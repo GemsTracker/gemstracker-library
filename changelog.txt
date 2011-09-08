@@ -1,0 +1,76 @@
+Important changes from 1.4 => 1.4.1
+============================================================
+ * Menu containers no longer have a privilege, this could have impact on custom menu's searching for a container.
+ * Default layouts have changed to make displaying the project name optional. To display the project name
+   add the following line to the project.ini:
+       layoutPrepare.projectName = header
+
+
+============================================================
+Library changes for 1.3 => 1.4
+
+- New track engine, all code from Gems_Source and Gems_Token to Gems_Tracker
+- Moved snippets from MUtil_Controller to their own top level package MUtil_Snippets, this allows snippets to load snippets
+- The backwards compatible Gems_Menu extensions Gems_Menu->getParameterSource() and Gems_Menu->getMenuList() are easier to use than their predecessors.
+
+Some examples:
+
+Checking for token completion:
+Old:
+    $tokenLibrary = Gems_Tokens::getLibrary($this->db);
+    $tokenLibrary->checkAnswers($data['grs_id_user'], $this->session->user_id);
+New:
+    $this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id);
+
+Getting the survey questions:
+Old:
+    $source     = Gems_Sources::getBySurveyId($this->gsu_id);
+    $this->data = $source->getSurveyQuestions($this->gsu_id, $this->locale);
+New:
+    $survey = $this->loader->getTracker()->getSurvey($this->gsu_id);
+    $this->data = $survey->getQuestionInformation($this->locale->getLanguage());
+
+Getting answers:
+Old:
+    Gems_Tokens::getAnswers($currentToken['gto_id_token'], $first));
+New:
+    $token = $this->loader->getTracker()->getToken($currentToken['gto_id_token']);
+    $token->getRawAnswers();
+or formatted:
+    $model = $token->getSurveyAnswerModel($this->locale->getLanguage());
+    $model->applyRequest($this->request);
+    $model->loadFirst();
+    etc...
+
+getting a token model:
+Old:
+    $this->loader->getModels()->getTokenModel('T' == $this->trackType);
+New for generic token model:
+    $this->loader->getTracker()->getTokenModel();
+Or for token specific detail show & edit:
+    $this->loader->getToken('xxxx-xxxx')->getModel();
+
+Getting a respondent model:
+Old:
+    $model = GemsEscort::getInstance()->getLoader()->getModels()->getTrackModel('TrackModel');
+New:
+    $model = $model = $this->loader->getTracker()->getTrackModel();
+
+New changes directories:
+    application/controllers/snippets => application/snippets
+    library/Gems/controllers/snippets => library/Gems/snippets
+    library/Gems/classes/MUtil/Controller/snippets => library/Gems/classes/MUtil/Snippets/Standard
+
+Changes to snippet classes:
+    MUtil_Controller_SnippetAbstract => MUtil_Snippets_SnippetAbstract
+    MUtil_Controller_SnippetInterface => MUtil_Snippets_SnippetInterface
+    MUtil_Controller_TabSnippetAbstract => MUtil_Snippets_TabSnippetAbstract
+    etc...
+    MUtil_Controller_*Snippet* => MUtil_Snippets_*Snippet*
+But also:
+    Gems_Controller_Snippets_* => Gems_Snippets_*
+
+Replaced individual snippets
+    SingleAnswerTableSnippet => AnswerModelSnippet
+    AnswersTableSnippet => TrackAnswersModelSnippet
+

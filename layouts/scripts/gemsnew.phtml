@@ -1,0 +1,66 @@
+<?php echo $this->doctype(); ?>
+<html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
+<head><?php
+    echo $this->headTitle();
+    echo $this->headLink();
+    echo $this->headStyle();
+    echo $this->headMeta();
+
+    // Check if jQuery library is needed
+    if ($this->jQuery) {
+        echo $this->jQuery();
+    }
+
+    // Check if dojo library is needed
+    if ($this->dojoTheme) {
+        // Echo out the dojo <script> tags
+        echo $this->dojo();
+    }
+    ?>
+    </head>
+<body<?php if (isset($this->dojoTheme)) { echo " class='" . $this->dojoTheme . "' "; } ?>>
+    <div id="all">
+    <div id="header"><?php if ($this->header) { echo $this->header->render($this); }?></div>
+    <div id="header_bar"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
+<?php
+    if ($this->navigation):
+?>
+    <div id="wrapper" class="menu">
+        <div id="colleft" class="main">
+            <div id="col1wrap">
+                <div id="main" ><?php
+                    if ($this->main) {
+                        echo $this->main->render($this);
+                    }
+                    echo $this->layout()->content; ?>
+                </div>
+            </div>
+            <div id="menu"><?php
+                echo $this->navigation()->menu(); ?>
+            </div>
+        </div>
+    </div><?php
+    else:
+    ?>
+    <div id="wrapper" class="main">
+        <div><?php
+            if ($this->main) {
+                echo $this->main->render($this);
+            }
+            echo $this->layout()->content;
+    ?>  </div>
+    </div><?php
+    endif;
+    ?>
+    <div id="footer"><?php
+    if ($this->footer) {
+        echo $this->footer->render($this);
+    }
+    ?>
+    </div>
+</div><?php
+echo MUtil_Echo::out();
+echo $this->headScript();
+echo $this->inlineScript();
+?></body>
+</html>

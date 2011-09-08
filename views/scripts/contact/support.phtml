@@ -1,0 +1,56 @@
+<?php 
+if ('en' == $this->locale->getLanguage()): 
+?><h3><?php echo $this->project->name; ?> support</h3>
+
+<?php echo $this->organizationsList->render($this); ?>
+
+<p class="info">
+    When you have questions about using <?php echo $this->project->name; ?> the place to look for answers is the 
+    <strong>forum</strong> on 
+    <a href="<?php echo $this->project->contact['supportUrl'] ?>" rel="external" target="pulse_support">support site</a>:
+</p>
+
+<div class="centerAlign">
+    <a href="<?php echo $this->project->contact['supportUrl'] ?>" class="actionlink" rel="external" target="pulse_support">Go to the support site</a>
+</div><?php   
+    if (isset($this->project->contact['bugsUrl'])): 
+?>
+<h3>Reporting bugs</h3>
+
+<p class="info">
+    If you encountered a bug while using <?php echo $this->project->name; ?> please report in on our
+    <a href="<?php echo $this->project->contact['bugsUrl'] ?>" rel="external" target="pulse_bugs">bug tracker site</a>.
+</p>
+
+<div class="centerAlign">
+    <a href="<?php echo $this->project->contact['bugsUrl'] ?>" class="actionlink" rel="external" target="pulse_bugs">Report a bug</a>
+</div><?php   
+    endif; 
+endif; ?>
+<?php 
+if ('nl' == $this->locale->getLanguage()): 
+?><h3><?php echo $this->project->name; ?> ondersteuning</h3>
+<?php 
+    echo $this->organizationsList->render($this); 
+?>
+<p class="info">
+    Vragen over het gebruik van <?php echo $this->project->name; ?> kan u het beste stellen op het <strong>forum</strong> van de 
+    <a href="<?php echo $this->project->contact['supportUrl'] ?>" rel="external" target="pulse_support">support site</a>:
+</p>
+<div class="centerAlign">
+    <a href="<?php echo $this->project->contact['supportUrl'] ?>" class="actionlink" rel="external" target="pulse_support">Ga naar de support site</a>
+</div><?php   
+    if (isset($this->project->contact['bugsUrl'])): 
+?>
+<h3>Problemen melden</h3>
+
+<p class="info">
+    Als u een fout of probleem tegengekomen bent tijdens het gebruik van <?php echo $this->project->name; ?> dan kan u die beter melden op onze
+    <a href="<?php echo $this->project->contact['bugsUrl'] ?>" rel="external" target="pulse_bugs">bug tracker</a>.
+</p>
+
+<div class="centerAlign">
+    <a href="<?php echo $this->project->contact['bugsUrl'] ?>" class="actionlink" rel="external" target="pulse_bugs">Meld een probleem</a>
+</div><?php   
+    endif; 
+endif; ?>

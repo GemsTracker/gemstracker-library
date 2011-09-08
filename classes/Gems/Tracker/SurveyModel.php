@@ -1,0 +1,158 @@
+<?php
+
+
+/**
+ * Copyright (c) 2011, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * @author Matijs de Jong
+ * @since 1.4
+ * @version 1.4
+ * @package Gems
+ * @subpackage Tracker
+ */
+
+/**
+ * Description of SurveyModel
+ *
+ * @author Matijs de Jong
+ * @package Gems
+ * @subpackage Tracker
+ */
+class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
+{
+    /**
+     *
+     * @var Gems_Tracker_Source_SourceInterface
+     */
+    protected $source;
+
+    /**
+     *
+     * @var Gems_Tracker_Survey
+     */
+    protected $survey;
+
+    public function __construct(Gems_Tracker_Survey $survey, Gems_Tracker_Source_SourceInterface $source)
+    {
+        parent::__construct($survey->getName(), 'gems__tokens', 'gto');
+        $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
+
+        $this->addColumn(
+            "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
+            'row_class');
+
+        $this->source = $source;
+        $this->survey = $survey;
+    }
+
+    /**
+     * Returns a nested array containing the items requested, including answers.
+     *
+     * @param array $inputRows Nested rows with Gems token information
+     * @return array Nested array or false
+     */
+    protected function addAnswers(array $inputRows)
+    {
+        $tokens = MUtil_Ra::column('gto_id_token', $inputRows);
+
+        // MUtil_Echo::track($tokens);
+
+        $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
+        $emptyRow   = array_fill_keys($this->getItemNames(), null);
+        $resultRows = array();
+
+        foreach ($inputRows as $row) {
+            $tokenId = $row['gto_id_token'];
+
+            if (isset($answerRows[$tokenId])) {
+                $resultRows[$tokenId] = $row + $answerRows[$tokenId] + $emptyRow;
+            } else {
+                $resultRows[$tokenId] = $row + $emptyRow;
+            }
+        }
+        return $resultRows;
+    }
+
+    /**
+     * True if this model allows the creation of new model items.
+     *
+     * @return boolean
+     */
+    public function hasNew()
+    {
+        return false;
+    }
+
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    public function load($filter = true, $sort = true)
+    {
+        return $this->addAnswers(parent::load($filter, $sort));
+    }
+
+    /**
+     * Returns an array containing the first requested item.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array An array or false
+     */
+    public function loadFirst($filter = true, $sort = true)
+    {
+        return reset($this->addAnswers(array(parent::loadFirst($filter, $sort))));
+    }
+
+    /**
+     * Returns a Zend_Paginator for the items in the model
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return Zend_Paginator
+     */
+    public function loadPaginator($filter = true, $sort = true)
+    {
+        return Zend_Paginator::factory($this->load($filter, $sort));
+    }
+
+    /**
+     * Returns a MUtil_Lazy_RepeatableInterface for the items in the model
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return MUtil_Lazy_RepeatableInterface
+     */
+    public function loadRepeatable($filter = true, $sort = true)
+    {
+        return MUtil_Lazy::repeat($this->load($filter, $sort));
+    }
+}

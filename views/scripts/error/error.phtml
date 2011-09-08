@@ -1,0 +1,38 @@
+<h1>An error occurred!</h1>
+<br/>
+<h2><?php echo $this->message ?></h2>
+
+<?php if (isset($this->info)): ?>
+  <p class="info">
+    <?php echo $this->info ?>
+  </p>
+<?php endif ?>
+
+<?php if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV):  ?>
+
+  <h3>Exception information:</h3>
+  <p class="info">
+      <b>Class:</b> <?php echo get_class($this->exception) ?>
+      <br/>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+
+      <?php if (method_exists($this->exception, 'getChainedException') &&
+                ($chained = $this->exception->getChainedException())) : ?>
+          <br/>
+          <b>Chained class:</b> <?php echo get_class($chained) ?>
+          <br/>
+          <b>Changed message:</b> <?php echo $chained ?>
+
+      <?php endif ?>
+  </p>
+
+  <h3>Stack trace:</h3>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
+  </pre>
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), 1) ?>
+  </pre>
+<?php else: ?>
+    <p class="info">Please contact system administration</p>
+<?php endif ?>

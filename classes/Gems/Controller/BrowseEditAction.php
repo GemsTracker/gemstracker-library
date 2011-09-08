@@ -1,0 +1,938 @@
+<?php
+
+/**
+ * Copyright (c) 2011, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Controller
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: BrowseEditAction.php 456 2011-08-31 12:03:57Z mjong $
+ */
+
+/**
+ * BrowseEdit controller
+ *
+ * This controller handles a default model browse / edit / export to excel
+ *
+ * @package    Gems
+ * @subpackage Controller
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
+ */
+abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelActionAbstract
+{
+    const RESET_PARAM   = 'reset';
+    const SEARCH_BUTTON = 'AUTO_SEARCH_TEXT_BUTTON';
+
+    public $autoFilter = true;
+
+    public $menuCreateIncludeLevel = 0;
+
+    public $menuEditIncludeLevel = 10;
+
+    public $menuIndexIncludeLevel = 4;
+
+    public $menuShowIncludeLevel = 2;
+
+    public $filterStandard;
+
+    /**
+     *
+     * @var Gems_Util_RequestCache
+     */
+    public $requestCache;
+
+    public $sortKey;
+
+    public $summarizedActions = array('index', 'autofilter');
+
+    public $tableSnippets;
+
+    public $useKeyboardSelector = true;
+
+    public $useMultiRowForm = false;
+
+    public $usePreviousFilter = true;
+
+    public $useTabbedForms = false;
+
+    protected function _applySearchParameters(MUtil_Model_ModelAbstract $model, $useStored = false)
+    {
+        $data = $this->getCachedRequestData();
+
+        // Make sure page and items parameters are not added to the search statement
+        unset($data['page'], $data['items']);
+
+        $data = $model->applyParameters($data);
+
+        if ($filter = $this->getDataFilter($data)) {
+            $model->addFilter($filter);
+        }
+
+        if ($this->sortKey) {
+            $model->addSort($this->sortKey);
+        }
+    }
+
+    /**
+     * Creates a Zend_Form_Element_Select
+     *
+     * @param string        $name    Name of the select element
+     * @param string|array  $options Can be a SQL select string or key/value array of options
+     * @param string        $empty   Text to display for the empty selector
+     * @return Zend_Form_Element_Select
+     */
+    protected function _createSelectElement($name, $options, $empty = null)
+    {
+        if (is_string($options)) {
+            $options = $this->db->fetchPairs($options);
+            natsort($options);
+        }
+        if ($options || null !== $empty)
+        {
+            if (null !== $empty) {
+                $options = array('' => $empty) + $options;
+            }
+            $element = new Zend_Form_Element_Select($name, array('multiOptions' => $options));
+
+            return $element;
+        }
+    }
+
+    protected function _createTable()
+    {
+        $model   = $this->getModel();
+        $request = $this->getRequest();
+        $search  = $this->getCachedRequestData(false);
+        $params  = array('baseUrl' => $search);
+
+        // Load the filters
+        $this->_applySearchParameters($model);
+
+        //* Actually we should apply the marker after the columns used have been determined. Takes more work though.
+        $textKey = $model->getTextFilter();
+        if (isset($search[$textKey])) {
+            $searchText = $search[$textKey];
+            // MUtil_Echo::r('[' . $searchText . ']');
+            $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            foreach ($model->getItemNames() as $name) {
+                if ($model->get($name, 'label')) {
+                    $model->set($name, 'markCallback', array($marker, 'mark'));
+                }
+            }
+        } // */
+
+        if ($this->tableSnippets) {
+            $sequence = new MUtil_Html_Sequence();
+            foreach ((array) $this->tableSnippets as $snippetName) {
+                $snippet = $this->getSnippet($snippetName, $params);
+
+                if ($snippet->hasHtmlOutput()) {
+                    $sequence[] = $snippet;
+                }
+            }
+        }
+
+        $model->trackUsage();
+        $table     = $this->getBrowseTable($search);
+        $paginator = $model->loadPaginator();
+        $table->setRepeater($paginator);
+        $table->tfrow()->pagePanel($paginator, $request, $this->translate, $params);
+
+        if (isset($sequence)) {
+            $sequence[] = $table;
+            return $sequence;
+        } else {
+            return $table;
+        }
+    }
+
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @rturn void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        // Add edit button if allowed, otherwise show, again if allowed
+        if ($menuItem = $this->findAllowedMenuItem('edit', 'show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+
+        parent::addBrowseTableColumns($bridge, $model);
+    }
+
+    /**
+     * This is where you can modify the model for excel export
+     *
+     * Only columns that have a label will be exported.
+     *
+     * example:
+     * <code>
+     * $model->set('columnname', 'label', $this->_('Excel label'));
+     * </code>
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addExcelColumns(MUtil_Model_ModelAbstract $model) {}
+
+    /**
+     * Hook to alter the formdata just before the form is populated
+     *
+     * @param array $data
+     * @param bool  $isNew
+     */
+    public function afterFormLoad(array &$data, $isNew)
+    {
+    }
+
+    /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        return true;
+    }
+
+    /**
+     * Get the afterSaveRoute and execute it
+     *
+     * @param mixed $data data array or Zend Request
+     * @return boolean
+     */
+    public function afterSaveRoute($data)
+    {
+        //Get default routing
+        $url = $this->getAfterSaveRoute($data);
+
+        //If we have a route, reroute
+        if ($url !== null && $url !== false) {
+            $this->_helper->redirector->gotoRoute($url, null, true);
+            return true;
+        }
+
+        // Do not reroute
+        return false;
+    }
+
+    /**
+     * Set the action key in request
+     *
+     * Use this when an action is a Ajax action for retrieving
+     * information for use within the screen of another action
+     *
+     * @param string $alias
+     */
+    protected function aliasAction($alias)
+    {
+        $request = $this->getRequest();
+        $request->setActionName($alias);
+        $request->setParam($request->getActionKey(), $alias);
+    }
+
+    public function autofilterAction()
+    {
+        // Make sure all links are generated as if the current request was index.
+        $this->aliasAction('index');
+
+        // MUtil_Model::$verbose = true;
+
+        // We do not need to return the layout, just the above table
+        Zend_Layout::resetMvcInstance();
+
+        $this->html[] = $this->_createTable();
+        $this->html->raw(MUtil_Echo::out());
+    }
+
+    /**
+     * Perform some actions on the form, right before it is displayed but already populated
+     *
+     * Here we add the table display to the form.
+     *
+     * @param Zend_Form $form
+     * @param bool      $isNew
+     * @return Zend_Form
+     */
+    public function beforeFormDisplay ($form, $isNew)
+    {
+        if ($this->useTabbedForms) {
+            //Create the tabs tried in $form->render() but somehow that is never reached
+            Gems_TabForm::htmlElementsToTabs($form);
+
+            //If needed, add a row of link buttons to the bottom of the form
+            if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
+                $element = new MUtil_Form_Element_Html('formLinks');
+                $element->setValue($links);
+                $element->setOrder(999);
+                $form->addElement($element);
+            }
+        } else {
+            $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+            $table->setAsFormLayout($form, true, true);
+            $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+
+            if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
+                $table->tf(); // Add empty cell, no label
+                $linksCell = $table->tf($links);
+            }
+        }
+
+        return $form;
+    }
+
+    /**
+     * Hook to alter formdata before saving
+     *
+     * @param array $data The data that will be saved.
+     * @param boolean $isNew
+     * $param Zend_Form $form
+     * @return boolean Returns true if flow should continue
+     */
+    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    {
+        return true;
+    }
+
+    /**
+     * Creates a form for a new record
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function createAction()
+    {
+        if ($form = $this->processForm()) {
+            $this->html->h3(sprintf($this->_('New %s...'), $this->getTopic()));
+            $this->html[] = $form;
+        }
+    }
+
+    /**
+     * Retrieve a form object and add extra decorators
+     *
+     * @param array $options
+     * @return Gems_Form
+     */
+    public function createForm($options = null) {
+        if ($this->useTabbedForms) {
+            $form = new Gems_TabForm($options);
+        } else {
+            $form = parent::createForm($options);
+        }
+
+        return $form;
+    }
+
+    // Still abstract
+    // abstract protected function createModel($detailed, $action);
+
+    /**
+     * Creates a form to delete a record
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function deleteAction()
+    {
+        if ($this->isConfirmedItem($this->_('Delete %s'))) {
+            $model   = $this->getModel();
+            $deleted = $model->delete();
+
+            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
+            $this->_reroute(array('action' => 'index'), true);
+        }
+    }
+
+    /**
+     * Creates a form to edit
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function editAction()
+    {
+        if ($form = $this->processForm()) {
+            $this->html->h3(sprintf($this->_('Edit %s'), $this->getTopic()));
+            $this->html[] = $form;
+        }
+    }
+
+    /**
+     * Outputs the model to excel, applying all filters and searches needed
+     *
+     * When you want to change the output, there are two places to check:
+     *
+     * 1. $this->addExcelColumns($model), where the model can be changed to have labels for columns you
+     * need exported
+     *
+     * 2. $this->getExcelData($data, $model) where the supplied data and model are merged to get output
+     * (by default all fields from the model that have a label)
+     */
+    public function excelAction()
+    {
+        // Set the request cache to use the search params from the index action
+        $this->getCachedRequestData(true, 'index');
+
+        $model = $this->getModel();
+
+        $this->_applySearchParameters($model, true);
+
+        $this->addExcelColumns($model);     // Hook to modify the model
+
+        $this->view->result   = $this->getExcelData($model->load(), $model);
+        $this->view->filename = $this->getRequest()->getControllerName() . '.xls';
+        $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
+
+        $this->render('excel', null, true);
+     }
+
+    /**
+     * Return an array with route options depending on de $data given.
+     *
+     * @param mixed $data array or Zend_Controller_Request_Abstract
+     * @return mixed array with route options or false when no redirect is found
+     */
+    public function getAfterSaveRoute($data) {
+        if ($currentItem = $this->menu->getCurrent()) {
+            $controller = $this->_getParam('controller');
+            $url        = null;
+
+            if ($data instanceof Zend_Controller_Request_Abstract) {
+                $refData = $data;
+            } elseif (is_array($data)) {
+                $refData = $this->getModel()->getKeyRef($data) + $data;
+            } else {
+                throw new Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
+            }
+
+            if ($parentItem = $currentItem->getParent()) {
+                if ($parentItem instanceof Gems_Menu_SubMenuItem) {
+                    $controller = $parentItem->get('controller');
+                }
+            }
+
+            // Look for allowed show
+            if ($menuItem = $this->menu->find(array('controller' => $controller, 'action' => 'show', 'allowed' => true))) {
+                $url = $menuItem->toRouteUrl($refData);
+            }
+
+            if (null === $url) {
+                // Look for allowed index
+                if ($menuItem = $this->menu->find(array('controller' => $controller, 'action' => 'index', 'allowed' => true))) {
+                    $url = $menuItem->toRouteUrl($refData);
+                }
+            }
+
+            if ((null === $url) && ($parentItem instanceof Gems_Menu_SubMenuItem)) {
+                // Still nothing? Try parent item.
+                $url = $parentItem->toRouteUrl($refData);
+            }
+
+            if (null !== $url) {
+                return $url;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    {
+        if ($model->hasTextSearchFilter()) {
+            // Search text
+            $element = new Zend_Form_Element_Text(MUtil_Model::TEXT_FILTER, array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
+
+            return array($element);
+        }
+    }
+
+    /**
+     * Creates an autosearch form for indexAction.
+     *
+     * @param string $targetId
+     * @return Gems_Form|null
+     */
+    protected function getAutoSearchForm($targetId)
+    {
+        if ($this->autoFilter) {
+            $model = $this->getModel();
+            $data  = $this->getCachedRequestData();
+
+            $elements = $this->getAutoSearchElements($model, $data);
+
+            if ($elements) {
+                $form = $this->createForm(array('name' => 'autosubmit')); // Assign a name so autosubmit will only work on this form (when there are others)
+                $form->setHtml('div');
+
+                $div = $form->getHtml();
+                $div->class = 'search';
+
+                $span = $div->div(array('class' => 'inputgroup'));
+
+                $elements[] = $this->getAutoSearchSubmit($model, $form);
+
+                foreach ($elements as $element) {
+                    if ($element instanceof Zend_Form_Element) {
+                        if ($element->getLabel()) {
+                            $span->label($element);
+                        }
+                        $span->input($element);
+                        // TODO: Elementen automatisch toevoegen in MUtil_Form
+                        $form->addElement($element);
+                    } elseif (null === $element) {
+                        $span = $div->div(array('class' => 'inputgroup'));
+                    } else {
+                        $span[] = $element;
+                    }
+                }
+
+                if ($this->_request->isPost()) {
+                    if (! $form->isValid($data)) {
+                        $this->addMessage($form->getErrorMessages());
+                        $this->addMessage($form->getMessages());
+                    }
+                } else {
+                    $form->populate($data);
+                }
+
+                $href = $this->getAutoSearchHref();
+                $div[] = new Gems_JQuery_AutoSubmitForm($href, $targetId, $form);
+
+                return $form;
+            }
+        }
+    }
+
+    protected function getAutoSearchHref()
+    {
+        return MUtil_Html::attrib('href', array('action' => 'autofilter', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true));
+    }
+
+    protected function getAutoSearchSubmit(MUtil_Model_ModelAbstract $model, MUtil_Form $form)
+    {
+        return new Zend_Form_Element_Submit(self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
+    }
+
+    /**
+     * Creates from the model a MUtil_Html_TableElement that can display multiple items.
+     *
+     * Overruled to add css classes for Gems
+     *
+     * @param array $baseUrl
+     * @return MUtil_Html_TableElement
+     */
+    public function getBrowseTable(array $baseUrl = array(), $sort = null, $model = null)
+    {
+        $table = parent::getBrowseTable($baseUrl, $sort, $model);
+
+        $table->class = 'browser';
+        $table->setOnEmpty(sprintf($this->_('No %s found'), $this->getTopic(0)));
+        $table->getOnEmpty()->class = 'centerAlign';
+
+        return $table;
+    }
+
+    /**
+     *
+     * @param boolean $includeDefaults Include the default values (yes for filtering, no for urls
+     * @param string  $sourceAction    The action to get the cache from if not the current one.
+     * @return array
+     */
+    public function getCachedRequestData($includeDefaults = true, $sourceAction = null)
+    {
+        if (! $this->requestCache) {
+            $this->requestCache = $this->util->getRequestCache();
+            if ($sourceAction) {
+                $this->requestCache->setSourceAction($sourceAction);
+            }
+            $this->requestCache->setMenu($this->menu);
+            $this->requestCache->setRequest($this->request);
+
+            // Button text should not be stored.
+            $this->requestCache->removeParams(self::SEARCH_BUTTON, 'page', 'items', 'action');
+        }
+
+        $data = $this->requestCache->getProgramParams();
+        if ($includeDefaults) {
+            $data = $data + $this->getDefaultSearchData();
+        }
+
+        return $data;
+    }
+
+    protected function getDataFilter(array $data)
+    {
+        if ($this->filterStandard) {
+            return (array) $this->filterStandard;
+        }
+
+        return array();
+    }
+
+    public function getDefaultSearchData()
+    {
+        return array();
+    }
+
+    /**
+     * Returns an array with all columns from the model that have a label
+     *
+     * @param array                     $data
+     * @param MUtil_Model_ModelAbstract $model
+     * @return array
+     */
+    protected function getExcelData($data, MUtil_Model_ModelAbstract $model)
+    {
+        $headings = array();
+        $emptyMsg = sprintf($this->_('No %s found.'), $this->getTopic(0));
+        foreach ($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $headings[$name] = (string) $label;
+            }
+        }
+        $results = array();
+        $results[] = $headings;
+        if ($headings) {
+            if ($data) {
+                foreach ($data as $row) {
+                    foreach ($headings as $key => $value) {
+                        $result[$key] = isset($row[$key]) ? $row[$key] : null;
+                    }
+                    $results[] = $result;
+                }
+                return $results;
+            } else {
+                foreach ($headings as $key => $value) {
+                    $result[$key] = $emptyMsg;
+                }
+                $results[] = $result;
+                return $results;
+            }
+        } else {
+            return array($emptyMsg);
+        }
+    }
+
+    /**
+     * Creates from the model a Zend_Form using createForm and adds elements
+     * using addFormElements().
+     *
+     * @param array $data The data that will later be loaded into the form, can be changed
+     * @param optional boolean $new Form should be for a new element
+     * @return Zend_Form
+     */
+    public function getModelForm(array &$data, $new = false)
+    {
+        $model = $this->getModel();
+
+        $baseform = $this->createForm();
+
+        if ($this->useMultiRowForm) {
+            $bridge    = new MUtil_Model_FormBridge($model, new Gems_Form_SubForm());
+            $newData   = $this->addFormElements($bridge, $model, $data, $new);
+            $formtable = new MUtil_Form_Element_Table($bridge->getForm(), $model->getName(), array('class' => $this->editTableClass));
+
+            $baseform->setMethod('post')
+                ->setDescription($this->getTopicTitle())
+                ->addElement($formtable);
+
+            $form = $baseform;
+        } else {
+            $bridge  = new MUtil_Model_FormBridge($model, $baseform);
+            $newData = $this->addFormElements($bridge, $model, $data, $new);
+            $form    = $bridge->getForm();
+        }
+
+        if ($newData && is_array($newData)) {
+            $data = $newData + $data;
+        }
+
+        return $form;
+    }
+
+    /**
+     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     *
+     * Overruled to add css classes for Gems
+     *
+     * @param integer $columns The number of columns to use for presentation
+     * @param mixed $filter A valid filter for MUtil_Model_ModelAbstract->load()
+     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
+     * @return MUtil_Html_TableElement
+     */
+    public function getShowTable($columns = 1, $filter = null, $sort = null)
+    {
+        $table = parent::getShowTable($columns, $filter, $sort);
+
+        $table->class = 'displayer';
+
+        return $table;
+    }
+
+    public function indexAction()
+    {
+        // MUtil_Model::$verbose = true;
+        $this->html->h3($this->getTopicTitle());
+
+        if (! $this->useMultiRowForm) {
+            $id = 'autofilter_target';
+
+            $this->html[] = $this->getAutoSearchForm($id);
+
+            $this->html->div(array('id' => $id), $this->_createTable());
+            if ($this->useKeyboardSelector) {
+                $this->html[] = new Gems_JQuery_TableRowKeySelector($id);
+            }
+
+            $this->html->buttonDiv($this->createMenuLinks($this->menuIndexIncludeLevel), array('class' => 'leftAlign', 'renderWithoutContent' => false));
+        } else {
+            if ($form = $this->processForm()) {
+                $this->html[] = $form;
+            }
+        }
+    }
+
+    public function isConfirmedItem($title, $question = null, $info = null)
+    {
+        if ($this->_getParam('confirmed')) {
+            return true;
+        }
+
+        if (null === $question) {
+            $question = $this->_('Are you sure?');
+        }
+
+        $this->html->h3(sprintf($title, $this->getTopic()));
+
+        if ($info) {
+            $this->html->pInfo($info);
+        }
+
+        $model    = $this->getModel();
+        $repeater = $model->applyRequest($this->getRequest())->loadRepeatable();
+        $table    = $this->getShowTable();
+        $table->caption($question);
+        $table->setRepeater($repeater);
+
+        $footer = $table->tfrow($question, ' ', array('class' => 'centerAlign'));
+        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'));
+        $footer->actionLink(array('action' => 'show'), $this->_('No'));
+
+        $this->html[] = $table;
+        $this->html->buttonDiv($this->createMenuLinks());
+
+        return false;
+    }
+
+    /**
+     * Performs actions when the form is submitted, but the submit button was not checked
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param Zend_Form $form   The populated form
+     * @param array     $data   The data-array we are working on
+     */
+    public function onFakeSubmit(&$form, &$data) {
+        if ($this->useMultiRowForm) {
+            //Check if the insert button was pressed and act upon that
+            if ($this->hasNew() && isset($data['insert_button']) && $data['insert_button']) {
+                    // Add a row
+                    $model          = $this->getModel();
+                    $mname          = $model->getName();
+                    $data[$mname][] = $model->loadNew();
+            }
+        }
+    }
+
+    /**
+     * Handles a form, including population and saving to the model
+     *
+     * @param string        $saveLabel  A label describing the form
+     * @param array         $data       An array of data to use, adding to the data from the post
+     * @return Zend_Form|null           Returns a form to display or null when finished
+     */
+    protected function processForm($saveLabel = null, $data = null)
+    {
+        $model   = $this->getModel();
+        $mname   = $model->getName();
+        $request = $this->getRequest();
+        $isNew   = $request->getActionName() === 'create';
+
+        //MUtil_Echo::r($data);
+        if ($request->isPost()) {
+            $data = $request->getPost() + (array) $data;
+        } else {
+            if (!$this->useMultiRowForm) {
+                if (! $data)  {
+                    if ($isNew) {
+                        $data = $model->loadNew();
+                    } else {
+                        $data = $model->loadFirst();
+                        if (! $data) {
+                            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
+                            $this->afterSaveRoute(array());
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                $data[$mname] = $model->load();
+
+                if (! $data[$mname]) {
+                    $data[$mname] = $model->loadNew(2);
+                }
+            }
+        }
+        // MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__ . '(): ' . __LINE__);
+
+        $form = $this->getModelForm($data, $isNew);
+
+        //Handle insert button on multirow forms
+        if ($this->useMultiRowForm) {
+            if ($this->hasNew()) {
+                $form->addElement(new MUtil_Form_Element_FakeSubmit(array(
+                    'name' => 'insert_button',
+                    'label' => sprintf($this->_('New %1$s...'), $this->getTopic()))));
+            }
+        }
+
+        //If not already there, add a save button
+        $saveButton = $form->getElement('save_button');
+        if (! $saveButton) {
+            if (null === $saveLabel) {
+                $saveLabel = $this->_('Save');
+            }
+
+            $saveButton = new Zend_Form_Element_Submit('save_button', $saveLabel);
+            $saveButton->setAttrib('class', 'button');
+            $form->addElement($saveButton);
+        }
+
+        if ($request->isPost()) {
+            //First populate the form, otherwise the saveButton will never be 'checked'!
+            $form->populate($data);
+            if ($saveButton->isChecked()) {
+                // MUtil_Echo::r($_POST, 'POST');
+                // MUtil_Echo::r($data, 'data');
+                // MUtil_Echo::r($form->getValues(), 'values');
+
+                // MUtil_Model::$verbose = true;
+                if ($form->isValid($data, false)) {
+                    /*
+                     * Now that we validated, the form should be populated. I think the step
+                     * below is not needed as the values in the form come from the data array
+                     * but performing a getValues() cleans the data array so data in post but
+                     * not in the form is removed from the data variable
+                     */
+                    $data = $form->getValues();
+
+                    if ($this->beforeSave($data, $isNew, $form)) {
+                        //Save the data
+                        if (!$this->useMultiRowForm) {
+                            $data = $model->save($data); // Do not add filter, all values are in $_POST
+                        } else {
+                            $data[$mname] = $model->saveAll($data[$mname]);
+                        }
+                        //Now check if there were changes
+                        if (($changed = $model->getChanged())) {
+                            if ($this->afterSave($data, $isNew)) {
+                                $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed));
+                            }
+                        } else {
+                            $this->addMessage($this->_('No changes to save.'));
+                        }
+
+                        //MUtil_Echo::r($data, 'after process');
+                        if ($this->afterSaveRoute($data, $isNew)) {
+                            return null;
+                        }
+                    }
+                } else {
+                    $this->addMessage($this->_('Input error! No changes saved!'));
+                }
+            } else {
+                //The default save button was NOT used, so we have a fakesubmit button
+                $this->onFakeSubmit($form, $data);
+            }
+        }
+        if (is_array($data)) {
+            $this->afterFormLoad($data, $isNew);
+        }
+
+        if ($data) {
+            $form->populate($data);
+
+            $form = $this->beforeFormDisplay($form, $isNew);
+
+            return $form;
+        }
+    }
+
+    /**
+     * Shows a table displaying a single record from the model
+     *
+     * Uses: $this->getModel()
+     *       $this->getShowTable();
+     */
+    public function showAction()
+    {
+        $this->html->h3(sprintf($this->_('Show %s'), $this->getTopic()));
+
+        $model    = $this->getModel();
+        // NEAR FUTURE:
+        // $this->addSnippet('ModelVerticalTableSnippet', 'model', $model, 'class', 'displayer');
+        $repeater = $model->loadRepeatable();
+        $table    = $this->getShowTable();
+        $table->setOnEmpty(sprintf($this->_('Unknown %s.'), $this->getTopic(1)));
+        $table->setRepeater($repeater);
+        $table->tfrow($this->createMenuLinks($this->menuShowIncludeLevel), array('class' => 'centerAlign'));
+
+        $this->html[] = $table;
+    }
+}

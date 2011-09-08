@@ -1,0 +1,224 @@
+<?php
+
+/**
+ * Copyright (c) 2011, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Snippets
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ */
+
+/**
+ * Snippet for showing the all tokens for a single respondent.
+ *
+ * @package    Gems
+ * @subpackage Snippets
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.1
+ */
+class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
+{
+    /**
+     * Sets pagination on or off.
+     *
+     * @var boolean
+     */
+    public $browse = true;
+
+    /**
+     * Required
+     *
+     * @var array
+     */
+    protected $respondentData;
+
+    /**
+     * Require
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = array(
+            'calc_used_date'  => SORT_ASC,
+            'gtr_track_name'  => SORT_ASC,
+            'gto_round_order' => SORT_ASC,
+            'gto_created'     => SORT_ASC);
+
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        // MUtil_Model::$verbose = true;
+        //
+        // Initiate data retrieval for stuff needed by links
+        $bridge->gr2o_patient_nr;
+        $bridge->gr2t_id_respondent_track;
+        $bridge->gtr_track_type;
+
+        $HTML = MUtil_Html::create();
+
+        $roundDescription[] = $HTML->if($bridge->calc_round_description, $HTML->small(' [', $bridge->calc_round_description, ']'));
+        $roundDescription[] = $HTML->small(' [', $bridge->createSortLink('calc_round_description'), ']');
+
+        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
+            $href = $menuItem->toHRefAttribute($this->request, $bridge);
+            $track1 = $HTML->if($bridge->calc_track_name, $HTML->a($href, $bridge->calc_track_name));
+        } else {
+            $track1 = $bridge->calc_track_name;
+        }
+        $track[] = array($track1, $HTML->if($bridge->calc_track_info, $HTML->small(' [', $bridge->calc_track_info, ']')));
+        $track[] = array($bridge->createSortLink('calc_track_name'), $HTML->small(' [', $bridge->createSortLink('calc_track_info'), ']'));
+
+        // Set column widths to prevent strange column breaking in dates
+        //
+        // Use colgroup to test the second way of doing this.
+        // $bridge->colgroup(array('span' => 3));
+        // $bridge->colgroup(array('span' => 3, 'width' => '9em'));
+
+        $bridge->addMultiSort($track);
+        $bridge->addMultiSort('gsu_survey_name', $roundDescription);
+        $bridge->addSortable('ggp_name');
+        $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
+        $bridge->addSortable('gto_changed');
+        $bridge->addSortable('assigned_by', $this->_('Assigned by'));
+        $project = GemsEscort::getInstance()->project;
+
+        //If we are allowed to see the result of the survey, show it
+        if (GemsEscort::getInstance()->hasPrivilege('pr.respondent.result')) {
+            $bridge->addSortable('gto_result', $this->_('Score'), 'date');
+        }
+        // $bridge->addSortable('gto_completion_time', null, 'date');
+
+        $bridge->useRowHref = false;
+
+        $title = $HTML->strong($this->_('+'));
+
+        $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
+        $showLinks[]   = $this->createMenuLink($bridge, 'survey', 'show', $title);
+        $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
+        $actionLinks[] = $this->createMenuLink($bridge, 'survey', 'answer');
+        $actionLinks[] = array(
+            $bridge->ggp_staff_members->if($this->createMenuLink($bridge, 'ask', 'take'), $bridge->calc_id_token->strtoupper()),
+            'class' => $bridge->ggp_staff_members->if(null, $bridge->calc_id_token->if('token')));
+        // calc_id_token is leeg als vraqgenlijst ingevuld
+
+        // MUtil_Lazy::comp($bridge->val1, '==', $bridge->val2)->if($bridge->val3, 'broehaha');
+
+        // Remove nulls
+        $showLinks   = array_filter($showLinks);
+        $actionLinks = array_filter($actionLinks);
+
+        if ($showLinks || $actionLinks) {
+            foreach ($showLinks as $showLink) {
+                if ($showLink) {
+                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
+                }
+            }
+            $bridge->addItemLink($actionLinks);
+            $bridge->addItemLink($showLinks);
+        }
+    }
+
+    /**
+     * The place to check if the data set in the snippet is valid
+     * to generate the snippet.
+     *
+     * When invalid data should result in an error, you can throw it
+     * here but you can also perform the check in the
+     * checkRegistryRequestsAnswers() function from the
+     * {@see MUtil_Registry_TargetInterface}.
+     *
+     * @return boolean
+     */
+    public function hasHtmlOutput()
+    {
+        return $this->respondentData && $this->request && parent::hasHtmlOutput();
+    }
+
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    {
+        $filter['gto_id_respondent'] = $this->respondentData['grs_id_user'];
+
+        $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
+        $filter['grc_success'] = 1;
+
+        $reqFilter = $this->request->getParam('filter');
+        switch ($reqFilter) {
+            case 'todo':
+                //Only actions valid now that are not already done
+                $filter[] = 'gto_completion_time IS NULL';
+                $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
+                $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
+                break;
+            case 'done':
+                //Only completed actions
+                $filter[] = 'gto_completion_time IS NOT NULL';
+                break;
+            case 'missed':
+                //Only missed actions (not filled in, valid until < today)
+                $filter[] = 'gto_completion_time IS NULL';
+                $filter[] = 'gto_valid_until < CURRENT_TIMESTAMP';
+                break;
+            case 'all':
+                $filter[] = 'gto_valid_from IS NOT NULL';
+                break;
+            default:
+                //2 weeks look ahead, valid from date is set
+                $filter[] = 'gto_valid_from IS NOT NULL';
+                $filter[] = 'DATEDIFF(gto_valid_from, CURRENT_TIMESTAMP) < 15';
+                $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
+        }
+
+        $model->setFilter($filter);
+        $this->processSortOnly($model);
+    }
+}
