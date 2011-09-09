@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -33,7 +33,7 @@
  * @license    New BSD License
  */
 
-/** 
+/**
  * OBSOLETE, we now use Gems_Auth with a Zend_Auth_Adapter_DbTable
  *
  * @deprecated
@@ -66,7 +66,7 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
 
     protected $_passwordField;
     protected $_usernameField;
-    
+
     /**
      * Exponent to use when calculating delay
      * @var int
@@ -86,11 +86,11 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
      */
     public function __construct($usernameField, $passwordField, Zend_Db_Adapter_Abstract $adapter = null, $delayFactor = null)
     {
-        parent::__construct('gems__login_info', 'user_login', null, $adapter);
+        parent::__construct('gems__staff', 'gsf_login', null, $adapter);
 
         $this->_usernameField = $usernameField;
         $this->_passwordField = $passwordField;
-        
+
         if (isset($delayFactor)) {
             $this->_delayFactor = $delayFactor;
         }
@@ -136,8 +136,8 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
                     throw new Zend_Validate_Exception('No database adapter present');
                 }
             }
-            
-            $condition = $this->_adapter->quoteIdentifier('user_password') . ' = ?';
+
+            $condition = $this->_adapter->quoteIdentifier('gsf_password') . ' = ?';
             $this->_exclude = $this->_adapter->quoteInto($condition, md5($password));
 
             try {
@@ -145,24 +145,24 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
                  * Lookup last failed login and number of failed logins
                  */
                 try {
-                    $sql = "SELECT user_failed_logins, UNIX_TIMESTAMP(user_last_failed)
-                    AS user_last_failed FROM {$this->_table} WHERE user_login = ?";
+                    $sql = "SELECT gsf_failed_logins, UNIX_TIMESTAMP(gsf_last_failed)
+                    AS gsf_last_failed FROM {$this->_table} WHERE gsf_login = ?";
                     $results = $this->_adapter->fetchRow($sql, array($username));
                 } catch (Zend_Db_Exception $zde) {
                     //If we need to apply a db patch, just use a default value
                     $results = 0;
                     MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Please update the database'));
                 }
-                
-                $delay = pow($results['user_failed_logins'], $this->_delayFactor);
-                $remaining = ($results['user_last_failed'] + $delay) - time();
-                
-                if ($results['user_failed_logins'] > 0 && $remaining > 0) {
+
+                $delay = pow($results['gsf_failed_logins'], $this->_delayFactor);
+                $remaining = ($results['gsf_last_failed'] + $delay) - time();
+
+                if ($results['gsf_failed_logins'] > 0 && $remaining > 0) {
                     $this->_obscureValue = false;
                     $this->_error(self::ERROR_PASSWORD_DELAY, ceil($remaining / 60));
                     return false;
                 }
-                
+
                 if ($this->_query($username)) {
                     return true;
                 } else {
