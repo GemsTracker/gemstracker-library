@@ -74,10 +74,13 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             $model   = $this->createTrackModel(false, 'index');
             $request = $this->getRequest();
 
+            $organisation_id = $this->escort->getCurrentOrganization();
+            $searchText = $this->_getParam($model->getTextFilter());
+
             $model->applyPostRequest($request);
             // $model->trackUsage(); DO NOT USE AS all is label here.
 
-            if ($searchText = $this->_getParam($model->getTextFilter())) {
+            if ($searchText) {
                 $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
                 foreach ($model->getItemNames() as $name) {
                     if ($model->get($name, 'label')) {
@@ -86,15 +89,13 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
                 }
             }
 
-            $organisation_id = $this->escort->getCurrentOrganization();
-            $filterText = $this->_getParam(MUtil_Model::TEXT_FILTER);
-            $filter     = $model->getTextSearchFilter($filterText);
+            $filter     = $model->getTextSearchFilter($searchText);
             $filter['gtr_track_type'] = $this->trackType;
             $filter['gtr_active']     = 1;
             $filter[]   = '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE';
             $filter[]   = "gtr_organisations LIKE '%|$organisation_id|%'";
 
-            $baseurl    = array('action' => 'index', 'gr2o_patient_nr' => $id, MUtil_Model::TEXT_FILTER => $filterText);
+            $baseurl    = array('action' => 'index', 'gr2o_patient_nr' => $id, MUtil_Model::TEXT_FILTER => $searchText);
 
             $bridge     = new MUtil_Model_TableBridge($model, array('class' => 'browser'));
             $bridge->setBaseUrl($baseurl);

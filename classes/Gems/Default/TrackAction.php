@@ -466,6 +466,8 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         $request = $this->getRequest();
         $model   = $this->getModel();
 
+        // Gems_Menu::$verbose = true;
+
         if ($data = $model->applyRequest($request)->loadFirst()) {
             $this->setMenuParameters($data);
 
@@ -521,6 +523,21 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             if ($links) {
                 $this->html->buttonDiv($links);
             }
+
+        } elseif ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+
+            $data['gr2o_patient_nr']      = $this->_getIdParam();
+            $data['gr2o_id_organization'] = $this->escort->getCurrentOrganization();
+            $data['track_can_be_created'] = 1;
+            $this->setMenuParameters($data);
+
+            $model = $this->createTrackModel(false, 'index');
+
+            // MUtil_Model::$verbose = true;
+
+            $this->html->h3($this->_('Add track'));
+            $this->html->pInfo($this->_('This respondent does not yet have an active track. Add one here.'));
+            $this->addSnippet('Track_AvailableTracksSnippets', 'model', $model, 'trackType', $this->trackType);
 
         } else {
             $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));

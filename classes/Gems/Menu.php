@@ -340,12 +340,22 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
+            $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr')
                 ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', 'T');
 
-            $tkPages['T'] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token');
+            $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
+                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+            $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
+                ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                ->addHiddenParameter('track_can_be_created', 1);
+            $subPage->addAction($this->_('Preview'), 'pr.track', 'view')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
+                ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                ->addHiddenParameter('track_can_be_created', 1);
 
         } else {
 
@@ -669,8 +679,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         if ($this->_menuParameters) {
             // array_unshift($parameterSources, $this->_menuParameters);
+            // MUtil_echo::track($this->_menuParameters);
             $parameterSources[] = $this->_menuParameters;
         }
+
+        // self::$verbose = true;
 
         $nav = new Zend_Navigation($this->_toNavigationArray($parameterSources));
 

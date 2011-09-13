@@ -26,34 +26,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * Minimal implementation of Snippet interface.
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SnippetInterface.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * A snippet is a piece of html output that can be reused on multiple places in the code
- * or that isolates the processing needed for that output.
+ * Minimal implementation of Snippet interface.
  *
- * Variables are intialized using the MUtil_Registry_TargetInterface mechanism.
- * The snippet is then rendered using MUtil_Html_HtmlInterface.
+ * Use this class for a quick implementation when SnippetAbstract feels to heavvy
  *
- * The only "program flow" that can be initiated by a snippet is that it can reroute
- * the browser to another page.
- *
- * @see MUtil_Registry_TargetInterface
- * @see MUtil_Html_HtmlInterface
+ * @see MUtil_Snippets_SnippetAbstract
  *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.1
+ * @since      Class available since version 1.4.2
  */
-interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface, MUtil_Html_HtmlInterface
+abstract class MUtil_Snippets_EmptySnippetAbstract extends MUtil_Registry_TargetAbstract implements MUtil_Snippets_SnippetInterface
 {
     /**
      * When hasHtmlOutput() is false a snippet code user should check
@@ -70,7 +66,8 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
-    public function getRedirectRoute();
+    public function getRedirectRoute()
+    { }
 
     /**
      * The place to check if the data set in the snippet is valid
@@ -83,7 +80,10 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      *
      * @return boolean
      */
-    public function hasHtmlOutput();
+    public function hasHtmlOutput()
+    {
+        return false;
+    }
 
     /**
      * When there is a redirectRoute this function will execute it.
@@ -92,5 +92,17 @@ interface MUtil_Snippets_SnippetInterface extends MUtil_Registry_TargetInterface
      *
      * @see Zend_Controller_Action_Helper_Redirector
      */
-    public function redirectRoute();
+    public function redirectRoute()
+    { }
+
+    /**
+     * Renders the element into a html string
+     *
+     * The $view is used to correctly encode and escape the output
+     *
+     * @param Zend_View_Abstract $view
+     * @return string Correctly encoded and escaped html output
+     */
+    public function render(Zend_View_Abstract $view)
+    { }
 }

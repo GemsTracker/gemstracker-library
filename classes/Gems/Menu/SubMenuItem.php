@@ -444,6 +444,16 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->addActionButton($this->_('Excel export'), $this->get('privilege') . '.excel', 'excel', $options);
     }
 
+    /**
+     * Add parameter values that should not show in the url but that
+     * must be added to the request when this menu item is current.
+     *
+     * @see applyHiddenParameters
+     *
+     * @param string $name Name of parameter
+     * @param mixed $value
+     * @return Gems_Menu_SubMenuItem (continuation pattern
+     */
     public function addHiddenParameter($name, $value = null)
     {
         if (null === $value) {
@@ -531,11 +541,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $menu;
     }
 
-    public function applyHiddenParameters(Zend_Controller_Request_Abstract $request)
+    public function applyHiddenParameters(Gems_Menu_ParameterSource $source)
     {
         if ($this->_hiddenParameters) {
             foreach ($this->_hiddenParameters as $key => $name) {
-                $request->setParam($key, $name);
+                $source[$key] = $name;
             }
         }
 

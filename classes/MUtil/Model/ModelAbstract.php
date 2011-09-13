@@ -198,6 +198,12 @@ abstract class MUtil_Model_ModelAbstract
         return $this;
     }
 
+    /**
+     * Add's one or more sort fields to the standard sort.
+     *
+     * @param mixed $value Array of sortfield => SORT_ASC|SORT_DESC or single sortfield for ascending sort.
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function addSort($value)
     {
         $value = $this->_checkSortValue($value);
