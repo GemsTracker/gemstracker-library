@@ -479,7 +479,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
             $this->html->h2(sprintf($this->_('%s track for respondent nr %s'), $data['gtr_track_name'], $this->_getParam(MUtil_Model::REQUEST_ID)));
 
-            if (! isset($this->project->trackId)) {
+            if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
                 $table = parent::getShowTable();
                 $table->setRepeater(array($data));
 
@@ -514,7 +514,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
             $this->addSnippet('TrackTokenOverviewSnippet', 'trackData', $data, 'baseUrl', $baseUrl);
 
-            if (! isset($this->project->trackId)) {
+            if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
                 $this->addTrackUsage($data['gr2o_patient_nr'], $data['gr2t_id_organization'], $data['gr2t_id_track'], $baseUrl);
             }
 

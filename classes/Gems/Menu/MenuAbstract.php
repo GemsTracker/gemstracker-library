@@ -242,12 +242,18 @@ abstract class Gems_Menu_MenuAbstract
     public function addProjectPage($label)
     {
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
-            $infoPage = $this->addPage($label, 'pr.project', 'project-tracks', 'show')
-                ->addHiddenParameter(MUtil_Model::REQUEST_ID, $this->escort->getTrackId());
-            $trackSurveys = $infoPage->addShowAction('pr.project');
-            $trackSurveys->addActionButton($this->_('Preview'), 'pr.project.questions', 'questions')
+            if ($trackId = $this->escort->getTrackId()) {
+                $infoPage = $this->addPage($label, 'pr.project', 'project-tracks', 'show')
+                    ->addHiddenParameter(MUtil_Model::REQUEST_ID, $trackId);
+                $trackSurveys = $infoPage;
+            } else {
+                $infoPage = $this->addPage($label, 'pr.project', 'project-tracks');
+                $trackSurveys = $infoPage->addShowAction('pr.project');
+            }
+            $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::SURVEY_ID, 'gsu_id_survey');
 
+            // MUtil_Echo::track($infoPage->_toNavigationArray(array($this->escort->request)));
         } else {
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
                 $infoPage = $this->addContainer($label, 'pr.project');
