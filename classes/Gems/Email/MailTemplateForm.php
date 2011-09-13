@@ -141,6 +141,10 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
             if (! $tokenData) {
                 // Well then just try to get any token
                 $tokenData = $model->loadFirst(false, $sort);
+                if (! $tokenData) {
+                    //No tokens, just add an empty array and hope we get no notices later
+                    $tokenData = array();
+                }
             }
 
             $this->setTokenData($tokenData);
