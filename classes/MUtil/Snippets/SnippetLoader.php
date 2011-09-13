@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Short description of file
  *
  * @package    MUtil
@@ -144,18 +144,21 @@ class MUtil_Snippets_SnippetLoader
 
         $dirs  = $this->getDirectories();
 
+        $classname = $filename;
+        if (strpos($filename, '_') === false) {
+            $filename  = $filename . '.php';
+        } else {
+            $filename  = str_replace('_', '/', $filename) . '.php';
+        }
+
         foreach ($dirs as $dir) {
             $filepath = $dir . '/' . $filename;
-            
-            // Add extension when needed
-            if (substr($filepath, -4) !== '.php') {
-                $filepath .= '.php';
-            }
+
             // MUtil_Echo::r($filepath);
             if (file_exists($filepath)) {
                 require_once($filepath);
 
-                $snippet = new $filename();
+                $snippet = new $classname();
 
                 if ($snippet instanceof MUtil_Snippets_SnippetInterface) {
                     if ($source->applySource($snippet)) {
@@ -165,7 +168,7 @@ class MUtil_Snippets_SnippetLoader
                         }
 
                         return $snippet;
-                        
+
                     } else {
                         throw new Zend_Exception("Not all parameters set for html snippet: '$filepath'. \n\nRequested variables were: " . implode(", ", $snippet->getRegistryRequests()));
                     }
