@@ -51,20 +51,6 @@
 class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
 {
     /**
-     * Optional: the display data of the track shown
-     *
-     * @var array
-     */
-    protected $trackData;
-
-    /**
-     * The respondent2track ID
-     *
-     * @var int
-     */
-    protected $respondentTrackId;
-
-    /**
      * Set a fixed model sort.
      *
      * Leading _ means not overwritten by sources.
@@ -75,6 +61,20 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
             'gto_round_order' => SORT_ASC,
             'gto_created'     => SORT_ASC
         );
+
+    /**
+     * The respondent2track ID
+     *
+     * @var int
+     */
+    protected $respondentTrackId;
+
+    /**
+     * Optional: the display data of the track shown
+     *
+     * @var array
+     */
+    protected $trackData;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
