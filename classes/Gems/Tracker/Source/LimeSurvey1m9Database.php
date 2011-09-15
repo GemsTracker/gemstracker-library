@@ -540,7 +540,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsTab  = $this->_getSurveyTableName($sourceSurveyId);
         $token  = $this->_getToken($tokenId);
 
-        $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ?", $token);
+        try {
+            $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ?", $token);
+        } catch (Zend_Db_Statement_Exception $exception) {
+            $this->logger->logError($exception, $this->request);
+            $values = false;
+        }
 
         if ($values) {
             return $this->_getFieldMap($sourceSurveyId)->mapKeysToTitles($values);
@@ -708,7 +713,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $sql = 'SELECT *
                 FROM ' . $lsTokens . '
                 WHERE token = ? LIMIT 1';
-            $result = $this->getSourceDatabase()->fetchRow($sql, $tokenId);
+
+            try {
+                $result = $this->getSourceDatabase()->fetchRow($sql, $tokenId);
+            } catch (Zend_Db_Statement_Exception $exception) {
+                $this->logger->logError($exception, $this->request);
+                $result = false;
+            }
 
             $token->cacheSet(self::CACHE_TOKEN_INFO, $result);
         } else {
