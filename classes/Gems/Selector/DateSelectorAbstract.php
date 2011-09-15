@@ -26,24 +26,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ *
+ * @package Gems
+ * @subpackage Selector
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: OverviewPlanAction.php 430 2011-08-18 10:40:21Z 175780 $
  */
 
 /**
- * File description of DateSelectorAbstract
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.1
- * @version 1.1
  * @package Gems
  * @subpackage Selector
- */
-
-/**
- * Class description of DateSelectorAbstract
- *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
- * @subpackage Selector
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.2
  */
 abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAbstract
 {
@@ -190,7 +190,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         switch ($this->dateType) {
             case 'D':
                 $keyCount = 1;
-                $groupby['period_1'] = $this->dateFrom;
+                $groupby['period_1'] = new Zend_Db_Expr("CONVERT($this->dateFrom, DATE)");
 
                 $date->setTime(0);
                 $date->addDay($this->dateFactor - $this->dateRange);
@@ -630,7 +630,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
 
             case 'W':
                 $header = array($repeater->period_1, MUtil_Html::create()->br(),
-                    sprintf($this->_('week %s'), $repeater->period_2));
+                    MUtil_Lazy::call('sprintf', $this->_('week %s'), $repeater->period_2));
                 break;
 
             case 'M':

@@ -298,10 +298,11 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $patcher  = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
         $changed  = $patcher->uploadPatches($this->loader->getVersions()->getBuild());
         $tableSql = sprintf(
-            'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
+            'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),
             $this->_('Subtype'),
             $this->_('Patches'),
+            $this->_('To be executed'),
             $this->_('Executed'),
             $this->_('Finished'));
 

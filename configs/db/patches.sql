@@ -185,3 +185,8 @@ ALTER TABLE `gems__organizations` ADD `gor_signature` TEXT NULL DEFAULT NULL AFT
 -- PATCH: Mail templates per organization
 ALTER TABLE `gems__mail_templates` ADD `gmt_organizations` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `gmt_body`;
 UPDATE gems__mail_templates SET gmt_organizations = (SELECT CONCAT('|', GROUP_CONCAT(gor_id_organization SEPARATOR '|'), '|') FROM gems__organizations);
+
+-- GEMS VERSION: 40
+-- PATCH: Organization codes
+ALTER TABLE `gems__organizations` ADD gor_code            varchar(20)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gor_name;
+

@@ -4,6 +4,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_id_organization bigint unsigned not null auto_increment,
 
         gor_name            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gor_code            varchar(20)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gor_location        varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gor_url             varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gor_task            varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
