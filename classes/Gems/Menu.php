@@ -606,6 +606,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $this->addHiddenPrivilige('pr.respondent.result');
         $this->addHiddenPrivilige('pr.respondent.who');
         $this->addHiddenPrivilige('pr.staff.edit.all');
+        $this->addHiddenPrivilige('pr.staff.see.all');
         $this->addHiddenPrivilige('pr.token.mail.freetext');
 
 

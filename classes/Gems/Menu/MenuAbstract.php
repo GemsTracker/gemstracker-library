@@ -253,6 +253,8 @@ abstract class Gems_Menu_MenuAbstract
             $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::SURVEY_ID, 'gsu_id_survey');
 
+            $infoPage->addAutofilterAction();
+
             // MUtil_Echo::track($infoPage->_toNavigationArray(array($this->escort->request)));
         } else {
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {

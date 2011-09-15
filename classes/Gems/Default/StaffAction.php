@@ -150,7 +150,7 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
         $groups = $this->db->fetchPairs($sql);
 
         if (($this->session->user_role == 'admin' && isset($groups) && $groups[$data['gsf_id_primary_group']] == 'super')
-            || (!$this->escort->hasPrivilege('pr.staff.edit.all') &&
+            || (! $this->escort->hasPrivilege('pr.staff.edit.all') &&
              $data['gsf_id_organization'] != $this->escort->getCurrentOrganization())) {
                 throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
@@ -179,10 +179,12 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
             'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
-        $model->set('gsf_id_organization',  'label', $this->_('Organization'),
-            'multiOptions', $this->util->getDbLookup()->getOrganizations(),
-            'default', $this->escort->getCurrentOrganization());
-
+        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
+            $model->set('gsf_id_organization',  'label', $this->_('Organization'),
+                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                'default', $this->escort->getCurrentOrganization());
+        }
+        
         $model->set('gsf_id_primary_group', 'label', $this->_('Primary function'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getStaffGroups));
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
@@ -202,9 +204,14 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
-        // Select organization
-        $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
-        $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
+        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
+            // Select organization
+            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
+            $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
+        } else {
+            $select = new Zend_Form_Element_Hidden('gsf_id_organization',
+                    array('value' => $this->escort->getCurrentOrganization()));
+        }
 
         // Position as second element
         $search = array_shift($elements);
