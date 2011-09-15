@@ -88,7 +88,5 @@ class Gems_JQuery_Form_Element_ToggleCheckboxes extends Zend_Form_Element_Button
             }
         }
         return parent::setView($view);
-        $z = new ZendX_JQuery_Form_Element_AutoComplete();
-        $z = new ZendX_JQuery_Form_Decorator_UiWidgetElement();
     }
 }
