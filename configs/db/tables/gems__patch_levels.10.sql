@@ -3,7 +3,7 @@ CREATE TABLE if not exists gems__patch_levels (
       gpl_level   int unsigned not null unique,
 
       gpl_created timestamp not null default current_timestamp,
-        
+
       PRIMARY KEY (gpl_level)
    )
    ENGINE=InnoDB
@@ -11,5 +11,5 @@ CREATE TABLE if not exists gems__patch_levels (
 
 INSERT INTO gems__patch_levels (gpl_level, gpl_created)
    VALUES
-   (26, CURRENT_TIMESTAMP);
+   (40, CURRENT_TIMESTAMP);
 

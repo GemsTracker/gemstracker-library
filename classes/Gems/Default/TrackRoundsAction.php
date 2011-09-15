@@ -87,7 +87,7 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
         $trackEngine->applyToMenuSource($menuSource);
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
-        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'trackEngine', $trackEngine, 'trackId', $trackId);
+        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'trackEngine', $trackEngine, 'trackId', $trackId, 'userId', $this->session->user_id);
     }
 
     /**
@@ -149,7 +149,7 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
         $trackEngine->applyToMenuSource($menuSource);
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
-        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'roundId', $this->_getParam(Gems_Model::ROUND_ID), 'trackEngine', $trackEngine, 'trackId', $trackId);
+        $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'roundId', $this->_getParam(Gems_Model::ROUND_ID), 'trackEngine', $trackEngine, 'trackId', $trackId, 'userId', $this->session->user_id);
     }
 
     public function getTopic($count = 1)

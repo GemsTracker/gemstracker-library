@@ -191,6 +191,43 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     }
 
     /**
+     * Update the track, both in the database and in memory.
+     *
+     * @param array $values The values that this token should be set to
+     * @param int $userId The current user
+     * @return int 1 if data changed, 0 otherwise
+     */
+    private function _update(array $values, $userId)
+    {
+        if ($this->tracker->filterChangesOnly($this->_trackData, $values)) {
+
+            if (Gems_Tracker::$verbose) {
+                $echo = '';
+                foreach ($values as $key => $val) {
+                    $echo .= $key . ': ' . $this->_trackData[$key] . ' => ' . $val . "\n";
+                }
+                MUtil_Echo::r($echo, 'Updated values for ' . $this->_trackId);
+            }
+
+            if (! isset($values['gto_changed'])) {
+                $values['gtr_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            }
+            if (! isset($values['gtr_changed_by'])) {
+                $values['gtr_changed_by'] = $userId;
+            }
+
+            // Update values in this object
+            $this->_trackData = $values + $this->_trackData;
+
+            // return 1;
+            return $this->db->update('gems__tracks', $values, array('gtr_id_track = ?' => $this->_trackId));
+
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Creates all tokens that should exist, but do not exist
      *
      * NOTE: When overruling this function you should not create tokens because they
@@ -263,6 +300,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     public function calculateFieldsInfo($respTrackId, array $data)
     {
         return trim(implode(' ', MUtil_Ra::flatten($data)));
+    }
+
+    /**
+     * Calculate the number of active rounds in this track from the database.
+     *
+     * @return int The number of rounds in this track.
+     */
+    public function calculateRoundCount()
+    {
+        return $this->db->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", $this->_trackId);
     }
 
     /**
@@ -714,5 +761,18 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         }
 
         return 0;
+    }
+
+    /**
+     * Updates the number of rounds in this track.
+     * 
+     * @param int $userId The current user
+     * @return int 1 if data changed, 0 otherwise
+     */
+    public function updateRoundCount($userId)
+    {
+        $values['gtr_survey_rounds'] = $this->calculateRoundCount();
+
+        return $this->_update($values, $userId);
     }
 }

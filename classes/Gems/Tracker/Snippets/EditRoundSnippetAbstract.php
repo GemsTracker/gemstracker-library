@@ -77,6 +77,12 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
     protected $trackId;
 
     /**
+     *
+     * @var int $userId The current user
+     */
+    protected $userId = 0;
+
+    /**
      * @var Gems_Util
      */
     protected $util;
@@ -199,6 +205,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         if ($this->createData && (! $this->roundId)) {
             $this->roundId = $this->formData['gro_id_round'];
         }
+        $this->trackEngine->updateRoundCount($this->userId);
     }
 
     /**

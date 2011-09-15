@@ -68,6 +68,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function calculateFieldsInfo($respTrackId, array $data);
 
     /**
+     * Calculate the number of active rounds in this track from the database.
+     *
+     * @return int The number of rounds in this track.
+     */
+    public function calculateRoundCount();
+
+    /**
      * Check for the existence of all tokens and create them otherwise
      *
      * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
@@ -303,4 +310,12 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return int The number of changed fields
      */
     public function setFieldsData($respTrackId, array $data);
+
+    /**
+     * Updates the number of rounds in this track.
+     *
+     * @param int $userId The current user
+     * @return int 1 if data changed, 0 otherwise
+     */
+    public function updateRoundCount($userId);
 }

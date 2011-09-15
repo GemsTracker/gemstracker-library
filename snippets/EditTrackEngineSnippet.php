@@ -265,10 +265,10 @@ class EditTrackEngineSnippet extends Gems_Snippets_ModelFormSnippetAbstract
         if (isset($this->formData['gtr_organisations']) && is_array($this->formData['gtr_organisations'])) {
             $this->formData['gtr_organisations'] = '|' . implode('|', $this->formData['gtr_organisations']) . '|';
         }
-        if ($this->createData) {
-            $this->formData['gtr_survey_rounds'] = 0;
+        if ($this->trackEngine) {
+            $this->formData['gtr_survey_rounds'] = $this->trackEngine->calculateRoundCount();
         } else {
-            $this->formData['gtr_survey_rounds'] = $this->db->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", $this->trackId);
+            $this->formData['gtr_survey_rounds'] = 0;
         }
 
         parent::saveData();
