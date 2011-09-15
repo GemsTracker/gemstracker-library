@@ -152,5 +152,6 @@ class Gems_Form extends MUtil_Form
             $args['targetId'] = '#' . $args['targetId'];
         }
         $this->_autosubmit = $args;
+        $this->activateJQuery();
     }
 }
