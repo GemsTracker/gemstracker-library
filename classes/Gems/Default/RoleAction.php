@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,78 +25,38 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Michiel Rook
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: StaffAction.php 460 2011-08-31 16:17:26Z mjong $
  */
 
 /**
- * 
+ *
  * @author Michiel Rook
- * @since 1.0
- * @version 1.3
- * @package Gems
+ * @package    Gems
  * @subpackage Default
- */
-
-/**
- * 
- * @author Michiel Rook
- * @package Gems
- * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.3
  */
 class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 {
-    
-    /**
-     * Check the disabled (=inherited) privileges
-     * 
-     * @param Gems_Form $form
-     * @param boolean $isNew
-     * @return Gems_Form
-     */
-    public function beforeFormDisplay($form, $isNew) {
-        $form = parent::beforeFormDisplay($form, $isNew);
-        $checkbox = $form->getElement('grl_privileges');
-        $values = $checkbox->getValue();
-        $disabled = $checkbox->getAttrib('disable');
-        
-        $values = array_merge($values, $disabled);
-        $checkbox->setValue($values);
-        return $form;
-    }
-    
-    /**
-     *
-     * @param array $data The data that will be saved.
-     * @param boolean $isNew
-     * $param Zend_Form $form
-     * @return array|null Returns null if save was already handled, the data otherwise.
-     */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    protected function _showTable($caption, $data, $nested = false)
     {
-        if (isset($data['grl_parents'])) {
-            $data['grl_parents'] = implode(',', $data['grl_parents']);
-        }
-
-        if (isset($data['grl_privileges'])) {
-            $data['grl_privileges'] = implode(',', $data['grl_privileges']);
-        }
-        
-        return true;
+        $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
+        $table->class = 'browser';
+        $this->html[] = $table;
     }
-    
-    /**
-     * @param array $data
-     * @param bool  $isNew
-     * @return array
-     */
-    public function afterFormLoad(array &$data, $isNew)
-    {
-        if (isset($data['grl_parents']) && (! is_array($data['grl_parents']))) {
-            $data['grl_parents'] = explode(',', $data['grl_parents']);
-        }
 
-        if (isset($data['grl_privileges']) && (! is_array($data['grl_privileges']))) {
-            $data['grl_privileges'] = explode(',', $data['grl_privileges']);
-        }
+    public function aclAction()
+    {
+        $this->html->h2($this->_('Access Control Lists'));
+        $this->_showTable($this->_('ACL\'s'), $this->acl->getRoles());
     }
 
     /**
@@ -128,13 +87,67 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $disable = array();
         foreach($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] as $key=>$value) {
             $disable[] = $value;
-        }       
+        }
         $checkbox->setAttrib('disable', $disable);
 
         //Don't use escaping, so the line breaks work
         $checkbox->setAttrib('escape', false);
     }
-    
+
+    /**
+     * @param array $data
+     * @param bool  $isNew
+     * @return array
+     */
+    public function afterFormLoad(array &$data, $isNew)
+    {
+        if (isset($data['grl_parents']) && (! is_array($data['grl_parents']))) {
+            $data['grl_parents'] = explode(',', $data['grl_parents']);
+        }
+
+        if (isset($data['grl_privileges']) && (! is_array($data['grl_privileges']))) {
+            $data['grl_privileges'] = explode(',', $data['grl_privileges']);
+        }
+    }
+
+    /**
+     * Check the disabled (=inherited) privileges
+     *
+     * @param Gems_Form $form
+     * @param boolean $isNew
+     * @return Gems_Form
+     */
+    public function beforeFormDisplay($form, $isNew) {
+        $form = parent::beforeFormDisplay($form, $isNew);
+        $checkbox = $form->getElement('grl_privileges');
+        $values = $checkbox->getValue();
+        $disabled = $checkbox->getAttrib('disable');
+
+        $values = array_merge($values, $disabled);
+        $checkbox->setValue($values);
+        return $form;
+    }
+
+    /**
+     *
+     * @param array $data The data that will be saved.
+     * @param boolean $isNew
+     * $param Zend_Form $form
+     * @return array|null Returns null if save was already handled, the data otherwise.
+     */
+    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    {
+        if (isset($data['grl_parents'])) {
+            $data['grl_parents'] = implode(',', $data['grl_parents']);
+        }
+
+        if (isset($data['grl_privileges'])) {
+            $data['grl_privileges'] = implode(',', $data['grl_privileges']);
+        }
+
+        return true;
+    }
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -156,14 +169,14 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $model->set('grl_privileges', 'label', $this->_('Privileges'), 'formatFunction', array($this, 'formatLongLine'));
 
         Gems_Model::setChangeFieldsByPrefix($model, 'grl');
-        
+
         return $model;
     }
-    
+
     public function formatLongLine($line)
     {
         if (strlen($line) > 50) {
-            return substr($line, 0, 50) . '...';       
+            return substr($line, 0, 50) . '...';
         } else {
             return $line;
         }
@@ -178,12 +191,46 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
     {
         return $this->_('Administrative roles');
     }
-    
+
     protected function getUsedPrivileges()
     {
         $privileges = $this->menu->getUsedPrivileges();
 
         asort($privileges);
         return $privileges;
-    }    
+    }
+
+    public function overviewAction()
+    {
+        $roles = array();
+
+        foreach ($this->acl->getRolePrivileges() as $role => $privileges) {
+            $roles[$role][$this->_('Role')]    = $role;
+            $roles[$role][$this->_('Parents')] = $privileges[MUtil_Acl::PARENTS]   ? implode(', ', $privileges[MUtil_Acl::PARENTS])   : null;
+            $roles[$role][$this->_('Allowed')] = $privileges[Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[Zend_Acl::TYPE_ALLOW]) : null;
+            $roles[$role][$this->_('Denied')]  = $privileges[Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[Zend_Acl::TYPE_DENY])  : null;
+        }
+        ksort($roles);
+
+        $this->html->h2($this->_('Project role overview'));
+
+        $this->_showTable($this->_('Roles'), $roles, true);
+    }
+
+    public function privilegeAction()
+    {
+        $privileges = array();
+
+        foreach ($this->acl->getPrivilegeRoles() as $privilege => $roles) {
+            $privileges[$privilege][$this->_('Privilege')] = $privilege;
+            $privileges[$privilege][$this->_('Allowed')]   = $roles[Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[Zend_Acl::TYPE_ALLOW]) : null;
+            $privileges[$privilege][$this->_('Denied')]    = $roles[Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[Zend_Acl::TYPE_DENY])  : null;
+        }
+        ksort($privileges);
+
+        $this->html->h2($this->_('Project privileges'));
+        $this->_showTable($this->_('Privileges'), $privileges, true);
+
+        // $this->acl->echoRules();
+    }
 }

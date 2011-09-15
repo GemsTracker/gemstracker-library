@@ -20,3 +20,19 @@ CREATE TABLE if not exists gems__mail_templates (
    AUTO_INCREMENT = 20
    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
+INSERT INTO gems__mail_templates (gmt_subject, gmt_body, gmt_changed, gmt_changed_by, gmt_created, gmt_created_by)
+    VALUES
+    ('Questions for your treatement at {organization}', 'Dear {greeting},
+
+Recently you visited [b]{organization}[/b] for treatment. For your proper treatment you are required to answer some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('Reminder: your treatement at {organization}', 'Dear {greeting},
+
+We remind you that for your proper treatment at [b]{organization}[/b] you are required to answer some questions.
+
+Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[/url] and enter your token "{token}".
+
+{organization_signature}', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

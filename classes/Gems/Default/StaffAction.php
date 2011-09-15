@@ -36,7 +36,7 @@
 
 /**
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -184,7 +184,7 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'default', $this->escort->getCurrentOrganization());
         }
-        
+
         $model->set('gsf_id_primary_group', 'label', $this->_('Primary function'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getStaffGroups));
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 

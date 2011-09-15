@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,22 +25,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: StaffAction.php 460 2011-08-31 16:17:26Z mjong $
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package Gems
+ *
+ * @package    Gems
  * @subpackage Default
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @package Gems
- * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 {
@@ -52,12 +52,6 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser';
         $this->html[] = $table;
-    }
-
-    public function aclAction()
-    {
-        $this->html->h2($this->_('Access Control Lists'));
-        $this->_showTable($this->_('ACL\'s'), $this->acl->getRoles());
     }
 
     public function changelogAction()
@@ -107,7 +101,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->html->h2($this->_('Project information'));
 
         $versions = $this->loader->getVersions();
-        
+
         $data[$this->_('Project name')]            = $this->project->name;
         $data[$this->_('Project version')]         = $versions->getProjectVersion();
         $data[$this->_('Gems version')]            = $versions->getGemsVersion();
@@ -139,23 +133,6 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->html->raw($php->getInfo());
     }
 
-    public function privilegeAction()
-    {
-        $privileges = array();
-
-        foreach ($this->acl->getPrivilegeRoles() as $privilege => $roles) {
-            $privileges[$privilege][$this->_('Privilege')] = $privilege;
-            $privileges[$privilege][$this->_('Allowed')]   = $roles[Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[Zend_Acl::TYPE_ALLOW]) : null;
-            $privileges[$privilege][$this->_('Denied')]    = $roles[Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[Zend_Acl::TYPE_DENY])  : null;
-        }
-        ksort($privileges);
-
-        $this->html->h2($this->_('Project privileges'));
-        $this->_showTable($this->_('Privileges'), $privileges, true);
-
-        // $this->acl->echoRules();
-    }
-
     public function projectAction()
     {
         $project = $this->project;
@@ -165,24 +142,6 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->_showTable(GEMS_PROJECT_NAME . 'Project.ini', $project);
     }
 
-
-    public function roleAction()
-    {
-        $roles = array();
-
-        foreach ($this->acl->getRolePrivileges() as $role => $privileges) {
-            $roles[$role][$this->_('Role')]    = $role;
-            $roles[$role][$this->_('Parents')] = $privileges[MUtil_Acl::PARENTS]   ? implode(', ', $privileges[MUtil_Acl::PARENTS])   : null;
-            $roles[$role][$this->_('Allowed')] = $privileges[Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[Zend_Acl::TYPE_ALLOW]) : null;
-            $roles[$role][$this->_('Denied')]  = $privileges[Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[Zend_Acl::TYPE_DENY])  : null;
-        }
-        ksort($roles);
-
-        $this->html->h2($this->_('Project roles'));
-        $this->_showTable($this->_('Roles'), $roles, true);
-
-        // $this->acl->echoRules();
-    }
 
     public function sessionAction()
     {

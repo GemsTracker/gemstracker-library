@@ -185,12 +185,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
            // PROJECT
         $page = $setup->addPage($this->_('Project setup'), 'pr.project-information', 'project-information');
-        $page->addAction($this->_('ACL'),        null, 'acl');
         $page->addAction($this->_('Errors'),     null, 'errors');
         $page->addAction($this->_('PHP'),        null, 'php');
-        $page->addAction($this->_('Privileges'), null, 'privilege');
         $page->addAction($this->_('Project'),    null, 'project');
-        $page->addAction($this->_('Roles'),      null, 'role');
         $page->addAction($this->_('Session'),    null, 'session');
 
            // COUNTRIES CONTROLLER
@@ -209,8 +206,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
 
         // ROLES CONTROLLER
-        $setup->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
-
+        $page = $setup->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
+        $page->addAction($this->_('ACL'),        null, 'acl');
+        $page->addAction($this->_('Assigned'),   null, 'overview');
+        $page->addAction($this->_('Privileges'), null, 'privilege');
 
         // RECEPTION CODE CONTROLLER
         $setup->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
