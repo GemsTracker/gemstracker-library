@@ -50,6 +50,15 @@
 class Track_AvailableTracksSnippets extends Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Set a fixed model filter.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedFilter = array('gtr_active' => 1);
+
+    /**
      *
      * @var MUtil_Model_ModelAbstract
      */
