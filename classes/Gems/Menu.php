@@ -214,13 +214,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         // RECEPTION CODE CONTROLLER
         $setup->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
 
-        // MAIL Server CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Email servers'), 'pr.mail.server', 'mail-server');
-        // $page->addAction($this->_('Test'), 'pr.mail.server.test', 'test')->addParameters(MUtil_Model::REQUEST_ID);
-
-        // MAIL CONTROLLER
-        $setup->addBrowsePage($this->_('Email'), 'pr.mail', 'mail');
-
         // SURVEY SOURCES CONTROLLER
         $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
         $page->addDeleteAction();
@@ -592,6 +585,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         // SETUP CONTAINER
         $this->addGemsSetupContainer($this->escort->_('Setup'));
+
+        // MAIL CONTAINER
+        $this->addMailSetupPage($this->escort->_('Mail'));
 
         // OTHER ITEMS
         $this->addLogonOffToken();

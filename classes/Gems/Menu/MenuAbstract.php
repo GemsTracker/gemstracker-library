@@ -198,6 +198,20 @@ abstract class Gems_Menu_MenuAbstract
         return $this->addPage($label, $privilege, $controller, $action, $other);
     }
 
+    public function addMailSetupPage($label)
+    {
+        $setup = $this->addContainer($label);
+
+        // MAIL Server CONTROLLER
+        $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
+        // $page->addAction($this->_('Test'), 'pr.mail.server.test', 'test')->addParameters(MUtil_Model::REQUEST_ID);
+
+        // MAIL CONTROLLER
+        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'mail');
+
+        return $setup;
+    }
+
     /**
      * Add a page to the menu
      *
