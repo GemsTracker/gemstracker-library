@@ -391,12 +391,12 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
     public function getTrackCount($currentId)
     {
-        $singleTrack  = $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface;
+        $singleTrack = ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) ? $this->escort->getTrackId() : null;
 
         $select = new Zend_Db_Select($this->db);
         $select->from('gems__rounds', array('useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)'));
         if ($singleTrack) {
-            $select->where("gro_id_track = ?", $this->escort->getTrackId());
+            $select->where("gro_id_track = ?", $singleTrack);
         } else {
             $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', array())
                     ->group('gems__tracks.gtr_id_track')
