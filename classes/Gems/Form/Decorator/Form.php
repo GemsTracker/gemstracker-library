@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -42,10 +42,37 @@
  */
 class Gems_Form_Decorator_Form extends Zend_Form_Decorator_Form
 {
+    protected $localScriptFiles = '/gems/js/autoSubmitForm.js';
+    protected $localScriptName = 'autoSubmitForm';
+
     public function render($content) {
     	$form	 	= $this->getElement();
     	$view 		= $form->getView();
-    	$scripts 	= $form->getScripts();
+
+        /*
+         * Check if this is a form that should autosubmit. If so, add script to head and onload
+         */
+        if ($form->isAutoSubmit()) {
+            $form->addScript($this->localScriptFiles);
+            //ZendX_JQuery::enableForm($form);
+            $jquery = $view->jQuery();
+            $jquery->enable();  //Just to make sure
+
+            $params = $form->getAutoSubmit();
+            if (($view instanceof Zend_View_Abstract) && ($params['submitUrl'] instanceof MUtil_Html_HtmlInterface)) {
+                $params['submitUrl'] = $params['submitUrl']->render($view);
+            }
+
+            $js = sprintf('%s("#%s").%s(%s);',
+            ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+            $form->getId(),
+            $this->localScriptName,
+            ZendX_JQuery::encodeJson($params)
+            );
+            $jquery->addOnLoad($js);
+        }
+
+        $scripts 	= $form->getScripts();
         $css        = $form->getCss();
 
         if (!is_null($scripts) && is_array($scripts)) {

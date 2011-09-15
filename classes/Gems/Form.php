@@ -1,9 +1,8 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @version    $Id: Form.php 345 2011-07-28 08:39:24Z 175780 $
  * @package    Gems
  * @subpackage Form
@@ -35,7 +34,7 @@
 
 /**
  * Base form class
- * 
+ *
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -56,6 +55,13 @@ class Gems_Form extends MUtil_Form
      * @var array
      */
 	protected $_scripts = null;
+
+    /**
+     * If set this holds the url and targetid for the autosubmit
+     *
+     * @var array
+     */
+    protected $_autosubmit = null;
 
     /**
      * Constructor
@@ -100,7 +106,7 @@ class Gems_Form extends MUtil_Form
 
     /**
      * Attach a css file to the form with form-specific css
-     * 
+     *
      * Optional media parameter can be used to determine media-type (print, screen etc)
      *
      * @param string $file
@@ -112,5 +118,39 @@ class Gems_Form extends MUtil_Form
 
     public function getCss() {
     	return $this->_css;
+    }
+
+    public function getAutoSubmit() {
+        return $this->_autosubmit;
+    }
+
+    /**
+     * Is this a form that autosubmits?
+     *
+     * @return boolean
+     */
+    public function isAutoSubmit() {
+        return isset($this->_autosubmit);
+    }
+
+    /**
+     *
+     * @param type $submitUrl
+     * @param type $targetId
+     */
+    public function setAutoSubmit($submitUrl, $targetId) {
+        // Filter out elements passed by type
+        $args = MUtil_Ra::args(func_get_args(),
+            array(
+                'submitUrl' => array('MUtil_Html_UrlArrayAttribute', 'is_array', 'is_string'),
+                'targetId'  => array('MUtil_Html_ElementInterface', 'is_string'),
+                ), null, MUtil_Ra::STRICT);
+
+        if ($args['targetId'] instanceof MUtil_Html_ElementInterface) {
+            $args['targetId'] = isset($args['targetId']->id) ? '#' . $args['targetId']->id : (isset($args['targetId']->class) ? '.' . $args['targetId']->class: $args['targetId']->getTagName());
+        } else {
+            $args['targetId'] = '#' . $args['targetId'];
+        }
+        $this->_autosubmit = $args;
     }
 }

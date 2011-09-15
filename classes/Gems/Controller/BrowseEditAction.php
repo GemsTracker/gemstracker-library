@@ -542,7 +542,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 }
 
                 $href = $this->getAutoSearchHref();
-                $div[] = new Gems_JQuery_AutoSubmitForm($href, $targetId, $form);
+                $form->setAutoSubmit($href, $targetId);
+                //$div[] = new Gems_JQuery_AutoSubmitForm($href, $targetId, $form);
 
                 return $form;
             }
