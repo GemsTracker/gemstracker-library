@@ -11,6 +11,7 @@ CREATE TABLE if not exists gems__staff (
 
         gsf_active           boolean not null default 1, 
 	gsf_failed_logins    int(11) unsigned not null default 0,
+        gsf_last_failed      timestamp null,
         gsf_id_primary_group bigint unsigned
                                references gems__groups (ggp_id_group),
         gsf_id_organization  bigint not null 
