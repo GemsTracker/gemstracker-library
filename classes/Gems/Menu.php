@@ -588,6 +588,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         // MAIL CONTAINER
         $this->addMailSetupPage($this->escort->_('Mail'));
+        
+        // EXPORT DATA
+        $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
 
         // OTHER ITEMS
         $this->addLogonOffToken();
