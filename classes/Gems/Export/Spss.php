@@ -32,7 +32,7 @@
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Spss.php 140 2011-09-15 14:18:14Z 175780 $
+ * @version    $Id$
  */
 
 /**

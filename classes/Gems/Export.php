@@ -31,7 +31,7 @@
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Export.php 124 2011-08-09 11:56:35Z 175780 $
+ * @version    $Id$
  */
 
 /**
