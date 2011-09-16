@@ -11,7 +11,10 @@ CREATE TABLE if not exists gems__respondent_communications (
         grco_method       varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         grco_topic        varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         grco_address      varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        grco_sender       varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         grco_comments     varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+
+        grco_id_message   bigint unsigned null references gems__mail_templates (gmt_id_message),
 
         grco_changed      timestamp not null default current_timestamp,
         grco_changed_by   bigint unsigned not null,

@@ -486,6 +486,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $this->mailer->setMethod($this->getValue('multi_method'));
         $this->mailer->setSubject($this->getValue('gmt_subject'));
         $this->mailer->setBody($this->getValue('gmt_body'));
+        $this->mailer->setTemplateId($this->getValue('select_subject'));
 
         $result = $this->mailer->process($this->getTokensData());
 

@@ -66,6 +66,7 @@ class Gems_Email_TemplateMailer
     private $_subject = null;
     private $_body = null;
     private $_method = 'M';
+    private $_templateId = null; // Not used for lookup
     private $_tokenData = array();
 
     private $_verbose = false;
@@ -86,11 +87,45 @@ class Gems_Email_TemplateMailer
         return $this;
     }
 
+    /**
+     * Replaces fields with their values
+     * @param  string $value
+     * @return string
+     */
+    public function applyFields($value)
+    {
+        if (! $this->_mailFields) {
+            $this->getTokenMailFields();
+        }
+        if (! $this->_mailKeys) {
+            $this->_mailKeys = array_keys($this->_mailFields);
+        }
+
+        return str_replace($this->_mailKeys, $this->_mailFields, $value);
+    }
+
+    /**
+     * Returns true if the "email.bounce" setting exists in the project
+     * configuration and is true
+     * @return boolean
+     */
+    public function bounceCheck()
+    {
+        return isset($this->escort->project->email['bounce']) && $this->escort->project->email['bounce'];
+    }
+
+    /**
+     * Returns Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
+     *
+     * @staticvar array $mailServers
+     * @param email address $from
+     * @return Zend_Mail_Transport_Abstract or null
+     */
     public function checkTransport($from)
     {
         static $mailServers = array();
 
-        if (!array_key_exists($from, $mailServers)) {
+        if (! array_key_exists($from, $mailServers)) {
             $sql = 'SELECT * FROM gems__mail_servers WHERE ? LIKE gms_from ORDER BY LENGTH(gms_from) DESC LIMIT 1';
 
             // Always set cache, se we know when not to check for this row.
@@ -138,31 +173,13 @@ class Gems_Email_TemplateMailer
         return $this->messages;
     }
 
-    /**
-     * Returns true if the "email.bounce" setting exists in the project
-     * configuration and is true
-     * @return boolean
-     */
-    public function bounceCheck()
-    {
-        return isset($this->escort->project->email['bounce']) && $this->escort->project->email['bounce'];
-    }
-
-    /**
-     * Replaces fields with their values
-     * @param  string $value
-     * @return string
-     */
-    public function applyFields($value)
+    public function getTokenMailFields()
     {
         if (! $this->_mailFields) {
-            $this->getTokenMailFields();
-        }
-        if (! $this->_mailKeys) {
-            $this->_mailKeys = array_keys($this->_mailFields);
+            $this->_mailFields = $this->escort->tokenMailFields($this->_tokenData);
         }
 
-        return str_replace($this->_mailKeys, $this->_mailFields, $value);
+        return $this->_mailFields;
     }
 
     /**
@@ -181,68 +198,6 @@ class Gems_Email_TemplateMailer
         $data = array_filter(array_map('trim', $data)); // Remove empties
 
         return implode(' ', $data);
-    }
-
-    /**
-     * Sets verbose (noisy) operation
-     * @param boolean $verbose
-     */
-    public function setVerbose($verbose)
-    {
-        $this->_verbose = $verbose;
-    }
-
-    /**
-     * Sets sender (regular e-mail address) or one of:
-     *    'O' - Uses the contact information of the selected organization
-     *    'S' - Uses the site-wide contact information
-     *    'U' - Uses the contact information of the currently logged in user
-     *
-     * @param string $from
-     */
-    public function setFrom($from)
-    {
-        $this->_from = $from;
-    }
-
-    /**
-     * Sets a list of tokens
-     * @param string[] $tokens
-     */
-    public function setTokens(array $tokens)
-    {
-        $this->_tokens = $tokens;
-    }
-
-    /**
-     * Sets the sending method to use
-     *    'M' - Send multiple mails per respondent, one for each checked token.
-     *    'O' - Send one mail per respondent, mark all checked tokens as send.
-     *    'A' - Send one mail per respondent, mark only mailed tokens as send.
-     *
-     * @param string $method
-     */
-    public function setMethod($method)
-    {
-        $this->_method = $method;
-    }
-
-    /**
-     * Sets the subject of the mail
-     * @param string $subject
-     */
-    public function setSubject($subject)
-    {
-        $this->_subject = $subject;
-    }
-
-    /**
-     * Sets the body of the mail
-     * @param string $body
-     */
-    public function setBody($body)
-    {
-        $this->_body = $body;
     }
 
     /**
@@ -279,7 +234,10 @@ class Gems_Email_TemplateMailer
         $ucount = 0;
 
         foreach ($tokensData as $tokenData) {
+            // Should this token be mailed?
             if (in_array($tokenData['gto_id_token'], $this->_tokens)) {
+
+                // Should all tokens be mailed or is this the first?
                 if ($mailAll || (! isset($send[$tokenData['grs_email']]))) {
 
                     if ($message = $this->processMail($tokenData)) {
@@ -347,7 +305,7 @@ class Gems_Email_TemplateMailer
         if ($message = $this->sendMail($to, $to_name, $from, $from_name, $tokenData)) {
             return $message;
         } else {
-            $this->updateToken($tokenData);
+            $this->updateToken($tokenData, $to, $from);
             return false;
         }
     }
@@ -395,59 +353,67 @@ class Gems_Email_TemplateMailer
 
         try {
             $mail->send($this->checkTransport($from));
-            return false;
+            $result = false;
 
         } catch (Exception $e) {
-            return $e->getMessage();
+            $result = $e->getMessage();
+
+            // Log to error file
+            $this->escort->logger->logError($e, $this->escort->request);
         }
+
+        return $result;
     }
 
     /**
-     * Updates a token
-     * @param array $tokenData
-     * @param string $subject
+     * Sets the body of the mail
+     * @param string $body
      */
-    protected function updateToken(array $tokenData, $subject = null)
+    public function setBody($body)
     {
-        if (null === $subject) {
-            $subject = $this->_mailSubject;
-        } else {
-            $this->_mailSubject = $subject;
-        }
-
-        if (null === $this->_changeDate) {
-            $this->_changeDate = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-        }
-
-        $db  = $this->escort->db;
-        $uid = $this->escort->session->user_id;
-
-        $tdata['gto_mail_sent_date'] = $this->_mailDate;
-
-        $db->update('gems__tokens', $tdata, $db->quoteInto('gto_id_token = ?', $tokenData['gto_id_token']));
-
-        $cdata['grco_id_to']        = $tokenData['grs_id_user'];
-        $cdata['grco_id_by']        = $uid;
-        $cdata['grco_organization'] = $tokenData['gor_id_organization'];
-        $cdata['grco_id_token']     = $tokenData['gto_id_token'];
-        $cdata['grco_method']       = 'email';
-        $cdata['grco_topic']        = substr($subject, 0, 120);
-        $cdata['grco_address']      = substr($tokenData['grs_email'], 0, 120);
-        $cdata['grco_changed']      = $this->_changeDate;
-        $cdata['grco_changed_by']   = $uid;
-        $cdata['grco_created']      = $this->_changeDate;
-        $cdata['grco_created_by']   = $uid;
-
-        $db->insert('gems__respondent_communications', $cdata);
+        $this->_body = $body;
     }
 
-    public function getTokenMailFields()
+    /**
+     * Sets sender (regular e-mail address) or one of:
+     *    'O' - Uses the contact information of the selected organization
+     *    'S' - Uses the site-wide contact information
+     *    'U' - Uses the contact information of the currently logged in user
+     *
+     * @param string $from
+     */
+    public function setFrom($from)
     {
-        if (! $this->_mailFields) {
-            $this->_mailFields = $this->escort->tokenMailFields($this->_tokenData);
-        }
+        $this->_from = $from;
+    }
 
-        return $this->_mailFields;
+    /**
+     * Sets the sending method to use
+     *    'M' - Send multiple mails per respondent, one for each checked token.
+     *    'O' - Send one mail per respondent, mark all checked tokens as send.
+     *    'A' - Send one mail per respondent, mark only mailed tokens as send.
+     *
+     * @param string $method
+     */
+    public function setMethod($method)
+    {
+        $this->_method = $method;
+    }
+
+    /**
+     * Sets the subject of the mail
+     * @param string $subject
+     */
+    public function setSubject($subject)
+    {
+        $this->_subject = $subject;
+    }
+
+    public function setTemplateId($templatedId)
+    {
+        $this->_templateId = $templatedId;
+
+        return $this;
     }
 
     public function setTokenData(array $tokenData)
@@ -469,5 +435,66 @@ class Gems_Email_TemplateMailer
         }
 
         return $this->_mailFields;
+    }
+
+    /**
+     * Sets a list of tokens
+     * @param string[] $tokens
+     */
+    public function setTokens(array $tokens)
+    {
+        $this->_tokens = $tokens;
+    }
+
+    /**
+     * Sets verbose (noisy) operation
+     *
+     * @param boolean $verbose
+     */
+    public function setVerbose($verbose)
+    {
+        $this->_verbose = $verbose;
+    }
+
+    /**
+     * Updates a token and log's the communication
+     *
+     * @param array $tokenData
+     * @param string $to Optional, if available the communication is logged.
+     * @param string $from Optional
+     */
+    protected function updateToken(array $tokenData, $to = null, $from = null)
+    {
+        if (null === $this->_changeDate) {
+            $this->_changeDate = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        }
+
+        $db  = $this->escort->db;
+        $uid = $this->escort->getCurrentUserId();
+
+        $tdata['gto_mail_sent_date'] = $this->_mailDate;
+
+        $db->update('gems__tokens', $tdata, $db->quoteInto('gto_id_token = ?', $tokenData['gto_id_token']));
+
+        if ($to) {
+            $cdata['grco_id_to']        = $tokenData['grs_id_user'];
+            $cdata['grco_id_by']        = $uid;
+            $cdata['grco_organization'] = $tokenData['gor_id_organization'];
+            $cdata['grco_id_token']     = $tokenData['gto_id_token'];
+            
+            $cdata['grco_method']       = 'email';
+            $cdata['grco_topic']        = substr($this->_mailSubject, 0, 120);
+            $cdata['grco_address']      = substr($to, 0, 120);
+            $cdata['grco_sender']       = substr($from, 0, 120);
+
+            $cdata['grco_id_message']   = $this->_templateId;
+
+            $cdata['grco_changed']      = $this->_changeDate;
+            $cdata['grco_changed_by']   = $uid;
+            $cdata['grco_created']      = $this->_changeDate;
+            $cdata['grco_created_by']   = $uid;
+
+            $db->insert('gems__respondent_communications', $cdata);
+        }
     }
 }

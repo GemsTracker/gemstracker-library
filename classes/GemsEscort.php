@@ -1090,6 +1090,10 @@ class GemsEscort extends MUtil_Application_Escort
         return $allowedOrganizations;
     }
 
+    /**
+     *
+     * @return int The current active organization id or 0 when not known
+     */
     public function getCurrentOrganization()
     {
         if ($this instanceof Gems_Project_Organization_MultiOrganizationInterface) {
@@ -1100,7 +1104,24 @@ class GemsEscort extends MUtil_Application_Escort
             return $this->getRespondentOrganization();
         }
 
-        return $this->session->user_organization_id;
+        if (isset($this->session->user_organization_id)) {
+            return $this->session->user_organization_id;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     *
+     * @return int The current user id or 0 when not known.
+     */
+    public function getCurrentUserId()
+    {
+        if (isset($this->session->user_id)) {
+            return $this->session->user_id;
+        } else {
+            return 0;
+        }
     }
 
     public function getDatabasePaths()

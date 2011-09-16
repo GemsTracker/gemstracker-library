@@ -190,3 +190,6 @@ UPDATE gems__mail_templates SET gmt_organizations = (SELECT CONCAT('|', GROUP_CO
 -- PATCH: Organization codes
 ALTER TABLE `gems__organizations` ADD gor_code            varchar(20)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gor_name;
 
+-- PATCH: Extra log
+ALTER TABLE gems__respondent_communications ADD grco_sender     varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER grco_address;
+ALTER TABLE gems__respondent_communications ADD grco_id_message bigint unsigned null references gems__mail_templates (gmt_id_message) AFTER grco_comments;
