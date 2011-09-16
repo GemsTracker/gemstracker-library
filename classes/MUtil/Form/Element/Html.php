@@ -31,7 +31,7 @@
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Html.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  */
 
 /**

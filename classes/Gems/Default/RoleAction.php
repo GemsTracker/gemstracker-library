@@ -32,7 +32,7 @@
  * @author     Michiel Rook
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StaffAction.php 460 2011-08-31 16:17:26Z mjong $
+ * @version    $Id$
  */
 
 /**

@@ -37,7 +37,7 @@
  * @package     Gems
  * @subpackage  View_Helper
  * @author      175780
- * @version     $Id: Excel.php 430 2011-08-18 10:40:21Z 175780 $
+ * @version     $Id$
  */
 class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
 

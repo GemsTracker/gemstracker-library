@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MenuAbstract.php 451 2011-08-25 09:25:18Z mjong $
+ * @version    $Id$
  */
 
 /**

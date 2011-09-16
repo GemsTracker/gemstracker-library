@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackEngineAbstract.php 282 2011-07-19 13:58:04Z mjong $
+ * @version    $Id$
  */
 
 /**

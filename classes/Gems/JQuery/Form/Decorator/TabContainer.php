@@ -31,7 +31,7 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TabContainer.php 430 2011-08-18 10:40:21Z 175780 $
+ * @version    $Id$
  */
 
 /**
@@ -40,7 +40,7 @@
  * Extension to the baseclass: In this class we merge options and attributes in order to make
  * selecting a tab work the change is in line 73
  *
- * $Id: TabContainer.php 430 2011-08-18 10:40:21Z 175780 $
+ * $Id$
  * @filesource
  * @package Gems
  * @subpackage Form

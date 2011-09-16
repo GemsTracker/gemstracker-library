@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StandardTokenModel.php 261 2011-07-18 11:22:08Z mjong $
+ * @version    $Id$
  */
 
 /**

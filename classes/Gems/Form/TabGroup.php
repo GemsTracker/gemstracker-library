@@ -30,7 +30,7 @@
 /**
  * A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.
  *
- * @version $Id: TabGroup.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version $Id$
  * @author 175780
  * @filesource
  * @package Gems

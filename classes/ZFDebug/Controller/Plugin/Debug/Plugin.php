@@ -36,7 +36,7 @@
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
- * @version    $Id: Plugin.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  */
 
 /**

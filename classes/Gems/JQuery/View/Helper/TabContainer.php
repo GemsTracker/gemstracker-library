@@ -31,7 +31,7 @@
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TabContainer.php 430 2011-08-18 10:40:21Z 175780 $
+ * @version    $Id$
  */
 
 require_once "ZendX/JQuery/View/Helper/TabContainer.php";

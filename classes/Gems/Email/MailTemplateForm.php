@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MailTemplateForm.php 476 2011-09-06 16:26:13Z mjong $
+ * @version    $Id$
  */
 
 /**

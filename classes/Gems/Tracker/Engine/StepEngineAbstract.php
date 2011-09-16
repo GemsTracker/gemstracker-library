@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: StepEngineAbstract.php 459 2011-08-31 14:55:46Z mjong $
+ * @version    $Id$
  */
 
 /**

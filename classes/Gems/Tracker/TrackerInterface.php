@@ -29,7 +29,7 @@
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackerInterface.php 448 2011-08-24 07:19:21Z 175780 $
+ * @version    $Id$
  */
 
 /**

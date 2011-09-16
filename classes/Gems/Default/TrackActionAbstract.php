@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackActionAbstract.php 463 2011-08-31 17:11:08Z mjong $
+ * @version    $Id$
  */
 
 /**

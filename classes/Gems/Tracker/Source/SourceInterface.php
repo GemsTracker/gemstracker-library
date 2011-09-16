@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SourceInterface.php 430 2011-08-18 10:40:21Z 175780 $
+ * @version    $Id$
  */
 
 /**

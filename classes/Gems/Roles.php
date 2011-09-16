@@ -42,7 +42,7 @@
  * This is where you can revoke or add privileges and/or add your own roles.
  *
  *
- * @version $Id: Roles.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version $Id$
  * @author user
  * @filesource
  * @package Gems

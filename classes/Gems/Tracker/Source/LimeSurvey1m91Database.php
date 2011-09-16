@@ -30,7 +30,7 @@
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: LimeSurvey1m91Database.php 482 2011-09-08 07:43:25Z 175780 $
+ * @version    $Id$
  */
 
 /**

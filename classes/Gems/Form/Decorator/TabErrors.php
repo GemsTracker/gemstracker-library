@@ -30,13 +30,13 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TabErrors.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  */
 
 /**
  * Takes care of rendering errors in tabbed forms
  *
- * $Id: TabErrors.php 345 2011-07-28 08:39:24Z 175780 $
+ * $Id$
  * @filesource
  * @package Gems
  * @subpackage Form

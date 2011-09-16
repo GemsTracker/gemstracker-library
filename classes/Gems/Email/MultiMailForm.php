@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id: MultiMailForm.php 407 2011-08-12 14:50:34Z michiel $
+ * @version    $Id$
  * @package    Gems
  * @subpackage Email
  * @copyright  Copyright (c) 2011 Erasmus MC

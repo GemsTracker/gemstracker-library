@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ShowRoundSnippetAbstract.php 448 2011-08-24 07:19:21Z 175780 $
+ * @version    $Id$
  */
 
 /**

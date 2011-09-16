@@ -29,13 +29,13 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Tooltip.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  */
 
 /**
  * Render a tooltip as a jQuery tooltip
  *
- * $Id: Tooltip.php 345 2011-07-28 08:39:24Z 175780 $
+ * $Id$
  * @filesource
  * @package Gems
  * @subpackage Form

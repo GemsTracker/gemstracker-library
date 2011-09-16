@@ -31,7 +31,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MailServerAction.php 478 2011-09-07 11:20:36Z mjong $
+ * @version    $Id$
  */
 
 /**

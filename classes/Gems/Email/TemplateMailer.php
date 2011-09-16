@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id: TemplateMailer.php 476 2011-09-06 16:26:13Z mjong $
+ * @version    $Id$
  * @package    Gems
  * @subpackage Email
  * @copyright  Copyright (c) 2011 Erasmus MC

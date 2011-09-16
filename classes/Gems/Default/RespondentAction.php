@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RespondentAction.php 460 2011-08-31 16:17:26Z mjong $
+ * @version    $Id$
  */
 
 /**

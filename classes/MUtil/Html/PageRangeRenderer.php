@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id: PageRangeRenderer.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -34,7 +34,7 @@
  */
  
 /**
- * @version    $Id: PageRangeRenderer.php 345 2011-07-28 08:39:24Z 175780 $
+ * @version    $Id$
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC

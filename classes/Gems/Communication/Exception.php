@@ -35,7 +35,7 @@
  * @see Gems_Exception
  * 
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
- * @version    $Id: Exception.php 448 2011-08-24 07:19:21Z 175780 $
+ * @version    $Id$
  * @package    Gems
  * @subpackage Communication
  */

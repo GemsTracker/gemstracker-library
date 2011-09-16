@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: GemsEscort.php 480 2011-09-07 16:14:55Z mjong $
+ * @version    $Id$
  */
 
 // $autoloader->registerNamespace has not yet run!!

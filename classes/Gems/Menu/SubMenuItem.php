@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SubMenuItem.php 349 2011-07-28 08:49:30Z michiel $
+ * @version    $Id$
  */
 
 /**

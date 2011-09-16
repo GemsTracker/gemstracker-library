@@ -29,7 +29,7 @@
 /**
  * A special displaygroup, to be displayed in a jQuery tab. Main difference is in the decorators.
  *
- * @version $Id: TabSubForm.php 430 2011-08-18 10:40:21Z 175780 $
+ * @version $Id$
  * @author 175780
  * @filesource
  * @package Gems

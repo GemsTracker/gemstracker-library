@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: FormBridge.php 369 2011-08-01 07:46:38Z 175780 $
+ * @version    $Id$
  */
 
 /**
