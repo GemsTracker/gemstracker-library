@@ -594,7 +594,7 @@ class GemsEscort extends MUtil_Application_Escort
     {
         // FAVICON
         $icon = isset($this->project->favicon) ? $this->project->favicon : 'favicon.ico';
-        if (file_exists(GEMS_ROOT_DIR . '/' . $icon)) {
+        if (file_exists(GEMS_WEB_DIR . '/' . $icon)) {
             $this->view->headLink(array(
                 'rel' => 'shortcut icon',
                 'href' =>  $this->basepath->getBasePath() . '/' . $icon,
