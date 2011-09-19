@@ -158,6 +158,8 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
                 foreach ($tr as $td) {
                     if (strpos($td->class, 'linked') === false) {
                         $td->onclick = $href;
+                    } else {
+                        $td->onclick = 'event.cancelBubble=true;';
                     }
                 }
             }
