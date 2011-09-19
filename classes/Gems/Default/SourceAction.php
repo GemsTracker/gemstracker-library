@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -191,7 +191,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
     public function getTopicTitle()
     {
-        return $this->_('Lime Survey Sources');
+        return $this->_('Survey Sources');
     }
 
     public function pingAction()

@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-15 16:26+0100\n"
+"POT-Creation-Date: 2011-09-19 10:05+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,34 +32,34 @@ msgstr "User: %s"
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1401
+#: classes/GemsEscort.php:1422
 msgid "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1523
+#: classes/GemsEscort.php:1544
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1525
-#: classes/GemsEscort.php:1561
+#: classes/GemsEscort.php:1546
+#: classes/GemsEscort.php:1582
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1541
+#: classes/GemsEscort.php:1562
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1543
+#: classes/GemsEscort.php:1564
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1548
-#: classes/GemsEscort.php:1559
+#: classes/GemsEscort.php:1569
+#: classes/GemsEscort.php:1580
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1549
+#: classes/GemsEscort.php:1570
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -153,234 +153,230 @@ msgid "Project setup"
 msgstr "Project setup"
 
 #: classes/Gems/Menu.php:188
-msgid "ACL"
-msgstr "ACL"
-
-#: classes/Gems/Menu.php:189
 msgid "Errors"
 msgstr "Errors"
 
-#: classes/Gems/Menu.php:190
+#: classes/Gems/Menu.php:189
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu.php:191
-msgid "Privileges"
-msgstr "Privileges"
-
-#: classes/Gems/Menu.php:192
-#: classes/Gems/Menu.php:589
+#: classes/Gems/Menu.php:190
+#: classes/Gems/Menu.php:581
 msgid "Project"
 msgstr "Project"
 
-#: classes/Gems/Menu.php:193
-#: classes/Gems/Menu.php:212
-msgid "Roles"
-msgstr "Roles"
-
-#: classes/Gems/Menu.php:194
+#: classes/Gems/Menu.php:191
 msgid "Session"
 msgstr "Session"
 
-#: classes/Gems/Menu.php:203
+#: classes/Gems/Menu.php:200
 msgid "Consents"
 msgstr "Consents"
 
-#: classes/Gems/Menu.php:206
+#: classes/Gems/Menu.php:203
 msgid "Organizations"
 msgstr "Organizations"
 
-#: classes/Gems/Menu.php:209
+#: classes/Gems/Menu.php:206
 msgid "Groups"
 msgstr "Groups"
 
-#: classes/Gems/Menu.php:216
+#: classes/Gems/Menu.php:209
+msgid "Roles"
+msgstr "Roles"
+
+#: classes/Gems/Menu.php:210
+msgid "ACL"
+msgstr "ACL"
+
+#: classes/Gems/Menu.php:211
+#: classes/Gems/Menu.php:398
+msgid "Assigned"
+msgstr "Assigned"
+
+#: classes/Gems/Menu.php:212
+msgid "Privileges"
+msgstr "Privileges"
+
+#: classes/Gems/Menu.php:215
 msgid "Reception codes"
 msgstr "Reception codes"
 
-#: classes/Gems/Menu.php:219
-msgid "Email servers"
-msgstr "Email servers"
-
-#: classes/Gems/Menu.php:223
-msgid "Email"
-msgstr "Email"
-
-#: classes/Gems/Menu.php:226
+#: classes/Gems/Menu.php:218
 msgid "Survey Sources"
 msgstr "Survey Sources"
 
-#: classes/Gems/Menu.php:228
+#: classes/Gems/Menu.php:220
 msgid "Check status"
 msgstr "Check status"
 
-#: classes/Gems/Menu.php:229
+#: classes/Gems/Menu.php:221
 msgid "Synchronize surveys"
 msgstr "Synchronize surveys"
 
-#: classes/Gems/Menu.php:230
-#: classes/Gems/Menu.php:241
+#: classes/Gems/Menu.php:222
+#: classes/Gems/Menu.php:233
 msgid "Check answers"
 msgstr "Check answers"
 
-#: classes/Gems/Menu.php:231
+#: classes/Gems/Menu.php:223
 msgid "Synchronize all surveys"
 msgstr "Synchronize all surveys"
 
-#: classes/Gems/Menu.php:232
-#: classes/Gems/Menu.php:242
+#: classes/Gems/Menu.php:224
+#: classes/Gems/Menu.php:234
 msgid "Check all answers"
 msgstr "Check all answers"
 
-#: classes/Gems/Menu.php:235
-#: classes/Gems/Menu.php:396
+#: classes/Gems/Menu.php:227
+#: classes/Gems/Menu.php:388
 msgid "Surveys"
 msgstr "Surveys"
 
-#: classes/Gems/Menu.php:238
+#: classes/Gems/Menu.php:230
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu.php:247
-#: classes/Gems/Menu.php:362
+#: classes/Gems/Menu.php:239
+#: classes/Gems/Menu.php:354
 msgid "Tracks"
 msgstr "Tracks"
 
-#: classes/Gems/Menu.php:250
+#: classes/Gems/Menu.php:242
 msgid "Fields"
 msgstr "Fields"
 
-#: classes/Gems/Menu.php:257
+#: classes/Gems/Menu.php:249
 msgid "Rounds"
 msgstr "Rounds"
 
-#: classes/Gems/Menu.php:266
+#: classes/Gems/Menu.php:258
 msgid "Round"
 msgstr "Round"
 
-#: classes/Gems/Menu.php:272
+#: classes/Gems/Menu.php:264
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu.php:275
+#: classes/Gems/Menu.php:267
 msgid "Check all assignments"
 msgstr "Check all assignments"
 
-#: classes/Gems/Menu.php:278
+#: classes/Gems/Menu.php:270
 msgid "Logging"
 msgstr "Logging"
 
-#: classes/Gems/Menu.php:282
+#: classes/Gems/Menu.php:274
 msgid "Maintenance"
 msgstr "Maintenance"
 
-#: classes/Gems/Menu.php:296
+#: classes/Gems/Menu.php:288
 #, php-format
 msgid "Stand-alone privilige: %s"
 msgstr "Stand-alone privilige: %s"
 
-#: classes/Gems/Menu.php:303
+#: classes/Gems/Menu.php:295
 msgid "Logon"
 msgstr "Logon"
 
-#: classes/Gems/Menu.php:304
+#: classes/Gems/Menu.php:296
 msgid "Lost password"
 msgstr "Lost password"
 
-#: classes/Gems/Menu.php:305
+#: classes/Gems/Menu.php:297
 msgid "Your account"
 msgstr "Your account"
 
-#: classes/Gems/Menu.php:306
+#: classes/Gems/Menu.php:298
 msgid "Activity overview"
 msgstr "Activity overview"
 
-#: classes/Gems/Menu.php:307
+#: classes/Gems/Menu.php:299
 msgid "Change password"
 msgstr "Change password"
 
-#: classes/Gems/Menu.php:308
-#: classes/Gems/Menu.php:348
-#: classes/Gems/Menu.php:383
+#: classes/Gems/Menu.php:300
+#: classes/Gems/Menu.php:340
+#: classes/Gems/Menu.php:375
 msgid "Token"
 msgstr "Token"
 
-#: classes/Gems/Menu.php:309
+#: classes/Gems/Menu.php:301
 msgid "Logoff"
 msgstr "Logoff"
 
-#: classes/Gems/Menu.php:344
+#: classes/Gems/Menu.php:336
 msgid "Track"
 msgstr "Track"
 
-#: classes/Gems/Menu.php:351
-#: classes/Gems/Menu.php:371
-#: classes/Gems/Menu.php:402
+#: classes/Gems/Menu.php:343
+#: classes/Gems/Menu.php:363
+#: classes/Gems/Menu.php:394
 msgid "Add"
 msgstr "Add"
 
-#: classes/Gems/Menu.php:355
-#: classes/Gems/Menu.php:438
+#: classes/Gems/Menu.php:347
+#: classes/Gems/Menu.php:430
 msgid "Preview"
 msgstr "Preview"
 
-#: classes/Gems/Menu.php:375
+#: classes/Gems/Menu.php:367
 msgid "Assignments"
 msgstr "Assignments"
 
-#: classes/Gems/Menu.php:379
+#: classes/Gems/Menu.php:371
 msgid "Show"
 msgstr "Show"
 
-#: classes/Gems/Menu.php:387
+#: classes/Gems/Menu.php:379
 msgid "Edit"
 msgstr "Edit"
 
-#: classes/Gems/Menu.php:391
+#: classes/Gems/Menu.php:383
 msgid "Delete"
 msgstr "Delete"
 
-#: classes/Gems/Menu.php:406
-msgid "Assigned"
-msgstr "Assigned"
-
-#: classes/Gems/Menu.php:428
+#: classes/Gems/Menu.php:420
 msgid "Fill in"
 msgstr "Fill in"
 
-#: classes/Gems/Menu.php:432
+#: classes/Gems/Menu.php:424
 msgid "Print PDF"
 msgstr "Print PDF"
 
-#: classes/Gems/Menu.php:435
+#: classes/Gems/Menu.php:427
 msgid "E-Mail now!"
 msgstr "E-Mail now!"
 
-#: classes/Gems/Menu.php:441
+#: classes/Gems/Menu.php:433
 msgid "Answers"
 msgstr "Answers"
 
-#: classes/Gems/Menu.php:579
+#: classes/Gems/Menu.php:571
 msgid "Respondents"
 msgstr "Patients"
 
-#: classes/Gems/Menu.php:582
+#: classes/Gems/Menu.php:574
 msgid "Overview"
 msgstr "Overview"
 
-#: classes/Gems/Menu.php:592
+#: classes/Gems/Menu.php:584
 msgid "Staff"
 msgstr "Staff"
 
-#: classes/Gems/Menu.php:595
+#: classes/Gems/Menu.php:587
 msgid "Setup"
 msgstr "Setup"
 
-#: classes/Gems/Menu.php:601
+#: classes/Gems/Menu.php:590
+msgid "Mail"
+msgstr "Mail"
+
+#: classes/Gems/Menu.php:599
 msgid "Contact"
 msgstr "Contact"
 
-#: classes/Gems/Menu.php:613
+#: classes/Gems/Menu.php:612
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -882,7 +878,6 @@ msgid "%d new or changed patch(es)."
 msgstr "%d new or changed patch(es)."
 
 #: classes/Gems/Default/DatabaseAction.php:317
-#: classes/Gems/Default/ProjectInformationAction.php:114
 msgid "Gems build"
 msgstr "Gems build"
 
@@ -1018,8 +1013,32 @@ msgstr "The data in table %s"
 msgid "Contents of %s %s"
 msgstr "Contents of %s %s"
 
+#: classes/Gems/Default/ExportAction.php:69
+msgid "Data"
+msgstr "Data"
+
+#: classes/Gems/Default/ExportAction.php:74
+msgid "Export data"
+msgstr "Export data"
+
+#: classes/Gems/Default/ExportAction.php:161
+msgid "Survey"
+msgstr "Survey"
+
+#: classes/Gems/Default/ExportAction.php:178
+#, php-format
+msgid "%s records found."
+msgstr "%s records found."
+
+#: classes/Gems/Default/ExportAction.php:182
+msgid "Organization"
+msgstr "Organization"
+
+#: classes/Gems/Default/ExportAction.php:190
+msgid "Export to"
+msgstr "Export to"
+
 #: classes/Gems/Default/GroupAction.php:88
-#: classes/Gems/Default/ProjectInformationAction.php:174
 msgid "Role"
 msgstr "Role"
 
@@ -1224,7 +1243,7 @@ msgstr "Email templates"
 
 #: classes/Gems/Default/MailServerAction.php:68
 msgid "From address [part]"
-msgstr ""
+msgstr "From address [part]"
 
 #: classes/Gems/Default/MailServerAction.php:70
 msgid "E.g.: '%', '%.org' or '%@gemstracker.org' or 'root@gemstracker.org'."
@@ -1277,6 +1296,10 @@ msgid "email server"
 msgid_plural "email servers"
 msgstr[0] "email server"
 msgstr[1] "email servers"
+
+#: classes/Gems/Default/MailServerAction.php:105
+msgid "Email servers"
+msgstr "Email servers"
 
 #: classes/Gems/Default/OptionAction.php:73
 #: classes/Gems/Default/OrganizationAction.php:128
@@ -1391,6 +1414,9 @@ msgid "Participating organizations"
 msgstr "Participating organizations"
 
 #: classes/Gems/Default/OverviewPlanAction.php:115
+#: classes/Gems/Default/ProjectSurveysAction.php:88
+#: classes/Gems/Default/SurveyAction.php:203
+#: classes/Gems/Default/SurveyMaintenanceAction.php:424
 msgid "survey"
 msgid_plural "surveys"
 msgstr[0] "survey"
@@ -1400,146 +1426,107 @@ msgstr[1] "surveys"
 msgid "Planning overview"
 msgstr "Planning overview"
 
-#: classes/Gems/Default/ProjectInformationAction.php:59
-msgid "Access Control Lists"
-msgstr "Access Control Lists"
-
-#: classes/Gems/Default/ProjectInformationAction.php:60
-msgid "ACL's"
-msgstr "ACL's"
-
-#: classes/Gems/Default/ProjectInformationAction.php:77
+#: classes/Gems/Default/ProjectInformationAction.php:71
 #, php-format
 msgid "No changelog found. Place one in %s."
 msgstr "No changelog found. Place one in %s."
 
-#: classes/Gems/Default/ProjectInformationAction.php:83
+#: classes/Gems/Default/ProjectInformationAction.php:77
 msgid "Logged errors"
 msgstr "Logged errors"
 
-#: classes/Gems/Default/ProjectInformationAction.php:94
-#: classes/Gems/Default/ProjectInformationAction.php:101
+#: classes/Gems/Default/ProjectInformationAction.php:88
+#: classes/Gems/Default/ProjectInformationAction.php:95
 msgid "Empty logfile"
 msgstr "Empty logfile"
 
-#: classes/Gems/Default/ProjectInformationAction.php:100
+#: classes/Gems/Default/ProjectInformationAction.php:94
 msgid "No logged errors found."
 msgstr "No logged errors found."
 
-#: classes/Gems/Default/ProjectInformationAction.php:107
+#: classes/Gems/Default/ProjectInformationAction.php:101
 msgid "Project information"
 msgstr "Project information"
 
-#: classes/Gems/Default/ProjectInformationAction.php:111
+#: classes/Gems/Default/ProjectInformationAction.php:105
 msgid "Project name"
 msgstr "Project name"
 
-#: classes/Gems/Default/ProjectInformationAction.php:112
+#: classes/Gems/Default/ProjectInformationAction.php:106
 msgid "Project version"
 msgstr "Project version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:113
+#: classes/Gems/Default/ProjectInformationAction.php:107
 msgid "Gems version"
 msgstr "Gems version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:115
+#: classes/Gems/Default/ProjectInformationAction.php:109
 msgid "Gems project"
 msgstr "Gems project"
 
-#: classes/Gems/Default/ProjectInformationAction.php:116
+#: classes/Gems/Default/ProjectInformationAction.php:110
 msgid "Gems web directory"
 msgstr "Gems web directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:117
+#: classes/Gems/Default/ProjectInformationAction.php:111
 msgid "Gems code directory"
 msgstr "Gems code directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:118
+#: classes/Gems/Default/ProjectInformationAction.php:112
 msgid "Gems project path"
 msgstr "Gems project path"
 
-#: classes/Gems/Default/ProjectInformationAction.php:119
+#: classes/Gems/Default/ProjectInformationAction.php:113
 msgid "MUtil version"
 msgstr "MUtil version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:120
+#: classes/Gems/Default/ProjectInformationAction.php:114
 msgid "Zend version"
 msgstr "Zend version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:121
+#: classes/Gems/Default/ProjectInformationAction.php:115
 msgid "Application environment"
 msgstr "Application environment"
 
-#: classes/Gems/Default/ProjectInformationAction.php:122
+#: classes/Gems/Default/ProjectInformationAction.php:116
 msgid "Application baseuri"
 msgstr "Application baseuri"
 
-#: classes/Gems/Default/ProjectInformationAction.php:123
+#: classes/Gems/Default/ProjectInformationAction.php:117
 msgid "Application directory"
 msgstr "Application directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:124
+#: classes/Gems/Default/ProjectInformationAction.php:118
 msgid "PHP version"
 msgstr "PHP version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:125
+#: classes/Gems/Default/ProjectInformationAction.php:119
 msgid "Server Hostname"
 msgstr "Server Hostname"
 
-#: classes/Gems/Default/ProjectInformationAction.php:126
+#: classes/Gems/Default/ProjectInformationAction.php:120
 msgid "Server OS"
 msgstr "Server OS"
 
-#: classes/Gems/Default/ProjectInformationAction.php:127
+#: classes/Gems/Default/ProjectInformationAction.php:121
 msgid "Time on server"
 msgstr "Time on server"
 
-#: classes/Gems/Default/ProjectInformationAction.php:129
+#: classes/Gems/Default/ProjectInformationAction.php:123
 msgid "Version information"
 msgstr "Version information"
 
-#: classes/Gems/Default/ProjectInformationAction.php:134
+#: classes/Gems/Default/ProjectInformationAction.php:128
 msgid "Server PHP Info"
 msgstr "Server PHP Info"
 
-#: classes/Gems/Default/ProjectInformationAction.php:147
-msgid "Privilege"
-msgstr "Privilege"
-
-#: classes/Gems/Default/ProjectInformationAction.php:148
-#: classes/Gems/Default/ProjectInformationAction.php:176
-msgid "Allowed"
-msgstr "Allowed"
-
-#: classes/Gems/Default/ProjectInformationAction.php:149
-#: classes/Gems/Default/ProjectInformationAction.php:177
-msgid "Denied"
-msgstr "Denied"
-
-#: classes/Gems/Default/ProjectInformationAction.php:153
-msgid "Project privileges"
-msgstr "Project privileges"
-
-#: classes/Gems/Default/ProjectInformationAction.php:164
+#: classes/Gems/Default/ProjectInformationAction.php:141
 msgid "Project settings"
 msgstr "Project settings"
 
-#: classes/Gems/Default/ProjectInformationAction.php:175
-msgid "Parents"
-msgstr "Parents"
-
-#: classes/Gems/Default/ProjectInformationAction.php:181
-msgid "Project roles"
-msgstr "Project roles"
-
-#: classes/Gems/Default/ProjectInformationAction.php:189
+#: classes/Gems/Default/ProjectInformationAction.php:148
 msgid "Session content"
 msgstr "Session content"
-
-#: classes/Gems/Default/ProjectSurveysAction.php:67
-#: classes/Gems/Default/SurveyAction.php:191
-msgid "Survey"
-msgstr "Survey"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:68
 #: classes/Gems/Default/SurveyAction.php:192
@@ -1571,7 +1558,6 @@ msgstr "Survey #"
 
 #: classes/Gems/Default/ProjectTracksAction.php:85
 #: classes/Gems/Default/TrackAction.php:451
-#: classes/Gems/Default/TrackMaintenanceAction.php:242
 msgid "track"
 msgid_plural "tracks"
 msgstr[0] "track"
@@ -1783,15 +1769,50 @@ msgstr "Progress"
 msgid "Respondent planning"
 msgstr "Respondent planning"
 
-#: classes/Gems/Default/RoleAction.php:174
+#: classes/Gems/Default/RoleAction.php:58
+msgid "Access Control Lists"
+msgstr "Access Control Lists"
+
+#: classes/Gems/Default/RoleAction.php:59
+msgid "ACL's"
+msgstr "ACL's"
+
+#: classes/Gems/Default/RoleAction.php:168
+#: classes/Gems/Default/RoleAction.php:209
+msgid "Parents"
+msgstr "Parents"
+
+#: classes/Gems/Default/RoleAction.php:187
 msgid "role"
 msgid_plural "roles"
 msgstr[0] "role"
 msgstr[1] "roles"
 
-#: classes/Gems/Default/RoleAction.php:179
+#: classes/Gems/Default/RoleAction.php:192
 msgid "Administrative roles"
 msgstr "Administrative roles"
+
+#: classes/Gems/Default/RoleAction.php:210
+#: classes/Gems/Default/RoleAction.php:226
+msgid "Allowed"
+msgstr "Allowed"
+
+#: classes/Gems/Default/RoleAction.php:211
+#: classes/Gems/Default/RoleAction.php:227
+msgid "Denied"
+msgstr "Denied"
+
+#: classes/Gems/Default/RoleAction.php:215
+msgid "Project role overview"
+msgstr "Project role overview"
+
+#: classes/Gems/Default/RoleAction.php:225
+msgid "Privilege"
+msgstr "Privilege"
+
+#: classes/Gems/Default/RoleAction.php:231
+msgid "Project privileges"
+msgstr "Project privileges"
 
 #: classes/Gems/Default/SourceAction.php:69
 msgid "Leave empty for the Gems database."
@@ -1840,10 +1861,6 @@ msgid_plural "sources"
 msgstr[0] "source"
 msgstr[1] "sources"
 
-#: classes/Gems/Default/SourceAction.php:194
-msgid "Lime Survey Sources"
-msgstr "Lime Survey Sources"
-
 #: classes/Gems/Default/SourceAction.php:202
 msgid "This installation is active."
 msgstr "This installation is active."
@@ -1882,15 +1899,11 @@ msgstr "If checked the user will logoff when answering a survey."
 msgid "You are not allowed to edit this staff member."
 msgstr "You are not allowed to edit this staff member."
 
-#: classes/Gems/Default/StaffAction.php:182
-msgid "Organization"
-msgstr "Organization"
-
-#: classes/Gems/Default/StaffAction.php:186
+#: classes/Gems/Default/StaffAction.php:188
 msgid "Primary function"
 msgstr "Primary function"
 
-#: classes/Gems/Default/StaffAction.php:233
+#: classes/Gems/Default/StaffAction.php:240
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "staff member"
@@ -2269,12 +2282,10 @@ msgid "Free text"
 msgstr "Free text"
 
 #: classes/Gems/Default/TrackFieldsAction.php:114
-#: classes/Gems/Default/TrackMaintenanceAction.php:211
 msgid "Values"
 msgstr "Values"
 
 #: classes/Gems/Default/TrackFieldsAction.php:116
-#: classes/Gems/Default/TrackMaintenanceAction.php:213
 msgid "Required"
 msgstr "Required"
 
@@ -2314,6 +2325,10 @@ msgid "%s in track"
 msgstr "%s in track"
 
 #: classes/Gems/Default/TrackRoundAction.php:89
+#: classes/Gems/Default/TrackRoundsAction.php:82
+#: classes/Gems/Default/TrackRoundsAction.php:109
+#: classes/Gems/Default/TrackRoundsAction.php:144
+#: classes/Gems/Default/TrackRoundsAction.php:173
 msgid "Missing track identifier."
 msgstr "Missing track identifier."
 
@@ -2442,12 +2457,12 @@ msgid "Last contact"
 msgstr "Last contact"
 
 #: classes/Gems/Email/OneMailForm.php:131
-#: classes/Gems/Email/TemplateMailer.php:256
+#: classes/Gems/Email/TemplateMailer.php:211
 msgid "The sending of emails was blocked for this installation."
 msgstr "The sending of emails was blocked for this installation."
 
 #: classes/Gems/Email/OneMailForm.php:139
-#: classes/Gems/Email/TemplateMailer.php:286
+#: classes/Gems/Email/TemplateMailer.php:244
 msgid "Mail failed to send."
 msgstr "Mail failed to send."
 
@@ -2456,24 +2471,60 @@ msgstr "Mail failed to send."
 msgid "Sent email to %s."
 msgstr "Sent email to %s."
 
-#: classes/Gems/Email/TemplateMailer.php:302
+#: classes/Gems/Email/TemplateMailer.php:260
 #, php-format
 msgid "Sent %d e-mails, updated %d tokens."
 msgstr "Sent %d e-mails, updated %d tokens."
 
-#: classes/Gems/Menu/MenuAbstract.php:229
+#: classes/Gems/Export/Excel.php:60
+msgid "Excel options"
+msgstr "Excel options"
+
+#: classes/Gems/Export/Excel.php:62
+msgid "Export questions instead of variable names"
+msgstr "Export questions instead of variable names"
+
+#: classes/Gems/Export/Excel.php:63
+msgid "Format answers"
+msgstr "Format answers"
+
+#: classes/Gems/Export/Spss.php:60
+msgid "Which file"
+msgstr "Which file"
+
+#: classes/Gems/Export/Spss.php:61
+msgid "syntax"
+msgstr "syntax"
+
+#: classes/Gems/Export/Spss.php:62
+msgid "data"
+msgstr "data"
+
+#: classes/Gems/Export/Spss.php:67
+msgid "Some help for this export"
+msgstr "Some help for this export"
+
+#: classes/Gems/Menu/MenuAbstract.php:206
+msgid "Servers"
+msgstr "Servers"
+
+#: classes/Gems/Menu/MenuAbstract.php:210
+msgid "Templates"
+msgstr "Templates"
+
+#: classes/Gems/Menu/MenuAbstract.php:243
 msgid "By period"
 msgstr "By period"
 
-#: classes/Gems/Menu/MenuAbstract.php:230
+#: classes/Gems/Menu/MenuAbstract.php:244
 msgid "By token"
 msgstr "By token"
 
-#: classes/Gems/Menu/MenuAbstract.php:231
+#: classes/Gems/Menu/MenuAbstract.php:245
 msgid "By respondent"
 msgstr "By respondent"
 
-#: classes/Gems/Menu/MenuAbstract.php:235
+#: classes/Gems/Menu/MenuAbstract.php:249
 msgid "Bulk mail"
 msgstr "Bulk mail"
 
@@ -2845,11 +2896,13 @@ msgid "Add new round"
 msgstr "Add new round"
 
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:124
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:164
 #, php-format
 msgid "Token %s not found."
 msgstr "Token %s not found."
 
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:128
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:168
 msgid "No token specified."
 msgstr "No token specified."
 
@@ -3325,6 +3378,7 @@ msgid "Deleted token %s for survey %s."
 msgstr "Deleted token %s for survey %s."
 
 #: snippets/DeleteTrackTokenSnippet.php:269
+#: snippets/EditTrackTokenSnippet.php:174
 #, php-format
 msgid "%d token changed by recalculation."
 msgid_plural "%d tokens changed by recalculation."
@@ -3442,8 +3496,15 @@ msgstr "This survey can be assigned since %s."
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
 
-#~ msgid "The Pulse software was made possible thanks to support from "
-#~ msgstr "The Pulse software was made possible thanks to support from "
+#: views/scripts/index/login.phtml:12
+msgid "The Pulse software was made possible thanks to support from "
+msgstr "The Pulse software was made possible thanks to support from "
+
+#~ msgid "Email"
+#~ msgstr "Email"
+
+#~ msgid "Lime Survey Sources"
+#~ msgstr "Lime Survey Sources"
 
 #~ msgid "Filling in by"
 #~ msgstr "Filling in by"
