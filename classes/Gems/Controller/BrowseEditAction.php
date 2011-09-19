@@ -585,13 +585,14 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * @param string  $sourceAction    The action to get the cache from if not the current one.
      * @return array
      */
-    public function getCachedRequestData($includeDefaults = true, $sourceAction = null)
+    public function getCachedRequestData($includeDefaults = true, $sourceAction = null, $readonly = false)
     {
         if (! $this->requestCache) {
             $this->requestCache = $this->util->getRequestCache();
             if ($sourceAction) {
                 $this->requestCache->setSourceAction($sourceAction);
             }
+            $this->requestCache->setReadonly($readonly);
             $this->requestCache->setMenu($this->menu);
             $this->requestCache->setRequest($this->request);
 

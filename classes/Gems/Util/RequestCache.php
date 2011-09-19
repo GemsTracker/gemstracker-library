@@ -64,6 +64,13 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
     protected $_programParams = array();
 
     /**
+     * True if the cache should not be written to.
+     *
+     * @var boolean
+     */
+    protected $_readonly = false;
+
+    /**
      * The module / controller /action of the request in an array.
      *
      * @var array
@@ -269,6 +276,12 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Ste the keys stored fot this cache
+     *
+     * @param array $programParams
+     * @return Gems_Util_RequestCache (continuation pattern)
+     */
     public function setProgramParams(array $programParams)
     {
         foreach ($programParams as $key => $value) {
@@ -279,7 +292,23 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
 
         // Store result
         $this->_programParams = $programParams;
-        $this->session->requestCache[$this->getStorageKey()] = $programParams;
+
+        if (! $this->_readonly) {
+            $this->session->requestCache[$this->getStorageKey()] = $programParams;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Makes sure any new values in the request are not written to the cache.
+     *
+     * @param boolen $value
+     * @return Gems_Util_RequestCache (continuation pattern)
+     */
+    public function setReadonly($value = true)
+    {
+        $this->_readonly = (boolean) $value;
 
         return $this;
     }

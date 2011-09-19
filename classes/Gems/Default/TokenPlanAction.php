@@ -128,7 +128,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $model   = $this->getModel();
 
         // Set the request cache to use the search params from the index action
-        $this->getCachedRequestData(true, 'index');
+        $this->getCachedRequestData(true, 'index', true);
 
         // Load the filters
         $this->_applySearchParameters($model);
