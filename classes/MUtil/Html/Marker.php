@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,7 +26,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @version    $Id$
  * @package    MUtil
  * @subpackage Html
@@ -52,23 +52,14 @@ class MUtil_Html_Marker
 
     public function __construct($searches, $tag, $encoding, $attributes = 'class="marked"')
     {
-        $this->_encoding = $encoding;
+        $this->setEncoding($encoding);
         $this->_tag      = $tag;
 
         if ($attributes) {
             $this->_attributes = ' ' . trim($attributes) . ' ';
         }
 
-        // Do not use the $tag itself here: str_replace will then replace
-        // the text of tag itself on later finds
-        $topen  = '<' . self::TAG_MARKER . '>';
-        $tclose = '</' . self::TAG_MARKER . '>';
-
-        foreach ((array) $searches as $search) {
-            $searchHtml = $this->escape($search);
-            $this->_searches[] = $searchHtml;
-            $this->_replaces[] = $topen . $searchHtml . $tclose;
-        }
+        $this->_searches = (array) $searches;
     }
 
     private function _fillTags($text)
@@ -91,6 +82,23 @@ class MUtil_Html_Marker
 
     public function mark($value)
     {
+        if (! $this->_replaces) {
+            // Late setting of search & replaces
+            $searches = $this->_searches;
+            $this->_searches = array();
+
+            // Do not use the $tag itself here: str_replace will then replace
+            // the text of tag itself on later finds
+            $topen  = '<' . self::TAG_MARKER . '>';
+            $tclose = '</' . self::TAG_MARKER . '>';
+
+            foreach ((array) $searches as $search) {
+                $searchHtml = $this->escape($search);
+                $this->_searches[] = $searchHtml;
+                $this->_replaces[] = $topen . $searchHtml . $tclose;
+            }
+        }
+
         if ($value instanceof MUtil_Html_Raw) {
             $values = array();
             // Split into HTML Elements
@@ -127,6 +135,34 @@ class MUtil_Html_Marker
 
             return new MUtil_Html_Raw($this->_fillTags($valueTemp));
         }
+    }
+
+    /**
+     * Function to allow later setting of encoding.
+     *
+     * @see htmlspecialchars()
+     *
+     * @param string $encoding Encoding htmlspecialchars
+     * @return MUtil_Html_Marker (continuation pattern)
+     */
+    public function setEncoding($encoding)
+    {
+        $this->_encoding = $encoding;
+
+        return $this;
+    }
+
+    /**
+     * Function to allow later setting of tag name.
+     *
+     * @param string $tagName Html element tag name
+     * @return MUtil_Html_Marker (continuation pattern)
+     */
+    public function setTagName($tagName)
+    {
+        $this->_tag = $tagName;
+
+        return $this;
     }
 }
 

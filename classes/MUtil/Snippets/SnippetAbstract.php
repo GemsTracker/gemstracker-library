@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -36,7 +36,7 @@
  */
 
 /**
- * An abstract class for building snippets. Sub classes should override at leist
+ * An abstract class for building snippets. Sub classes should override at least
  * getHtmlOutput(0 or render() to generate output.
  *
  * This class add's to the interface helper variables and functions for:
@@ -59,7 +59,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
      * @var Zend_Controller_Action_Helper_FlashMessenger
      */
     private $_messenger;
-    
+
     /**
      * Attributes (e.g. class) for the main html element
      *
@@ -77,11 +77,11 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
     /**
      * Variable to either keep or throw away the request data
      * not specified in the route.
-     * 
+     *
      * @var boolean True then the route is reset
      */
     public $resetRoute = false;
-    
+
     /**
      * Set as this is a MUtil_Registry_TargetInterface
      *
@@ -124,9 +124,9 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
     }
 
     /**
-     * Applies the $this=>attributes and $this->class snippet parameters to the 
+     * Applies the $this=>attributes and $this->class snippet parameters to the
      * $html element.
-     * 
+     *
      * @param MUtil_Html_HtmlElement $html Element to apply the snippet parameters to.
      */
     protected function applyHtmlAttributes(MUtil_Html_HtmlElement $html)
@@ -168,7 +168,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
 
     /**
      * Retrieves the messenger
-     * 
+     *
      * @return Zend_Controller_Action_Helper_FlashMessenger
      */
     protected function getMessenger()
@@ -181,22 +181,22 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
 
     /**
      * When hasHtmlOutput() is false a snippet code user should check
-     * for a redirectRoute. Otherwise the redirect calling render() will 
+     * for a redirectRoute. Otherwise the redirect calling render() will
      * execute the redirect.
-     * 
+     *
      * This function should never return a value when the snippet does
      * not redirect.
-     * 
-     * Also when hasHtmlOutput() is true this function should not be 
+     *
+     * Also when hasHtmlOutput() is true this function should not be
      * called.
-     * 
+     *
      * @see Zend_Controller_Action_Helper_Redirector
-     * 
+     *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
     public function getRedirectRoute()
     { }
-    
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -235,9 +235,9 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
 
     /**
      * When there is a redirectRoute this function will execute it.
-     * 
+     *
      * When hasHtmlOutput() is true this functions should not be called.
-     * 
+     *
      * @see Zend_Controller_Action_Helper_Redirector
      */
     public function redirectRoute()
@@ -247,7 +247,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
             $router->gotoRouteAndExit($url, null, $this->resetRoute);
         }
     }
-    
+
     /**
      * Render a string that becomes part of the HtmlOutput of the view
      *
@@ -260,7 +260,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
     {
         if ($this->getRedirectRoute()) {
             $this->redirectRoute();
-            
+
         } else {
             $html = $this->getHtmlOutput($view);
 

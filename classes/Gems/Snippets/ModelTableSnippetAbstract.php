@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -37,10 +37,10 @@
 
 /**
  * Adds Gems specific display details and helper functions:
- * 
+ *
  * Items set are:
  * - Display class: 'browser'
- * 
+ *
  * Extra helpers are:
  * - Baseurl helper:  $this->requestCache
  * - Keyboard access: $this->keyboard & getHtmlOutput()
@@ -61,6 +61,12 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      * @var string
      */
     protected $class = 'browser';
+
+    /**
+     *
+     * @var string The id of a div that contains the table.
+     */
+    protected $containingId;
 
     /**
      * Use keyboard to select row
@@ -94,6 +100,19 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      * @var string
      */
     protected $sortParamDesc = 'dsrt';
+
+    /**
+     * Add the paginator panel to the table.
+     *
+     * Only called when $this->browse is true. Overrule this function
+     * to define your own method.
+     *
+     * $param Zend_Paginator $paginator
+     */
+    protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
+    {
+        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
+    }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -153,12 +172,16 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
 
-        if ($this->keyboard) {
+        if ($this->containingId || $this->keyboard) {
             $this->applyHtmlAttributes($table);
 
-            $div = MUtil_Html::create()->div(array('id' => 'keys_target'), $table);
+            $div = MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
 
-            return array($div, new Gems_JQuery_TableRowKeySelector($div));
+            if ($this->keyboard) {
+                return array($div, new Gems_JQuery_TableRowKeySelector($div));
+            } else {
+                return $div;
+            }
         } else {
             return $table;
         }

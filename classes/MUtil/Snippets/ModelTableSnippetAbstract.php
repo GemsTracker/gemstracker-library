@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -36,12 +36,12 @@
  */
 
 /**
- * Displays multiple items in a model below each other in an Html table. 
- * 
+ * Displays multiple items in a model below each other in an Html table.
+ *
  * To use this class either subclass or use the existing default ModelTableSnippet.
  *
  * @see ModelTableSnippet
- * 
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -51,18 +51,31 @@
 abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
 {
     /**
+     *
+     * @var MUtil_Html_Marker Class for marking text in the output
+     */
+    protected $_marker;
+
+    /**
      * Url parts added to each link in the resulting table
-     * 
+     *
      * @var array
      */
     public $baseUrl;
-    
+
     /**
      * Sets pagination on or off.
      *
      * @var boolean
      */
     public $browse = false;
+
+    /**
+     * When true the post parameters are removed from the request while filtering
+     *
+     * @var boolean Should post variables be removed from the request?
+     */
+    public $removePost = false;
 
     /**
      * Content to show when there are no rows.
@@ -93,6 +106,20 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     }
 
     /**
+     * Add the paginator panel to the table.
+     *
+     * Only called when $this->browse is true. Overrule this function
+     * to define your own method.
+     *
+     * @param MUtil_Html_TableElement $table
+     * $param Zend_Paginator $paginator
+     */
+    protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
+    {
+        $table->tfrow()->pagePanel($paginator, $this->request, array('baseUrl' => $this->baseUrl));
+    }
+
+    /**
      * Creates from the model a MUtil_Html_TableElement that can display multiple items.
      *
      * Allows overruling
@@ -116,7 +143,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
 
         return $bridge->getTable();
     }
-    
+
     /**
      * Create the snippets content
      *
@@ -135,11 +162,51 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
         if ($this->browse) {
             $paginator = $model->loadPaginator();
             $table->setRepeater($paginator);
-            $table->tfrow()->pagePanel($paginator, $this->request, array('baseUrl' => $this->baseUrl));
+            $this->addPaginator($table, $paginator);
         } else {
             $table->setRepeater($model->loadRepeatable());
         }
 
         return $table;
+    }
+
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    {
+        parent::processFilterAndSort($model);
+
+        // Add generic text search filter and marker
+        $textKey = $model->getTextFilter();
+        if ($searchText = $this->request->getParam($textKey)) {
+            // MUtil_Echo::r($textKey . '[' . $searchText . ']');
+            $this->_marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'xxUTF-8');
+
+            foreach ($model->getItemNames() as $name) {
+                if ($model->get($name, 'label')) {
+                    $model->set($name, 'markCallback', array($this->_marker, 'mark'));
+                }
+            }
+        }
+    }
+
+    /**
+     * Render a string that becomes part of the HtmlOutput of the view
+     *
+     * You should override either getHtmlOutput() or this function to generate output
+     *
+     * @param Zend_View_Abstract $view
+     * @return string Html output
+     */
+    public function render(Zend_View_Abstract $view)
+    {
+        if ($this->_marker) {
+            $this->_marker->setEncoding($view->getEncoding());
+        }
+
+        return parent::render($view);
     }
 }

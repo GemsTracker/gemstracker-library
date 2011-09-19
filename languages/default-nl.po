@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-19 09:57+0100\n"
+"POT-Creation-Date: 2011-09-19 18:16+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -473,56 +473,56 @@ msgstr "Zoeken"
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:634
+#: classes/Gems/Controller/BrowseEditAction.php:635
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:749
+#: classes/Gems/Controller/BrowseEditAction.php:750
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:765
+#: classes/Gems/Controller/BrowseEditAction.php:766
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:766
+#: classes/Gems/Controller/BrowseEditAction.php:767
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:819
+#: classes/Gems/Controller/BrowseEditAction.php:820
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:842
+#: classes/Gems/Controller/BrowseEditAction.php:843
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:850
+#: classes/Gems/Controller/BrowseEditAction.php:851
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:886
+#: classes/Gems/Controller/BrowseEditAction.php:887
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:889
+#: classes/Gems/Controller/BrowseEditAction.php:890
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:898
+#: classes/Gems/Controller/BrowseEditAction.php:899
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:926
+#: classes/Gems/Controller/BrowseEditAction.php:927
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:933
+#: classes/Gems/Controller/BrowseEditAction.php:934
 #, php-format
 msgid "Unknown %s."
 msgstr "%s is onbekend."
@@ -629,10 +629,13 @@ msgid "The number zero and the letter O are treated as the same; the same goes f
 msgstr "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook niet tussen het getal één en de letter L."
 
 #: classes/Gems/Default/ConsentAction.php:66
+#: classes/Gems/Default/CountryAction.php:67
+#: classes/Gems/Default/GroupAction.php:87
 msgid "Description"
 msgstr "Omschrijving"
 
 #: classes/Gems/Default/ConsentAction.php:68
+#: classes/Gems/Default/DatabaseAction.php:155
 msgid "Order"
 msgstr "Volgorde"
 
@@ -751,7 +754,6 @@ msgid "Group"
 msgstr "Groep"
 
 #: classes/Gems/Default/DatabaseAction.php:156
-#: classes/Gems/Default/OrganizationAction.php:116
 msgid "Location"
 msgstr "Locatie"
 
@@ -1043,7 +1045,6 @@ msgid "Role"
 msgstr "Rol"
 
 #: classes/Gems/Default/GroupAction.php:91
-#: classes/Gems/Default/OrganizationAction.php:132
 msgid "Active"
 msgstr "Actief"
 
@@ -1224,6 +1225,7 @@ msgid "Log maintenance"
 msgstr "Logboek onderhoud"
 
 #: classes/Gems/Default/MailAction.php:61
+#: classes/Gems/Default/MailLogAction.php:71
 msgid "Subject"
 msgstr "Onderwerp"
 
@@ -1240,6 +1242,22 @@ msgstr[1] "email sjablonen"
 #: classes/Gems/Default/MailAction.php:99
 msgid "Email templates"
 msgstr "Email sjabloon"
+
+#: classes/Gems/Default/MailLogAction.php:69
+msgid "To"
+msgstr "Aan"
+
+#: classes/Gems/Default/MailLogAction.php:70
+msgid "From"
+msgstr "Van"
+
+#: classes/Gems/Default/MailLogAction.php:72
+msgid "Date sent"
+msgstr "Datum verstuurd"
+
+#: classes/Gems/Default/MailLogAction.php:80
+msgid "Mail Activity Log"
+msgstr "Logboek Mail Activiteit"
 
 #: classes/Gems/Default/MailServerAction.php:68
 msgid "From address [part]"
@@ -1282,8 +1300,6 @@ msgid "User ID"
 msgstr "Gebruikers ID"
 
 #: classes/Gems/Default/MailServerAction.php:90
-#: classes/Gems/Default/OptionAction.php:107
-#: classes/Gems/Default/OptionAction.php:112
 msgid "Repeat password"
 msgstr "Herhaal wachtwoord"
 
@@ -1303,10 +1319,13 @@ msgstr "Email servers"
 
 #: classes/Gems/Default/OptionAction.php:73
 #: classes/Gems/Default/OrganizationAction.php:128
+#: classes/Gems/Default/RespondentAction.php:164
+#: classes/Gems/Default/StaffAction.php:192
 msgid "Language"
 msgstr "Taal"
 
 #: classes/Gems/Default/OptionAction.php:74
+#: classes/Gems/Default/StaffAction.php:193
 msgid "Logout on survey"
 msgstr "Logout bij beantwoorden vragenlijst"
 
@@ -1371,6 +1390,7 @@ msgid "Invalid organization."
 msgstr "Ongeldige organisatie."
 
 #: classes/Gems/Default/OrganizationAction.php:117
+#: classes/Gems/Default/SourceAction.php:143
 msgid "Url"
 msgstr "Url"
 
@@ -1533,13 +1553,6 @@ msgstr "Sessie inhoud"
 msgid "By"
 msgstr "Door"
 
-#: classes/Gems/Default/ProjectSurveysAction.php:69
-#: classes/Gems/Default/ProjectTracksAction.php:67
-#: classes/Gems/Default/SurveyAction.php:193
-#: classes/Gems/Default/TrackAction.php:329
-msgid "From"
-msgstr "Van"
-
 #: classes/Gems/Default/ProjectSurveysAction.php:70
 #: classes/Gems/Default/ProjectTracksAction.php:68
 #: classes/Gems/Default/SurveyAction.php:195
@@ -1583,7 +1596,6 @@ msgid "Survey not specified."
 msgstr "Vragenlijst niet opgegeven."
 
 #: classes/Gems/Default/ProjectTracksAction.php:120
-#: classes/Gems/Default/TrackActionAbstract.php:479
 #, php-format
 msgid "Track %s does not exist."
 msgstr "Trajectnummer %s bestaat niet."
@@ -2282,10 +2294,12 @@ msgid "Free text"
 msgstr "Vrije tekst"
 
 #: classes/Gems/Default/TrackFieldsAction.php:114
+#: classes/Gems/Default/TrackMaintenanceAction.php:211
 msgid "Values"
 msgstr "Waarden"
 
 #: classes/Gems/Default/TrackFieldsAction.php:116
+#: classes/Gems/Default/TrackMaintenanceAction.php:213
 msgid "Required"
 msgstr "Verplicht"
 
@@ -2431,11 +2445,6 @@ msgstr "Verstuur één email per patiënt, zet alleen de verzonden kenmerken op 
 msgid "Method"
 msgstr "Methode"
 
-#: classes/Gems/Email/MultiMailForm.php:105
-#: classes/Gems/Email/OneMailForm.php:87
-msgid "To"
-msgstr "Aan"
-
 #: classes/Gems/Email/MultiMailForm.php:126
 msgid "Survey has been taken."
 msgstr "Vragenlijsten is al afgenomen"
@@ -2505,26 +2514,30 @@ msgid "Some help for this export"
 msgstr "Uitleg over deze export mogelijkheid"
 
 #: classes/Gems/Menu/MenuAbstract.php:206
+msgid "Activity"
+msgstr "Activiteit"
+
+#: classes/Gems/Menu/MenuAbstract.php:209
 msgid "Servers"
 msgstr "Servers"
 
-#: classes/Gems/Menu/MenuAbstract.php:210
+#: classes/Gems/Menu/MenuAbstract.php:213
 msgid "Templates"
 msgstr "Sjablonen"
 
-#: classes/Gems/Menu/MenuAbstract.php:243
+#: classes/Gems/Menu/MenuAbstract.php:246
 msgid "By period"
 msgstr "Per periode"
 
-#: classes/Gems/Menu/MenuAbstract.php:244
+#: classes/Gems/Menu/MenuAbstract.php:247
 msgid "By token"
 msgstr "Per kenmerk"
 
-#: classes/Gems/Menu/MenuAbstract.php:245
+#: classes/Gems/Menu/MenuAbstract.php:248
 msgid "By respondent"
 msgstr "Per patiënt"
 
-#: classes/Gems/Menu/MenuAbstract.php:249
+#: classes/Gems/Menu/MenuAbstract.php:252
 msgid "Bulk mail"
 msgstr "Bulk mail"
 
@@ -3496,9 +3509,8 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
 
-#: views/scripts/index/login.phtml:12
-msgid "The Pulse software was made possible thanks to support from "
-msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
+#~ msgid "The Pulse software was made possible thanks to support from "
+#~ msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
 
 #~ msgid "Email"
 #~ msgstr "Email"

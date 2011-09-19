@@ -202,6 +202,9 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
+        // MAIL ACTIVITY CONTROLLER
+        $setup->addBrowsePage($this->_('Activity'), 'pr.mail.log', 'mail-log');
+
         // MAIL Server CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
         // $page->addAction($this->_('Test'), 'pr.mail.server.test', 'test')->addParameters(MUtil_Model::REQUEST_ID);

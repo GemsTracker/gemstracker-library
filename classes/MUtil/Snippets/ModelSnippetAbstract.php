@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -55,7 +55,7 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      * Set a fixed model filter.
      *
      * Leading _ means not overwritten by sources.
-     * 
+     *
      * @var array
      */
     protected $_fixedFilter;
@@ -75,6 +75,27 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      * @var MUtil_Model_ModelAbstract
      */
     private $_model;
+
+    /**
+     * Optional extra filter
+     *
+     * @var array
+     */
+    public $extraFilter;
+
+    /**
+     * Optional extra sort(s)
+     *
+     * @var array
+     */
+    public $extraSort;
+
+    /**
+     * When true the post parameters are removed from the request while filtering
+     *
+     * @var boolean Should post variables be removed from the request?
+     */
+    public $removePost = true;
 
     /**
      *
@@ -154,8 +175,14 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
         if ($this->_fixedFilter) {
             $model->addFilter($this->_fixedFilter);
         }
+        if ($this->extraFilter) {
+            $model->addFilter($this->extraFilter);
+        }
         if ($this->_fixedSort) {
             $model->addSort($this->_fixedSort);
+        }
+        if ($this->extraSort) {
+            $model->addSort($this->extraSort);
         }
     }
 
@@ -165,15 +192,15 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      * @param MUtil_Model_ModelAbstract $model
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    { 
+    {
         if ($this->request) {
-            $model->applyRequest($this->request);
+            $model->applyRequest($this->request, $this->removePost);
         }
     }
 
     /**
-     * Use this when overruling processFilterAndSort() 
-     * 
+     * Use this when overruling processFilterAndSort()
+     *
      * Overrule to implement snippet specific filtering and sorting.
      *
      * @param MUtil_Model_ModelAbstract $model
