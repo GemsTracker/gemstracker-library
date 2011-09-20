@@ -26,22 +26,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.4
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * TableElement is an extension of HtmlElement that add's a lot of table specific extra functionality
  *
- * @author Matijs de Jong
- * @package MUtil
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Html_ColumnInterface, MUtil_Html_FormLayout
 {
@@ -86,7 +88,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     /**
      * Constant for start of display of any special type of value in static createX and renderX functions
      */
-    const RENDER_OPEN = '<span class="tblSpecial">';
+    const RENDER_OPEN = '<span class="tableSpecial">';
 
     /**
      * All new content is added to the last (tbody) element.

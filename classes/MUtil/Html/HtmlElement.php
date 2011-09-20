@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,11 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -206,6 +208,7 @@
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     implements MUtil_Html_ElementInterface, MUtil_Lazy_Procrastinator
@@ -281,7 +284,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_content = array();
 
-    
+
     /**
      * @var boolean|string When true, no content is used, when a string content is added to an attribute with that name.
      */
@@ -316,19 +319,19 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_lastChild;
 
-    
+
     /**
      * Cache for Lazy object version of this element.
-     * 
+     *
      * @var MUtil_Lazy_ObjectWrap
      */
     protected $_lazy;
 
-    
+
     /**
      * The content to display when there is no other data to display when rendering.
-     * 
-     * The reason for there being nothing to display can be that the $_repeater contains 
+     *
+     * The reason for there being nothing to display can be that the $_repeater contains
      * no data. But another reason might be that there is simply nothing to display e.g.
      * because of conditional statements.
      * <code>
@@ -341,21 +344,21 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * }
      * $div->setOnEmpty(MUtil_Html::create()->p('We do not yet have a description for this item.'));
      * </code>
-     * 
+     *
      * When asking for the content an empty MUtil_Html_Sequence is returned, so the last line can
      * be simplified to:
      * <code>
      * $div->getOnEmpty()->p('We do not yet have a description for this item.');
      * </code>
-     * 
+     *
      * @see $_repeater;
      * @see setOnEmpty()
-     * 
+     *
      * @var mixed Content to display when the $_repeater contains no data.
      */
     protected $_onEmptyContent;
 
-    
+
     /**
      * Usually no text is appended before an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
@@ -365,7 +368,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_prependString = '';
 
-    
+
     /**
      * The traditional method of outputting repeated data is added the items to the output
      * element in a loop. E.g.:
@@ -375,19 +378,19 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *   $ul->li($row['title'], array('class' => $row['class']));
      * }
      * </code>
-     * 
+     *
      * The MUtil Html sub package allows an alternate method of specifying this, eliminating
      * the loop:
      * <code>
      * $ul  = new MUtil_Html_ListElement('ul');
      * $ul->setRepeater($data);
-     * 
+     *
      * $rep = $ul->getRepeater();
      * $ul->li($rep->title, array('class' => $rep['class']));
      * </code>
      * Both the property and the array notation can be used to access data in the repeater,
      * but the propery version is preferred.
-     * 
+     *
      * By default only the contents of the element is repeated, not the tags themselves.
      * Setting _repeatTags to true will repeat the whole element including the tags. This
      * example repeats the 'li' items including their tags instead of the contents of the
@@ -398,7 +401,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * $ul->li($rep->title, array('class' => $rep->class, 'repeater' => $repeater, 'repeatTags' => true));
      * </code>
      * As long as the 'ul' element contains only a single 'li' the resulting output is the same.
-     * 
+     *
      * If there is no data in the input, e.g. when $data is an empty array, the tradition loop requires
      * an extra if:
      * <code>
@@ -421,7 +424,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * $ul->renderWithoutContent = false;
      * $ul->li($rep->title, array('class' => $rep->class));
      * </code>
-     * 
+     *
      * When outputting an alternative value when the array is empty like this:
      * <code>
      * $ul = new MUtil_Html_ListElement('ul');
@@ -441,13 +444,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * $ul->setOnEmpty('No data');
      * $ul->li($rep->title, array('class' => $rep->class));
      * </code>
-     * The ListElement will autmatically put the 'No data' text in its own 'li' 
+     * The ListElement will autmatically put the 'No data' text in its own 'li'
      * element. Use getOnEmpty() to change it:
      * <code>
      * $ul->getOnEmpty()->class = 'disabled';
      * </code>
-     * 
-     * 
+     *
+     *
      * @see $_onEmptyContent
      * @see $_repeatTags
      * @see $renderWithoutContent
@@ -455,24 +458,24 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @see setRepeater()
      * @see setRepeatTags()
      * @see MUtil_Lazy_RepeatableInterface
-     * 
+     *
      * @var MUtil_Lazy_RepeatableInterface
      */
     protected $_repeater;
-    
-    
+
+
     /**
-     * When repeatTags is false (the default) only the content is repeated but 
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @see $_repeater
-     * 
+     *
      * @var boolean The repeatTags switch, default false.
      */
     protected $_repeatTags = false;
 
-    
+
     protected $_specialTypes;
 
     private $_specialTypesDefault = array(
@@ -495,7 +498,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      *   dd, dl, dt, label, li, ol, table, tbody, tfoot, thead and ul
      *
      * @see $_repeater
-     * 
+     *
      * @var boolean The element is rendered even without content when true.
      */
     public $renderWithoutContent = true;
@@ -515,17 +518,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Adds an HtmlElement to this element
-     * 
+     *
      * @see MUtil_Html_Creator
-     * 
+     *
      * @param string $name Function name becomes tagname (unless specified otherwise in MUtil_Html_Creator)
-     * @param array $arguments The content and attributes values 
+     * @param array $arguments The content and attributes values
      * @return MUtil_Html_HtmlElement With '$name' tagName
      */
     public function __call($name, array $arguments)
     {
         $elem = MUtil_Html::createArray($name, $arguments);
-        
+
         $this[] = $elem;
 
         return $elem;
@@ -746,7 +749,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
         if ($attrib instanceof MUtil_Lazy_LazyInterface) {
             $attrib = new MUtil_Html_ArrayAttribute($name, $attrib);
-            
+
         } elseif ($attrib && ($value instanceof MUtil_Lazy_LazyInterface)) {
             if (! $attrib instanceof MUtil_Html_AttributeInterface) {
                 $attrib = new MUtil_Html_ArrayAttribute($name, $attrib);
@@ -847,17 +850,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     }
 
     /**
-     * When repeatTags is false (the default) only the content is repeated but 
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @return boolean The repeatTags switch.
      */
     public function getRepeatTags()
     {
         return $this->_repeatTags;
     }
-    
+
     public function getTagName()
     {
         return $this->tagName;
@@ -890,15 +893,15 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
                         }
                         return;
                     }
-    
+
                     $value = $this->_createDefaultTag($value, $offset);
                 }
-    
+
                 // Set as last child when this is a new item only.
                 if (! isset($offset, $this->_content[$offset])) {
                     $this->_lastChild = $value;
                 }
-    
+
                 if (null === $offset) {
                     $this->_content[] = $value;
                 } else {
@@ -915,7 +918,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Renders the element into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
@@ -925,17 +928,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     {
         $this->setView($view);
 
-        if ($this->_repeater && 
-                $this->_repeatTags && 
+        if ($this->_repeater &&
+                $this->_repeatTags &&
                 $this->_repeater->__start()) {
-            
+
             $html = null;
             while ($this->_repeater->__next()) {
                 $html .= $this->renderElement($view);
             }
 
             return $html;
-            
+
         } else {
             return $this->renderElement($view);
         }
@@ -943,7 +946,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Function to allow overloading of content rendering only
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
@@ -976,9 +979,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Function to allow overloading  of tag rendering only
-     * 
+     *
      * Renders the element tag with it's content into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
@@ -1014,7 +1017,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Set this elements attribute value
-     * 
+     *
      * @param string $name
      * @param mixed $value
      * @return MUtil_Html_HtmlElement  (continuation pattern)
@@ -1030,8 +1033,8 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * the tagname of the element that is created to contain the content.
      *
      * @see $_defaultChildTag
-     * 
-     * @param string $tag Tagname 
+     *
+     * @param string $tag Tagname
      * @return MUtil_Html_HtmlElement (continuation pattern)
      */
     public function setDefaultChildTag($tag)
@@ -1042,8 +1045,8 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Set the content displayed by the item when it is empty during rendering.
-     * 
-     * The reason for there being nothing to display can be that the $_repeater contains 
+     *
+     * The reason for there being nothing to display can be that the $_repeater contains
      * no data. But another reason might be that there is simply nothing to display e.g.
      * because of conditional statements.
      * <code>
@@ -1056,16 +1059,16 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * }
      * $div->setOnEmpty(MUtil_Html::create()->p('We do not yet have a description for this item.'));
      * </code>
-     * 
+     *
      * Some subclasses require their content to be a HtmlElement of a certain type. If the content
      * is not of that type, then it is automatically put in an element with $_defaultChildTag as
      * $tagName.
-     * 
+     *
      * @see $_defaultChildTag
      * @see $_onEmptyContent;
      * @see $_repeater;
      * @see getOnEmpty()
-     * 
+     *
      * @param mixed $content Content that can be rendered.
      * @return MUtil_Html_HtmlElement (continuation pattern)
      */
@@ -1080,12 +1083,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     }
 
     /**
-     * Repeat the element when rendering. 
-     * 
-     * When repeatTags is false (the default) only the content is repeated but 
+     * Repeat the element when rendering.
+     *
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @param mixed $onEmptyContent Optional. When not null the content to display when the repeater does not result in data is set.
      * @param boolean $repeatTags Optional when not null the repeatTags switch is set.
@@ -1102,19 +1105,19 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         if (null !== $onEmptyContent) {
             $this->setOnEmpty($onEmptyContent);
         }
-        
+
         if (null !== $repeatTags) {
             $this->setRepeatTags($repeatTags);
         }
 
         return $this;
     }
-    
+
     /**
-     * When repeatTags is false (the default) only the content is repeated but 
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @param boolean $repeatTags Set the repeatTags switch.
      * @return MUtil_Html_HtmlElement (continuation pattern)
      */
