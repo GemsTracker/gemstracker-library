@@ -92,6 +92,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
                     $list .= '<li class="ui-tabs-nav-item' . $class . '"><a href="'.$opts['contentUrl'].'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
                 } else {
                     $list .= '<li class="ui-tabs-nav-item' . $class . '"><a href="#'.$frag_name.'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
+                    $html .= '<h3 class="print-only">' . $v['name'] . '</h3>'; /* For printing of tab forms */
                     $html .= '<div id="'.$frag_name.'" class="ui-tabs-panel">'.$v['content'].'</div>'.PHP_EOL;
                 }
             }
