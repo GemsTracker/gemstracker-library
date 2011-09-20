@@ -1,3 +1,12 @@
+Important changes from 1.4.1 => 1.4.2
+============================================================
+ * To have an autosubmit form it is enough now to just use $form->setAutoSubmit($href, $targetId)
+ * Introduced Gems_FormattedData, which takes a model and array of data and applies all formatting rules to the data
+   (see export for more info)
+ * The menu is reorganised and some items no longers have privileges assigned to them. Be careful with project menus!
+ * Tooltip decorator now uses jQuery icon instead of an image
+ * Print view of tab-forms now output the tab-titles for better readability, this introduced the class print-only
+
 Important changes from 1.4 => 1.4.1
 ============================================================
  * Menu containers no longer have a privilege, this could have impact on custom menu's searching for a container.
