@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  * 
+  *
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -101,7 +101,10 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
 
     public function getImg()
     {
-        return '<img src="' . Zend_Controller_Front::getInstance()->getBaseUrl() . '/gems/js/images/question_mark.gif">';
+        return '<div class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">
+   <span class="ui-icon ui-icon-help"></span>
+</div>';
+        //return '<img src="' . Zend_Controller_Front::getInstance()->getBaseUrl() . '/gems/js/images/question_mark.gif">';
     }
 
     /**
@@ -158,11 +161,11 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
         if (null === $view) {
             return $content;
         }
-        
+
         $tooltip = $element->getAttrib('tooltip');
         $tooltip = trim($tooltip);
         //$element->removeAttrib('tooltip');
-        
+
         if (empty($tooltip)) {
             return $content;
         }
@@ -170,17 +173,17 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
         $view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.cluetip.js');
         $view->headLink()->appendStylesheet(Zend_Controller_Front::getInstance()->getBaseUrl()  . '/gems/js/jquery.cluetip.css');
         $script = "$('" . $this->getTag() . ".tooltip').cluetip({
-            activation: 'click', 
-            sticky: 'true', 
-            closeText: '[X]', 
+            activation: 'click',
+            sticky: 'true',
+            closeText: '[X]',
             closePosition:    'title',
-            width: 450, 
-            titleAttribute: 'tip', 
+            width: 450,
+            titleAttribute: 'tip',
             splitTitle: '|'})
                    $('#tabContainer').bind( 'tabsselect', function(event, ui) {
   $(document).trigger('hideCluetip');
 });";
-        
+
         $view->jQuery()->addOnLoad($script);
 
         $separator = $this->getSeparator();
@@ -237,5 +240,5 @@ class Gems_Form_Decorator_Tooltip extends Zend_Form_Decorator_Abstract
         $this->_tag = (string) $tag;
         return $this;
     }
- 
+
 }
