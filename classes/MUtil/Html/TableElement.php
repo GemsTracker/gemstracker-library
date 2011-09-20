@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,7 +38,7 @@
 
 /**
  * TableElement is an extension of HtmlElement that add's a lot of table specific extra functionality
- * 
+ *
  * @author Matijs de Jong
  * @package MUtil
  * @subpackage Html
@@ -53,11 +53,11 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     const TBODY = 'tbody';
     const TFOOT = 'tfoot';
     const THEAD = 'thead';
-    
+
     /**
      * Rendering constants for displaying special values in static createX and renderX functions
      */
-    
+
     /**
      * Constant for displaying circular reference in static createX and renderX functions
      */
@@ -86,20 +86,20 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     /**
      * Constant for start of display of any special type of value in static createX and renderX functions
      */
-    const RENDER_OPEN = '<span style="color: blue;">';
-    
+    const RENDER_OPEN = '<span class="tblSpecial">';
+
     /**
      * All new content is added to the last (tbody) element.
-     * 
+     *
      * @var boolean When true new content not having a $_allowedChildTags is added to $_lastChild.
      */
     protected $_addtoLastChild = true;
 
     /**
-     * Of course strictly speaking a row is allowed as well, 
-     * but there is no need to support independent rows and 
+     * Of course strictly speaking a row is allowed as well,
+     * but there is no need to support independent rows and
      * allowing them makes for semantic difficulties.
-     * 
+     *
      * @var string|array A string or array of string values of the allowed element tags.
      */
     protected $_allowedChildTags = array(self::CAPTION, self::COLGROUPS, self::TBODY, self::TFOOT, self::THEAD);
@@ -113,29 +113,29 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * All content is added to the tbody element.
-     * 
+     *
      * @var string The tagname of the element that should be created for content not having an $_allowedChildTags.
      */
     protected $_defaultChildTag = 'tbody';
 
     /**
      * Signals the default row class was set
-     * 
-     * @var boolean 
+     *
+     * @var boolean
      */
     protected $_defaultRowClassSet = false;
 
     /**
      * When set the table layout is pivoted to the left when rendering.
-     * 
+     *
      * I.e. the first (header) row becomes the first column, etc..
-     * 
+     *
      * When set this is an array containing array(self::THEAD => number_of_header_rows, self::TFOOT => number_of_footer_rows).
-     * 
+     *
      * @var array False or array containing number of header en footer rows
      */
     protected $_pivot = false;
-    
+
     /**
      * Always start on a new line. Makes the html code better readable
      *
@@ -150,9 +150,9 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     /**
      * When empty a table element should not be output at rendering time as
      * a stand-alone <table/> tag makes no sense.
-     * 
+     *
      * @see $_repeater
-     * 
+     *
      * @var boolean The element is rendered even without content when true.
      */
     public $renderWithoutContent = false;
@@ -191,7 +191,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     /**
      * Makes sure the column width of the $name part is equal to that
      * of the 'tbody' part.
-     * 
+     *
      * @param string $name 'thead' or 'tfoot'
      */
     private function _equalizeColumnCounts($name)
@@ -204,18 +204,18 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         }
     }
 
-    private function _pivotBody($name) 
+    private function _pivotBody($name)
     {
         $newBody = MUtil_Html::create($name);
-        
+
         if ($this->_content[$name] instanceof MUtil_Html_TBodyElement) {
             $newBody->_attribs = $this->_content[$name]->_attribs;
             $newBody->defaultRowClass = $this->_content[$name]->getDefaultRowClass();
         }
-        
+
         return $newBody;
     }
-    
+
     private function _pivotContent($headerRows, $footerRows)
     {
         $newContent[self::CAPTION]   = $this->_content[self::CAPTION];
@@ -226,14 +226,14 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
         $order   = array($this->_content[self::THEAD], $this->_content[self::TBODY], $this->_content[self::TFOOT]);
         $newRows = array();
-        
+
         foreach ($order as $oldBody) {
-            
+
             if ($oldBody) {
                 foreach ($oldBody as $row) {
 
                     $bodyRepeater = $oldBody->getRepeater();
-                    
+
                     $i = 0;
                     foreach ($row as $cell) {
                         if (! isset($newRows[$i])) {
@@ -267,10 +267,10 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
                 }
             }
         }
-        
+
         $rowCount    = count($newRows);
         $footerStart = $rowCount - $footerRows;
-        
+
         for ($i = 0; $i < $headerRows; $i++) {
             $newRows[$i]->appendAttrib('class', $newContent[self::THEAD]->getDefaultRowClass());
             $newContent[self::THEAD][] = $newRows[$i];
@@ -283,7 +283,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
             $newRows[$i]->appendAttrib('class', $newContent[self::TFOOT]->getDefaultRowClass());
             $newContent[self::TFOOT][] = $newRows[$i];
         }
-        
+
         return $newContent;
     }
 
@@ -572,7 +572,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns the cell or a MUtil_MultiWrapper containing cells that occupy the column position, taking colspan and other functions into account.
-     * 
+     *
      * @param int $col The numeric column position, starting at 0;
      * @return MUtil_Html_HtmlElement Probably an element of this type, but can also be something else, posing as an element.
      */
@@ -581,16 +581,16 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         $count = -1;
         foreach ($this->_content as $cell) {
             $count += self::getCellWidth($cell);
-            
+
             if ($count >= $col) {
                 return $cell;
             }
         }
     }
-    
+
     /**
      * Returns the cells that occupies the column position, taking colspan and other functions into account, in an array.
-     * 
+     *
      * @param int $col The numeric column position, starting at 0;
      * @return array Of probably one MUtil_Html_HtmlElement
      */
@@ -606,10 +606,10 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
         return $results;
     }
-    
+
     /**
      * Return the number of columns, taking such niceties as colspan into account
-     * 
+     *
      * @return int
      */
     public function getColumnCount()
@@ -647,7 +647,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Renders the element tag with it's content into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
@@ -657,22 +657,22 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     {
         if ($this->_pivot) {
             $oldContent = $this->_content;
-            
+
             $this->_repeater = $this->getRepeater(); // Cache for bridge
             $this->_content  = $this->_pivotContent($this->_pivot[self::THEAD], $this->_pivot[self::TFOOT]);
-            
+
             $html = parent::render($view);
-            
+
             $this->_repeater = null;
             $this->_content  = $oldContent;
-            
+
             return $html;
-            
+
         } else {
             return parent::render($view);
         }
     }
-    
+
     /**
      * Support function for renderVar(). Use of renderVar is preferred.
      *
@@ -714,7 +714,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     {
         return self::createVar($data, $caption)->render($view);
     }
-    
+
     public function setAlternateRowClass($class1 = 'odd', $class2 = 'even')
     {
         $args = func_get_args();
@@ -760,17 +760,17 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         $decorator->setHtmlElement($this);
         $decorator->setPrologue($formrep); // Renders hidden elements before this element
         $form->setDecorators(array($decorator, 'AutoFocus', 'Form'));
-        
+
         return $this;
     }
 
     /**
      * Set the default row class of the tbody item (as the table has rows)
-     * 
+     *
      * When a new row is added to the body it is autmatically given the
      * class attribute specified here.
      *
-     * @param string $tag Tagname 
+     * @param string $tag Tagname
      * @return MUtil_Html_TableElement (continuation pattern)
      */
     public function setDefaultRowClass($class)
@@ -783,13 +783,13 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Setting a table to pviot left-rotates the table at rendering time.
-     * 
+     *
      * The header rows become the first columns, the body rows form the next
      * set of columns and lastly the footer rows become the rightmost columns.
-     * 
+     *
      * In other words: this humble setting switches a table with repeating rows
      * in a table with repeating columns.
-     * 
+     *
      * @param boolean $pivot True to switch to left rotated pivot when rendering
      * @param int $headerRows The number of pivoted rows going to in the header
      * @param int $footerRows The number of pivoted rows going to in the footer
@@ -807,11 +807,11 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Set the content displayed by the tbody item when it is empty during rendering.
-     * 
+     *
      * Overruled as the onEmpty is not set on this element itself.
-     * 
+     *
      * @see $_onEmptyContent;
-     * 
+     *
      * @param mixed $content Content that can be rendered.
      * @return MUtil_Html_TableElement (continuation pattern)
      */
@@ -820,17 +820,17 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         $this->_content[self::TBODY]->setOnEmpty($content, $this);
         return $this;
     }
-    
+
     /**
      * Overruled as setting a table repeater means repeating the content of the tbody element.
      * Not repeating thead, tfoot and tbody elements but just repeating the rows in the tbody element.
-     * 
-     * Repeat the element when rendering. 
-     * 
-     * When repeatTags is false (the default) only the content is repeated but 
+     *
+     * Repeat the element when rendering.
+     *
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @param mixed $onEmptyContent Optional. When not null the content to display when the repeater does not result in data is set.
      * @param boolean $repeatTags Optional when not null the repeatTags switch is set.
@@ -841,12 +841,12 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         $this->_content[self::TBODY]->setRepeater($repeater, $onEmptyContent, $repeatTags, $this);
         return $this;
     }
-    
+
     /**
      * Static helper function for creation, used by @see MUtil_Html_Creator.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
-     * @return MUtil_Html_TableElement 
+     * @return MUtil_Html_TableElement
      */
     public static function table($arg_array = null)
     {
@@ -855,10 +855,10 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     }
 
     /**
-     * Returns the tbody element. 
-     * 
+     * Returns the tbody element.
+     *
      * Addition of multiple bodies is not possible.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement With 'tbody' tagName
      */
@@ -875,7 +875,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in the current row in the tbody
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -887,7 +887,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'th' cell in the current row in the tbody
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'th' tagName
      */
@@ -899,7 +899,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in a new row in the body with a colspan equal to the number of columns in the table.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -916,7 +916,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in the current row in the footer
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -928,7 +928,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'th' cell in the current row in the footer
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'th' tagName
      */
@@ -940,9 +940,9 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns the tfoot element. Creates when needed.
-     * 
+     *
      * Addition of multiple bodies is not possible.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement With 'tfoot' tagName
      */
@@ -962,7 +962,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in a new row in the footer with a colspan equal to the number of columns in the table.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -979,7 +979,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'th' cell in the current row in the header
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'th' tagName
      */
@@ -991,9 +991,9 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns the thead element. Creates when needed.
-     * 
+     *
      * Addition of multiple bodies is not possible.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement With 'thead' tagName
      */
@@ -1013,7 +1013,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in the current row in the header
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -1025,7 +1025,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'td' cell in a new row in the header with a colspan equal to the number of columns in the table.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'td' tagName
      */
@@ -1037,11 +1037,11 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a 'th' cell in a new row in the header with a colspan equal to the number of columns in the table.
-     * 
+     *
      * The name should be 'throw', but that is not an allowed function, so we redefined it as an alias in __call
-     * 
+     *
      * @see __call
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement With 'th' tagName
      */
@@ -1060,12 +1060,12 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns a new row in the tbody.
-     * 
+     *
      * Also signals thead and tfoot that we are on a new row for addColumn() addition.
-     * 
+     *
      * @see addColumn
      * @see addColumnArray
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TrElement
      */
