@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-19 18:16+0100\n"
+"POT-Creation-Date: 2011-09-20 17:37+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1069,7 +1069,6 @@ msgid "Username"
 msgstr "Gebruikersnaam"
 
 #: classes/Gems/Default/IndexAction.php:105
-#: classes/Gems/Default/MailServerAction.php:88
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -1225,7 +1224,8 @@ msgid "Log maintenance"
 msgstr "Logboek onderhoud"
 
 #: classes/Gems/Default/MailAction.php:61
-#: classes/Gems/Default/MailLogAction.php:71
+#: classes/Gems/Default/MailLogAction.php:95
+#: classes/Gems/Default/MailLogActionOldStyle.php:118
 msgid "Subject"
 msgstr "Onderwerp"
 
@@ -1243,21 +1243,46 @@ msgstr[1] "email sjablonen"
 msgid "Email templates"
 msgstr "Email sjabloon"
 
-#: classes/Gems/Default/MailLogAction.php:69
-msgid "To"
-msgstr "Aan"
-
-#: classes/Gems/Default/MailLogAction.php:70
-msgid "From"
-msgstr "Van"
-
-#: classes/Gems/Default/MailLogAction.php:72
+#: classes/Gems/Default/MailLogAction.php:89
+#: classes/Gems/Default/MailLogActionOldStyle.php:112
 msgid "Date sent"
-msgstr "Datum verstuurd"
+msgstr "Verzend datum"
 
-#: classes/Gems/Default/MailLogAction.php:80
+#: classes/Gems/Default/MailLogAction.php:90
+#: classes/Gems/Default/MailLogActionOldStyle.php:113
+msgid "Receiver"
+msgstr "Ontvanger"
+
+#: classes/Gems/Default/MailLogAction.php:91
+#: classes/Gems/Default/MailLogActionOldStyle.php:114
+msgid "To address"
+msgstr "Adres aan"
+
+#: classes/Gems/Default/MailLogAction.php:92
+#: classes/Gems/Default/MailLogActionOldStyle.php:115
+msgid "Sender"
+msgstr "Verzender"
+
+#: classes/Gems/Default/MailLogAction.php:93
+#: classes/Gems/Default/MailLogActionOldStyle.php:116
+msgid "From address"
+msgstr "Adres van"
+
+#: classes/Gems/Default/MailLogAction.php:98
+#: classes/Gems/Default/MailLogActionOldStyle.php:121
+msgid "Template"
+msgstr "Sjabloon"
+
+#: classes/Gems/Default/MailLogAction.php:108
+#: classes/Gems/Default/MailLogActionOldStyle.php:148
 msgid "Mail Activity Log"
 msgstr "Logboek Mail Activiteit"
+
+#: classes/Gems/Default/MailLogActionOldStyle.php:137
+msgid "Activity Log"
+msgid_plural "Activity Logs"
+msgstr[0] "Mail Activiteit Log"
+msgstr[1] "Mail Activiteiten Logs"
 
 #: classes/Gems/Default/MailServerAction.php:68
 msgid "From address [part]"
@@ -1300,10 +1325,16 @@ msgid "User ID"
 msgstr "Gebruikers ID"
 
 #: classes/Gems/Default/MailServerAction.php:90
+#: classes/Gems/Default/OptionAction.php:107
+#: classes/Gems/Default/OptionAction.php:112
+#: classes/Gems/Default/SourceAction.php:95
+#: classes/Gems/Default/StaffAction.php:114
 msgid "Repeat password"
 msgstr "Herhaal wachtwoord"
 
 #: classes/Gems/Default/MailServerAction.php:91
+#: classes/Gems/Default/SourceAction.php:74
+#: classes/Gems/Default/StaffAction.php:99
 msgid "Enter only when changing"
 msgstr "Alleen invoeren om het wachtwoord te wijzigen"
 
@@ -1319,7 +1350,7 @@ msgstr "Email servers"
 
 #: classes/Gems/Default/OptionAction.php:73
 #: classes/Gems/Default/OrganizationAction.php:128
-#: classes/Gems/Default/RespondentAction.php:164
+#: classes/Gems/Default/RespondentAction.php:173
 #: classes/Gems/Default/StaffAction.php:192
 msgid "Language"
 msgstr "Taal"
@@ -1436,7 +1467,7 @@ msgstr "Deelnemende organisaties"
 #: classes/Gems/Default/OverviewPlanAction.php:115
 #: classes/Gems/Default/ProjectSurveysAction.php:88
 #: classes/Gems/Default/SurveyAction.php:203
-#: classes/Gems/Default/SurveyMaintenanceAction.php:424
+#: classes/Gems/Default/SurveyMaintenanceAction.php:425
 msgid "survey"
 msgid_plural "surveys"
 msgstr[0] "vragenlijst"
@@ -1553,10 +1584,15 @@ msgstr "Sessie inhoud"
 msgid "By"
 msgstr "Door"
 
+#: classes/Gems/Default/ProjectSurveysAction.php:69
+#: classes/Gems/Default/ProjectTracksAction.php:67
+#: classes/Gems/Default/SurveyAction.php:193
+msgid "From"
+msgstr "Van"
+
 #: classes/Gems/Default/ProjectSurveysAction.php:70
 #: classes/Gems/Default/ProjectTracksAction.php:68
 #: classes/Gems/Default/SurveyAction.php:195
-#: classes/Gems/Default/TrackAction.php:331
 msgid "Until"
 msgstr "Tot"
 
@@ -1565,12 +1601,10 @@ msgid "Active surveys"
 msgstr "Beschikbare vragenlijsten"
 
 #: classes/Gems/Default/ProjectTracksAction.php:65
-#: classes/Gems/Default/TrackAction.php:328
 msgid "Survey #"
 msgstr "Vragenlijsten"
 
 #: classes/Gems/Default/ProjectTracksAction.php:85
-#: classes/Gems/Default/TrackAction.php:451
 msgid "track"
 msgid_plural "tracks"
 msgstr[0] "traject"
@@ -1666,114 +1700,106 @@ msgid_plural "reception codes"
 msgstr[0] "Ontvangst code"
 msgstr[1] "Ontvangst code"
 
-#: classes/Gems/Default/RespondentAction.php:113
+#: classes/Gems/Default/RespondentAction.php:122
 msgid "Enter a 9-digit BSN number."
 msgstr "Voer een BSN nummer van 9 cijfers in."
 
-#: classes/Gems/Default/RespondentAction.php:122
+#: classes/Gems/Default/RespondentAction.php:131
 msgid "Identification"
 msgstr "Identificatie"
 
-#: classes/Gems/Default/RespondentAction.php:123
+#: classes/Gems/Default/RespondentAction.php:132
 msgid "BSN"
 msgstr "BSN"
 
-#: classes/Gems/Default/RespondentAction.php:127
+#: classes/Gems/Default/RespondentAction.php:136
 msgid "Patient number"
 msgstr "Patiënt nummer"
 
-#: classes/Gems/Default/RespondentAction.php:136
+#: classes/Gems/Default/RespondentAction.php:145
 msgid "Medical data"
 msgstr "Medische gegevens"
 
-#: classes/Gems/Default/RespondentAction.php:143
+#: classes/Gems/Default/RespondentAction.php:152
 msgid "DBC's, etc..."
 msgstr "DBC's, etc..."
 
-#: classes/Gems/Default/RespondentAction.php:146
+#: classes/Gems/Default/RespondentAction.php:155
 msgid "Contact information"
 msgstr "Contact informatie"
 
-#: classes/Gems/Default/RespondentAction.php:151
+#: classes/Gems/Default/RespondentAction.php:160
 msgid "Respondent has no e-mail"
 msgstr "Patiënt zonder e-mail"
 
-#: classes/Gems/Default/RespondentAction.php:152
+#: classes/Gems/Default/RespondentAction.php:161
 msgid "With housenumber"
 msgstr "Met huisnummer"
 
-#: classes/Gems/Default/RespondentAction.php:159
+#: classes/Gems/Default/RespondentAction.php:168
 msgid "Country"
 msgstr "Land"
 
-#: classes/Gems/Default/RespondentAction.php:163
+#: classes/Gems/Default/RespondentAction.php:172
 msgid "Settings"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/RespondentAction.php:165
+#: classes/Gems/Default/RespondentAction.php:174
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Heeft de patiënt het \"informed consent\" formulier ondertekend?"
 
-#: classes/Gems/Default/RespondentAction.php:190
+#: classes/Gems/Default/RespondentAction.php:199
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: classes/Gems/Default/RespondentAction.php:191
+#: classes/Gems/Default/RespondentAction.php:200
 msgid "Physician"
 msgstr "Dokter"
 
-#: classes/Gems/Default/RespondentAction.php:192
+#: classes/Gems/Default/RespondentAction.php:201
 msgid "Treatment"
 msgstr "Behandeling"
 
-#: classes/Gems/Default/RespondentAction.php:221
-#: classes/Gems/Default/TrackAction.php:131
-#: classes/Gems/Default/TrackAction.php:475
+#: classes/Gems/Default/RespondentAction.php:230
 msgid "Rejection code"
 msgstr "Afkeuringscode"
 
-#: classes/Gems/Default/RespondentAction.php:228
+#: classes/Gems/Default/RespondentAction.php:237
 msgid "Delete respondent"
 msgstr "Verwijder patiënt"
 
-#: classes/Gems/Default/RespondentAction.php:279
+#: classes/Gems/Default/RespondentAction.php:288
 msgid "Respondent deleted."
 msgstr "Patiënt verwijderd"
 
-#: classes/Gems/Default/RespondentAction.php:282
-#: classes/Gems/Default/TrackAction.php:404
+#: classes/Gems/Default/RespondentAction.php:291
 msgid "Choose a reception code to delete."
 msgstr "Kies een ontvangst code om te verwijderen."
 
-#: classes/Gems/Default/RespondentAction.php:346
+#: classes/Gems/Default/RespondentAction.php:355
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:386
+#: classes/Gems/Default/RespondentAction.php:395
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
 #: classes/Gems/Default/RespondentPlanAction.php:67
 #: classes/Gems/Default/SurveyAction.php:171
-#: classes/Gems/Default/TrackAction.php:296
 msgid "Show respondent"
 msgstr "Toon patiënt"
 
 #: classes/Gems/Default/RespondentPlanAction.php:73
-#: classes/Gems/Default/TrackAction.php:265
-#: classes/Gems/Default/TrackAction.php:284
 msgid "Show track"
 msgstr "Toon traject"
 
 #: classes/Gems/Default/RespondentPlanAction.php:136
-#: classes/Gems/Default/TrackAction.php:316
 msgid " of "
 msgstr " van "
 
 #: classes/Gems/Default/RespondentPlanAction.php:137
-#: classes/Gems/Default/TrackAction.php:317
 msgid "Progress"
 msgstr "Voortgang"
 
@@ -1965,95 +1991,95 @@ msgstr "Toon vragenlijsten"
 msgid "Assigned surveys"
 msgstr "Toegewezen vragenlijsten"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:129
+#: classes/Gems/Default/SurveyMaintenanceAction.php:130
 msgid "If empty, survey will never show up!"
 msgstr "Indien leeg zal de vragenlijst niet tevoorschijn komen!"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:130
+#: classes/Gems/Default/SurveyMaintenanceAction.php:131
 msgid "Result field"
 msgstr "Resultaat veld"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:131
+#: classes/Gems/Default/SurveyMaintenanceAction.php:132
 msgid "Before answering"
 msgstr "Voor beantwoording"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:132
+#: classes/Gems/Default/SurveyMaintenanceAction.php:133
 msgid "After completion"
 msgstr "Na afronding"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:135
+#: classes/Gems/Default/SurveyMaintenanceAction.php:136
 msgid "Upload new PDF"
 msgstr "Upload nieuwe PDF"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:142
+#: classes/Gems/Default/SurveyMaintenanceAction.php:143
 msgid "Usage"
 msgstr "Gebruik"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:157
+#: classes/Gems/Default/SurveyMaintenanceAction.php:158
 msgid "Single Survey Assignment"
 msgstr "Losse vragenlijst toewijzing"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:202
+#: classes/Gems/Default/SurveyMaintenanceAction.php:203
 msgid "Assignable since"
 msgstr "Toewijsbaar sinds"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:203
+#: classes/Gems/Default/SurveyMaintenanceAction.php:204
 msgid "Assignable until"
 msgstr "Toewijsbaar tot"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:209
+#: classes/Gems/Default/SurveyMaintenanceAction.php:210
 msgid "Create Single Survey"
 msgstr "Maak losse vragenlijst"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:213
+#: classes/Gems/Default/SurveyMaintenanceAction.php:214
 msgid "At the moment this survey can only be assigned to respondents as part of an existing track."
 msgstr "Op dit moment kan deze vragenlijst alleen aan patiënten toegewezen als onderdeel van een traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:266
+#: classes/Gems/Default/SurveyMaintenanceAction.php:267
 msgid "Survey should be assigned to a group before making it active."
 msgstr "Vragenlijst moet aan een groep toegewezen worden voordat deze actief kan worden gemaakt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:279
+#: classes/Gems/Default/SurveyMaintenanceAction.php:280
 #, php-format
 msgid "Checking survey results for the %s survey."
 msgstr "Controle op vragenlijstresultaten voor de vragenlijst '%s'."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:354
+#: classes/Gems/Default/SurveyMaintenanceAction.php:355
 msgid "Source"
 msgstr "Bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:355
+#: classes/Gems/Default/SurveyMaintenanceAction.php:356
 msgid "Status in source"
 msgstr "Status in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:359
+#: classes/Gems/Default/SurveyMaintenanceAction.php:360
 msgid "Active in source"
 msgstr "Actief in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:360
+#: classes/Gems/Default/SurveyMaintenanceAction.php:361
 #, php-format
 msgid "Active in %s"
 msgstr "Actief in %s"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:367
+#: classes/Gems/Default/SurveyMaintenanceAction.php:368
 msgid "Single"
 msgstr "Los"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:409
+#: classes/Gems/Default/SurveyMaintenanceAction.php:410
 #, php-format
 msgid "%d times in track."
 msgstr "%d keer in traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:411
+#: classes/Gems/Default/SurveyMaintenanceAction.php:412
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d keer in %d traject(en)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:415
+#: classes/Gems/Default/SurveyMaintenanceAction.php:416
 msgid "Not used in track."
 msgstr "Niet in traject gebruikt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:417
+#: classes/Gems/Default/SurveyMaintenanceAction.php:418
 msgid "Not used in tracks."
 msgstr "Niet in trajecten gebruikt."
 
@@ -2153,7 +2179,6 @@ msgid "+"
 msgstr "+"
 
 #: classes/Gems/Default/TokenPlanAction.php:478
-#: classes/Gems/Default/TrackAction.php:449
 msgid "token"
 msgid_plural "tokens"
 msgstr[0] "kenmerk"
@@ -2380,10 +2405,6 @@ msgstr "Html voorbeeld"
 msgid "Preview text"
 msgstr "Tekstvoorbeeld"
 
-#: classes/Gems/Email/EmailFormAbstract.php:306
-msgid "Template"
-msgstr "Sjabloon"
-
 #: classes/Gems/Email/EmailFormAbstract.php:330
 msgid "Send"
 msgstr "Verstuur"
@@ -2445,6 +2466,11 @@ msgstr "Verstuur één email per patiënt, zet alleen de verzonden kenmerken op 
 msgid "Method"
 msgstr "Methode"
 
+#: classes/Gems/Email/MultiMailForm.php:105
+#: classes/Gems/Email/OneMailForm.php:87
+msgid "To"
+msgstr "Aan"
+
 #: classes/Gems/Email/MultiMailForm.php:126
 msgid "Survey has been taken."
 msgstr "Vragenlijsten is al afgenomen"
@@ -2470,12 +2496,12 @@ msgstr "Contactdatum"
 msgid "The sending of emails was blocked for this installation."
 msgstr "Het versturen van emails is geblokkeerd in deze installatie."
 
-#: classes/Gems/Email/OneMailForm.php:139
+#: classes/Gems/Email/OneMailForm.php:140
 #: classes/Gems/Email/TemplateMailer.php:244
 msgid "Mail failed to send."
 msgstr "Mail sturen mislukt."
 
-#: classes/Gems/Email/OneMailForm.php:143
+#: classes/Gems/Email/OneMailForm.php:144
 #, php-format
 msgid "Sent email to %s."
 msgstr "Email naar %s verzonden."
@@ -3416,12 +3442,10 @@ msgid "Recalculate track"
 msgstr "Berekening traject opnieuw"
 
 #: snippets/RespondentDetailsSnippet.php:59
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:74
 msgid "Respondent information"
 msgstr "Patiënt informatie"
 
 #: snippets/RespondentDetailsSnippet.php:71
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:97
 msgid "Respondent nr: "
 msgstr "Patiënt nr:"
 

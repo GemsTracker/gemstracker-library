@@ -42,6 +42,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class MailLogController extends Gems_Default_MailLogAction
+class MailLogController extends Gems_Default_MailLogActionOldStyle
 {
 }

@@ -206,7 +206,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         // Token items
         $this->set('gto_id_token',          'label', $this->translate->_('Token'));
         $this->set('gto_round_description', 'label', $this->translate->_('Round'));
-        $this->set('gto_valid_from',        'label', $this->translate->_('Measure(d) on'),     'formatFunction', $translated->formatDateNever,   'tdClass', 'date');
+        $this->set('gto_valid_from',        'label', $this->translate->_('Measure(d) on'),  'formatFunction', $translated->formatDateNever,   'tdClass', 'date');
         $this->set('gto_valid_until',       'label', $this->translate->_('Valid until'),    'formatFunction', $translated->formatDateForever, 'tdClass', 'date');
         $this->set('gto_mail_sent_date',    'label', $this->translate->_('Last contact'),   'formatFunction', $translated->formatDateNever,   'tdClass', 'date');
         $this->set('gto_completion_time',   'label', $this->translate->_('Completed'),      'formatFunction', $translated->formatDateNa,      'tdClass', 'date');

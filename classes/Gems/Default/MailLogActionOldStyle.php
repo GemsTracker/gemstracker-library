@@ -37,18 +37,41 @@
  */
 
 /**
- * Short description for class
- *
- * Long description for class (if any)...
+ * Temprary class until Gems_Controller_ModelSnippetActionAbstract works
  *
  * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.4.2
  */
-class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_MailLogActionOldStyle extends Gems_Controller_BrowseEditAction
 {
+    public $sortKey = array('grco_created' => SORT_DESC);
+
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @rturn void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        if ($menuItem = $this->findAllowedMenuItem('show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+
+        // Newline placeholder
+        $br = MUtil_Html::create('br');
+
+        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address');
+        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender');
+        $bridge->addMultiSort('grco_topic');
+    }
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -103,15 +126,25 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         return $model;
     }
 
-    public function indexAction()
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
     {
-        $this->html->h3($this->_('Mail Activity Log'));
+        return $this->plural('Activity Log', 'Activity Logs', $count);
+    }
 
-        $filter = array('grco_organization' => $this->escort->getCurrentOrganization());
 
-        $this->indexParameters['extraFilter'] = $filter;
-        $this->indexParameters['extraSort'] = array('grco_created' => SORT_DESC);
-
-        parent::indexAction();
+    /**
+     * Helper function to allow generalized treatment of the header.
+     *
+     * return $string
+     */
+    public function getTopicTitle()
+    {
+        return $this->_('Mail Activity Log');
     }
 }

@@ -134,6 +134,7 @@ class Gems_Email_OneMailForm extends Gems_Email_EmailFormAbstract
 
             $this->mailer->setSubject($this->getValue('gmt_subject'));
             $this->mailer->setBody($this->getValue('gmt_body'));
+            $this->mailer->setTemplateId($this->getValue('select_subject'));
 
             if ($message = $this->mailer->processMail($tokenData)) {
                 $this->addMessage($this->escort->_('Mail failed to send.'));

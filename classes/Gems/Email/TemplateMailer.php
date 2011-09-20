@@ -481,7 +481,7 @@ class Gems_Email_TemplateMailer
             $cdata['grco_id_by']        = $uid;
             $cdata['grco_organization'] = $tokenData['gor_id_organization'];
             $cdata['grco_id_token']     = $tokenData['gto_id_token'];
-            
+
             $cdata['grco_method']       = 'email';
             $cdata['grco_topic']        = substr($this->_mailSubject, 0, 120);
             $cdata['grco_address']      = substr($to, 0, 120);
@@ -494,7 +494,7 @@ class Gems_Email_TemplateMailer
             $cdata['grco_created']      = $this->_changeDate;
             $cdata['grco_created_by']   = $uid;
 
-            $db->insert('gems__respondent_communications', $cdata);
+            $db->insert('gems__log_respondent_communications', $cdata);
         }
     }
 }

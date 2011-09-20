@@ -1,9 +1,9 @@
 
-CREATE TABLE if not exists gems__respondent_communications (
+CREATE TABLE if not exists gems__log_respondent_communications (
         grco_id_action    bigint unsigned not null auto_increment,
 
         grco_id_to        bigint unsigned not null references gems__respondents (grs_id_user),
-        grco_id_by        bigint unsigned null default 0 references gems_staff (gsf_id_user),
+        grco_id_by        bigint unsigned null default 0 references gems__staff (gsf_id_user),
         grco_organization bigint unsigned not null references gems__organizations (gor_id_organization),
 
         grco_id_token     varchar(9) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null references gems__tokens (gto_id_token),
