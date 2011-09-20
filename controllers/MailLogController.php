@@ -36,7 +36,7 @@
 
 /**
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License

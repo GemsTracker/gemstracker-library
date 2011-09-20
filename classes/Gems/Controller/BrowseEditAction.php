@@ -181,7 +181,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * @param MUtil_Model_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
-     * @rturn void
+     * @return void
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {

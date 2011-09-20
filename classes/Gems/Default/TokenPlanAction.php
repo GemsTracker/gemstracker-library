@@ -75,7 +75,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 
-        $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw(', '), 'respondent_name');
+        $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
         $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
 
         $bridge->tr();
@@ -83,7 +83,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addSortable('gto_completion_time');
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
-            $bridge->addMultiSort('calc_round_description', $HTML->raw(', '), 'gsu_survey_name');
+            $bridge->addMultiSort('calc_round_description', $HTML->raw('; '), 'gsu_survey_name');
         } else {
             $model->set('calc_track_info', 'tableDisplay', 'smallData');
             $model->set('calc_round_description', 'tableDisplay', 'smallData');
