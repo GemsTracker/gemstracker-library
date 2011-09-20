@@ -93,7 +93,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
-        // MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__);
+        //MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__);
+        $data = array_merge($model->loadFirst(), $data);
 
         // Prepare variables
         $currentId    = $data['gsu_id_survey'];
@@ -436,8 +437,11 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
     public function setMenuParameter($data)
     {
-        $this->data[MUtil_Model::REQUEST_ID] = $data['gsu_id_survey'];
+        $source = $this->menu->getParameterSource();
+        $source->offsetSet('gsu_has_pdf', $data['gsu_survey_pdf'] ? 1 : 0);
+        $source->offsetSet(MUtil_Model::REQUEST_ID, $data['gsu_id_survey']);
         $this->data['gsu_has_pdf'] = $data['gsu_survey_pdf'] ? 1 : 0;
+        $this->data[MUtil_Model::REQUEST_ID] = $data['gsu_id_survey'];
 
         return $this;
     }
