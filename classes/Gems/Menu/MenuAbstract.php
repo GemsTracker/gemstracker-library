@@ -203,7 +203,11 @@ abstract class Gems_Menu_MenuAbstract
         $setup = $this->addContainer($label);
 
         // MAIL ACTIVITY CONTROLLER
-        $setup->addBrowsePage($this->_('Activity'), 'pr.mail.log', 'mail-log');
+        //$setup->addBrowsePage();
+        $page = $this->addPage($this->_('Activity'), 'pr.mail.log', 'mail-log');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+        $page->addShowAction();
 
         // MAIL Server CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
