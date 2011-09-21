@@ -1,10 +1,8 @@
 <?php
-
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,16 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * The maintenace screen for the action log
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
+ */
+
 class Gems_Default_LogMaintenanceAction extends Gems_Controller_BrowseEditAction {
-    
+
     public $sortKey = array('glac_name' => SORT_ASC);
-    
+
     public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false) {
         $model->set('glac_name', 'elementClass', 'exhibitor');
         $model->set('glac_log', 'elementClass', 'checkBox');
         parent::addFormElements($bridge, $model, $data, $new);
     }
-         
+
     protected function createModel($detailed, $action) {
         //MUtil_Model::$verbose=true;
         $model = new Gems_Model_JoinModel('log_maint', 'gems__log_actions', true);
@@ -46,22 +54,22 @@ class Gems_Default_LogMaintenanceAction extends Gems_Controller_BrowseEditAction
 
         return $model;
     }
-    
+
     public function getAfterSaveRoute($data) {
         Gems_AccessLog::getLog()->loadActions(true);
         return parent::getAfterSaveRoute($data);
     }
-    
+
     public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
         $elements = parent::getAutoSearchElements($model, $data);
-        
+
         if ($elements) {
             $elements[] = null; // break into separate spans
         }
-        
+
         $elements[] = $this->_('Log:');
         $elements[] = $this->_createSelectElement('glac_log', $this->util->getTranslated()->getYesNo(), $this->_('All'));
-        
+
         return $elements;
     }
 

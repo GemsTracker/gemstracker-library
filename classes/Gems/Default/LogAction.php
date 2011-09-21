@@ -1,10 +1,8 @@
 <?php
-
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,29 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * Show the action log
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
+ */
 class Gems_Default_LogAction extends Gems_Controller_BrowseEditAction {
-    
+
     public $sortKey = array('glua_created' => SORT_DESC);
-    
+
     public $defaultPeriodEnd   = 1;
     public $defaultPeriodStart = -4;
     public $defaultPeriodType  = 'W';
-    
+
     public $maxPeriod = 1;
     public $minPeriod = -15;
-    
+
     public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
         $elements = parent::getAutoSearchElements($model, $data);
-        
+
         if ($elements) {
             $elements[] = null; // break into separate spans
         }
-        
+
         // Create date range elements
         $min  = -91;
         $max  = 91;
         $size = max(strlen($min), strlen($max));
-        
+
         $element = new Zend_Form_Element_Text('period_start', array('label' => $this->_('from'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));
         $element->addValidator(new Zend_Validate_Int());
         $element->addValidator(new Zend_Validate_Between($min, $max));
@@ -85,32 +92,32 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $elements[] = $element;
 
         $elements[] = null; // break into separate spans
-               
+
         $elements[] = $this->_('Staff:');
         $sql = "SELECT glua_by, CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
-             . "JOIN gems__staff ON glua_by = gsf_id_user";        
+             . "JOIN gems__staff ON glua_by = gsf_id_user";
         $elements[] = $this->_createSelectElement('glua_by', $sql, $this->_('All staff'));
-        
+
         $elements[] = $this->_('Patient:');
         $sql = "SELECT glua_by, CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
-             . "JOIN gems__respondents ON glua_by = grs_id_user";        
+             . "JOIN gems__respondents ON glua_by = grs_id_user";
         $elements[] = $this->_createSelectElement('glua_to', $sql, $this->_('All patients'));
-        
+
         $elements[] = MUtil_Html::create('br');
         $elements[] = $this->_('Action:');
         $sql = "SELECT glac_id_action, glac_name "
              . "FROM gems__log_actions ";
         $elements[] = $this->_createSelectElement('glua_action', $sql, $this->_('All actions'));
-        
+
         return $elements;
     }
-    
+
     public function getDataFilter(array $data) {
         $filter = array();
-        
-        
+
+
         // Check for period selected
         switch ($data['date_type']) {
             case 'W':
@@ -134,7 +141,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         return $filter;
     }
-    
+
     public function getDefaultSearchData()
     {
         return array(
@@ -145,7 +152,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
     }
 
     protected function createModel($detailed, $action) {
-        //MUtil_Model::$verbose=true;        
+        //MUtil_Model::$verbose=true;
         $model = new Gems_Model_JoinModel('Log', 'gems__log_useractions');
         $model->addLeftTable('gems__log_actions', array('glua_action'=>'glac_id_action'));
         $model->addLeftTable('gems__respondents', array('glua_to'=>'grs_id_user'));
