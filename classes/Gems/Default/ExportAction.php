@@ -161,7 +161,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
         $elements[] = $element;
-        
+
         //Add a field to the form showing the record count. If this is too slow for large recordsets
         //then remove it or make it more efficient
         unset($data['records']);
@@ -246,9 +246,9 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         if (isset($data['type'])) {
             //Do the logging
-            $message = join(', ', $data);
+            $message = Zend_Json::encode($data);
             Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
-            
+
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);
             $exportClass->handleExport($data, $survey, $answers, $answerModel, $language);
