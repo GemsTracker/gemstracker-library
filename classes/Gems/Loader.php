@@ -54,6 +54,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @var Gems_Export
+     */
+    protected $export;
+
+    /**
+     *
      * @var Gems_Model
      */
     protected $models;
@@ -112,6 +118,15 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getEvents()
     {
         return $this->_getClass('events');
+    }
+
+    /**
+     *
+     * @return Gems_Export
+     */
+    public function getExport()
+    {
+        return $this->_getClass('export');
     }
 
     /**
