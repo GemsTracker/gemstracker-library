@@ -253,7 +253,7 @@ abstract class Gems_Menu_MenuAbstract
 
         foreach ($plans as $plan) {
             $plan->addAutofilterAction();
-            $plan->addAction($this->_('Bulk mail'), 'pr.token.mail', 'email', array('routeReset' => false));
+            $plan->addAction($this->_('Bulk mail'), 'pr.token.bulkmail', 'email', array('routeReset' => false));
             $plan->addExcelAction();
         }
 

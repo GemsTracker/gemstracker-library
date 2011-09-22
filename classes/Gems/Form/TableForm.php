@@ -69,6 +69,8 @@ class Gems_Form_TableForm extends Gems_Form {
 
         if (isset($decorators['Zend_Form_Decorator_ViewHelper'])) {
             $dec1 = $decorators['Zend_Form_Decorator_ViewHelper'];
+        } elseif (isset($decorators['Zend_Form_Decorator_File'])) {
+            $dec1 = $decorators['Zend_Form_Decorator_File'];
         } else {
             foreach($decorators as $name=>$decorator) {
                 if (substr($name, 0, 5) == 'ZendX') {

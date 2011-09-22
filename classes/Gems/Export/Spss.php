@@ -205,7 +205,7 @@ GET DATA
                 //We should create a model with the transformations we need
                 //think of date translations, numers and strings
                 $answerRow = reset($answers);
-                $spssModel = new Zsd_Export_ExportModel();
+                $spssModel = new Gems_Export_ExportModel();
                 foreach($answerRow as $key => $value) {
                     $options = array();
                     $type = $answerModel->get($key,'type');
