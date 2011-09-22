@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -28,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Form
+ * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -43,7 +41,7 @@
  * $Id$
  * @filesource
  * @package Gems
- * @subpackage Form
+ * @subpackage JQuery
  */
 class Gems_JQuery_Form_Decorator_TabContainer extends ZendX_JQuery_Form_Decorator_TabContainer
 {
