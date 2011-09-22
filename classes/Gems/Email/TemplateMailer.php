@@ -38,7 +38,7 @@
  *
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @package    Gems
- * @subpackage Mail
+ * @subpackage Email
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
