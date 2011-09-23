@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -36,7 +35,11 @@
  */
 
 /**
- * Displays a toolbox of drop down UL's om tracks/ surveys toe te voegen.
+ * Displays a toolbox of drop down UL's to assign tracks / surveys to a patient.
+ *
+ * If project uses the Gems_Project_Tracks_MultiTracksInterface, show a track drowpdown
+ * If project uses the Gems_Project_Tracks_StandAloneSurveysInterface, show a survey
+ * drowpdown for both staff and patient
  *
  * A snippet is a piece of html output that is reused on multiple places in the code.
  *
@@ -178,23 +181,34 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Create the snippets content
+     * Allow manual assignment of surveys/tracks to a patient
      *
-     * This is a stub function either override getHtmlOutput() or override render()
+     * If project uses the Gems_Project_Tracks_MultiTracksInterface, show a track drowpdown
+     * If project uses the Gems_Project_Tracks_StandAloneSurveysInterface, show a survey
+     * drowpdown for both staff and patient
      *
      * @param Zend_View_Abstract $view Just in case it is needed here
      * @return MUtil_Html_HtmlInterface Something that can be rendered
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        $pageRef = array(MUtil_Model::REQUEST_ID => $this->request->getParam(MUtil_Model::REQUEST_ID));
+        if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface ||
+            $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
 
-        $addToLists = MUtil_Html::create()->div(array('class' => 'tooldock'));
-        $addToLists->strong($this->_('Add'));
-        $addToLists[] = $this->_getTracks('T', $pageRef);
-        $addToLists[] = $this->_getTracks('S', $pageRef);
-        $addToLists[] = $this->_getTracks('M', $pageRef);
+            $pageRef = array(MUtil_Model::REQUEST_ID => $this->request->getParam(MUtil_Model::REQUEST_ID));
 
-        return $addToLists;
+            $addToLists = MUtil_Html::create()->div(array('class' => 'tooldock'));
+            $addToLists->strong($this->_('Add'));
+            if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
+                $addToLists[] = $this->_getTracks('T', $pageRef);
+            }
+            if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
+                $addToLists[] = $this->_getTracks('S', $pageRef);
+                $addToLists[] = $this->_getTracks('M', $pageRef);
+            }
+
+            return $addToLists;
+        }
+        return null;
     }
 }
