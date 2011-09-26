@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -125,8 +124,10 @@ GET DATA
                 $answerRow = reset($answers);
                 $labels = array();
                 $types = array();
+                $fixedNames = array();
                 $questions = $survey->getQuestionList($language);
                 foreach($answerRow as $key => $value) {
+                    $fixedNames[$key] = $this->fixName($key);
                     $options = array();
                     $type = $answerModel->get($key,'type');
                     switch ($type) {
@@ -166,18 +167,18 @@ GET DATA
                     if (isset($questions[$key])) {
                         $labels[$key] = $questions[$key];
                     }
-                    $response->appendBody("\n " . $key . ' '. $type);
+                    $response->appendBody("\n " . $fixedNames[$key] . ' '. $type);
                 }
                 $response->appendBody(".\nCACHE.\nEXECUTE.\n");
                 $response->appendBody("\n*Define variable labels.\n");
                 foreach($labels as $key => $label) {
-                    $response->appendBody("VARIABLE LABELS " . $key . ' "' . $label . '".' . "\n");
+                    $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . ' "' . $label . '".' . "\n");
                 }
 
                 $response->appendBody("\n*Define value labels.\n");
                 foreach($answerRow as $key => $value) {
                     if($options = $answerModel->get($key, 'multiOptions')) {
-                        $response->appendBody('VALUE LABELS ' . $key);
+                        $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
                         foreach($options as $option=>$label) {
                             if($types[$key]=='F') {
                                 //Numeric
@@ -263,8 +264,25 @@ GET DATA
      * @return string
      */
     public function formatString($input) {
-        $output = str_replace("'", "''", $input);
+        $output = strip_tags($input);
+        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
         $output = "'" . $output . "'";
         return $output;
+    }
+
+    /**
+     * Make sure the $input fieldname is correct for usage in SPSS
+     *
+     * Should start with alphanum, and contain no spaces
+     *
+     * @param string $input
+     * @return string
+     */
+    public function fixName($input) {
+        if (!preg_match ("/^([a-z]|[A-Z])+.*$/", $input)) {
+                $input = "q_" . $input;
+        }
+        $input = str_replace(array(" ","-",":",";","!","/","\\","'"), array("_","_hyph_","_dd_","_dc_","_excl_","_fs_","_bs_",'_qu_'), $input);
+        return $input;
     }
 }
