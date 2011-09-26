@@ -50,6 +50,43 @@
 class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @rturn void
+     */
+    public function addTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        if ($menuItem = $this->firstAllowedMenuItem('show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+
+        // Newline placeholder
+        $br = MUtil_Html::create('br');
+
+        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address');
+        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender');
+        $bridge->addMultiSort('grco_topic');
+    }
+
+    /**
+     * The automatically filtered result
+     */
+    public function autofilterAction($resetMvc = true)
+    {
+        $filter = array('grco_organization' => $this->escort->getCurrentOrganization());
+
+        $this->autofilterParameters['addTableColumns'] = array($this, 'addTableColumns');
+        $this->autofilterParameters['extraFilter']     = $filter;
+        $this->autofilterParameters['extraSort']       = array('grco_created' => SORT_DESC);
+
+        return parent::autofilterAction($resetMvc);
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -107,11 +144,7 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     {
         $this->html->h3($this->_('Mail Activity Log'));
 
-        $filter = array('grco_organization' => $this->escort->getCurrentOrganization());
-
-        $this->indexParameters['extraFilter'] = $filter;
-        $this->indexParameters['extraSort'] = array('grco_created' => SORT_DESC);
-
+        // MUtil_Echo::track($this->indexParameters);
         parent::indexAction();
     }
 }

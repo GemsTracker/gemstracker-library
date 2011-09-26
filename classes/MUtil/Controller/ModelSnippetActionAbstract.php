@@ -77,6 +77,20 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $indexSnippets = null;
 
     /**
+     * The parameters used for the show action
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = array();
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = 'ModelVerticalTableSnippet';
+
+    /**
      * Set the action key in request
      *
      * Use this when an action is a Ajax action for retrieving
@@ -93,6 +107,8 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
     /**
      * The automatically filtered result
+     *
+     * @param $resetMvc When true only the filtered resulsts
      */
     public function autofilterAction($resetMvc = true)
     {
@@ -112,10 +128,14 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
             $this->addSnippets($this->autofilterSnippets, $this->autofilterParameters);
         }
+
+        if ($resetMvc && MUtil_Echo::hasOutput()) {
+            $this->html->raw(MUtil_Echo::out());
+        }
     }
 
     /**
-     * Action for showing a browse page, optional with
+     * Action for showing a browse page
      */
     public function indexAction()
     {
@@ -131,4 +151,19 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         $this->autofilterAction(false);
     }
 
+
+    /**
+     * Action for showing an item page
+     */
+    public function showAction()
+    {
+        if ($this->showSnippets) {
+            $this->showParameters = $this->indexParameters + $this->autofilterParameters;
+
+            $this->showParameters['model']   = $this->getModel();
+            $this->showParameters['request'] = $this->getRequest();
+
+            $this->addSnippets($this->showSnippets, $this->showParameters);
+        }
+    }
 }

@@ -81,6 +81,34 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     protected $indexSnippets = 'Generic_AutosearchForm';
 
     /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = 'Generic_ModelItemTableSnippet';
+
+    /**
+     * Finds the first item with one of the actions specified as parameter and using the current controller
+     *
+     * @param string $action
+     * @param string $action2
+     * @return Gems_Menu_SubMenuItem
+     */
+    protected function firstAllowedMenuItem($action, $action2 = null)
+    {
+        $actions = MUtil_Ra::args(func_get_args());
+        $controller = $this->_getParam('controller');
+
+        foreach ($actions as $action) {
+            $menuItem = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+
+            if ($menuItem) {
+                return $menuItem;
+            }
+        }
+    }
+
+    /**
      * Intializes the html component.
      *
      * @param boolean $reset Throws away any existing html output when true

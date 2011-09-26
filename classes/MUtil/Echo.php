@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,44 +25,72 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Echo
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @package MUtil
+ * This class allows you to echo debug statements over multiple requests by
+ * storing the output in the session.
+ *
+ * @package    MUtil
+ * @subpackage Echo
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
 class MUtil_Echo
 {
+    /**
+     * Add's a backtrace of the position of the code
+     * where this function is called.
+     *
+     * The function itself is not in the backtrace.
+     *
+     * @return void
+     */
     public static function backtrace()
     {
-    $trace = debug_backtrace(false);
+        $trace = debug_backtrace(false);
 
-    $content = "\n<h8><b>Print backtrace</b></h8>\n<br/>\n";
-    foreach ($trace as $key => $line) {
-        if (0 === $key) {
-            // First line is different
-            $content .= '<i>Starting backtrace at</i>: ';
-        } else {
-            if (isset($line['type'])) {
-                $content .= $line['class'] . $line['type'];
+        $content = "\n<h8><b>Print backtrace</b></h8>\n<br/>\n";
+        foreach ($trace as $key => $line) {
+            if (0 === $key) {
+                // First line is different
+                $content .= '<i>Starting backtrace at</i>: ';
+            } else {
+                if (isset($line['type'])) {
+                    $content .= $line['class'] . $line['type'];
+                }
+                if (isset($line['function'])) {
+                    $content .= $line['function'] . '() ';
+                }
             }
-            if (isset($line['function'])) {
-                $content .= $line['function'] . '() ';
+            if (isset($line['file'])) {
+                $content .= $line['file'];
             }
+            if (isset($line['line'])) {
+                $content .= ' (' . $line['line'] . ')';
+            }
+            $content .= "<br/>\n";
         }
-        if (isset($line['file'])) {
-            $content .= $line['file'];
-        }
-        if (isset($line['line'])) {
-            $content .= ' (' . $line['line'] . ')';
-        }
-        $content .= "<br/>\n";
+
+        $session = self::getSession();
+        $session->content .= $content . "\n";
     }
 
-    $session = self::getSession();
-    $session->content .= $content . "\n";
-    }
-
+    /**
+     * Returns the current session namespace that stores the content.
+     *
+     * @staticvar Zend_Session_Namespace $session
+     * @return Zend_Session_Namespace
+     */
     private static function getSession()
     {
         static $session;
@@ -74,6 +102,22 @@ class MUtil_Echo
         return $session;
     }
 
+    /**
+     * Returns true if there is information to output.
+     *
+     * @return boolean
+     */
+    public static function hasOutput()
+    {
+        $session = self::getSession();
+        return isset($session->content);
+    }
+
+    /**
+     * Returns and resets the content of the output/
+     *
+     * @return string Raw html content.
+     */
     public static function out()
     {
         $session = self::getSession();
@@ -89,11 +133,23 @@ class MUtil_Echo
         }
     }
 
+    /**
+     * Outputs a wordwrapped string with an optional caption.
+     *
+     * @param string $var The variable to wordwrap
+     * @param string $caption Optional text descibing the variable or moment of debugging.
+     */
     public static function pre($var, $caption = null)
     {
         self::r(wordwrap((string) $var, 120), $caption);
     }
 
+    /**
+     * Adds the content of a variable and an optional caption to the output.
+     *
+     * @param mixed $var Any kind of variable
+     * @param string $caption Optional text descibing the variable or moment of debugging.
+     */
     public static function r($var, $caption = null)
     {
         $session = self::getSession();
@@ -121,13 +177,26 @@ class MUtil_Echo
         $session->content .= $content;
     }
 
+    /**
+     * Adds multiple variables to the output (without captions).
+     *
+     * @param mixed $var_1 Any kind of variable
+     * @param mixed $var_2 Optional, any kind of variable
+     */
     public static function rs($var_1, $var_2 = null)
     {
         foreach (func_get_args() as $var) {
             self::r($var);
         }
     }
-    
+
+    /**
+     * Adds multiple variables to the output with as caption information on the line
+     * of code that called this function.
+     *
+     * @param mixed $var_1 Any kind of variable
+     * @param mixed $var_2 Optional, any kind of variable
+     */
     public static function track($var_1, $var_2 = null)
     {
         $trace = debug_backtrace(false);
@@ -144,7 +213,7 @@ class MUtil_Echo
             $header .= ': ' . $trace[0]['line'];
         }
 
-        
+
         foreach (func_get_args() as $var) {
             self::r($var, $header);
             $header = null;
