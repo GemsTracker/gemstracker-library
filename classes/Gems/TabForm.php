@@ -226,7 +226,7 @@ class Gems_TabForm extends Gems_Form
         //Retrieve it and set decorators
         $group = $this->getDisplayGroup($name);
         $group->setDecorators( array('FormElements',
-                            array('HtmlTag', array('tag' => 'div', 'class' => $group->getName()))
+                            array('HtmlTag', array('tag' => 'div', 'class' => $group->getName(). ' ' . $group->getAttrib('class')))
                             ));
     }
 }
