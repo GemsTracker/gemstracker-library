@@ -834,6 +834,18 @@ abstract class MUtil_Model_ModelAbstract
         return $this;
     }
 
+    /**
+     * Reset the processing / display order for getItemsOrdered().
+     *
+     * Model items are displayed in the order they are first set() by the code.
+     * Using this functions resets this list and allows you to start over
+     * and determine the display order by the order you set() the items from
+     * now on.
+     *
+     * @see getItemsOrdered()
+     *
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function resetOrder()
     {
         $this->_model_order = null;
@@ -845,7 +857,7 @@ abstract class MUtil_Model_ModelAbstract
      *
      * @param array $newValues The values to store for a single model item.
      * @param array $filter If the filter contains old key values these are used
-     * te decide on update versus insert.
+     * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
     abstract public function save(array $newValues, array $filter = null);

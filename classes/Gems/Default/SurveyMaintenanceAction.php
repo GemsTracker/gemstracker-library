@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
+class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAction
 {
     public $autoFilter = true;
 
@@ -53,12 +53,6 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     public $menuShowIncludeLevel = 100;
 
     public $sortKey = array('gsu_survey_name' => SORT_ASC);
-
-    /**
-     *
-     * @var array
-     */
-    protected $data = array();
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -93,8 +87,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
-        //MUtil_Echo::r($data, __CLASS__ . '->' . __FUNCTION__);
-        $data = array_merge($model->loadFirst(), $data);
+        // MUtil_Echo::track($data);
 
         // Prepare variables
         $currentId    = $data['gsu_id_survey'];
@@ -381,15 +374,6 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         return MUtil_Html::raw(strip_tags($value));
     }
 
-    public function getMenuParameter($name, $default)
-    {
-        if (isset($this->data[$name])) {
-            return $this->data[$name];
-        } else {
-            return $default;
-        }
-    }
-
     public function getTrackCount($currentId)
     {
         $singleTrack = ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) ? $this->escort->getTrackId() : null;
@@ -440,8 +424,6 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $source = $this->menu->getParameterSource();
         $source->offsetSet('gsu_has_pdf', $data['gsu_survey_pdf'] ? 1 : 0);
         $source->offsetSet(MUtil_Model::REQUEST_ID, $data['gsu_id_survey']);
-        $this->data['gsu_has_pdf'] = $data['gsu_survey_pdf'] ? 1 : 0;
-        $this->data[MUtil_Model::REQUEST_ID] = $data['gsu_id_survey'];
 
         return $this;
     }
@@ -470,7 +452,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $this->html[] = $table;
 
         if ($this->escort->hasPrivilege('pr.project.questions')) {
-            $this->addSnippet('SurveyQuestionsSnippet', 'surveyId', $this->data[MUtil_Model::REQUEST_ID]);
+            $this->addSnippet('SurveyQuestionsSnippet', 'surveyId', $this->_getIdParam());
         }
     }
 }

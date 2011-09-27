@@ -27,11 +27,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * @package    MUtil
  * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -42,9 +43,11 @@
  * but you can override this when calling save() and delete().
  *
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package MUtil
+ * @package    MUtil
  * @subpackage Model
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 {
@@ -230,6 +233,14 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         return $select;
     }
 
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
     public function save(array $newValues, array $filter = null, array $saveTables = null)
     {
         if (null === $saveTables) {
@@ -245,13 +256,14 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         foreach ($saveTables as $table_name) {
             // Gotta repeat this every time, as keys may be set later
             foreach ($this->_joinFields as $source => $target) {
-                if (! (isset($newValues[$target]) && $newValues[$target])) {
-                    if (! (isset($newValues[$source]) && $newValues[$source])) {
+                // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
+                if (! (is_string($target) && isset($newValues[$target]) && $newValues[$target])) {
+                    if (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
                         continue;
                     }
                     $newValues[$target] = $newValues[$source];
 
-                } elseif (! (isset($newValues[$source]) && $newValues[$source])) {
+                } elseif (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
                     $newValues[$source] = $newValues[$target];
                 }
             }
