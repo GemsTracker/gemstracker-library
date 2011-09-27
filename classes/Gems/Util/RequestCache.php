@@ -109,6 +109,19 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
     protected $sourceAction;
 
     /**
+     *
+     * @param string  $sourceAction    The action to get the cache from if not the current one.
+     * @param boolean $readonly        Optional, tell the cache not to store any new values
+     */
+    public function __construct($sourceAction = null, $readonly = false)
+    {
+        if ($sourceAction) {
+            $this->setSourceAction($sourceAction);
+        }
+        $this->setReadonly($readonly);
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *

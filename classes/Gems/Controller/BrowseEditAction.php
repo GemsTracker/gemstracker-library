@@ -583,16 +583,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      *
      * @param boolean $includeDefaults Include the default values (yes for filtering, no for urls
      * @param string  $sourceAction    The action to get the cache from if not the current one.
+     * @param boolean $readonly        Optional, tell the cache not to store any new values
      * @return array
      */
     public function getCachedRequestData($includeDefaults = true, $sourceAction = null, $readonly = false)
     {
         if (! $this->requestCache) {
-            $this->requestCache = $this->util->getRequestCache();
-            if ($sourceAction) {
-                $this->requestCache->setSourceAction($sourceAction);
-            }
-            $this->requestCache->setReadonly($readonly);
+            $this->requestCache = $this->util->getRequestCache($sourceAction, $readonly);
             $this->requestCache->setMenu($this->menu);
             $this->requestCache->setRequest($this->request);
 

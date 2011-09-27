@@ -82,6 +82,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     public $menu;
 
     /**
+     * Optional, used for base url
      *
      * @var Gems_Util_RequestCache
      */
@@ -122,11 +123,16 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      */
     public function checkRegistryRequestsAnswers()
     {
-        if ($this->requestCache && (! $this->baseUrl)) {
-            $this->baseUrl = $this->requestCache->getProgramParams();
+        if ($this->requestCache) {
+            // Items that should not be stored.
+            $this->requestCache->removeParams('page', 'items', 'action');
 
-            if (MUtil_Registry_Source::$verbose) {
-                MUtil_Echo::track($this->baseUrl);
+            if ((! $this->baseUrl)) {
+                $this->baseUrl = $this->requestCache->getProgramParams();
+
+                if (MUtil_Registry_Source::$verbose) {
+                    MUtil_Echo::track($this->baseUrl);
+                }
             }
         }
 
@@ -184,6 +190,23 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
             }
         } else {
             return $table;
+        }
+    }
+
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->requestCache) {
+            $data = $this->requestCache->getProgramParams();
+
+            $model->applyParameters($data);
+            
+        } else {
+            parent::processFilterAndSort($model);
         }
     }
 }

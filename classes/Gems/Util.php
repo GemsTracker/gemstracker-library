@@ -170,11 +170,13 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @param string  $sourceAction    The action to get the cache from if not the current one.
+     * @param boolean $readonly        Optional, tell the cache not to store any new values
      * @return Gems_Util_RequestCache
      */
-    public function getRequestCache()
+    public function getRequestCache($sourceAction = null, $readonly = false)
     {
-        return $this->_getClass('requestCache');
+        return $this->_getClass('requestCache', null, array($sourceAction, $readonly));
     }
 
     /**

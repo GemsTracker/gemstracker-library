@@ -70,11 +70,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $indexParameters = array();
 
     /**
-     * The snippets used for the index action, minus those in autofilter
+     * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexSnippets = null;
+    protected $indexStartSnippets = null;
+
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = null;
 
     /**
      * The parameters used for the show action
@@ -139,16 +146,22 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      */
     public function indexAction()
     {
-        if ($this->indexSnippets) {
+        if ($this->indexStartSnippets || $this->indexStopSnippets) {
             $this->indexParameters = $this->indexParameters + $this->autofilterParameters;
 
             $this->indexParameters['model']   = $this->getModel();
             $this->indexParameters['request'] = $this->getRequest();
 
-            $this->addSnippets($this->indexSnippets, $this->indexParameters);
+            if ($this->indexStartSnippets) {
+                $this->addSnippets($this->indexStartSnippets, $this->indexParameters);
+            }
         }
 
         $this->autofilterAction(false);
+
+        if ($this->indexStopSnippets) {
+            $this->addSnippets($this->indexStopSnippets, $this->indexParameters);
+        }
     }
 
 
@@ -158,8 +171,6 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     public function showAction()
     {
         if ($this->showSnippets) {
-            $this->showParameters = $this->indexParameters + $this->autofilterParameters;
-
             $this->showParameters['model']   = $this->getModel();
             $this->showParameters['request'] = $this->getRequest();
 

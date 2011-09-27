@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -90,6 +89,31 @@ class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSni
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
+
+    /**
+     * Adds rows from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        parent::addShowTableRows($bridge, $model);
+
+        $controller = $this->request->getControllerName();
+
+        $menuList = $this->menu->getMenuList();
+        $menuList->addParameterSources($bridge)
+                ->addByController($controller)
+                ->addByController($controller, 'edit')
+                ->addByController($controller, 'delete');
+
+        $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+    }
 
     /**
      * Creates the model

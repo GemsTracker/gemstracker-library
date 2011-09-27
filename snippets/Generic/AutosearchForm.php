@@ -68,11 +68,43 @@ class Generic_AutosearchForm extends MUtil_Snippets_SnippetAbstract
     protected $request;
 
     /**
+     * Optional, otherwise created from $util
+     *
+     * @var Gems_Util_RequestCache
+     */
+    public $requestCache;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      *
      * @var string Id for auto search button
      */
     protected $searchButtonId = 'AUTO_SEARCH_TEXT_BUTTON';
 
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        if ($this->util && (! $this->requestCache)) {
+            $this->requestCache = $this->util->getRequestCache();
+        }
+        if ($this->requestCache) {
+            // Do not store searchButtonId
+            $this->requestCache->removeParams($this->searchButtonId);
+        }
+
+        return parent::checkRegistryRequestsAnswers();
+    }
 
     /**
      * Creates the form itself
@@ -196,6 +228,10 @@ class Generic_AutosearchForm extends MUtil_Snippets_SnippetAbstract
      */
     protected function getSearchData()
     {
-        return $this->request->getParams();
+        if ($this->requestCache) {
+            return $this->requestCache->getProgramParams();
+        } else {
+            return $this->request->getParams();
+        }
     }
 }

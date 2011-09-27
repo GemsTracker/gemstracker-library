@@ -140,11 +140,26 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         return $model;
     }
 
+    /**
+     * Action for showing a browse page
+     */
     public function indexAction()
     {
         $this->html->h3($this->_('Mail Activity Log'));
 
         // MUtil_Echo::track($this->indexParameters);
         parent::indexAction();
+    }
+
+
+    /**
+     * Action for showing an item page
+     */
+    public function showAction()
+    {
+        $this->html->h3($this->_('Show Mail Activity Log item'));
+
+        // MUtil_Echo::track($this->indexParameters);
+        parent::showAction();
     }
 }

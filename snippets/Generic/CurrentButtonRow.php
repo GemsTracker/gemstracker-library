@@ -26,63 +26,60 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * Short description of file
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Displays multiple items from a model in a tabel by row using
- * the model set through the $model snippet parameter.
+ * Short description for class
  *
- * @package    MUtil
+ * Long description for class (if any)...
+ *
+ * @package    Gems
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.2
  */
-class Generic_ModelTableSnippet extends Gems_Snippets_ModelTableSnippetAbstract
+class Generic_CurrentButtonRow extends MUtil_Snippets_SnippetAbstract
 {
     /**
+     * Required
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var Gems_Menu
      */
-    protected $model;
+    protected $menu;
 
     /**
+     * Required
      *
-     * @var Gems_Util
+     * @var Zend_Controller_Request_Abstract
      */
-    protected $util;
+    protected $request;
 
     /**
-     * Automatically add request cacge
+     * Create the snippets content
      *
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
+     * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @return boolean False if required are missing.
+     * @param Zend_View_Abstract $view Just in case it is needed here
+     * @return MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function checkRegistryRequestsAnswers()
+    public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        if ($this->util && (! $this->requestCache)) {
-            $this->requestCache = $this->util->getRequestCache();
-        }
+        $menuList = $this->menu->getMenuList();
 
-        return parent::checkRegistryRequestsAnswers();
+        $menuList->addParameterSources($this->request)
+                ->addCurrentParent($this->_('Cancel'))
+                ->addCurrentChildren();
+
+        return $menuList;
     }
 
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
-    }
 }
