@@ -289,7 +289,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         // Add track selection
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
-            $sql = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_active=1 AND gtr_track_type='T' AND INSTR(gtr_organisations, '|$orgId|') > 0";
+            $sql = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_active=1 AND gtr_track_type='T' AND INSTR(gtr_organizations, '|$orgId|') > 0";
             $elements[] = $this->_createSelectElement('gto_id_track', $sql, $this->_('(all tracks)'));
         }
 
@@ -299,7 +299,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organisations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0";
         $elements[] = $this->_createSelectElement('gto_round_description', $sql, $this->_('(all rounds)'));
 
         $sql = "SELECT gsu_id_survey, gsu_survey_name
@@ -309,7 +309,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                         gro_active=1 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organisations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0";
         /* TODO: use this when we can update this list using ajax
         if (isset($data['gsu_id_primary_group'])) {
             $sql .= $this->db->quoteInto(" AND gsu_id_primary_group = ?", $data['gsu_id_primary_group']);
@@ -335,7 +335,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                         gro_active=1 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organisations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 
         if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) &&

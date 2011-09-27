@@ -84,10 +84,10 @@ UPDATE gems__surveys SET gsu_active = 0 WHERE gsu_id_primary_group IS NULL AND g
 ALTER TABLE `gems__staff` ADD `gsf_reset_key` varchar(64) NULL AFTER `gsf_phone_1`;
 ALTER TABLE `gems__staff` ADD `gsf_reset_req`timestamp NULL AFTER `gsf_reset_key`;
 
--- PATCH: Add gtr_organisations to tracks
-ALTER TABLE `gems__tracks` ADD `gtr_organisations` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `gtr_track_type` ;
+-- PATCH: Add gtr_organizations to tracks
+ALTER TABLE `gems__tracks` ADD `gtr_organizations` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `gtr_track_type` ;
 UPDATE gems__tracks
-    SET  `gtr_organisations` = (SELECT CONCAT('|', CONVERT(GROUP_CONCAT(gor_id_organization SEPARATOR '|'), CHAR), '|') as orgs FROM gems__organizations WHERE gor_active=1)
+    SET  `gtr_organizations` = (SELECT CONCAT('|', CONVERT(GROUP_CONCAT(gor_id_organization SEPARATOR '|'), CHAR), '|') as orgs FROM gems__organizations WHERE gor_active=1)
     WHERE gtr_active = 1;
 
 -- PATCH: Gewijzigd track model
@@ -196,3 +196,6 @@ RENAME TABLE gems__respondent_communications TO gems__log_respondent_communicati
 ALTER TABLE gems__log_respondent_communications ADD grco_sender     varchar(120) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER grco_address;
 ALTER TABLE gems__log_respondent_communications ADD grco_id_message bigint unsigned null references gems__mail_templates (gmt_id_message) AFTER grco_comments;
 
+-- GEMS VERSION: 41
+-- PATCH: Corrected misspelling of gtr_organisations
+ALTER TABLE gems__tracks CHANGE gtr_organisations gtr_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

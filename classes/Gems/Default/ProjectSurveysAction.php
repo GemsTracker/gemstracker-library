@@ -78,7 +78,7 @@ class Gems_Default_ProjectSurveysAction  extends Gems_Controller_BrowseEditActio
         $filter = parent::getDataFilter($data);
 
         $organization_id = $this->escort->getCurrentOrganization();
-        $filter[] = "gtr_organisations LIKE '%|$organization_id|%'";
+        $filter[] = "gtr_organizations LIKE '%|$organization_id|%'";
 
         return $filter;
     }

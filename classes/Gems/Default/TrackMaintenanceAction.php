@@ -98,7 +98,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $bridge->addDate(    'gtr_date_until');
         // $bridge->addList(    'gtr_start_date_field', 'label', $this->_('Date used for track'));
         $bridge->addCheckbox('gtr_active');
-        $bridge->addMultiCheckbox('gtr_organisations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
+        $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
     }
 
     /**
@@ -109,8 +109,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     public function afterFormLoad(array &$data, $isNew)
     {
         // feature request #200
-        if (isset($data['gtr_organisations']) && (! is_array($data['gtr_organisations']))) {
-            $data['gtr_organisations'] = explode('|', trim($data['gtr_organisations'], '|'));
+        if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
+            $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
         }
     }
 
@@ -124,8 +124,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
     {
         // feature request #200
-        if (isset($data['gtr_organisations']) && is_array($data['gtr_organisations'])) {
-            $data['gtr_organisations'] = '|' . implode('|', $data['gtr_organisations']) . '|';
+        if (isset($data['gtr_organizations']) && is_array($data['gtr_organizations'])) {
+            $data['gtr_organizations'] = '|' . implode('|', $data['gtr_organizations']) . '|';
         }
         if (isset($data['gtr_id_track'])) {
             $data['gtr_survey_rounds'] = $this->db->fetchOne("SELECT COUNT(*) FROM gems__rounds WHERE gro_active = 1 AND gro_id_track = ?", $data['gtr_id_track']);

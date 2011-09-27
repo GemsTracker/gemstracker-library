@@ -20,7 +20,7 @@ CREATE TABLE if not exists gems__tracks (
         gtr_track_class varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
         -- Yes, quick and dirty, will correct later (probably)
-        gtr_organisations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gtr_changed timestamp not null default current_timestamp on update current_timestamp,
         gtr_changed_by bigint unsigned not null,

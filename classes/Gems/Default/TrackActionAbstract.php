@@ -93,7 +93,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             $filter['gtr_track_type'] = $this->trackType;
             $filter['gtr_active']     = 1;
             $filter[]   = '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE';
-            $filter[]   = "gtr_organisations LIKE '%|$organisation_id|%'";
+            $filter[]   = "gtr_organizations LIKE '%|$organisation_id|%'";
 
             $baseurl    = array('action' => 'index', 'gr2o_patient_nr' => $id, MUtil_Model::TEXT_FILTER => $searchText);
 

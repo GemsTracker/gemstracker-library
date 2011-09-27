@@ -134,7 +134,7 @@ class EditTrackEngineSnippet extends Gems_Snippets_ModelFormSnippetAbstract
         if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         }
-        $bridge->addMultiCheckbox('gtr_organisations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
+        $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
     }
 
     /**
@@ -247,8 +247,8 @@ class EditTrackEngineSnippet extends Gems_Snippets_ModelFormSnippetAbstract
         parent::loadFormData();
 
         // feature request #200
-        if (isset($this->formData['gtr_organisations']) && (! is_array($this->formData['gtr_organisations']))) {
-            $this->formData['gtr_organisations'] = explode('|', trim($this->formData['gtr_organisations'], '|'));
+        if (isset($this->formData['gtr_organizations']) && (! is_array($this->formData['gtr_organizations']))) {
+            $this->formData['gtr_organizations'] = explode('|', trim($this->formData['gtr_organizations'], '|'));
         }
     }
 
@@ -262,8 +262,8 @@ class EditTrackEngineSnippet extends Gems_Snippets_ModelFormSnippetAbstract
     protected function saveData()
     {
         // feature request #200
-        if (isset($this->formData['gtr_organisations']) && is_array($this->formData['gtr_organisations'])) {
-            $this->formData['gtr_organisations'] = '|' . implode('|', $this->formData['gtr_organisations']) . '|';
+        if (isset($this->formData['gtr_organizations']) && is_array($this->formData['gtr_organizations'])) {
+            $this->formData['gtr_organizations'] = '|' . implode('|', $this->formData['gtr_organizations']) . '|';
         }
         if ($this->trackEngine) {
             $this->formData['gtr_survey_rounds'] = $this->trackEngine->calculateRoundCount();

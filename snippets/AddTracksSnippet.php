@@ -117,7 +117,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
                             gtr_active = 1 AND
                             gtr_track_type = 'T' AND
-                            gtr_organisations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$organization_id|%'
                          ORDER BY gtr_track_name";
                     break;
                 case 'S':
@@ -131,7 +131,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             gtr_active = 1 AND
                             gtr_track_type = 'S' AND
                             ggp_respondent_members = 1 AND
-                            gtr_organisations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$organization_id|%'
                          ORDER BY gtr_track_name";
                     break;
                 case 'M':
@@ -145,7 +145,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             gtr_active = 1 AND
                             gtr_track_type = 'S' AND
                             ggp_respondent_members = 0 AND
-                            gtr_organisations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$organization_id|%'
                          ORDER BY gtr_track_name";
                     break;
                 // default:

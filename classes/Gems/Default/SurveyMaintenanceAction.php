@@ -203,7 +203,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                 $bridge->addDate(  'gtr_date_start', 'label', $this->_('Assignable since'));
                 $bridge->addDate(  'gtr_date_until', 'label', $this->_('Assignable until'));
                 // feature request #200
-                $bridge->addMultiCheckbox('gtr_organisations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
+                $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
 
             } else {
                 $standAloneButton = new MUtil_Form_Element_FakeSubmit('create_stand_alone');
@@ -228,8 +228,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     public function afterFormLoad(array &$data, $isNew)
     {
         // feature request #200
-        if (isset($data['gtr_organisations']) && (! is_array($data['gtr_organisations']))) {
-            $data['gtr_organisations'] = explode('|', trim($data['gtr_organisations'], '|'));
+        if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
+            $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
         }
     }
 
@@ -259,8 +259,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $data['gtr_track_class'] = 'SingleSurveyEngine';
 
         // feature request #200
-        if (isset($data['gtr_organisations']) && is_array($data['gtr_organisations'])) {
-            $data['gtr_organisations'] = '|' . implode('|', $data['gtr_organisations']) . '|';
+        if (isset($data['gtr_organizations']) && is_array($data['gtr_organizations'])) {
+            $data['gtr_organizations'] = '|' . implode('|', $data['gtr_organizations']) . '|';
         }
 
         if ($data['gsu_active']==1 && empty($data['gsu_id_primary_group'])) {
