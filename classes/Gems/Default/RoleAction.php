@@ -85,8 +85,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         //Get inherited privileges and disable tem
         $result = $this->escort->acl->getRolePrivileges();
         $disable = array();
-        foreach($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] as $key=>$value) {
-            $disable[] = $value;
+        if (isset($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW])) {
+            foreach($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] as $key => $value) {
+                $disable[] = $value;
+            }
         }
         $checkbox->setAttrib('disable', $disable);
 
@@ -123,7 +125,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $values = $checkbox->getValue();
         $disabled = $checkbox->getAttrib('disable');
 
-        $values = array_merge($values, $disabled);
+        if ($disabled) {
+            $values = array_merge($values, $disabled);
+        }
         $checkbox->setValue($values);
         return $form;
     }
