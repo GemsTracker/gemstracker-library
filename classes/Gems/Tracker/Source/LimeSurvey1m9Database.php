@@ -83,6 +83,18 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
     /**
      *
+     * @var Gems_Log
+     */
+    protected $logger;
+
+    /**
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     *
      * @var Zend_Translate
      */
     protected $translate;

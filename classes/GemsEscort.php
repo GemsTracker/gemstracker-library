@@ -62,16 +62,9 @@ class GemsEscort extends MUtil_Application_Escort
     /**
      * The menu variable
      *
-     * @var GemsMenu
+     * @var Gems_Menu
      */
     public $menu;
-
-    /**
-     * The logger
-     *
-     * @var Zend_Log
-     */
-    public $logger;
 
     public function _($text, $locale = null)
     {
@@ -147,9 +140,9 @@ class GemsEscort extends MUtil_Application_Escort
     /**
      * Initialize the logger
      */
-    protected function _initLog()
+    protected function _initLogger()
     {
-        $this->logger = Gems_Log::getLogger();
+        $logger = Gems_Log::getLogger();
 
         $log_path = GEMS_ROOT_DIR . '/var/logs';
 
@@ -160,14 +153,16 @@ class GemsEscort extends MUtil_Application_Escort
             die(sprintf($this->translate->_('Path %s not writable'), $log_path));
         }
 
-        $this->logger->addWriter($writer);
+        $logger->addWriter($writer);
 
         // OPTIONAL STARTY OF FIREBUG LOGGING.
         if ($this->_startFirebird) {
-            $this->logger->addWriter(new Zend_Log_Writer_Firebug());
+            $logger->addWriter(new Zend_Log_Writer_Firebug());
         }
 
-        Zend_Registry::set('logger', $this->logger);
+        Zend_Registry::set('logger', $logger);
+
+        return $logger;
     }
 
     /**
