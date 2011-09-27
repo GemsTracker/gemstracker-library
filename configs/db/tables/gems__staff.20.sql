@@ -1,5 +1,5 @@
 
--- Table containing the project staff 
+-- Table containing the project staff
 --
 CREATE TABLE if not exists gems__staff (
         gsf_id_user          bigint unsigned not null auto_increment,
@@ -9,12 +9,12 @@ CREATE TABLE if not exists gems__staff (
         gsf_password         varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
                                not null,
 
-        gsf_active           boolean not null default 1, 
-	gsf_failed_logins    int(11) unsigned not null default 0,
+        gsf_active           boolean not null default 1,
+    	gsf_failed_logins    int(11) unsigned not null default 0,
         gsf_last_failed      timestamp null,
         gsf_id_primary_group bigint unsigned
                                references gems__groups (ggp_id_group),
-        gsf_id_organization  bigint not null 
+        gsf_id_organization  bigint not null
                                references gems__organizations (gor_id_organization),
         gsf_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
                                not null default 'nl' references gems__languages (gml_iso_lang),

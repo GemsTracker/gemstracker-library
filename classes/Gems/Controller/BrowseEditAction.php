@@ -608,6 +608,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         return $data;
     }
 
+    /**
+     * Additional data filter statements for the user input.
+     *
+     * User input that has the same name as a model field is automatically
+     * used as a filter, but if the name is different processing is needed.
+     * That processing should happen here.
+     *
+     * @param array $data The current user input
+     * @return array New filter statements
+     */
     protected function getDataFilter(array $data)
     {
         if ($this->filterStandard) {
@@ -617,6 +627,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         return array();
     }
 
+    /**
+     * Returns the default search values for this class instance.
+     *
+     * Used to specify the filter when no values have been entered by the user.
+     *
+     * @return array
+     */
     public function getDefaultSearchData()
     {
         return array();

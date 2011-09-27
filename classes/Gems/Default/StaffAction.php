@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // implements Gems_Menu_ParameterSourceInterface
+class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
     public $filterStandard = array('gsf_active' => 1);
     public $sortKey = array('name' => SORT_ASC);
@@ -133,7 +133,7 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
             $this->_groups = MUtil_Lazy::call(array($this->db, 'fetchPairs'), $sql);
 
             $bridge->addExhibitor('gsf_id_organization');
-            $bridge->addSelect(  'gsf_id_primary_group', 'multiOptions', $dbLookup->getStaffGroupsNoSuper());
+            $bridge->addSelect(   'gsf_id_primary_group', 'multiOptions', $dbLookup->getStaffGroupsNoSuper());
         }
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 
@@ -149,9 +149,8 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
         $sql = "SELECT ggp_id_group,ggp_role FROM gems__groups WHERE ggp_id_group = " . (int) $data['gsf_id_primary_group'];
         $groups = $this->db->fetchPairs($sql);
 
-        if (($this->session->user_role == 'admin' && isset($groups) && $groups[$data['gsf_id_primary_group']] == 'super')
-            || (! $this->escort->hasPrivilege('pr.staff.edit.all') &&
-             $data['gsf_id_organization'] != $this->escort->getCurrentOrganization())) {
+        if (! ($this->escort->hasPrivilege('pr.staff.edit.all') ||
+             $data['gsf_id_organization'] == $this->escort->getCurrentOrganization())) {
                 throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
     }
@@ -179,7 +178,9 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
             'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
-        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
+        if ($detailed || $this->escort->hasPrivilege('pr.staff.see.all')) {
+            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
+
             $model->set('gsf_id_organization',  'label', $this->_('Organization'),
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'default', $this->escort->getCurrentOrganization());
@@ -208,16 +209,33 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
             // Select organization
             $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
             $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
-        } else {
-            $select = new Zend_Form_Element_Hidden('gsf_id_organization',
-                    array('value' => $this->escort->getCurrentOrganization()));
+
+            // Position as second element
+            $search = array_shift($elements);
+            array_unshift($elements, $search, $select);
         }
 
-        // Position as second element
-        $search = array_shift($elements);
-        array_unshift($elements, $search, $select);
-
         return $elements;
+    }
+
+    /**
+     * Additional data filter statements for the user input.
+     *
+     * User input that has the same name as a model field is automatically
+     * used as a filter, but if the name is different processing is needed.
+     * That processing should happen here.
+     *
+     * @param array $data The current user input
+     * @return array New filter statements
+     */
+    protected function getDataFilter(array $data)
+    {
+        $filter = parent::getDataFilter($data);
+
+        if (! $this->escort->hasPrivilege('pr.staff.see.all')) {
+            $filter['gsf_id_organization'] = $this->escort->getCurrentOrganization();
+        }
+        return $filter;
     }
 
     public function getInstanceId()
@@ -229,11 +247,27 @@ class Gems_Default_StaffAction  extends Gems_Controller_BrowseEditAction // impl
         return parent::getInstanceId();
     }
 
-    /*
-    public function getMenuParameter($name, $default)
+    /**
+     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     *
+     * Overruled to add css classes for Gems
+     *
+     * @param integer $columns The number of columns to use for presentation
+     * @param mixed $filter A valid filter for MUtil_Model_ModelAbstract->load()
+     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
+     * @return MUtil_Html_TableElement
+     */
+    public function getShowTable($columns = 1, $filter = null, $sort = null)
     {
+        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
+            // Model filter has now been set.
+            $data = $this->getModel()->loadFirst();
 
-    } // */
+            $this->_setParam('gsf_id_organization', $data['gsf_id_organization']);
+            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $data['gsf_id_organization']);
+        }
+        return parent::getShowTable($columns, $filter, $sort);
+    }
 
     public function getTopic($count = 1)
     {
