@@ -536,7 +536,9 @@ class GemsEscort extends MUtil_Application_Escort
     {
         // Set CSS stylescheet(s)
         if (isset($this->project->css)) {
-            foreach ((array) $this->project->css as $css) {
+            $projectCss = (array) $this->project->css;
+            $projectCss = array_reverse($projectCss);
+            foreach ($projectCss as $css) {
                 if (is_array($css)) {
                     $media = $css['media'];
                     $url = $css['url'];
@@ -544,7 +546,7 @@ class GemsEscort extends MUtil_Application_Escort
                     $url = $css;
                     $media = 'screen';
                 }
-                $this->view->headLink()->appendStylesheet($this->basepath->getBasePath() . '/' . $url, $media);
+                $this->view->headLink()->prependStylesheet($this->basepath->getBasePath() . '/' . $url, $media);
             }
         }
     }
