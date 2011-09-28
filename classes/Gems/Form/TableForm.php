@@ -146,7 +146,9 @@ class Gems_Form_TableForm extends Gems_Form {
             $element->setDecorators($decorators);
             if ($element instanceof Zend_Form_Element_Checkbox) {
                 $decorator = $element->getDecorator('Label');
-                $decorator->setOption('placement', Zend_Form_Decorator_Label::APPEND);
+                if ($decorator) {
+                    $decorator->setOption('placement', Zend_Form_Decorator_Label::APPEND);
+                }
             }
         }
         return $this;
