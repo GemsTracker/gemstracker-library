@@ -50,6 +50,8 @@
  */
 class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 {
+    protected $hashBsn = true;
+
     public function __construct()
     {
         // gems__respondents MUST be first table for INSERTS!!
@@ -65,8 +67,30 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
 
-        $this->setSaveWhenNotNull('grs_bsn');
-        $this->setOnSave('grs_bsn', array($this, 'formatBSN'));
+        if ($this->hashBsn) {
+            $this->setSaveWhenNotNull('grs_bsn');
+            $this->setOnSave('grs_bsn', array($this, 'formatBSN'));
+        }
+    }
+
+    /**
+     * Add an organization filter if it wasn't specified in the filter.
+     *
+     * Checks the filter on sematic correctness and replaces the text seacrh filter
+     * with the real filter.
+     *
+     * @param mixed $filter True for the filter stored in this model or a filter array
+     * @return array The filter to use
+     */
+    protected function _checkFilterUsed($filter)
+    {
+        $filter = parent::_checkFilterUsed($filter);
+
+        if (! isset($filter['gr2o_id_organization'])) {
+            $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
+        }
+
+        return $filter;
     }
 
     public function formatBSN($name, $value, $new = false)
@@ -88,16 +112,6 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->addColumn('gems__respondent2org.' . $key, $this->getKeyCopyName($key));
 
         return $this;
-    }
-
-    public function getSelect()
-    {
-        $select = parent::getSelect();
-        $adapter = $select->getAdapter();
-
-        $select->where($adapter->quoteIdentifier('gr2o_id_organization') . ' = ?', $this->getCurrentOrganization());
-
-        return $select;
     }
 
     public function getRespondentTracksModel()

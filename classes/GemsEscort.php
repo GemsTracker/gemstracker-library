@@ -139,6 +139,8 @@ class GemsEscort extends MUtil_Application_Escort
 
     /**
      * Initialize the logger
+     *
+     * @return Gems_Log
      */
     protected function _initLogger()
     {

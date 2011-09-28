@@ -79,6 +79,13 @@ abstract class MUtil_Model_ModelAbstract
         $this->_model_name = $modelName;
     }
 
+    /**
+     * Checks the filter on sematic correctness and replaces the text seacrh filter
+     * with the real filter.
+     *
+     * @param mixed $filter True for the filter stored in this model or a filter array
+     * @return array The filter to use
+     */
     protected function _checkFilterUsed($filter)
     {
         if (true === $filter) {
