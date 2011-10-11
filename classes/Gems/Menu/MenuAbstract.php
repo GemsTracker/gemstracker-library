@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -37,6 +36,9 @@
  */
 
 /**
+ * Base class for building a menu / button structure where the display of items is dependent
+ * on both privileges and the availability of parameter information,
+ * e.g. data to fill an 'id' parameter.
  *
  * @package    Gems
  * @subpackage Menu
@@ -140,8 +142,25 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a sub item to this item.
      *
-     * @param <type> $args_array
+     * The argumenets can be any of those used for Zend_Navigation_Page as well as some Gems specials.<ul>
+     * <li>'action' The name of the action.</li>
+     * <li>'allowed' Is the user allowed to access this menu item. Is checked against ACL using 'privilige'.</li>
+     * <li>'button_only' Never in the menu, only shown as a button by the program.</li>
+     * <li>'class' Display class for the menu link.</li>
+     * <li>'controller' What controller to use.</li>
+     * <li>'icon' Icon to display with the label.</li>
+     * <li>'label' The label to display for the menu item.</li>
+     * <li>'privilege' The privilege needed to choose the item.</li>
+     * <li>'target' Optional target attribute for the link.</li>
+     * <li>'type' Optional content type for the link</li>
+     * <li>'visible' Is the item visible. Is checked against ACL using 'privilige'.</li>
+     * </ul>
+     *
+     * @see Zend_Navigation_Page
+     *
+     * @param array $args_array MUtil_Ra::args array with defaults 'visible' and 'allowed' true.
      * @return Gems_Menu_SubMenuItem
      */
     protected function add($args_array)
@@ -198,7 +217,14 @@ abstract class Gems_Menu_MenuAbstract
         return $this->addPage($label, $privilege, $controller, $action, $other);
     }
 
-    public function addMailSetupPage($label)
+    /**
+     * Add a Mail menu tree to the menu
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addMailSetupMenu($label)
     {
         $setup = $this->addContainer($label);
 
@@ -226,8 +252,7 @@ abstract class Gems_Menu_MenuAbstract
      * @param string $privilege     The privilege for the item
      * @param string $controller    What controller to use
      * @param string $action        The name of the action
-     * @param array  $other         Array of extra options for this item
-     *
+     * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
      * @return Gems_Menu_SubMenuItem
      */
     public function addPage($label, $privilege, $controller, $action = 'index', array $other = array())
@@ -260,6 +285,33 @@ abstract class Gems_Menu_MenuAbstract
         return $infoPage;
     }
 
+    /**
+     * Add pages that show the user technical information about the installation
+     * in the project.
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addProjectInfoPage($label)
+    {
+        $page = $this->addPage($label, 'pr.project-information', 'project-information');
+        $page->addAction($this->_('Errors'),     null, 'errors');
+        $page->addAction($this->_('PHP'),        null, 'php');
+        $page->addAction($this->_('Project'),    null, 'project');
+        $page->addAction($this->_('Session'),    null, 'session');
+
+        return $page;
+    }
+
+    /**
+     * Add pages that show the user an overview of the tracks / surveys used
+     * in the project.
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addProjectPage($label)
     {
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
@@ -300,6 +352,13 @@ abstract class Gems_Menu_MenuAbstract
         return $infoPage;
     }
 
+    /**
+     * Add a staff browse edit page to the menu,
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addStaffPage($label, array $other = array())
     {
         $page = $this->addPage($label, 'pr.staff', 'staff', 'index', $other);
@@ -315,6 +374,73 @@ abstract class Gems_Menu_MenuAbstract
         }
 
         return $page;
+    }
+
+
+    /**
+     * Add a Trackbuilder menu tree to the menu
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addTrackBuilderMenu($label, array $other = array())
+    {
+        $setup = $this->addContainer($label);
+
+        // SURVEY SOURCES CONTROLLER
+        $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
+        $page->addDeleteAction();
+        $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check answers'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
+        $page->addAction($this->_('Check all answers'), 'pr.source.check-answers-all', 'check-all');
+
+        // SURVEY MAINTENANCE CONTROLLER
+        $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
+        $page->addEditAction();
+        $page->addShowAction();
+        $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
+                ->addParameters(MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gsu_has_pdf', 1);
+        $page->addAction($this->_('Check answers'), 'pr.survey-maintenance.check', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check all answers'), 'pr.survey-maintenance.check-all', 'check-all');
+
+        $page->addAutofilterAction();
+
+        // TRACK MAINTENANCE CONTROLLER
+        $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
+
+        // Fields
+        $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addAutofilterAction();
+        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
+        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+
+        // Standard tracks
+        $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
+                ->setParameterFilter('gtr_track_type', 'T');
+        $fpage->addAutofilterAction();
+        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
+        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
+        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
+
+        // Single survey tracks
+        $fpage = $page->addPage($this->_('Round'), 'pr.track-maintenance', 'track-round', 'show')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
+                ->setParameterFilter('gtr_track_type', 'S');
+        $fpage->addEditAction('pr.track-maintenance.edit')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
+
+        $page->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+
+        $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
+
+        return $setup;
     }
 
     public function applyAcl(Zend_Acl $acl, $userRole)

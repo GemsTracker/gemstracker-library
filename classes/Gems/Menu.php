@@ -163,6 +163,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
+        $setup->addProjectInfoPage($this->_('Project setup'));
+
         // DATABASE CONTROLLER
         $page = $setup->addPage($this->_('Database'), 'pr.database', 'database');
         $page->addAutofilterAction();
@@ -183,27 +185,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         }
         $page->addAction($this->_('Run SQL'), 'pr.database.execute', 'run-sql');
 
-           // PROJECT
-        $page = $setup->addPage($this->_('Project setup'), 'pr.project-information', 'project-information');
-        $page->addAction($this->_('Errors'),     null, 'errors');
-        $page->addAction($this->_('PHP'),        null, 'php');
-        $page->addAction($this->_('Project'),    null, 'project');
-        $page->addAction($this->_('Session'),    null, 'session');
-
-           // COUNTRIES CONTROLLER
-        // $setup->addBrowsePage($this->_('Countries'), 'pr.country', 'country');
-
-        // LANGUAGE CONTROLLER
-        // $setup->addPage($this->_('Languages'), 'pr.language', 'language');
+        // RECEPTION CODE CONTROLLER
+        $page->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
 
         // CONSENT CONTROLLER
-        $setup->addBrowsePage($this->_('Consents'), 'pr.consent', 'consent');
-
-        // ORGANIZATIONS CONTROLLER
-        $setup->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
-
-        // GROUPS CONTROLLER
-        $setup->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
+        $page->addBrowsePage($this->_('Consents'), 'pr.consent', 'consent');
 
         // ROLES CONTROLLER
         $page = $setup->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
@@ -211,60 +197,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $page->addAction($this->_('Assigned'),   null, 'overview');
         $page->addAction($this->_('Privileges'), null, 'privilege');
 
-        // RECEPTION CODE CONTROLLER
-        $setup->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
+        // GROUPS CONTROLLER
+        $setup->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
 
-        // SURVEY SOURCES CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
-        $page->addDeleteAction();
-        $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check answers'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
-        $page->addAction($this->_('Check all answers'), 'pr.source.check-answers-all', 'check-all');
+        // ORGANIZATIONS CONTROLLER
+        $setup->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
 
-        // SURVEY MAINTENANCE CONTROLLER
-        $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
-        $page->addEditAction();
-        $page->addShowAction();
-        $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
-                ->addParameters(MUtil_Model::REQUEST_ID)
-                ->setParameterFilter('gsu_has_pdf', 1);
-        $page->addAction($this->_('Check answers'), 'pr.survey-maintenance.check', 'check')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check all answers'), 'pr.survey-maintenance.check-all', 'check-all');
-
-        $page->addAutofilterAction();
-
-        // TRACK MAINTENANCE CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
-
-        // Fields
-        $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
-        $fpage->addAutofilterAction();
-        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
-        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
-        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
-
-        // Standard tracks
-        $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
-                ->setParameterFilter('gtr_track_type', 'T');
-        $fpage->addAutofilterAction();
-        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
-        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
-
-        // Single survey tracks
-        $fpage = $page->addPage($this->_('Round'), 'pr.track-maintenance', 'track-round', 'show')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
-                ->setParameterFilter('gtr_track_type', 'S');
-        $fpage->addEditAction('pr.track-maintenance.edit')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
-
-        $page->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
-                ->addParameters(MUtil_Model::REQUEST_ID);
-
-        $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
+        // STAFF CONTROLLER
+        $setup->addStaffPage($this->_('Staff'));
 
         // LOG CONTROLLER
         $page = $setup->addPage($this->_('Logging'), 'pr.log', 'log', 'index');
@@ -568,27 +508,30 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
     public function loadDefaultMenu()
     {
         // MAIN RESPONDENTS ITEM
-        $this->addRespondentPage($this->escort->_('Respondents'));
+        $this->addRespondentPage($this->_('Respondents'));
 
         // MAIN PLANNING ITEM
-        $this->addPlanPage($this->escort->_('Overview'));
+        $this->addPlanPage($this->_('Overview'));
 
         // MAIN RESULTS ITEM
         // $menu->addPage($this->_('Results'), 'pr.result', 'result');
         // $menu->addPage($this->_('Invite'), 'pr.invitation', 'invitation');
 
         // PROJECT INFO
-        $this->addProjectPage($this->escort->_('Project'));
+        $this->addProjectPage($this->_('Project'));
 
         // MAIN STAFF ITEM
-        $this->addStaffPage($this->escort->_('Staff'), array('order'=>40));
+        $this->addStaffPage($this->_('Staff'), array('order'=>40));
 
         // SETUP CONTAINER
-        $this->addGemsSetupContainer($this->escort->_('Setup'));
+        $this->addGemsSetupContainer($this->_('Setup'));
 
         // MAIL CONTAINER
-        $this->addMailSetupPage($this->escort->_('Mail'));
-        
+        $this->addMailSetupMenu($this->_('Mail'));
+
+        // TRACK BUILDER
+        $this->addTrackBuilderMenu($this->_('Track Builder'));
+
         // EXPORT DATA
         $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
 
@@ -596,7 +539,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $this->addLogonOffToken();
 
         // CONTACT MENU
-        $this->addContactPage($this->escort->_('Contact'));
+        $this->addContactPage($this->_('Contact'));
 
         // Privileges not associated with menu item
         $this->addHiddenPrivilige('pr.plan.choose-org');

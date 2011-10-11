@@ -54,46 +54,58 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->html[] = $table;
     }
 
-    public function changelogAction()
+    protected function _showText($caption, $log_file, $empty_label = null)
     {
-        $this->html->h2($this->_('Changelog'));
+        $this->html->h2($caption);
 
-        $log_path = APPLICATION_PATH;
-        $log_file = $log_path . '/changelog.txt';
-
-        if ((1 == $this->_getParam(MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
+        if ($empty_label && (1 == $this->_getParam(MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
             unlink($log_file);
         }
 
         if (file_exists($log_file)) {
-            $this->html->pre(trim(file_get_contents($log_file)), array('class' => 'logFile'));
+            $content = trim(file_get_contents($log_file));
+
+            if ($content) {
+                $error = false;
+            } else {
+                $error = $this->_('empty file');
+            }
         } else {
-            $this->html->pInfo(sprintf($this->_('No changelog found. Place one in %s.'), $log_file));
+            $content = null;
+            $error   = $this->_('file not found');
         }
+
+        if ($empty_label) {
+            $buttons = $this->html->buttonDiv();
+            if ($error) {
+                $buttons->actionDisabled($empty_label);
+            } else {
+                $buttons->actionLink(array(MUtil_Model::REQUEST_ID => 1), $empty_label);
+            }
+        }
+
+        if ($error) {
+            $this->html->pre($error, array('class' => 'disabled logFile'));
+        } else {
+            $this->html->pre($content, array('class' => 'logFile'));
+        }
+
+        if ($empty_label) {
+            // Buttons at both bottom and top.
+            $this->html[] = $buttons;
+        }
+    }
+
+    public function changelogAction()
+    {
+        $this->_showText($this->_('Changelog'), APPLICATION_PATH . '/changelog.txt');
     }
 
     public function errorsAction()
     {
-        $this->html->h2($this->_('Logged errors'));
+        $this->logger->shutdown();
 
-        $log_path = GEMS_ROOT_DIR . '/var/logs';
-        $log_file = $log_path . '/errors.log';
-
-        if ((1 == $this->_getParam(MUtil_Model::REQUEST_ID)) && file_exists($log_file)) {
-            unlink($log_file);
-        }
-
-        if (file_exists($log_file)) {
-            $buttons = $this->html->buttonDiv();
-            $buttons->actionLink(array(MUtil_Model::REQUEST_ID => 1), $this->_('Empty logfile'));
-
-            $this->html->pre(trim(file_get_contents($log_file)), array('class' => 'logFile'));
-
-            $this->html[] = $buttons;
-        } else {
-            $this->html->pInfo($this->_('No logged errors found.'));
-            $this->html->buttonDiv()->actionDisabled($this->_('Empty logfile'));
-        }
+        $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
     }
 
     public function indexAction()

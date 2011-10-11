@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @version    $Id$
  * @package    Gems
  * @subpackage Log
@@ -46,7 +46,7 @@ class Gems_Log extends Zend_Log
      * @var Gems_Log
      */
     private static $_instance = null;
-    
+
     /**
      * Returns static instance
      * @return Gems_Log
@@ -56,7 +56,7 @@ class Gems_Log extends Zend_Log
         if (empty(self::$_instance)) {
             self::$_instance = new Gems_Log();
         }
-        
+
         return self::$_instance;
     }
 
@@ -72,17 +72,17 @@ class Gems_Log extends Zend_Log
     }
 
     /**
-     * Helper method to log exception and (optional) request information 
+     * Helper method to log exception and (optional) request information
      * @param Exception                        $exception
      * @param Zend_Controller_Request_Abstract $request
      */
     public function logError(Exception $exception, Zend_Controller_Request_Abstract $request = null)
     {
         $info = array();
-        
+
         $info[] = 'Class:     ' . get_class($exception);
         $info[] = 'Message:   ' . $this->stripHtml($exception->getMessage());
-        
+
         if (($exception instanceof Gems_Exception) && ($text = $exception->getInfo())) {
             $info[] = 'Info:      ' . $this->stripHtml($text);
         }
@@ -98,19 +98,29 @@ class Gems_Log extends Zend_Log
                 $info[] = 'Changed info:    ' . $this->stripHtml($text);
             }
         } */
-        
+
         if (!empty($request)) {
             $info[] = 'Request Parameters:';
             foreach ($request->getParams() as $key => $value) {
                 $info[] = $key . ' => ' . $value;
             }
         }
-        
+
         $info[] = 'Stack trace:';
         $info[] = $exception->getTraceAsString();
-        
+
         foreach ($info as $line) {
             $this->log($line, Zend_Log::ERR);
+        }
+    }
+
+    /**
+     * Closes all writers.
+     */
+    public function shutdown()
+    {
+        foreach ($this->_writers as $writer) {
+            $writer->shutdown();
         }
     }
 }
