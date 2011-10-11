@@ -58,6 +58,7 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
         } elseif ($element instanceof Zend_Form_Element) {
             if (($element instanceof Zend_Form_Element_Hidden) ||
                 ($element instanceof MUtil_Form_Element_NoFocusInterface) ||
+                ($element->getAttrib('readonly')) ||
                 ($element->helper == 'Button') ||
                 ($element->helper == 'formSubmit') ||
                 ($element->helper == 'SubmitButton')) {

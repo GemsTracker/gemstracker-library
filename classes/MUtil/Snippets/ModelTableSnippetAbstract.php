@@ -59,7 +59,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     /**
      * Functional extension: optionally use this function to add the browse columns
      *
-     * @var callable With signature: function(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+     * @var callable With signature: function(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, MUtil_Snippets_ModelTableSnippetAbstract $snippet)
      */
     public $addTableColumns;
 
@@ -78,6 +78,13 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     public $browse = false;
 
     /**
+     * Optional table caption.
+     *
+     * @var string
+     */
+    public $caption;
+
+    /**
      * Content to show when there are no rows.
      *
      * Null shows '&hellip;'
@@ -94,6 +101,13 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     public $removePost = false;
 
     /**
+     * When true (= default) the headers get sortable links.
+     *
+     * @var boolean
+     */
+    public $sortableLinks = true;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -105,9 +119,17 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $bridge->addSortable($name, $label);
+        if ($this->sortableLinks) {
+            foreach($model->getItemsOrdered() as $name) {
+                if ($label = $model->get($name, 'label')) {
+                    $bridge->addSortable($name, $label);
+                }
+            }
+        } else {
+            foreach($model->getItemsOrdered() as $name) {
+                if ($label = $model->get($name, 'label')) {
+                    $bridge->addColumn($bridge->$name, $label);
+                }
             }
         }
     }
@@ -137,6 +159,9 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     public function getBrowseTable(MUtil_Model_ModelAbstract $model)
     {
         $bridge = new MUtil_Model_TableBridge($model);
+        if ($this->caption) {
+            $bridge->caption($this->caption);
+        }
         if ($this->onEmpty) {
             $bridge->setOnEmpty($this->onEmpty);
         } else {
@@ -147,7 +172,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
         }
 
         if (is_callable($this->addTableColumns)) {
-            call_user_func($this->addTableColumns, $bridge, $model);
+            call_user_func($this->addTableColumns, $bridge, $model, $this);
         } else {
             $this->addBrowseTableColumns($bridge, $model);
         }

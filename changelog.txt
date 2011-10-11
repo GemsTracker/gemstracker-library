@@ -1,6 +1,7 @@
 Important changes from 1.4.2 => 1.4.3
 ============================================================
  * gtr_organisations renamed to gtr_organizations
+ * table gems__countries is no longer in use
 
 Important changes from 1.4.1 => 1.4.2
 ============================================================

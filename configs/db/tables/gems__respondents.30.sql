@@ -49,8 +49,7 @@ CREATE TABLE if not exists gems__respondents (
       grs_zipcode varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       grs_city varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       -- grs_region varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      grs_iso_country char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-              not null default 'NL' references gems__countries (gct_code),
+      grs_iso_country char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NL',
       grs_phone_1 varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       -- grs_phone_2 varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       -- grs_phone_3 varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
