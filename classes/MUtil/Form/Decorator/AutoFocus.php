@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,22 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Form
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Form decorator that sets the focus on the first suitable element.
+ *
+ * @package    MUtil
  * @subpackage Form
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Form
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
 {
@@ -55,7 +56,7 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
                 }
             }
         } elseif ($element instanceof Zend_Form_Element) {
-            if (($element instanceof Zend_Form_Element_Hidden) || 
+            if (($element instanceof Zend_Form_Element_Hidden) ||
                 ($element instanceof MUtil_Form_Element_NoFocusInterface) ||
                 ($element->helper == 'Button') ||
                 ($element->helper == 'formSubmit') ||
@@ -64,14 +65,14 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
             }
             return $element->getId();
 
-        } elseif (($element instanceof Zend_Form) || 
+        } elseif (($element instanceof Zend_Form) ||
                   ($element instanceof Zend_Form_DisplayGroup)) {
             foreach ($element as $subelement) {
                 if ($focus = $this->_getFocus($subelement)) {
                     return $focus;
                 }
             }
-        } 
+        }
 
         return null;
     }

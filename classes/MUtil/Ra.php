@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,37 +26,38 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
  *
- * @author Matijs de Jong
- * @version 1.0
- * @since 1.0
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Ra
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * The Ra class contains static array processing functions that are used to give PHP/Zend some 
+ * The Ra class contains static array processing functions that are used to give PHP/Zend some
  * Python and Haskell like parameter processing functionality.
  *
  * Ra class: pronouce "array" except on 19 september, then it is "ahrrray".
  *
- * The functions are:
- * - MUtil_Ra::args    => Python faking
- * - MUtil_Ra::flatten => flatten an array renumbering keys
- * - MUtil_Ra::pairs   => the parameters represent name => value pairs
+ * The functions are:<ol>
+ * <li>MUtil_Ra::args    => Python faking</li>
+ * <li>MUtil_Ra::flatten => flatten an array renumbering keys</li>
+ * <li>MUtil_Ra::pairs   => the parameters represent name => value pairs</li></ol>
  *
- * @author Matijs de Jong
- * @package MUtil
+ * @package    MUtil
  * @subpackage Ra
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Ra
 {
     const RELAXED = 0;
     const STRICT  = 1;
-    
+
     private static $_initialToArrayList = array(
         'ArrayObject'                      => 'getArrayCopy',
         'MUtil_Lazy_LazyInterface'         => 'MUtil_Lazy::rise',
@@ -75,7 +76,7 @@ class MUtil_Ra
     private static $_toArrayConverter;
 
     public static $toArrayConverterLoopLimit = 10;
-        
+
     /**
      * The args() function makes position independent argument passing possible.
      *
@@ -161,8 +162,8 @@ class MUtil_Ra
      * Of course the actual order is not important, as is the actual number assigned to the last
      * parameter value.
      *
-     * Assignment is depth first. Mind you, assignment is name first, instanceof second as long 
-     * as the $mode = MUtil_Ra::RELAXED. If the name does not correspond to the specified type 
+     * Assignment is depth first. Mind you, assignment is name first, instanceof second as long
+     * as the $mode = MUtil_Ra::RELAXED. If the name does not correspond to the specified type
      * it is still assigned. Also the assignment order is again depth first:
      * <code>
      * MUtil_Ra::args(
@@ -170,22 +171,22 @@ class MUtil_Ra
      *  array('foo' => 'Zend_Foo', 'bar' => 'Zend_Foo', 'foobar' => 'Zend_Db_Select'));
      * =>
      *  array('foo' => new Zend_Foo(1), 'bar' => new Zend_Foo(2), 'foobar' => 'x', 0 => 'a', 1 => 'b');
-     * </code> 
-     * 
-     *  
-     * OTHER TYPE OPTIONS 
-     *  
-     * Apart from class names you can also use is_*() functions to test for a type. E.g. is_string() or 
-     * is_boolean(). You can also write your own is_whatever() function. 
-     *  
-     * You can assign multiple types as an array. The array will search all the arguments first for the 
+     * </code>
+     *
+     *
+     * OTHER TYPE OPTIONS
+     *
+     * Apart from class names you can also use is_*() functions to test for a type. E.g. is_string() or
+     * is_boolean(). You can also write your own is_whatever() function.
+     *
+     * You can assign multiple types as an array. The array will search all the arguments first for the
      * first type, then the second, etc..
-     *  
-     * The next example will get the first passed compatible Zend element (which your code can use to get 
+     *
+     * The next example will get the first passed compatible Zend element (which your code can use to get
      * the id of) or else the first available string parameter.
-     * <code> 
+     * <code>
      *  array('id' => array('Zend_Form_Element', ''Zend_Form_DisplayGroup', 'Zend_Form', 'is_string'));
-     * </code> 
+     * </code>
      *
      * ADDING DEFAULTS
      *
@@ -207,7 +208,7 @@ class MUtil_Ra
      * @param array $args       An array containing the arguments to process (usually func_get_args() output)
      * @param mixed $skipOrName If numeric the number of arguments in $args to leave alone, otherwise the names of numbered
      *                          elements. Class names can also be specified.
-     * @param array $defaults   An array of argument name => default_value pairs. 
+     * @param array $defaults   An array of argument name => default_value pairs.
      * @param boolean $mode     The $skipOrName types are only used as hints or must be strictly adhered to.
      * @return array Flattened array containing the arguments.
      */
@@ -234,16 +235,16 @@ class MUtil_Ra
                 // Assign numbered array items to the names specified (if any)
                 foreach ($names as $n1 => $n2) {
                     // The current element is always the first in the args array,
-                    // as long as the corresponding key is numeric. 
+                    // as long as the corresponding key is numeric.
                     //
-                    // When the "supply" of numeric keys is finished we have processed 
+                    // When the "supply" of numeric keys is finished we have processed
                     // all the keys that were passed.
                     reset($args);
                     $current = key($args);
                     if (! is_int($current)) {
                         break;
                     }
-    
+
                     // The parameter type
                     if (is_int($n1)) {
                         $ntype = null;
@@ -342,19 +343,19 @@ class MUtil_Ra
 
         return false;
     }
-    
+
     /**
      * Extracts a column from a nested array of values, maintaining index association.
-     * 
-     * The default RELAXED mode will return only values where these exist and are not null. 
+     *
+     * The default RELAXED mode will return only values where these exist and are not null.
      * STRICT mode will return all values plus null for all keys in $input.
-     * 
+     *
      * @param string $index Index of the column to extract
      * @param array $input A nested array from which we extract a column
      * @param int $mode RELAXED means a v
-     * @return array An array containing the requested column 
+     * @return array An array containing the requested column
      */
-    public static function column($index, array $input, $mode = self::RELAXED) 
+    public static function column($index, array $input, $mode = self::RELAXED)
     {
         $all = (self::STRICT === $mode);
         $results = array();
