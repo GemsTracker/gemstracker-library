@@ -281,17 +281,20 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             if ($token->hasSuccesCode() &&
                     (! $token->isCompleted())) {
 
-                $round      = $this->_rounds[$token->getRoundId()];
+                //Only process the token when linked to a round
+                if(array_key_exists($token->getRoundId(), $this->_rounds)) {
+                    $round      = $this->_rounds[$token->getRoundId()];
 
-                $fromDate   = $this->getValidFromDate($round['grp_valid_after_source'], $round['grp_valid_after_field'], $round['grp_valid_after_id'], $token, $respTrack);
-                $validFrom  = $this->calculateFromDate($fromDate, $round['grp_valid_after_unit'], $round['grp_valid_after_length']);
+                    $fromDate   = $this->getValidFromDate($round['grp_valid_after_source'], $round['grp_valid_after_field'], $round['grp_valid_after_id'], $token, $respTrack);
+                    $validFrom  = $this->calculateFromDate($fromDate, $round['grp_valid_after_unit'], $round['grp_valid_after_length']);
 
-                // MUtil_Echo::track($round, (string) $fromDate, $validFrom);
+                    // MUtil_Echo::track($round, (string) $fromDate, $validFrom);
 
-                $untilDate  = $this->getValidUntilDate($round['grp_valid_for_source'], $round['grp_valid_for_field'], $round['grp_valid_for_id'], $token, $respTrack, $validFrom);
-                $validUntil = $this->calculateUntilDate($untilDate, $round['grp_valid_for_unit'], $round['grp_valid_for_length']);
+                    $untilDate  = $this->getValidUntilDate($round['grp_valid_for_source'], $round['grp_valid_for_field'], $round['grp_valid_for_id'], $token, $respTrack, $validFrom);
+                    $validUntil = $this->calculateUntilDate($untilDate, $round['grp_valid_for_unit'], $round['grp_valid_for_length']);
 
-                $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                    $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                }
             }
             $token = $token->getNextToken();
         }

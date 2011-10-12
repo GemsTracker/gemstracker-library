@@ -96,7 +96,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 //Now add all onload actions to make the form still work
                 $actions = $this->view->jQuery()->getOnLoadActions();
                 $this->html->raw('<script type="text/javascript">');
-                foreach($actions as $action) {
+                foreach ($actions as $action) {
                     $this->html->raw($action);
                 }
                 $this->html->raw('</script>');
@@ -161,11 +161,9 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         //then remove it or make it more efficient
         unset($data['records']);
         if (isset($data['sid'])) {
-            $gsu_id = intval($data['sid']);
-            $survey = $this->loader->getTracker()->getSurvey($gsu_id);
-
-            $filter = $this->_getFilter($data);
-            $answers = $survey->getRawTokenAnswerRows($filter);
+            $survey   = $this->loader->getTracker()->getSurvey(intval($data['sid']));
+            $filter   = $this->_getFilter($data);
+            $answers  = $survey->getRawTokenAnswerRows($filter);
         } else {
             $answers = array();
         }
@@ -226,11 +224,8 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      */
     public function handleExport($data)
     {
-        $language = $this->locale->getLanguage();
-        $emptyMsg = sprintf($this->_('No %s found.'), $this->getTopic(0));
-        $gsu_id   = intval($data['sid']);
-        $survey   = $this->loader->getTracker()->getSurvey($gsu_id);
-
+        $language    = $this->locale->getLanguage();
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
         $filter      = $this->_getFilter($data);
         $answers     = $survey->getRawTokenAnswerRows($filter);
         $answerModel = $survey->getAnswerModel($language);
@@ -239,7 +234,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $answerModel->set('organizationid', 'multiOptions', $this->escort->getAllowedOrganizations());
 
         if (count($answers) === 0) {
-            $answers[0] = array('' => $emptyMsg);
+            $answers[0] = array('' => sprintf($this->_('No %s found.'), $this->getTopic(0)));
         }
 
         if (isset($data['type'])) {
