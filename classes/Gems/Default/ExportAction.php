@@ -124,13 +124,9 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         $form = $this->getForm($data);
 
+        //Make the form 'autosubmit' so it can refresh
         $form->setAttrib('id', 'autosubmit');
         $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true)), 'mainform');
-        //$this->html[] = new Gems_JQuery_AutoSubmitForm(MUtil_Html::attrib('href', array('action' => 'index', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true)), 'mainform', $form);
-
-        if ($request->isPost()) {
-            $form->populate($data);
-        }
 
         if ($data) {
             $form->populate($data);
@@ -147,19 +143,18 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     public function getForm(&$data)
     {
         //Read some data from tables, initialize defaults...
-        $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name');
+        $surveys       = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name');
         $organizations = $this->escort->getAllowedOrganizations();
-        $types = $this->export->getExportClasses();
+        $types         = $this->export->getExportClasses();
 
         //Create the basic form
         $form = new Gems_Form_TableForm();
-        $form->loadDefaultDecorators();
         $form->removeDecorator('TabPane');
 
         //Start adding elements
         $element = new Zend_Form_Element_Select('sid');
         $element->setLabel($this->_('Survey'))
-            ->setMultiOptions($surveys);
+                ->setMultiOptions($surveys);
         $elements[] = $element;
 
         //Add a field to the form showing the record count. If this is too slow for large recordsets
@@ -180,15 +175,16 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         $element = new Zend_Form_Element_MultiCheckbox('oid');
         $element->setLabel($this->_('Organization'))
-            ->setMultiOptions($organizations);
+                ->setMultiOptions($organizations);
         $elements[] = $element;
+
         $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         $element->setLabel('Toggle');
         $elements[] = $element;
 
         $element = new Zend_Form_Element_Select('type');
         $element->setLabel($this->_('Export to'))
-            ->setMultiOptions($types);
+                ->setMultiOptions($types);
         $elements[] = $element;
 
         //Add all elements to the form
@@ -198,8 +194,9 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         //Now make a change for the selected export type
         if (isset($data['type'])) {
             $exportClass = $this->export->getExport($data['type']);
-            $formFields = $exportClass->getFormElements($form, $data);
-            $exportName = $exportClass->getName();
+            $formFields  = $exportClass->getFormElements($form, $data);
+            $exportName  = $exportClass->getName();
+
             //Now add a hidden field so we know that when this is present in the $data
             //we don't need to set the defaults
             $formFields[] = new Zend_Form_Element_Hidden($exportName);
@@ -216,7 +213,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         //Finally create a submit button and add to the form
         $element = new Zend_Form_Element_Submit('export');
         $element->setLabel('Export')
-            ->setAttrib('class', 'button');
+                ->setAttrib('class', 'button');
         $form->addElement($element);
 
         return $form;
@@ -231,12 +228,13 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     {
         $language = $this->locale->getLanguage();
         $emptyMsg = sprintf($this->_('No %s found.'), $this->getTopic(0));
-        $gsu_id = intval($data['sid']);
-        $survey = $this->loader->getTracker()->getSurvey($gsu_id);
+        $gsu_id   = intval($data['sid']);
+        $survey   = $this->loader->getTracker()->getSurvey($gsu_id);
 
-        $filter = $this->_getFilter($data);
-        $answers = $survey->getRawTokenAnswerRows($filter);
+        $filter      = $this->_getFilter($data);
+        $answers     = $survey->getRawTokenAnswerRows($filter);
         $answerModel = $survey->getAnswerModel($language);
+
         //Now add the organization id => name mapping
         $answerModel->set('organizationid', 'multiOptions', $this->escort->getAllowedOrganizations());
 
@@ -255,6 +253,15 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         }
     }
 
+    /**
+     * Convert the submitted form-data to a filter to be used for retrieving the data to export
+     *
+     * Now only handles the organization ID and consent codes, but can be extended to
+     * include track info or perform some checks
+     *
+     * @param array $data
+     * @return array
+     */
     public function _getFilter($data) {
         $filter = array();
         if (isset($data['oid'])) {
