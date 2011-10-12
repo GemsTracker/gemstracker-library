@@ -193,7 +193,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         // ROLES CONTROLLER
         $page = $setup->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
-        $page->addAction($this->_('ACL'),        null, 'acl');
         $page->addAction($this->_('Assigned'),   null, 'overview');
         $page->addAction($this->_('Privileges'), null, 'privilege');
 
@@ -519,9 +518,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         // PROJECT INFO
         $this->addProjectPage($this->_('Project'));
-
-        // MAIN STAFF ITEM
-        $this->addStaffPage($this->_('Staff'), array('order'=>40));
 
         // SETUP CONTAINER
         $this->addGemsSetupContainer($this->_('Setup'));

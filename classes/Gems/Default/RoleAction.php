@@ -53,12 +53,6 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $this->html[] = $table;
     }
 
-    public function aclAction()
-    {
-        $this->html->h2($this->_('Access Control Lists'));
-        $this->_showTable($this->_('ACL\'s'), $this->acl->getRoles());
-    }
-
     /**
      * Adds elements from the model to the bridge that creates the form.
      *
