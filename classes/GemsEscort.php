@@ -925,17 +925,6 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
-     * Hook to do project specific handling after a round was completed
-     *
-     * The tokendata array will be passed and the values to be saved, including a possible calculated
-     * result. We can calculate results here, and maybe add extra surveys or present a warning screen.
-     *
-     * @param array $tokenData
-     * @param array $values
-     */
-    public function afterRoundCompleted($tokenData, $values) {}
-
-    /**
      * Hook 2: Called in $this->run().
      *
      * This->init() has ran and the constructor has finisched so all _init{name} and application.ini
