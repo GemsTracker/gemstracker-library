@@ -124,16 +124,11 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail')->addValidator($model->createUniqueValidator('gsf_email'));
 
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $this->_groups = MUtil_Lazy::call($dbLookup->getStaffGroups);
-
             $bridge->addSelect('gsf_id_organization');
             $bridge->addSelect('gsf_id_primary_group');
         } else {
-            $sql = "SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 AND ggp_role != 'super' ORDER BY ggp_name";
-            $this->_groups = MUtil_Lazy::call(array($this->db, 'fetchPairs'), $sql);
-
             $bridge->addExhibitor('gsf_id_organization');
-            $bridge->addSelect(   'gsf_id_primary_group', 'multiOptions', $dbLookup->getStaffGroupsNoSuper());
+            $bridge->addSelect(   'gsf_id_primary_group', 'multiOptions', $dbLookup->getAllowedStaffGroups());
         }
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 

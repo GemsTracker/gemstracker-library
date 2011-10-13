@@ -69,6 +69,12 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      */
     protected $util;
 
+    /**
+     *
+     * @var Zend_Session
+     */
+    protected $session;
+
     public function getActiveOrganizations()
     {
         static $organizations;
@@ -186,19 +192,31 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $groups;
     }
 
-    public function getStaffGroupsNoSuper()
+    /**
+     * Retrieve an array of groups the user is allowed to assign: his own group and all groups
+     * he inherits rights from
+     *
+     * @return array
+     */
+    public function getAllowedStaffGroups()
     {
         $groups = $this->getActiveStaffGroups();
-        $roles  = $this->db->fetchPairs('SELECT ggp_id_group, ggp_role FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
-        $result = array();
+        if ($this->session->user_role === 'super') {
+            return $groups;
 
-        foreach ($roles as $id => $role) {
-            if (($role !== 'super') && isset($groups[$id])) {
-                $result[$id] = $groups[$id];
+        } else {
+            $rolesAllowed = $this->acl->getRoleAndParents($this->session->user_role);
+            $roles        = $this->db->fetchPairs('SELECT ggp_id_group, ggp_role FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
+            $result       = array();
+
+            foreach ($roles as $id => $role) {
+                if ((in_array($role, $rolesAllowed)) && isset($groups[$id])) {
+                    $result[$id] = $groups[$id];
+                }
             }
-        }
 
-        return $result;
+            return $result;
+        }
     }
 
     public function getUserConsents()

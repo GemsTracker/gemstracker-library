@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @author     Matijs de Jong
  * @since      1.0
  * @version    $Id$
@@ -37,7 +37,7 @@
 
 /**
  * Extends Zend_Acl with a couple of overview functions/
- * 
+ *
  * @author     Matijs de Jong
  * @package    MUtil
  * @subpackage Acl
@@ -80,14 +80,14 @@ class MUtil_Acl extends Zend_Acl
                     foreach ($rule['byPrivilegeId'] as $privilege => $pdata) {
                         if (! isset($results[$privilege])) {
                             $results[$privilege] = array(
-                                parent::TYPE_ALLOW => array(), 
+                                parent::TYPE_ALLOW => array(),
                                 parent::TYPE_DENY  => array());
                         }
 
                         if (isset($pdata['type'])) {
                             if ($pdata['type'] === parent::TYPE_ALLOW) {
                                 $results[$privilege][parent::TYPE_ALLOW][] = $role;
-                            } elseif ($pdata['type'] === parent::TYPE_DENY) { 
+                            } elseif ($pdata['type'] === parent::TYPE_DENY) {
                                 $results[$privilege][parent::TYPE_DENY][]  = $role;
                             }
                         }
@@ -97,6 +97,26 @@ class MUtil_Acl extends Zend_Acl
             }
         }
 
+        return $results;
+    }
+
+    /**
+     * Retrieve an array of the current role and all parents
+     *
+     * @param string $role
+     * @param array $parents
+     * @return array
+     */
+    public function getRoleAndParents($role, $parents = array()) {
+        $results = $parents;
+        $result = $this->_getRoleRegistry()->getParents($role);
+        foreach($result as $roleId => $selRole) {
+            if (!in_array($roleId, $results)) {
+                $results = $this->getRoleAndParents($roleId, $results);
+            }
+            $results[$roleId] = $roleId;
+        }
+        $results[$role] = $role;
         return $results;
     }
 
@@ -147,15 +167,15 @@ class MUtil_Acl extends Zend_Acl
 
     /**
      * Returns all allow and deny rules for a given role
-     * 
+     *
      * Sample output:
      * <code>
      *   [Zend_Acl::TYPE_ALLOW]=>array(<index>=>privilege),
      *   [Zend_Acl::TYPE_DENY]=>array(<index>=>privilege)
      * </code>
-     * 
+     *
      * @param string $role
-     * @return array 
+     * @return array
      */
     public function getPrivileges ($role) {
         $rule = $this->_getRules(null, $this->getRole($role));

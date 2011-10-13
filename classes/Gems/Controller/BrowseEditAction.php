@@ -294,7 +294,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         if ($this->useTabbedForms) {
             //Create the tabs tried in $form->render() but somehow that is never reached
-            Gems_TabForm::htmlElementsToTabs($form);
+            if ($form instanceof Gems_TabForm) {
+                Gems_TabForm::htmlElementsToTabs($form);
+            }
 
             //If needed, add a row of link buttons to the bottom of the form
             if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
