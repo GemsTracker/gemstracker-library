@@ -348,6 +348,11 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                         }
                     }
 
+                    if ($setCompletionTime) {
+                        $values['gto_completion_time'] = $complTime->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+                        $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
+                    }
+
                     // Process any Gems side survey dependent changes
                     if ($changed = $this->handleAfterCompletion()) {
 
@@ -360,8 +365,9 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                     }
 
                     if ($setCompletionTime) {
-                        $values['gto_completion_time'] = $complTime->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+                        $this->_gemsData['gto_completion_time'] = null;
                     }
+
                     $values['gto_duration_in_sec'] = max($complTime->diffSeconds($startTime), 0);
 
                     //If the survey has a resultfield, store it
