@@ -149,7 +149,6 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         //Create the basic form
         $form = new Gems_Form_TableForm();
-        $form->removeDecorator('TabPane');
 
         //Start adding elements
         $element = new Zend_Form_Element_Select('sid');
