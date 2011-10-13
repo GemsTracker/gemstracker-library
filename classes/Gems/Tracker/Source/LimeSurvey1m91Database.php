@@ -53,10 +53,10 @@ class Gems_Tracker_Source_LimeSurvey1m91Database extends Gems_Tracker_Source_Lim
      * @var string The LS version dependent field name for anonymized surveys
      */
     protected $_anonymizedField = 'anonymized';
-    
+
     /**
      * Sets the answers passed on.
-     * 
+     *
      * With the 'usesleft' feature in 1.91 we should decrease the usesleft with 1 when we insert answers
      *
      * @param Gems_Tracker_Token $token Gems token object
@@ -86,18 +86,18 @@ class Gems_Tracker_Source_LimeSurvey1m91Database extends Gems_Tracker_Source_Lim
             $sql = $lsDb->select()
                         ->from($lsTokenTable, array('usesleft'))
                         ->where('token = ?', $lsTokenId);
-            
-            $usesLeft = $lsdb->fetchOne($sql);
-            
+
+            $usesLeft = $lsDb->fetchOne($sql);
+
             if ($usesLeft > 0) {
                 $usesLeft--;
                 $where = $lsDb->quoteInto("token = ?", $lsTokenId);
-                $lsDb->update($table, array('usesleft'=>$usesLeft), $where);
+                $lsDb->update($lsTokenTable, array('usesleft' => $usesLeft), $where);
             } else {
                 //This is an error condition, should not occur
                 throw new Gems_Exception('Not allowed to use this token');
             }
-            
+
             $current = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
             $answers['token'] = $lsTokenId;
