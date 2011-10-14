@@ -987,7 +987,21 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $this->_ensureReceptionCode();
         }
 
-        return $this->_gemsData['grc_redo_survey'];
+        return (boolean) $this->_gemsData['grc_redo_survey'];
+    }
+
+    /**
+     * True if the reception code is a redo survey copy.
+     *
+     * @return boolean
+     */
+    public function hasRedoCopyCode()
+    {
+        if (! isset($this->_gemsData['grc_redo_survey'])) {
+            $this->_ensureReceptionCode();
+        }
+
+        return Gems_Util_Translated::REDO_COPY == $this->_gemsData['grc_redo_survey'];
     }
 
     /**

@@ -106,6 +106,28 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     protected $util;
 
     /**
+     * Filters an answers array, return only those fields that where answered by the user.
+     *
+     * @param int $sourceSurveyId Survey ID
+     * @param array $answers
+     * @return array
+     */
+    protected function _filterAnswersOnly($sourceSurveyId, array $answers)
+    {
+        $s = $sourceSurveyId . 'X';
+        $l = strlen($s);
+
+        $results = array();
+        foreach ($answers as $key => $value) {
+            if (substr($key, 0, $l) == $s) {
+                $results[$key] = $value;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Return a fieldmap object
      *
      * @param int $sourceSurveyId Survey ID
@@ -822,6 +844,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsTokenId = $this->_getToken($token->getTokenId());
 
         $answers = $this->_getFieldMap($sourceSurveyId)->mapTitlesToKeys($answers);
+        $answers = $this->_filterAnswersOnly($sourceSurveyId, $answers);
 
         if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);

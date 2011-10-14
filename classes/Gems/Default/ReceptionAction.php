@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,35 +25,34 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package Gems
+ * Controller for maintaining reception codes.
+ *
+ * @package    Gems
  * @subpackage Default
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @package Gems
- * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
 {
-    public $sortKey = array('grc_active' => SORT_DESC,        
-                            'grc_success' => SORT_DESC,
-                            'grc_for_respondents' => SORT_DESC,
-                            'grc_for_tracks' => SORT_DESC,
-                            'grc_for_surveys' => SORT_DESC,
-                            'grc_description' => SORT_ASC);
-    
-    public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false) {
+    public $sortKey = array('grc_id_reception_code' => SORT_ASC);
+
+    public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    {
         $model->set('desc1', 'elementClass', 'Html', 'order', 55, 'label', $this->_('Can be assigned to'));
         $model->set('desc2', 'elementClass', 'Html', 'order', 85, 'label', $this->_('Additional action'));
+
         parent::addFormElements($bridge, $model, $data, $new);
     }
 
@@ -101,9 +99,9 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a survey.'));
         $model->set('grc_redo_survey',       'label', $this->_('Redo survey'),
-            'multiOptions', $yesNo ,
-            'elementClass', 'CheckBox',
-            'description', $this->_('Redo a survey on this reception code.'));        
+            'multiOptions', $this->util->getTranslated()->getRedoCodes(),
+            'elementClass', 'Select',
+            'description', $this->_('Redo a survey on this reception code.'));
         $model->set('grc_overwrite_answers', 'label', $this->_('Overwrite ansers'),
             'multiOptions', $yesNo ,
             'elementClass', 'CheckBox',

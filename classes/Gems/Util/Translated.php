@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -42,6 +42,10 @@
  */
 class Gems_Util_Translated extends Gems_Registry_TargetAbstract
 {
+    const REDO_NONE = 0;
+    const REDO_ONLY = 1;
+    const REDO_COPY = 2;
+
     protected $phpDateFormatString = 'd-m-Y';
 
     /**
@@ -78,7 +82,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
             }
         }
         self::$emptyDropdownArray = array('' => $this->_('-'));
-            
+
         return parent::checkRegistryRequestsAnswers();
     }
 
@@ -128,11 +132,11 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
         if ($dateTimeValue) {
             //$dateTime = strtotime($dateTimeValue);
             // MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
-            // TODO: Timezone seems to screw this one up          
-            //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60            
+            // TODO: Timezone seems to screw this one up
+            //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
             $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
             $days = $dateTime->diffDays(new MUtil_Date());
-            
+
             switch ($days) {
                 case -2:
                     return $this->_('2 days ago');
@@ -167,7 +171,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
 
     /**
      * Get a translated empty value for usage in dropdowns
-     * 
+     *
      * On instantiation of the class via Gems_Loader this variable will be populated
      * in checkRegistryRequestsAnswers
      *
@@ -191,6 +195,27 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     public function getGenderHello()
     {
         return array('M' => $this->_('Mr.'), 'F' => $this->_('Mrs.'), 'U' => $this->_('Mr./Mrs.'));
+    }
+
+    /**
+     * Return the field values for the redo code.
+     *
+     * <ul><li>0: do not redo</li>
+     * <li>1: redo but do not copy answers</li>
+     * <li>2: redo and copy answers</li></ul>
+     *
+     * @staticvar array $data
+     * @return array
+     */
+    public function getRedoCodes()
+    {
+        static $data;
+
+        if (! $data) {
+            $data = array(self::REDO_NONE => $this->_('No'), self::REDO_ONLY => $this->_('Yes (forget answers)'), self::REDO_COPY => $this->_('Yes (keep answers)'));
+        }
+
+        return $data;
     }
 
     public function getYesNo()

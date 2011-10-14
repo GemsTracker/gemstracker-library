@@ -259,8 +259,16 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
             // Tell what the user what happened
             $this->addMessage(sprintf($this->_('Created replacement token %2$s for token %1$s.'), $oldTokenUrl, strtoupper($this->_replacementTokenId)));
 
+            // Lookup token
+            $newToken = $this->loader->getTracker()->getToken($this->_replacementTokenId);
+
             // Make sure the Next token is set right
-            $this->token->setNextToken($this->loader->getTracker()->getToken($this->_replacementTokenId));
+            $this->token->setNextToken($newToken);
+
+            // Copy answers when requested.
+            if ($this->token->hasRedoCopyCode()) {
+                $newToken->setRawAnswers($this->token->getRawAnswers());
+            }
         }
 
         $respTrack = $this->token->getRespondentTrack();
