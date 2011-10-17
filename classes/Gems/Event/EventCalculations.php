@@ -209,16 +209,8 @@ class Gems_Event_EventCalculations
     protected function sumInt(array $tokenAnswers, $fieldNames)
     {
         if (is_string($fieldNames)) {
-            $startName  = $fieldNames;
-            $fieldNames = array();
-
-            foreach ($tokenAnswers as $fieldName => $value) {
-                if (strpos($fieldName, $startName) !== false) {
-                    $fieldNames[] = $fieldName;
-                }
-            }
+            $fieldNames = $this->_arrayFindName($tokenAnswers, $fieldNames);
         }
-        // MUtil_Echo::track($fieldNames);
 
         $sum = 0;
         foreach ($fieldNames as $name) {
