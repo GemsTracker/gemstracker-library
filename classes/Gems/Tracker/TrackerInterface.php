@@ -60,8 +60,7 @@
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.4
  */
 interface Gems_Tracker_TrackerInterface {
     /**
@@ -75,7 +74,7 @@ interface Gems_Tracker_TrackerInterface {
      * @return array of translated messages
      */
     public function checkTrackRounds($userId = null, $cond = null);
-    
+
     /**
      * Create a new track for a patient
      *
@@ -91,7 +90,7 @@ interface Gems_Tracker_TrackerInterface {
 
     /**
      * Creates a new token with a new random token Id
-     * 
+     *
      * @param array $tokenData The other new data for the token
      * @param int $userId Id of the user who takes the action (for logging)
      * @return string
@@ -131,7 +130,7 @@ interface Gems_Tracker_TrackerInterface {
 
     /**
      * Retrieve a SourceInterface with a given id
-     * 
+     *
      * Should only be called by Gems_Tracker, Gems_Tracker_Survey or Gems_Tracker_Token (or should
      * this one use Gems_Tracker_Survey instead?)
      *
