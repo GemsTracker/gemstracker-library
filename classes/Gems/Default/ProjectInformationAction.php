@@ -135,6 +135,17 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->_showTable($this->_('Version information'), $data);
     }
 
+    public function maintenanceAction()
+    {
+        $lockFile = GEMS_ROOT_DIR . '/var/settings/lock.txt';
+        if(file_exists($lockFile)) {
+            unlink($lockFile);
+        } else {
+            touch($lockFile);
+        }
+        $this->_forward('index');
+    }
+
     public function phpAction()
     {
         $this->html->h2($this->_('Server PHP Info'));

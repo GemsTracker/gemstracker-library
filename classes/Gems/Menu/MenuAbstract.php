@@ -300,6 +300,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('PHP'),        null, 'php');
         $page->addAction($this->_('Project'),    null, 'project');
         $page->addAction($this->_('Session'),    null, 'session');
+        $page->addAction($this->_('Maintenance mode'),    'pr.maintenance', 'maintenance');
 
         return $page;
     }

@@ -1519,6 +1519,25 @@ class GemsEscort extends MUtil_Application_Escort
         $this->menu = $this->getLoader()->createMenu($this);
         $this->_updateVariable('menu');
 
+        /**
+         * Check if we are in maintenance mode or not. This is triggeren by a file in the var/settings
+         * directory with the name lock.txt
+         */
+        if(file_exists(GEMS_ROOT_DIR . '/var/settings/lock.txt')) {
+            if ($this->session->user_id && $this->session->user_role !== 'super') {
+                //Still allow logoff so we can relogin as super
+                if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
+                    $this->setError(
+                        $this->_('Please check back later.'),
+                        401,
+                        $this->_('System is in maintenance mode'));
+                }
+            } else {
+                $this->getMessenger()->addMessage($this->_('System is in maintenance mode'));
+                MUtil_Echo::r($this->_('System is in maintenance mode'));
+            }
+        }
+
         // Gems does not use index/index
         if (('index' == $request->getControllerName()) && ('index' == $request->getActionName())) {
             // Instead Gems routes to the first available menu item when this is the request target
