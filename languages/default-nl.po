@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-14 17:00+0100\n"
+"POT-Creation-Date: 2011-10-17 15:19+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,30 +36,40 @@ msgstr "versie"
 msgid "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer de gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1532
+#: classes/GemsEscort.php:1531
+msgid "Please check back later."
+msgstr "Probeer het later opnieuw."
+
+#: classes/GemsEscort.php:1533
+#: classes/GemsEscort.php:1536
+#: classes/GemsEscort.php:1537
+msgid "System is in maintenance mode"
+msgstr "Systeem is in onderhoudsmodus"
+
+#: classes/GemsEscort.php:1551
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1534
-#: classes/GemsEscort.php:1570
+#: classes/GemsEscort.php:1553
+#: classes/GemsEscort.php:1589
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1550
+#: classes/GemsEscort.php:1569
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1552
+#: classes/GemsEscort.php:1571
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1557
-#: classes/GemsEscort.php:1568
+#: classes/GemsEscort.php:1576
+#: classes/GemsEscort.php:1587
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1558
+#: classes/GemsEscort.php:1577
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
@@ -1480,19 +1490,19 @@ msgstr "De tijd op de server"
 msgid "Version information"
 msgstr "Versie informatie"
 
-#: classes/Gems/Default/ProjectInformationAction.php:140
+#: classes/Gems/Default/ProjectInformationAction.php:151
 msgid "Server PHP Info"
 msgstr "Server PHP Info"
 
-#: classes/Gems/Default/ProjectInformationAction.php:153
+#: classes/Gems/Default/ProjectInformationAction.php:164
 msgid "Project settings"
 msgstr "Project instellingen"
 
-#: classes/Gems/Default/ProjectInformationAction.php:160
+#: classes/Gems/Default/ProjectInformationAction.php:171
 msgid "Session content"
 msgstr "Sessie inhoud"
 
-#: classes/Gems/Default/ProjectInformationAction.php:161
+#: classes/Gems/Default/ProjectInformationAction.php:172
 msgid "Session"
 msgstr "Sessie"
 
@@ -2517,49 +2527,53 @@ msgstr "Foutmeldingen"
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu/MenuAbstract.php:394
+#: classes/Gems/Menu/MenuAbstract.php:303
+msgid "Maintenance mode"
+msgstr "Onderhoudsmodus"
+
+#: classes/Gems/Menu/MenuAbstract.php:395
 msgid "Check status"
 msgstr "Status controle"
 
-#: classes/Gems/Menu/MenuAbstract.php:395
+#: classes/Gems/Menu/MenuAbstract.php:396
 msgid "Synchronize surveys"
 msgstr "Synchroniseer vragenlijsten"
 
-#: classes/Gems/Menu/MenuAbstract.php:396
-#: classes/Gems/Menu/MenuAbstract.php:407
+#: classes/Gems/Menu/MenuAbstract.php:397
+#: classes/Gems/Menu/MenuAbstract.php:408
 msgid "Check answers"
 msgstr "Antwoord controle"
 
-#: classes/Gems/Menu/MenuAbstract.php:397
+#: classes/Gems/Menu/MenuAbstract.php:398
 msgid "Synchronize all surveys"
 msgstr "Synchroniseer alle vragenlijsten"
 
-#: classes/Gems/Menu/MenuAbstract.php:398
-#: classes/Gems/Menu/MenuAbstract.php:408
+#: classes/Gems/Menu/MenuAbstract.php:399
+#: classes/Gems/Menu/MenuAbstract.php:409
 msgid "Check all answers"
 msgstr "Controleer alle antwoorden"
 
-#: classes/Gems/Menu/MenuAbstract.php:404
+#: classes/Gems/Menu/MenuAbstract.php:405
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:438
+#: classes/Gems/Menu/MenuAbstract.php:439
 msgid "Check assignments"
 msgstr "Controleer toewijzingen"
 
-#: classes/Gems/Menu/MenuAbstract.php:441
+#: classes/Gems/Menu/MenuAbstract.php:442
 msgid "Check all assignments"
 msgstr "Controleer alle toewijzingen"
 
-#: classes/Gems/Menu/SubMenuItem.php:386
+#: classes/Gems/Menu/SubMenuItem.php:396
 msgid "New"
 msgstr "Nieuw"
 
-#: classes/Gems/Menu/SubMenuItem.php:440
+#: classes/Gems/Menu/SubMenuItem.php:450
 msgid "Export the current data set to Excel"
 msgstr "Exporteer de huidige gegevens naar Excel"
 
-#: classes/Gems/Menu/SubMenuItem.php:444
+#: classes/Gems/Menu/SubMenuItem.php:454
 msgid "Excel export"
 msgstr "Excel export"
 
@@ -3527,6 +3541,10 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
 
+#: views/scripts/index/login.phtml:12
+msgid "The Pulse software was made possible thanks to support from "
+msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
+
 #~ msgid "ACL"
 #~ msgstr "ACL"
 
@@ -3556,9 +3574,6 @@ msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
 
 #~ msgid "No logged errors found."
 #~ msgstr "Geen foutmeldingen gevonden."
-
-#~ msgid "The Pulse software was made possible thanks to support from "
-#~ msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
 
 #~ msgid "Email"
 #~ msgstr "Email"

@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-14 17:00+0100\n"
+"POT-Creation-Date: 2011-10-17 15:19+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,30 +36,40 @@ msgstr "version"
 msgid "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1532
+#: classes/GemsEscort.php:1531
+msgid "Please check back later."
+msgstr "Please check back later."
+
+#: classes/GemsEscort.php:1533
+#: classes/GemsEscort.php:1536
+#: classes/GemsEscort.php:1537
+msgid "System is in maintenance mode"
+msgstr "System is in maintenance mode"
+
+#: classes/GemsEscort.php:1551
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1534
-#: classes/GemsEscort.php:1570
+#: classes/GemsEscort.php:1553
+#: classes/GemsEscort.php:1589
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1550
+#: classes/GemsEscort.php:1569
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1552
+#: classes/GemsEscort.php:1571
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1557
-#: classes/GemsEscort.php:1568
+#: classes/GemsEscort.php:1576
+#: classes/GemsEscort.php:1587
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1558
+#: classes/GemsEscort.php:1577
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -1480,19 +1490,19 @@ msgstr "Time on server"
 msgid "Version information"
 msgstr "Version information"
 
-#: classes/Gems/Default/ProjectInformationAction.php:140
+#: classes/Gems/Default/ProjectInformationAction.php:151
 msgid "Server PHP Info"
 msgstr "Server PHP Info"
 
-#: classes/Gems/Default/ProjectInformationAction.php:153
+#: classes/Gems/Default/ProjectInformationAction.php:164
 msgid "Project settings"
 msgstr "Project settings"
 
-#: classes/Gems/Default/ProjectInformationAction.php:160
+#: classes/Gems/Default/ProjectInformationAction.php:171
 msgid "Session content"
 msgstr "Session content"
 
-#: classes/Gems/Default/ProjectInformationAction.php:161
+#: classes/Gems/Default/ProjectInformationAction.php:172
 msgid "Session"
 msgstr "Session"
 
@@ -2517,49 +2527,53 @@ msgstr "Errors"
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu/MenuAbstract.php:394
+#: classes/Gems/Menu/MenuAbstract.php:303
+msgid "Maintenance mode"
+msgstr "Maintenance mode"
+
+#: classes/Gems/Menu/MenuAbstract.php:395
 msgid "Check status"
 msgstr "Check status"
 
-#: classes/Gems/Menu/MenuAbstract.php:395
+#: classes/Gems/Menu/MenuAbstract.php:396
 msgid "Synchronize surveys"
 msgstr "Synchronize surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:396
-#: classes/Gems/Menu/MenuAbstract.php:407
+#: classes/Gems/Menu/MenuAbstract.php:397
+#: classes/Gems/Menu/MenuAbstract.php:408
 msgid "Check answers"
 msgstr "Check answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:397
+#: classes/Gems/Menu/MenuAbstract.php:398
 msgid "Synchronize all surveys"
 msgstr "Synchronize all surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:398
-#: classes/Gems/Menu/MenuAbstract.php:408
+#: classes/Gems/Menu/MenuAbstract.php:399
+#: classes/Gems/Menu/MenuAbstract.php:409
 msgid "Check all answers"
 msgstr "Check all answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:404
+#: classes/Gems/Menu/MenuAbstract.php:405
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:438
+#: classes/Gems/Menu/MenuAbstract.php:439
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:441
+#: classes/Gems/Menu/MenuAbstract.php:442
 msgid "Check all assignments"
 msgstr "Check all assignments"
 
-#: classes/Gems/Menu/SubMenuItem.php:386
+#: classes/Gems/Menu/SubMenuItem.php:396
 msgid "New"
 msgstr "New"
 
-#: classes/Gems/Menu/SubMenuItem.php:440
+#: classes/Gems/Menu/SubMenuItem.php:450
 msgid "Export the current data set to Excel"
 msgstr "Export the current data set to Excel"
 
-#: classes/Gems/Menu/SubMenuItem.php:444
+#: classes/Gems/Menu/SubMenuItem.php:454
 msgid "Excel export"
 msgstr "Excel export"
 
@@ -3527,6 +3541,10 @@ msgstr "This survey can be assigned since %s."
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
 
+#: views/scripts/index/login.phtml:12
+msgid "The Pulse software was made possible thanks to support from "
+msgstr "The Pulse software was made possible thanks to support from "
+
 #~ msgid "ACL"
 #~ msgstr "ACL"
 
@@ -3556,9 +3574,6 @@ msgstr "This track can be assigned since %s."
 
 #~ msgid "No logged errors found."
 #~ msgstr "No logged errors found."
-
-#~ msgid "The Pulse software was made possible thanks to support from "
-#~ msgstr "The Pulse software was made possible thanks to support from "
 
 #~ msgid "Email"
 #~ msgstr "Email"
