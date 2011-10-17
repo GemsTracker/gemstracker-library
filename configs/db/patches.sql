@@ -202,3 +202,5 @@ ALTER TABLE gems__tracks CHANGE gtr_organisations gtr_organizations varchar(250)
 
 -- PATCH: Assign maintenance mode toggle to super role
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.maintenance') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.maintenance%';
+
+-- GEMS VERSION: 42
