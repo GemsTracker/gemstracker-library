@@ -29,5 +29,5 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
     ('OK', '', 1, 1, 0, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 

@@ -4,8 +4,6 @@ CREATE TABLE if not exists gems__mail_jobs (
 
         gmj_id_organization bigint unsigned not null
                 references gems__organizations (gor_id_organization),
-        gmj_id_message bigint unsigned not null
-                references gems__mail_templates (gmt_id_message),
 
         gmj_id_user_as bigint unsigned not null
                 references gems__staff (gsf_id_user),
