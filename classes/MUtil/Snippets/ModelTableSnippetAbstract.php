@@ -57,13 +57,6 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     protected $_marker;
 
     /**
-     * Functional extension: optionally use this function to add the browse columns
-     *
-     * @var callable With signature: function(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, MUtil_Snippets_ModelTableSnippetAbstract $snippet)
-     */
-    public $addTableColumns;
-
-    /**
      * Url parts added to each link in the resulting table
      *
      * @var array
@@ -171,11 +164,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
             $bridge->setBaseUrl($this->baseUrl);
         }
 
-        if (is_callable($this->addTableColumns)) {
-            call_user_func($this->addTableColumns, $bridge, $model, $this);
-        } else {
-            $this->addBrowseTableColumns($bridge, $model);
-        }
+        $this->addBrowseTableColumns($bridge, $model);
 
         return $bridge->getTable();
     }

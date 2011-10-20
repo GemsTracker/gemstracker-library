@@ -39,50 +39,13 @@
  * Displays multiple items from a model in a tabel by row using
  * the model set through the $model snippet parameter.
  *
+ * Usage snippet for Gems_Snippets_ModelTableSnippetGeneric
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4
  */
-class Generic_ModelTableSnippet extends Gems_Snippets_ModelTableSnippetAbstract
-{
-    /**
-     *
-     * @var MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
-    /**
-     *
-     * @var Gems_Util
-     */
-    protected $util;
-
-    /**
-     * Automatically add request cacge
-     *
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->util && (! $this->requestCache)) {
-            $this->requestCache = $this->util->getRequestCache();
-        }
-
-        return parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
-    }
-}
+class Generic_ModelTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+{ }

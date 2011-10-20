@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -36,62 +36,19 @@
  */
 
 /**
- * Displays each fields of a single item in a model in a row in a Html table
- * the model set through the $model snippet parameter.
+ * Add complex column layout to display.
  *
- * @package    MUtil
- * @subpackage Gems
+ *
+ * @package    Gems
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.4
  */
-class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+class Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
-     * The PHP class used to create the VerticalTableBridge.
-     *
-     * Must be instanceof MUtil_Model_VerticalTableBridge.
-     *
-     * @var string Class name
-     */
-    // protected $bridgeClass = 'Gems_Model_ThreeColumnTableBridge';
-
-    /**
-     * Shortfix to add class attribute
-     *
-     * @var string
-     */
-    protected $class = 'displayer';
-
-    /**
-     * Required
-     *
-     * @var Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
-     * @var Gems_Menu
-     */
-    protected $menu;
-
-    /**
-     *
-     * @var MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
-    /**
-     * Required
-     *
-     * @var Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
-     * Adds rows from the model to the bridge that creates the browse table.
+     * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
@@ -100,28 +57,20 @@ class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSni
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        parent::addShowTableRows($bridge, $model);
+        if ($menuItem = $this->findMenuItem($this->request->getControllerName(), 'show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+        }
 
-        $controller = $this->request->getControllerName();
+        // Newline placeholder
+        $br = MUtil_Html::create('br');
 
-        $menuList = $this->menu->getMenuList();
-        $menuList->addParameterSources($bridge)
-                ->addByController($controller, 'index', $this->_('Cancel'))
-                ->addByController($controller, 'edit')
-                ->addByController($controller, 'delete');
+        // make sure search results are highlighted
+        $this->applyTextMarker();
 
-        $bridge->tfrow($menuList, array('class' => 'centerAlign'));
-    }
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
+        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address');
+        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender');
+        $bridge->addMultiSort('grco_topic');
     }
 }

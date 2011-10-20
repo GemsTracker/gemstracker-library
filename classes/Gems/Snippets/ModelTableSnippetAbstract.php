@@ -103,6 +103,24 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     protected $sortParamDesc = 'dsrt';
 
     /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        // make sure search results are highlighted
+        $this->applyTextMarker();
+
+        return parent::addBrowseTableColumns($bridge, $model);
+    }
+
+    /**
      * Add the paginator panel to the table.
      *
      * Only called when $this->browse is true. Overrule this function
@@ -113,6 +131,30 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
     {
         $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
+    }
+
+    /**
+     * Make sure generic search text results are marked
+     *
+     * @return void
+     */
+    protected function applyTextMarker()
+    {
+        $model = $this->getModel();
+
+        $textKey = $model->getTextFilter();
+        $filter  = $model->getFilter();
+
+        if (isset($filter[$textKey])) {
+            $searchText = $filter[$textKey];
+            // MUtil_Echo::r('[' . $searchText . ']');
+            $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            foreach ($model->getItemNames() as $name) {
+                if ($model->get($name, 'label')) {
+                    $model->set($name, 'markCallback', array($marker, 'mark'));
+                }
+            }
+        }
     }
 
     /**
@@ -204,7 +246,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
             $data = $this->requestCache->getProgramParams();
 
             $model->applyParameters($data);
-            
+
         } else {
             parent::processFilterAndSort($model);
         }

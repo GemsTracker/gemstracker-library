@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    Gems
+ * @package    MUtil
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -36,47 +36,23 @@
  */
 
 /**
- * Displays each fields of a single item in a model in a row in a Html table
+ * Displays multiple items from a model in a tabel by row using
  * the model set through the $model snippet parameter.
  *
+ * If you want to use this class "as is" use the 'Generic_ModelTableSnippet' snippet.
+ *
+ * This class is not in the standard snippet loading directories and does not follow
+ * their naming conventions, but exists only to make it simple to extend this class
+ * for a specific implementation.
+ *
  * @package    MUtil
- * @subpackage Gems
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.4
  */
-class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+class Gems_Snippets_ModelTableSnippetGeneric extends Gems_Snippets_ModelTableSnippetAbstract
 {
-    /**
-     * The PHP class used to create the VerticalTableBridge.
-     *
-     * Must be instanceof MUtil_Model_VerticalTableBridge.
-     *
-     * @var string Class name
-     */
-    // protected $bridgeClass = 'Gems_Model_ThreeColumnTableBridge';
-
-    /**
-     * Shortfix to add class attribute
-     *
-     * @var string
-     */
-    protected $class = 'displayer';
-
-    /**
-     * Required
-     *
-     * @var Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     * Required
-     *
-     * @var Gems_Menu
-     */
-    protected $menu;
-
     /**
      *
      * @var MUtil_Model_ModelAbstract
@@ -84,35 +60,26 @@ class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSni
     protected $model;
 
     /**
-     * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var Gems_Util
      */
-    protected $request;
+    protected $util;
 
     /**
-     * Adds rows from the model to the bridge that creates the browse table.
+     * Automatically add request cacge
      *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
      *
-     * @param MUtil_Model_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @return void
+     * @return boolean False if required are missing.
      */
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    public function checkRegistryRequestsAnswers()
     {
-        parent::addShowTableRows($bridge, $model);
+        if ($this->util && (! $this->requestCache)) {
+            $this->requestCache = $this->util->getRequestCache();
+        }
 
-        $controller = $this->request->getControllerName();
-
-        $menuList = $this->menu->getMenuList();
-        $menuList->addParameterSources($bridge)
-                ->addByController($controller, 'index', $this->_('Cancel'))
-                ->addByController($controller, 'edit')
-                ->addByController($controller, 'delete');
-
-        $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+        return parent::checkRegistryRequestsAnswers();
     }
 
     /**

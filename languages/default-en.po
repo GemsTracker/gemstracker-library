@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-20 15:30+0100\n"
+"POT-Creation-Date: 2011-10-20 17:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1151,8 +1151,7 @@ msgid "Log maintenance"
 msgstr "Log maintenance"
 
 #: classes/Gems/Default/MailAction.php:61
-#: classes/Gems/Default/MailLogAction.php:132
-#: classes/Gems/Default/MailLogActionOldStyle.php:118
+#: classes/Gems/Default/MailLogAction.php:113
 msgid "Subject"
 msgstr "Subject"
 
@@ -1170,50 +1169,37 @@ msgstr[1] "email templates"
 msgid "Email templates"
 msgstr "Email templates"
 
-#: classes/Gems/Default/MailLogAction.php:126
-#: classes/Gems/Default/MailLogActionOldStyle.php:112
+#: classes/Gems/Default/MailLogAction.php:107
 msgid "Date sent"
 msgstr "Date sent"
 
-#: classes/Gems/Default/MailLogAction.php:127
-#: classes/Gems/Default/MailLogActionOldStyle.php:113
+#: classes/Gems/Default/MailLogAction.php:108
 msgid "Receiver"
 msgstr "Receiver"
 
-#: classes/Gems/Default/MailLogAction.php:128
-#: classes/Gems/Default/MailLogActionOldStyle.php:114
+#: classes/Gems/Default/MailLogAction.php:109
 msgid "To address"
 msgstr "To address"
 
-#: classes/Gems/Default/MailLogAction.php:129
-#: classes/Gems/Default/MailLogActionOldStyle.php:115
+#: classes/Gems/Default/MailLogAction.php:110
 msgid "Sender"
 msgstr "Sender"
 
-#: classes/Gems/Default/MailLogAction.php:130
-#: classes/Gems/Default/MailLogActionOldStyle.php:116
+#: classes/Gems/Default/MailLogAction.php:111
 msgid "From address"
 msgstr "From address"
 
-#: classes/Gems/Default/MailLogAction.php:135
-#: classes/Gems/Default/MailLogActionOldStyle.php:121
+#: classes/Gems/Default/MailLogAction.php:116
 msgid "Template"
 msgstr "Template"
 
-#: classes/Gems/Default/MailLogAction.php:148
-#: classes/Gems/Default/MailLogActionOldStyle.php:148
+#: classes/Gems/Default/MailLogAction.php:129
 msgid "Mail Activity Log"
 msgstr "Mail Activity Log"
 
-#: classes/Gems/Default/MailLogAction.php:160
+#: classes/Gems/Default/MailLogAction.php:140
 msgid "Show Mail Activity Log item"
 msgstr "Show Mail Activity Log item"
-
-#: classes/Gems/Default/MailLogActionOldStyle.php:137
-msgid "Activity Log"
-msgid_plural "Activity Logs"
-msgstr[0] "Activity Log"
-msgstr[1] "Activity Logs"
 
 #: classes/Gems/Default/MailServerAction.php:68
 msgid "From address [part]"
@@ -1256,6 +1242,8 @@ msgid "User ID"
 msgstr "User ID"
 
 #: classes/Gems/Default/MailServerAction.php:90
+#: classes/Gems/Default/OptionAction.php:107
+#: classes/Gems/Default/OptionAction.php:112
 msgid "Repeat password"
 msgstr "Repeat password"
 
@@ -1274,14 +1262,10 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/OptionAction.php:73
-#: classes/Gems/Default/OrganizationAction.php:128
-#: classes/Gems/Default/RespondentAction.php:173
-#: classes/Gems/Default/StaffAction.php:188
 msgid "Language"
 msgstr "Language"
 
 #: classes/Gems/Default/OptionAction.php:74
-#: classes/Gems/Default/StaffAction.php:189
 msgid "Logout on survey"
 msgstr "Logout on survey"
 
@@ -1568,6 +1552,7 @@ msgid "Survey not specified."
 msgstr "Survey not specified."
 
 #: classes/Gems/Default/ProjectTracksAction.php:120
+#: classes/Gems/Default/TrackActionAbstract.php:479
 #, php-format
 msgid "Track %s does not exist."
 msgstr "Track %s does not exist."
@@ -2515,8 +2500,8 @@ msgid "Some help for this export"
 msgstr "Some help for this export"
 
 #: classes/Gems/Menu/MenuAbstract.php:233
-msgid "Activity"
-msgstr "Activity"
+msgid "Activity log"
+msgstr "Activity Log"
 
 #: classes/Gems/Menu/MenuAbstract.php:239
 msgid "Servers"
@@ -3563,6 +3548,9 @@ msgstr "This survey can be assigned since %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#~ msgid "Activity"
+#~ msgstr "Activity"
 
 #~ msgid "DB Adaptor"
 #~ msgstr "DB Adaptor"

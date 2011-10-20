@@ -37,9 +37,7 @@
  */
 
 /**
- * Short description for class
- *
- * Long description for class (if any)...
+ * Controller for looking at mail activity
  *
  * @package    Gems
  * @subpackage Default
@@ -50,27 +48,11 @@
 class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
+     * The snippets used for the autofilter action.
      *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param MUtil_Model_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @rturn void
+     * @var mixed String or array of snippets name
      */
-    public function addTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        if ($menuItem = $this->firstAllowedMenuItem('show')) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
-
-        // Newline placeholder
-        $br = MUtil_Html::create('br');
-
-        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address');
-        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender');
-        $bridge->addMultiSort('grco_topic');
-    }
+    protected $autofilterSnippets = 'Mail_Log_MailLogBrowseSnippet';
 
     /**
      * The automatically filtered result
@@ -79,7 +61,6 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     {
         $filter = array('grco_organization' => $this->escort->getCurrentOrganization());
 
-        $this->autofilterParameters['addTableColumns'] = array($this, 'addTableColumns');
         $this->autofilterParameters['extraFilter']     = $filter;
         $this->autofilterParameters['extraSort']       = array('grco_created' => SORT_DESC);
 
@@ -147,7 +128,6 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     {
         $this->html->h3($this->_('Mail Activity Log'));
 
-        // MUtil_Echo::track($this->indexParameters);
         parent::indexAction();
     }
 

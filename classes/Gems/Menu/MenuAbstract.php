@@ -230,7 +230,7 @@ abstract class Gems_Menu_MenuAbstract
 
         // MAIL ACTIVITY CONTROLLER
         //$setup->addBrowsePage();
-        $page = $setup->addPage($this->_('Activity'), 'pr.mail.log', 'mail-log');
+        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
         $page->addAutofilterAction();
         $page->addExcelAction();
         $page->addShowAction();

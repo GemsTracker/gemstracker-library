@@ -98,6 +98,19 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $showSnippets = 'ModelVerticalTableSnippet';
 
     /**
+     * Array of the actions that use a summarized version of the model.
+     *
+     * This determines the value of $detailed in createAction(). As it is usually
+     * less of a problem to use a $detailed model with an action that should use
+     * a summarized model and I guess there will usually be more detailed actions
+     * than summarized ones it seems less work to specify these.
+     *
+     * @var array $summarizedActions Array of the actions that use a
+     * summarized version of the model.
+     */
+    public $summarizedActions = array('index', 'autofilter');
+
+    /**
      * Set the action key in request
      *
      * Use this when an action is a Ajax action for retrieving
@@ -137,7 +150,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         }
 
         if ($resetMvc && MUtil_Echo::hasOutput()) {
-            $this->html->raw(MUtil_Echo::out());
+            // Lazy call here, because any echo calls in the snippets have not yet been
+            // performed. so they will appear only in the next call when not lazy.
+            $this->html->raw(MUtil_Lazy::call(array('MUtil_Echo', 'out')));
         }
     }
 
