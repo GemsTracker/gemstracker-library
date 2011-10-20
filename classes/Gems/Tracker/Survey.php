@@ -104,6 +104,26 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Makes sure the receptioncode data is part of the $this->_gemsData
+     *
+     * @param boolean $reload Optional parameter to force reload.
+     */
+    private function _ensureGroupData($reload = false)
+    {
+        if ($reload || (! isset($this->_gemsSurvey['ggp_id_group']))) {
+            $sql  = "SELECT * FROM gems__groups WHERE ggp_id_group = ?";
+            $code = $this->_gemsSurvey['gsu_id_primary_group'];
+
+            if ($row = $this->db->fetchRow($sql, $code)) {
+                $this->_gemsSurvey = $row + $this->_gemsSurvey;
+            } else {
+                $name = $this->getName();
+                throw new Gems_Exception("Group code $code is missing for survey '$name'.");
+            }
+        }
+    }
+
+    /**
      * Update the survey, both in the database and in memory.
      *
      * @param array $values The values that this token should be set to
@@ -463,6 +483,20 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     {
         $source = $this->getSource();
         return $source->isCompleted($token, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+    }
+
+    /**
+     * Should this survey be filled in by staff members.
+     *
+     * @return boolean
+     */
+    public function isTakenByStaff()
+    {
+        if (! isset($this->_gemsSurvey['ggp_staff_members'])) {
+            $this->_ensureGroupData();
+        }
+
+        return (boolean) $this->_gemsSurvey['ggp_staff_members'];
     }
 
     /**

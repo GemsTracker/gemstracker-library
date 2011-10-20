@@ -20,7 +20,10 @@ CREATE TABLE if not exists gems__surveys (
                 references gems__sources (gso_id_source),
         gsu_active boolean not null default 0,
         gsu_status varchar(127) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+
+        -- depreciated
         gsu_staff boolean not null default 0,
+        -- end depreciated
 
         gsu_id_primary_group bigint unsigned null
                 references gems__groups (ggp_id_group),
