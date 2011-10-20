@@ -76,14 +76,14 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         }
 
         $bridge->addHidden('gso_id_source');
-        $bridge->addText('gso_source_name', array('size' => 15, 'minlength' => 4));
+        $bridge->addText('gso_source_name', 'description', $this->_('E.g. the name of the project - for single source projects.'), 'size', 15, 'minlength', 4);
         $bridge->addValidator('gso_source_name', $model->createUniqueValidator('gso_source_name'));
-        $bridge->addText('gso_ls_url', array('size' => 50));
+        $bridge->addText('gso_ls_url', 'description', $this->_('For creating token-survey url.'), 'size', 50);
         $bridge->addValidator('gso_ls_url', $model->createUniqueValidator('gso_ls_url'));
         $bridge->addValidator('gso_ls_url', new MUtil_Validate_Url());
 
         $bridge->addSelect('gso_ls_class');
-        $bridge->addSelect('gso_ls_adapter', 'description', $this->_('Choose the database used by the source.'));
+        $bridge->addSelect('gso_ls_adapter', 'description', $this->_('Choose the database used by this source.'));
 
         $bridge->addText('gso_ls_table_prefix', array('size' => 15, 'description' => $this->_('Do not forget the underscores.')));
         $bridge->addText('gso_ls_dbhost', array('size' => 15, 'description' => $in_gems));
@@ -140,7 +140,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $model   = new MUtil_Model_TableModel('gems__sources');
 
         $model->set('gso_source_name', 'label', $this->_('Name'));
-        $model->set('gso_ls_url',      'label', $this->_('Url'), 'default', 'http://');
+        $model->set('gso_ls_url',      'label', $this->_('Source Url'), 'default', 'http://');
 
         $model->set('gso_ls_class',    'label', $this->_('Adaptor class'), 'multiOptions', $tracker->getSourceClasses());
         if ($detailed) {
