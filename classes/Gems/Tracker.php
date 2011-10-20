@@ -73,7 +73,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @var array Of classname => description
      */
     protected $_sourceClasses = array(
-        'LimeSurvey1m9Database' => 'Lime Survey 1.90 DB',
+        'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
         'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
         );
 
@@ -114,18 +114,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     private $_trackEngines = array();
 
     /**
-     *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
-     * @var Zend_Session
-     */
-    protected $session;
-
-    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -137,6 +125,18 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
+     *
+     * @var Zend_Session
+     */
+    protected $session;
 
     /**
      * Set to true to get detailed information on all tracker actions
@@ -413,12 +413,18 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         // TODO: this should be moved to Gems_Tracker_Source_SourceInterface,
         // but do not have time to implement is of minor importance at this moment.
 
-        return array(
-            '' => '-- none --',
-            'Mysqli' => 'MySQL',
-            'Pdo_Mysql' => 'MySQL (PDO)',
-            'Sqlsrv' => 'SQL Server',
-            'Pdo_Mssql' => 'SQL Server (PDO)');
+        // If the project uses Pdo database, use Pdo classes, otherwise MySQL
+        if (stripos(get_class($this->db), '_Pdo_')) {
+            return array(
+                '' => '-- none --',
+                'Pdo_Mysql' => 'MySQL (PDO)',
+                'Pdo_Mssql' => 'SQL Server (PDO)');
+        } else {
+            return array(
+                '' => '-- none --',
+                'Mysqli' => 'MySQL',
+                'Sqlsrv' => 'SQL Server');
+        }
     }
 
     /**

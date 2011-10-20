@@ -83,7 +83,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $bridge->addValidator('gso_ls_url', new MUtil_Validate_Url());
 
         $bridge->addSelect('gso_ls_class');
-        $bridge->addSelect('gso_ls_adapter');
+        $bridge->addSelect('gso_ls_adapter', 'description', $this->_('Choose the database used by the source.'));
 
         $bridge->addText('gso_ls_table_prefix', array('size' => 15, 'description' => $this->_('Do not forget the underscores.')));
         $bridge->addText('gso_ls_dbhost', array('size' => 15, 'description' => $in_gems));
@@ -144,11 +144,12 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $model->set('gso_ls_class',    'label', $this->_('Adaptor class'), 'multiOptions', $tracker->getSourceClasses());
         if ($detailed) {
-            $model->set('gso_ls_adapter',  'label', $this->_('DB Adaptor'), 'multiOptions', $tracker->getSourceDatabaseClasses());
+            $model->set('gso_ls_adapter',  'label', $this->_('Database Server'), 'multiOptions', $tracker->getSourceDatabaseClasses(), 'default', substr(get_class($this->db), strlen('Zend_Db_Adapter_')));
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'));
             $model->set('gso_ls_database',     'label', $this->_('Database'));
         }
+
         $model->set('gso_ls_table_prefix', 'label', $this->_('Table prefix'), 'default', 'ls__');
 
         $model->set('gso_active', 'default', 0);
