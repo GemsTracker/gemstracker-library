@@ -1,3 +1,7 @@
+-- GEMS VERSION: 1
+-- PATCH: Test skip earlier patch levels
+
+SELECT NULL;
 
 -- GEMS VERSION: 27
 -- PATCH: Use OK reception code

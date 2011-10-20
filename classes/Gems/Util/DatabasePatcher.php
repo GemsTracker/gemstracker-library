@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,19 +25,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * @version    $Id$
+ *
  * @package    Gems
  * @subpackage Util
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
+ * File for checking and executing (new) patches.
+ *
  * @package    Gems
  * @subpackage Util
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.1
  */
 class Gems_Util_DatabasePatcher
 {
@@ -175,6 +179,22 @@ class Gems_Util_DatabasePatcher
         return $executed;
     }
 
+    /**
+     * New installations should not be trequired to run patches. This esthablishes that level.
+     *
+     * @return int The lowest level of patch stored in the database.
+     */
+    protected function getMinimumPatchLevel()
+    {
+        static $level;
+
+        if (! $level) {
+            $level = intval($this->db->fetchOne("SELECT COALESCE(MIN(gpl_level), 1) FROM gems__patch_levels"));
+        }
+
+        return $level;
+    }
+
     public function hasPatchFiles()
     {
         return (boolean) $this->patch_files;
@@ -195,33 +215,36 @@ class Gems_Util_DatabasePatcher
         $tree    = MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
         $changed = 0;
         $current = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $minimum = $this->getMinimumPatchLevel();
+        // MUtil_Echo::track($minimum);
 
         $this->_loadPatches($applicationLevel);
         foreach ($this->_loaded_patches as $patch) {
+            if ($minimum <= $patch['gpa_level']) {
+                $level    = $patch['gpa_level'];
+                $location = $patch['gpa_location'];
+                $name     = $patch['gpa_name'];
+                $order    = $patch['gpa_order'];
 
-            $level    = $patch['gpa_level'];
-            $location = $patch['gpa_location'];
-            $name     = $patch['gpa_name'];
-            $order    = $patch['gpa_order'];
+                // Does it exist?
+                if (isset($tree[$level][$location][$name][$order])) {
+                    $sql = $patch['gpa_sql'];
+                    if ($sql != $tree[$level][$location][$name][$order]['gpa_sql']) {
+                        $values['gpa_sql']       = $sql;
+                        $values['gpa_executed']  = 0;
+                        $values['gpa_completed'] = 0;
+                        $values['gpa_changed']   = $current;
 
-            // Does it exist?
-            if (isset($tree[$level][$location][$name][$order])) {
-                $sql = $patch['gpa_sql'];
-                if ($sql != $tree[$level][$location][$name][$order]['gpa_sql']) {
-                    $values['gpa_sql']       = $sql;
-                    $values['gpa_executed']  = 0;
-                    $values['gpa_completed'] = 0;
-                    $values['gpa_changed']   = $current;
+                        $this->db->update('gems__patches', $values, $this->db->quoteInto('gpa_id_patch = ?', $tree[$level][$location][$name][$order]['gpa_id_patch']));
+                        $changed++;
+                    }
 
-                    $this->db->update('gems__patches', $values, $this->db->quoteInto('gpa_id_patch = ?', $tree[$level][$location][$name][$order]['gpa_id_patch']));
+                } else {
+                    $patch['gpa_changed'] = $current;
+                    $patch['gpa_created'] = $current;
+                    $this->db->insert('gems__patches', $patch);
                     $changed++;
                 }
-
-            } else {
-                $patch['gpa_changed'] = $current;
-                $patch['gpa_created'] = $current;
-                $this->db->insert('gems__patches', $patch);
-                $changed++;
             }
         } // */
 
