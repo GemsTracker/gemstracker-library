@@ -45,6 +45,18 @@
  */
 class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 {
+    /**
+     *
+     * @var GemsEscort
+     */
+    public $escort;
+
+    /**
+     *
+     * @var Gems_Menu
+     */
+    public $menu;
+
     public $useHtmlView = true;
 
     protected function _showTable($caption, $data, $nested = false)
@@ -132,18 +144,40 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
 
+        if (file_exists($this->escort->getMaintenanceLockFilename())) {
+            $label = $this->_('Turn Maintenance Mode OFF');
+        } else {
+            $label = $this->_('Turn Maintenance Mode ON');
+        }
+        $request = $this->getRequest();
+        $buttonList = $this->menu->getMenuList();
+        $buttonList->addParameterSources($request)
+                ->addByController($request->getControllerName(), 'maintenance', $label);
+
+        // $this->html->buttonDiv($buttonList);
+
         $this->_showTable($this->_('Version information'), $data);
+
+        $this->html->buttonDiv($buttonList);
     }
 
     public function maintenanceAction()
     {
-        $lockFile = GEMS_ROOT_DIR . '/var/settings/lock.txt';
-        if(file_exists($lockFile)) {
+        $lockFile = $this->escort->getMaintenanceLockFilename();
+        if (file_exists($lockFile)) {
             unlink($lockFile);
         } else {
             touch($lockFile);
         }
-        $this->_forward('index');
+
+        // Dump the existing maintenance mode messages.
+        $this->escort->getMessenger()->clearCurrentMessages();
+        $this->escort->getMessenger()->clearMessages();
+        MUtil_Echo::out();
+
+        // Redirect
+        $request = $this->getRequest();
+        $this->_reroute(array($request->getActionKey() => 'index'));
     }
 
     public function phpAction()

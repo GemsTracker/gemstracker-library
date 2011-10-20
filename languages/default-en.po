@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-20 14:51+0100\n"
+"POT-Creation-Date: 2011-10-20 15:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -32,44 +32,44 @@ msgstr "User: %s"
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1410
+#: classes/GemsEscort.php:1419
 msgid "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs where not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1531
+#: classes/GemsEscort.php:1540
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1533
-#: classes/GemsEscort.php:1536
-#: classes/GemsEscort.php:1537
+#: classes/GemsEscort.php:1542
+#: classes/GemsEscort.php:1545
+#: classes/GemsEscort.php:1546
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1551
+#: classes/GemsEscort.php:1560
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1553
-#: classes/GemsEscort.php:1589
+#: classes/GemsEscort.php:1562
+#: classes/GemsEscort.php:1598
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1569
+#: classes/GemsEscort.php:1578
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1571
+#: classes/GemsEscort.php:1580
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1576
-#: classes/GemsEscort.php:1587
+#: classes/GemsEscort.php:1585
+#: classes/GemsEscort.php:1596
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1577
+#: classes/GemsEscort.php:1586
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -1401,107 +1401,115 @@ msgstr[1] "surveys"
 msgid "Planning overview"
 msgstr "Planning overview"
 
-#: classes/Gems/Default/ProjectInformationAction.php:71
+#: classes/Gems/Default/ProjectInformationAction.php:83
 msgid "empty file"
 msgstr "empty file"
 
-#: classes/Gems/Default/ProjectInformationAction.php:75
+#: classes/Gems/Default/ProjectInformationAction.php:87
 msgid "file not found"
 msgstr "file not found"
 
-#: classes/Gems/Default/ProjectInformationAction.php:108
+#: classes/Gems/Default/ProjectInformationAction.php:120
 msgid "Logged errors"
 msgstr "Logged errors"
 
-#: classes/Gems/Default/ProjectInformationAction.php:108
+#: classes/Gems/Default/ProjectInformationAction.php:120
 msgid "Empty logfile"
 msgstr "Empty logfile"
 
-#: classes/Gems/Default/ProjectInformationAction.php:113
+#: classes/Gems/Default/ProjectInformationAction.php:125
 msgid "Project information"
 msgstr "Project information"
 
-#: classes/Gems/Default/ProjectInformationAction.php:117
+#: classes/Gems/Default/ProjectInformationAction.php:129
 msgid "Project name"
 msgstr "Project name"
 
-#: classes/Gems/Default/ProjectInformationAction.php:118
+#: classes/Gems/Default/ProjectInformationAction.php:130
 msgid "Project version"
 msgstr "Project version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:119
+#: classes/Gems/Default/ProjectInformationAction.php:131
 msgid "Gems version"
 msgstr "Gems version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:121
+#: classes/Gems/Default/ProjectInformationAction.php:133
 msgid "Gems project"
 msgstr "Gems project"
 
-#: classes/Gems/Default/ProjectInformationAction.php:122
+#: classes/Gems/Default/ProjectInformationAction.php:134
 msgid "Gems web directory"
 msgstr "Gems web directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:123
+#: classes/Gems/Default/ProjectInformationAction.php:135
 msgid "Gems code directory"
 msgstr "Gems code directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:124
+#: classes/Gems/Default/ProjectInformationAction.php:136
 msgid "Gems project path"
 msgstr "Gems project path"
 
-#: classes/Gems/Default/ProjectInformationAction.php:125
+#: classes/Gems/Default/ProjectInformationAction.php:137
 msgid "MUtil version"
 msgstr "MUtil version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:126
+#: classes/Gems/Default/ProjectInformationAction.php:138
 msgid "Zend version"
 msgstr "Zend version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:127
+#: classes/Gems/Default/ProjectInformationAction.php:139
 msgid "Application environment"
 msgstr "Application environment"
 
-#: classes/Gems/Default/ProjectInformationAction.php:128
+#: classes/Gems/Default/ProjectInformationAction.php:140
 msgid "Application baseuri"
 msgstr "Application baseuri"
 
-#: classes/Gems/Default/ProjectInformationAction.php:129
+#: classes/Gems/Default/ProjectInformationAction.php:141
 msgid "Application directory"
 msgstr "Application directory"
 
-#: classes/Gems/Default/ProjectInformationAction.php:130
+#: classes/Gems/Default/ProjectInformationAction.php:142
 msgid "PHP version"
 msgstr "PHP version"
 
-#: classes/Gems/Default/ProjectInformationAction.php:131
+#: classes/Gems/Default/ProjectInformationAction.php:143
 msgid "Server Hostname"
 msgstr "Server Hostname"
 
-#: classes/Gems/Default/ProjectInformationAction.php:132
+#: classes/Gems/Default/ProjectInformationAction.php:144
 msgid "Server OS"
 msgstr "Server OS"
 
-#: classes/Gems/Default/ProjectInformationAction.php:133
+#: classes/Gems/Default/ProjectInformationAction.php:145
 msgid "Time on server"
 msgstr "Time on server"
 
-#: classes/Gems/Default/ProjectInformationAction.php:135
+#: classes/Gems/Default/ProjectInformationAction.php:148
+msgid "Turn Maintenance Mode OFF"
+msgstr "Turn Maintenance Mode OFF"
+
+#: classes/Gems/Default/ProjectInformationAction.php:150
+msgid "Turn Maintenance Mode ON"
+msgstr "Turn Maintenance Mode ON"
+
+#: classes/Gems/Default/ProjectInformationAction.php:159
 msgid "Version information"
 msgstr "Version information"
 
-#: classes/Gems/Default/ProjectInformationAction.php:151
+#: classes/Gems/Default/ProjectInformationAction.php:185
 msgid "Server PHP Info"
 msgstr "Server PHP Info"
 
-#: classes/Gems/Default/ProjectInformationAction.php:164
+#: classes/Gems/Default/ProjectInformationAction.php:198
 msgid "Project settings"
 msgstr "Project settings"
 
-#: classes/Gems/Default/ProjectInformationAction.php:171
+#: classes/Gems/Default/ProjectInformationAction.php:205
 msgid "Session content"
 msgstr "Session content"
 
-#: classes/Gems/Default/ProjectInformationAction.php:172
+#: classes/Gems/Default/ProjectInformationAction.php:206
 msgid "Session"
 msgstr "Session"
 
