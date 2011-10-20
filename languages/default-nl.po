@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-17 15:19+0100\n"
+"POT-Creation-Date: 2011-10-20 14:51+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -381,7 +381,7 @@ msgstr "Telefoon"
 msgid "Birthday"
 msgstr "Geboren op"
 
-#: classes/Gems/Tracker.php:726
+#: classes/Gems/Tracker.php:732
 msgid "Checks performed"
 msgstr "Controle uitgevoerd"
 
@@ -1346,7 +1346,6 @@ msgid "Invalid organization."
 msgstr "Ongeldige organisatie."
 
 #: classes/Gems/Default/OrganizationAction.php:117
-#: classes/Gems/Default/SourceAction.php:143
 msgid "Url"
 msgstr "Url"
 
@@ -1791,6 +1790,18 @@ msgstr "Project priviléges"
 msgid "Leave empty for the Gems database."
 msgstr "Leeglaten bij gebruik van de Gems database."
 
+#: classes/Gems/Default/SourceAction.php:79
+msgid "E.g. the name of the project - for single source projects."
+msgstr "Bijvoorbeeld de project naam - bij projecten met maar één bron."
+
+#: classes/Gems/Default/SourceAction.php:81
+msgid "For creating token-survey url."
+msgstr "Voor kenmerk-vragenlijst url."
+
+#: classes/Gems/Default/SourceAction.php:86
+msgid "The database server used by the source."
+msgstr "Het merk database server gebruikt door deze bron."
+
 #: classes/Gems/Default/SourceAction.php:88
 msgid "Do not forget the underscores."
 msgstr "Vergeet de underscores niet."
@@ -1808,63 +1819,67 @@ msgstr "Database wachtwoord"
 msgid "Checking survey results for %s source."
 msgstr "Controle vragenlijstresultaten voor %s bron."
 
+#: classes/Gems/Default/SourceAction.php:143
+msgid "Source Url"
+msgstr "Bron Url"
+
 #: classes/Gems/Default/SourceAction.php:145
 msgid "Adaptor class"
 msgstr "Adaptor klasse"
 
 #: classes/Gems/Default/SourceAction.php:147
-msgid "DB Adaptor"
-msgstr "DB Adaptor"
+msgid "Database Server"
+msgstr "Database Server"
 
 #: classes/Gems/Default/SourceAction.php:149
 msgid "Database host"
 msgstr "Database machine"
 
-#: classes/Gems/Default/SourceAction.php:152
+#: classes/Gems/Default/SourceAction.php:153
 msgid "Table prefix"
 msgstr "Voorvoegsel tabel"
 
-#: classes/Gems/Default/SourceAction.php:156
+#: classes/Gems/Default/SourceAction.php:157
 msgid "Last check"
 msgstr "Laatste controle"
 
-#: classes/Gems/Default/SourceAction.php:189
+#: classes/Gems/Default/SourceAction.php:190
 msgid "source"
 msgid_plural "sources"
 msgstr[0] "bron"
 msgstr[1] "bronnen"
 
-#: classes/Gems/Default/SourceAction.php:194
+#: classes/Gems/Default/SourceAction.php:195
 msgid "Survey Sources"
 msgstr "Bronnen"
 
-#: classes/Gems/Default/SourceAction.php:202
+#: classes/Gems/Default/SourceAction.php:203
 msgid "This installation is active."
 msgstr "Deze installatie is actief"
 
-#: classes/Gems/Default/SourceAction.php:204
+#: classes/Gems/Default/SourceAction.php:205
 msgid "Inactive installation."
 msgstr "Deze installatie is inactief"
 
-#: classes/Gems/Default/SourceAction.php:217
-#: classes/Gems/Default/SourceAction.php:236
+#: classes/Gems/Default/SourceAction.php:218
+#: classes/Gems/Default/SourceAction.php:237
 msgid "No changes."
 msgstr "Geen veranderingen"
 
-#: classes/Gems/Default/SourceAction.php:232
+#: classes/Gems/Default/SourceAction.php:233
 #, php-format
 msgid "Synchronization of source %s:"
 msgstr "Synchronisatie van %s bron:"
 
-#: classes/Gems/Default/SourceAction.php:243
+#: classes/Gems/Default/SourceAction.php:244
 msgid "Synchronize all sources of surveys"
 msgstr "Synchronizeer alle vragenlijsten bronnen"
 
-#: classes/Gems/Default/SourceAction.php:244
+#: classes/Gems/Default/SourceAction.php:245
 msgid "Synchronization will update the status of all surveys imported into this project to the status at the sources."
 msgstr "Synchronisatie zal de status van alle vragenlijsten in dit project aanpassen aan de status van de bron."
 
-#: classes/Gems/Default/SourceAction.php:251
+#: classes/Gems/Default/SourceAction.php:252
 msgid "Are you sure you want to synchronize all survey sources?"
 msgstr "Weet je zeker dat je alle bronnen wil synchroniseren?"
 
@@ -3541,9 +3556,11 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
 
-#: views/scripts/index/login.phtml:12
-msgid "The Pulse software was made possible thanks to support from "
-msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
+#~ msgid "DB Adaptor"
+#~ msgstr "DB Adaptor"
+
+#~ msgid "The Pulse software was made possible thanks to support from "
+#~ msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
 
 #~ msgid "ACL"
 #~ msgstr "ACL"

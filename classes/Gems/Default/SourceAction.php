@@ -83,7 +83,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $bridge->addValidator('gso_ls_url', new MUtil_Validate_Url());
 
         $bridge->addSelect('gso_ls_class');
-        $bridge->addSelect('gso_ls_adapter', 'description', $this->_('Choose the database used by this source.'));
+        $bridge->addSelect('gso_ls_adapter', 'description', $this->_('The database server used by the source.'));
 
         $bridge->addText('gso_ls_table_prefix', array('size' => 15, 'description' => $this->_('Do not forget the underscores.')));
         $bridge->addText('gso_ls_dbhost', array('size' => 15, 'description' => $in_gems));
