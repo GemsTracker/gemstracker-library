@@ -551,11 +551,12 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $menu;
     }
 
-    public function applyHiddenParameters(Gems_Menu_ParameterSource $source)
+    public function applyHiddenParameters(Zend_Controller_Request_Abstract $request, Gems_Menu_ParameterSource $source)
     {
         if ($this->_hiddenParameters) {
-            foreach ($this->_hiddenParameters as $key => $name) {
-                $source[$key] = $name;
+            foreach ($this->_hiddenParameters as $key => $value) {
+                $request->setParam($key, $value);
+                $source[$key] = $value;
             }
         }
 

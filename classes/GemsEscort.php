@@ -1607,7 +1607,7 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if (isset($menuItem)) {
-            $menuItem->applyHiddenParameters($this->menu->getParameterSource());
+            $menuItem->applyHiddenParameters($request, $this->menu->getParameterSource());
             $this->menu->setCurrent($menuItem);
         }
     }
