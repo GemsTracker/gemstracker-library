@@ -46,8 +46,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Controller_ModelActionAbstract
+abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Controller_Action
 {
+    /**
+     * Created in createModel().
+     *
+     * Always retrieve using $this->getModel().
+     *
+     * $var MUtil_Model_ModelAbstract $_model The model in use
+     */
+    private $_model;
+
     /**
      * The parameters used for the autofilter action.
      *
@@ -61,6 +70,20 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'ModelTableSnippet';
+
+    /**
+     * The parameters used for the create and edit actions.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array();
+
+    /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'ModelFormSnippet';
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -111,6 +134,23 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     public $summarizedActions = array('index', 'autofilter');
 
     /**
+     * Set to true in so $this->html is created at startup.
+     *
+     * @var boolean $useHtmlView true
+     */
+    public $useHtmlView = true;  // Overrule parent
+
+    /**
+     * The request ID value
+     *
+     * @return string The request ID value
+     */
+    protected function _getIdParam()
+    {
+        return $this->_getParam(MUtil_Model::REQUEST_ID);
+    }
+
+    /**
      * Set the action key in request
      *
      * Use this when an action is a Ajax action for retrieving
@@ -157,6 +197,77 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     * Action for showing a create new page
+     */
+    public function createAction()
+    {
+        if ($this->createEditSnippets) {
+            $this->createEditParameters['createData'] = true;
+            $this->createEditParameters['model']      = $this->getModel();
+            $this->createEditParameters['request']    = $this->getRequest();
+
+            $this->addSnippets($this->createEditSnippets, $this->createEditParameters);
+        }
+    }
+
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return MUtil_Model_ModelAbstract
+     */
+    abstract protected function createModel($detailed, $action);
+
+    /**
+     * Action for showing a edit item page
+     */
+    public function editAction()
+    {
+        if ($this->createEditSnippets) {
+            $this->createEditParameters['createData'] = false;
+            $this->createEditParameters['model']      = $this->getModel();
+            $this->createEditParameters['request']    = $this->getRequest();
+
+            $this->addSnippets($this->createEditSnippets, $this->createEditParameters);
+        }
+    }
+
+    /**
+     * Returns the model for the current $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @return MUtil_Model_ModelAbstract
+     */
+    protected function getModel()
+    {
+        $request = $this->getRequest();
+        $action  = null === $request ? '' : $request->getActionName();
+
+        // Only get new model if there is no model or the model was for a different action
+        if (! ($this->_model && $this->_model->isMeta('action', $action))) {
+            $detailed = ! in_array($action, $this->summarizedActions);
+
+            $this->_model = $this->createModel($detailed, $action);
+            $this->_model->setMeta('action', $action);
+
+            // Detailed models DO NOT USE $_POST for filtering,
+            // multirow models DO USE $_POST parameters for filtering.
+            $this->_model->applyRequest($request, $detailed);
+        }
+
+        return $this->_model;
+    }
+
+
+    /**
      * Action for showing a browse page
      */
     public function indexAction()
@@ -178,7 +289,6 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
             $this->addSnippets($this->indexStopSnippets, $this->indexParameters);
         }
     }
-
 
     /**
      * Action for showing an item page

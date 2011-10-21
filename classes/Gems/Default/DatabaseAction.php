@@ -93,6 +93,18 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Set the parameters needed by the menu.
+     *
+     * @param array $data The current model item
+     */
+    private function _setMenuParameters(array $data)
+    {
+        $source = $this->menu->getParameterSource();
+        $source['script'] = $data['script'] ? true : false;
+        $source['exists'] = $data['exists'] ? true : false;
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -179,6 +191,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     {
         $model = $this->getModel();
         $data  = $model->applyRequest($this->getRequest())->loadFirst();
+
+        $this->_setMenuParameters($data);
 
         if (! ($data && isset($data['exists']) && $data['exists'])) {
             $this->addMessage($this->_('This database object does not exist. You cannot delete it.'));
@@ -438,6 +452,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $model = $this->getModel();
         $data  = $model->loadFirst();
 
+        $this->_setMenuParameters($data);
+
         if (! ($data && isset($data['exists'], $data['script']) && ($data['exists'] || $data['script']))) {
             $this->addMessage($this->_('This database object does not exist. You cannot create it.'));
             $this->html->buttonDiv($this->createMenuLinks(1));
@@ -580,9 +596,9 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $model  = $this->getModel();
         $data   = $model->loadFirst();
 
-        $source = $this->menu->getParameterSource();
-        $source['script'] = $data['script'];
-        $source['exists'] = $data['exists'];
+        if ($data) {
+            $this->_setMenuParameters($data);
+        }
 
         parent::showAction();
     }
@@ -591,6 +607,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     {
         $model  = $this->getModel();
         $data   = $model->loadFirst();
+
+        $this->_setMenuParameters($data);
 
         if (! ($data && isset($data['exists']) && $data['exists'])) {
             $this->addMessage($this->_('This database object does not exist. You cannot view it.'));

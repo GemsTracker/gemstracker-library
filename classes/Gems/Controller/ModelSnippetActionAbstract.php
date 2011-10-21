@@ -26,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
  *
  * @package    Gems
  * @subpackage Controller
@@ -37,9 +36,7 @@
  */
 
 /**
- * Short description for class
- *
- * Long description for class (if any)...
+ * Class contains Gems specific adaptations to parent class.
  *
  * @package    Gems
  * @subpackage Controller
@@ -49,12 +46,6 @@
  */
 abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controller_ModelSnippetActionAbstract
 {
-    /**
-     *
-     * @var GemsEscort
-     */
-    public $escort;
-
     /**
      * The parameters used for the autofilter action.
      *
@@ -72,6 +63,19 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Generic_ModelTableSnippet';
+
+    /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'Generic_ModelFormSnippet';
+
+    /**
+     *
+     * @var GemsEscort
+     */
+    public $escort;
 
     /**
      * The snippets used for the index action, before those in autofilter

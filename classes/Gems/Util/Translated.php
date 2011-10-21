@@ -170,6 +170,20 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * The options for bulk mail token processing.
+     *
+     * @return array
+     */
+    public function getBulkMailProcessOptions()
+    {
+        return array(
+            'M' => $this->_('Send multiple mails per respondent, one for each checked token.'),
+            'O' => $this->_('Send one mail per respondent, mark all checked tokens as send.'),
+            'A' => $this->_('Send one mail per respondent, mark only mailed tokens as send.'),
+            );
+    }
+
+    /**
      * Get a translated empty value for usage in dropdowns
      *
      * On instantiation of the class via Gems_Loader this variable will be populated

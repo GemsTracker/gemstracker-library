@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -69,15 +69,11 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
 
     protected function createMethodElement()
     {
-        $options = array(
-            'M' => $this->escort->_('Send multiple mails per respondent, one for each checked token.'),
-            'O' => $this->escort->_('Send one mail per respondent, mark all checked tokens as send.'),
-            'A' => $this->escort->_('Send one mail per respondent, mark only mailed tokens as send.'),
-            );
+        $options = $this->escort->getUtil()->getTranslated()->getBulkMailProcessOptions();
 
         return new Zend_Form_Element_Radio('multi_method', array(
             'label'        => $this->escort->_('Method'),
-            'multiOptions' => $options,    
+            'multiOptions' => $options,
             'required'     => true,
             ));
     }
@@ -138,11 +134,11 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
             $title = null;
         }
 
-        return $this->_createMultiOption($tokenData, 
-            $this->mailer->getTokenName($tokenData), 
-            $tokenData['grs_email'], 
-            $tokenData['survey_short'], 
-            $title, 
+        return $this->_createMultiOption($tokenData,
+            $this->mailer->getTokenName($tokenData),
+            $tokenData['grs_email'],
+            $tokenData['survey_short'],
+            $title,
             $menuFind);
     }
 
@@ -202,7 +198,7 @@ class Gems_Email_MultiMailForm extends Gems_Email_EmailFormAbstract
         $this->tokensData = $tokensData;
 
         $this->setTokenData(reset($tokensData));
-        
+
         return $this;
     }
 }
