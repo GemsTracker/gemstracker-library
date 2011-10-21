@@ -211,3 +211,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.maintenance')
 -- PATCH: Add mail actions to admin role
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.mail.log') WHERE grl_name = 'admin' AND grl_privileges NOT LIKE '%pr.mail.log%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.mail.server,pr.mail.server.create,pr.mail.server.delete,pr.mail.server.edit') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.mail.server%';
+
+-- PATCH: Set default for new rounds at days
+ALTER TABLE `gems__round_periods` CHANGE `grp_valid_after_unit` `grp_valid_after_unit` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D',
+    CHANGE `grp_valid_for_unit` `grp_valid_for_unit` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D';

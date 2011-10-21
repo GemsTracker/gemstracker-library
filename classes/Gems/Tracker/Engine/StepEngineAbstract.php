@@ -438,7 +438,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set('grp_valid_for_id', 'label', $this->_('Round used'), 'default', '');
             $model->set('grp_valid_for_field', 'label', $this->_('Date used'), 'default', 'gto_valid_from');
             $model->set('grp_valid_for_length', 'label', $this->_('Add to date'), 'required', false, 'default', 2);
-            $model->set('grp_valid_for_unit', 'label', $this->_('Add to date unit'), 'multiOptions', $this->getDateUnitsList(false), 'default', 'M');
+            $model->set('grp_valid_for_unit', 'label', $this->_('Add to date unit'), 'multiOptions', $this->getDateUnitsList(false));
 
             // Continue with last round level items
             $model->set('gro_active');

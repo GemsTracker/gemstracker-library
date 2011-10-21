@@ -605,22 +605,22 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
-                $tmpres['label'] = $this->removeHtml($field['question']);
+                $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['question']));
             }
 
             // Juggle the labels for sub-questions etc..
             if (isset($field['sq_question'])) {
                 if (isset($field['sq_question1'])) {
-                    $field['label'] = sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']);
+                    $field['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']));
                 }
                 if (! isset($tmpres['label'])) {
-                    $tmpres['label'] = $this->removeHtml($field['sq_question']);
+                    $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
                 } else {
                     // Add non answered question for grouping
                     $model->set('_' . $name . '_', $tmpres);
 
                     // "Next" question
-                    $tmpres['label'] = $this->removeHtml($field['sq_question']);
+                    $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
                 }
                 $tmpres['thClass'] = 'question_sub';
             }
@@ -826,7 +826,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param string $removeContent Pipe | separated tags from which contect will be stripped
      * @return string
      */
-    private function removeHtml($s , $keepTags = '' , $removeContent = 'script|style|noframes|select|option'){
+    private function removeHtml($s, $keepTags = '' , $removeContent = 'script|style|noframes|select|option'){
         /**///prep the string
         $s = ' ' . $s;
 
