@@ -137,7 +137,7 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function showAction()
     {
-        $this->html->h3($this->_('Show Mail Activity Log item'));
+        $this->showParameters['displayTitle'] = $this->_('Show Mail Activity Log item');
 
         // MUtil_Echo::track($this->indexParameters);
         parent::showAction();

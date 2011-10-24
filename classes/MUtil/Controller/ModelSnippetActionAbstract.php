@@ -86,6 +86,20 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $createEditSnippets = 'ModelFormSnippet';
 
     /**
+     * The parameters used for the delete action.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $deleteParameters = array();
+
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'ModelYesNoDeleteSnippet';
+
+    /**
      * The parameters used for the index action minus those in autofilter.
      *
      * @var array Mixed key => value array for snippet initialization
@@ -207,6 +221,19 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
             $this->createEditParameters['request']    = $this->getRequest();
 
             $this->addSnippets($this->createEditSnippets, $this->createEditParameters);
+        }
+    }
+
+    /**
+     * Action for showing a delete item page
+     */
+    public function deleteAction()
+    {
+        if ($this->deleteSnippets) {
+            $this->deleteParameters['model']      = $this->getModel();
+            $this->deleteParameters['request']    = $this->getRequest();
+
+            $this->addSnippets($this->deleteSnippets, $this->deleteParameters);
         }
     }
 

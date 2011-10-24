@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -28,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -37,30 +36,14 @@
  */
 
 /**
- * Displays each field of a single item in a model in a row in a Html table
+ * Displays each fields of a single item in a model in a row in a Html table
  * the model set through the $model snippet parameter.
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.4
  */
-class ModelVerticalTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
-{
-    /**
-     *
-     * @var MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
-    }
-}
+class Generic_ModelItemYesNoDeleteSnippet extends Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
+{ }

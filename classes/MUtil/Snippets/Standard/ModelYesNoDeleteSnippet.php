@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -33,20 +32,21 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Displays each field of a single item in a model in a row in a Html table
- * the model set through the $model snippet parameter.
+ * Ask conformation for deletion and deletes item when confirmed.
+ *
+ * The model is set through the $model snippet parameter.
  *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.2
+ * @since      Class available since version 1.4.4
  */
-class ModelVerticalTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
+class ModelYesNoDeleteSnippet extends MUtil_Snippets_ModelYesNoDeleteSnippetAbstract
 {
     /**
      *
@@ -63,4 +63,6 @@ class ModelVerticalTableSnippet extends MUtil_Snippets_ModelVerticalTableSnippet
     {
         return $this->model;
     }
+
+
 }

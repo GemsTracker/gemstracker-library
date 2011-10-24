@@ -142,8 +142,36 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
         $bridge = new $this->bridgeClass($model);
         $bridge->setColumnCount($this->bridgeColumns);
 
+        $this->setShowTableHeader($bridge, $model);
+        $this->setShowTableFooter($bridge, $model);
         $this->addShowTableRows($bridge, $model);
 
         return $bridge->getTable();
     }
+
+    /**
+     * Set the footer of the browse table.
+     *
+     * Overrule this function to set the header differently, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function setShowTableFooter(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    { }
+
+    /**
+     * Set the header of the browse table.
+     *
+     * Overrule this function to set the header differently, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function setShowTableHeader(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    { }
 }

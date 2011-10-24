@@ -125,12 +125,23 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
+     * Action for showing a delete item page
+     */
+    public function deleteAction()
+    {
+        $this->deleteParameters['deleteQuestion'] = $this->_('Do you want to delete this mail job?');
+        $this->deleteParameters['displayTitle']   = $this->deleteParameters['deleteQuestion'];
+
+        parent::deleteAction();
+    }
+
+    /**
      * Action for showing a edit item page
      */
     public function editAction()
     {
         $this->createEditParameters['formTitle'] = $this->_('Edit automatic mail job');
-        
+
         parent::editAction();
     }
 
@@ -176,5 +187,15 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
         parent::indexAction();
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
+    }
+
+    /**
+     * Action for showing an item page
+     */
+    public function showAction()
+    {
+        $this->showParameters['displayTitle'] = $this->_('Automatic mail job details');
+
+        parent::showAction();
     }
 }
