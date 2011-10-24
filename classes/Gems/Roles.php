@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -103,7 +103,7 @@ class Gems_Roles
     public function getAcl() {
         return $this->_acl;
     }
-    
+
     public static function getInstance()
     {
         if (!isset(self::$_instanceOfSelf)) {
@@ -124,11 +124,11 @@ class Gems_Roles
             $this->loadDbAcl();
         } catch (Exception $e) {
             Gems_Log::getLogger()->logError($e);
-                        
+
             // Reset all roles
             unset($this->_acl);
             $this->_acl = new MUtil_Acl();
-            
+
             //Voeg standaard rollen en privileges in
             $this->loadDefaultRoles();
             $this->loadDefaultPrivileges();
@@ -137,6 +137,10 @@ class Gems_Roles
             $this->loadProjectRoles();
             $this->loadProjectPrivileges();
         }
+
+        //Now allow super admin all access, except for the actions that have the nologin privilege (->the login action)
+        $this->_acl->allow('super');
+        $this->_acl->deny('super', null, 'pr.nologin');
     }
 
     public function load() {
@@ -154,7 +158,7 @@ class Gems_Roles
             $this->build();
         }
     }
-    
+
     /**
      * Recursively expands roles into Zend_Acl_Role objects
      * @param array  $roleList
@@ -163,31 +167,31 @@ class Gems_Roles
     private function _expandRole(&$roleList, $roleName, $depth = 0)
     {
         $role = $roleList[$roleName];
-        
+
         if (isset($role['marked']) && $role['marked']) {
             return;
         }
-        
+
         // possible circular reference!
         if ($depth > 5) {
             throw new Exception("Possible circular reference detected while expanding role '{$roleName}'");
         }
-        
+
         if (!empty($role['grl_parents'])) {
             $parents = explode(",", $role['grl_parents']);
-            
+
             foreach ($parents as $parent) {
                 $this->_expandRole($roleList, $parent, $depth + 1);
             }
         } else {
             $parents = array();
         }
-        
+
         $this->addRole(new Zend_Acl_Role($role['grl_name']), $parents);
-        
+
         $privileges = explode(",", $role['grl_privileges']);
         $this->addPrivilege($role['grl_name'], $privileges);
-        
+
         $roleList[$roleName]['marked'] = true;
     }
 
@@ -199,19 +203,19 @@ class Gems_Roles
         $db = Zend_Registry::get('db');
 
         $sql = "SELECT grl_id_role,grl_name,grl_privileges,grl_parents FROM gems__roles";
-        
+
         $roles = $db->fetchAll($sql);
-        
+
         if (empty($roles)) {
             throw new Exception("No roles stored in db");
         }
-        
+
         $roleList = array_combine(array_map(function($value) { return $value['grl_name']; }, $roles), $roles);
-        
+
         foreach ($roleList as $role) {
             $this->_expandRole($roleList, $role['grl_name']);
         }
-                
+
         return true;
     }
 

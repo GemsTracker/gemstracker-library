@@ -139,6 +139,14 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
             $data['grl_parents'] = implode(',', $data['grl_parents']);
         }
 
+        //Always add nologin privilege to 'nologin' role
+        if (isset($data['grl_name']) && $data['grl_name'] == 'nologin') {
+            $data['grl_privileges'][] = 'pr.nologin';
+        } elseif (isset($data['grl_name']) && $data['grl_name'] !== 'nologin') {
+            //Assign islogin to all other roles
+            $data['grl_privileges'][] = 'pr.islogin';
+        }
+
         if (isset($data['grl_privileges'])) {
             $data['grl_privileges'] = implode(',', $data['grl_privileges']);
         }
@@ -171,6 +179,20 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         return $model;
     }
 
+    public function editAction()
+    {
+        $model   = $this->getModel();
+        $data    = $model->loadFirst();
+
+        //If we try to edit super, add an error message and reroute
+        if (isset($data['grl_name']) && $data['grl_name']=='super') {
+            $this->addMessage($this->_('Editing `super` is not allowed'));
+            $this->_reroute(array('action'=>'index'), true);
+        }
+
+        parent::editAction();
+    }
+
     public function formatLongLine($line)
     {
         if (strlen($line) > 50) {
@@ -195,6 +217,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $privileges = $this->menu->getUsedPrivileges();
 
         asort($privileges);
+        //don't allow to edit the pr.nologin and pr.islogin privilege
+        unset($privileges['pr.nologin']);
+        unset($privileges['pr.islogin']);
+
         return $privileges;
     }
 

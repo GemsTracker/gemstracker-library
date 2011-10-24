@@ -61,6 +61,11 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public $escort;
 
     /**
+     * @var Gems_Menu
+     */
+    public $menu;
+
+    /**
      * Extension point, use different auth adapter if needed depending on the provided formValues
      *
      * This could be an organization passed in the login-form or something else.
@@ -135,8 +140,17 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
     public function loginAction()
     {
+        /**
+         * If already logged in, try to redirect to the first allowed and visible menu item
+         * if that fails, try to reroute to respondent/index
+         */
         if (isset($this->session->user_id)) {
-            $this->_reroute(array('controller' => 'respondent'));
+            if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
+                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                $redirector->gotoRoute($menuItem->toRouteUrl($this->getRequest()));
+            } else {
+                $this->_reroute(array('controller' => 'respondent', 'action'=>'index'));
+            }
         }
 
         $form = $this->_getLoginForm();
