@@ -98,27 +98,28 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gmj');
 
-        $model->set('gmj_id_message',      'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getMailTemplates());
-        $model->set('gmj_id_user_as',      'label', $this->_('By staff member'),
+        $model->set('gmj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getMailTemplates());
+        $model->set('gmj_id_user_as',          'label', $this->_('By staff member'),
                 'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->escort->getCurrentUserId(),
                 'description', $this->_('Used for logging and possibly from address.'));
-        $model->set('gmj_active',          'label', $this->_('Active'),
+        $model->set('gmj_active',              'label', $this->_('Active'),
                 'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,
                 'description', $this->_('Job is only run when active.'));
 
         $fromMethods = $unselected + $this->getBulkMailFromOptions();
-        $model->set('gmj_from_method',     'label', $this->_('From address used'), 'multiOptions', $fromMethods);
+        $model->set('gmj_from_method',         'label', $this->_('From address used'), 'multiOptions', $fromMethods);
         if ($detailed) {
-            $model->set('gmj_from_fixed',  'label', $this->_('From other'),
+            $model->set('gmj_from_fixed',      'label', $this->_('From other'),
                     'description', sprintf($this->_("Only when '%s' is '%s'."), $model->get('gmj_from_method', 'label'), end($fromMethods)));
         }
-        $model->set('gmj_process_method',  'label', $this->_('Processing Method'), 'multiOptions', $unselected + $translated->getBulkMailProcessOptions());
-        $model->set('gmj_filter_mode',     'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
+        $model->set('gmj_process_method',      'label', $this->_('Processing Method'), 'multiOptions', $unselected + $translated->getBulkMailProcessOptions());
+        $model->set('gmj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
+        $model->set('gmj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
 
         if ($detailed) {
             $model->set('gmj_id_organization', 'label', $this->_('Organization'), 'multiOptions', $empty + $dbLookup->getOrganizations());
             $model->set('gmj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
-            $model->set('gsu_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
+            $model->set('gmj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
         }
 
         return $model;

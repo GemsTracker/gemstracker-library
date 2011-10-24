@@ -551,6 +551,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $this->addButtonOnly($this->_('Changelog'),  'pr.project-information.changelog', 'project-information','changelog');
 
         // Special page for automated e-mail cronjob
+        $this->addPage(null, null, 'cron', 'index');
         $this->addPage(null, null, 'email', 'index');
     }
 

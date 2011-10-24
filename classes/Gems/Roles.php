@@ -113,7 +113,9 @@ class Gems_Roles
         return self::$_instanceOfSelf;
     }
 
-//Reset de ACL en bouw opnieuw op
+    /**
+     * Reset de ACL en bouw opnieuw op
+     */
     private function initAcl() {
         $this->_acl = new MUtil_Acl();
         if (get_class(self::$_instanceOfSelf)!=='Gems_Roles') {
@@ -139,8 +141,8 @@ class Gems_Roles
         }
 
         //Now allow super admin all access, except for the actions that have the nologin privilege (->the login action)
-        $this->_acl->allow('super');
-        $this->_acl->deny('super', null, 'pr.nologin');
+        // $this->_acl->allow('super');
+        // $this->_acl->deny('super', null, 'pr.nologin');
     }
 
     public function load() {

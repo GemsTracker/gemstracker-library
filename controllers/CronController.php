@@ -27,7 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @deprecated Since 1.5, use CronController
  * @package    Gems
  * @subpackage Default
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
@@ -39,12 +38,11 @@
 /**
  * This action performs automatic timed actions on the server.
  *
- * @deprecated Since 1.5, use CronController
  * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class EmailController extends Gems_Default_CronAction
+class CronController extends Gems_Default_CronAction
 { }

@@ -25,11 +25,12 @@ CREATE TABLE if not exists gems__mail_jobs (
         -- N => notmailed
         -- R => reminder
         gmj_filter_mode varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gmj_filter_days_between int unsigned not null default 7,
 
         -- Optional filters
         gmj_id_organization bigint unsigned null references gems__organizations (gor_id_organization),
         gmj_id_track        int unsigned null references gems__tracks (gtr_id_track),
-        gsu_id_survey       int unsigned null references gems__surveys (gsu_id_survey),
+        gmj_id_survey       int unsigned null references gems__surveys (gsu_id_survey),
 
         gmj_changed timestamp not null default current_timestamp on update current_timestamp,
         gmj_changed_by bigint unsigned not null,

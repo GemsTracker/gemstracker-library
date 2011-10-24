@@ -1,6 +1,7 @@
 Important changes from 1.4.3 => 1.5
 ============================================================
-MailController is now claaed MailTemplateController
+MailController is now called MailTemplateController
+EmailController is now called CronController (with stub for compatibility)
 
 Important changes from 1.4.2 => 1.4.3
 ============================================================

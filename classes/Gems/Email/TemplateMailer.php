@@ -49,6 +49,12 @@ class Gems_Email_TemplateMailer
     const MAIL_TLS = 2;
 
     /**
+     *
+     * @var Zend_Mail_Transport
+     */
+    protected $defaultTransport = null;
+
+    /**
      * @var GemsEscort $escort
      */
     protected $escort;
@@ -161,7 +167,7 @@ class Gems_Email_TemplateMailer
 
                 $mailServers[$from] = new Zend_Mail_Transport_Smtp($serverData['gms_server'], $options);
             } else {
-                $mailServers[$from] = null;
+                $mailServers[$from] = $this->defaultTransport;
             }
         }
 
@@ -317,7 +323,7 @@ class Gems_Email_TemplateMailer
      * @param  string $from
      * @param  string $from_name
      * @param  array $tokenData
-     * @return boolean|string
+     * @return boolean|string String = error message from protocol.
      */
     public function sendMail($to, $to_name, $from, $from_name, array $tokenData)
     {
@@ -368,10 +374,24 @@ class Gems_Email_TemplateMailer
     /**
      * Sets the body of the mail
      * @param string $body
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setBody($body)
     {
         $this->_body = $body;
+        return $this;
+    }
+
+    /**
+     * Set a different default transport protocol.
+     *
+     * @param Zend_Mail_Transport_Abstract $transport
+     * @return Gems_Email_TemplateMailer (continuation pattern)
+     */
+    public function setDefaultTransport(Zend_Mail_Transport_Abstract $transport)
+    {
+        $this->defaultTransport = $transport;
+        return $this;
     }
 
     /**
@@ -381,10 +401,12 @@ class Gems_Email_TemplateMailer
      *    'U' - Uses the contact information of the currently logged in user
      *
      * @param string $from
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setFrom($from)
     {
         $this->_from = $from;
+        return $this;
     }
 
     /**
@@ -394,15 +416,18 @@ class Gems_Email_TemplateMailer
      *    'A' - Send one mail per respondent, mark only mailed tokens as send.
      *
      * @param string $method
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setMethod($method)
     {
         $this->_method = $method;
+        return $this;
     }
 
     /**
      * Sets the subject of the mail
      * @param string $subject
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setSubject($subject)
     {
@@ -412,7 +437,6 @@ class Gems_Email_TemplateMailer
     public function setTemplateId($templatedId)
     {
         $this->_templateId = $templatedId;
-
         return $this;
     }
 
@@ -438,22 +462,27 @@ class Gems_Email_TemplateMailer
     }
 
     /**
-     * Sets a list of tokens
+     * Sets the list of tokens that will be mailed.
+     *
      * @param string[] $tokens
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setTokens(array $tokens)
     {
         $this->_tokens = $tokens;
+        return $this;
     }
 
     /**
      * Sets verbose (noisy) operation
      *
      * @param boolean $verbose
+     * @return Gems_Email_TemplateMailer (continuation pattern)
      */
     public function setVerbose($verbose)
     {
         $this->_verbose = $verbose;
+        return $this;
     }
 
     /**
