@@ -213,13 +213,19 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $roles;
     }
 
+    /**
+     * Return key/value pairs of all active staff members
+     *
+     * @staticvar array $data
+     * @return array
+     */
     public function getStaff()
     {
         static $data;
 
         if (! $data) {
             $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
-                    FROM gems__staff ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
+                    FROM gems__staff WHERE gsf_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
         }
 
         return $data;
