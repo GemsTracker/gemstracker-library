@@ -345,7 +345,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
         $options = $this->model->get($name, 'maxlength', 'required');
         $options['label'] = $this->escort->_('Subject');
-        $options['size']  = $options['maxlength'];
+        $options['size']  = min(array($options['maxlength'], 80));
 
         return new Zend_Form_Element_Text($name, $options);
     }
