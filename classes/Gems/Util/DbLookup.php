@@ -93,6 +93,24 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $organizations;
     }
 
+    /**
+     * Return key/value pairs of all active staff members
+     *
+     * @staticvar array $data
+     * @return array
+     */
+    public function getActiveStaff()
+    {
+        static $data;
+
+        if (! $data) {
+            $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
+                    FROM gems__staff WHERE gsf_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
+        }
+
+        return $data;
+    }
+
     public function getActiveStaffGroups()
     {
         static $groups;
@@ -214,7 +232,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Return key/value pairs of all active staff members
+     * Return key/value pairs of all staff members, currently active or not
      *
      * @staticvar array $data
      * @return array
@@ -225,7 +243,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if (! $data) {
             $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
-                    FROM gems__staff WHERE gsf_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
+                    FROM gems__staff WHERE ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
         }
 
         return $data;

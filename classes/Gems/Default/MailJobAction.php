@@ -100,7 +100,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
 
         $model->set('gmj_id_message',      'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getMailTemplates());
         $model->set('gmj_id_user_as',      'label', $this->_('By staff member'),
-                'multiOptions', $unselected + $dbLookup->getStaff(), 'default', $this->escort->getCurrentUserId(),
+                'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->escort->getCurrentUserId(),
                 'description', $this->_('Used for logging and possibly from address.'));
         $model->set('gmj_active',          'label', $this->_('Active'),
                 'multiOptions', $translated->getYesNo(), 'elementClass', 'Checkbox', 'required', true,
