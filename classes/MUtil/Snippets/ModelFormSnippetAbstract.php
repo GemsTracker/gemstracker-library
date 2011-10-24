@@ -36,15 +36,15 @@
  */
 
 /**
- * Abstract class for creating & processing a form based on a model. To use this 
+ * Abstract class for creating & processing a form based on a model. To use this
  * class either subclass or use the existing default ModelFormSnippet.
- * 
+ *
  * The processForm() method executes e sequence of methods that
- * depending on the input display the form or save the form and 
+ * depending on the input display the form or save the form and
  * redirects the output to another controller/action.
  *
  * @see ModelFormSnippet
- * 
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -466,6 +466,27 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction);
+
+            // Set the key identifiers for the route.
+            //
+            // Mind you the values may have changed, either because of an edit or
+            // because a new item was created.
+            $model = $this->getModel();
+            $keys  = $model->getKeys();
+            if (count($keys) == 1) {
+                $key = reset($keys);
+                if (isset($this->formData[$key])) {
+                    $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID] = $this->formData[$key];
+                }
+            } else {
+                $i = 1;
+                foreach ($model->getKeys() as $key) {
+                    if (isset($this->formData[$key])) {
+                        $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID . $i] = $this->formData[$key];
+                    }
+                    $i++;
+                }
+            }
         }
 
         return $this;

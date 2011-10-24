@@ -235,12 +235,15 @@ abstract class Gems_Menu_MenuAbstract
         $page->addExcelAction();
         $page->addShowAction();
 
-        // MAIL Server CONTROLLER
+        // MAIL JOB CONTROLLER
+        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'mail-job');
+
+        // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
         // $page->addAction($this->_('Test'), 'pr.mail.server.test', 'test')->addParameters(MUtil_Model::REQUEST_ID);
 
         // MAIL CONTROLLER
-        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'mail');
+        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'mail-template');
 
         return $setup;
     }

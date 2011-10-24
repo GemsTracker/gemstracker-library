@@ -114,10 +114,19 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        if ($showMenuItem = $this->getShowMenuItem()) {
+            $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
+        }
+
         // make sure search results are highlighted
         $this->applyTextMarker();
 
-        return parent::addBrowseTableColumns($bridge, $model);
+        parent::addBrowseTableColumns($bridge, $model);
+
+        if ($editMenuItem = $this->getEditMenuItem()) {
+            $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
+        }
+
     }
 
     /**
@@ -197,14 +206,25 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     }
 
     /**
+     * Finds a specific active menu item
      *
      * @param string $controller
      * @param string $action
      * @return Gems_Menu_SubMenuItem
      */
-    public function findMenuItem($controller, $action = 'index')
+    protected function findMenuItem($controller, $action = 'index')
     {
         return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+    }
+
+    /**
+     * Returns an edit menu item, if access is allowed by privileges
+     *
+     * @return Gems_Menu_SubMenuItem
+     */
+    protected function getEditMenuItem()
+    {
+        return $this->findMenuItem($this->request->getControllerName(), 'edit');
     }
 
     /**
@@ -233,6 +253,16 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
         } else {
             return $table;
         }
+    }
+
+    /**
+     * Returns a show menu item, if access is allowed by privileges
+     *
+     * @return Gems_Menu_SubMenuItem
+     */
+    protected function getShowMenuItem()
+    {
+        return $this->findMenuItem($this->request->getControllerName(), 'show');
     }
 
     /**

@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_MailAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
 {
     /**
      * Creates a model for getModel(). Called only for each new $action.

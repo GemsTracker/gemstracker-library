@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -37,13 +37,13 @@
 
 /**
  * Adds Gems specific display details and helper functions:
- * 
+ *
  * Items set are:
  * = Default route: 'show'
  * - Display class: 'formTable'
  * - Gems_Form use: createForm()
  * - Table display: beforeDispay()
- * 
+ *
  * Extra helpers are:
  * - Form title:   getTitle()
  * - Menu helpers: $this->menu, beforeDispay() & getMenuList()
@@ -62,21 +62,28 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      * @var string
      */
     protected $class = 'formTable';
-   
+
+    /**
+     * An optional title for the form. replacing the current generic form title.
+     *
+     * @var string Optional
+     */
+    protected $formTitle;
+
     /**
      * Required
-     * 
+     *
      * @var Gems_Menu
      */
     protected $menu;
-    
+
     /**
      * The name of the action to forward to after form completion
-     * 
+     *
      * @var string
      */
     protected $routeAction = 'show';
-    
+
     /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
@@ -90,7 +97,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         $table->setAsFormLayout($this->_form, true, true);
 
         // There is only one row with formLayout, so all in output fields get class.
-        $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);  
+        $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
 
         if ($links = $this->getMenuList()) {
             $table->tf(); // Add empty cell, no label
@@ -108,7 +115,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     {
         return $this->menu && parent::checkRegistryRequestsAnswers();
     }
-    
+
     /**
      * Creates an empty form. Allows overruling in sub-classes.
      *
@@ -119,10 +126,10 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     {
         // $form = new Zend_Form($options);
         $form = new Gems_Form($options);
-        
+
         return $form;
     }
-    
+
     /**
      * Create the snippets content
      *
@@ -140,13 +147,13 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         $form = parent::getHtmlOutput($view);
 
         $htmlDiv[] = $form;
-        
+
         return $htmlDiv;
     }
 
     /**
      * overrule to add your own buttons.
-     * 
+     *
      * @return Gems_Menu_MenuList
      */
     protected function getMenuList()
@@ -158,14 +165,16 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
 
         return $links;
     }
-    
+
     /**
-     * 
+     *
      * @return string The header title to display
      */
     protected function getTitle()
     {
-        if ($this->createData) {
+        if ($this->formTitle) {
+            return $this->formTitle;
+        } elseif ($this->createData) {
             return sprintf($this->_('New %s...'), $this->getTopic());
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());

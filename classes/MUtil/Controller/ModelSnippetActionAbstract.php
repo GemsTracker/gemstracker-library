@@ -197,7 +197,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
-     * Action for showing a create new page
+     * Action for showing a create new item page
      */
     public function createAction()
     {

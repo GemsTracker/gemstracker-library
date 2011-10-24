@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,49 +28,23 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Add complex column layout to display.
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class MailJobController extends Gems_Default_MailJobAction
 {
-    /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Overrule this function to add different columns to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @return void
-     */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        if ($menuItem = $this->getShowMenuItem()) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
-        }
 
-        // Newline placeholder
-        $br = MUtil_Html::create('br');
-
-        // make sure search results are highlighted
-        $this->applyTextMarker();
-
-        $bridge->addMultiSort('grco_created',  $br, 'respondent_name', $br, 'grco_address');
-        $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender');
-        $bridge->addMultiSort('grco_topic');
-    }
 }

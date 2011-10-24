@@ -102,6 +102,11 @@ class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSni
      */
     protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        if ($menuItem = $this->getEditMenuItem()) {
+            // Add click to edit 
+            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
+        }
+
         parent::addShowTableRows($bridge, $model);
 
         $controller = $this->request->getControllerName();
@@ -123,5 +128,27 @@ class Generic_ModelItemTableSnippet extends MUtil_Snippets_ModelVerticalTableSni
     protected function createModel()
     {
         return $this->model;
+    }
+
+    /**
+     * Finds a specific active menu item
+     *
+     * @param string $controller
+     * @param string $action
+     * @return Gems_Menu_SubMenuItem
+     */
+    protected function findMenuItem($controller, $action = 'index')
+    {
+        return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+    }
+
+    /**
+     * Returns an edit menu item, if access is allowed by privileges
+     *
+     * @return Gems_Menu_SubMenuItem
+     */
+    protected function getEditMenuItem()
+    {
+        return $this->findMenuItem($this->request->getControllerName(), 'edit');
     }
 }

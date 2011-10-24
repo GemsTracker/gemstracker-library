@@ -43,6 +43,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class MailController extends Gems_Default_MailAction
+class MailTemplateController extends Gems_Default_MailTemplateAction
 {
 }
