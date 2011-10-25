@@ -184,7 +184,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      */
     public function getMaintenanceLock()
     {
-        return $this->_loadClass('lockFile', null, array(GEMS_ROOT_DIR . '/var/settings/lock.txt'));
+        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/lock.txt'));
     }
 
     /**
