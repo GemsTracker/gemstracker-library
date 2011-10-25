@@ -131,7 +131,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     public function getAllowedStaffGroups()
     {
         $groups = $this->getActiveStaffGroups();
-        if ($this->session->user_role === 'super') {
+        if ($this->session->user_role === 'master') {
             return $groups;
 
         } else {

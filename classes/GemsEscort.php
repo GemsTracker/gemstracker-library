@@ -1533,8 +1533,8 @@ class GemsEscort extends MUtil_Application_Escort
          * directory with the name lock.txt
          */
         if (file_exists($this->getMaintenanceLockFilename())) {
-            if ($this->session->user_id && $this->session->user_role !== 'super') {
-                //Still allow logoff so we can relogin as super
+            if ($this->session->user_id && $this->session->user_role !== 'master') {
+                //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
                         $this->_('Please check back later.'),

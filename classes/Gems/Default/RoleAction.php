@@ -120,7 +120,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $disabled = $checkbox->getAttrib('disable');
 
         if ($disabled) {
-            $values = array_merge($values, $disabled);
+            $values = array_merge((array) $values, $disabled);
         }
         $checkbox->setValue($values);
         return $form;
@@ -149,6 +149,11 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         if (isset($data['grl_privileges'])) {
             $data['grl_privileges'] = implode(',', $data['grl_privileges']);
+        }
+
+        if(isset($data['grl_name']) && $data['grl_name'] == 'master') {
+            $form->getElement('grl_name')->setErrors(array($this->_('Illegal name')));
+            return false;
         }
 
         return true;
@@ -184,9 +189,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $model   = $this->getModel();
         $data    = $model->loadFirst();
 
-        //If we try to edit super, add an error message and reroute
-        if (isset($data['grl_name']) && $data['grl_name']=='super') {
-            $this->addMessage($this->_('Editing `super` is not allowed'));
+        //If we try to edit master, add an error message and reroute
+        if (isset($data['grl_name']) && $data['grl_name']=='master') {
+            $this->addMessage($this->_('Editing `master` is not allowed'));
             $this->_reroute(array('action'=>'index'), true);
         }
 

@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,27 +24,29 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    Gems
+ * @subpackage Roles
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * This is the generic Roles class to be extended by the project
+ * This is the generic Roles class
  *
- * It loads the ACL in four stages:
+ * It loads the ACL in two stages when there is no db present, otherwise it just loads from the db:
  *
  * 1. $this->loadDefaultRoles()
  * 2. $this->loadDefaultPrivileges()
  * Normally you should not touch this to make upgrading easier
  *
- * 3. $this->loadProjectRoles()
- * 4. $this->loadProjectPrivileges()
- * This is where you can revoke or add privileges and/or add your own roles.
  *
- *
- * @version $Id$
- * @author user
- * @filesource
- * @package Gems
+ * @package    Gems
  * @subpackage Roles
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 class Gems_Roles
 {
@@ -134,15 +134,15 @@ class Gems_Roles
             //Voeg standaard rollen en privileges in
             $this->loadDefaultRoles();
             $this->loadDefaultPrivileges();
-
-            //Voeg project rollen em privileges in
-            $this->loadProjectRoles();
-            $this->loadProjectPrivileges();
         }
 
-        //Now allow super admin all access, except for the actions that have the nologin privilege (->the login action)
-        // $this->_acl->allow('super');
-        // $this->_acl->deny('super', null, 'pr.nologin');
+        //Now allow 'master' all access, except for the actions that have the nologin privilege (->the login action)
+        if (!$this->_acl->hasRole('master')) {
+            //Add role if not already present
+            $this->_acl->addRole('master');
+        }
+        $this->_acl->allow('master');
+        $this->_acl->deny('master', null, 'pr.nologin');
     }
 
     public function load() {
@@ -222,96 +222,20 @@ class Gems_Roles
     }
 
     public function loadDefaultPrivileges() {
+        /**
+         * Only add the nologin role, as the others should come from the database when it is initialized
+         */
         $this->addPrivilege('nologin',
                         'pr.contact.bugs', 'pr.contact.support',
                         'pr.nologin'
-                )
-                ->addPrivilege('guest',
-                        'pr.ask',
-                        'pr.contact.bugs', 'pr.contact.support',
-                        'pr.islogin',
-                        'pr.respondent'
-                )
-                // ->allow('respondent', null, array('islogin'))
-                ->addPrivilege('staff',
-                        'pr.option.edit', 'pr.option.password',
-                        'pr.plan', 'pr.plan.overview', 'pr.plan.token',
-                        'pr.project', 'pr.project.questions',
-                        'pr.respondent.create', 'pr.respondent.edit',
-                        'pr.respondent.who', //Who filled out the survey instead of just the role
-                        'pr.setup',
-                        'pr.staff',
-                        'pr.survey', 'pr.survey.create',
-                        'pr.token', 'pr.token.answers', 'pr.token.delete', 'pr.token.edit', 'pr.token.mail', 'pr.token.print',
-                        'pr.track', 'pr.track.create', 'pr.track.delete', 'pr.track.edit'
-                )
-                ->addPrivilege('researcher',
-                        'pr.invitation',
-                        'pr.result',
-                        'pr.islogin'
-                )
-                // ->allow('security',   null, array())
-                ->addPrivilege('admin',
-                        'pr.consent', 'pr.consent.create', 'pr.consent.edit',
-                        'pr.group',
-                        'pr.role',
-                        'pr.mail', 'pr.mail.create', 'pr.mail.delete', 'pr.mail.edit',
-                        'pr.organization', 'pr.organization-switch',
-                        'pr.plan.overview.excel', 'pr.plan.respondent', 'pr.plan.respondent.excel', 'pr.plan.token.excel',
-                        'pr.project-information',
-                        'pr.reception', 'pr.reception.create', 'pr.reception.edit',
-                        'pr.respondent.choose-org', 'pr.respondent.delete',
-                        'pr.respondent.result', //Show the result of the survey in the overview
-                        'pr.source',
-                        'pr.staff.create', 'pr.staff.delete', 'pr.staff.edit',
-                        'pr.survey-maintenance',
-                        'pr.track-maintenance',
-                        'pr.token.mail.freetext'
-                )
-                ->addPrivilege('super',
-                        'pr.consent.delete',
-                        'pr.country', 'pr.country.create', 'pr.country.delete', 'pr.country.edit',
-                        'pr.database', 'pr.database.create', 'pr.database.delete', 'pr.database.edit', 'pr.database.execute', 'pr.database.patches',
-                        'pr.group.create', 'pr.group.edit',
-                        'pr.role.create', 'pr.role.edit',
-                        'pr.language',
-                        'pr.organization.create', 'pr.organization.edit',
-                        'pr.plan.choose-org', 'pr.plan.mail-as-application',
-                        'pr.reception.delete',
-                        'pr.source.create', 'pr.source.edit',
-                        'pr.staff.edit.all',
-                        'pr.survey-maintenance.edit',
-                        'pr.track-maintenance.create', 'pr.track-maintenance.edit'
-        );
-
-        /*         * ***************************************
-         * UNASSIGNED RIGHTS (by default)
-         *
-         * 'pr.group.delete'
-         * 'pr.organization.delete'
-         * 'pr.source.delete'
-         * 'pr.track-maintenance.delete'
-         * *************************************** */
+                );
     }
 
     public function loadDefaultRoles() {
-        $this->addRole(new Zend_Acl_Role('nologin'))
-                ->addRole(new Zend_Acl_Role('guest'))
-                ->addRole(new Zend_Acl_Role('respondent'), 'guest')
-                ->addRole(new Zend_Acl_Role('staff'), 'guest')
-                ->addRole(new Zend_Acl_Role('physician'), 'staff')
-                ->addRole(new Zend_Acl_Role('researcher'))
-                ->addRole(new Zend_Acl_Role('security'), 'guest')
-                ->addRole(new Zend_Acl_Role('admin'), array('staff', 'researcher', 'security'))
-                ->addRole(new Zend_Acl_Role('super'), 'admin');
-    }
-
-    public function loadProjectPrivileges() {
-
-    }
-
-    public function loadProjectRoles() {
-
+        /**
+         * Only add the nologin role, as the others should come from the database when it is initialized
+         */
+        $this->addRole(new Zend_Acl_Role('nologin'));
     }
 
     private function save() {

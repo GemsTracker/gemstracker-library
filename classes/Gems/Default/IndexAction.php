@@ -161,10 +161,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $this->session->user_id    = 2000;
                     $this->session->user_name  = $_POST['userlogin'];
                     $this->session->user_group = 800;
-                    $this->session->user_role  = 'super';
+                    $this->session->user_role  = 'master';
                     $this->session->user_organization_id   = 70;
                     $this->session->user_organization_name = 'SUPER ADMIN';
-                    $this->session->user_style = 'pulse';
+                    $this->session->user_style = 'gems';
                     //Als er nog geen tabellen zijn, moet dit ingesteld worden
                     //@@TODO Nog kijken hoe beter op te lossen (met try op tabel ofzo)
                     $this->session->allowedOrgs = array($this->session->user_organization_id=>$this->session->user_organization_name);

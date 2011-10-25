@@ -92,7 +92,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         $dbLookup = $this->util->getDbLookup();
 
-        $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getActiveStaffGroups));
+        $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
         if ($new) {
             $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
         } else {
@@ -125,11 +125,10 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
             $bridge->addSelect('gsf_id_organization');
-            $bridge->addSelect('gsf_id_primary_group');
         } else {
             $bridge->addExhibitor('gsf_id_organization');
-            $bridge->addSelect(   'gsf_id_primary_group', 'multiOptions', $dbLookup->getAllowedStaffGroups());
         }
+        $bridge->addSelect('gsf_id_primary_group');
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 
         $bridge->addSelect('gsf_iso_lang');
