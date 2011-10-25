@@ -85,6 +85,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public $escort;
 
     /**
+     *
+     * @var Gems_Menu
+     */
+    public $menu;
+
+    /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name

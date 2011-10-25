@@ -1133,15 +1133,6 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
-     *
-     * @return string Name of the file that performs the maintenance lock
-     */
-    public function getMaintenanceLockFilename()
-    {
-        return GEMS_ROOT_DIR . '/var/settings/lock.txt';
-    }
-
-    /**
      * Retrieve the GemsEscort object
      *
      * @return GemsEscort
@@ -1532,7 +1523,7 @@ class GemsEscort extends MUtil_Application_Escort
          * Check if we are in maintenance mode or not. This is triggeren by a file in the var/settings
          * directory with the name lock.txt
          */
-        if (file_exists($this->getMaintenanceLockFilename())) {
+        if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
             if ($this->session->user_id && $this->session->user_role !== 'master') {
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {

@@ -69,6 +69,12 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
 
     /**
      *
+     * @var Gems_Menu
+     */
+    public $menu;
+
+    /**
+     *
      * @var Zend_Session_Namespace
      */
     public $session;
@@ -81,6 +87,25 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
      * @var boolean $useHtmlView
      */
     public $useHtmlView = true;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    public $util;
+
+    /**
+     * Action that switches the cron job lock on or off.
+     */
+    public function cronLockAction()
+    {
+        // Switch lock
+        $this->util->getCronJobLock()->reverse();
+
+        // Redirect
+        $request = $this->getRequest();
+        $this->_reroute($this->menu->getCurrentParent()->toRouteUrl());
+    }
 
     /**
      * Loads an e-mail template
@@ -106,7 +131,12 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
     public function indexAction()
     {
         $this->initHtml();
-        $this->mailJob();
+
+        if ($this->util->getCronJobLock()->isLocked()) {
+            $this->html->append($this->_('Cron jobs turned off.'));
+        } else {
+            $this->mailJob();
+        }
     }
 
     public function mailJob()
@@ -165,7 +195,12 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
             }
         }
 
-        $this->html->append($mailer->getMessages());
+        $msg = $mailer->getMessages();
+        if (! $msg) {
+            $msg[] = $this->_('No mails sent');
+        }
+
+        $this->html->append($msg);
 
         if ($currentUser) {
             $this->escort->loadLoginInfo($currentUser);

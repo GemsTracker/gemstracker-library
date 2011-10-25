@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -117,6 +116,16 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         return array_combine($consentTypes, $consentTypes);
     }
 
+    /**
+     * Returns the cron job lock
+     *
+     * @return Gems_Util_LockFile
+     */
+    public function getCronJobLock()
+    {
+        return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/cron_lock.txt'));
+    }
+
     public function getCurrentURI($subpath = '')
     {
         static $uri;
@@ -166,6 +175,16 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     public function getLocalized()
     {
         return $this->_getClass('localized');
+    }
+
+    /**
+     * Returns the maintenance lock
+     *
+     * @return Gems_Util_LockFile
+     */
+    public function getMaintenanceLock()
+    {
+        return $this->_loadClass('lockFile', null, array(GEMS_ROOT_DIR . '/var/settings/lock.txt'));
     }
 
     /**

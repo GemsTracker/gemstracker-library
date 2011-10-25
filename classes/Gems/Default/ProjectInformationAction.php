@@ -144,7 +144,8 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
 
-        if (file_exists($this->escort->getMaintenanceLockFilename())) {
+        $lock = $this->util->getMaintenanceLock();
+        if ($lock->isLocked()) {
             $label = $this->_('Turn Maintenance Mode OFF');
         } else {
             $label = $this->_('Turn Maintenance Mode ON');
@@ -161,14 +162,13 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->html->buttonDiv($buttonList);
     }
 
+    /**
+     * Action that switches the maintenance lock on or off.
+     */
     public function maintenanceAction()
     {
-        $lockFile = $this->escort->getMaintenanceLockFilename();
-        if (file_exists($lockFile)) {
-            unlink($lockFile);
-        } else {
-            touch($lockFile);
-        }
+        // Switch lock
+        $this->util->getMaintenanceLock()->reverse();
 
         // Dump the existing maintenance mode messages.
         $this->escort->getMessenger()->clearCurrentMessages();

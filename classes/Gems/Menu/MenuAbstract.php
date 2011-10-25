@@ -199,6 +199,23 @@ abstract class Gems_Menu_MenuAbstract
         return $page;
     }
 
+    /**
+     * Add a menu item that is never added to the navigation tree and only shows up as a button.
+     *
+     * @param string $label
+     * @param string $privilege
+     * @param string $controller
+     * @param string $action
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addButtonOnly($label, $privilege, $controller, $action = 'index', array $other = array())
+    {
+        $other['button_only'] = true;
+
+        return $this->addPage($label, $privilege, $controller, $action, $other);
+    }
+
     public function addContainer($label, $privilege = null, array $other = array())
     {
         $other['label'] = $label;
@@ -208,13 +225,6 @@ abstract class Gems_Menu_MenuAbstract
         }
 
         return $this->add($other);
-    }
-
-    public function addButtonOnly($label, $privilege, $controller, $action = 'index', array $other = array())
-    {
-        $other['button_only'] = true;
-
-        return $this->addPage($label, $privilege, $controller, $action, $other);
     }
 
     /**
@@ -237,6 +247,8 @@ abstract class Gems_Menu_MenuAbstract
 
         // MAIL JOB CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'mail-job');
+        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
+        $page->addPage($this->_('Run'), null, 'cron', 'index');
 
         // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
