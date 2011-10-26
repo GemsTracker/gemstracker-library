@@ -316,6 +316,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Project'),    null, 'project');
         $page->addAction($this->_('Session'),    null, 'session');
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance', 'project-information', 'maintenance');
+        $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance', 'project-information', 'cacheclean');
 
         return $page;
     }

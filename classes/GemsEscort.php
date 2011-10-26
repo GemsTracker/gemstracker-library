@@ -138,6 +138,36 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
+     * Create a default file cache for the Translate and DB adapters to speed up execution
+     *
+     * @return Zend_Cache_Core
+     */
+    protected function _initCache()
+    {
+        $exists = false;
+        $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
+        if (!file_exists($cacheDir)) {
+            if (mkdir($cacheDir, 0777, true)) {
+                $exists = true;
+            }
+        } else {
+            $exists = true;
+        }
+
+        if ($exists) {
+            $cacheFrontendOptions = array('automatic_serialization' => true);
+            $cacheBackendOptions = array('cache_dir' => $cacheDir);
+
+            $cache = Zend_Cache::factory('Core', 'File', $cacheFrontendOptions, $cacheBackendOptions);
+
+            Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
+            Zend_Translate::setCache($cache);
+        }
+
+        return $cache;
+    }
+
+    /**
      * Initialize the logger
      *
      * @return Gems_Log

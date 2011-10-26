@@ -153,7 +153,8 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $request = $this->getRequest();
         $buttonList = $this->menu->getMenuList();
         $buttonList->addParameterSources($request)
-                ->addByController($request->getControllerName(), 'maintenance', $label);
+                ->addByController($request->getControllerName(), 'maintenance', $label)
+                ->addByController($request->getControllerName(), 'cacheclean');
 
         // $this->html->buttonDiv($buttonList);
 
@@ -175,6 +176,15 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->escort->getMessenger()->clearMessages();
         MUtil_Echo::out();
 
+        // Redirect
+        $request = $this->getRequest();
+        $this->_reroute(array($request->getActionKey() => 'index'));
+    }
+
+    public function cachecleanAction()
+    {
+        $this->escort->cache->clean();
+        $this->addMessage($this->_('Cache cleaned'));
         // Redirect
         $request = $this->getRequest();
         $this->_reroute(array($request->getActionKey() => 'index'));
