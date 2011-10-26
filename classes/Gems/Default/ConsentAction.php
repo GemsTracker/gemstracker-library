@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,7 +29,7 @@
  */
 
 /**
- * 
+ *
  * @author Matijs de Jong
  * @since 1.0
  * @version 1.1
@@ -38,22 +38,24 @@
  */
 
 /**
- * 
+ *
  * @author Matijs de Jong
  * @package Gems
  * @subpackage Default
  */
 class Gems_Default_ConsentAction  extends Gems_Controller_BrowseEditAction
 {
+    public $menuIndexIncludeLevel = 1;
+
     public $sortKey = array('gco_order' => SORT_ASC);
 
-    /** 
-     * Creates a model for getModel(). Called only for each new $action. 
-     *  
-     * The parameters allow you to easily adapt the model to the current action. The $detailed 
-     * parameter was added, because the most common use of action is a split between detailed 
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
      * and summarized actions.
-     *  
+     *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
      * @return MUtil_Model_ModelAbstract

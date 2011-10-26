@@ -46,6 +46,8 @@
  */
 class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
 {
+    public $menuIndexIncludeLevel = 1;
+
     public $sortKey = array('grc_id_reception_code' => SORT_ASC);
 
     public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
