@@ -46,6 +46,11 @@
  */
 class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 {
+    /**
+     * @var GemsEscort
+     */
+    public $escort;
+
     protected function _showTable($caption, $data, $nested = false)
     {
         $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
@@ -104,6 +109,21 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (isset($data['grl_privileges']) && (! is_array($data['grl_privileges']))) {
             $data['grl_privileges'] = explode(',', $data['grl_privileges']);
         }
+    }
+
+    /**
+     * As the ACL might have to be updated, rebuild the acl
+     *
+     * @param array $data
+     * @param type $isNew
+     * @return type
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        $roles = $this->loader->getRoles($this->escort);
+        $roles->build();
+
+        return true;
     }
 
     /**

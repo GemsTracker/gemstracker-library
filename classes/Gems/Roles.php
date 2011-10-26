@@ -241,13 +241,16 @@ class Gems_Roles
     private function save() {
         if ($this->_cache instanceof Zend_Cache_Core) {
             if (!$this->_cache->save($this->_acl, $this->_cacheid, array(), null))
-                echo "MISLUKT!";
+                throw new Gems_Exception('Failed to save acl to cache');
         }
     }
 
     public function setCache($cache) {
-        if ($cache instanceof Zend_Cache_Core)
+        if ($cache instanceof Zend_Cache_Core) {
             $this->_cache = $cache;
-    }
+        } elseif ($cache instanceof GemsEscort) {
+            $this->_cache = $cache->cache;
+        }
+   }
 
 }
