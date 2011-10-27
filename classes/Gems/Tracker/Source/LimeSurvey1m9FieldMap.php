@@ -59,6 +59,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected $_titlesMap;
 
     /**
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
      * The language of this fieldmap
      *
      * @var string
@@ -108,6 +113,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $this->lsDb           = $lsDb;
         $this->translate      = $translate;
         $this->tablePrefix    = $tablePrefix;
+        $this->cache          = GemsEscort::getInstance()->cache;   //Load the cache from escort
     }
 
     /**
@@ -198,7 +204,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
     protected function _getMap()
     {
-        if (! $this->_fieldMap) {
+        $cacheId = 'lsFieldMap'.$this->sourceSurveyId.$this->language;
+
+        if( ($this->_fieldMap = $this->cache->load($cacheId)) === false ) {
             $gTable = $this->_getGroupsTableName();
             $qTable = $this->_getQuestionsTableName();
 
@@ -333,8 +341,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
             }
             $this->_fieldMap = $map;
-            // MUtil_Echo::track($this->_fieldMap);
+            $this->cache->save($this->_fieldMap, $cacheId);
         }
+
 
         return $this->_fieldMap;
     }
