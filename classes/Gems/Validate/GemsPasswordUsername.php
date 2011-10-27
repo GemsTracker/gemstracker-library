@@ -86,7 +86,7 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
      */
     public function __construct($usernameField, $passwordField, Zend_Db_Adapter_Abstract $adapter = null, $delayFactor = null)
     {
-        parent::__construct('gems__staff', 'gsf_login', null, $adapter);
+        parent::__construct('gems__users', 'gsu_login', null, $adapter);
 
         $this->_usernameField = $usernameField;
         $this->_passwordField = $passwordField;
@@ -137,7 +137,7 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
                 }
             }
 
-            $condition = $this->_adapter->quoteIdentifier('gsf_password') . ' = ?';
+            $condition = $this->_adapter->quoteIdentifier('gsu_password') . ' = ?';
             $this->_exclude = $this->_adapter->quoteInto($condition, md5($password));
 
             try {
@@ -145,8 +145,8 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
                  * Lookup last failed login and number of failed logins
                  */
                 try {
-                    $sql = "SELECT gsf_failed_logins, UNIX_TIMESTAMP(gsf_last_failed)
-                    AS gsf_last_failed FROM {$this->_table} WHERE gsf_login = ?";
+                    $sql = "SELECT gsu_failed_logins, UNIX_TIMESTAMP(gsu_last_failed)
+                    AS gsu_last_failed FROM {$this->_table} WHERE gsu_login = ?";
                     $results = $this->_adapter->fetchRow($sql, array($username));
                 } catch (Zend_Db_Exception $zde) {
                     //If we need to apply a db patch, just use a default value
@@ -154,10 +154,10 @@ class Gems_Validate_GemsPasswordUsername extends Zend_Validate_Db_Abstract
                     MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Please update the database'));
                 }
 
-                $delay = pow($results['gsf_failed_logins'], $this->_delayFactor);
-                $remaining = ($results['gsf_last_failed'] + $delay) - time();
+                $delay = pow($results['gsu_failed_logins'], $this->_delayFactor);
+                $remaining = ($results['gsu_last_failed'] + $delay) - time();
 
-                if ($results['gsf_failed_logins'] > 0 && $remaining > 0) {
+                if ($results['gsu_failed_logins'] > 0 && $remaining > 0) {
                     $this->_obscureValue = false;
                     $this->_error(self::ERROR_PASSWORD_DELAY, ceil($remaining / 60));
                     return false;

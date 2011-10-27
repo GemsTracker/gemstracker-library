@@ -125,7 +125,7 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
      */
     protected function getUserLogin($userId)
     {
-        return $this->db->fetchOne("SELECT gsf_login FROM gems__staff WHERE gsf_id_user = ?", $userId);
+        return $this->db->fetchOne("SELECT gsu_login FROM gems__users WHERE gsu_id_user = ?", $userId);
     }
 
     public function indexAction()

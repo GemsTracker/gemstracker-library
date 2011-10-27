@@ -90,6 +90,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @var Gems_User_UserLoader
+     */
+    protected $userLoader;
+
+    /**
+     *
      * @var Gems_Util
      */
     protected $util;
@@ -173,6 +179,28 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getTracker()
     {
         return $this->_getClass('tracker');
+    }
+
+    /**
+     *
+     * @param string $login_name
+     * @param int $organization Only used when more than one organization uses this $login_name
+     * @return Gems_User_UserAbstract
+     */
+    public function getUser($login_name, $organization)
+    {
+        $loader = $this->getUserLoader();
+
+        return $loader->getUser($login_name, $organization);
+    }
+
+    /**
+     *
+     * @return Gems_User_UserLoader
+     */
+    protected function getUserLoader()
+    {
+        return $this->_getClass('userLoader', 'User_UserLoader');
     }
 
     /**

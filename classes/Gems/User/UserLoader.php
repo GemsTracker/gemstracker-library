@@ -28,21 +28,78 @@
  *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Stub for StaffAction, that allows overrulling of this controller in a project.
+ * Loads users.
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.4.4
  */
-class StaffController extends Gems_Default_StaffAction
-{ }
+class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
+{
+    /**
+     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     *
+     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     */
+    protected $cascade = 'User';
+
+    /**
+     *
+     * @var ArrayObject
+     */
+    protected $project;
+
+
+    /**
+     *
+     */
+    public function getCurrentUser()
+    {
+        static $currentUser;
+
+        if (! $currentUser) {
+            $currentUser = Gems_User_UserAbstract::getCurrentUser();
+
+            if (! $currentUser) {
+                $currentUser = $this->_loadClass('NoLoginUser', true, array(null, null));
+
+                $currentUser->setAsCurrentUser();
+            }
+        }
+
+        return $currentUser;
+    }
+
+    /**
+     *
+     * @param string $login_name
+     * @param int $organization Only used when more than one organization uses this $login_name
+     * @return Gems_User_UserAbstract
+     */
+    public function getUser($login_name, $organization)
+    {
+        if ($this->isProjectUser($login_name)) {
+            return $this->loadProjectUser($login_name, $organization);
+        }
+    }
+
+    protected function isProjectUser($login_name)
+    {
+        return isset($this->project->admin['user']) && ($this->project->admin['user'] == $login_name);
+    }
+
+    protected function loadProjectUser($login_name, $organization)
+    {
+        return $this->_getClass('ProjectSuperUser', null, array($login_name, $organization));
+    }
+}

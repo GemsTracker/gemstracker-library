@@ -28,21 +28,56 @@
  *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Stub for StaffAction, that allows overrulling of this controller in a project.
+ *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.4.4
  */
-class StaffController extends Gems_Default_StaffAction
-{ }
+class Gems_User_DatabaseUserAbstract extends Gems_User_UserAbstract
+{
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     * Simple used name => database field
+     * @var array
+     */
+    protected $fieldMappings = array();
+
+    /**
+     * Creates the initial feed SQL select statement
+     *
+     * @return Zend_Db_Select
+     */
+    abstract public function getSqlSelect();
+
+    /**
+     * Intialize the values for this user.
+     *
+     * Skipped when the user is the active user and is stored in the session.
+     *
+     * @param string $login_name
+     * @param int $organization Only used when more than one organization uses this $login_name
+     * @return boolean False when the object could not load.
+     */
+    protected function initVariables($login_name, $organization)
+    {
+        $select = $this->getSqlSelect();
+
+        $userIds = $select->query()->fetchAll();
+    }
+}

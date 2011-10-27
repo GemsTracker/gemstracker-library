@@ -74,7 +74,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      * @return Zend_Auth_Adapter_Interface
      */
     protected function _getAuthAdapter($formValues) {
-        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__staff', 'gsf_login', 'gsf_password');
+        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__users', 'gsu_login', 'gsu_password');
         $adapter->setIdentity($formValues['userlogin']);
         $adapter->setCredential($this->escort->passwordHash(null, $formValues['password'], false));
         return $adapter;
@@ -96,6 +96,21 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $form = new Gems_Form(array('labelWidthFactor' => $this->labelWidthFactor));
         $form->setMethod('post');
         $form->setDescription(sprintf($this->_('Login to %s application'), $this->project->name));
+
+        if ($this->escort instanceof Gems_Project_Organization_SingleOrganizationInterface) {
+            $element = new Zend_Form_Element_Hidden('organization');
+            $element->setValue($this->escort->getRespondentOrganization());
+        } else {
+            $element = new Zend_Form_Element_Select('organization');
+            $element->setLabel($this->_('Organization'));
+            $element->setMultiOptions($this->util->getDbLookup()->getOrganizations());
+            $element->setRequired(true);
+
+            if (! $this->_request->isPost()) {
+                $element->setValue($this->escort->getCurrentOrganization());
+            }
+        }
+        $form->addElement($element);
 
         // Veld inlognaam
         $element = new Zend_Form_Element_Text('userlogin');
@@ -135,7 +150,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         return $form;
     }
 
-    // Dummy: always rerouted by Gems
+    // Dummy: always rerouted by GemsEscort
     public function indexAction() { }
 
     public function loginAction()
@@ -152,11 +167,17 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $this->_reroute(array('controller' => 'respondent', 'action'=>'index'));
             }
         }
+        // MUtil_Echo::track(get_class($this->loader->getUser('super', null)));
 
         $form = $this->_getLoginForm();
 
         if ($this->_request->isPost()) {
             if ($form->isValid($_POST, false)) {
+                /*
+                if ($user = $this->loader->getUser($_POST['userlogin'], $_POST['organization'])) {
+
+                } // */
+
                 if (isset($this->project->admin) && $this->project->admin['user'] == $_POST['userlogin'] && $this->project->admin['pwd'] == $_POST['password']) {
                     $this->session->user_id    = 2000;
                     $this->session->user_name  = $_POST['userlogin'];
@@ -180,6 +201,19 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $adapter = $this->_getAuthAdapter($form->getValues());
                 $auth    = Gems_Auth::getInstance();
                 $result  = $auth->authenticate($adapter, $_POST['userlogin']);
+
+                // Allow login using old password.
+                if ((! $result->isValid()) && ($userid = $this->db->fetchOne("SELECT gsu_id_user FROM gems__users WHERE gsu_active = 1 AND gsu_password IS NULL AND gsu_login = ?", $_POST['userlogin']))) {
+
+                    $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__staff', 'gsf_id_user', 'gsf_password');
+                    $adapter->setIdentity($userid);
+                    $adapter->setCredential(md5($_POST['password'], false));
+                    $result  = $auth->authenticate($adapter, $_POST['userlogin']);
+                    MUtil_Echo::track('old autho');
+                } else {
+                    MUtil_Echo::track('new autho');
+                }
+
                 if (!$result->isValid()) {
                     // Invalid credentials
                     $errors = $result->getMessages();
@@ -295,19 +329,19 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         }
 
         if ($this->_request->isPost() && $form->isValid($_POST)) {
-            $sql = $this->db->quoteInto("SELECT gsf_id_user,gsf_email,gsf_reset_key,DATEDIFF(NOW(), gsf_reset_req) AS gsf_days FROM gems__staff WHERE gsf_login = ?", $_POST['userlogin']);
+            $sql = $this->db->quoteInto("SELECT gsu_id_user, gsf_email, gsu_reset_key, DATEDIFF(NOW(), gsu_reset_requested) AS gsf_days FROM gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user WHERE gsu_login = ?", $_POST['userlogin']);
             $result = $this->db->fetchRow($sql);
 
             if (empty($result) || empty($result['gsf_email'])) {
                 $this->addMessage($this->_('No such user found or no e-mail address known'));
-            } else if (!empty($result['gsf_reset_key']) && $result['gsf_days'] < 1) {
+            } else if (!empty($result['gsu_reset_key']) && $result['gsf_days'] < 1) {
                 $this->addMessage($this->_('Reset e-mail already sent, please try again after 24 hours'));
             } else {
                 $email = $result['gsf_email'];
                 $key = md5(time() . $email);
                 $url = $this->util->getCurrentURI('index/resetpassword/key/' . $key);
 
-                $this->db->update('gems__staff', array('gsf_reset_key' => $key, 'gsf_reset_req' => new Zend_Db_Expr('NOW()')), 'gsf_id_user = ' . $result['gsf_id_user']);
+                $this->db->update('gems__users', array('gsu_reset_key' => $key, 'gsu_reset_requested' => new Zend_Db_Expr('NOW()')), 'gsu_id_user = ' . $result['gsu_id_user']);
 
                 $mail->setSubject('Password reset requested');
                 $mail->setBodyText('To reset your password, please click this link: ' . $url);
@@ -323,7 +357,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 }
             }
         } else if ($key = $this->_request->getParam('key')) {
-            $sql = $this->db->quoteInto("SELECT gsf_id_user,gsf_email FROM gems__staff WHERE gsf_reset_key = ?", $key);
+            $sql = $this->db->quoteInto("SELECT gsu_id_user, gsf_email FROM gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user WHERE gsu_reset_key = ?", $key);
             $result = $this->db->fetchRow($sql);
 
             if (!empty($result)) {
@@ -339,7 +373,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 try {
                     $mail->send();
                     $this->addMessage($this->_('An e-mail was sent containing your new password'));
-                    $this->db->update('gems__staff', array('gsf_reset_key' => new Zend_Db_Expr('NULL'), 'gsf_reset_req' => new Zend_Db_Expr('NULL'), 'gsf_password' => $passwordHash), 'gsf_id_user = ' . $result['gsf_id_user']);
+                    $this->db->update('gems__users', array('gsu_reset_key' => new Zend_Db_Expr('NULL'), 'gsu_reset_requested' => new Zend_Db_Expr('NULL'), 'gsu_password' => $passwordHash), 'gsu_id_user = ' . $result['gsu_id_user']);
                     $this->_reroute(array('action' => 'index'), true);
                 } catch (Exception $e) {
                     $this->addMessage($this->_('Unable to send e-mail'));

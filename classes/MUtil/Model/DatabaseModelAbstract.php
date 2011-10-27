@@ -60,6 +60,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     // If there exists a table containing two fields that map to these, shoot the table designer!!!
 
     /**
+     * @var array When specified delete() updates the selected rows with these values, instead of physically deleting the rows.
+     */
+    protected $_deleteValues;
+
+    /**
      * Child classes may technically be able or not able to add extra rows,
      * but the data model or specific circumstances may require a specific
      * instance of that class to deviate from the default.
@@ -501,6 +506,21 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $this;
     }
 
+    /**
+     * Adding DeleteValues means delete() updates the selected rows with these values, instead of physically deleting the rows.
+     *
+     * @param string|array $arrayOrField1 MUtil_Ra::pairs() arguments
+     * @param mxied $value1
+     * @param string $field2
+     * @param mixed $key2
+     * @return MUtil_Model_TableModel
+     */
+    public function addDeleteValues($arrayOrField1 = null, $value1 = null, $field2 = null, $key2 = null)
+    {
+        $args = MUtil_Ra::pairs(func_get_args());
+        $this->_deleteValues = $args + $this->_deleteValues;
+        return $this;
+    }
 
     /**
      * Makes a copy for each key item in the model using $this->getKeyCopyName()
@@ -520,7 +540,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         }
         return $this;
     }
-
 
     /**
      * Creates a validator that checks that this value is used in no other
@@ -600,11 +619,12 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $this->canCreate;
     }
 
-    public function getKeyCopier()
-    {
-        return $this->keyCopier;
-    }
-
+    /**
+     * Returns the key copy name for a field.
+     *
+     * @param string $name
+     * @return string
+     */
     public function getKeyCopyName($name)
     {
         return sprintf($this->keyCopier, $name);
@@ -719,6 +739,22 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     public function setCreate($value = true)
     {
         $this->canCreate = (bool) $value;
+        return $this;
+    }
+
+    /**
+     * Setting DeleteValues means delete() updates the selected rows with these values, instead of physically deleting the rows.
+     *
+     * @param string|array $arrayOrField1 MUtil_Ra::pairs() arguments
+     * @param mxied $value1
+     * @param string $field2
+     * @param mixed $key2
+     * @return MUtil_Model_TableModel
+     */
+    public function setDeleteValues($arrayOrField1 = null, $value1 = null, $field2 = null, $key2 = null)
+    {
+        $args = MUtil_Ra::pairs(func_get_args());
+        $this->_deleteValues = $args;
         return $this;
     }
 

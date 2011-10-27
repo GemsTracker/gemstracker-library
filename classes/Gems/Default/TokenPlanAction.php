@@ -351,9 +351,9 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                         COALESCE(gems__staff.gsf_first_name, ''),
                         COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
                     ) AS gsf_name
-                FROM gems__staff INNER JOIN gems__respondent2track ON gsf_id_user = gr2t_created_by
+                FROM (gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user) INNER JOIN gems__respondent2track ON gsu_id_user = gr2t_created_by
                 WHERE gr2t_id_organization = $orgId AND
-                    gsf_active = 1 AND
+                    gsu_active = 1 AND
                     gr2t_active = 1";
         $elements[] = $this->_createSelectElement('gr2t_created_by', $sql, $this->_('(all staff)'));
 

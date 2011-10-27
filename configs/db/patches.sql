@@ -216,3 +216,16 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.mail.job,pr.
 -- PATCH: Set default for new rounds at days
 ALTER TABLE `gems__round_periods` CHANGE `grp_valid_after_unit` `grp_valid_after_unit` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D',
     CHANGE `grp_valid_for_unit` `grp_valid_for_unit` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D';
+
+-- PATCH: New user login structure
+INSERT INTO gems__users (gsu_id_user, gsu_login, gsu_id_organization, gsu_user_class, gsu_active,
+                gsu_password, gsu_failed_logins, gsu_last_failed, gsu_reset_key, gsu_reset_requested, gsu_reset_required,
+                gsu_changed, gsu_changed_by, gsu_created, gsu_created_by)
+    SELECT gsf_id_user, gsf_login, gsf_id_organization, 'StaffUser', gsf_active,
+                NULL, gsf_failed_logins, gsf_last_failed, gsf_reset_key, 0, 1,
+                gsf_changed, gsf_changed_by, gsf_created, gsf_created_by
+        FROM gems__staff;
+
+ALTER TABLE `gems__staff` CHANGE `gsf_id_user` `gsf_id_user` BIGINT( 20 ) UNSIGNED NOT NULL;
+
+ALTER TABLE `gems__staff` DROP INDEX `gsf_login`;

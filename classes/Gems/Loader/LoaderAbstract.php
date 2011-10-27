@@ -154,7 +154,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     {
         // echo '_loadClassPath: ' . $this->cascade . '-' . $classname . '-' . ($create ? 1 : 0) . "<br/>\n";
         // debug_print_backtrace();
-        // MUtil_Echo::r($filepath, $classname, $this->cascade);
+        // MUtil_Echo::track($filepath, $classname, $this->cascade);
 
         if (file_exists($filepath)) {
             if (! class_exists($classname)) {

@@ -61,8 +61,10 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        $bridge->addHidden(   'gsu_id_user');
+        $bridge->addHidden(   'gsu_id_organization');
         $bridge->addHidden(   'gsf_id_user');
-        $bridge->addExhibitor('gsf_login', array('size' => 15, 'minlength' => 4));
+        $bridge->addExhibitor('gsu_login', array('size' => 15, 'minlength' => 4));
         $bridge->addText(     'gsf_first_name');
         $bridge->addText(     'gsf_surname_prefix');
         $bridge->addText(     'gsf_last_name');
@@ -71,12 +73,11 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $bridge->addRadio(    'gsf_gender', 'separator', '');
 
         $bridge->addSelect(   'gsf_iso_lang', array('label' => $this->_('Language'), 'multiOptions' => $this->util->getLocalized()->getLanguages()));
-        $bridge->addCheckbox( 'gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'description', $this->_('If checked you will logoff after answering a survey.'));
     }
 
     public function afterSave(array $data, $isNew)
     {
-        $this->escort->loadLoginInfo($data['gsf_login']);
+        $this->escort->loadLoginInfo($data['gsu_login']);
     }
 
     public function changePasswordAction()
@@ -86,15 +87,18 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
          *************/
         $form = $this->createForm();
 
-        // Veld current password
-        $element = new Zend_Form_Element_Password('old_password');
-        $element->setLabel($this->_('Current password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRenderPassword(true);
-        $element->setRequired(true);
-        $element->addValidator(new Gems_Validate_GemsPasswordUsername($this->session->user_login, 'old_password', $this->db));
-        $form->addElement($element);
+        $sql = "SELECT CASE WHEN gsu_password IS NULL THEN 0 ELSE 1 END FROM gems__users WHERE gsu_id_user = ? AND gsu_id_organization = ?";
+        if ($this->db->fetchOne($sql, array($this->session->user_id, $this->session->user_organization_id))) {
+            // Veld current password
+            $element = new Zend_Form_Element_Password('old_password');
+            $element->setLabel($this->_('Current password'));
+            $element->setAttrib('size', 10);
+            $element->setAttrib('maxlength', 20);
+            $element->setRenderPassword(true);
+            $element->setRequired(true);
+            $element->addValidator(new Gems_Validate_GemsPasswordUsername($this->session->user_login, 'old_password', $this->db));
+            $form->addElement($element);
+        }
 
         // Veld new password
         $element = new Zend_Form_Element_Password('new_password');
@@ -127,8 +131,9 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
          ****************/
         if ($this->_request->isPost() && $form->isValid($_POST)) {
 
-            $data['gsf_id_user']  = $this->session->user_id;
-            $data['gsf_password'] = $this->escort->passwordHash(null,$_POST['new_password']);
+            $data['gsu_id_user']         = $this->session->user_id;
+            $data['gsu_id_organization'] = $this->session->user_organization_id;
+            $data['gsu_password']        = $this->escort->passwordHash(null, $_POST['new_password']);
 
             $this->getModel()->save($data);
 
@@ -180,10 +185,10 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__staff');
-        $model->canCreate = false;
+        $model = new Gems_Model_UserModel('staff', 'gems__staff', array('gsu_id_user' => 'gsf_id_user'), 'gsf');
+        $model->copyKeys();
 
-        $model->set('gsf_login',            'label', $this->_('Login Name'));
+        $model->set('gsu_login',            'label', $this->_('Login Name'));
         $model->set('gsf_email',            'label', $this->_('E-Mail'));
         $model->set('gsf_first_name',       'label', $this->_('First name'));
         $model->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
@@ -191,14 +196,12 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
 
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gsf');
-
         return $model;
     }
 
     public function editAction()
     {
-        $this->getModel()->setFilter(array('gsf_id_user' => $this->session->user_id));
+        $this->getModel()->setFilter(array('gsu_id_user' => $this->session->user_id));
 
         if ($form = $this->processForm()) {
             $this->html->h3(sprintf($this->_('Options'), $this->getTopic()));

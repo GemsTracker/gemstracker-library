@@ -98,8 +98,8 @@ class Gems_Auth extends Zend_Auth
              * Lookup last failed login and number of failed logins
              */
             try {
-                $sql = "SELECT gsf_failed_logins, UNIX_TIMESTAMP(gsf_last_failed)
-                AS gsf_last_failed FROM gems__staff WHERE gsf_login = ?";
+                $sql = "SELECT gsu_failed_logins, UNIX_TIMESTAMP(gsu_last_failed)
+                AS gsu_last_failed FROM gems__users WHERE gsu_login = ?";
                 $results = $this->db->fetchRow($sql, array($username));
             } catch (Zend_Db_Exception $zde) {
                 //If we need to apply a db patch, just use a default value
@@ -107,10 +107,10 @@ class Gems_Auth extends Zend_Auth
                 MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Please update the database'));
             }
 
-            $delay = pow($results['gsf_failed_logins'], $this->_delayFactor);
-            $remaining = ($results['gsf_last_failed'] + $delay) - time();
+            $delay = pow($results['gsu_failed_logins'], $this->_delayFactor);
+            $remaining = ($results['gsu_last_failed'] + $delay) - time();
 
-            if ($results['gsf_failed_logins'] > 0 && $remaining > 0) {
+            if ($results['gsu_failed_logins'] > 0 && $remaining > 0) {
                 //$this->_obscureValue = false;
                 $result = $this->_error(self::ERROR_PASSWORD_DELAY, ceil($remaining / 60));
             }

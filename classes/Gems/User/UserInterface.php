@@ -28,21 +28,33 @@
  *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Stub for StaffAction, that allows overrulling of this controller in a project.
+ *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.4.4
  */
-class StaffController extends Gems_Default_StaffAction
-{ }
+interface Gems_User_UserInterface
+{
+    /**
+     * Check that the password is correct for this user.
+     *
+     * @param string $password Unencrypted password
+     * @return boolean
+     */
+    public function checkPassword($password);
+
+    public function hasPrivilege($privilege);
+
+    public function setAsCurrentUser();
+}

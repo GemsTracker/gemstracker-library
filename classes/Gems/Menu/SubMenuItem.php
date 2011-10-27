@@ -417,7 +417,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
 
         $menu = $this->addAction($label, $privilege, 'delete', $other);
-        $menu->addParameters(MUtil_Model::REQUEST_ID);
+        $menu->setModelParameters(1);
 
         return $menu;
     }
@@ -436,7 +436,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
 
         $menu = $this->addAction($label, $privilege, 'edit', $other);
-        $menu->addParameters(MUtil_Model::REQUEST_ID);
+        $menu->setModelParameters(1);
 
         return $menu;
     }
@@ -475,6 +475,17 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this;
     }
 
+    /**
+     * Add required parameters - shown in the url - for this
+     * menu item.
+     *
+     * Numeric array keys are changed into the same string as the
+     * array value.
+     *
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs named array
+     * @param mixed $key2
+     * @return Gems_Menu_SubMenuItem (continuation pattern)
+     */
     public function addNamedParameters($arrayOrKey1 = null, $altName1 = null)
     {
         $params = MUtil_Ra::pairs(func_get_args());
@@ -483,16 +494,8 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             $this->_parameters = new MUtil_Lazy_ArrayWrap();
         }
         foreach ($params as $param => $name) {
-            if (! $name) {
-                if (is_int($param)) {
-                    throw new Zend_Exception('Invalid integer required parameter key with empty name.');
-                } else {
-                    $name = $param;
-                }
-            } else {
-                if (is_int($param)) {
-                    $param = $name;
-                }
+            if (is_int($param)) {
+                $param = $name;
             }
             $this->_requiredParameters[$param] = $name;
             $this->_parameters[$param] = MUtil_Lazy::L($name);
@@ -546,7 +549,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
 
         $menu = $this->addAction($label, $privilege, 'show', $other);
-        $menu->addParameters(MUtil_Model::REQUEST_ID);
+        $menu->setModelParameters(1);
 
         return $menu;
     }
@@ -755,6 +758,41 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this;
     }
 
+    /**
+     * Defines the number of named parameters using the model naming
+     * convention: id=x or id1=x id2=y
+     *
+     * @see setNamedParamenters()
+     *
+     * @param int $idCount The number of parameters to define
+     * @return Gems_Menu_SubMenuItem (continuation pattern)
+     */
+    public function setModelParameters($idCount)
+    {
+        $params = array();
+        if (1 == $idCount) {
+            $params[MUtil_Model::REQUEST_ID] = MUtil_Model::REQUEST_ID;
+        } else {
+            for ($i = 1; $i <= $idCount; $i++) {
+                $params[MUtil_Model::REQUEST_ID . $i] = MUtil_Model::REQUEST_ID . $i;
+            }
+        }
+        $this->setNamedParameters($params);
+
+        return $this;
+    }
+
+    /**
+     * Set the required parameters - shown in the url - for this
+     * menu item.
+     *
+     * Numeric array keys are changed into the same string as the
+     * array value.
+     *
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs named array
+     * @param mixed $key2
+     * @return Gems_Menu_SubMenuItem (continuation pattern)
+     */
     public function setNamedParameters($arrayOrKey1 = null, $key2 = null)
     {
         $params = MUtil_Ra::pairs(func_get_args());

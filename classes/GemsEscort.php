@@ -237,7 +237,7 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * Use $this->acl to access afterwards
      *
-     * @return Zend_View
+     * @return MUtil_Acl
      */
     protected function _initAcl()
     {
@@ -927,7 +927,7 @@ class GemsEscort extends MUtil_Application_Escort
          * Reset number of failed logins
          */
         try {
-            $sql = "UPDATE gems__staff SET gsf_failed_logins = 0, gsf_last_failed = NULL WHERE gsf_login = ?";
+            $sql = "UPDATE gems__users SET gsu_failed_logins = 0, gsu_last_failed = NULL WHERE gsu_login = ?";
             $this->db->query($sql, array($_POST['userlogin']));
         } catch (Exception $e) {
             // swallow exception
@@ -941,7 +941,7 @@ class GemsEscort extends MUtil_Application_Escort
          */
         try {
             if (isset($_POST['userlogin'])) {
-                $sql = "UPDATE gems__staff SET gsf_failed_logins = gsf_failed_logins + 1, gsf_last_failed = NOW() WHERE gsf_login = ?";
+                $sql = "UPDATE gems__users SET gsu_failed_logins = gsu_failed_logins + 1, gsu_last_failed = NOW() WHERE gsu_login = ?";
                 $this->db->query($sql, array($_POST['userlogin']));
             }
         } catch (Exception $e) {
@@ -1097,12 +1097,7 @@ class GemsEscort extends MUtil_Application_Escort
             //If user is current user, read from session
             $allowedOrganizations = $this->session->allowedOrgs;
         } else {
-            //Here we read all allowed orgs for the user
-            $model = new MUtil_Model_TableModel('gems__organizations');
-            $data = $model->load();
-            foreach ($data as $org) {
-                $allowedOrganizations[$org['gor_id_organization']] = $org['gor_name'];
-            }
+            $allowedOrganizations = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
         }
 
         return $allowedOrganizations;
@@ -1309,22 +1304,24 @@ class GemsEscort extends MUtil_Application_Escort
          * compatibility
          */
         $select = new Zend_Db_Select($this->db);
-        $select->from('gems__staff', array('user_id'=>'gsf_id_user',
-                                           'user_login'=>'gsf_login',
-                                           //don't expose the password hash
-                                           //'user_password'=>'gsf_password',
-                                           'user_email'=>'gsf_email',
-                                           'user_group'=>'gsf_id_primary_group',
-                                           'user_locale'=>'gsf_iso_lang',
-                                           'user_logout'=>'gsf_logout_on_survey'))
+        $select->from('gems__users', array('user_id' => 'gsu_id_user',
+                                          'user_login' => 'gsu_login',
+                                          //don't expose the password hash
+                                          //'user_password'=>'gsu_password',
+                                          ))
+                ->join('gems__staff', 'gsu_id_user = gsf_id_user', array(
+                                          'user_email'=>'gsf_email',
+                                          'user_group'=>'gsf_id_primary_group',
+                                          'user_locale'=>'gsf_iso_lang',
+                                          'user_logout'=>'gsf_logout_on_survey'))
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
-               ->join('gems__organizations', 'gsf_id_organization = gor_id_organization',
+               ->join('gems__organizations', 'gsu_id_organization = gor_id_organization',
                        array('user_organization_id'=>'gor_id_organization', 'user_organization_name'=>'gor_name'))
                ->where('ggp_group_active = ?', 1)
                ->where('gor_active = ?', 1)
-               ->where('gsf_active = ?', 1)
-               ->where('gsf_login = ?', $userName)
+               ->where('gsu_active = ?', 1)
+               ->where('gsu_login = ?', $userName)
                ->limit(1);
 
         //For a multi-layout project we need to select the appropriate style too
@@ -1348,7 +1345,11 @@ class GemsEscort extends MUtil_Application_Escort
 
     public function passwordHash($name, $value, $new)
     {
-        return md5($value, false);
+        if (isset($this->project->salt)) {
+            return md5($this->project->salt . $value, false);
+        } else {
+            return md5($value, false);
+        }
     }
 
     /**

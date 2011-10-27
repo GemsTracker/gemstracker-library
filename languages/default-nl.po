@@ -3136,11 +3136,11 @@ msgstr "Man"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:156
 msgid "Checked"
-msgstr "Gecontroleerd"
+msgstr "Aangevinkt"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:157
 msgid "Not checked"
-msgstr "Niet gecontroleerd"
+msgstr "Niet aangevinkt"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:249
 #, php-format

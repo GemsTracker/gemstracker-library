@@ -326,8 +326,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $values = $this->db->fetchPairs("
                 SELECT gsf_id_user,
                     CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name
-                    FROM gems__staff INNER JOIN gems__groups ON gsf_id_primary_group = ggp_id_group
-                    WHERE gsf_active=1 AND gsf_id_organization = ? AND ggp_role = 'physician'
+                    FROM (gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user) INNER JOIN gems__groups ON gsf_id_primary_group = ggp_id_group
+                    WHERE gsu_active=1 AND gsu_id_organization = ? AND ggp_role = 'physician'
                     ORDER BY 2", $organizationId);
 
             $session->physicians = $values;

@@ -44,7 +44,7 @@
  */
 class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
-    public $filterStandard = array('gsf_active' => 1);
+    public $filterStandard = array('gsu_active' => 1);
     public $sortKey = array('name' => SORT_ASC);
 
     protected $_instanceId;
@@ -96,18 +96,28 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if ($new) {
             $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
         } else {
-            $model->set('gsf_password', 'description', $this->_('Enter only when changing'));
-            $model->setSaveWhenNotNull('gsf_password');
+            $model->set('gsu_password', 'description', $this->_('Enter only when changing'));
+            $model->setSaveWhenNotNull('gsu_password');
         }
-        $model->setOnSave('gsf_password', array($this->escort, 'passwordHash'));
+        $model->setOnSave('gsu_password', array($this->escort, 'passwordHash'));
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
 
-        $bridge->addHidden(  'gsf_id_user');
-        $bridge->addText(    'gsf_login', 'size', 15, 'minlength', 4,
-            'validator', $model->createUniqueValidator('gsf_login'));
+        $bridge->addHidden(  'gsu_id_user');
+        $bridge->addHidden(  'gsf_id_user'); // Needed for e-mail validation
+        $bridge->addHidden(  'gsu_user_class');
+        $bridge->addText(    'gsu_login', 'size', 15, 'minlength', 4,
+            'validator', $model->createUniqueValidator('gsu_login'));
 
-        $bridge->addPassword('gsf_password',
+        // Can the organization be changed?
+        if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
+            $bridge->addHiddenMulti($model->getKeyCopyName('gsu_id_organization'));
+            $bridge->addSelect('gsu_id_organization');
+        } else {
+            $bridge->addExhibitor('gsu_id_organization');
+        }
+
+        $bridge->addPassword('gsu_password',
             'label', $this->_('Password'),
             'minlength', $this->project->passwords['MinimumLength'],
             // 'renderPassword', true,
@@ -123,11 +133,6 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addFilter(  'gsf_last_name',      $ucfirst);
         $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail')->addValidator($model->createUniqueValidator('gsf_email'));
 
-        if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $bridge->addSelect('gsf_id_organization');
-        } else {
-            $bridge->addExhibitor('gsf_id_organization');
-        }
         $bridge->addSelect('gsf_id_primary_group');
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 
@@ -136,15 +141,15 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     public function afterFormLoad(array &$data, $isNew)
     {
-        if (array_key_exists('gsf_login', $data)) {
-            $this->_instanceId = $data['gsf_login'];
+        if (array_key_exists('gsu_login', $data)) {
+            $this->_instanceId = $data['gsu_login'];
         }
 
         $sql = "SELECT ggp_id_group,ggp_role FROM gems__groups WHERE ggp_id_group = " . (int) $data['gsf_id_primary_group'];
         $groups = $this->db->fetchPairs($sql);
 
         if (! ($this->escort->hasPrivilege('pr.staff.edit.all') ||
-             $data['gsf_id_organization'] == $this->escort->getCurrentOrganization())) {
+             $data['gsu_id_organization'] == $this->escort->getCurrentOrganization())) {
                 throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
     }
@@ -164,18 +169,21 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         // MUtil_Model::$verbose = true;
 
-        $model = new MUtil_Model_TableModel('gems__staff');
+        $model = new Gems_Model_UserModel('staff', 'gems__staff', array('gsu_id_user' => 'gsf_id_user'), 'gsf');
+        if ($detailed) {
+            $model->copyKeys();
+        }
         //$model->resetOrder();
 
-        $model->set('gsf_login',            'label', $this->_('Login'));
+        $model->set('gsu_login',            'label', $this->_('Login'));
         $model->set('name',                 'label', $this->_('Name'),
             'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
         if ($detailed || $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
+            $this->menu->getParameterSource()->offsetSet('gsu_id_organization', $this->escort->getCurrentOrganization());
 
-            $model->set('gsf_id_organization',  'label', $this->_('Organization'),
+            $model->set('gsu_id_organization',  'label', $this->_('Organization'),
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'default', $this->escort->getCurrentOrganization());
         }
@@ -184,13 +192,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
         if ($detailed) {
+            $model->set('gsu_user_class',       'default', 'StaffUser');
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         }
 
-        $model->setDeleteValues('gsf_active', 0);
-
-        Gems_Model::setChangeFieldsByPrefix($model, 'gsf');
+        $model->setDeleteValues('gsu_active', 0);
 
         return $model;
     }
@@ -201,8 +208,8 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         if ($this->escort->hasPrivilege('pr.staff.see.all')) {
             // Select organization
-            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
-            $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
+            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsu_id_organization', 'multiOptions');
+            $select = new Zend_Form_Element_Select('gsu_id_organization', array('multiOptions' => $options));
 
             // Position as second element
             $search = array_shift($elements);
@@ -227,7 +234,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $filter = parent::getDataFilter($data);
 
         if (! $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $filter['gsf_id_organization'] = $this->escort->getCurrentOrganization();
+            $filter['gsu_id_organization'] = $this->escort->getCurrentOrganization();
         }
         return $filter;
     }
@@ -257,8 +264,8 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             // Model filter has now been set.
             $data = $this->getModel()->loadFirst();
 
-            $this->_setParam('gsf_id_organization', $data['gsf_id_organization']);
-            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $data['gsf_id_organization']);
+            $this->_setParam('gsu_id_organization', $data['gsu_id_organization']);
+            $this->menu->getParameterSource()->offsetSet('gsu_id_organization', $data['gsu_id_organization']);
         }
         return parent::getShowTable($columns, $filter, $sort);
     }

@@ -174,39 +174,43 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         }
         $filter = $this->_checkFilterUsed($filter);
 
-        $changed = 0;
-        foreach ($saveTables as $table_name) {
-            $table_filter = array();
-            $delete       = true;
+        if ($this->_deleteValues) {
+            $changed = $this->save($this->_deleteValues + $filter, $filter, $saveTables);
+        } else {
+            $changed = 0;
+            foreach ($saveTables as $table_name) {
+                $table_filter = array();
+                $delete       = true;
 
-            // Find per table key filters
-            foreach ($this->_getKeysFor($table_name) as $key) {
-                if (isset($filter[$key])) {
-                    $table_filter[$key] = $filter[$key];
-                } else {
-                    // If key values are missing, do not delete.
-                    $delete = false;
-                    foreach ($this->_joinFields as $source => $target) {
-                        $found = null;
+                // Find per table key filters
+                foreach ($this->_getKeysFor($table_name) as $key) {
+                    if (isset($filter[$key])) {
+                        $table_filter[$key] = $filter[$key];
+                    } else {
+                        // If key values are missing, do not delete.
+                        $delete = false;
+                        foreach ($this->_joinFields as $source => $target) {
+                            $found = null;
 
-                        if ($source === $key) {
-                            $found = $target;
-                        } elseif ($target == $key) {
-                            $found = $source;
-                        }
-                        if ($found && isset($filter[$found])) {
-                            /// Found after all.
-                            $delete = true;
-                            $table_filter[$key] = $filter[$found];
-                            break;
+                            if ($source === $key) {
+                                $found = $target;
+                            } elseif ($target == $key) {
+                                $found = $source;
+                            }
+                            if ($found && isset($filter[$found])) {
+                                /// Found after all.
+                                $delete = true;
+                                $table_filter[$key] = $filter[$found];
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            // MUtil_Echo::r($table_filter, $table_name);
-            if ($delete && $table_filter) {
-                $changed = max($changed, $this->_deleteTableData($this->_tables[$table_name], $table_filter));
+                // MUtil_Echo::r($table_filter, $table_name);
+                if ($delete && $table_filter) {
+                    $changed = max($changed, $this->_deleteTableData($this->_tables[$table_name], $table_filter));
+                }
             }
         }
 
@@ -239,6 +243,8 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * @param array $newValues The values to store for a single model item.
      * @param array $filter If the filter contains old key values these are used
      * to decide on update versus insert.
+     * @param array $saveTables Optional array containing the table names to save,
+     * otherwise the tables set to save at model level will be saved.
      * @return array The values as they are after saving (they may change).
      */
     public function save(array $newValues, array $filter = null, array $saveTables = null)

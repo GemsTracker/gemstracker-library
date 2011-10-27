@@ -28,21 +28,44 @@
  *
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
- * Stub for StaffAction, that allows overrulling of this controller in a project.
+ *
+ *
+-- PATCH: New user login structure
+INSERT INTO gems__users (gsu_id_user, gsu_login, gsu_id_organization, gsu_user_class, gsu_active,
+                gsu_password, gsu_failed_logins, gsu_last_failed, gsu_reset_key, gsu_reset_requested, gsu_reset_required,
+                gsu_changed, gsu_changed_by, gsu_created, gsu_created_by)
+    SELECT grs_id_user, gr2o_patient_nr, gr2o_id_organization, 'RespondentUser', CASE WHEN gr2o_reception_code = 'OK' THEN 1 ELSE 0 END,
+                NULL, 0, NULL, NULL, NULL, 0,
+                gr2o_changed, gr2o_changed_by, gr2o_created, gr2o_created_by
+        FROM gems__respondents INNER JOIN gems__respondent2org ON grs_id_user = gr2o_id_user
+            INNER JOIN gems__organizations ON gr2o_id_organization = gor_id_organization
+        WHERE gor_name = 'HCU / Xpert Clinic';
+
  *
  * @package    Gems
- * @subpackage Default
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.4.4
  */
-class StaffController extends Gems_Default_StaffAction
-{ }
+class Gems_User_RespondentUser extends Gems_User_DatabaseUserAbstract
+{
+    /**
+     * Creates the initial feed SQL select statement
+     *
+     * @return Zend_Db_Select
+     */
+    public function getSqlSelect()
+    {
+        $this->db->select();
+    }
+
+}

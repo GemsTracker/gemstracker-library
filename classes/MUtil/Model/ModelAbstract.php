@@ -543,13 +543,22 @@ abstract class MUtil_Model_ModelAbstract
         return $href;
     }
 
+    /**
+     * Returns an array containing the currently defined keys for this
+     * model.
+     *
+     * When no keys are defined, the keys are derived from the model.
+     *
+     * @param boolean $reset If true, derives the key from the model.
+     * @return array
+     */
     public function getKeys($reset = false)
     {
         if ((! $this->_keys) || $reset) {
             $keys = array();
             foreach ($this->_model as $name => $info) {
                 if (isset($info['key']) && $info['key']) {
-                    $keys[$name] = $name;
+                    $keys[] = $name;
                 }
             }
             $this->setKeys($keys);
@@ -1025,12 +1034,29 @@ abstract class MUtil_Model_ModelAbstract
         return false;
     }
 
+    /**
+     * Sets the keys, processing the array key.
+     *
+     * When an array key is numeric MUtil_Model::REQUEST_ID is used.
+     * When there is more than one key a increasing number is added to
+     * MUtil_Model::REQUEST_ID starting with 1.
+     *
+     * String key names ar eleft as is.
+     *
+     * @param array $keys
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setKeys(array $keys)
     {
         $this->_keys = array();
 
         if (count($keys) == 1) {
-            $this->_keys[MUtil_Model::REQUEST_ID] = reset($keys);
+            $name = reset($keys);
+            if (is_numeric(key($keys))) {
+                $this->_keys[MUtil_Model::REQUEST_ID] = $name;
+            } else {
+                $this->_keys[key($keys)] = $name;
+            }
         } else {
             $i = 1;
             foreach ($keys as $idx => $name) {
@@ -1080,15 +1106,6 @@ abstract class MUtil_Model_ModelAbstract
 
         return $this;
     }
-
-    /* appears to be not implemented or at least not functionale so removing
-    public function setOnLoad($name, $callableOrConstant)
-
-    {
-        $this->set($name, self::SAVE_TRANSFORMER, $callableOrConstant);
-        return $this;
-    }
-    */
 
     public function setOnSave($name, $callableOrConstant)
     {
