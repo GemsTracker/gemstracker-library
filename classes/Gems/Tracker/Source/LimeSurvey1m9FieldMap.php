@@ -204,9 +204,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
     protected function _getMap()
     {
-        $cacheId = 'lsFieldMap'.$this->sourceSurveyId.$this->language;
+        $cacheId = 'lsFieldMap'.$this->sourceSurveyId.strtr($this->language, '-.', '__');
+        $this->_fieldMap = $this->cache->load($cacheId);
 
-        if( ($this->_fieldMap = $this->cache->load($cacheId)) === false ) {
+        if (false === $this->_fieldMap) {
             $gTable = $this->_getGroupsTableName();
             $qTable = $this->_getQuestionsTableName();
 
@@ -343,7 +344,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $this->_fieldMap = $map;
             $this->cache->save($this->_fieldMap, $cacheId);
         }
-
 
         return $this->_fieldMap;
     }

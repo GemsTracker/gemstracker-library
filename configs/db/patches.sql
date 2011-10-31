@@ -229,3 +229,7 @@ INSERT INTO gems__users (gsu_id_user, gsu_login, gsu_id_organization, gsu_user_c
 ALTER TABLE `gems__staff` CHANGE `gsf_id_user` `gsf_id_user` BIGINT( 20 ) UNSIGNED NOT NULL;
 
 ALTER TABLE `gems__staff` DROP INDEX `gsf_login`;
+
+ALTER TABLE `gems__staff` CHANGE `gsf_login` `gsf_login` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    CHANGE `gsf_password` `gsf_password` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    CHANGE `gsf_id_organization` `gsf_id_organization` BIGINT( 20 ) NULL DEFAULT NULL;

@@ -209,9 +209,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $adapter->setIdentity($userid);
                     $adapter->setCredential(md5($_POST['password'], false));
                     $result  = $auth->authenticate($adapter, $_POST['userlogin']);
-                    MUtil_Echo::track('old autho');
+                    // MUtil_Echo::track('old autho');
                 } else {
-                    MUtil_Echo::track('new autho');
+                    // MUtil_Echo::track('new autho');
                 }
 
                 if (!$result->isValid()) {

@@ -103,10 +103,11 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                 throw new exception('Invalid track type requested.');
         }
 
-        $trackTypeTime = $trackType . '_time';
+        $trackTypeCache = $trackType . '_' . $this->session->user_style;
+        $trackTypeTime  = $trackType . '_time';
 
-        if (isset($this->session->$trackType, $this->session->$trackTypeTime) && (time() < $this->session->$trackTypeTime)) {
-            $tracks = $this->session->$trackType;
+        if (isset($this->session->$trackTypeCache, $this->session->$trackTypeTime) && (time() < $this->session->$trackTypeTime)) {
+            $tracks = $this->session->$trackTypeCache;
         } else {
             $organization_id = $this->escort->getCurrentOrganization();
             switch ($trackType) {
@@ -153,8 +154,8 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             }
             $tracks = $this->db->fetchPairs($sql);
 
-            $this->session->$trackType = $tracks;
-            $this->session->$trackTypeTime = time() + 600;
+            $this->session->$trackTypeCache = $tracks;
+            $this->session->$trackTypeTime  = time() + 600;
         }
 
         $div = MUtil_Html::create()->div(array('class' => 'toolbox'));

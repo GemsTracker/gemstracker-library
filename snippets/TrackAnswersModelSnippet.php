@@ -36,8 +36,6 @@
  * @version    $Id$
  */
 
-include_once(dirname(__FILE__) . '/AnswerModelSnippet.php');
-
 /**
  * Class description of TrackAnswersModelSnippet
  *
@@ -47,7 +45,7 @@ include_once(dirname(__FILE__) . '/AnswerModelSnippet.php');
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class TrackAnswersModelSnippet extends AnswerModelSnippet
+class TrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
      * Overrule to implement snippet specific filtering and sorting.
