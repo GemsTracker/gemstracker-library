@@ -83,6 +83,13 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $locale;
 
     /**
+     * Switch to put the display of the current token as select to true or false.
+     *
+     * @var boolean
+     */
+    protected $showSelected = true;
+
+    /**
      * Optional: $request or $tokenData must be set
      *
      * The display data of the token shown
@@ -111,7 +118,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $br = MUtil_Html::create('br');
-        $selectedClass = MUtil_Lazy::iff(MUtil_Lazy::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
+        if ($this->showSelected) {
+            $selectedClass = MUtil_Lazy::iff(MUtil_Lazy::comp($bridge->gto_id_token, '==', $this->tokenId), 'selectedColumn', null);
+        } else {
+            $selectedClass = null;
+        }
 
         $bridge->th($this->_('Status'));
         $td = $bridge->tdh(MUtil_Lazy::first($bridge->grc_description, $this->_('OK')));
