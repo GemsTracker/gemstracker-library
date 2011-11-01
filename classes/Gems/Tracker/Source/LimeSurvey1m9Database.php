@@ -191,7 +191,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      */
     protected function _getSid($surveyId)
     {
-        return $this->getSurveyData($surveyId, 'gsu_surveyor_id');
+        return $this->tracker->getSurvey($surveyId)->getSourceSurveyId();
     }
 
     /**

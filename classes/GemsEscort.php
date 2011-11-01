@@ -329,7 +329,7 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * Use $this->project to access afterwards
      *
-     * @return Zend_View
+     * @return ArrayObject
      */
     protected function _initProject()
     {
