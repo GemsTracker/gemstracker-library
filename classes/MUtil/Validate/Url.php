@@ -114,6 +114,11 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
 
                     // curl_setopt($ch, CURLOPT_FILETIME, true);
                     curl_setopt($ch, CURLOPT_NOBODY, true);
+                    
+                    /**
+                     * @todo Unknown CA's should probably be imported...
+                     */
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
                     $valid = curl_exec($ch);
                     if (! $valid) {
