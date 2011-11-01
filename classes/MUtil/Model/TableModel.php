@@ -77,8 +77,7 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
     {
         return $this->_deleteTableData(
                 $this->_table,
-                $this->_checkFilterUsed($filter),
-                $this->getDeleteValues());
+                $this->_checkFilterUsed($filter));
     }
 
     /**
