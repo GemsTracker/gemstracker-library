@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,22 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.4
- * @version 1.4
- * @package Gems
- * @subpackage Tracker
- */
-
-/**
- * Description of SurveyModel
  *
- * @author Matijs de Jong
- * @package Gems
+ * 
+ * @package    Gems
  * @subpackage Tracker
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
+ */
+
+/**
+ * More correctly a Survey ANSWERS Model as it adds answers to token information/
+ *
+ * @package    Gems
+ * @subpackage Tracker
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
  */
 class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
 {
@@ -62,6 +63,9 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
         parent::__construct($survey->getName(), 'gems__tokens', 'gto');
         $this->addTable('gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
 
+        $this->addColumn(
+            'CASE WHEN grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN 1 ELSE 0 END',
+            'can_be_taken');
         $this->addColumn(
             "CASE WHEN grc_success = 1 THEN '' ELSE 'deleted' END",
             'row_class');

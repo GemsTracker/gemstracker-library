@@ -130,6 +130,7 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
         $model          = $this->getModel();
         $this->formData = $model->save($this->formData);
         $changed        = $model->getChanged();
+        $refresh        = false;
 
         // Retrieve the key if just created
         if ($this->createData) {
@@ -140,17 +141,24 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
             $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);
 
         } elseif (! (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed'])) {
-            // Check if sartdate has changed
+            // Check if startdate has changed
             if (! $this->respondentTrack->getStartDate()->equals(new MUtil_Date($this->formData['gr2t_start_date']))) {
-                // Perform a refresh from the database, to avoid date trouble
-                $this->respondentTrack->refresh();
-                $this->respondentTrack->checkTrackTokens($this->userId);
+                $refresh = true;
             }
         }
 
         if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
             $changed = $this->trackEngine->setFieldsData($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]) ? 1 : $changed;
+            $refresh = $refresh || $changed;
         }
+
+        if ($refresh) {
+            Gems_Tracker::$verbose;
+            // Perform a refresh from the database, to avoid date trouble
+            $this->respondentTrack->refresh();
+            $this->respondentTrack->checkTrackTokens($this->userId);
+        }
+
 
         // Communicate with the user
         $this->afterSave($changed);

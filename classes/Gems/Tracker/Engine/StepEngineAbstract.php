@@ -359,11 +359,21 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                return $survey->getDatesList($language);
 
            case self::RESPONDENT_TRACK_TABLE:
-               return array(
+               $this->_ensureTrackFields();
+
+               $results = array(
                    'gr2t_start_date' => $this->_('Track start'),
                    'gr2t_end_date'   => $this->_('Track end'),
                    // 'gr2t_created'    => $this->_('Track created'),
                );
+
+               foreach ($this->_trackFields as $field) {
+                   if ('date' == $field['gtf_field_type']) {
+                       $results[$field['gtf_id_field']] =  $field['gtf_field_name'];
+                   }
+               }
+
+               return $results;
 
            case self::TOKEN_TABLE:
                return array(

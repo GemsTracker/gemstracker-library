@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,14 +25,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Lazy
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -48,9 +47,11 @@
  * 3 - an object propery
  * 4 - an array object
  *
- * @author Matijs de Jong
- * @package MUtil
+ * @package    MUtil
  * @subpackage Lazy
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Lazy
 {
@@ -77,10 +78,10 @@ class MUtil_Lazy
         $args = func_get_args();
 
         // Last value first
-        $result = array_pop($args);
+        $result = array_shift($args);
 
-        foreach (array_reverse($args) as $arg) {
-            $result = new MUtil_Lazy_Call(array($arg, 'if'), array($arg, $result));
+        foreach ($args as $arg) {
+            $result = new MUtil_Lazy_Call(array($result, 'if'), array($result, $arg));
         }
         return $result;
     }
@@ -130,16 +131,16 @@ class MUtil_Lazy
         return new MUtil_Lazy_Property($object, $property);
     }
 
-    /** 
-     * Raises a MUtil_Lazy_LazyInterface one level, but may still 
+    /**
+     * Raises a MUtil_Lazy_LazyInterface one level, but may still
      * return a MUtil_Lazy_LazyInterface.
-     *  
-     * This function is usually used to perform a e.g. filter function on object that may e.g. 
+     *
+     * This function is usually used to perform a e.g. filter function on object that may e.g.
      * contain Repeater objects.
-     * 
+     *
      * @param mixed $object Usually an object of type MUtil_Lazy_LazyInterface
      * @param mixed $stack Optional variable stack for evaluation
-     * @return mixed 
+     * @return mixed
      */
     public static function raise($object, $stack = null)
     {
@@ -153,7 +154,7 @@ class MUtil_Lazy
     /**
      *
      * @param mixed $repeatable
-     * @return MUtil_Lazy_RepeatableInterface 
+     * @return MUtil_Lazy_RepeatableInterface
      */
     public static function repeat($repeatable)
     {
@@ -164,18 +165,18 @@ class MUtil_Lazy
         return new MUtil_Lazy_Repeatable($repeatable);
     }
 
-    /** 
-     * Raises a MUtil_Lazy_LazyInterface until the return object is not a 
+    /**
+     * Raises a MUtil_Lazy_LazyInterface until the return object is not a
      * MUtil_Lazy_LazyInterface object.
-     *  
-     * @param mixed $object Usually an object of type MUtil_Lazy_LazyInterface 
+     *
+     * @param mixed $object Usually an object of type MUtil_Lazy_LazyInterface
      * @param mixed $stack Optional variable stack for evaluation
      * @return mixed Something not lazy
      */
     public static function rise($object, $stack = null)
     {
         $stack = self::toStack($stack, __FUNCTION__);
-         
+
         // Resolving when MUtil_Lazy_LazyInterface.
         while ($object instanceof MUtil_Lazy_LazyInterface) {
             $object = $object->__toValue($stack);
@@ -192,11 +193,11 @@ class MUtil_Lazy
         return $object;
     }
 
-    /** 
+    /**
      * Turns any input into a MUtil_Lazy_StackInterface object.
-     *  
-     * @param mixed $stack Value to be turned into stack for evaluation 
-     * @param string A string describing where the stack was created. 
+     *
+     * @param mixed $stack Value to be turned into stack for evaluation
+     * @param string A string describing where the stack was created.
      * @return MUtil_Lazy_StackInterface A usable stack
      */
     private static function toStack($stack, $source)

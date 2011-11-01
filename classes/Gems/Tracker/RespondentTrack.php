@@ -58,6 +58,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var array Field data
+     */
+    protected $_fieldData = null;
+
+    /**
+     *
      * @var Gems_Tracker_Token
      */
     protected $_firstToken;
@@ -103,6 +109,18 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $this->_respTrackId   = $respTracksData['gr2t_id_respondent_track'];
         } else {
             $this->_respTrackId = $respTracksData;
+        }
+    }
+
+    /**
+     * Makes sure the fieldData is in $this->_fieldData
+     *
+     * @param boolean $reload Optional parameter to force reload.
+     */
+    private function _ensureFieldData($reload = false)
+    {
+        if ((null === $this->_fieldData) || $reload) {
+            $this->_fieldData = $this->getTrackEngine()->getFieldsData($this->_respTrackId);
         }
     }
 
@@ -344,14 +362,26 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getDate($fieldName)
     {
         if (isset($this->_respTrackData[$fieldName])) {
-            if (Zend_Date::isDate($this->_respTrackData[$fieldName], Gems_Tracker::DB_DATETIME_FORMAT)) {
-                return new MUtil_Date($this->_respTrackData[$fieldName], Gems_Tracker::DB_DATETIME_FORMAT);
+            $date = $this->_respTrackData[$fieldName];
+        } else {
+            $this->_ensureFieldData();
+
+            if (isset($this->_fieldData[$fieldName])) {
+                $date = $this->_fieldData[$fieldName];
+            } else {
+                $date = false;
             }
-            if (Zend_Date::isDate($this->_respTrackData[$fieldName], Gems_Tracker::DB_DATE_FORMAT)) {
-                return new MUtil_Date($this->_respTrackData[$fieldName], Gems_Tracker::DB_DATE_FORMAT);
+        }
+
+        if ($date) {
+            if (Zend_Date::isDate($date, Gems_Tracker::DB_DATETIME_FORMAT)) {
+                return new MUtil_Date($date, Gems_Tracker::DB_DATETIME_FORMAT);
+            }
+            if (Zend_Date::isDate($date, Gems_Tracker::DB_DATE_FORMAT)) {
+                return new MUtil_Date($date, Gems_Tracker::DB_DATE_FORMAT);
             }
             if (Gems_Tracker::$verbose)  {
-                MUtil_Echo::r($this->_respTrackData[$fieldName], 'Missed track date value:');
+                MUtil_Echo::r($date, 'Missed track date value:');
             }
         }
     }
@@ -372,6 +402,18 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getEditSnippets()
     {
         return $this->getTrackEngine()->getTrackEditSnippetNames($this);
+    }
+
+    /**
+     * Returns the field data for this respondent track id.
+     *
+     * @return array of the existing field values for this respondent track
+     */
+    public function getFieldData()
+    {
+        $this->_ensureFieldData();
+
+        return $this->_fieldData;
     }
 
     /**

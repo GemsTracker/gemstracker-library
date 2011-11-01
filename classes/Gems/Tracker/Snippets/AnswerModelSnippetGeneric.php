@@ -83,6 +83,13 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $locale;
 
     /**
+     * Switch to put the display of the cancel and pritn buttons.
+     *
+     * @var boolean
+     */
+    protected $showButtons = true;
+
+    /**
      * Switch to put the display of the current token as select to true or false.
      *
      * @var boolean
@@ -149,7 +156,20 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
         }
 
         $bridge->th($this->_('Token'));
-        $td = $bridge->tdh($bridge->gto_id_token->strtoupper());
+
+        $tokenUpper = $bridge->gto_id_token->strtoupper();
+        if ($menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
+            $source = new Gems_Menu_ParameterSource();
+            $source->setTokenId($bridge->gto_id_token);
+            $source->offsetSet('can_be_taken', $bridge->can_be_taken);
+
+            $link = $menuItem->toActionLink($source);
+            $link->title = array($this->_('Token'), $tokenUpper);
+
+            $td = $bridge->tdh($bridge->can_be_taken->if($link, $tokenUpper));
+        } else {
+            $td = $bridge->tdh($tokenUpper);
+        }
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
     }
@@ -207,9 +227,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
             $htmlDiv->ul($this->_('No token specified.'), array('class' => 'errors'));
         }
 
-        $buttonDiv = $htmlDiv->buttonDiv();
-        $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
-        $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
+        if ($this->showButtons) {
+            $buttonDiv = $htmlDiv->buttonDiv();
+            $buttonDiv->actionLink(array(), $this->_('Close'), array('onclick' => 'window.close();'));
+            $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
+        }
         return $htmlDiv;
     }
 

@@ -67,9 +67,12 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
         $bridge->addExhibitor('gtf_id_track');
         $bridge->addText('gtf_id_order');
         $bridge->addText('gtf_field_name', 'size', '30', 'minlength', 4, 'required', true, 'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track')));
+        $bridge->addText('gtf_field_code', 'minlength', 4, 'description', $this->_('Optional extra name to link the field to program code.'));
+        $bridge->addText('gtf_field_description', 'size', 30, 'description', $this->_('Optional extra description to show the user.'));
         $bridge->addTextarea('gtf_field_values', 'minlength', 4, 'rows', 4, 'description', $this->_('Separate multiple values with a vertical bar (|)'), 'required', false);
         $bridge->addSelect('gtf_field_type');
         $bridge->addCheckBox('gtf_required');
+        $bridge->addCheckBox('gtf_readonly', 'description', $this->_('Check this box if this field is always set by code instead of the user.'));
     }
 
     /**
@@ -104,16 +107,23 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     public function createModel($detailed, $action)
     {
         $trackId = $this->_getIdParam();
-        $types = array('select' => $this->_('Select one'), 'multiselect' => $this->_('Select multiple'), 'text' => $this->_('Free text'));
+        $types = array('select' => $this->_('Select one'), 'multiselect' => $this->_('Select multiple'), 'date' => $this->_('Date'), 'text' => $this->_('Free text'));
 
         $model = new MUtil_Model_TableModel('gems__track_fields');
         $model->setKeys(array('fid' => 'gtf_id_field', MUtil_Model::REQUEST_ID => 'gtf_id_track'));
         $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
         $model->set('gtf_id_order', 'label', $this->_('Order'));
         $model->set('gtf_field_name', 'label', $this->_('Name'));
+        if ($detailed) {
+            $model->set('gtf_field_code', 'label', $this->_('Code Name'));
+            $model->set('gtf_field_description', 'label', $this->_('Description'));
+        }
         $model->set('gtf_field_values', 'label', $this->_('Values'));
         $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $types);
         $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+        if ($detailed) {
+            $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+        }
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
 

@@ -112,7 +112,7 @@ class MUtil_Model_FormBridge
         return $element;
     }
 
-    protected function _applyFixedOptions($type, array &$options)
+    public static function applyFixedOptions($type, array &$options)
     {
         static $typeOptions;
 
@@ -268,7 +268,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::CHECK_OPTIONS);
 
-        $this->_applyFixedOptions(__FUNCTION__, $options);
+        self::applyFixedOptions(__FUNCTION__, $options);
 
         $element = new Zend_Form_Element_Checkbox($name, $options);
 
@@ -286,7 +286,7 @@ class MUtil_Model_FormBridge
         $elementName = $name;
 
         // Allow centrally set options
-        $this->_applyFixedOptions(__FUNCTION__, $options);
+        self::applyFixedOptions(__FUNCTION__, $options);
 
         if (isset($options['dateFormat'])) {
             // Make sure the model knows the dateFormat (can be important for storage).

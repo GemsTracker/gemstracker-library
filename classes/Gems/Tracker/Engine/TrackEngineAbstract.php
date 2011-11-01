@@ -173,7 +173,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     protected function _ensureTrackFields()
     {
         if (! is_array($this->_trackFields)) {
-            $sql = "SELECT gtf_id_field, gtf_field_name, gtf_field_values, gtf_field_type, gtf_required
+            $sql = "SELECT *
                         FROM gems__track_fields
                         WHERE gtf_id_track = ?
                         ORDER BY gtf_id_order";
@@ -493,24 +493,38 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
 
                 $name = (string) $field['gtf_id_field'];
 
-                switch ($field['gtf_field_type']) {
-                    case "multiselect":
-                        $element = new Zend_Form_Element_MultiCheckbox($name);
-                        $element->setMultiOptions($multi);
-                        break;
+                if ($field['gtf_readonly']) {
+                    $element = new MUtil_Form_Element_Exhibitor($name);
 
-                    case "select":
-                        $element = new Zend_Form_Element_Select($name);
-                        $element->setMultiOptions($empty + $multi);
-                        break;
+                } else {
+                    switch ($field['gtf_field_type']) {
+                        case "multiselect":
+                            $element = new Zend_Form_Element_MultiCheckbox($name);
+                            $element->setMultiOptions($multi);
+                            break;
 
-                    default:
-                        $element = new Zend_Form_Element_Text($name);
-                        $element->setAttrib('size', 40);
-                        break;
+                        case "select":
+                            $element = new Zend_Form_Element_Select($name);
+                            $element->setMultiOptions($empty + $multi);
+                            break;
+
+                        case "date":
+                            $options = array();
+                            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+
+                            $element = new MUtil_JQuery_Form_Element_DatePicker($name, $options);
+                            $element->setStorageFormat('yyyy-MM-dd');
+                            break;
+
+                        default:
+                            $element = new Zend_Form_Element_Text($name);
+                            $element->setAttrib('size', 40);
+                            break;
+                    }
                 }
                 $element->setLabel($field['gtf_field_name'])
-                        ->setRequired($field['gtf_required']);
+                        ->setRequired($field['gtf_required'])
+                        ->setDescription($field['gtf_field_description']);
 
                 $elements[$name] = $element;
             }
@@ -734,13 +748,31 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
      */
     public function setFieldsData($respTrackId, array $data)
     {
+        $elements  = null;
         $newValues = array();
 
         // MUtil_Echo::track($data);
 
+        $this->_ensureTrackFields();
+
         foreach ($data as $id => $value) {
             if (is_array($value)) {
                 $value = implode(self::FIELD_SEP, $value);
+            }
+
+            // Do the hard work for storing dates
+            if (isset($this->_trackFields[$id]['gtf_field_type']) && ('date' == $this->_trackFields[$id]['gtf_field_type'])) {
+                if (! $elements) {
+                    $elements = $this->getFieldsElements();
+                }
+                if (isset($elements[$id])) {
+                    $elem = $elements[$id];
+                    if ($elem instanceof MUtil_JQuery_Form_Element_DatePicker) {
+                        // I do not like regenerating elements either, but this
+                        // is the only place where we KNOW this information for sure.
+                        $value = MUtil_Date::format($value, $elem->getStorageFormat(), $elem->getDateFormat());
+                    }
+                }
             }
 
             $newValues[]= array(
@@ -765,7 +797,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
 
     /**
      * Updates the number of rounds in this track.
-     * 
+     *
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
