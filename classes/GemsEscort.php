@@ -144,10 +144,11 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initCache()
     {
+        $cache = null;
         $exists = false;
         $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
         if (!file_exists($cacheDir)) {
-            if (mkdir($cacheDir, 0777, true)) {
+            if (@mkdir($cacheDir, 0777, true)) {
                 $exists = true;
             }
         } else {
