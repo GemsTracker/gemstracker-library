@@ -159,8 +159,13 @@ class Gems_Form_TableForm extends Gems_Form {
     /**
      * Add element to stack
      *
-     * @param  Zend_Form_Element $element
-     * @return Zend_Form_Element
+     * Takes care of setting the right decorators for table display
+     *
+     * @param  string|Zend_Form_Element $element
+     * @param  string $name
+     * @param  array|Zend_Config $options
+     * @throws Zend_Form_Exception on invalid element
+     * @return Gems_Form_TableForm
      */
     public function addElement($element, $name = null, $options = null)
     {

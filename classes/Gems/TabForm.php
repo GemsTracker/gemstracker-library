@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -45,7 +44,17 @@ class Gems_TabForm extends Gems_Form
      * @var Gems_Form_TabSubForm
      */
     private $currentTab = null;
-    
+
+    /**
+     * Add an element to the form, when a tab (subform) had been added, it will return
+     * the subform instead of the form, keep this in mind when chaining methods
+     *
+     * @param  string|Zend_Form_Element $element
+     * @param  string $name
+     * @param  array|Zend_Config $options
+     * @throws Zend_Form_Exception on invalid element
+     * @return Gems_TabForm|Gems_Form_TabSubForm
+     */
     public function addElement($element, $name = null, $options = null)
     {
         if ($this->currentTab) {
@@ -54,7 +63,14 @@ class Gems_TabForm extends Gems_Form
             return parent::addElement($element, $name, $options);
         }
     }
-    
+
+    /**
+     * Add a tab to the form
+     *
+     * @param string $name
+     * @param string $title
+     * @return Gems_Form_TabSubForm
+     */
     public function addTab($name, $title)
     {
         if ($title instanceof MUtil_Html_Sequence) $title = $title->render($form->getView());
@@ -64,6 +80,16 @@ class Gems_TabForm extends Gems_Form
         return $tab;
     }
 
+    /**
+     * Add an element to the form, when a tab (subform) had been added, it will return
+     * the subform instead of the form, keep this in mind when chaining methods
+     *
+     * @param  array $elements
+     * @param  string $name
+     * @param  array|Zend_Config $options
+     * @return Gems_TabForm|Gems_Form_TabSubForm
+     * @throws Zend_Form_Exception if no valid elements provided
+     */
     public function addDisplayGroup(array $elements, $name, $options = null) {
         if ($this->currentTab) {
             return $this->currentTab->addDisplayGroup($elements, $name, $options);
@@ -80,6 +106,13 @@ class Gems_TabForm extends Gems_Form
         }
     }
 
+    /**
+     * Return a display group, use recursive search in subforms to provide a transparent experience
+     * with tabs
+     *
+     * @param  string $name
+     * @return Zend_Form_DisplayGroup|null
+     */
     public function getDisplayGroup($name)
     {
         if ($group = parent::getDisplayGroup($name)) {
@@ -95,6 +128,13 @@ class Gems_TabForm extends Gems_Form
         }
     }
 
+    /**
+     * Retrieve a single element, use recursive search in subforms to provide a transparent experience
+     * with tabs
+     *
+     * @param  string $name
+     * @return Zend_Form_Element|null
+     */
     public function getElement($name)
     {
         if ($element = parent::getElement($name)) {
