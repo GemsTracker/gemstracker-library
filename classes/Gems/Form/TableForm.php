@@ -61,25 +61,28 @@ class Gems_Form_TableForm extends Gems_Form {
     /**
      * Get a ViewHelper or ZendX decorator to add in front of the decorator chain
      *
-     * @param array $decorators
+     * @param Zend_Form_Element $element
      * @return null|Zend_Form_Decorator_Abstract
      */
-    private function _getImportantDecorator($decorators) {
+    private function _getImportantDecorator($element) {
         $dec1 = null;
 
-        if (isset($decorators['Zend_Form_Decorator_ViewHelper'])) {
-            $dec1 = $decorators['Zend_Form_Decorator_ViewHelper'];
-        } elseif (isset($decorators['Zend_Form_Decorator_File'])) {
-            $dec1 = $decorators['Zend_Form_Decorator_File'];
+        if ($dec1 = $element->getDecorator('ViewHelper')) {
+            return $dec1;
+        } elseif ($dec1 = $element->getDecorator('UiWidgetElement')) {
+            return $dec1;
+        } elseif ($dec1 = $element->getDecorator('File')) {
+            return $dec1;
         } else {
+            $decorators = $element->getDecorators();
             foreach($decorators as $name=>$decorator) {
                 if (substr($name, 0, 5) == 'ZendX') {
                     $dec1 = $decorator;
                     break;
                 }
             }
+            return $dec1;
         }
-        return $dec1;
     }
 
     /**
@@ -126,8 +129,7 @@ class Gems_Form_TableForm extends Gems_Form {
         //Now add the right decorators to the elements
         $groupElements = $group->getElements();
         foreach ($groupElements as $element) {
-            $decorators = $element->getDecorators();
-            $dec1 = $this->_getImportantDecorator($decorators);
+            $dec1 = $this->_getImportantDecorator($element);
 
             $decorators = array(    array('Description', array('class'=>'description')),
                                     'Errors',
@@ -170,8 +172,7 @@ class Gems_Form_TableForm extends Gems_Form {
             $element = $this->getElement($name);
         }
 
-        $decorators = $element->getDecorators();
-        $dec1 = $this->_getImportantDecorator($decorators);
+        $dec1 = $this->_getImportantDecorator($element);
 
         if ($element instanceof MUtil_Form_Element_Html) {
             //Colspan 2
