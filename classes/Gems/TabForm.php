@@ -42,6 +42,75 @@
 class Gems_TabForm extends Gems_Form
 {
     /**
+     * @var Gems_Form_TabSubForm
+     */
+    private $currentTab = null;
+    
+    public function addElement($element, $name = null, $options = null)
+    {
+        if ($this->currentTab) {
+            return $this->currentTab->addElement($element, $name, $options);
+        } else {
+            return parent::addElement($element, $name, $options);
+        }
+    }
+    
+    public function addTab($name, $title)
+    {
+        if ($title instanceof MUtil_Html_Sequence) $title = $title->render($form->getView());
+        $tab = new Gems_Form_TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
+        $this->currentTab = $tab;
+        $this->addSubForm($tab, $name);
+        return $tab;
+    }
+
+    public function addDisplayGroup(array $elements, $name, $options = null) {
+        if ($this->currentTab) {
+            return $this->currentTab->addDisplayGroup($elements, $name, $options);
+        } else {
+            //Add the group as usual
+            parent::addDisplayGroup($elements, $name, $options);
+
+            //Retrieve it and set decorators
+            $group = $this->getDisplayGroup($name);
+            $group->setDecorators( array('FormElements',
+                                array('HtmlTag', array('tag' => 'div', 'class' => $group->getName(). ' ' . $group->getAttrib('class')))
+                                ));
+            return $this;
+        }
+    }
+
+    public function getDisplayGroup($name)
+    {
+        if ($group = parent::getDisplayGroup($name)) {
+            return $group;
+        } else {
+            $subforms = $this->getSubForms();
+            foreach($subforms as $subform) {
+                if ($group = $subform->getDisplayGroup($name)) {
+                    return $group;
+                }
+            }
+            return;
+        }
+    }
+
+    public function getElement($name)
+    {
+        if ($element = parent::getElement($name)) {
+            return $element;
+        } else {
+            $subforms = $this->getSubForms();
+            foreach($subforms as $subform) {
+                if ($element = $subform->getElement($name)) {
+                    return $element;
+                }
+            }
+            return;
+        }
+    }
+
+    /**
      * Create tabs from MUtil_Form_Element_Tab elements
      *
      * All elements following an element of type MUtil_Form_Element_Tab will be in tabs
@@ -51,12 +120,6 @@ class Gems_TabForm extends Gems_Form
      */
     public static function htmlElementsToTabs($form) {
         foreach ($form as $element) {
-            //Make sure error decorator is the last one! (not really needed inside the tabs, but just to make sure)
-            $error = $element->getDecorator('Errors');
-            if ($error instanceof Zend_Form_Decorator_Errors) {
-                $element->removeDecorator('Errors');
-                $element->addDecorator($error);
-            }
             switch (get_class($element)) {
                 case 'MUtil_Form_Element_Tab':
                     //Start a new tab
@@ -75,6 +138,7 @@ class Gems_TabForm extends Gems_Form
                     //zorg dat er geen display is voor hidden fields
                     $element->removeDecorator('htmlTag');
                     $element->removeDecorator('Label');
+                case 'Gems_Form_TabSubForm':
                 case 'Zend_Form_Element_Submit':
                     //Just leave this one out of the tabs
                     break;
@@ -103,7 +167,12 @@ class Gems_TabForm extends Gems_Form
                             $remove[] = $element->getName();
                         }
                     } else {
-                        unset($tab);
+                        //Make sure error decorator is the last one! (not really needed inside the tabs, but just to make sure)
+                        $error = $element->getDecorator('Errors');
+                        if ($error instanceof Zend_Form_Decorator_Errors) {
+                            $element->removeDecorator('Errors');
+                            $element->addDecorator($error);
+                        }
                     }
                     break;
             }
@@ -217,16 +286,5 @@ class Gems_TabForm extends Gems_Form
         }
 
         return $form;
-    }
-
-    public function addDisplayGroup(array $elements, $name, $options = null) {
-        //Add the group as usual
-        parent::addDisplayGroup($elements, $name, $options);
-
-        //Retrieve it and set decorators
-        $group = $this->getDisplayGroup($name);
-        $group->setDecorators( array('FormElements',
-                            array('HtmlTag', array('tag' => 'div', 'class' => $group->getName(). ' ' . $group->getAttrib('class')))
-                            ));
     }
 }

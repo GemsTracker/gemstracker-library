@@ -618,9 +618,12 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::TAB_OPTIONS);
 
-        $element = new MUtil_Form_Element_Tab($name, $options);
-
-        $this->form->addElement($element);
+        if (method_exists($this->form, 'addTab')) {
+            return $this->form->addTab($name, $options['value']);
+        } else {
+            $element = new MUtil_Form_Element_Tab($name, $options);
+            $this->form->addElement($element);
+        }
 
         return $element;
     }

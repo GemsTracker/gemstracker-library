@@ -120,7 +120,7 @@ class Gems_Form_TableForm extends Gems_Form {
         $group->setDecorators( array('FormElements',
                             array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
                             array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-                            array('Tooltip'),
+                            'Tooltip',
                             array('Description', array('tag'=>'label', 'class'=>'optional', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'escape'=>false)),
                             array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
                             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $this->_alternate . ' ' . $group->getName(). ' ' . $group->getAttrib('class')))
@@ -133,7 +133,7 @@ class Gems_Form_TableForm extends Gems_Form {
 
             $decorators = array(    array('Description', array('class'=>'description')),
                                     'Errors',
-                                    array('Tooltip'),
+                                    'Tooltip',
                                     );
 
             //If we want to see the individual fields labels, do so:
@@ -179,7 +179,7 @@ class Gems_Form_TableForm extends Gems_Form {
             $decorators = array(
             array('Description', array('class'=>'description')),
             'Errors',
-            array('Tooltip'),
+            'Tooltip',
             array('Label', array('escape'=>false)),
             array(array('labelCell' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'colspan'=>2)),
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
@@ -192,7 +192,7 @@ class Gems_Form_TableForm extends Gems_Form {
             'Errors',
             array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
             array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-            array('Tooltip'),
+            'Tooltip',
             array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
             );
@@ -202,7 +202,7 @@ class Gems_Form_TableForm extends Gems_Form {
             'Errors',
             array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
             array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-            array('Tooltip'),
+            'Tooltip',
             array('Label', array('escape'=>false)),
             array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
             array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
@@ -222,7 +222,7 @@ class Gems_Form_TableForm extends Gems_Form {
             $decorator->setOption('class', $this->_alternate . ' ' . $element->getName());
         }
 
-        return parent::addElement($element);
+        return $this;
     }
 
     /**
