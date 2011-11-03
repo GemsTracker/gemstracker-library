@@ -14,8 +14,8 @@ CREATE TABLE if not exists gems__user_logins (
         gul_created          timestamp not null,
         gul_created_by       bigint unsigned not null,
 
-        PRIMARY KEY (gsl_id_user),
-        UNIQUE (gsl_login, gsl_id_organization)
+        PRIMARY KEY (gul_id_user),
+        UNIQUE (gul_login, gul_id_organization)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 10001
