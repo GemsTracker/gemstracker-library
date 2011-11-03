@@ -141,9 +141,9 @@ class Gems_Project_ProjectSettings extends ArrayObject
         $salt = $this->offsetExists('salt') ? $this->offsetGet('salt') : '';
 
         if (false === strpos($salt, '%s')) {
-            return md5(sprintf($salt, $value), false);
-        } else {
             return md5($salt . $value, false);
+        } else {
+            return md5(sprintf($salt, $value), false);
         }
     }
 }
