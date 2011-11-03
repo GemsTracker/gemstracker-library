@@ -50,7 +50,24 @@
  */
 class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 {
-    protected $hashBsn = true;
+    const SSN_HASH = 0;
+    const SSN_HIDE = 1;
+    const SSN_OPEN = 2;
+
+    /**
+     * Determines how the social security number is stored.
+     *
+     * Can be changed is derived classes.
+     *
+     * @var int One of the SSN_ constants
+     */
+    public $hashSsn = self::SSN_HASH;
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     public function __construct()
     {
@@ -67,9 +84,9 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
 
-        if ($this->hashBsn) {
+        if (self::SSN_HASH === $this->hashSsn) {
             $this->setSaveWhenNotNull('grs_ssn');
-            $this->setOnSave('grs_ssn', array($this, 'formatBSN'));
+            $this->setOnSave('grs_ssn', array($this, 'formatSSN'));
         }
     }
 
@@ -93,15 +110,19 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         return $filter;
     }
 
-    public function formatBSN($name, $value, $new = false)
+    /**
+     * Return a hashed version of the input value.
+     *
+     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
+     * @param string $value The value to hash.
+     * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @return string The salted hash as a 32-character hexadecimal number.
+     */
+    public function formatSSN($name, $value, $new = false)
     {
-        return md5($value);
-    }
-
-    public function addPhysicians()
-    {
-        $this->addLeftTable('gems__staff', array('gr2o_id_physician' => 'gsf_id_user'));
-        return $this;
+        if ($value) {
+            return $this->project->getValueHash($value);
+        }
     }
 
     public function copyKeys($reset = false)

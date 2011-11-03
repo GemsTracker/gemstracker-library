@@ -1308,7 +1308,7 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
-     * Return a hashed of the string.
+     * Return a hashed version of the input value.
      *
      * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
      * @param string $value The value to hash.
