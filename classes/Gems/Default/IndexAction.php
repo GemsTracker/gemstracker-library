@@ -273,26 +273,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $this->_reroute(array('action' => 'index'), true);
     }
 
-    protected function _getRandomPassword()
-    {
-        $salt = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ0123456789";
-        $pass = "";
-
-        srand((double)microtime()*1000000);
-
-        $i = 0;
-
-        while ($i <= 7)
-        {
-            $num = rand() % strlen($salt);
-            $tmp = substr($salt, $num, 1);
-            $pass = $pass . $tmp;
-            $i++;
-        }
-
-        return $pass;
-    }
-
     protected function _getResetForm()
     {
         $form = new Gems_Form(array('labelWidthFactor' => $this->labelWidthFactor));
@@ -362,7 +342,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
             if (!empty($result)) {
                 // generate new password
-                $password = $this->_getRandomPassword();
+                $password = $this->escort->getRandomPassword();
                 $passwordHash = $this->escort->passwordHash(null, $password, false);
 
                 $mail->setSubject('New password');

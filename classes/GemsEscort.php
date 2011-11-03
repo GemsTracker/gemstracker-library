@@ -1319,7 +1319,31 @@ class GemsEscort extends MUtil_Application_Escort
     {
         return $this->project->getValueHash($value);
     }
+    
+    /**
+     * Generate random password
+     * @return string
+     */
+    public function getRandomPassword()
+    {
+        $salt = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ0123456789";
+        $pass = "";
 
+        srand((double)microtime()*1000000);
+
+        $i = 0;
+
+        while ($i <= 7)
+        {
+            $num = rand() % strlen($salt);
+            $tmp = substr($salt, $num, 1);
+            $pass = $pass . $tmp;
+            $i++;
+        }
+
+        return $pass;
+    }
+    
     /**
      * Hook 12: Called after an action is dispatched by Zend_Controller_Dispatcher.
      *
