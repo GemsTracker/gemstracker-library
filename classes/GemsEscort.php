@@ -911,8 +911,12 @@ class GemsEscort extends MUtil_Application_Escort
         }
     }
 
-    public function afterLogin($userName)
+    public function afterLogin($userName = null)
     {
+        if (empty($userName)) {
+            $userName = $_POST['userlogin'];
+        }
+        
         /**
          * Reset number of failed logins
          */
