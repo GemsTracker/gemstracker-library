@@ -911,14 +911,14 @@ class GemsEscort extends MUtil_Application_Escort
         }
     }
 
-    public function afterLogin()
+    public function afterLogin($userName)
     {
         /**
          * Reset number of failed logins
          */
         try {
             $sql = "UPDATE gems__users SET gsu_failed_logins = 0, gsu_last_failed = NULL WHERE gsu_login = ?";
-            $this->db->query($sql, array($_POST['userlogin']));
+            $this->db->query($sql, array($userName));
         } catch (Exception $e) {
             // swallow exception
         }

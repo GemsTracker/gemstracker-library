@@ -231,7 +231,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     /**
                      * Perform any project specific post login activities
                      */
-                    $this->escort->afterLogin();
+                    $this->escort->afterLogin($_POST['userlogin']);
 
                     /**
                      * Fix current locale
