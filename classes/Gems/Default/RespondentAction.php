@@ -116,10 +116,10 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
                 $num++;
             }
 
-            $model->set('grs_bsn', 'description', 'Willekeurig voorbeeld BSN: ' . $num);
+            $model->set('grs_ssn', 'description', sprintf($this->_('Random Example BSN: %s'), $num));
 
         } else {
-            $model->set('grs_bsn', 'description', $this->_('Enter a 9-digit BSN number.'));
+            $model->set('grs_ssn', 'description', $this->_('Enter a 9-digit SSN number.'));
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
@@ -129,9 +129,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addHidden(   $model->getKeyCopyName('gr2o_patient_nr'));
 
         $bridge->addTab(    'caption1')->h4($this->_('Identification'));
-        $bridge->addText(    'grs_bsn',            'label', $this->_('BSN'), 'size', 10, 'maxlength', 12)
+        $bridge->addText(    'grs_ssn',            'label', $this->_('SSN'), 'size', 10, 'maxlength', 12)
             ->addValidator(  new MUtil_Validate_Dutch_Burgerservicenummer())
-            ->addValidator(  $model->createUniqueValidator('grs_bsn'))
+            ->addValidator(  $model->createUniqueValidator('grs_ssn'))
             ->addFilter(     'Digits');
         $bridge->addText(    'gr2o_patient_nr',    'label', $this->_('Patient number'), 'size', 15, 'minlength', 4)
             ->addValidator(  $model->createUniqueValidator(array('gr2o_patient_nr', 'gr2o_id_organization'), array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')));

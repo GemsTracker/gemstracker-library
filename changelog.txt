@@ -1,9 +1,10 @@
 Important changes from 1.4.3 => 1.5
 ============================================================
-The table gems__staff is split into gems__staff and gems__user with all login data in gems__users
 Passwords should be set with a project.ini->salt. Salt is now a required project setting!
-MailController is now called MailTemplateController
-EmailController is now called CronController (with stub for compatibility)
+The table gems__staff is split into gems__staff and gems__user with all login data in gems__users.
+The gems__respondent.grs_bsn has been renamed to grs_ssn, to make the code more international.
+MailController is now called MailTemplateController.
+EmailController is now called CronController (with stub for compatibility).
 
 Important changes from 1.4.2 => 1.4.3
 ============================================================

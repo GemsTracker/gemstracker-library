@@ -68,8 +68,8 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setSaveOnChange('gr2o_opened_by');
 
         if ($this->hashBsn) {
-            $this->setSaveWhenNotNull('grs_bsn');
-            $this->setOnSave('grs_bsn', array($this, 'formatBSN'));
+            $this->setSaveWhenNotNull('grs_ssn');
+            $this->setOnSave('grs_ssn', array($this, 'formatBSN'));
         }
     }
 

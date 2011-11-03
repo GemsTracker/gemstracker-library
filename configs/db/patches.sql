@@ -267,3 +267,6 @@ ALTER TABLE `gems__staff` CHANGE `gsf_login` `gsf_login` VARCHAR( 20 ) CHARACTER
 ALTER TABLE gems__track_fields ADD gtf_field_code varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gtf_field_name,
     ADD gtf_field_description varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gtf_field_code,
     ADD gtf_readonly boolean not null default false AFTER gtf_required;
+
+-- PATCH: Change Burger Service Nummer to Social Security Number
+ALTER TABLE `gems__respondents` CHANGE `grs_bsn` `grs_ssn` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

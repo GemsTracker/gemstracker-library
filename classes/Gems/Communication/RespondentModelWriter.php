@@ -65,7 +65,7 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
     {
         $parameters = $this->_model->applyParameters(
             array(
-                'grs_bsn' => $respondent->getBsn(),
+                'grs_ssn' => $respondent->getBsn(),
                 'gr2o_reception_code' => GemsEscort::RECEPTION_OK,
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
@@ -85,7 +85,7 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
         $data['grs_first_name'] = $respondent->getFirstName();
         $data['grs_last_name'] = $respondent->getLastName();
         $data['grs_surname_prefix'] = $respondent->getSurnamePrefix();
-        $data['grs_bsn'] = $respondent->getBsn();
+        $data['grs_ssn'] = $respondent->getBsn();
         $data['grs_gender'] = $respondent->getGender();
         $data['grs_birthday'] = $respondent->getBirthday();
         

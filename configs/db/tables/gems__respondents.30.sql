@@ -6,7 +6,7 @@ CREATE TABLE if not exists gems__respondents (
       --   null unique key,
       -- grs_password varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
-      grs_bsn varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+      grs_ssn varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
             null unique key,
 
 -- Naam
