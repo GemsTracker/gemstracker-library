@@ -107,7 +107,27 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
             $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
         }
 
+        if (self::SSN_HASH === $this->hashSsn) {
+            // Make sure a search for a SSN is hashed when needed.
+            array_walk_recursive($filter, array($this, 'applyHash'));
+        }
+
         return $filter;
+    }
+
+    /**
+     * Apply hash function for array_walk_recursive in _checkFilterUsed()
+     *
+     * @see _checkFilterUsed()
+     *
+     * @param string $filterValue
+     * @param string $filterKey
+     */
+    public function applyHash(&$filterValue, $filterKey)
+    {
+        if ('grs_ssn' === $filterKey) {
+            $filterValue = $this->project->getValueHash($filterValue);
+        }
     }
 
     /**
