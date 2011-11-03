@@ -54,7 +54,7 @@ class Gems_Util_Localized extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     protected $project;
 

@@ -50,7 +50,7 @@ class Gems_User_ProjectSuperUser extends Gems_User_UserAbstract
 
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     protected $project;
 

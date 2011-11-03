@@ -48,10 +48,9 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
 {
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     public $project;
-
 
     /**
      * The automatically filtered result

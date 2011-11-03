@@ -73,7 +73,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     protected $project;
 

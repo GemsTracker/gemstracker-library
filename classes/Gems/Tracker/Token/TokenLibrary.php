@@ -53,7 +53,7 @@ class Gems_Tracker_Token_TokenLibrary extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     protected $project;
 

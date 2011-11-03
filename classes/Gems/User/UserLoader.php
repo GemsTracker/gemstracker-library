@@ -55,7 +55,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var ArrayObject
+     * @var Gems_Project_ProjectSettings
      */
     protected $project;
 

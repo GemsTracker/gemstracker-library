@@ -329,28 +329,17 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * Use $this->project to access afterwards
      *
-     * @return ArrayObject
+     * @return Gems_Project_ProjectSettings
      */
     protected function _initProject()
     {
-        $project = $this->includeProjectFile('project.ini');
+        $projectArray = $this->includeFile(APPLICATION_PATH . '/configs/project');
 
-        if (false === $project) {
-            $project['css']['gems']       = 'gems.css';
-            $project['version']           = '0.0';
-            $project['locale']['default'] = 'en';
-            $project['locales']['en']     = 'en';
+        if ($projectArray instanceof Gems_Project_ProjectSettings) {
+            $project = $projectArray;
+        } else {
+            $project = $this->createProjectClass('Project_ProjectSettings', $projectArray);
         }
-
-        if (! array_key_exists('name', $project)) {
-            $project['name'] = GEMS_PROJECT_NAME;
-        }
-
-        if (is_array($project)) {
-            $project = new ArrayObject($project, ArrayObject::ARRAY_AS_PROPS);
-        }
-
-        $project->multiLocale = isset($project->locales) && (count($project->locales) > 1);
 
         return $project;
     }
@@ -1228,7 +1217,7 @@ class GemsEscort extends MUtil_Application_Escort
      * @param string $fileName A filename in the include path
      * @return mixed false if nothing was returned
      */
-    public function includeFile($fileName)
+    protected function includeFile($fileName)
     {
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
@@ -1265,36 +1254,6 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         // If the file does not exists it is up to the calling function to do something about it.
-        return false;
-    }
-
-    /**
-     * Searches and loads ini, xml, php or inc file in application/configs and project/configs.
-     *
-     * When no extension is specified the system looks for a file with the right extension.
-     *
-     * .php and .inc files run within the context of this object and thus can access all
-     * $this-> variables and functions.
-     *
-     * @param string $fileName_args One or more filenames, looks for the first to return a value
-     * @return mixed false if nothing was returned
-     */
-    public function includeProjectFile($fileName_args)
-    {
-        foreach (func_get_args() as $fileName) {
-            // First check in the project configs directory
-            $result = $this->includeFile(APPLICATION_PATH . '/configs/' . $fileName);
-
-            if (! $result) {
-                // Then check in the gems configs directory
-                $result = $this->includeFile(GEMS_LIBRARY_DIR . '/configs/' . $fileName);
-            }
-
-            if ($result) {
-                return $result;
-            }
-        }
-
         return false;
     }
 
@@ -1344,13 +1303,17 @@ class GemsEscort extends MUtil_Application_Escort
         }
     }
 
+    /**
+     * Return a hashed of the string.
+     *
+     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
+     * @param string $value The value to hash.
+     * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @return string The salted hash as a 32-character hexadecimal number.
+     */
     public function passwordHash($name, $value, $new)
     {
-        if (isset($this->project->salt)) {
-            return md5($this->project->salt . $value, false);
-        } else {
-            return md5($value, false);
-        }
+        return $this->project->getValueHash($value);
     }
 
     /**
