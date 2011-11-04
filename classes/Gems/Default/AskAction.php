@@ -186,6 +186,9 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
     public function indexAction()
     {
+        // Make sure to return to ask screen
+        $this->session->return_controller = $this->getRequest()->getControllerName();
+
         $tracker    = $this->loader->getTracker();
         $max_length = $tracker->getTokenLibrary()->getLength();
 
@@ -242,11 +245,40 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
     public function returnAction()
     {
-        if (isset($this->session->user_id)) {
+        if (isset($this->session->user_id) && $this->session->user_id) {
             $tracker = $this->loader->getTracker();
             $token   = $tracker->getToken($tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID)));
 
-            $this->_reroute(array('controller' => 'respondent', 'action' => 'show', MUtil_Model::REQUEST_ID => $token->getPatientNumber()), true);
+            // Check for completed tokens
+            $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $this->session->user_id);
+
+            if (isset($this->session->return_controller) && $this->session->return_controller) {
+                $return = $this->session->return_controller;
+            } else {
+                $return = 'respondent';
+            }
+
+            $parameters['controller'] = $return;
+            $parameters['action']     = 'show';
+            $parameters[MUtil_Model::REQUEST_ID] = $token->getPatientNumber();
+            switch ($return) {
+                case 'track':
+                    $parameters['action'] = 'show-track';
+                    $parameters[Gems_Model::RESPONDENT_TRACK] = $token->getRespondentTrackId();
+                    break;
+
+                case 'survey':
+                    $parameters[MUtil_Model::REQUEST_ID] = $token->getTokenId();
+                    break;
+
+                case 'ask':
+                    $this->_forward('forward');
+                    return;
+
+                default:
+                    $parameters['controller'] = 'respondent';
+            }
+                $this->_reroute($parameters, true);
         } else {
             $this->_forward('forward');
         }

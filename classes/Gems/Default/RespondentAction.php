@@ -360,6 +360,20 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         return $this->_('Respondents');
     }
 
+    /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->session->return_controller = $this->getRequest()->getControllerName();
+    }
+
     protected function openedRespondent($patientId, $orgId = null, $userId = null)
     {
         if ($patientId) {
@@ -386,12 +400,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         // Log
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
-
-        // Check for completed tokens
-        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id)) {
-            //As data might have changed due to token events... reload
-            $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
-        }
 
         if ($data['gr2o_consent'] == $model->get('gr2o_consent', 'default')) {
             $url = $this->view->url(array('controller' => 'respondent', 'action' => 'edit', 'id' => $data['gr2o_patient_nr'])) . '#tabContainer-frag-3';

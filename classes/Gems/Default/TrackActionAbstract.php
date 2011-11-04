@@ -352,6 +352,20 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         parent::indexAction();
     }
 
+    /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->session->return_controller = $this->getRequest()->getControllerName();
+    }
+
     public function initFilter()
     {
         // FROM REQUEST

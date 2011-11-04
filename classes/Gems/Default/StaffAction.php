@@ -107,7 +107,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addHidden(  'gsf_id_user'); // Needed for e-mail validation
         $bridge->addHidden(  'gsu_user_class');
         $bridge->addText(    'gsu_login', 'size', 15, 'minlength', 4,
-            'validator', $model->createUniqueValidator('gsu_login'));
+            'validator', $model->createUniqueValidator('gsu_login', array('gsu_id_user')));
 
         // Can the organization be changed?
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
