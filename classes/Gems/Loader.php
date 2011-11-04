@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -87,6 +85,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      * @var Gems_Tracker
      */
     protected $tracker;
+
+    /**
+     *
+     * @var Gems_Upgrades
+     */
+    protected $upgrades;
 
     /**
      *
@@ -179,6 +183,15 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getTracker()
     {
         return $this->_getClass('tracker');
+    }
+
+    /**
+     *
+     * @return Gems_Upgrades
+     */
+    public function getUpgrades()
+    {
+        return $this->_getClass('upgrades');
     }
 
     /**
