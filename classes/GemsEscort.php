@@ -146,20 +146,29 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $cache = null;
         $exists = false;
-        $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
-        if (!file_exists($cacheDir)) {
-            if (@mkdir($cacheDir, 0777, true)) {
+
+        // Check if APC extension is loaded
+        if( extension_loaded('apc') ) {
+            $cacheBackend = 'Apc';
+            $cacheBackendOptions = array();
+            $exists = true;
+        } else {
+            $cacheBackend = 'File';
+            $cacheDir = GEMS_ROOT_DIR . "/var/cache/";
+            $cacheBackendOptions = array('cache_dir' => $cacheDir);
+            if (!file_exists($cacheDir)) {
+                if (@mkdir($cacheDir, 0777, true)) {
+                    $exists = true;
+                }
+            } else {
                 $exists = true;
             }
-        } else {
-            $exists = true;
         }
 
         if ($exists) {
             $cacheFrontendOptions = array('automatic_serialization' => true);
-            $cacheBackendOptions = array('cache_dir' => $cacheDir);
 
-            $cache = Zend_Cache::factory('Core', 'File', $cacheFrontendOptions, $cacheBackendOptions);
+            $cache = Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
 
             Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
             Zend_Translate::setCache($cache);
