@@ -130,14 +130,22 @@ class Gems_Util_DatabasePatcher
                                     'gpa_sql'      => $statement
                                 );
                         }
-                }
+                    }
 
                 }
             }
         }
     }
 
-    public function executePatch($patch, $ignoreCompleted = true, $ignoreExecuted = false)
+    /**
+     * Executes db patches for the given $patchLevel
+     *
+     * @param int $patchLevel Only execute patches for this patchlevel
+     * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
+     * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed (this includes the ones that are executed but not completed)
+     * @return int The number of executed patches
+     */
+    public function executePatch($patchLevel, $ignoreCompleted = true, $ignoreExecuted = false)
     {
         $sql = 'SELECT gpa_id_patch, gpa_sql, gpa_completed FROM gems__patches WHERE gpa_level = ?';
         if ($ignoreCompleted) {
@@ -151,7 +159,7 @@ class Gems_Util_DatabasePatcher
 
         $current  = new Zend_Db_Expr('CURRENT_TIMESTAMP');
         $executed = 0;
-        $patches  = $this->db->fetchAll($sql, $patch);
+        $patches  = $this->db->fetchAll($sql, $patchLevel);
 
         foreach ($patches as $patch) {
             $data = array();
@@ -174,6 +182,11 @@ class Gems_Util_DatabasePatcher
 
             $this->db->update('gems__patches', $data, $this->db->quoteInto('gpa_id_patch = ?', $patch['gpa_id_patch']));
             $executed++;
+        }
+
+        //Update the patchlevel only when we have executed at least one patch
+        if ($executed>0) {
+            $this->db->query('INSERT IGNORE INTO gems__patch_levels (gpl_level, gpl_created) VALUES (?, CURRENT_TIMESTAMP)', $patchLevel);
         }
 
         return $executed;

@@ -351,8 +351,6 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $data['db_level'] = $data['level'];
                     $form->getElement('db_level')->setValue($data['db_level']);
 
-                    $this->db->query('INSERT IGNORE INTO gems__patch_levels (gpl_level, gpl_created) VALUES (?, CURRENT_TIMESTAMP)', $data['level']);
-
                     $this->addMessage(sprintf($this->_('%d patch(es) executed.'), $changed));
                 }
 
