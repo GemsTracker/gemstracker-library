@@ -66,10 +66,11 @@ define('GEMS_PROJECT_PATH', APPLICATION_PATH);
  * then to Gems application directory
  */
 set_include_path(
-    GEMS_ROOT_DIR . '/library' . PATH_SEPARATOR .
     GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
-    get_include_path());
+    get_include_path() 
+    //. PATH_SEPARATOR . GEMS_ROOT_DIR . '/library'     //Shouldn't be needed, uncomment when neccessary
+    );
 
 $GEMS_DIRS = array(
     GEMS_PROJECT_NAME_UC => APPLICATION_PATH . '/classes',
