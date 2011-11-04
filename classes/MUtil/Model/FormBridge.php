@@ -112,31 +112,6 @@ class MUtil_Model_FormBridge
         return $element;
     }
 
-    public static function applyFixedOptions($type, array &$options)
-    {
-        static $typeOptions;
-
-        if (! $typeOptions) {
-            $typeOptions = Zend_Registry::get('MUtil_Model_FormBridge');
-        }
-
-        if (substr($type, 0, 3) == 'add') {
-            $type = strtolower(substr($type, 3));
-        }
-        // MUtil_Echo::rs($type, $options);
-
-        if (isset($typeOptions[$type])) {
-            foreach ($typeOptions[$type] as $key => $value) {
-                if (is_array($value) && isset($options[$key])) {
-                    $options[$key] = $value + $options[$key];
-                } else {
-                    $options[$key] = $value;
-                }
-            }
-        }
-        // MUtil_Echo::rs('After', $options, $typeOptions);
-    }
-
     protected function _applyValidators($name, Zend_Form_Element $element)
     {
         $validators = $this->model->get($name, 'validators');
@@ -656,6 +631,8 @@ class MUtil_Model_FormBridge
             self::DISPLAY_OPTIONS, self::TEXT_OPTIONS, self::TEXTAREA_OPTIONS);
 
         $stringlength = $this->_getStringLength($options);
+        // Remove as size and maxlength are not used for textarea's
+        unset($options['size'], $options['maxlength']);
 
         $element = new Zend_Form_Element_Textarea($name, $options);
 
@@ -680,6 +657,31 @@ class MUtil_Model_FormBridge
         $element->addValidator($validator, $breakChainOnFailure, $options);
 
         return $this;
+    }
+
+    public static function applyFixedOptions($type, array &$options)
+    {
+        static $typeOptions;
+
+        if (! $typeOptions) {
+            $typeOptions = Zend_Registry::get('MUtil_Model_FormBridge');
+        }
+
+        if (substr($type, 0, 3) == 'add') {
+            $type = strtolower(substr($type, 3));
+        }
+        // MUtil_Echo::rs($type, $options);
+
+        if (isset($typeOptions[$type])) {
+            foreach ($typeOptions[$type] as $key => $value) {
+                if (is_array($value) && isset($options[$key])) {
+                    $options[$key] = $value + $options[$key];
+                } else {
+                    $options[$key] = $value;
+                }
+            }
+        }
+        // MUtil_Echo::rs('After', $options, $typeOptions);
     }
 
     /**
