@@ -145,7 +145,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public function execute($context, $to = null, $from = null)
     {
         if(is_null($to)) {
-            $to = count($this->_upgradeStack[$context]);
+            $to = $this->getMaxLevel($context);
         }
         if(is_null($from)) {
             $from = $this->getLevel($context);
@@ -214,7 +214,24 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         return $this->_messages;
     }
 
-    public function getUpgrades($requestedContext = null)
+    /**
+     * Retrieve the upgrades for a certain context, will return an empty array when nothing present.
+     *
+     * @param string $context
+     * @return array
+     */
+    public function getUpgrades($context = null) {
+        if (! $context) {
+                $context = $this->getContext();
+            }
+
+        if (isset($this->_upgradeStack[$context])) {
+            return $this->_upgradeStack[$context];
+        }
+        return array();
+    }
+
+    public function getUpgradesInfo($requestedContext = null)
     {
         $result = array();
         foreach($this->_upgradeStack as $context => $content) {
@@ -237,7 +254,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public function register($callback, $index = null, $context = null)
     {
         if (is_string($callback)) {
-            $callback = array($this, $callback);
+            $callback = array(get_class($this), $callback);
         }
         if (is_callable($callback)) {
             if (! $context) {
