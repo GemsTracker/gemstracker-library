@@ -166,7 +166,8 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if ($exists) {
-            $cacheFrontendOptions = array('automatic_serialization' => true);
+            $cacheFrontendOptions = array('automatic_serialization' => true,
+                                          'cache_id_prefix' => GEMS_PROJECT_NAME . '_');
 
             $cache = Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
 
