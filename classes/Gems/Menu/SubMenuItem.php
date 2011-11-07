@@ -127,8 +127,8 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
     private function _applyParameterSource($source, $paramFunction, array &$parameters)
     {
         // Fill in required parameters
-        if ($this->_requiredParameters) {
-            foreach ($this->_requiredParameters as $param => $name) {
+        if ($this->_parameters && is_array($this->_parameters)) {
+            foreach ($this->_parameters as $param => $name) {
 
                 $default = isset($parameters[$param]) ? $parameters[$param] : null;
 
@@ -491,14 +491,31 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         $params = MUtil_Ra::pairs(func_get_args());
 
         if (true === $this->_parameters) {
-            $this->_parameters = new MUtil_Lazy_ArrayWrap();
+            $this->_parameters = array();
         }
         foreach ($params as $param => $name) {
             if (is_int($param)) {
                 $param = $name;
             }
             $this->_requiredParameters[$param] = $name;
-            $this->_parameters[$param] = MUtil_Lazy::L($name);
+            $this->_parameters[$param] = $name;
+        }
+        return $this;
+    }
+
+    public function addOptionalParameters($arrayOrKey1 = null, $altName1 = null)
+    {
+        $params = MUtil_Ra::pairs(func_get_args());
+
+        if (true === $this->_parameters) {
+            $this->_parameters = array();
+        }
+        foreach ($params as $param => $name) {
+            if (is_int($param)) {
+                $param = $name;
+            }
+            //$this->_requiredParameters[$param] = $name;
+            $this->_parameters[$param] = $name;
         }
         return $this;
     }

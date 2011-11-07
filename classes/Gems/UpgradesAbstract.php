@@ -148,17 +148,26 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
             $to = $this->getMaxLevel($context);
         }
         if(is_null($from)) {
-            $from = $this->getLevel($context);
+            $from = $this->getNextLevel();
+
+            if ($from > $to) {
+                $this->addMessage($this->_('Already at max. level.'));
+                return $to;
+            }
         }
-        $from = max(1, $from);
+        $from = max(1, intval($from));
+        $to   = intval($to);
 
         $this->addMessage(sprintf($this->_('Trying upgrade for %s from level %s to level %s'), $context, $from, $to));
 
         $success = false;
-        for($level = $from; $level<=$to; $level++) {
-            if (isset($this->_upgradeStack[$context][$level]) && is_callable($this->_upgradeStack[$context][$level])) {
-                $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s'), $context, $level));
-                if (call_user_func($this->_upgradeStack[$context][$level])) {
+        $upgrades = $this->_upgradeStack[$context];
+        ksort($upgrades);
+        $this->_upgradeStack[$context] = $upgrades;
+        foreach($this->_upgradeStack[$context] as $level => $upgrade) {
+            if (($level > $from && $level <= $to))  {
+                $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s: %s'), $context, $level, $this->_upgradeStack[$context][$level]['info']));
+                if (call_user_func($upgrade['upgrade'])) {
                     $success = $level;
                     $this->addMessage('OK');
                 } else {
@@ -209,6 +218,38 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         }
     }
 
+    /**
+     * Get the next level for a given level and context
+     *
+     * When context is null, it will get the current context
+     * When level is null, it will get the current level
+     *
+     * @param type $level
+     * @param type $context
+     * @return type
+     */
+    public function getNextLevel($context = null, $level = null) {
+        if (is_null($context)) {
+            $context = $this->getContext();
+        }
+        if (is_null($level)) {
+            $level = $this->getLevel($context);
+        }
+
+        //Get all the levels
+        $currentContext = $this->_upgradeStack[$context];
+        ksort($currentContext);
+        $levels = array_keys($this->_upgradeStack[$context]);
+        //Find the index of the current one
+        $current = array_search($level, $levels);
+        
+        //And if it is present, return the next level
+        if (isset($levels[$current++])) return $levels[$current++];
+
+        //Else return current level +1 (doesn't exist anyway)
+        return $level++;
+    }
+
     public function getMessages()
     {
         return $this->_messages;
@@ -251,7 +292,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         }
     }
 
-    public function register($callback, $index = null, $context = null)
+    public function register($callback, $info = null, $index = null, $context = null)
     {
         if (is_string($callback)) {
             $callback = array(get_class($this), $callback);
@@ -275,7 +316,8 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
                 $index++;
             }
 
-            $this->_upgradeStack[$context][$index] = $callback;
+            $this->_upgradeStack[$context][$index]['upgrade'] = $callback;
+            $this->_upgradeStack[$context][$index]['info']    = $info;
 
             return true;
         }

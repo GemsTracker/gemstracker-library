@@ -55,7 +55,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         //Now set the context
         $this->setContext('gems');
         //And add our patches
-        $this->register('Upgrade143to15');
+        $this->register('Upgrade143to15', 'Upgrade from 1.43 to 1.5');
     }
 
 
