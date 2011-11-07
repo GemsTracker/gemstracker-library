@@ -170,10 +170,12 @@ class GemsEscort extends MUtil_Application_Escort
                                           'cache_id_prefix' => GEMS_PROJECT_NAME . '_');
 
             $cache = Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
-
-            Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
-            Zend_Translate::setCache($cache);
+        } else {
+            $cache = Zend_Cache::factory('Core', 'Static', array('caching' => false), array('disable_caching' => true));
         }
+
+        Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
+        Zend_Translate::setCache($cache);
 
         return $cache;
     }
