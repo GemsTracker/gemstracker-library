@@ -92,7 +92,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
 
         if ($menuItem = $this->menu->find(array('controller' => $this->_getParam('controller'), 'action' => 'show', 'allowed' => true))) {
             $this->html->br();
-            $this->html[] = $menuItem->toActionLinkLower($this->getRequest(), array('id'=>$context));
+            $this->html[] = $menuItem->toActionLinkLower($this->getRequest(), array('id'=>$context), $this->_('Back'));
         }
     }
 
@@ -181,6 +181,10 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
         } else {
             $this->html[] = sprintf($this->_('Context %s not found!'), $context);
         }
+
+        if ($parentItem = $this->menu->getCurrent()->getParent()) {
+            $this->html[] = $parentItem->toActionLink($this->getRequest(), $this->_('Cancel'));
+        }       
     }
 
     public function getTopicTitle() {

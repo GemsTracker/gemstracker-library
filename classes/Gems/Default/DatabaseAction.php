@@ -382,7 +382,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-        if ($links = $this->createMenuLinks(10)) {
+        if ($links = $this->createMenuLinks(1)) {
             $table->tf(); // Add empty cell, no label
             $linksCell = $table->tf($links);
         }
