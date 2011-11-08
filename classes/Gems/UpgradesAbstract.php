@@ -148,7 +148,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
             $to = $this->getMaxLevel($context);
         }
         if(is_null($from)) {
-            $from = $this->getNextLevel();
+            $from = $this->getNextLevel($context);
 
             if ($from > $to) {
                 $this->addMessage($this->_('Already at max. level.'));
@@ -165,7 +165,7 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         ksort($upgrades);
         $this->_upgradeStack[$context] = $upgrades;
         foreach($this->_upgradeStack[$context] as $level => $upgrade) {
-            if (($level > $from && $level <= $to))  {
+            if (($level >= $from && $level <= $to))  {
                 $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s: %s'), $context, $level, $this->_upgradeStack[$context][$level]['info']));
                 if (call_user_func($upgrade['upgrade'])) {
                     $success = $level;
@@ -244,10 +244,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         $current = array_search($level, $levels);
         
         //And if it is present, return the next level
-        if (isset($levels[$current++])) return $levels[$current++];
+        $current++;
+        if (isset($levels[$current])) return $levels[$current];
 
         //Else return current level +1 (doesn't exist anyway)
-        return $level++;
+        return ++$level;
     }
 
     public function getMessages()

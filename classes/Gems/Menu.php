@@ -213,6 +213,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $logMaint = $page->addPage($this->_('Maintenance'), 'pr.log.maintenance', 'log-maintenance');
         $logMaint->addAutofilterAction();
         $logMaint->addEditAction('pr.log.maintenance');
+
+        //UPGRADES CONTROLLER
+        $page = $setup->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
+        $show = $page->addAction($this->_('Show'), null, 'show')->setNamedParameters('id','context');
+        $page->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')->setModelParameters(1);
+        $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
+        $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')->setModelParameters(1)->addNamedParameters('from','from');
+        $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')->setModelParameters(1)->addNamedParameters('to','to');
         return $setup;
     }
 
