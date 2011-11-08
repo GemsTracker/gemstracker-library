@@ -235,7 +235,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param array $trackFieldsData
      * @return Gems_Tracker_RespondentTrack The newly created track
      */
-    public function createRespondentTrack($patientId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array())
+    public function createRespondentTrack($patientId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
     {
         $trackEngine = $this->getTrackEngine($trackId);
 
