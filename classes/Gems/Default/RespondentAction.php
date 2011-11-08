@@ -401,6 +401,12 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         // Log
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
 
+        // Check for completed tokens
+        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id)) {
+            //As data might have changed due to token events... reload
+            $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+        }
+
         if ($data['gr2o_consent'] == $model->get('gr2o_consent', 'default')) {
             $url = $this->view->url(array('controller' => 'respondent', 'action' => 'edit', 'id' => $data['gr2o_patient_nr'])) . '#tabContainer-frag-3';
             $this->addMessage(MUtil_Html::create()->a($url, $this->_('Please settle the informed consent form for this respondent.')));
