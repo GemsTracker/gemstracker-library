@@ -45,7 +45,8 @@
  */
 class Gems_Cookies
 {
-    const LOCALE_COOKIE = 'gems_locale';
+    const LOCALE_COOKIE       = 'gems_locale';
+    const ORGANIZATION_COOKIE = 'gems_organization';
 
     /**
      * Get a specific cookie from the request.
@@ -69,6 +70,17 @@ class Gems_Cookies
     public static function getLocale(Zend_Controller_Request_Abstract $request)
     {
         return self::get($request, self::LOCALE_COOKIE);
+    }
+
+    /**
+     * Get the organization from the cookie.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return int The organization
+     */
+    public static function getOrganization(Zend_Controller_Request_Abstract $request)
+    {
+        return self::get($request, self::ORGANIZATION_COOKIE);
     }
 
     /**
@@ -103,5 +115,18 @@ class Gems_Cookies
     {
         // Set the cookie for 30 days
         return self::set(self::LOCALE_COOKIE, $locale, 30, $basepath);
+    }
+
+    /**
+     * Store the organization in a cookie.
+     *
+     * @param int $locale Organization to store
+     * @param string $basepath The folder of the domain, if any.
+     * @return boolean True if the cookie was stored.
+     */
+    public static function setOrganization($locale, $basepath = '/')
+    {
+        // Set the cookie for 30 days
+        return self::set(self::ORGANIZATION_COOKIE, $locale, 30, $basepath);
     }
 }

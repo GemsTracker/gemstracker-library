@@ -234,9 +234,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $this->escort->afterLogin($_POST['userlogin']);
 
                     /**
-                     * Fix current locale
+                     * Fix current locale & organization
                      */
                     Gems_Cookies::setLocale($this->session->user_locale, $this->basepath->getBasePath());
+                    Gems_Cookies::setOrganization($this->session->user_organization_id, $this->basepath->getBasePath());
 
                     /**
                      * Ready

@@ -1115,6 +1115,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function getCurrentOrganization()
     {
+        /*
         if ($this instanceof Gems_Project_Organization_MultiOrganizationInterface) {
             return $this->getUserOrganization();
         }
@@ -1122,11 +1123,12 @@ class GemsEscort extends MUtil_Application_Escort
         if ($this instanceof Gems_Project_Organization_SingleOrganizationInterface) {
             return $this->getRespondentOrganization();
         }
+        */
 
         if (isset($this->session->user_organization_id)) {
             return $this->session->user_organization_id;
         } else {
-            return 0;
+            return Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
         }
     }
 
