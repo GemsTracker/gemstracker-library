@@ -25,8 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
  * @subpackage Upgrades
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -35,9 +33,9 @@
  */
 
 /**
- * Short description for Upgrades
- *
- * Long description for class Upgrades (if any)...
+ * This class can take care of handling upgrades that can not be achieved by a
+ * simple db patch. For example adding an extra attribute to all token tables
+ * in LimeSurvey needs a simple loop.
  *
  * @package    Gems
  * @subpackage Upgrades
@@ -142,6 +140,18 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         $this->_messages = array();
     }
 
+    /**
+     * Execute upgrades for the given $context
+     *
+     * When no $to or $from are given, the given $context will be upgraded from the current level
+     * to the max level. Otherwise the $from and/or $to will be used to determine what upgrades
+     * to execute.
+     *
+     * @param string $context The context to execute the upgrades for
+     * @param int|null $to The level to upgrade to
+     * @param int|null $from The level to start the upgrade on
+     * @return false|int The achieved upgrade level or false on failure
+     */
     public function execute($context, $to = null, $from = null)
     {
         if(is_null($to)) {
@@ -182,21 +192,32 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         return $success;
     }
 
+    /**
+     * Retrieve the current context
+     *
+     * @return string 
+     */
     public function getContext() {
         return $this->_context;
     }
 
+    /**
+     * Get the current upgrade level for the given $context
+     *
+     * @param string $context
+     * @return int
+     */
     public function getLevel($context)
     {
         if(isset($this->_info->$context)) {
-            return $this->_info->$context;
+            return intval($this->_info->$context);
         } else {
             return 0;
         }
     }
 
     /**
-     * Get the highest level for the given context
+     * Get the highest level for the given $context
      *
      * @param string|null $context
      * @return int
@@ -251,6 +272,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         return ++$level;
     }
 
+    /**
+     * Get all messages that were recorded during the upgrade process
+     *
+     * @return array
+     */
     public function getMessages()
     {
         return $this->_messages;
@@ -273,6 +299,12 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         return array();
     }
 
+    /**
+     * Retrieve info about the $requestedContext or all contexts when omitted
+     *
+     * @param string $requestedContext
+     * @return array
+     */
     public function getUpgradesInfo($requestedContext = null)
     {
         $result = array();
@@ -293,6 +325,19 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         }
     }
 
+    /**
+     * Register an upgrade in the stack, it can be executed by using $this->execute
+     * 
+     * Index and context are optional and will be generated when omitted. For the 
+     * user interface to be clear $info should provide a good description of what
+     * the upgrade does.
+     * 
+     * @param array|string $callback A valid callback, either string for a method of the current class or array otherwise
+     * @param string $info A descriptive message about what this upgrade does
+     * @param int $index The number of the upgrade
+     * @param string $context The context to which this upgrade applies
+     * @return boolean
+     */
     public function register($callback, $info = null, $index = null, $context = null)
     {
         if (is_string($callback)) {
@@ -325,10 +370,27 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         return false;
     }
 
+    /**
+     * Change the active context
+     *
+     * Usefull when adding upgrades in the construct to save typing
+     *
+     * @param string $context
+     */
     public function setContext($context) {
         $this->_context = $context;
     }
 
+    /**
+     * Set the upgrade level for the given $context to a certain level
+     *
+     * Will only update when the $level is higher than the achieved level, unless
+     * when $force = true when it will always update.
+     *
+     * @param string $context
+     * @param int $level
+     * @param boolean $force
+     */
     protected function setLevel($context, $level = null, $force = false)
     {
         if (!is_null($level) &&
