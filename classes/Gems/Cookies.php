@@ -26,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    Gems
  * @subpackage Cookies
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -73,14 +74,14 @@ class Gems_Cookies
     }
 
     /**
-     * Get the organization from the cookie.
+     * Get the current organization from the cookie.
      *
      * @param Zend_Controller_Request_Abstract $request
-     * @return int The organization
+     * @return int The current organization
      */
     public static function getOrganization(Zend_Controller_Request_Abstract $request)
     {
-        return self::get($request, self::ORGANIZATION_COOKIE);
+        return intval(self::get($request, self::ORGANIZATION_COOKIE));
     }
 
     /**
@@ -120,13 +121,15 @@ class Gems_Cookies
     /**
      * Store the organization in a cookie.
      *
-     * @param int $locale Organization to store
+     * @param int $organization Organization to store
      * @param string $basepath The folder of the domain, if any.
      * @return boolean True if the cookie was stored.
      */
-    public static function setOrganization($locale, $basepath = '/')
+    public static function setOrganization($organization, $basepath = '/')
     {
-        // Set the cookie for 30 days
-        return self::set(self::ORGANIZATION_COOKIE, $locale, 30, $basepath);
+        if ($organization) {
+            // Set the cookie for 30 days
+            return self::set(self::ORGANIZATION_COOKIE, $organization, 30, $basepath);
+        }
     }
 }

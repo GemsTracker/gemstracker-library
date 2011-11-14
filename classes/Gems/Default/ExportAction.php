@@ -144,7 +144,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     {
         //Read some data from tables, initialize defaults...
         $surveys       = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name');
-        $organizations = $this->escort->getAllowedOrganizations();
+        $organizations = $this->loader->getCurrentUser()->getAllowedOrganizations();
         $types         = $this->export->getExportClasses();
 
         //Create the basic form
@@ -230,7 +230,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $answerModel = $survey->getAnswerModel($language);
 
         //Now add the organization id => name mapping
-        $answerModel->set('organizationid', 'multiOptions', $this->escort->getAllowedOrganizations());
+        $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
 
         if (count($answers) === 0) {
             $answers[0] = array('' => sprintf($this->_('No %s found.'), $this->getTopic(0)));

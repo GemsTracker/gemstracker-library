@@ -2,18 +2,17 @@
 -- Table containing the project staff
 --
 CREATE TABLE if not exists gems__staff (
-        gsf_id_user          bigint unsigned not null references gems__users (gsu_id_user),
+        gsf_id_user          bigint unsigned not null references gems__user_ids (gui_id_user),
+
+        gsf_login            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gsf_id_organization  bigint not null references gems__organizations (gor_id_organization),
+
+        gsf_active           boolean null default 1,
 
         -- depreciated
-        gsf_login            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-                               not null unique key,
-        gsf_password         varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-                               not null,
-        gsf_active           boolean not null default 1,
-    	gsf_failed_logins    int(11) unsigned not null default 0,
+        gsf_password         varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+    	gsf_failed_logins    int(11) unsigned null default 0,
         gsf_last_failed      timestamp null,
-        gsf_id_organization  bigint not null
-                               references gems__organizations (gor_id_organization),
         -- end depreciated
 
 
@@ -45,15 +44,18 @@ CREATE TABLE if not exists gems__staff (
         -- gsf_phone_2          varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- gsf_phone_3          varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
+        -- depreciated
         gsf_reset_key        varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gsf_reset_requested  timestamp null,
+        -- end depreciated
 
         gsf_changed          timestamp not null default current_timestamp on update current_timestamp,
         gsf_changed_by       bigint unsigned not null,
         gsf_created          timestamp not null,
         gsf_created_by       bigint unsigned not null,
 
-        PRIMARY KEY(gsf_id_user)
+        PRIMARY KEY(gsf_id_user),
+        UNIQUE KEY(gsf_login, gsf_id_organization)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 2001

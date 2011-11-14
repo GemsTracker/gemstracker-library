@@ -376,6 +376,7 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * Use $this->session to access afterwards
      *
+     * @deprecated since 1.5
      * @return Zend_Session_Namespace
      */
     protected function _initSession()
@@ -795,7 +796,7 @@ class GemsEscort extends MUtil_Application_Escort
                         'controller' => 'organization',
                         'action' => 'change-ui'), null, true);
             $orgSwitch->raw('<form method="get" action="' . $url . '"><div><input type="hidden" name="current_uri" value="' . $currentUri . '" /><select name="org" onchange="javascript:this.form.submit();">');
-            foreach ($this->getAllowedOrganizations() as $id => $org) {
+            foreach ($this->getLoader()->getCurrentUser()->getAllowedOrganizations() as $id => $org) {
                 $selected = '';
                 if ($id == $this->session->user_organization_id) {
                     $selected = ' selected="selected"';
@@ -928,43 +929,6 @@ class GemsEscort extends MUtil_Application_Escort
         }
     }
 
-    public function afterLogin($userName = null)
-    {
-        if (empty($userName)) {
-            $userName = $_POST['userlogin'];
-        }
-        
-        /**
-         * Reset number of failed logins
-         */
-        try {
-            $sql = "UPDATE gems__users SET gsu_failed_logins = 0, gsu_last_failed = NULL WHERE gsu_login = ?";
-            $this->db->query($sql, array($userName));
-        } catch (Exception $e) {
-            // swallow exception
-        }
-    }
-
-    public function afterFailedLogin()
-    {
-        /**
-         * Store the failed login attempt
-         */
-        try {
-            if (isset($_POST['userlogin'])) {
-                $sql = "UPDATE gems__users SET gsu_failed_logins = gsu_failed_logins + 1, gsu_last_failed = NOW() WHERE gsu_login = ?";
-                $this->db->query($sql, array($_POST['userlogin']));
-            }
-        } catch (Exception $e) {
-            // swallow exception
-        }
-    }
-
-    public function afterLogout()
-    {
-        $this->session->unsetAll();
-    }
-
     /**
      * Hook 2: Called in $this->run().
      *
@@ -1095,26 +1059,6 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
-     * Get an array of OrgId => Org Name for all allowed organizations for the current loggedin user
-     *
-     * @@TODO Make ui to store allowed orgs in staff controller and change function to read these
-     *
-     * @return array
-     */
-    public function getAllowedOrganizations($userId = null)
-    {
-        if (is_null($userId)) $userId = $this->session->user_id;
-        if ($userId == $this->session->user_id && isset($this->session->allowedOrgs)) {
-            //If user is current user, read from session
-            $allowedOrganizations = $this->session->allowedOrgs;
-        } else {
-            $allowedOrganizations = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
-        }
-
-        return $allowedOrganizations;
-    }
-
-    /**
      *
      * @return int The current active organization id or 0 when not known
      */
@@ -1143,11 +1087,9 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function getCurrentUserId()
     {
-        if (isset($this->session->user_id)) {
-            return $this->session->user_id;
-        } else {
-            return 0;
-        }
+        $id = $this->getLoader()->getCurrentUser()->getUserId();
+
+        return $id ? $id : 0;
     }
 
     public function getDatabasePaths()
@@ -1159,10 +1101,6 @@ class GemsEscort extends MUtil_Application_Escort
 
         if ($this instanceof Gems_Project_Log_LogRespondentAccessInterface) {
             $paths['gems_log'] = GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access';
-        }
-
-        if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $paths['gems_multi_layout'] = GEMS_LIBRARY_DIR . '/configs/db_multi_layout';
         }
 
         $paths['gems'] = GEMS_LIBRARY_DIR . '/configs/db';
@@ -1280,54 +1218,10 @@ class GemsEscort extends MUtil_Application_Escort
         return false;
     }
 
-    public function loadLoginInfo($userName)
-    {
-        /**
-         * Read the needed parameters from the different tables, lots of renames for backward
-         * compatibility
-         */
-        $select = new Zend_Db_Select($this->db);
-        $select->from('gems__users', array('user_id' => 'gsu_id_user',
-                                          'user_login' => 'gsu_login',
-                                          //don't expose the password hash
-                                          //'user_password'=>'gsu_password',
-                                          ))
-                ->join('gems__staff', 'gsu_id_user = gsf_id_user', array(
-                                          'user_email'=>'gsf_email',
-                                          'user_group'=>'gsf_id_primary_group',
-                                          'user_locale'=>'gsf_iso_lang',
-                                          'user_logout'=>'gsf_logout_on_survey'))
-               ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
-               ->join('gems__organizations', 'gsu_id_organization = gor_id_organization',
-                       array('user_organization_id'=>'gor_id_organization', 'user_organization_name'=>'gor_name'))
-               ->where('ggp_group_active = ?', 1)
-               ->where('gor_active = ?', 1)
-               ->where('gsu_active = ?', 1)
-               ->where('gsu_login = ?', $userName)
-               ->limit(1);
-
-        //For a multi-layout project we need to select the appropriate style too
-        if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $select->columns(array('user_style' => 'gor_style'), 'gems__organizations');
-        }
-
-
-        if ($result = $this->db->fetchRow($select, array(), Zend_Db::FETCH_ASSOC)) {
-            // $this->session is a session object so we cannot use $this->session = $result
-            foreach ($result as $name => $value) {
-                $this->session->$name = $value;
-            }
-
-            if ($this instanceof Gems_Project_Organization_MultiOrganizationInterface) {
-                //Load the allowed organizations into the session
-                $this->session->allowedOrgs = $this->getAllowedOrganizations();
-            }
-        }
-    }
-
     /**
      * Return a hashed version of the input value.
+     *
+     * @deprecated Since 1.5
      *
      * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
      * @param string $value The value to hash.
@@ -1338,7 +1232,7 @@ class GemsEscort extends MUtil_Application_Escort
     {
         return $this->project->getValueHash($value);
     }
-    
+
     /**
      * Generate random password
      * @return string
@@ -1362,7 +1256,7 @@ class GemsEscort extends MUtil_Application_Escort
 
         return $pass;
     }
-    
+
     /**
      * Hook 12: Called after an action is dispatched by Zend_Controller_Dispatcher.
      *
@@ -1553,12 +1447,15 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
+        $loader = $this->getLoader();
+        $user   = $loader->getCurrentUser();
+
         // MUtil_Echo::r($request->getParams(), 'params');
         // MUtil_Echo::r($request->getUserParams(), 'userparams');
         // Load the menu. As building the menu can depend on all resources and the request, we do it here.
         //
         // PS: The REQUEST is needed because otherwise the locale for translate is not certain.
-        $this->menu = $this->getLoader()->createMenu($this);
+        $this->menu = $loader->createMenu($this);
         $this->_updateVariable('menu');
 
         /**
@@ -1566,7 +1463,7 @@ class GemsEscort extends MUtil_Application_Escort
          * directory with the name lock.txt
          */
         if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
-            if ($this->session->user_id && $this->session->user_role !== 'master') {
+            if ($user->isActive() && $user->getRole() !== 'master') {
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
@@ -1574,6 +1471,7 @@ class GemsEscort extends MUtil_Application_Escort
                         401,
                         $this->_('System is in maintenance mode'));
                 }
+                $user->unsetAsCurrentUser();
             } else {
                 $this->addMessage($this->_('System is in maintenance mode'));
                 MUtil_Echo::r($this->_('System is in maintenance mode'));
@@ -1583,12 +1481,7 @@ class GemsEscort extends MUtil_Application_Escort
         // Gems does not use index/index
         if (('index' == $request->getControllerName()) && ('index' == $request->getActionName())) {
             // Instead Gems routes to the first available menu item when this is the request target
-            if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
-                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-                $redirector->gotoRoute($menuItem->toRouteUrl($request));
-                //$menuItem->applyToRequest($request);
-                //$this->setControllerDirectory($request); // Maybe the controller directory to be used changed
-            } else {
+            if (! $user->gotoStartPage($this->menu, $request)) {
                 $this->setError(
                     $this->_('No access to site.'),
                     401,

@@ -61,9 +61,22 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var Gems_Loader
      */
     protected $loader;
+
+    /**
+     * Field name in respondent model containing the login id.
+     *
+     * @var string
+     */
+    public $respondentLoginIdField  = 'gr2o_patient_nr';
 
     /**
      * @var Zend_Translate
@@ -71,9 +84,74 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     protected $translate;
 
     /**
+     * The length of a user id.
+     *
+     * @var int
+     */
+    protected $userIdLen = 8;
+
+    /**
      * @var Gems_Util
      */
     protected $util;
+
+    /**
+     * Link the model to the user_logins table.
+     *
+     * @param Gems_Model_JoinModel $model
+     * @param string $loginField Field that links to login name field.
+     * @param string $organizationField Field that links to the organization field.
+     */
+    protected function addUserLogin(Gems_Model_JoinModel $model, $loginField, $organizationField)
+    {
+        $model->addTable('gems__user_logins', array($loginField => 'gul_login', $organizationField => 'gul_id_organization'), 'gul');
+    }
+
+    /**
+     * Link the model to the user_passwords table.
+     *
+     * @param Gems_Model_JoinModel $model
+     */
+    public static function addUserPassword(Gems_Model_JoinModel $model)
+    {
+        $model->addLeftTable('gems__user_passwords', array('gul_id_user' => 'gup_id_user'), 'gup');
+    }
+
+    /**
+     * Create a Gems project wide unique user id
+     *
+     * @param string $name
+     * @param mixed $value
+     * @param boolean $isNew
+     * @return int
+     */
+    public function createGemsUserId($name, $value, $isNew)
+    {
+        if ($isNew || (null === $value)) {
+            $creationTime = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+            do {
+                $out = mt_rand(1, 9);
+                for ($i = 1; $i < $this->userIdLen; $i++) {
+                    $out .= mt_rand(0, 9);
+                }
+                // Make it a number
+                $out = intval($out);
+
+                try {
+                    if (0 === $this->db->insert('gems__user_ids', array('gui_id_user' => $out, 'gui_created' => $creationTime))) {
+                        $out = null;
+                    }
+                } catch (Zend_Db_Exception $e) {
+                    $out = null;
+                }
+            } while (null === $out);
+
+            return $out;
+        }
+
+        return $value;
+    }
 
     /**
      * Load project specific model or general Gems model otherwise
@@ -82,7 +160,12 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      */
     public function createRespondentModel()
     {
-        return $this->_loadClass('RespondentModel', true);
+        $model = $this->_loadClass('RespondentModel', true);
+
+        // $this->addUserLogin($model, $this->respondentLoginIdField, 'gr2o_id_organization');
+        $this->setAsGemsUserId($model, 'grs_id_user');
+
+        return $model;
     }
 
     /**
@@ -101,6 +184,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         }
 
         $model      = $this->createRespondentModel();
+
         $translated = $this->util->getTranslated();
 
         $model->setIfExists('gr2o_patient_nr',    'label', $this->translate->_('Respondent nr'));
@@ -131,6 +215,31 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $model->setIfExists('grs_iso_lang',       'default', 'nl');
 
         return $model;
+    }
+
+    public function getStaffModel()
+    {
+        $model = new Gems_Model_JoinModel('staff', 'gems__staff', 'gsf');
+
+        $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
+        $this->setAsGemsUserId($model, 'gsf_id_user');
+
+        return $model;
+    }
+
+    /**
+     * Set a field in this model as a gems unique user id
+     *
+     * @param MUtil_Model_DatabaseModelAbstract $model
+     * @param string $idField Field that uses global id.
+     */
+    public function setAsGemsUserId(MUtil_Model_DatabaseModelAbstract $model, $idField)
+    {
+        // Make sure field is added to save when not there
+        $model->setAutoSave($idField);
+
+        // Make sure the fields get a userid when empty
+        $model->setOnSave($idField, array($this, 'createGemsUserId'));
     }
 
     /**

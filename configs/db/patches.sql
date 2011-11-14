@@ -218,50 +218,91 @@ ALTER TABLE `gems__round_periods` CHANGE `grp_valid_after_unit` `grp_valid_after
     CHANGE `grp_valid_for_unit` `grp_valid_for_unit` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'D';
 
 -- PATCH: New user login structure
-CREATE TABLE if not exists gems__users (
-        gsu_id_user          bigint unsigned not null,
-        gsu_id_organization  bigint not null references gems__organizations (gor_id_organization),
+CREATE TABLE if not exists gems__user_ids (
+        gui_id_user          bigint unsigned not null,
 
-        gsu_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gui_created          timestamp not null,
 
-        gsu_user_class       varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gsu_active           boolean not null default 1,
-
-        -- Common fields for standard 'store password in Gems' logins
-        -- Not every gsu_user_class will use them
-        gsu_password         varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-    	gsu_failed_logins    int(11) unsigned not null default 0,
-        gsu_last_failed      timestamp null,
-        gsu_reset_key        varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gsu_reset_requested  timestamp null,
-        gsu_reset_required   boolean not null default 0,
-
-        gsu_changed          timestamp not null default current_timestamp on update current_timestamp,
-        gsu_changed_by       bigint unsigned not null,
-        gsu_created          timestamp not null,
-        gsu_created_by       bigint unsigned not null,
-
-        PRIMARY KEY (gsu_id_user, gsu_id_organization),
-        UNIQUE (gsu_login, gsu_id_organization)
+        PRIMARY KEY (gui_id_user)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
-INSERT INTO gems__users (gsu_id_user, gsu_login, gsu_id_organization, gsu_user_class, gsu_active,
-                gsu_password, gsu_failed_logins, gsu_last_failed, gsu_reset_key, gsu_reset_requested, gsu_reset_required,
-                gsu_changed, gsu_changed_by, gsu_created, gsu_created_by)
-    SELECT gsf_id_user, gsf_login, gsf_id_organization, 'StaffUser', gsf_active,
-                NULL, gsf_failed_logins, gsf_last_failed, gsf_reset_key, 0, 1,
+CREATE TABLE if not exists gems__user_logins (
+        gul_id_user          bigint unsigned not null auto_increment,
+
+        gul_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gul_id_organization  bigint not null references gems__organizations (gor_id_organization),
+
+        gul_user_class       varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NoLogin',
+        gul_can_login        boolean not null default 1,
+
+        gul_changed          timestamp not null default current_timestamp on update current_timestamp,
+        gul_changed_by       bigint unsigned not null,
+        gul_created          timestamp not null,
+        gul_created_by       bigint unsigned not null,
+
+        PRIMARY KEY (gul_id_user),
+        UNIQUE (gul_login, gul_id_organization)
+    )
+    ENGINE=InnoDB
+    AUTO_INCREMENT = 10001
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE if not exists gems__user_login_attemps (
+        gula_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gula_id_organization  bigint not null references gems__organizations (gor_id_organization),
+
+    	gula_failed_logins    int(11) unsigned not null default 0,
+        gula_last_failed      timestamp null,
+
+        PRIMARY KEY (gula_login, gula_id_organization)
+    )
+    ENGINE=InnoDB
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+CREATE TABLE if not exists gems__user_passwords (
+        gup_id_user          bigint unsigned not null references gems__user_logins (gul_id_user),
+
+        gup_password         varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gup_reset_key        varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gup_reset_requested  timestamp null,
+        gup_reset_required   boolean not null default 0,
+
+        gup_changed          timestamp not null default current_timestamp on update current_timestamp,
+        gup_changed_by       bigint unsigned not null,
+        gup_created          timestamp not null,
+        gup_created_by       bigint unsigned not null,
+
+        PRIMARY KEY (gup_id_user)
+    )
+    ENGINE=InnoDB
+    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+INSERT INTO gems__user_logins (gul_login, gul_id_organization, gul_user_class,
+                gul_can_login,
+                gul_changed, gul_changed_by, gul_created, gul_created_by)
+    SELECT gsf_login, gsf_id_organization, 'OldStaffUser',
+                gsf_active,
                 gsf_changed, gsf_changed_by, gsf_created, gsf_created_by
-        FROM gems__staff;
+        FROM gems__staff WHERE gsf_login IS NOT NULL AND
+            gsf_id_organization IS NOT NULL AND
+            gsf_id_organization != 0 AND
+            (gsf_login, gsf_id_organization) NOT IN (SELECT gul_login, gul_id_organization FROM gems__user_logins);
 
 ALTER TABLE `gems__staff` CHANGE `gsf_id_user` `gsf_id_user` BIGINT( 20 ) UNSIGNED NOT NULL;
 
-ALTER TABLE `gems__staff` DROP INDEX `gsf_login`;
+ALTER TABLE `gems__staff` CHANGE `gsf_password` `gsf_password` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
-ALTER TABLE `gems__staff` CHANGE `gsf_login` `gsf_login` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-    CHANGE `gsf_password` `gsf_password` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-    CHANGE `gsf_id_organization` `gsf_id_organization` BIGINT( 20 ) NULL DEFAULT NULL;
+ALTER TABLE `gems__staff` ADD UNIQUE `gesf_login` (`gsf_login`, `gsf_id_organization`);
+
+ALTER TABLE gems__organizations ADD gor_style varchar(15) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems' AFTER gor_signature;
+
+INSERT INTO gems__user_ids (gui_id_user, gui_created)
+    SELECT gsf_id_user, gsf_created FROM gems__staff WHERE gsf_id_user NOT IN (SELECT gui_id_user FROM gems__user_ids);
+
+INSERT INTO gems__user_ids (gui_id_user, gui_created)
+    SELECT grs_id_user, grs_created FROM gems__respondents WHERE grs_id_user NOT IN (SELECT gui_id_user FROM gems__user_ids);
 
 -- PATCH: Extra information for track fields
 ALTER TABLE gems__track_fields ADD gtf_field_code varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gtf_field_name,

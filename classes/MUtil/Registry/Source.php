@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -97,14 +97,14 @@ class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
                 }
             }
         }
-        
+
         return false;
     }
 
     /**
      * Adds an extra source container to this object.
-     * 
-     * @param mixed $container
+     *
+     * @param mixed $container Zend_Config, array or ArrayObject
      * @param string $name An optional name to identify the container
      * @return MUtil_Registry_Source
      */
@@ -156,7 +156,7 @@ class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
     public function removeRegistryContainer($name)
     {
         unset($this->_containers[$name]);
-        
+
         return $this;
     }
 }

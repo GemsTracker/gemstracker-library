@@ -26,17 +26,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Michiel Rook <michiel@touchdownconsulting.nl>
- * @package Gems
+ *
+ * @author     Michiel Rook <michiel@touchdownconsulting.nl>
+ * @package    Gems
  * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Performs bulk-mail action, can be called from a cronjob
  *
- * @author Michiel Rook <michiel@touchdownconsulting.nl>
- * @package Gems
+ * @package    Gems
  * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
  */
 class Gems_Default_CronAction extends MUtil_Controller_Action
 {
@@ -66,6 +72,12 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
      * @var GemsEscort
      */
     public $escort;
+
+    /**
+     *
+     * @var Gems_Loader
+     */
+    public $loader;
 
     /**
      *
@@ -125,7 +137,7 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
      */
     protected function getUserLogin($userId)
     {
-        return $this->db->fetchOne("SELECT gsu_login FROM gems__users WHERE gsu_id_user = ?", $userId);
+        return $this->db->fetchOne("SELECT gsf_login FROM gems__staff WHERE gsf_id_user = ?", $userId);
     }
 
     public function indexAction()
@@ -141,112 +153,78 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
 
     public function mailJob()
     {
-        // Test: update `gems__tokens` set `gto_mail_sent_date` = null where `gto_mail_sent_date` > '2011-10-23'
-
-        $currentUser = isset($this->session->user_login) ? $this->session->user_login : null;
+        $userLoader = $this->loader->getUserLoader();
+        $startUser  = $userLoader->getCurrentUser();
+        $user       = $startUser;
 
         $model  = $this->loader->getTracker()->getTokenModel();
         $mailer = new Gems_Email_TemplateMailer($this->escort);
+
         // $mailer->setDefaultTransport(new MUtil_Mail_Transport_EchoLog());
 
         $jobs = $this->db->fetchAll("SELECT * FROM gems__mail_jobs WHERE gmj_active = 1");
 
         if ($jobs) {
             foreach ($jobs as $job) {
-                $this->escort->loadLoginInfo($this->getUserLogin($job['gmj_id_user_as']));
-
-                // Set up filter
-                $filter = $this->defaultFilter;
-                if ($job['gmj_filter_mode'] == 'R') {
-                    $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
-                } else {
-                    $filter['gto_mail_sent_date'] = NULL;
-                }
-                if ($job['gmj_id_organization']) {
-                    $filter['gto_id_organization'] = $job['gmj_id_organization'];
-                }
-                if ($job['gmj_id_track']) {
-                    $filter['gto_id_track'] = $job['gmj_id_track'];
-                }
-                if ($job['gmj_id_survey']) {
-                    $filter['gto_id_survey'] = $job['gmj_id_survey'];
+                if ($user->getUserId() != $job['gmj_id_user_as']) {
+                    $user = $userLoader->getUserByStaffId($job['gmj_id_user_as']);
                 }
 
-                $tokensData = $model->load($filter);
-
-                if (count($tokensData)) {
-                    $mailer->setMethod($job['gmj_process_method']);
-                    if ($job['gmj_from_method'] == 'F') {
-                        $mailer->setFrom($job['gmj_from_fixed']);
-                    } else {
-                        $mailer->setFrom($job['gmj_from_method']);
+                if ($user->isActive()) {
+                    if (! $user->isCurrentUser()) {
+                        $user->setAsCurrentUser();
                     }
 
-                    $templateData = $this->getTemplate($job['gmj_id_message']);
-                    $mailer->setSubject($templateData['gmt_subject']);
-                    $mailer->setBody($templateData['gmt_body']);
+                    // Set up filter
+                    $filter = $this->defaultFilter;
+                    if ($job['gmj_filter_mode'] == 'R') {
+                        $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
+                    } else {
+                        $filter['gto_mail_sent_date'] = NULL;
+                    }
+                    if ($job['gmj_id_organization']) {
+                        $filter['gto_id_organization'] = $job['gmj_id_organization'];
+                    }
+                    if ($job['gmj_id_track']) {
+                        $filter['gto_id_track'] = $job['gmj_id_track'];
+                    }
+                    if ($job['gmj_id_survey']) {
+                        $filter['gto_id_survey'] = $job['gmj_id_survey'];
+                    }
 
-                    $mailer->setTokens(MUtil_Ra::column('gto_id_token', $tokensData));
-                    $mailer->process($tokensData);
+                    $tokensData = $model->load($filter);
+
+                    if (count($tokensData)) {
+                        $mailer->setMethod($job['gmj_process_method']);
+                        if ($job['gmj_from_method'] == 'F') {
+                            $mailer->setFrom($job['gmj_from_fixed']);
+                        } else {
+                            $mailer->setFrom($job['gmj_from_method']);
+                        }
+
+                        $templateData = $this->getTemplate($job['gmj_id_message']);
+                        $mailer->setSubject($templateData['gmt_subject']);
+                        $mailer->setBody($templateData['gmt_body']);
+
+                        $mailer->setTokens(MUtil_Ra::column('gto_id_token', $tokensData));
+                        $mailer->process($tokensData);
+                    }
                 }
-
-                Gems_Auth::getInstance()->clearIdentity();
-                $this->escort->session->unsetAll();
             }
         }
 
         $msg = $mailer->getMessages();
         if (! $msg) {
-            $msg[] = $this->_('No mails sent');
+            $msg[] = $this->_('No mails sent.');
+        }
+        if ($mailer->bounceCheck()) {
+            array_unshift($msg, $this->_('On this test system all mail will be delivered to the from address.'));
         }
 
-        $this->html->append($msg);
+        $this->addMessage($msg);
 
-        if ($currentUser) {
-            $this->escort->loadLoginInfo($currentUser);
-        } else {
-            $this->escort->afterLogout();
+        if (! $startUser->isCurrentUser()) {
+            $startUser->setAsCurrentUser();
         }
-
-        /*
-        if (isset($this->project->email['automatic'])) {
-            $batches = $this->project->email['automatic'];
-            $numBatches = count($batches['mode']);
-
-            for ($i = 0; $i < $numBatches; $i++) {
-                $this->_organizationId = $batches['organization'][$i];
-
-                if (isset($batches['days'][$i])) {
-                    $this->_intervalDays = $batches['days'][$i];
-                }
-
-                $this->escort->loadLoginInfo($batches['user'][$i]);
-
-                $model->setFilter($this->getFilter($batches['mode'][$i]));
-
-                $tokensData = $model->load();
-
-                if (count($tokensData)) {
-                    $tokens = array();
-
-                    foreach ($tokensData as $tokenData) {
-                        $tokens[] = $tokenData['gto_id_token'];
-                    }
-
-                    $templateData = $this->getTemplate($batches['template'][$i]);
-                    $mailer->setSubject($templateData['gmt_subject']);
-                    $mailer->setBody($templateData['gmt_body']);
-                    $mailer->setMethod($batches['method'][$i]);
-                    $mailer->setFrom($batches['from'][$i]);
-                    $mailer->setTokens($tokens);
-
-                    $mailer->process($tokensData);
-                }
-
-                Gems_Auth::getInstance()->clearIdentity();
-                $this->escort->session->unsetAll();
-            }
-        }
-        // */
     }
 }

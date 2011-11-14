@@ -440,9 +440,10 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
                 } else {
                     // Perform insert
+                    // MUtil_Echo::r($returnValues);
                     $newKeyValues = $table->insert($returnValues);
                     $this->addChanged();
-                    // MUtil_Echo::r((array) $newKeyValues);
+                    // MUtil_Echo::rs($newKeyValues, $primaryKeys);
 
                     // Composite key returned.
                     if (is_array($newKeyValues)) {
@@ -459,6 +460,8 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                                 return $this->_updateCopyKeys($primaryKeys, $returnValues);
                             }
                         }
+                        // But if all the key values were already filled, make sure the new values are returned.
+                        return $this->_updateCopyKeys($primaryKeys, $returnValues);
                     }
                 }
             }
@@ -595,12 +598,17 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
     public function formatSaveDate($name, $value, $new = false)
     {
-        if ($name) {
+        if ($name && (! ((null === $value) || ($value instanceof Zend_Db_Expr)))) {
             if ($saveFormat = $this->get($name, 'storageFormat')) {
 
-                $displayFormat = $this->get($name, 'dateFormat');
+                if ($value instanceof Zend_Date) {
+                    return $value->toString($saveFormat);
+                    
+                } else {
+                    $displayFormat = $this->get($name, 'dateFormat');
 
-                return MUtil_Date::format($value, $saveFormat, $displayFormat);
+                    return MUtil_Date::format($value, $saveFormat, $displayFormat);
+                }
             }
         }
 

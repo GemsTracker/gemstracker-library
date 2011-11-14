@@ -123,6 +123,17 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @return Gems_User_User
+     */
+    public function getCurrentUser()
+    {
+        $loader = $this->getUserLoader();
+
+        return $loader->getCurrentUser();
+    }
+
+    /**
+     *
      * @return gems_Events
      */
     public function getEvents()
@@ -197,8 +208,8 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     /**
      *
      * @param string $login_name
-     * @param int $organization Only used when more than one organization uses this $login_name
-     * @return Gems_User_UserAbstract
+     * @param int $organization
+     * @return Gems_User_User
      */
     public function getUser($login_name, $organization)
     {
@@ -211,7 +222,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      *
      * @return Gems_User_UserLoader
      */
-    protected function getUserLoader()
+    public function getUserLoader()
     {
         return $this->_getClass('userLoader', 'User_UserLoader');
     }

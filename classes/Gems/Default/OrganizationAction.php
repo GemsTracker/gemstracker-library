@@ -50,7 +50,7 @@ class Gems_Default_OrganizationAction  extends Gems_Controller_BrowseEditAction
         $url        = base64_decode($request->getParam('current_uri'));
         $oldOrgId   = $this->session->user_organization_id;
 
-        $allowedOrganizations = $this->escort->getAllowedOrganizations();
+        $allowedOrganizations = $this->loader->getCurrentUser()->getAllowedOrganizations();
         if ($orgId = array_search($org, $allowedOrganizations)) {
             $this->session->user_organization_id = $orgId;
             $this->session->user_organization_name = $allowedOrganizations[$orgId];

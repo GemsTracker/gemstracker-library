@@ -316,26 +316,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->html[] = $form;
     }
 
-    public function getPhysicians()
-    {
-        $session = new Zend_Session_Namespace('Pulse_' . __FILE__);
-
-        if (! isset($session->physicians)) {
-            $organizationId = $this->escort->getCurrentOrganization();
-
-            $values = $this->db->fetchPairs("
-                SELECT gsf_id_user,
-                    CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name
-                    FROM (gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user) INNER JOIN gems__groups ON gsf_id_primary_group = ggp_id_group
-                    WHERE gsu_active=1 AND gsu_id_organization = ? AND ggp_role = 'physician'
-                    ORDER BY 2", $organizationId);
-
-            $session->physicians = $values;
-        }
-
-        return $this->util->getTranslated()->getEmptyDropdownArray() + $session->physicians;
-    }
-
     public function getMenuParameter($name, $default)
     {
         switch ($name) {

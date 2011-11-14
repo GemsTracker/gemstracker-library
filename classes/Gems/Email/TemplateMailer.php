@@ -516,7 +516,7 @@ class Gems_Email_TemplateMailer
             $cdata['grco_address']      = substr($to, 0, 120);
             $cdata['grco_sender']       = substr($from, 0, 120);
 
-            $cdata['grco_id_message']   = $this->_templateId;
+            $cdata['grco_id_message']   = $this->_templateId ? $this->_templateId : null;
 
             $cdata['grco_changed']      = $this->_changeDate;
             $cdata['grco_changed_by']   = $uid;

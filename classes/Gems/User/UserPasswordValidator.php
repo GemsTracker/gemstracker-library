@@ -42,30 +42,77 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since version 1.5
  */
-class Gems_User_StaffUser extends Gems_User_DatabaseUserAbstract
+class Gems_User_UserPasswordValidator implements Zend_Validate_Interface
 {
     /**
-     * Creates the initial feed SQL select statement
      *
-     * @return Zend_Db_Select
+     * @var Gems_User_User
      */
-    public function getSqlSelect()
-    {
-        $select = new Zend_Db_Select($this->db);
-        $select->from('gems__users')
-               ->join('gems__staff', 'gsu_login = gsf_id_user')
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group')
-               ->join('gems__organizations', 'gsu_id_organization = gor_id_organization')
-               ->where('ggp_group_active = 1')
-               ->where('gor_active = 1')
-               ->where('gsu_active = 1')
-               ->where('gsu_login = ?', $this->getLoginName())
-               ->limit(1);
+    private $_user;
 
-        return $select;
+    /**
+     *
+     * @var Zend_Translate
+     */
+    private $_translate;
+
+    /**
+     *
+     * @var boolean
+     */
+    private $_valid = false;
+
+    /**
+     *
+     * @param Gems_User_User $user The user to check
+     * @param Zend_Translate $translate Optional translator
+     */
+    public function __construct(Gems_User_User $user, Zend_Translate $translate = null)
+    {
+        $this->_user = $user;
+        $this->_translate = $translate ? $translate : new MUtil_Translate_Adapter_Potemkin();
     }
 
+    /**
+     * Returns true if and only if $value meets the validation requirements
+     *
+     * If $value fails validation, then this method returns false, and
+     * getMessages() will return an array of messages that explain why the
+     * validation failed.
+     *
+     * @param  mixed $value
+     * @param  mixed $content
+     * @return boolean
+     * @throws Zend_Validate_Exception If validation of $value is impossible
+     */
+    public function isValid($value, $context = array())
+    {
+        $this->_valid  = $this->_user->checkPassword($value);
 
+        return $this->_valid;
+    }
+
+    /**
+     * Returns an array of messages that explain why the most recent isValid()
+     * call returned false. The array keys are validation failure message identifiers,
+     * and the array values are the corresponding human-readable message strings.
+     *
+     * If isValid() was never called or if the most recent isValid() call
+     * returned true, then this method returns an empty array.
+     *
+     * @return array
+     */
+    public function getMessages()
+    {
+        if ($this->_valid) {
+            return array();
+
+        } else {
+            return array($this->_translate->_('Wrong password.'));
+        }
+
+
+    }
 }

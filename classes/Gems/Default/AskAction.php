@@ -82,13 +82,14 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                         /***************
                          * Get the url *
                          ***************/
-                        $url = $token->getUrl($language, $this->session->user_id ? $this->session->user_id : $respId);
+                        $user = $this->loader->getCurrentUser();
+                        $url = $token->getUrl($language, $user->getUserId() ? $user->getUserId() : $respId);
 
                         /************************
                          * Optional user logout *
                          ************************/
-                        if (isset($this->session->user_logout) && $this->session->user_logout) {
-                            $this->escort->afterLogout();
+                        if ($user->isLogoutOnSurvey()) {
+                            $user->unsetAsCurrentUser();
                         }
 
                         /***********************************

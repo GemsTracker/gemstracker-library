@@ -105,7 +105,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if (! $data) {
             $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
-                    FROM gems__users INNER JOIN gems__staff ON gsu_id_user = gsf_id_user WHERE gsu_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
+                    FROM gems__staff WHERE gsf_active = 1 ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
         }
 
         return $data;

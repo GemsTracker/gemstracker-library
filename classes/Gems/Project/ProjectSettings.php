@@ -47,6 +47,14 @@
 class Gems_Project_ProjectSettings extends ArrayObject
 {
     /**
+     * The minimum length for the password of a super admin
+     * on a production server.
+     *
+     * @var int
+     */
+    protected $minimumSuperPasswordLength = 10;
+
+    /**
      * Array of required keys. Give a string value for root keys
      * or name => array() values for required subs keys.
      *
@@ -123,11 +131,77 @@ class Gems_Project_ProjectSettings extends ArrayObject
             throw new Gems_Exception_Coding($error);
         }
 
+        $superPassword = $this->getSuperAdminPassword();
+        if ((APPLICATION_ENV === 'production') && $this->getSuperAdminName() && $superPassword) {
+            if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
+                $error = sprintf("Project setting 'admin.pwd' is shorter than %d characters. That is not allowed.", $this->minimumSuperPasswordLength);
+                throw new Gems_Exception_Coding($error);
+            }
+        }
+
         if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
             $this->offsetSet('name', GEMS_PROJECT_NAME);
         }
 
         $this->offsetSet('multiLocale', isset($project->locales) && (count($project->locales) > 1));
+    }
+
+    /**
+     * Checks the super admin password, if it exists
+     *
+     * @param string $password
+     * @return boolean True if the password is correct.
+     */
+    public function checkSuperAdminPassword($password)
+    {
+        return $password && ($password == $this->getSuperAdminPassword($password));
+    }
+
+    /**
+     * Returns the factor used to delay account reloading.
+     *
+     * @return int
+     */
+    public function getAccountDelayFactor()
+    {
+        if (isset($this->account['delayFactor'])) {
+            return intval($this->account['delayFactor']);
+        } else {
+            return 4;
+        }
+    }
+
+    /**
+     * Returns the public name of this project.
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->offsetGet('name');
+    }
+
+    /**
+     * Returns the super admin name, if any
+     *
+     * @return string
+     */
+    public function getSuperAdminName()
+    {
+        if (isset($this->admin['user'])) {
+            return $this->admin['user'];
+        }
+    }
+
+    /**
+     * Returns the super admin password, if it exists
+     *
+     * @return string
+     */
+    protected function getSuperAdminPassword()
+    {
+        if (isset($this->admin['pwd'])) {
+            return $this->admin['pwd'];
+        }
     }
 
     /**
@@ -141,9 +215,26 @@ class Gems_Project_ProjectSettings extends ArrayObject
         $salt = $this->offsetExists('salt') ? $this->offsetGet('salt') : '';
 
         if (false === strpos($salt, '%s')) {
-            return md5($salt . $value, false);
+            $salted = $salt . $value;
         } else {
-            return md5(sprintf($salt, $value), false);
+            $salted = sprintf($salt, $value);
         }
+
+        // MUtil_Echo::track($value, md5($salted));
+
+        return md5($salted, false);
+    }
+
+    /**
+     * Returns a salted hash on the
+     *
+     * @param string $name Fieldname
+     * @param string $value The value to hash
+     * @param string $isNew True when new
+     * @return string The salted hash as a 32-character hexadecimal number.
+     */
+    public function getValueHashForModel($name, $value, $isNew = false)
+    {
+        return $this->getValueHash($value);
     }
 }

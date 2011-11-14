@@ -100,14 +100,18 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date
+     * @param Zend_Date $date Date or now
      * @param Zend_Locale $locale optional (not used)
      * @return type
      */
-    public function diffSeconds(Zend_Date $date, $locale = null)
+    public function diffSeconds(Zend_Date $date = null, $locale = null)
     {
         $val1 = $this->getUnixTimestamp();
-        $val2 = $date->getUnixTimestamp();
+        if (null == $date) {
+            $val2 = time();
+        } else {
+            $val2 = $date->getUnixTimestamp();
+        }
 
         return $val1 - $val2;
     }

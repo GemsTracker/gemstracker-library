@@ -1,5 +1,5 @@
 
--- Table containing the users that are allowed to login
+-- Support table for generating unique staff/respondent id's
 --
 CREATE TABLE if not exists gems__user_ids (
         gui_id_user          bigint unsigned not null,

@@ -594,7 +594,7 @@ class MUtil_Model_FormBridge
             self::DISPLAY_OPTIONS, self::TAB_OPTIONS);
 
         if (method_exists($this->form, 'addTab')) {
-            return $this->form->addTab($name, $options['value']);
+            return $this->form->addTab($name, isset($options['value']) ? $options['value'] : null);
         } else {
             $element = new MUtil_Form_Element_Tab($name, $options);
             $this->form->addElement($element);

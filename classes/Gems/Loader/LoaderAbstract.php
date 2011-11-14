@@ -84,7 +84,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
     /**
      *
-     * @param type $container A container acting as source fro MUtil_Registry_Source
+     * @param mixed $container A container acting as source for MUtil_Registry_Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)
@@ -115,6 +115,14 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         throw new Gems_Exception_Coding("Unknown property '$name' requested.");
     }
 
+    /**
+     * Returns $this->$name, creating the item if it does not yet exist.
+     *
+     * @param string $name The $name of the variable to store this object in.
+     * @param string $className Class name or null if the same as $name, prepending $this->_dirs.
+     * @param array $arguments Class initialization arguments.
+     * @return mixed Instance of $className
+     */
     protected function _getClass($name, $className = null, array $arguments = array())
     {
         if (! isset($this->$name)) {
@@ -127,6 +135,18 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         return $this->$name;
     }
 
+    /**
+     * Create or loads the class. When only loading, this function returns a StaticCall object that
+     * can be invoked lazely.
+     *
+     * @see MUtil_Lazy_StaticCall
+     * @see MUtil_Registry_TargetInterface
+     *
+     * @param string $name The class name, minus the part in $this->_dirs.
+     * @param boolean $create Create the object, or only when an MUtil_Registry_TargetInterface instance.
+     * @param array $arguments Class initialization arguments.
+     * @return mixed A class instance or a MUtil_Lazy_StaticCall object
+     */
     protected function _loadClass($name, $create = false, array $arguments = array())
     {
         // echo $name . ($create ? ' create' : ' not created') . "<br/>\n";
@@ -150,6 +170,15 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         //print_r($this->_dirs);
     }
 
+    /**
+     * Try the actual loading of the class.
+     *
+     * @param string $filepath The full path to the class
+     * @param string $classname The full class name.
+     * @param boolean $create Create the object, or only when an MUtil_Registry_TargetInterface instance.
+     * @param array $arguments Class initialization arguments.
+     * @return mixed Null or object of type $classname or MUtil_Lazy_StaticCall
+     */
     private function _loadClassPath($filepath, $classname, $create, array $arguments)
     {
         // echo '_loadClassPath: ' . $this->cascade . '-' . $classname . '-' . ($create ? 1 : 0) . "<br/>\n";

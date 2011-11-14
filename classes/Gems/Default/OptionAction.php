@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,60 +25,52 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  *
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package Gems
+ * @package    Gems
  * @subpackage Default
- */
-
-/**
- *
- * @author Matijs de Jong
- * @package Gems
- * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.1
  */
 class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
 {
     public $autoFilter = false;
 
     /**
-     * Adds elements from the model to the bridge that creates the form.
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
+     * @var Gems_Project_ProjectSettings
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        $bridge->addHidden(   'gsu_id_user');
-        $bridge->addHidden(   'gsu_id_organization');
-        $bridge->addHidden(   'gsf_id_user');
-        $bridge->addExhibitor('gsu_login', array('size' => 15, 'minlength' => 4));
-        $bridge->addText(     'gsf_first_name');
-        $bridge->addText(     'gsf_surname_prefix');
-        $bridge->addText(     'gsf_last_name');
-        $bridge->addText(     'gsf_email', array('size' => 30));
+    public $project;
 
-        $bridge->addRadio(    'gsf_gender', 'separator', '');
-
-        $bridge->addSelect(   'gsf_iso_lang', array('label' => $this->_('Language'), 'multiOptions' => $this->util->getLocalized()->getLanguages()));
-    }
-
+    /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
     public function afterSave(array $data, $isNew)
     {
-        $this->escort->loadLoginInfo($data['gsu_login']);
+        // Reload the current user data
+        $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization']);
     }
 
+    /**
+     * Allow a user to change his / her password.
+     */
     public function changePasswordAction()
     {
         /*************
@@ -87,20 +78,31 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
          *************/
         $form = $this->createForm();
 
-        $sql = "SELECT CASE WHEN gsu_password IS NULL THEN 0 ELSE 1 END FROM gems__users WHERE gsu_id_user = ? AND gsu_id_organization = ?";
-        if ($this->db->fetchOne($sql, array($this->session->user_id, $this->session->user_organization_id))) {
-            // Veld current password
+        $user = $this->loader->getCurrentUser();
+
+        if (! $user->canSetPassword()) {
+            $this->addMessage($this->_('You are not allowed to change your password.'));
+            return;
+        }
+
+        if ($user->isPasswordResetRequired()) {
+            $this->menu->setVisible(false);
+        } elseif ($user->hasPassword()) {
+            // Field current password
+            //
+            // This is only used when the password is already set, which may not always be the case
+            // e.g. when using embedded login in Pulse.
             $element = new Zend_Form_Element_Password('old_password');
             $element->setLabel($this->_('Current password'));
             $element->setAttrib('size', 10);
             $element->setAttrib('maxlength', 20);
             $element->setRenderPassword(true);
             $element->setRequired(true);
-            $element->addValidator(new Gems_Validate_GemsPasswordUsername($this->session->user_login, 'old_password', $this->db));
+            $element->addValidator(new Gems_User_UserPasswordValidator($user, $this->translate));
             $form->addElement($element);
         }
 
-        // Veld new password
+        // Field new password
         $element = new Zend_Form_Element_Password('new_password');
         $element->setLabel($this->_('New password'));
         $element->setAttrib('size', 10);
@@ -111,7 +113,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $element->addValidator(new MUtil_Validate_IsConfirmed('repeat_password', $this->_('Repeat password')));
         $form->addElement($element);
 
-        // Veld repeat password
+        // Field repeat password
         $element = new Zend_Form_Element_Password('repeat_password');
         $element->setLabel($this->_('Repeat password'));
         $element->setAttrib('size', 10);
@@ -130,21 +132,10 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
          * Process form *
          ****************/
         if ($this->_request->isPost() && $form->isValid($_POST)) {
+            $user->setPassword($_POST['new_password']);
 
-            $data['gsu_id_user']         = $this->session->user_id;
-            $data['gsu_id_organization'] = $this->session->user_organization_id;
-            $data['gsu_password']        = $this->escort->passwordHash(null, $_POST['new_password']);
-
-            $this->getModel()->save($data);
-
-            // $data = $_POST;
-            // $data['name'] = '';
-            // $data['type'] = $this->_('raw');
-
-            // $results = array();
-            // $this->_runScript($data, $results);
             $this->addMessage($this->_('New password is active.'));
-            $this->afterSaveRoute($this->getRequest());
+            $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
 
         } else {
             if (isset($_POST['old_password'])) {
@@ -162,7 +153,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-        if ($links = $this->createMenuLinks()) {
+        if (! $user->isPasswordResetRequired() && ($links = $this->createMenuLinks())) {
             $table->tf(); // Add empty cell, no label
             $linksCell = $table->tf($links);
         }
@@ -185,23 +176,23 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        $model = new Gems_Model_UserModel('staff', 'gems__staff', array('gsu_id_user' => 'gsf_id_user'), 'gsf');
-        $model->copyKeys();
+        $model = $this->loader->getModels()->getStaffModel();
 
-        $model->set('gsu_login',            'label', $this->_('Login Name'));
-        $model->set('gsf_email',            'label', $this->_('E-Mail'));
-        $model->set('gsf_first_name',       'label', $this->_('First name'));
-        $model->set('gsf_surname_prefix',   'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
-        $model->set('gsf_last_name',        'label', $this->_('Last name'), 'required', true);
-
-        $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
+        $model->set('gsf_login',          'label', $this->_('Login Name'), 'elementClass', 'Exhibitor');
+        $model->set('gsf_email',          'label', $this->_('E-Mail'), 'size', 30);
+        $model->set('gsf_first_name',     'label', $this->_('First name'));
+        $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
+        $model->set('gsf_last_name',      'label', $this->_('Last name'), 'required', true);
+        $model->set('gsf_gender',         'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders(),
+                'elementClass', 'Radio', 'separator', '');
+        $model->set('gsf_iso_lang',       'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
 
         return $model;
     }
 
     public function editAction()
     {
-        $this->getModel()->setFilter(array('gsu_id_user' => $this->session->user_id));
+        $this->getModel()->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
 
         if ($form = $this->processForm()) {
             $this->html->h3(sprintf($this->_('Options'), $this->getTopic()));
@@ -222,7 +213,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         WHERE glac.glac_name = 'index.login'
         ORDER BY glua.glua_created DESC LIMIT 10";
 
-        $activity = $this->db->fetchAll($sql, $this->session->user_id);
+        $activity = $this->db->fetchAll($sql, $this->loader->getCurrentUser()->getUserId());
 
         foreach (array_keys($activity) as $key) {
             $date = new MUtil_Date($activity[$key]['glua_created']);

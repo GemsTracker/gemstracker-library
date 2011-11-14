@@ -42,19 +42,36 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since version 1.5
  */
-interface Gems_User_UserInterface
+class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
 {
     /**
-     * Check that the password is correct for this user.
+     * Checks the password for the specified $login_name and $organization.
      *
-     * @param string $password Unencrypted password
-     * @return boolean
+     * @param string $login_name
+     * @param int $organization
+     * @param string $password
+     * @return boolean True if the password is correct.
      */
-    public function checkPassword($password);
+    public function checkPassword($login_name, $organization, $password)
+    {
+        return false;
+    }
 
-    public function hasPrivilege($privilege);
-
-    public function setAsCurrentUser();
+    /**
+     * Returns a user object, that may be empty if the user is unknown.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return array Of data to fill the user with.
+     */
+    public function getUserData($login_name, $organization)
+    {
+        return array(
+            'user_active'          => false,
+            'user_role'            => 'nologin',
+            'user_organization_id' => 0,
+            );
+    }
 }

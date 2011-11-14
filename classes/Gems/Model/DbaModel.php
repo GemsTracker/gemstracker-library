@@ -132,50 +132,52 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         foreach (array_reverse($this->directories) as $i => $mainDirectory) {
             $location = $this->locations[$i];
 
-            foreach (new DirectoryIterator($mainDirectory) as $directory) {
-                $type = $this->_getType($directory->getFilename());
+            if (is_dir($mainDirectory)) {
+                foreach (new DirectoryIterator($mainDirectory) as $directory) {
+                    $type = $this->_getType($directory->getFilename());
 
-                if ($directory->isDir() && (! $directory->isDot())) {
-                    $path = $directory->getPathname();
+                    if ($directory->isDir() && (! $directory->isDot())) {
+                        $path = $directory->getPathname();
 
-                    foreach (new DirectoryIterator($path) as $file) {
+                        foreach (new DirectoryIterator($path) as $file) {
 
-                        $fileName = strtolower($file->getFilename());
+                            $fileName = strtolower($file->getFilename());
 
-                        if (substr($fileName, -4) == '.sql') {
-                            $fileName = substr($fileName,  0,  -4);
-                            $forder   = $this->_getOrder($fileName); // Changes $fileName
+                            if (substr($fileName, -4) == '.sql') {
+                                $fileName = substr($fileName,  0,  -4);
+                                $forder   = $this->_getOrder($fileName); // Changes $fileName
 
-                            if ($fexists = array_key_exists($fileName, $tables)) {
-                                unset($tables[$fileName]);
-                            } elseif (array_key_exists($fileName, $data)) {
-                                // $fexists is also true when the table was already defined
-                                // in a previous directory
-                                $fexists = $data[$fileName]['exists'];
+                                if ($fexists = array_key_exists($fileName, $tables)) {
+                                    unset($tables[$fileName]);
+                                } elseif (array_key_exists($fileName, $data)) {
+                                    // $fexists is also true when the table was already defined
+                                    // in a previous directory
+                                    $fexists = $data[$fileName]['exists'];
+                                }
+
+                                $fileContent = file_get_contents($file->getPathname());
+                                if ($this->file_encoding) {
+                                    $fileContent = mb_convert_encoding($fileContent, mb_internal_encoding(), $this->file_encoding);
+                                }
+
+                                $data[$fileName] = array(
+                                    'name'        => $fileName,
+                                    'group'       => $this->_getGroupName($fileName),
+                                    'type'        => $type,
+                                    'order'       => $forder,
+                                    'defined'     => true,
+                                    'exists'      => $fexists,
+                                    'state'       => $fexists ? self::STATE_CREATED : self::STATE_DEFINED,
+                                    'path'        => $path,
+                                    'fullPath'    => $file->getPathname(),
+                                    'fileName'    => $file->getFilename(),
+                                    // MUtil_Lazy does not serialize
+                                    // 'script'      => MUtil_Lazy::call('file_get_contents', $file->getPathname()),
+                                    'script'      => $fileContent,
+                                    'lastChanged' => $file->getMTime(),
+                                    'location'    => $location,
+                                    );
                             }
-
-                            $fileContent = file_get_contents($file->getPathname());
-                            if ($this->file_encoding) {
-                                $fileContent = mb_convert_encoding($fileContent, mb_internal_encoding(), $this->file_encoding);
-                            }
-
-                            $data[$fileName] = array(
-                                'name'        => $fileName,
-                                'group'       => $this->_getGroupName($fileName),
-                                'type'        => $type,
-                                'order'       => $forder,
-                                'defined'     => true,
-                                'exists'      => $fexists,
-                                'state'       => $fexists ? self::STATE_CREATED : self::STATE_DEFINED,
-                                'path'        => $path,
-                                'fullPath'    => $file->getPathname(),
-                                'fileName'    => $file->getFilename(),
-                                // MUtil_Lazy does not serialize
-                                // 'script'      => MUtil_Lazy::call('file_get_contents', $file->getPathname()),
-                                'script'      => $fileContent,
-                                'lastChanged' => $file->getMTime(),
-                                'location'    => $location,
-                                );
                         }
                     }
                 }

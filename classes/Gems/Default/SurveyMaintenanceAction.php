@@ -318,7 +318,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
             // Hence the unexpected order of the tables in the JoinModel.
             $model = new Gems_Model_JoinModel('surveys', 'gems__tracks');
             $model->addTable('gems__rounds', array('gro_id_track' => 'gtr_id_track', 'gtr_track_type' => new Zend_Db_Expr("'S'")));
-            $model->addRightTable('gems__surveys', array('gsu_id_survey' => 'gro_id_survey'), 'gsu');
+            $model->addRightTable('gems__surveys', array('gsu_id_survey' => 'gro_id_survey'), 'gus');
             $model->addTable('gems__sources', array('gsu_id_source'=>'gso_id_source'));
             $model->setKeysToTable('gems__surveys');
 
@@ -330,9 +330,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                 $model->addColumn(new Zend_Db_Expr('NULL'), 'create_stand_alone');
             }
         } else {
-            $model = new Gems_Model_JoinModel('surveys', 'gems__surveys', 'gsu');
+            $model = new Gems_Model_JoinModel('surveys', 'gems__surveys', 'gus');
             $model->addTable('gems__sources', array('gsu_id_source'=>'gso_id_source'));
-
         }
 
         $model->addColumn(

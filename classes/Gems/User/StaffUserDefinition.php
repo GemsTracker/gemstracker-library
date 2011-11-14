@@ -1,0 +1,255 @@
+<?php
+
+/**
+ * Copyright (c) 2011, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage User
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ */
+
+/**
+ * A standard, database stored and authenticate staff user as of version 1.5.
+ *
+ * @package    Gems
+ * @subpackage User
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.5
+ */
+class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
+{
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     * Return true if a password reset key can be created.
+     *
+     * Returns the setting for the definition whan no user is passed, otherwise
+     * returns the answer for this specific user.
+     *
+     * @param Gems_User_User $user Optional, the user whose password might change
+     * @return boolean
+     */
+    public function canResetPassword(Gems_User_User $user = null)
+    {
+        if ($user) {
+            // Depends on the user.
+            return $user->hasEmailAddress() && $user->canSetPassword();
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Return true if the password can be set.
+     *
+     * Returns the setting for the definition whan no user is passed, otherwise
+     * returns the answer for this specific user.
+     *
+     * @param Gems_User_User $user Optional, the user whose password might change
+     * @return boolean
+     */
+    public function canSetPassword(Gems_User_User $user = null)
+    {
+        return true;
+    }
+
+    /**
+     * Checks the password for the specified $login_name and $organization.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @param string $password
+     * @return boolean True if the password is correct.
+     */
+    public function checkPassword($login_name, $organization, $password)
+    {
+        $pwd_hash = $this->hashPassword($password);
+
+        $sql = "SELECT gup_password
+                    FROM gems__user_passwords INNER JOIN gems__user_logins ON gup_id_user = gul_id_user
+                    WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?";
+
+        $db_pwd = $this->db->fetchOne($sql, array($login_name, $organization));
+
+        // MUtil_Echo::track($password, $pwd_hash, $db_pwd);
+
+        return ($pwd_hash == $db_pwd);
+    }
+
+    /**
+     * Check whether a reset key is really linked to a user.
+     *
+     * @param Gems_User_User $user The user the key was created for (hopefully).
+     * @param string The key
+     * @return boolean
+     */
+    public function checkPasswordResetKey(Gems_User_User $user, $key)
+    {
+        $model = new MUtil_Model_TableModel('gems__user_passwords');
+
+        $filter['gup_id_user'] = $user->getUserLoginId();
+        $filter[] = 'DATE_ADD(gup_reset_requested, INTERVAL 24 HOUR) >= CURRENT_TIMESTAMP';
+
+        $row = $model->loadFirst($filter);
+        if ($row && $row['gup_reset_key']) {
+            return $key == $row['gup_reset_key'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Return a password reset key
+     *
+     * @param Gems_User_User $user The user to create a key for.
+     * @return string
+     */
+    public function getPasswordResetKey(Gems_User_User $user)
+    {
+        $model = new MUtil_Model_TableModel('gems__user_passwords');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+
+        $data['gup_id_user'] = $user->getUserLoginId();
+
+        $row = $model->loadFirst($data + array('DATE_ADD(gup_reset_requested, INTERVAL 24 HOUR) >= CURRENT_TIMESTAMP'));
+        if ($row && $row['gup_reset_key']) {
+            // Keep using the key.
+            $data['gup_reset_key'] = $row['gup_reset_key'];
+        } else {
+            $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+        }
+        $data['gup_reset_requested'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+        $model->save($data);
+
+        return $data['gup_reset_key'];
+    }
+
+    /**
+     * Returns a user object, that may be empty if the user is unknown.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return array Of data to fill the user with.
+     */
+    public function getUserData($login_name, $organization)
+    {
+        $select = new Zend_Db_Select($this->db);
+        $select->from('gems__user_logins', array('user_login_id' => 'gul_id_user'))
+                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
+                                          'user_login' => 'gsf_login',
+                                          'user_id' => 'gsf_id_user',
+                                          'user_email'=>'gsf_email',
+                                          'user_group'=>'gsf_id_primary_group',
+                                          'user_locale'=>'gsf_iso_lang',
+                                          'user_logout'=>'gsf_logout_on_survey'))
+               ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
+               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
+               ->join('gems__organizations', 'gul_id_organization = gor_id_organization',
+                       array(
+                           'user_organization_id'=>'gor_id_organization',
+                           'user_organization_name'=>'gor_name',
+                           'user_style' => 'gor_style'))
+               ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user',
+                       array('user_password_reset' => 'gup_reset_required'))
+               ->where('ggp_group_active = 1')
+               ->where('gor_active = 1')
+               ->where('gsf_active = 1')
+               ->where('gul_can_login = 1')
+               ->where('gul_login = ?')
+               ->where('gul_id_organization = ?')
+               ->limit(1);
+
+        return $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+    }
+
+    /**
+     * Allow overruling of password hashing.
+     *
+     * @param string $password
+     * @return string
+     */
+    protected function hashPassword($password)
+    {
+        return $this->project->getValueHash($password);
+    }
+
+    /**
+     * Return true if the user has a password.
+     *
+     * @param Gems_User_User $user The user to check
+     * @return boolean
+     */
+    public function hasPassword(Gems_User_User $user)
+    {
+        $sql = "SELECT CASE WHEN gup_password IS NULL THEN 0 ELSE 1 END FROM gems__user_passwords WHERE gup_id_user = ?";
+
+        return (boolean) $this->db->fetchOne($sql, $user->getUserLoginId());
+    }
+
+    /**
+     * Set the password, if allowed for this user type.
+     *
+     * @param Gems_User_User $user The user whose password to change
+     * @param string $password
+     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     */
+    public function setPassword(Gems_User_User $user, $password)
+    {
+        $data['gup_id_user']         = $user->getUserLoginId();
+        $data['gup_reset_key']       = null;
+        $data['gup_reset_requested'] = null;
+        $data['gup_reset_required']  = 0;
+        if (null === $password) {
+            // Passwords may be emptied.
+            $data['gup_password'] = null;
+        } else {
+            $data['gup_password'] = $this->hashPassword($password);
+        }
+
+        $model = new MUtil_Model_TableModel('gems__user_passwords');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
+
+        $model->save($data);
+
+        return $this;
+    }
+}

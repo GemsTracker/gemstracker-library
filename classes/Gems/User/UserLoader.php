@@ -47,6 +47,14 @@
 class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 {
     /**
+     * User class constants
+     */
+    const USER_NOLOGIN   = 'NoLogin';
+    const USER_OLD_STAFF = 'OldStaffUser';
+    const USER_PROJECT   = 'ProjectUser';
+    const USER_STAFF     = 'StaffUser';
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -55,51 +63,285 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
 
-
     /**
      *
+     * @var Zend_Session_Namespace
      */
-    public function getCurrentUser()
+    protected $session;
+
+    /**
+     * There can be only one, current user that is.
+     *
+     * @var Gems_User_User
+     */
+    protected static $currentUser;
+
+    /**
+     * Checks the password for the specified $login_name and $organization and
+     * handles the login security.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @param string $password
+     * @return boolean True if the password is correct.
+     */
+    public function checkPassword($login_name, $organization, $password)
     {
-        static $currentUser;
+        // MUtil_Echo::track($login_name, $organization, $password);
+        $defName = $this->getUserClassName($login_name, $organization);
+        $definition = $this->_getClass($defName);
 
-        if (! $currentUser) {
-            $currentUser = Gems_User_UserAbstract::getCurrentUser();
+        $success = $definition->checkPassword($login_name, $organization, $password);
 
-            if (! $currentUser) {
-                $currentUser = $this->_loadClass('NoLoginUser', true, array(null, null));
+        try {
+            $sql = "SELECT gula_failed_logins, gula_last_failed FROM gems__user_login_attemps WHERE gula_login = ? AND gula_id_organization = ?";
+            $values = $this->db->fetchRow($sql, array($login_name, $organization));
 
-                $currentUser->setAsCurrentUser();
+            if (! $values) {
+                $values = array();
+                $values['gula_login']           = $login_name;
+                $values['gula_id_organization'] = $organization;
+                $values['gula_failed_logins']   = 0;
+                $values['gula_last_failed']     = null;
             }
-        }
+            if ($success) {
+                $values['gula_failed_logins']   = 0;
+                $values['gula_last_failed']     = null;
+            } else {
+                if ($values['gula_failed_logins']) {
+                    // Get the datetime
+                    $last  = new MUtil_Date($values['gula_last_failed'], Zend_Date::ISO_8601);
 
-        return $currentUser;
+                    // How long to wait until we can ignore the previous failed attempt
+                    $delay = pow($values['gula_failed_logins'], $this->project->getAccountDelayFactor());
+
+                    if (abs($last->diffSeconds()) <= $delay) {
+                        // Response gets slowly slower
+                        sleep(min($values['gula_failed_logins'], 10));
+
+                        $values['gula_failed_logins'] += 1;
+
+                    } else {
+                        $values['gula_failed_logins'] = 1;
+                    }
+                } else {
+                    $values['gula_failed_logins'] = 1;
+                }
+                $values['gula_failed_logins'] = max($values['gula_failed_logins'], 1);
+                $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            }
+
+            if (isset($values['gula_login'])) {
+                $this->db->insert('gems__user_login_attemps', $values);
+            } else {
+                $where = $this->db->quoteInto('gula_login = ? AND ', $login_name);
+                $where .= $this->db->quoteInto('gula_id_organization = ?', $organization);
+                $this->db->update('gems__user_login_attemps', $values, $where);
+            }
+
+        } catch (Zend_Db_Exception $e) {
+            // Fall through as this does not work if the database upgrade did not run
+            // MUtil_Echo::r($e);
+        }
+        return $success;
     }
 
     /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        // Make sure Gems_User_User gets userLoader variable.
+        $extras['userLoader'] = $this;
+
+        // Make sure that this code keeps working when _initSession
+        // is removed from GemsEscort
+        if (! $this->session instanceof Zend_Session_Namespace) {
+            $this->session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
+
+            $extras['session'] = $this->session;
+        }
+
+        $this->addRegistryContainer($extras);
+    }
+
+    /**
+     * Get an array of OrgId => Org Name for all allowed organizations for the current loggedin user
+     *
+     * @return array
+     */
+    public function getAllowedOrganizations()
+    {
+        return $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
+    }
+
+    /**
+     * Get the currently loggin in user
+     *
+     * @return Gems_User_User
+     */
+    public final function getCurrentUser()
+    {
+        if (! self::$currentUser) {
+            if ($this->session->__isset('__user_definition')) {
+                $defName = $this->session->__get('__user_definition');
+                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
+            } else {
+                self::$currentUser = $this->getUser(null, null);
+                self::$currentUser->setAsCurrentUser();
+            }
+        }
+
+        return self::$currentUser;
+    }
+
+    /**
+     * Returns a user object, that may be empty if no user exist.
      *
      * @param string $login_name
-     * @param int $organization Only used when more than one organization uses this $login_name
-     * @return Gems_User_UserAbstract
+     * @param int $organization
+     * @return Gems_User_User But ! ->isActive when the user does not exist
      */
     public function getUser($login_name, $organization)
     {
-        if ($this->isProjectUser($login_name)) {
-            return $this->loadProjectUser($login_name, $organization);
+        $defName = $this->getUserClassName($login_name, $organization);
+
+        $definition = $this->_getClass($defName);
+
+        $values = $definition->getUserData($login_name, $organization);
+
+        if (! isset($values['user_active'])) {
+            $values['user_active'] = true;
         }
+
+        if (! isset($values['allowedOrgs'])) {
+            //Load the allowed organizations
+            $values['allowedOrgs'] = $this->getAllowedOrganizations();
+        }
+        $values['__user_definition'] = $defName;
+
+        return $this->_loadClass('User', true, array($values, $definition));
+    }
+
+    /**
+     * Get a staff user using the $staff_id
+     *
+     * @param int $staff_id
+     * @return Gems_User_User But ! ->isActive when the user does not exist
+     */
+    public function getUserByStaffId($staff_id)
+    {
+        $data = $this->db->fetchRow("SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", $staff_id);
+
+        if (false == $data) {
+            $data = array('gsf_login' => null, 'gsf_id_organization' => null);
+        }
+
+        return $this->getUser($data['gsf_login'], $data['gsf_id_organization']);
+    }
+
+    /**
+     * Returns the name of the user definition class of this user.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return string
+     */
+    protected function getUserClassName($login_name, $organization)
+    {
+        if ($this->isProjectUser($login_name)) {
+            return 'ProjectUserDefinition';
+        }
+
+        try {
+            $sql = "SELECT gul_user_class FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?";
+            if ($class = $this->db->fetchOne($sql, array($login_name, $organization))) {
+                return $class . 'Definition';
+            }
+
+        } catch (Zend_Db_Exception $e) {
+            // Intentional fall through
+        }
+
+        // Fail over for pre 1.5 projects
+        $sql = "SELECT gsf_id_user FROM gems__staff WHERE gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
+
+        if ($user_id = $this->db->fetchOne($sql, array($login_name, $organization))) {
+            // Move user to new staff.
+            $values['gul_login']           = $login_name;
+            $values['gul_id_organization'] = $organization;
+            $values['gul_user_class']      = self::USER_OLD_STAFF; // Old staff as password is still in gems__staff
+            $values['gul_can_login']       = 1;
+            $values['gul_changed']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gul_changed_by']      = $user_id;
+            $values['gul_created']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gul_created_by']      = $user_id;
+
+            try {
+                $this->db->insert('gems__user_logins', $values);
+            } catch (Zend_Db_Exception $e) {
+                // Fall through as this does not work if the database upgrade did not run
+                // MUtil_Echo::r($e);
+            }
+
+            return self::USER_OLD_STAFF . 'Definition';
+        }
+
+        return 'NoLoginDefinition';
     }
 
     protected function isProjectUser($login_name)
     {
-        return isset($this->project->admin['user']) && ($this->project->admin['user'] == $login_name);
+        return $this->project->getSuperAdminName() == $login_name;
     }
 
-    protected function loadProjectUser($login_name, $organization)
+    /**
+     * Sets a new user as the current user.
+     *
+     * @param Gems_User_User $user
+     * @return Gems_User_UserLoader (continuation pattern)
+     */
+    public function setCurrentUser(Gems_User_User $user)
     {
-        return $this->_getClass('ProjectSuperUser', null, array($login_name, $organization));
+        if ($user !== self::$currentUser) {
+            $this->unsetCurrentUser();
+            self::$currentUser = $user;
+
+            // Double check in case this function was used as original
+            // start for setting the user.
+            if (! $user->isCurrentUser()) {
+                $user->setAsCurrentUser(true);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes the current user
+     *
+     * @return Gems_User_UserLoader (continuation pattern)
+     */
+    public function unsetCurrentUser()
+    {
+        // Remove if the currentUser still sees itself as the current user.
+        if ((self::$currentUser instanceof Gems_User_User) && self::$currentUser->isCurrentUser()) {
+            self::$currentUser->unsetAsCurrentUser(false);
+        }
+        self::$currentUser = null;
+        return $this;
     }
 }

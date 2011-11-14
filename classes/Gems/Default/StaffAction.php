@@ -44,7 +44,9 @@
  */
 class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
-    public $filterStandard = array('gsu_active' => 1);
+    public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
+
+    public $filterStandard = array('gsf_active' => 1);
     public $sortKey = array('name' => SORT_ASC);
 
     protected $_instanceId;
@@ -92,39 +94,58 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         $dbLookup = $this->util->getDbLookup();
 
+        switch ($data['gul_user_class']) {
+            case Gems_User_UserLoader::USER_STAFF:
+                Gems_Model::addUserPassword($model);
+                $passwordField = 'gup_password';
+                $model->setOnSave($passwordField, array($this->project, 'getValueHashForModel'));
+                break;
+
+            case Gems_User_UserLoader::USER_OLD_STAFF:
+                $passwordField = 'gsf_password';
+                $model->setOnSave($passwordField, array($this, 'getOldPasswordHash'));
+                break;
+
+            default:
+                $passwordField = false;
+                break;
+        }
+
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
         if ($new) {
             $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
-        } else {
-            $model->set('gsu_password', 'description', $this->_('Enter only when changing'));
-            $model->setSaveWhenNotNull('gsu_password');
+        } elseif ($passwordField) {
+            $model->set($passwordField, 'description', $this->_('Enter only when changing'));
+            $model->setSaveWhenNotNull($passwordField);
         }
-        $model->setOnSave('gsu_password', array($this->escort, 'passwordHash'));
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
 
-        $bridge->addHidden(  'gsu_id_user');
-        $bridge->addHidden(  'gsf_id_user'); // Needed for e-mail validation
-        $bridge->addHidden(  'gsu_user_class');
-        $bridge->addText(    'gsu_login', 'size', 15, 'minlength', 4,
-            'validator', $model->createUniqueValidator('gsu_login', array('gsu_id_user')));
+        $bridge->addHidden(  'gsf_id_user');
+        $bridge->addHidden(  'gul_id_user');
+        $bridge->addHidden(  'gup_id_user');
+        $bridge->addHidden(  'gul_user_class');
+        $bridge->addText(    'gsf_login', 'size', 15, 'minlength', 4,
+            'validator', $model->createUniqueValidator('gsf_login', array('gsf_id_user')));
 
         // Can the organization be changed?
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $bridge->addHiddenMulti($model->getKeyCopyName('gsu_id_organization'));
-            $bridge->addSelect('gsu_id_organization');
+            $bridge->addHiddenMulti($model->getKeyCopyName('gsf_id_organization'));
+            $bridge->addSelect('gsf_id_organization');
         } else {
-            $bridge->addExhibitor('gsu_id_organization');
+            $bridge->addExhibitor('gsf_id_organization');
         }
 
-        $bridge->addPassword('gsu_password',
-            'label', $this->_('Password'),
-            'minlength', $this->project->passwords['MinimumLength'],
-            // 'renderPassword', true,
-            'repeatLabel', $this->_('Repeat password'),
-            'required', $new,
-            'size', 15
-            );
+        if ($passwordField) {
+            $bridge->addPassword($passwordField,
+                'label', $this->_('Password'),
+                'minlength', $this->project->passwords['MinimumLength'],
+                // 'renderPassword', true,
+                'repeatLabel', $this->_('Repeat password'),
+                'required', $new,
+                'size', 15
+                );
+        }
         $bridge->addRadio(   'gsf_gender',         'separator', '');
         $bridge->addText(    'gsf_first_name',     'label', $this->_('First name'));
         $bridge->addFilter(  'gsf_first_name',     $ucfirst);
@@ -141,15 +162,15 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     public function afterFormLoad(array &$data, $isNew)
     {
-        if (array_key_exists('gsu_login', $data)) {
-            $this->_instanceId = $data['gsu_login'];
+        if (array_key_exists('glf_login', $data)) {
+            $this->_instanceId = $data['gsf_login'];
         }
 
         $sql = "SELECT ggp_id_group,ggp_role FROM gems__groups WHERE ggp_id_group = " . (int) $data['gsf_id_primary_group'];
         $groups = $this->db->fetchPairs($sql);
 
         if (! ($this->escort->hasPrivilege('pr.staff.edit.all') ||
-             $data['gsu_id_organization'] == $this->escort->getCurrentOrganization())) {
+             $data['gsf_id_organization'] == $this->escort->getCurrentOrganization())) {
                 throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
     }
@@ -169,21 +190,17 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         // MUtil_Model::$verbose = true;
 
-        $model = new Gems_Model_UserModel('staff', 'gems__staff', array('gsu_id_user' => 'gsf_id_user'), 'gsf');
-        if ($detailed) {
-            $model->copyKeys();
-        }
-        //$model->resetOrder();
+        $model = $this->loader->getModels()->getStaffModel();
 
-        $model->set('gsu_login',            'label', $this->_('Login'));
+        $model->set('gsf_login',            'label', $this->_('Login'));
         $model->set('name',                 'label', $this->_('Name'),
             'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
         if ($detailed || $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $this->menu->getParameterSource()->offsetSet('gsu_id_organization', $this->escort->getCurrentOrganization());
+            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
 
-            $model->set('gsu_id_organization',  'label', $this->_('Organization'),
+            $model->set('gsf_id_organization',  'label', $this->_('Organization'),
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'default', $this->escort->getCurrentOrganization());
         }
@@ -192,12 +209,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
         if ($detailed) {
-            $model->set('gsu_user_class',       'default', 'StaffUser');
+            $model->set('gul_user_class',       'default', $this->defaultStaffDefinition);
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         }
 
-        $model->setDeleteValues('gsu_active', 0);
+        $model->setDeleteValues('gsf_active', 0);
 
         return $model;
     }
@@ -208,8 +225,8 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         if ($this->escort->hasPrivilege('pr.staff.see.all')) {
             // Select organization
-            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsu_id_organization', 'multiOptions');
-            $select = new Zend_Form_Element_Select('gsu_id_organization', array('multiOptions' => $options));
+            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
+            $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
 
             // Position as second element
             $search = array_shift($elements);
@@ -234,7 +251,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $filter = parent::getDataFilter($data);
 
         if (! $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $filter['gsu_id_organization'] = $this->escort->getCurrentOrganization();
+            $filter['gsf_id_organization'] = $this->escort->getCurrentOrganization();
         }
         return $filter;
     }
@@ -249,25 +266,16 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     * Return an old style (< 1.5) hashed version of the input value.
      *
-     * Overruled to add css classes for Gems
-     *
-     * @param integer $columns The number of columns to use for presentation
-     * @param mixed $filter A valid filter for MUtil_Model_ModelAbstract->load()
-     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
-     * @return MUtil_Html_TableElement
+     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
+     * @param string $value The value to hash.
+     * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @return string The salted hash as a 32-character hexadecimal number.
      */
-    public function getShowTable($columns = 1, $filter = null, $sort = null)
+    public function getOldPasswordHash($name, $value, $new)
     {
-        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
-            // Model filter has now been set.
-            $data = $this->getModel()->loadFirst();
-
-            $this->_setParam('gsu_id_organization', $data['gsu_id_organization']);
-            $this->menu->getParameterSource()->offsetSet('gsu_id_organization', $data['gsu_id_organization']);
-        }
-        return parent::getShowTable($columns, $filter, $sort);
+        return md5($value);
     }
 
     public function getTopic($count = 1)

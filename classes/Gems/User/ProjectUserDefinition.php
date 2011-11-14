@@ -42,40 +42,48 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since version 1.5
  */
-class Gems_User_NoLoginUser extends Gems_User_UserAbstract
+class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
 {
     /**
      *
-     * @var Gems_Util_Translated
+     * @var Gems_Project_ProjectSettings
      */
-    protected $translated;
+    protected $project;
 
     /**
-     * Check that the password is correct for this user.
-     *
-     * @param string $password Unencrypted password
-     * @return boolean
-     */
-    public function checkPassword($password)
-    {
-        return false;
-    }
-
-    /**
-     * Intialize the values for this user.
-     *
-     * Skipped when the user is the active user and is stored in the session.
+     * Checks the password for the specified $login_name and $organization.
      *
      * @param string $login_name
-     * @param int $organization Only used when more than one organization uses this $login_name
-     * @return boolean False when the object could not load.
+     * @param int $organization
+     * @param string $password
+     * @return boolean True if the password is correct.
      */
-    protected function initVariables($login_name, $organization)
+    public function checkPassword($login_name, $organization, $password)
     {
-        $this->setRole('nologin');
-        return true;
+        return $this->project->checkSuperAdminPassword($password);
     }
 
+    /**
+     * Returns a user object, that may be empty if the user is unknown.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return array Of data to fill the user with.
+     */
+    public function getUserData($login_name, $organization)
+    {
+        return array(
+            'user_id'    => 1,
+            'user_login'  => $login_name,
+            'user_name'  => $login_name,
+            'user_group' => 800,
+            'user_role'  => 'master',
+            'user_style' => 'gems',
+            'user_organization_id'   => $organization,
+            'user_organization_name' => 'SUPER ADMIN',
+            'allowedOrgs' => array($organization => 'SUPER ADMIN')
+            );
+    }
 }

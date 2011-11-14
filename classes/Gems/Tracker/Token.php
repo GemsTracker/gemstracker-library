@@ -118,12 +118,6 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     protected $survey;
 
     /**
-     * @deprecated MD: 20111108 Found no reference and defined class is missing. Remove?
-     * @var Gems_Tracker_Track
-     */
-    protected $track;
-
-    /**
      *
      * @var Gems_Tracker
      */
