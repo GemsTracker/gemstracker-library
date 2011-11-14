@@ -55,6 +55,20 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     const USER_STAFF     = 'StaffUser';
 
     /**
+     * The default organization data for 'no organization'.
+     *
+     * @var array
+     */
+    protected static $_noOrganization = array(
+        'gor_id_organization' => 1,
+        'gor_name'            => 'NO ORGANIZATION',
+        'gor_code'            => null,
+        'gor_style'           => null,
+        'gor_iso_lang'        => 'en',
+        'gor_active'          => 0,
+        );
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -75,6 +89,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     *
      * @var Zend_Session_Namespace
      */
     protected $session;
@@ -85,6 +105,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_User_User
      */
     protected static $currentUser;
+
+    /**
+     * Session storage of loaded organizations.
+     *
+     * @var Zend_Session_Namespace
+     */
+    protected static $organizationStore;
 
     /**
      * Checks the password for the specified $login_name and $organization and
@@ -209,6 +236,49 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns an organization object, initiated from the database or from
+     * self::$_noOrganization when the database does not yet exist.
+     *
+     * @param int $organizationId Optional, uses current user when empty
+     * @return Gems_User_Organization
+     */
+    public function getOrganization($organizationId = null)
+    {
+        if (! self::$organizationStore) {
+            self::$organizationStore = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.organizations');
+        }
+
+        if (null === $organizationId) {
+            $organizationId = intval(self::$currentUser->getOrganizationId());
+        }
+
+        if (! self::$organizationStore->__isset($organizationId)) {
+
+            // We are not sure the is a database at this moment
+            try {
+                $data = $this->db->fetchRow('SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1', $organizationId);
+            } catch (Zend_Db_Exception $e) {
+                $data = false;
+            }
+            if (! $data) {
+                // Use default
+                $data = self::$_noOrganization;
+
+                // But do attempt to get the last added organization.
+                foreach (self::$organizationStore->getIterator() as $key => $value) {
+                    if ($key !== 0) {
+                        $organizationId = $key;
+                        $data = self::$organizationStore->__get($key);
+                    }
+                }
+            }
+            self::$organizationStore->__set($organizationId, $data);
+        }
+
+        return new Gems_User_Organization(self::$organizationStore->__get($organizationId));
+    }
+
+    /**
      * Returns a user object, that may be empty if no user exist.
      *
      * @param string $login_name
@@ -262,7 +332,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     protected function getUserClassName($login_name, $organization)
     {
-        if (is_null($login_name) && is_null($organization)) return 'NoLoginDefinition';
+        if ((null == $login_name) || (null == $organization)) {
+            return 'NoLoginDefinition';
+        }
         if ($this->isProjectUser($login_name)) {
             return 'ProjectUserDefinition';
         }

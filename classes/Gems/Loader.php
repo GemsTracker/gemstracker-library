@@ -160,6 +160,19 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     }
 
     /**
+     * Returns an organization object, initiated from the database.
+     *
+     * @param int $organizationId Optional, uses current user when empty
+     * @return Gems_User_Organization
+     */
+    public function getOrganization($organizationId = null)
+    {
+        $loader = $this->getUserLoader();
+
+        return $loader->getOrganization($organizationId);
+    }
+
+    /**
      *
      * @return Gems_Pdf
      */

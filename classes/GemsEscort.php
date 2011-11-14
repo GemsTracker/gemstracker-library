@@ -89,7 +89,7 @@ class GemsEscort extends MUtil_Application_Escort
 
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
-        
+
         Zend_Session::start(
             array(
             	'name' => GEMS_PROJECT_NAME_UC . 'SESSID',
@@ -1064,21 +1064,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function getCurrentOrganization()
     {
-        /*
-        if ($this instanceof Gems_Project_Organization_MultiOrganizationInterface) {
-            return $this->getUserOrganization();
-        }
-
-        if ($this instanceof Gems_Project_Organization_SingleOrganizationInterface) {
-            return $this->getRespondentOrganization();
-        }
-        */
-
-        if (isset($this->session->user_organization_id)) {
-            return $this->session->user_organization_id;
-        } else {
-            return Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
-        }
+        return $this->getLoader()->getCurrentUser()->getOrganizationId();
     }
 
     /**
@@ -1357,7 +1343,7 @@ class GemsEscort extends MUtil_Application_Escort
 
     public function prepareController() {
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $this->layoutSwitch($this->request, $this->session);
+            $this->layoutSwitch($this->request);
         }
     }
 
@@ -1448,7 +1434,8 @@ class GemsEscort extends MUtil_Application_Escort
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
         $loader = $this->getLoader();
-        $user   = $loader->getCurrentUser();
+        $user   = $loader->getCurrentUser()
+                ->applyRequest($request);
 
         // MUtil_Echo::r($request->getParams(), 'params');
         // MUtil_Echo::r($request->getUserParams(), 'userparams');

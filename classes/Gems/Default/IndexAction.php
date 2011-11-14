@@ -164,7 +164,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $element->setRequired(true);
 
             if (! $this->_request->isPost()) {
-                $element->setValue($this->escort->getCurrentOrganization());
+                $element->setValue($this->loader->getCurrentUser()->getOrganizationId());
             }
         }
 

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
@@ -170,6 +170,22 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         } else {
             $store->offsetUnset($name, $value);
         }
+    }
+
+    /**
+     * Applies any setttings coming from the request object, e.g. processing cookies.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return Gems_User_User (continuation pattern)
+     */
+    public function applyRequest(Zend_Controller_Request_Abstract $request)
+    {
+        // MUtil_Echo::track($this->getOrganizationId(), Gems_Cookies::getOrganization($request));
+        if (! $this->getOrganizationId()) {
+            $this->_setVar('user_organization_id', Gems_Cookies::getOrganization($request));
+        }
+
+        return $this;
     }
 
     /**
