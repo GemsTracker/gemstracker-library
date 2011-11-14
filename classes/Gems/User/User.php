@@ -200,7 +200,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function checkPassword($password)
     {
-        return $this->definition->checkPassword($this->getLoginName(), $this->getOrganizationId(), $password);
+        return $this->userLoader->checkPassword($this->getLoginName(), $this->getOrganizationId(), $password);
     }
 
     /**

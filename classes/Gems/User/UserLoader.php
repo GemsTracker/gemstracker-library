@@ -262,6 +262,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     protected function getUserClassName($login_name, $organization)
     {
+        if (is_null($login_name) && is_null($organization)) return 'NoLoginDefinition';
         if ($this->isProjectUser($login_name)) {
             return 'ProjectUserDefinition';
         }
