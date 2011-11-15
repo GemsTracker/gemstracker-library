@@ -1434,8 +1434,7 @@ class GemsEscort extends MUtil_Application_Escort
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
         $loader = $this->getLoader();
-        $user   = $loader->getCurrentUser()
-                ->applyRequest($request);
+        $user   = $loader->getCurrentUser();
 
         // MUtil_Echo::r($request->getParams(), 'params');
         // MUtil_Echo::r($request->getUserParams(), 'userparams');

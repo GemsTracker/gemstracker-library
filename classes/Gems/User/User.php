@@ -173,22 +173,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Applies any setttings coming from the request object, e.g. processing cookies.
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return Gems_User_User (continuation pattern)
-     */
-    public function applyRequest(Zend_Controller_Request_Abstract $request)
-    {
-        // MUtil_Echo::track($this->getOrganizationId(), Gems_Cookies::getOrganization($request));
-        if (! $this->getOrganizationId()) {
-            $this->_setVar('user_organization_id', Gems_Cookies::getOrganization($request));
-        }
-
-        return $this;
-    }
-
-    /**
      * Return true if a password reset key can be created.
      *
      * @return boolean
@@ -332,7 +316,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function getOrganizationId()
     {
-        return $this->_getVar('user_organization_id');
+        $orgId = $this->_getVar('user_organization_id');
+
+        //If not set, read it from the cookie
+        if (is_null($orgId)) {
+            $orgId = Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
+        }
+        return $orgId;
     }
 
     /**
