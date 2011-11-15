@@ -43,6 +43,13 @@ class Gems_Default_OrganizationAction  extends Gems_Controller_BrowseEditAction
 {
     public $autoFilter = false;
 
+    public function afterSave(array $data, $isNew)
+    {
+        $org = $this->loader->getOrganization($data['gor_id_organization']);
+        $org->invalidateCache();
+        return parent::afterSave($data, $isNew);
+    }
+
     public function changeUiAction()
     {
         $request    = $this->getRequest();

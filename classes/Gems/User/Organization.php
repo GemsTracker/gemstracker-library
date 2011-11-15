@@ -116,6 +116,15 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the cacheId for the organization
+     *
+     * @return string
+     */
+    private function _getCacheId() {
+        return GEMS_PROJECT_NAME . '__' . __CLASS__ . '__' . $this->_organizationId;
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -124,7 +133,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     public function checkRegistryRequestsAnswers()
     {
         if ($this->cache) {
-            $cacheId = GEMS_PROJECT_NAME . '__' . __CLASS__ . '__' . $this->_organizationId;
+            $cacheId = $this->_getCacheId();
             $this->_organizationData = $this->cache->load($cacheId);
         } else {
             $cacheId = false;
@@ -154,5 +163,12 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     public function getStyle()
     {
         return $this->_organizationData['gor_style'];
+    }
+
+    public function invalidateCache() {
+        if ($this->cache) {
+            $cacheId = $this->_getCacheId();
+            $this->cache->remove($cacheId);
+        }
     }
 }
