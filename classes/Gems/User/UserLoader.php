@@ -55,20 +55,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     const USER_STAFF     = 'StaffUser';
 
     /**
-     * The default organization data for 'no organization'.
-     *
-     * @var array
-     */
-    protected static $_noOrganization = array(
-        'gor_id_organization' => 1,
-        'gor_name'            => 'NO ORGANIZATION',
-        'gor_code'            => null,
-        'gor_style'           => null,
-        'gor_iso_lang'        => 'en',
-        'gor_active'          => 0,
-        );
-
-    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -174,38 +160,17 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function getOrganization($organizationId = null)
     {
-        if (! self::$organizationStore) {
-            self::$organizationStore = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.organizations');
-        }
+        static $organizations = array();
 
         if (null === $organizationId) {
             $organizationId = intval(self::$currentUser->getOrganizationId());
         }
 
-        if (! self::$organizationStore->__isset($organizationId)) {
-
-            // We are not sure the is a database at this moment
-            try {
-                $data = $this->db->fetchRow('SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1', $organizationId);
-            } catch (Zend_Db_Exception $e) {
-                $data = false;
-            }
-            if (! $data) {
-                // Use default
-                $data = self::$_noOrganization;
-
-                // But do attempt to get the last added organization.
-                foreach (self::$organizationStore->getIterator() as $key => $value) {
-                    if ($key !== 0) {
-                        $organizationId = $key;
-                        $data = self::$organizationStore->__get($key);
-                    }
-                }
-            }
-            self::$organizationStore->__set($organizationId, $data);
+        if (! isset($organizations[$organizationId])) {
+            $organizations[$organizationId] = $this->_loadClass('Organization', true, array($organizationId));
         }
 
-        return new Gems_User_Organization(self::$organizationStore->__get($organizationId));
+        return $organizations[$organizationId];
     }
 
     /**

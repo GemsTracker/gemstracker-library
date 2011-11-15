@@ -46,8 +46,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Organization
+class Gems_User_Organization extends Gems_Registry_TargetAbstract
 {
+    /**
+     * The default organization data for 'no organization'.
+     *
+     * @var array
+     */
+    protected $_noOrganization = array(
+        'gor_id_organization' => 1,
+        'gor_name'            => 'NO ORGANIZATION',
+        'gor_code'            => null,
+        'gor_style'           => null,
+        'gor_iso_lang'        => 'en',
+        'gor_active'          => 0,
+        );
+
     /**
      *
      * @var array
@@ -55,18 +69,67 @@ class Gems_User_Organization
     protected $_organizationData;
 
     /**
+     *
+     * @var int
+     */
+    protected $_organizationId;
+
+    /**
+     *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
      * Creates the organization object.
      *
-     * @param array $organizationData
+     * @param int $organizationId
      */
-    public function __construct(array $organizationData)
+    public function __construct($organizationId)
     {
-        $this->_organizationData = $organizationData;
+        $this->_organizationId = $organizationId;
     }
 
     /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        if ($this->cache) {
+            $cacheId = GEMS_PROJECT_NAME . '__' . __CLASS__ . '__' . $this->_organizationId;
+            $this->_organizationData = $this->cache->load($cacheId);
+        } else {
+            $cacheId = false;
+        }
+
+        if (! $this->_organizationData) {
+            $this->_organizationData = $this->db->fetchRow('SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1', $this->_organizationId);
+
+            if (! $this->_organizationData) {
+                $this->_organizationData = $this->_noOrganization;
+            }
+
+            if ($cacheId) {
+                $this->cache->save($this->_organizationData, $cacheId);
+            }
+        }
+
+        return is_array($this->_organizationData) && parent::checkRegistryRequestsAnswers();
+    }
+
+
+    /**
      * Get the style attribute.
-     * 
+     *
      * @return string
      */
     public function getStyle()
