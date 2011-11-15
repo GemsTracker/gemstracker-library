@@ -184,7 +184,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $element->setAttrib('size', 10);
         $element->setAttrib('maxlength', 20);
         $element->setRequired(true);
-        //$element->addValidator(new Gems_User_LoginPasswordValidator($this->loader->getUserLoader(), 'userlogin', 'organization', $this->translate));
 
         return $element;
     }

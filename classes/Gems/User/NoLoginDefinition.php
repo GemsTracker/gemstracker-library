@@ -46,17 +46,15 @@
  */
 class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
 {
-    /**
-     * Checks the password for the specified $login_name and $organization.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($login_name, $organization, $password)
-    {
+    private function alwaysFalse($params) {
+        $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, $params['userlogin']);
         return false;
+    }
+    
+    public function getAuthAdapter($formValues)
+    {
+        $adapter = new Gems_Auth_Adapter_Callback(array(get_class(),'alwaysFalse'), $formValues['userlogin'], $formValues);
+        return $adapter;
     }
 
     /**
@@ -73,16 +71,5 @@ class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
             'user_role'            => 'nologin',
             //'user_organization_id' => 0, //REMOVED AS IT BREAKS STORING LAST ORGANIZATION
             );
-    }
-
-    public function getAuthAdapter($formValues)
-    {
-        $adapter = new Gems_Auth_Adapter_Callback(array(get_class(),'alwaysFalse'), $formValues['userlogin'], $formValues);
-        return $adapter;
-    }
-
-    private function alwaysFalse($params) {
-        $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, $params['userlogin']);
-        return false;
     }
 }

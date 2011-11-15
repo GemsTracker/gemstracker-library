@@ -98,7 +98,6 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
             $element->setAttrib('maxlength', 20);
             $element->setRenderPassword(true);
             $element->setRequired(true);
-            $element->addValidator(new Gems_User_UserPasswordValidator($user, $this->translate));
             $form->addElement($element);
         }
 
@@ -131,16 +130,26 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         /****************
          * Process form *
          ****************/
-        if ($this->_request->isPost() && $form->isValid($_POST)) {
-            $user->setPassword($_POST['new_password']);
+        if ($this->_request->isPost()) {
+            if ($form->isValid($_POST)) {
+                $authResult = $user->authenticate(array('userlogin'    => $user->getLoginName(),
+                                                        'password'     => $_POST['old_password'],
+                                                        'organization' =>$user->getOrganizationId()));
+                if ($authResult->isValid()) {
+                    $user->setPassword($_POST['new_password']);
 
-            $this->addMessage($this->_('New password is active.'));
-            $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
+                    $this->addMessage($this->_('New password is active.'));
+                    $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
+                } else {
+                    if (isset($_POST['old_password'])) {
+                        if ($_POST['old_password'] === strtoupper($_POST['old_password'])) {
+                            $this->addMessage($this->_('Caps Lock seems to be on!'));
+                        } else {
+                            $errors = $authResult->getMessages();
+                            $this->addMessage($errors);
 
-        } else {
-            if (isset($_POST['old_password'])) {
-                if ($_POST['old_password'] === strtoupper($_POST['old_password'])) {
-                    $this->addMessage($this->_('Caps Lock seems to be on!'));
+                        }
+                    }
                 }
             }
             $form->populate($_POST);

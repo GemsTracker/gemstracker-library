@@ -69,16 +69,6 @@ interface Gems_User_UserDefinitionInterface
     public function canSetPassword(Gems_User_User $user = null);
 
     /**
-     * Checks the password for the specified $login_name and $organization.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($login_name, $organization, $password);
-
-    /**
      * Check whether a reset key is really linked to a user.
      *
      * @param Gems_User_User $user The user the key was created for (hopefully).

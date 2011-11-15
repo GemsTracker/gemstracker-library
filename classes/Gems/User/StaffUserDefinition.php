@@ -92,29 +92,6 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
     }
 
     /**
-     * Checks the password for the specified $login_name and $organization.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($login_name, $organization, $password)
-    {
-        $pwd_hash = $this->hashPassword($password);
-
-        $sql = "SELECT gup_password
-                    FROM gems__user_passwords INNER JOIN gems__user_logins ON gup_id_user = gul_id_user
-                    WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?";
-
-        $db_pwd = $this->db->fetchOne($sql, array($login_name, $organization));
-
-        // MUtil_Echo::track($password, $pwd_hash, $db_pwd);
-
-        return ($pwd_hash == $db_pwd);
-    }
-
-    /**
      * Check whether a reset key is really linked to a user.
      *
      * @param Gems_User_User $user The user the key was created for (hopefully).
@@ -134,6 +111,23 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
         }
 
         return false;
+    }
+
+    public function getAuthAdapter($formValues)
+    {
+        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
+
+        $pwd_hash = $this->hashPassword($formValues['password']);
+
+        $select = $adapter->getDbSelect();
+        $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
+               ->where('gul_can_login = 1')
+               ->where('gul_id_organization = ?', $formValues['organization']);
+
+        $adapter->setIdentity($formValues['userlogin'])
+                ->setCredential($pwd_hash);
+
+        return $adapter;
     }
 
     /**
@@ -251,22 +245,5 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
         $model->save($data);
 
         return $this;
-    }
-
-    public function getAuthAdapter($formValues)
-    {
-        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
-
-        $pwd_hash = $this->hashPassword($formValues['password']);
-
-        $select = $adapter->getDbSelect();
-        $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
-               ->where('gul_can_login = 1')
-               ->where('gul_id_organization = ?', $formValues['organization']);
-
-        $adapter->setIdentity($formValues['userlogin'])
-                ->setCredential($pwd_hash);
-
-        return $adapter;
     }
 }

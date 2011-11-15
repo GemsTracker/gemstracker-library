@@ -52,17 +52,10 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     protected $project;
 
-    /**
-     * Checks the password for the specified $login_name and $organization.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($login_name, $organization, $password)
+    public function getAuthAdapter($formValues)
     {
-        return $this->project->checkSuperAdminPassword($password);
+        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $formValues['userlogin'], $formValues['password']);
+        return $adapter;
     }
 
     /**
@@ -85,11 +78,5 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
             'user_organization_name' => 'SUPER ADMIN',
             'allowedOrgs' => array($organization => 'SUPER ADMIN')
             );
-    }
-
-    public function getAuthAdapter($formValues)
-    {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $formValues['userlogin'], $formValues['password']);
-        return $adapter;
     }
 }

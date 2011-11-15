@@ -227,17 +227,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Checks the password for this user and handle the login security.
-     *
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($password)
-    {
-        return $this->userLoader->checkPassword($this->getLoginName(), $this->getOrganizationId(), $password);
-    }
-
-    /**
      * Check whether a reset key is really linked to this user.
      *
      * @param string The key
