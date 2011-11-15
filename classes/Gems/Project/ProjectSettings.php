@@ -143,7 +143,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             $this->offsetSet('name', GEMS_PROJECT_NAME);
         }
 
-        $this->offsetSet('multiLocale', isset($project->locales) && (count($project->locales) > 1));
+        $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
     }
 
     /**
