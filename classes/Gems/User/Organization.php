@@ -97,6 +97,25 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns a callable if a method is called as a variable
+     * or the value from the organizationData if it exists
+     *
+     * @param string $name
+     * @return Callable
+     */
+    public function __get($name)
+    {
+        if (method_exists($this, $name)) {
+            // Return a callable
+            return array($this, $name);
+        } elseif (isset($this->_organizationData[$name])) {
+            return $this->_organizationData[$name];
+        }
+
+        throw new Gems_Exception_Coding("Unknown method '$name' requested as callable.");
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *

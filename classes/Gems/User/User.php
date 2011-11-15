@@ -193,7 +193,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Authenticate a users credentials using the submitted form
      *
      * @param array $formValues the array containing all formvalues from the login form
-     * @return boolean
+     * @return Zend_Auth_Result
      */
     public function authenticate($formValues)
     {
