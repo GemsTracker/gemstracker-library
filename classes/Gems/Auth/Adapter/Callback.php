@@ -1,9 +1,8 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *
+ *      
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,64 +24,67 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ * 
+ * Short description of file
  *
  * @package    Gems
- * @subpackage User
- * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @subpackage Auth
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
+ * Short description for Callback
  *
+ * Long description for class Callback (if any)...
  *
  * @package    Gems
- * @subpackage User
+ * @subpackage Auth
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.0
+ * @deprecated Class deprecated since version 2.0
  */
-class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_Auth_Adapter_Callback implements Zend_Auth_Adapter_Interface
 {
-    /**
-     * Checks the password for the specified $login_name and $organization.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @param string $password
-     * @return boolean True if the password is correct.
-     */
-    public function checkPassword($login_name, $organization, $password)
-    {
-        return false;
-    }
+    private $_callback;
+    private $_identity;
+    private $_params;
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Create an auth adapter from a callback
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return array Of data to fill the user with.
+     * Ideally the callback should return a Zend_Auth_Result, when not it should
+     * return true or false and in that case this adapter will wrap the result
+     * in a Zend_Auth_Result
+     *
+     * @param type $callback A valid callback
+     * @param type $identity The identity to use
+     * @param type $params   Array of parameters needed for the callback
      */
-    public function getUserData($login_name, $organization)
+    public function __construct($callback, $identity, $params)
     {
-        return array(
-            'user_active'          => false,
-            'user_role'            => 'nologin',
-            //'user_organization_id' => 0, //REMOVED AS IT BREAKS STORING LAST ORGANIZATION
-            );
+        $this->_callback = $callback;
+        $this->_identity = $identity;
+        $this->_params   = $params;
     }
 
-    public function getAuthAdapter($formValues)
+    /**
+     * Perform the authenticate attempt
+     *
+     * @return Zend_Auth_Result
+     */
+    public function authenticate()
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array(get_class(),'alwaysFalse'), $formValues['userlogin'], $formValues);
-        return $adapter;
-    }
-
-    private function alwaysFalse($params) {
-        $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, $params['userlogin']);
-        return false;
+        $result = call_user_func_array($this->_callback, $this->_params);
+        if ( !($result instanceof Zend_Auth_Result)) {
+            if ($result === true) {
+                $result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->_identity);
+            } else {
+                $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, $this->_identity);
+            }
+        }
+        return $result;
     }
 }

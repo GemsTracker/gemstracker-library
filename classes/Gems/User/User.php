@@ -48,6 +48,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 {
     /**
      *
+     * @var Zend_Auth_Result
+     */
+    private $_authResult;
+
+    /**
+     *
      * @var ArrayObject or Zend_Session_Namespace
      */
     private $_vars;
@@ -170,6 +176,34 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         } else {
             $store->offsetUnset($name, $value);
         }
+    }
+
+    /**
+     * Perform project specific after login logic here, can also delegate to the user definition
+     *
+     * @return void
+     */
+    public function afterLogin($formValues) {
+        if (is_callable(array($this->definition, 'afterLogin'))) {
+            $this->definition->afterLogin($this->_authResult, $formValues);
+        }
+    }
+
+    /**
+     * Authenticate a users credentials using the submitted form
+     *
+     * @param array $formValues the array containing all formvalues from the login form
+     * @return boolean
+     */
+    public function authenticate($formValues)
+    {
+       $auth = Gems_Auth::getInstance();
+       $adapter = $this->definition->getAuthAdapter($formValues);
+       $authResult = $auth->authenticate($adapter, $formValues);
+
+       $this->_authResult = $authResult;
+       
+       return $authResult;
     }
 
     /**

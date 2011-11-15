@@ -184,7 +184,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $element->setAttrib('size', 10);
         $element->setAttrib('maxlength', 20);
         $element->setRequired(true);
-        $element->addValidator(new Gems_User_LoginPasswordValidator($this->loader->getUserLoader(), 'userlogin', 'organization', $this->translate));
+        //$element->addValidator(new Gems_User_LoginPasswordValidator($this->loader->getUserLoader(), 'userlogin', 'organization', $this->translate));
 
         return $element;
     }
@@ -284,31 +284,42 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $user = $this->loader->getUser($request->getParam('userlogin'), $request->getParam('organization'));
 
                 if ($user->isActive()) {
-                    $user->setAsCurrentUser();
+                    $formValues = $form->getValues();
+                    $authResult = $user->authenticate($formValues);
 
-                    /**
-                     * Fix current locale / organization in cookies
-                     */
-                    Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
-                    Gems_Cookies::setOrganization($user->getOrganizationId(), $this->basepath->getBasePath());
+                    if ($authResult->isValid()) {
 
-                    /**
-                     * Ready
-                     */
-                    $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
+                        $user->setAsCurrentUser();
 
-                    /**
-                     * Log the login
-                     */
-                    Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+                        $user->afterLogin($form->getValues());
 
-                    if ($previousRequestParameters = $this->session->previousRequestParameters) {
-                        $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
+                        /**
+                         * Fix current locale / organization in cookies
+                         */
+                        Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
+                        Gems_Cookies::setOrganization($user->getOrganizationId(), $this->basepath->getBasePath());
+
+                        /**
+                         * Ready
+                         */
+                        $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
+
+                        /**
+                         * Log the login
+                         */
+                        Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+
+                        if ($previousRequestParameters = $this->session->previousRequestParameters) {
+                            $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
+                        } else {
+                            // This reroutes to the first available menu page after login
+                            $this->_reroute(array('controller' => null, 'action' => null), true);
+                        }
+                        return;
                     } else {
-                        // This reroutes to the first available menu page after login
-                        $this->_reroute(array('controller' => null, 'action' => null), true);
+                        $errors = $authResult->getMessages();
+                        $this->addMessage($errors);
                     }
-                    return;
                 }
             } else {
                 $errors = $form->getErrors();

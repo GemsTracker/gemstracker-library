@@ -57,7 +57,7 @@ class Gems_Auth extends Zend_Auth
      */
     protected $_messageTemplates = array(
         self::ERROR_DATABASE_NOT_INSTALLED     => 'Installation not complete! Login is not yet possible!',
-        self::ERROR_PASSWORD_DELAY             => 'Your account is temporarily blocked, please wait %s minutes'
+        self::ERROR_PASSWORD_DELAY             => 'Your account is temporarily blocked, please wait %s seconds'
     );
 
     /**
@@ -92,35 +92,74 @@ class Gems_Auth extends Zend_Auth
         return new Zend_Auth_Result($code, null, (array) $messages);
     }
 
-    public function authenticate(Zend_Auth_Adapter_Interface $adapter, $username = '') {
+    public function authenticate(Zend_Auth_Adapter_Interface $adapter, $formValues) {
         try {
-            /**
-             * Lookup last failed login and number of failed logins
-             */
-            try {
-                $sql = "SELECT gul_failed_logins, UNIX_TIMESTAMP(gul_last_failed) AS gul_last_failed
-                            FROM gems__user_logins WHERE gul_login = ?";
-                $results = $this->db->fetchRow($sql, array($username));
-            } catch (Zend_Db_Exception $zde) {
-                //If we need to apply a db patch, just use a default value
-                $results = 0;
-                MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Please update the database'));
-            }
+            $login_name   = $formValues['userlogin'];
+            $organization = $formValues['organization'];
+            $sql = "SELECT gula_failed_logins, gula_last_failed FROM gems__user_login_attemps WHERE gula_login = ? AND gula_id_organization = ?";
+            $values = $this->db->fetchRow($sql, array($login_name, $organization));
 
-            $delay = pow($results['gul_failed_logins'], $this->_delayFactor);
-            $remaining = ($results['gul_last_failed'] + $delay) - time();
+            if (! $values) {
+                $values = array();
+                $values['gula_login']           = $login_name;
+                $values['gula_id_organization'] = $organization;
+                $values['gula_failed_logins']   = 0;
+                $values['gula_last_failed']     = null;
+            } elseif ($values['gula_failed_logins'] > 0) {
+                    // Get the datetime
+                    $last  = new MUtil_Date($values['gula_last_failed'], Zend_Date::ISO_8601);
 
-            if ($results['gul_failed_logins'] > 0 && $remaining > 0) {
-                //$this->_obscureValue = false;
-                $result = $this->_error(self::ERROR_PASSWORD_DELAY, ceil($remaining / 60));
+                    // How long to wait until we can ignore the previous failed attempt
+                    $delay = pow($values['gula_failed_logins'], GemsEscort::getInstance()->project->getAccountDelayFactor());
+
+                    if (abs($last->diffSeconds()) <= $delay) {
+                        // Response gets slowly slower
+                        $sleepTime = min($values['gula_failed_logins'], 10);
+                        sleep($sleepTime);
+                        $remaining = $delay - abs($last->diffSeconds()) - $sleepTime;
+                        if ($remaining>0) {
+                            $result = $this->_error(self::ERROR_PASSWORD_DELAY, $remaining);
+                        }
+                    }
             }
-        } catch (Zend_Db_Exception $zde) {
-            $result = $this->_error(self::ERROR_DATABASE_NOT_INSTALLED);
+        } catch (Zend_Db_Exception $e) {
+            // Fall through as this does not work if the database upgrade did not run
+            // MUtil_Echo::r($e);
         }
 
-        if (!isset($result)) {
-            //Ok we are done without errors, now delegate to the Zend_Auth_Adapter
+        // We only forward to auth adapter when we have no timeout to prevent hammering the auth system
+        if (! isset($result) ) {
             $result = parent::authenticate($adapter);
+        }
+
+        if ($result->isValid()) {
+            $values['gula_failed_logins']   = 0;
+            $values['gula_last_failed']     = null;
+        } else {
+            if ($values['gula_failed_logins']) {
+                // Only increment when we have no password delay
+                if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
+                    $values['gula_failed_logins'] += 1;
+                    $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                }
+            } else {
+                $values['gula_failed_logins'] = 1;
+                $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            }
+            $values['gula_failed_logins'] = max($values['gula_failed_logins'], 1);
+        }
+
+        try {
+            if (isset($values['gula_login'])) {
+                $this->db->insert('gems__user_login_attemps', $values);
+            } else {
+                $where = $this->db->quoteInto('gula_login = ? AND ', $login_name);
+                $where .= $this->db->quoteInto('gula_id_organization = ?', $organization);
+                $this->db->update('gems__user_login_attemps', $values, $where);
+            }
+        } catch (Zend_Db_Exception $e) {
+            // Fall through as this does not work if the database upgrade did not run
+            // MUtil_Echo::r($e);
         }
 
         //Now localize

@@ -252,4 +252,21 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
         return $this;
     }
+
+    public function getAuthAdapter($formValues)
+    {
+        $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
+
+        $pwd_hash = $this->hashPassword($formValues['password']);
+
+        $select = $adapter->getDbSelect();
+        $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
+               ->where('gul_can_login = 1')
+               ->where('gul_id_organization = ?', $formValues['organization']);
+
+        $adapter->setIdentity($formValues['userlogin'])
+                ->setCredential($pwd_hash);
+
+        return $adapter;
+    }
 }

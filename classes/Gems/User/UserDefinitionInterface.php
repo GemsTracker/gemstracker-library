@@ -88,6 +88,13 @@ interface Gems_User_UserDefinitionInterface
     public function checkPasswordResetKey(Gems_User_User $user, $key);
 
     /**
+     * Returns an initialized Zend_Auth_Adapter_Interface
+     *
+     * @return Zend_Auth_Adapter_Interface
+     */
+    public function getAuthAdapter($formValues);
+
+    /**
      * Return a password reset key
      *
      * @param Gems_User_User $user The user to create a key for.
