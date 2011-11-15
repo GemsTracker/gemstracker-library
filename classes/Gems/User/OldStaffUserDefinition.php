@@ -204,6 +204,9 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     public function afterLogin($authResult, $formValues)
     {
         if ($authResult->isValid()) {
+            $login_name   = $formValues['userlogin'];
+            $organization = $formValues['organization'];
+            $password     = $formValues['password'];
             $userData = $this->getUserData($formValues['userlogin'], $formValues['organization']);
             $staff_id = $userData['user_id'];
 
