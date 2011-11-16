@@ -26,20 +26,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package Gems
+ *
+ * @package    Gems
  * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
+ * Generic controller class for showing and editing organizations
  *
- * @author Matijs de Jong
- * @package Gems
+ * @package    Gems
  * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-class Gems_Default_OrganizationAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction // Gems_Controller_ModelSnippetActionAbstract
 {
     public $autoFilter = false;
 
@@ -92,7 +97,7 @@ class Gems_Default_OrganizationAction  extends Gems_Controller_BrowseEditAction
             }
             $this->session->requestCache = $requestCache;
 
-            if (Gems_Cookies::set('organization', $orgId)) {
+            if (Gems_Cookies::setOrganization($orgId, $this->basepath->getBasePath())) {
                 $this->getResponse()->setRedirect($url);
                 return;
             }
