@@ -140,15 +140,20 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
             'gor_iso_lang', 'label', $this->_('Language'),
             'multiOptions', $this->util->getLocalized()->getLanguages(), 'default', 'nl'
         );
-        $model->set(
-            'gor_active', 'label', $this->_('Active'), 'elementClass', 'Checkbox',
-            'multiOptions', $this->util->getTranslated()->getYesNo()
-        );
+        $yesNo = $this->util->getTranslated()->getYesNo();
+        $model->set('gor_active', 'label', $this->_('Active'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
+        $model->set('gor_add_patients', 'label', $this->_('Allow new respondents'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
+
 
         if ($detailed) {
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));
             $model->set('gor_welcome',   'label', $this->_('Greeting'),  'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
             $model->set('gor_signature', 'label', $this->_('Signature'), 'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
+
+            $model->set('gor_accessible_by', 'label', $this->_('Accessible by'), 'description', $this->_('Checked organizations see this organizations respondents.'), 'elementClass', 'MultiCheckbox',
+                    'multiOptions', $this->util->getDbLookup()->getOrganizations());
+            MUtil_Model_Save_ArraySaver::create($model, 'gor_accessible_by', ':');
+
         }
 
         if ($this->project->multiLocale) {

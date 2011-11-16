@@ -311,3 +311,11 @@ ALTER TABLE gems__track_fields ADD gtf_field_code varchar(20) CHARACTER SET 'utf
 
 -- PATCH: Change Burger Service Nummer to Social Security Number
 ALTER TABLE `gems__respondents` CHANGE `grs_bsn` `grs_ssn` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+-- PATCH: Extending organizations
+
+ALTER TABLE `gems__organizations` ADD UNIQUE INDEX (`gor_code`);
+
+ALTER TABLE `gems__organizations` ADD gor_accessible_by text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_task,
+    ADD gor_has_patients boolean not null default 1 AFTER gor_iso_lang,
+    ADD gor_add_patients boolean not null default 1 AFTER gor_has_patients;
