@@ -46,14 +46,14 @@
  */
 class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
 {
-    private function alwaysFalse($params) {
-        $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, $params['userlogin']);
+    public function alwaysFalse($params)
+    {
         return false;
     }
-    
+
     public function getAuthAdapter($formValues)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array(get_class(),'alwaysFalse'), $formValues['userlogin'], $formValues);
+        $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin'], $formValues);
         return $adapter;
     }
 

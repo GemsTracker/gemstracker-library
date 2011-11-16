@@ -48,9 +48,12 @@ class Gems_Auth extends Zend_Auth
 {
     /**
      * Error constants
+     *
+     * These must be numeric constants smaller than zero for
+     * Zend_Auth_Result to work.
      */
-    const ERROR_DATABASE_NOT_INSTALLED     = 'notInstalled';
-    const ERROR_PASSWORD_DELAY             = 'blockedDelay';
+    const ERROR_DATABASE_NOT_INSTALLED     = -11;
+    const ERROR_PASSWORD_DELAY             = -12;
 
     /**
      * @var array Message templates
@@ -71,7 +74,8 @@ class Gems_Auth extends Zend_Auth
      */
     public $db;
 
-    public function __construct($db = null) {
+    public function __construct($db = null)
+    {
         /**
          * Check for an adapter being defined. if not, fetch the default adapter.
          */
@@ -86,13 +90,22 @@ class Gems_Auth extends Zend_Auth
         }
     }
 
-    private function _error($code, $value1 = null, $value2 = null) {
+    private function _error($code, $value1 = null, $value2 = null)
+    {
         $messages = func_get_args();
         array_splice($messages, 0, 1, $this->_messageTemplates[$code]);
         return new Zend_Auth_Result($code, null, (array) $messages);
     }
 
-    public function authenticate(Zend_Auth_Adapter_Interface $adapter, $formValues) {
+    /**
+     * Authenticates against the supplied adapter
+     *
+     * @param  Zend_Auth_Adapter_Interface $adapter
+     * @param  array $formValues  We need information not in the adapter.
+     * @return Zend_Auth_Result
+     */
+    public function authenticate(Zend_Auth_Adapter_Interface $adapter, array $formValues = null)
+    {
         try {
             $login_name   = $formValues['userlogin'];
             $organization = $formValues['organization'];
@@ -105,22 +118,23 @@ class Gems_Auth extends Zend_Auth
                 $values['gula_id_organization'] = $organization;
                 $values['gula_failed_logins']   = 0;
                 $values['gula_last_failed']     = null;
+
             } elseif ($values['gula_failed_logins'] > 0) {
-                    // Get the datetime
-                    $last  = new MUtil_Date($values['gula_last_failed'], Zend_Date::ISO_8601);
+                // Get the datetime
+                $last  = new MUtil_Date($values['gula_last_failed'], Zend_Date::ISO_8601);
 
-                    // How long to wait until we can ignore the previous failed attempt
-                    $delay = pow($values['gula_failed_logins'], GemsEscort::getInstance()->project->getAccountDelayFactor());
+                // How long to wait until we can ignore the previous failed attempt
+                $delay = pow($values['gula_failed_logins'], GemsEscort::getInstance()->project->getAccountDelayFactor());
 
-                    if (abs($last->diffSeconds()) <= $delay) {
-                        // Response gets slowly slower
-                        $sleepTime = min($values['gula_failed_logins'], 10);
-                        sleep($sleepTime);
-                        $remaining = $delay - abs($last->diffSeconds()) - $sleepTime;
-                        if ($remaining>0) {
-                            $result = $this->_error(self::ERROR_PASSWORD_DELAY, $remaining);
-                        }
+                if (abs($last->diffSeconds()) <= $delay) {
+                    // Response gets slowly slower
+                    $sleepTime = min($values['gula_failed_logins'], 10);
+                    sleep($sleepTime);
+                    $remaining = $delay - abs($last->diffSeconds()) - $sleepTime;
+                    if ($remaining>0) {
+                        $result = $this->_error(self::ERROR_PASSWORD_DELAY, $remaining);
                     }
+                }
             }
         } catch (Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not run
@@ -137,11 +151,12 @@ class Gems_Auth extends Zend_Auth
             $values['gula_last_failed']     = null;
         } else {
             if ($values['gula_failed_logins']) {
+                // MUtil_Echo::track($result->getCode(), self::ERROR_PASSWORD_DELAY);
                 // Only increment when we have no password delay
-                if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
+                // if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
                     $values['gula_failed_logins'] += 1;
                     $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-                }
+                // }
             } else {
                 $values['gula_failed_logins'] = 1;
                 $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
@@ -195,7 +210,8 @@ class Gems_Auth extends Zend_Auth
      * @param Zend_Auth_Result $result
      * @return Zend_Auth_Result
      */
-    public function localize($result) {
+    public function localize($result)
+    {
         $translate = GemsEscort::getInstance()->translate;
         $code      = $result->getCode();
         $identity  = $result->getIdentity();
@@ -210,17 +226,22 @@ class Gems_Auth extends Zend_Auth
          */
         switch ($code) {
             case Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
-                $message = $translate->_('Wrong password.');
-                break;
+            //    $message = $translate->_('Wrong password.');
+            //    break;
             case Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
-                $message = $translate->_('Combination of username password not found.');
+                $message = $translate->_('Combination of organization, username and password not found.');
                 break;
         }
 
-        //Now recombine with the others, they will be treated as params
-        $messages  = array_merge((array) $message, (array) $messages);
-        //Now do a sprintf if we have 1 or more params
-        if (count($messages)>1) $messages = call_user_func_array('sprintf', $messages);
+        // Recombine with the others if any, they will be treated as params
+        if (count($messages)) {
+            $messages  = array_merge((array) $message, (array) $messages);
+
+            //Now do a sprintf if we have 1 or more params
+            $messages = call_user_func_array('sprintf', $messages);
+        } else {
+            $messages = array($message);
+        }
 
         return new Zend_Auth_Result($code, $identity, (array) $messages);
     }

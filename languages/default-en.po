@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-16 18:30+0100\n"
+"POT-Creation-Date: 2011-11-16 19:09+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -77,13 +77,9 @@ msgstr "You must login to access this page."
 msgid "Database needs to be updated!"
 msgstr "Database needs to be updated!"
 
-#: classes/Gems/Auth.php:225
-msgid "Wrong password."
-msgstr "Wrong password."
-
 #: classes/Gems/Auth.php:228
-msgid "Combination of username password not found."
-msgstr "Combination of username password not found."
+msgid "Combination of organization, username and password not found."
+msgstr "Combination of organization, username and password not found."
 
 #: classes/Gems/Html.php:154
 msgid "<< First"
@@ -3783,6 +3779,9 @@ msgstr "This survey can be assigned since %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#~ msgid "Wrong password."
+#~ msgstr "Wrong password."
 
 #~ msgid "Please update the database"
 #~ msgstr "Please update the database"

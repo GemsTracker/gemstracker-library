@@ -54,7 +54,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
 
     public function getAuthAdapter($formValues)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $formValues['userlogin'], $formValues['password']);
+        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $formValues['userlogin'], array($formValues['password']));
         return $adapter;
     }
 

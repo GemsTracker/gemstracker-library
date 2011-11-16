@@ -282,46 +282,44 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
                 $user = $this->loader->getUser($request->getParam('userlogin'), $request->getParam('organization'));
 
-                if ($user->isActive()) {
-                    $formValues = $form->getValues();
-                    $authResult = $user->authenticate($formValues);
+                // NO!!! DO not test! Otherwise it is easy to test which users exist.
+                // if ($user->isActive()) {
+                $formValues = $form->getValues();
+                $authResult = $user->authenticate($formValues);
 
-                    if ($authResult->isValid()) {
+                if ($authResult->isValid()) {
 
-                        $user->setAsCurrentUser();
+                    $user->setAsCurrentUser();
 
-                        $user->afterLogin($form->getValues());
+                    $user->afterLogin($form->getValues());
 
-                        /**
-                         * Fix current locale / organization in cookies
-                         */
-                        Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
-                        Gems_Cookies::setOrganization($user->getOrganizationId(), $this->basepath->getBasePath());
+                    /**
+                     * Fix current locale / organization in cookies
+                     */
+                    Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
+                    Gems_Cookies::setOrganization($user->getOrganizationId(), $this->basepath->getBasePath());
 
-                        /**
-                         * Ready
-                         */
-                        $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
+                    /**
+                     * Ready
+                     */
+                    $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
 
-                        /**
-                         * Log the login
-                         */
-                        Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+                    /**
+                     * Log the login
+                     */
+                    Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
 
-                        if ($previousRequestParameters = $this->session->previousRequestParameters) {
-                            $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
-                        } else {
-                            // This reroutes to the first available menu page after login
-                            $this->_reroute(array('controller' => null, 'action' => null), true);
-                        }
-                        return;
+                    if ($previousRequestParameters = $this->session->previousRequestParameters) {
+                        $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
                     } else {
-                        $errors = $authResult->getMessages();
-                        $this->addMessage($errors);
+                        // This reroutes to the first available menu page after login
+                        $this->_reroute(array('controller' => null, 'action' => null), true);
                     }
+                    return;
+                } else {
+                    $errors = $authResult->getMessages();
+                    $this->addMessage($errors);
                 }
-            } else {
-                $errors = $form->getErrors();
             }
         }
         $this->view->form = $form;
