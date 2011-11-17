@@ -609,6 +609,8 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
             $this->_respTrackData = $this->db->fetchRow($sql, $this->_respTrackId);
         }
+        
+        $this->_ensureFieldData(true);
 
         return $this;
     }
