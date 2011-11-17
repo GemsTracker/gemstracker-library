@@ -152,11 +152,12 @@ class Gems_Auth extends Zend_Auth
         } else {
             if ($values['gula_failed_logins']) {
                 // MUtil_Echo::track($result->getCode(), self::ERROR_PASSWORD_DELAY);
-                // Only increment when we have no password delay
-                // if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
+                // Only increment when we have no password delay as the right password
+                // will not be accepted when we are in the delay.
+                if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
                     $values['gula_failed_logins'] += 1;
                     $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-                // }
+                }
             } else {
                 $values['gula_failed_logins'] = 1;
                 $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
