@@ -532,6 +532,24 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
 
         return $elements;
     }
+    
+    /**
+     * Returns an associative array of the fields in this track
+     *
+     * @return string[]
+     */
+    public function getFields()
+    {
+        $this->_ensureTrackFields();
+        
+        $fields = array();
+        
+        foreach ($this->_trackFields as $field) {
+            $fields[$field['gtf_id_field']] = $field['gtf_field_name'];
+        }
+        
+        return $fields;
+    }
 
     /**
      * Get the round id of the first round
