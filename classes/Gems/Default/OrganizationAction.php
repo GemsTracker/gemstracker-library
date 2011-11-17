@@ -149,12 +149,11 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));
             $model->set('gor_welcome',   'label', $this->_('Greeting'),  'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
             $model->set('gor_signature', 'label', $this->_('Signature'), 'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
-
-            $model->set('gor_accessible_by', 'label', $this->_('Accessible by'), 'description', $this->_('Checked organizations see this organizations respondents.'), 'elementClass', 'MultiCheckbox',
-                    'multiOptions', $this->util->getDbLookup()->getOrganizations());
-            MUtil_Model_Save_ArraySaver::create($model, 'gor_accessible_by', ':');
-
         }
+        $model->set('gor_accessible_by', 'label', $this->_('Accessible by'), 'description', $this->_('Checked organizations see this organizations respondents.'),
+                'elementClass', 'MultiCheckbox', 'multiOptions', $this->util->getDbLookup()->getOrganizations());
+        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp->apply($model, 'gor_accessible_by');
 
         if ($this->project->multiLocale) {
             $model->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');

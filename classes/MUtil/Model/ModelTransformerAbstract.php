@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -43,7 +43,7 @@ abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbs
         $paramTypes['sourceModel'] = 'MUtil_Model_ModelAbstract';
         $paramTypes['name']        = 'is_string';
 
-        $args = MUtil_Ra::args($args, $paramTypes); 
+        $args = MUtil_Ra::args($args, $paramTypes);
 
         if (isset($args['name'])) {
             $name = $args['name'];
@@ -75,6 +75,20 @@ abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbs
         if ($this->sourceModel) {
             return $this->sourceModel->_getKeyValue($name, $key);
         }
+    }
+
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _load($filter = true, $sort = true)
+    {
+        $data = $this->sourceModel->_load($filter, $sort);
+
+        return $this->transform($data, $filter, $sort);
     }
 
     public function delete($filter = true)
@@ -134,7 +148,7 @@ abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbs
         }
     }
 
-    public function getSourceModel() 
+    public function getSourceModel()
     {
         return $this->sourceModel;
     }
@@ -158,13 +172,6 @@ abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbs
     public function hasNew()
     {
         return false;
-    }
-
-    public function load($filter = true, $sort = true)
-    {
-        $data = $this->sourceModel->load($filter, $sort);
-
-        return $this->transform($data, $filter, $sort);
     }
 
     public function resetOrder()
@@ -206,7 +213,7 @@ abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbs
         return $this;
     }
 
-    public function setSourceModel(MUtil_Model_ModelAbstract $model) 
+    public function setSourceModel(MUtil_Model_ModelAbstract $model)
     {
         $this->sourceModel = $model;
         return $this;

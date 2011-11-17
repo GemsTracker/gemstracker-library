@@ -61,6 +61,7 @@ abstract class MUtil_Model_ModelAbstract
 {
     const ALIAS_OF  = 'alias_of';
     const AUTO_SAVE = 'auto_save';
+    const LOAD_TRANSFORMER = 'load_transformer';
     const SAVE_TRANSFORMER = 'save_transformer';
     const SAVE_WHEN_TEST   = 'save_when_test';
 
@@ -132,7 +133,40 @@ abstract class MUtil_Model_ModelAbstract
         }
     }
 
-    protected function _filterDataArray(array $data, $new = false)
+    /**
+     * Processes empty strings, filters items that should not be saved
+     * according to setSaveWhen() and changes values that have a setOnSave()
+     * function.
+     *
+     * @see setOnSave
+     * @set setSaveWhen
+     *
+     * @param array $data The values to save
+     * @param boolean $new True when it is a new item
+     * @return array The possibly adapted array of values
+     */
+    protected function _filterDataAfterLoad(array $data, $new = false)
+    {
+        foreach ($data as $name => $value) {
+            $data[$name] = $this->getOnLoad($value, $new, $name, $data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Processes empty strings, filters items that should not be saved
+     * according to setSaveWhen() and changes values that have a setOnSave()
+     * function.
+     *
+     * @see setOnSave
+     * @set setSaveWhen
+     *
+     * @param array $data The values to save
+     * @param boolean $new True when it is a new item
+     * @return array The possibly adapted array of values
+     */
+    protected function _filterDataForSave(array $data, $new = false)
     {
         // MUtil_Echo::r($data, 'preFilter');
 
@@ -142,7 +176,7 @@ abstract class MUtil_Model_ModelAbstract
                 $value = null;
             }
 
-            if ($this->isSaveable($name, $value, $new)) {
+            if ($this->isSaveable($value, $new, $name, $data)) {
                 $filteredData[$name] = $this->getOnSave($value, $new, $name, $data);
             }
         }
@@ -180,6 +214,15 @@ abstract class MUtil_Model_ModelAbstract
             }
         }
     }
+
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    abstract protected function _load($filter = true, $sort = true);
 
     protected function addChanged($add = 1)
     {
@@ -580,6 +623,30 @@ abstract class MUtil_Model_ModelAbstract
     }
 
     /**
+     * Checks for and executes any actions to perform on a value after
+     * loading the value
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return mixed The value to save
+     */
+    public function getOnLoad($value, $new, $name, array $context = array())
+    {
+        if ($call = $this->get($name, self::LOAD_TRANSFORMER)) {
+
+             if (is_callable($call)) {
+                 $value = call_user_func($call, $value, $new, $name, $context);
+             } else {
+                 $value = $call;
+             }
+        }
+
+        return $value;
+    }
+
+    /**
      * Checks for and executes any actions to perform on a value before
      * saving the value
      *
@@ -734,12 +801,13 @@ abstract class MUtil_Model_ModelAbstract
     /**
      * Must the model save field $name with this $value and / or this $new values.
      *
-     * @param string $name The name of a field
-     * @param mixed $value The value being changed
-     * @param boolean $new True if the item is a new item saved for the first time
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
      * @return boolean True if the data can be saved
      */
-    public function isSaveable($name, $value, $new = false)
+    public function isSaveable($value, $new, $name, array $context = array())
     {
         if ($test = $this->get($name, self::SAVE_WHEN_TEST)) {
 
@@ -769,20 +837,35 @@ abstract class MUtil_Model_ModelAbstract
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @return array Nested array or false
      */
-    abstract public function load($filter = true, $sort = true);
+    public function load($filter = true, $sort = true)
+    {
+        $data = $this->_load($filter, $sort);
+
+        if (is_array($data) && $this->getMeta(self::LOAD_TRANSFORMER)) {
+            foreach ($data as $key => $row) {
+                $data[$key] = $this->_filterDataAfterLoad($row, false);
+            }
+        }
+
+        return $data;
+    }
 
     /**
      * Returns an array containing the first requested item.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $filter True to use the stored filter, array to specify a different filteloa
      * @param mixed $sort True to use the stored sort, array to specify a different sort
      * @return array An array or false
      */
     public function loadFirst($filter = true, $sort = true)
     {
-        $data = $this->load($filter, $sort);
+        $data = $this->_load($filter, $sort);
         // Return the first row or null.
-        return reset($data);
+        $data = reset($data);
+        if (is_array($data) && $this->getMeta(self::LOAD_TRANSFORMER)) {
+            $data = $this->_filterDataAfterLoad($data, false);
+        }
+        return $data;
     }
 
     /**
@@ -801,6 +884,7 @@ abstract class MUtil_Model_ModelAbstract
                 $empty[$name] = null;
             }
         }
+        $empty = $this->_filterDataAfterLoad($empty, true);
 
         // Return only a single row when no count is specified
         if (null === $count) {
@@ -1118,9 +1202,24 @@ abstract class MUtil_Model_ModelAbstract
     }
 
     /**
-     * Sets a name to automatically determined/changed of value during save.
+     * Sets a name to automatically change a value after a load.
      *
-     * @param string $name
+     * @param string $name The fieldname
+     * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array())
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function setOnLoad($name, $callableOrConstant)
+    {
+        // Make sure we store that there is some OnLoad function.
+        $this->setMeta(self::LOAD_TRANSFORMER, true);
+        $this->set($name, self::LOAD_TRANSFORMER, $callableOrConstant);
+        return $this;
+    }
+
+    /**
+     * Sets a name to an automatically determined or changed of value before a save.
+     *
+     * @param string $name The fieldname
      * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array())
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
@@ -1130,24 +1229,49 @@ abstract class MUtil_Model_ModelAbstract
         return $this;
     }
 
+    /**
+     * Set this field to be saved whenever there is anything to save at all.
+     *
+     * @param string $name The fieldname
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setSaveOnChange($name)
     {
         $this->setAutoSave($name);
         return $this->setSaveWhen($name, true);
     }
 
+    /**
+     * Set this field to be saved whenever a constant is true or a callable returns true.
+     *
+     * @param string $name The fieldname
+     * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array()) boolean
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setSaveWhen($name, $callableOrConstant)
     {
         $this->set($name, self::SAVE_WHEN_TEST, $callableOrConstant);
         return $this;
     }
 
+    /**
+     * Set this field to be saved only when it is a new item.
+     *
+     * @param string $name The fieldname
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setSaveWhenNew($name)
     {
         $this->setAutoSave($name);
         return $this->setSaveWhen($name, array(__CLASS__, 'whenNotNew'));
     }
 
+    /**
+     * Set this field to be saved only when it is not empty.
+     *
+     * @param string $name The fieldname
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setSaveWhenNotNull($name)
     {
         return $this->setSaveWhen($name, array(__CLASS__, 'whenNotNull'));
@@ -1183,12 +1307,35 @@ abstract class MUtil_Model_ModelAbstract
         }
     }
 
-    public static function whenNotNew($name, $value, $new)
+    /**
+     * A ModelAbstract->setSaveWhen() function that true when a new item is saved..
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public static function whenNotNew($value, $isNew = false, $name = null, array $context = array())
     {
         return $new;
     }
 
-    public static function whenNotNull($name, $value, $new)
+    /**
+     * A ModelAbstract->setSaveWhen() function that true when the value
+     * is not null.
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public static function whenNotNull($value, $isNew = false, $name = null, array $context = array())
     {
         return null !== $value;
     }

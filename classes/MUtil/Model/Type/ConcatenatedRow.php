@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id$
  */
 
 /**
@@ -44,15 +44,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Save_ArraySaver
+class MUtil_Model_Type_ConcatenatedRow
 {
+    protected $displaySeperator = ' ';
+
     protected $seperatorChar = ' ';
 
     protected $valuePad = true;
 
-    public function __construct($seperatorChar = ' ', $valuePad = true)
+    public function __construct($seperatorChar = ' ', $displaySeperator = ' ', $valuePad = true)
     {
         $this->seperatorChar = substr($seperatorChar . ' ', 0, 1);
+        $this->displaySeperator = $displaySeperator;
         $this->valuePad = $valuePad;
     }
 
@@ -61,18 +64,25 @@ class MUtil_Model_Save_ArraySaver
      *
      * @param MUtil_Model_ModelAbstract $model
      * @param string $name The field to set the seperator character
-     * @param string $char
-     * @param boolean $pad
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return MUtil_Model_Type_ConcatenatedRow (continuation pattern)
      */
-    public static function create(MUtil_Model_ModelAbstract $model, $name, $char = ' ', $pad = true)
+    public function apply(MUtil_Model_ModelAbstract $model, $name)
     {
-        $class = new self($char, $pad);
+        $model->set($name, 'formatFunction', array($this, 'format'));
+        $model->setOnLoad($name, array($this, 'loadValue'));
+        $model->setOnSave($name, array($this, 'saveValue'));
 
-        $model->set($name, 'valueSeperatorChar', substr($char . ' ', 0, 1), 'valuePad', $pad);
-        $model->setOnSave($name, array($class, 'saveValue'));
+        return $this;
+    }
 
-        return $class;
+    public function format($value)
+    {
+        // MUtil_Echo::track($value);
+        if (is_array($value)) {
+            return implode($this->displaySeperator, $value);
+        } else {
+            return $value;
+        }
     }
 
     /**
@@ -85,7 +95,33 @@ class MUtil_Model_Save_ArraySaver
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return array Of the values
+     */
+    public function loadValue($value, $isNew = false, $name = null, array $context = array())
+    {
+        // MUtil_Echo::track($value);
+        if (! is_array($value)) {
+            if ($this->valuePad) {
+                $value = trim($value, $this->seperatorChar);
+            }
+            $value = explode($this->seperatorChar, $value);
+        }
+        // MUtil_Echo::track($value);
+
+        return $value;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that concatenates the
+     * value if it is an array.
+     *
+     * @see Gems_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string Of the values concatenated
      */
     public function saveValue($value, $isNew = false, $name = null, array $context = array())
     {

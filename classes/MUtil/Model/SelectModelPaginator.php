@@ -93,6 +93,12 @@ class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interfa
     {
         $items = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
 
+        // MUtil_Echo::track($items);
+        if ($items && is_array($items)) {
+            $items = $this->_model->processAfterLoad($items);
+        }
+        // MUtil_Echo::track($items);
+
         return $items;
     }
 }

@@ -241,7 +241,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             }
         }
 
-        return $this->_filterDataArray($tableData, $isNew);
+        return $this->_filterDataForSave($tableData, $isNew);
     }
 
     protected function _getKeysFor($table_name)
@@ -259,6 +259,18 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     protected function _getTableName(Zend_Db_Table_Abstract $table)
     {
         return $table->info(Zend_Db_Table_Abstract::NAME);
+    }
+
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _load($filter = true, $sort = true)
+    {
+        return $this->_createSelect($filter, $sort)->query(Zend_Db::FETCH_ASSOC)->fetchAll();
     }
 
     protected function _loadTableMetaData(Zend_Db_Table_Abstract $table)
@@ -608,7 +620,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * @param array $context Optional, the other values being saved
      * @return Zend_Date
      */
-    public function formatSaveDate($value, $isNew = false, $name = null)
+    public function formatSaveDate($value, $isNew = false, $name = null, array $context = array())
     {
         if ($name && (! ((null === $value) || ($value instanceof Zend_Db_Expr)))) {
             if ($saveFormat = $this->get($name, 'storageFormat')) {
@@ -714,18 +726,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
-     * Returns a nested array containing the items requested.
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array Nested array or false
-     */
-    public function load($filter = true, $sort = true)
-    {
-        return $this->_createSelect($filter, $sort)->query(Zend_Db::FETCH_ASSOC)->fetchAll();
-    }
-
-    /**
      * Returns an array containing the first requested item.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -737,7 +737,12 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         $select = $this->_createSelect($filter, $sort);
         $select->limit(1, 0);
 
-        return $select->query(Zend_Db::FETCH_ASSOC)->fetch();
+        $data = $select->query(Zend_Db::FETCH_ASSOC)->fetch();
+        if (is_array($data)) {
+            $data = $this->_filterDataAfterLoad($data, false);
+        }
+
+        return $data;
     }
 
     /**
@@ -753,6 +758,26 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         $adapter = new MUtil_Model_SelectModelPaginator($select, $this);
 
         return new Zend_Paginator($adapter);
+    }
+
+    /**
+     * Helper function for SelectModelPaginator to process
+     * setOnLoads.
+     *
+     * @see MUtil_Model_SelectModelPaginator
+     *
+     * @param array $data Nested array
+     * @return array Nested
+     */
+    public function processAfterLoad(array $data)
+    {
+        if ($this->getMeta(parent::LOAD_TRANSFORMER)) {
+            foreach ($data as $key => $row) {
+                $data[$key] = $this->_filterDataAfterLoad($row, false);
+            }
+        }
+
+        return $data;
     }
 
     // abstract public function save(array $newValues);

@@ -7,6 +7,7 @@ The table gems__user_ids provides unique and non-sequential user ids accross gem
 The gems__respondent.grs_bsn has been renamed to grs_ssn, to make the code more international.
 MailController is now called MailTemplateController.
 EmailController is now called CronController (with stub for compatibility).
+ModelAbstract now declares an protected _load instead of a public load abstract, for implementation of setOnLoad() functions, check your own Models for overloading load() or loadXX() functions.
 
 Important changes from 1.4.2 => 1.4.3
 ============================================================

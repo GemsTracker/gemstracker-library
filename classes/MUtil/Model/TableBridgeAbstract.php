@@ -104,6 +104,7 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
 
     private static function _applyDisplayFunction($item, $function)
     {
+        // MUtil_Echo::track($function);
         if (is_callable($function)) {
             return call_user_func($function, $item);
         }
@@ -127,7 +128,9 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
 
         } elseif (is_array($function)) {
             foreach ($function as $display) {
-                $item = self::_applyDisplayFunction($item, $display);
+                if ($display !== null) {
+                    $item = self::_applyDisplayFunction($item, $display);
+                }
             }
         }
 

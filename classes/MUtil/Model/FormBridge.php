@@ -85,7 +85,7 @@ class MUtil_Model_FormBridge
         self::FILE_OPTIONS     => array('accept', 'count', 'destination', 'valueDisabled'),
         self::GROUP_OPTIONS    => array('elements', 'legend', 'separator'),
         self::JQUERY_OPTIONS   => array('jQueryParams'),
-        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'valuePad', 'valueSeperatorChar'),
+        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size'),
         self::PASSWORD_OPTIONS => array('repeatLabel'),
         self::TAB_OPTIONS      => array('value'),
         self::TEXT_OPTIONS     => array('maxlength', 'minlength', 'onchange', 'onfocus', 'onselect', 'size'),
@@ -538,7 +538,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new MUtil_Form_Element_MultiCheckbox($name, $options);
+        $element = new Zend_Form_Element_MultiCheckbox($name, $options);
 
         return $this->_addToForm($name, $element);
     }
@@ -562,7 +562,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new MUtil_Form_Element_Multiselect($name, $options);
+        $element = new Zend_Form_Element_Multiselect($name, $options);
 
         return $this->_addToForm($name, $element);
     }

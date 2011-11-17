@@ -120,6 +120,28 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         }
     }
 
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _load($filter = true, $sort = true)
+    {
+        $data = $this->_loadAllData();
+
+        if ($filter) {
+            $data = $this->_filterData($data, $this->_checkFilterUsed($filter));
+        }
+
+        if ($sort) {
+            $data = $this->_sortData($data, $this->_checkSortUsed($sort));
+        }
+
+        return $data;
+    }
+
     private function _loadAllData()
     {
         $tables = $this->db->listTables();
@@ -345,21 +367,6 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
     public function hasTextSearchFilter()
     {
         return true;
-    }
-
-    public function load($filter = true, $sort = true)
-    {
-        $data = $this->_loadAllData();
-
-        if ($filter) {
-            $data = $this->_filterData($data, $this->_checkFilterUsed($filter));
-        }
-
-        if ($sort) {
-            $data = $this->_sortData($data, $this->_checkSortUsed($sort));
-        }
-
-        return $data;
     }
 
     public function loadTable($tableName)

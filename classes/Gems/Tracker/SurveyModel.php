@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -75,6 +75,18 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     }
 
     /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _load($filter = true, $sort = true)
+    {
+        return $this->addAnswers(parent::_load($filter, $sort));
+    }
+
+    /**
      * Returns a nested array containing the items requested, including answers.
      *
      * @param array $inputRows Nested rows with Gems token information
@@ -113,18 +125,6 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     }
 
     /**
-     * Returns a nested array containing the items requested.
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array Nested array or false
-     */
-    public function load($filter = true, $sort = true)
-    {
-        return $this->addAnswers(parent::load($filter, $sort));
-    }
-
-    /**
      * Returns an array containing the first requested item.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -145,18 +145,7 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
      */
     public function loadPaginator($filter = true, $sort = true)
     {
+        // Do not use a select paginator for the moment, till we can add addAnswers()
         return Zend_Paginator::factory($this->load($filter, $sort));
-    }
-
-    /**
-     * Returns a MUtil_Lazy_RepeatableInterface for the items in the model
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return MUtil_Lazy_RepeatableInterface
-     */
-    public function loadRepeatable($filter = true, $sort = true)
-    {
-        return MUtil_Lazy::repeat($this->load($filter, $sort));
     }
 }

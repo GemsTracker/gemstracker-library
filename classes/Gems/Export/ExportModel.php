@@ -54,6 +54,22 @@ class Gems_Export_ExportModel extends MUtil_Model_ModelAbstract
         parent::__construct('export');
     }
 
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _load($filter = true, $sort = true)
+    {
+        $result = array();
+        foreach ($this->getItemsOrdered() as $item) {
+            $result[0][$item] = $item;
+        }
+        return $result;
+    }
+
     public function delete($filter = true)
     {
         return false;
@@ -62,15 +78,6 @@ class Gems_Export_ExportModel extends MUtil_Model_ModelAbstract
     public function hasNew()
     {
         return false;
-    }
-
-    public function load($filter = true, $sort = true)
-    {
-        $result = array();
-        foreach ($this->getItemsOrdered() as $item) {
-            $result[0][$item] = $item;
-        }
-        return $result;
     }
 
     public function save(array $newValues, array $filter = null)
