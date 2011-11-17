@@ -596,14 +596,26 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         throw new MUtil_Model_ModelException("Cannot create UniqueValue validator as no table was defined for field $name.");
     }
 
-    public function formatSaveDate($name, $value, $new = false)
+    /**
+     * A ModelAbstract->setOnSave() function that returns the input
+     * date as a valid date.
+     *
+     * @see Gems_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return Zend_Date
+     */
+    public function formatSaveDate($value, $isNew = false, $name = null)
     {
         if ($name && (! ((null === $value) || ($value instanceof Zend_Db_Expr)))) {
             if ($saveFormat = $this->get($name, 'storageFormat')) {
 
                 if ($value instanceof Zend_Date) {
                     return $value->toString($saveFormat);
-                    
+
                 } else {
                     $displayFormat = $this->get($name, 'dateFormat');
 
@@ -737,9 +749,10 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     public function loadPaginator($filter = true, $sort = true)
     {
-        $select = $this->_createSelect($filter, $sort);
+        $select  = $this->_createSelect($filter, $sort);
+        $adapter = new MUtil_Model_SelectModelPaginator($select, $this);
 
-        return Zend_Paginator::factory($select);
+        return new Zend_Paginator($adapter);
     }
 
     // abstract public function save(array $newValues);

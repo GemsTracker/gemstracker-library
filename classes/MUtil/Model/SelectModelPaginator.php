@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,11 +32,14 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id$
  */
 
 /**
+ * This class wraps around a select as a paginator, while allowing model->onload
+ * functions to apply.
  *
+ * @see MUtil_Model_DatabaseModelAbstract
  *
  * @package    MUtil
  * @subpackage Model
@@ -44,58 +47,52 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Save_ArraySaver
+class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interface
 {
-    protected $seperatorChar = ' ';
-
-    protected $valuePad = true;
-
-    public function __construct($seperatorChar = ' ', $valuePad = true)
-    {
-        $this->seperatorChar = substr($seperatorChar . ' ', 0, 1);
-        $this->valuePad = $valuePad;
-    }
+    /**
+     *
+     * @var MUtil_Model_DatabaseModelAbstract
+     */
+    protected $_model;
 
     /**
-     * If this field is saved as an array value, use
      *
+     * @var Zend_Paginator_Adapter_DbSelect
+     */
+    protected $_selectAdapter;
+
+    /**
+     *
+     * @param Zend_Db_Select $select
      * @param MUtil_Model_ModelAbstract $model
-     * @param string $name The field to set the seperator character
-     * @param string $char
-     * @param boolean $pad
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
-    public static function create(MUtil_Model_ModelAbstract $model, $name, $char = ' ', $pad = true)
+    public function __construct(Zend_Db_Select $select, MUtil_Model_DatabaseModelAbstract $model)
     {
-        $class = new self($char, $pad);
-
-        $model->set($name, 'valueSeperatorChar', substr($char . ' ', 0, 1), 'valuePad', $pad);
-        $model->setOnSave($name, array($class, 'saveValue'));
-
-        return $class;
+        $this->_selectAdapter = new Zend_Paginator_Adapter_DbSelect($select);
+        $this->_model = $model;
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that concatenates the
-     * value if it is an array.
+     * Returns the total number of rows in the result set.
      *
-     * @see Gems_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return integer
      */
-    public function saveValue($value, $isNew = false, $name = null, array $context = array())
+    public function count()
     {
-        if (is_array($value)) {
-            $value = implode($this->seperatorChar, $value);
+        return $this->_selectAdapter->count();
+    }
 
-            if ($this->valuePad) {
-                $value = $this->seperatorChar . $value . $this->seperatorChar;
-            }
-        }
-        return $value;
+    /**
+     * Returns an array of items for a page.
+     *
+     * @param  integer $offset Page offset
+     * @param  integer $itemCountPerPage Number of items per page
+     * @return array
+     */
+    public function getItems($offset, $itemCountPerPage)
+    {
+        $items = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
+
+        return $items;
     }
 }

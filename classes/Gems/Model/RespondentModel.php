@@ -133,12 +133,13 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     /**
      * Return a hashed version of the input value.
      *
-     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
-     * @param string $value The value to hash.
-     * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
      * @return string The salted hash as a 32-character hexadecimal number.
      */
-    public function formatSSN($name, $value, $new = false)
+    public function formatSSN($value, $isNew = false, $name = null, array $context = array())
     {
         if ($value) {
             return $this->project->getValueHash($value);

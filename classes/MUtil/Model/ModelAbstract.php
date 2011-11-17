@@ -143,7 +143,7 @@ abstract class MUtil_Model_ModelAbstract
             }
 
             if ($this->isSaveable($name, $value, $new)) {
-                $filteredData[$name] = $this->getOnSave($name, $value, $new);
+                $filteredData[$name] = $this->getOnSave($value, $new, $name, $data);
             }
         }
 
@@ -579,12 +579,22 @@ abstract class MUtil_Model_ModelAbstract
         return $this->_model_name;
     }
 
-    public function getOnSave($name, $value, $new = false)
+    /**
+     * Checks for and executes any actions to perform on a value before
+     * saving the value
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return mixed The value to save
+     */
+    public function getOnSave($value, $new, $name, array $context = array())
     {
         if ($call = $this->get($name, self::SAVE_TRANSFORMER)) {
 
              if (is_callable($call)) {
-                 $value = call_user_func($call, $name, $value, $new);
+                 $value = call_user_func($call, $value, $new, $name, $context);
              } else {
                  $value = $call;
              }
@@ -1107,6 +1117,13 @@ abstract class MUtil_Model_ModelAbstract
         return $this;
     }
 
+    /**
+     * Sets a name to automatically determined/changed of value during save.
+     *
+     * @param string $name
+     * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array())
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setOnSave($name, $callableOrConstant)
     {
         $this->set($name, self::SAVE_TRANSFORMER, $callableOrConstant);

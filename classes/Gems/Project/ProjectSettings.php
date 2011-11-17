@@ -224,17 +224,4 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         return md5($salted, false);
     }
-
-    /**
-     * Returns a salted hash on the
-     *
-     * @param string $name Fieldname
-     * @param string $value The value to hash
-     * @param string $isNew True when new
-     * @return string The salted hash as a 32-character hexadecimal number.
-     */
-    public function getValueHashForModel($name, $value, $isNew = false)
-    {
-        return $this->getValueHash($value);
-    }
 }

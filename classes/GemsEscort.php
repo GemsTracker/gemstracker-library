@@ -1207,12 +1207,13 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * @deprecated Since 1.5
      *
-     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
      * @param string $value The value to hash.
      * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
+     * @param array $context Optional, the other values being saved
      * @return string The salted hash as a 32-character hexadecimal number.
      */
-    public function passwordHash($name, $value, $new)
+    public function passwordHash($value, $isNew = false, $name = null, array $context = array())
     {
         return $this->project->getValueHash($value);
     }

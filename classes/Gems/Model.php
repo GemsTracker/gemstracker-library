@@ -120,12 +120,15 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Create a Gems project wide unique user id
      *
-     * @param string $name
-     * @param mixed $value
-     * @param boolean $isNew
+     * @see Gems_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
      * @return int
      */
-    public function createGemsUserId($name, $value, $isNew)
+    public function createGemsUserId($value, $isNew = false, $name = null, array $context = array())
     {
         if ($isNew || (null === $value)) {
             $creationTime = new Zend_Db_Expr('CURRENT_TIMESTAMP');

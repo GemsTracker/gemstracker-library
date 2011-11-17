@@ -98,7 +98,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             case Gems_User_UserLoader::USER_STAFF:
                 Gems_Model::addUserPassword($model);
                 $passwordField = 'gup_password';
-                $model->setOnSave($passwordField, array($this->project, 'getValueHashForModel'));
+                $model->setOnSave($passwordField, array($this->project, 'getValueHash'));
                 break;
 
             case Gems_User_UserLoader::USER_OLD_STAFF:
@@ -268,12 +268,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     /**
      * Return an old style (< 1.5) hashed version of the input value.
      *
-     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
      * @param string $value The value to hash.
      * @param boolean $new Optional is new, is here for ModelAbstract setOnSave compatibility
+     * @param string $name Optional name, is here for ModelAbstract setOnSave compatibility
+     * @param array $context Optional, the other values being saved
      * @return string The salted hash as a 32-character hexadecimal number.
      */
-    public function getOldPasswordHash($name, $value, $new)
+    public function getOldPasswordHash($value, $isNew = false, $name = null, array $context = array())
     {
         return md5($value);
     }

@@ -160,8 +160,8 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         if ($this->formData[self::RECALCULATE_FIELD]) {
             $model = $this->getModel();
             // Refresh token with current form data
-            $updateData['gto_valid_from']  = $model->getOnSave('gto_valid_from', $this->formData['gto_valid_from'], true);
-            $updateData['gto_valid_until'] = $model->getOnSave('gto_valid_until', $this->formData['gto_valid_until'], true);
+            $updateData['gto_valid_from']  = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
+            $updateData['gto_valid_until'] = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
             $updateData['gto_comment']     = $this->formData['gto_comment'];
 
             $this->token->refresh($updateData);
