@@ -111,6 +111,17 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     }
 
     /**
+     * Check for password weakness.
+     *
+     * @param string $password
+     * @return mixed String or array of strings containing warning messages
+     */
+    public function isPasswordWeak($password)
+    {
+
+    }
+
+    /**
      * Set the password, if allowed for this user type.
      *
      * @param Gems_User_User $user The user whose password to change

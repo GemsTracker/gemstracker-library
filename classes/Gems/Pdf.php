@@ -26,24 +26,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * File description of Pdf
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.1
- * @version 1.1
- * @package Gems
+ *
+ * @package    Gems
  * @subpackage Pdf
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * Class description of Pdf
+ * Gems standaard Pdf utility functions
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
+ * @package    Gems
  * @subpackage PDf
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class Gems_Pdf extends Gems_Registry_TargetAbstract
 {

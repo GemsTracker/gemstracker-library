@@ -532,7 +532,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
 
         return $elements;
     }
-    
+
     /**
      * Returns an associative array of the fields in this track
      *
@@ -541,13 +541,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     public function getFields()
     {
         $this->_ensureTrackFields();
-        
+
         $fields = array();
-        
+
         foreach ($this->_trackFields as $field) {
             $fields[$field['gtf_id_field']] = $field['gtf_field_name'];
         }
-        
+
         return $fields;
     }
 
@@ -703,7 +703,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         }
 
         $model->set('gro_id_survey',         'label', $this->_('Survey'),       'multiOptions', $this->util->getTrackData()->getAllSurveys());
-        $model->set('gro_id_order',          'label', $this->_('Order'),        'default', 10);
+        $model->set('gro_id_order',          'label', $this->_('Order'),        'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
         $model->set('gro_round_description', 'label', $this->_('Description'),  'size', '30'); //, 'minlength', 4, 'required', true);
         $model->set('gro_changed_event',     'label', $this->_('After change'), 'multiOptions', $this->events->listRoundChangedEvents());
         $model->set('gro_active',            'label', $this->_('Active'),       'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
