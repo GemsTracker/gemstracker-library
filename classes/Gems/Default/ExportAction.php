@@ -89,8 +89,6 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 $div[] = $form;
             } else {
                 Zend_Layout::resetMvcInstance();
-                $this->view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
-                $this->view->addHelperPath('ZendX/JQuery/View/Helper', 'ZendX_JQuery_View_Helper');
                 $this->html->raw($form->render($this->view));
 
                 //Now add all onload actions to make the form still work

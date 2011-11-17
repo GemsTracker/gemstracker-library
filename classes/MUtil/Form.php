@@ -96,11 +96,11 @@ class MUtil_Form extends Zend_Form
                 return;
             }
         }
-
+        
+        ZendX_JQuery::enableView($view);
+        
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
             $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
-
-            ZendX_JQuery::enableView($view);
         }
     }
 

@@ -79,14 +79,12 @@ class Gems_JQuery_Form_Element_ToggleCheckboxes extends Zend_Form_Element_Button
      */
     public function setView(Zend_View_Interface $view = null)
     {
+        $element = parent::setView($view);
         if (null !== $view) {
             if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
                 $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
             }
-            if (false === $view->getPluginLoader('helper')->getPaths('ZendX_JQuery_View_Helper')) {
-                $view->addHelperPath('ZendX/JQuery/View/Helper', 'ZendX_JQuery_View_Helper');
-            }
         }
-        return parent::setView($view);
+        return $element;
     }
 }

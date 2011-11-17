@@ -319,10 +319,12 @@ class Gems_TabForm extends Gems_Form
      */
     public function setView(Zend_View_Interface $view = null) {
         $form = parent::setView($view);
-        ZendX_JQuery::enableView($view);
-
-        if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
-            $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
+        
+        if ($view) {
+            $this->activateJQuery();
+            if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
+                $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
+            }
         }
 
         return $form;

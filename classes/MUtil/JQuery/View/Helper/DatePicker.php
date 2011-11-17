@@ -43,13 +43,34 @@
  * @package MUtil
  * @subpackage View
  */
-class MUtil_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DatePicker
+class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DatePicker
 {
     public function datePicker($id, $value = null, array $params = array(), array $attribs = array()) {
         $result = parent::datePicker($id, $value, $params, $attribs);
         if (isset($attribs['disabled'])) {
             $js = "$('#" . $attribs['id'] . "').datepicker('disable');";
             $this->jquery->addOnLoad($js);
+        }
+
+        if ($format = $params['dateFormat']) {
+            //*
+            $js = array();
+            $js[] = '{';
+            $js[] = "  var datePick = $('#" . $id . "');";
+            $js[] = '';
+            $js[] = "  datePick.blur(function() {";
+            $js[] = "    var dateused;";
+            $js[] = "    var dateformat = '" . $format . "';";
+            // TODO: Why won't this work
+            // $js[] = "    var dateformat = datePick.datepicker('option', 'dateFormat');";
+            // $js[] = "    alert(dateformat);";
+            $js[] = "    dateused = datePick.attr('value');";
+            $js[] = "    dateused = $.datepicker.parseDate(dateformat, dateused);";
+            $js[] = "    datePick.attr('value', $.datepicker.formatDate(dateformat, dateused));";
+            $js[] = "  });";
+            $js[] = '}';
+
+            $this->view->inlineScript()->appendScript(implode("\n", $js)); // */
         }
         return $result;
     }

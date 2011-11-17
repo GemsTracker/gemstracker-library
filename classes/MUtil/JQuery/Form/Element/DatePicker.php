@@ -213,26 +213,14 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
             }
         }
 
-        if ($format = $this->getJQueryParam('dateFormat')) {
-            //*
-            $js[] = '{';
-            $js[] = "  var datePick = $('#" . $this->getId() . "');";
-            $js[] = '';
-            $js[] = "  datePick.blur(function() {";
-            $js[] = "    var dateused;";
-            $js[] = "    var dateformat = '" . $format . "';";
-            // TODO: Why won't this work
-            // $js[] = "    var dateformat = datePick.datepicker('option', 'dateFormat');";
-            // $js[] = "    alert(dateformat);";
-            $js[] = "    dateused = datePick.attr('value');";
-            $js[] = "    dateused = $.datepicker.parseDate(dateformat, dateused);";
-            $js[] = "    datePick.attr('value', $.datepicker.formatDate(dateformat, dateused));";
-            $js[] = "  });";
-            $js[] = '}';
+        $element = parent::setView($view);
 
-            $view->inlineScript()->appendScript(implode("\n", $js)); // */
+        if (null !== $view) {
+            if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
+                $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
+            }
         }
 
-        return parent::setView($view);
+        return $element;
     }
 }
