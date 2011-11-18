@@ -660,11 +660,11 @@ abstract class MUtil_Model_ModelAbstract
     {
         if ($call = $this->get($name, self::SAVE_TRANSFORMER)) {
 
-             if (is_callable($call)) {
-                 $value = call_user_func($call, $value, $new, $name, $context);
-             } else {
-                 $value = $call;
-             }
+            if (is_callable($call)) {
+                $value = call_user_func($call, $value, $new, $name, $context);
+            } else {
+                $value = $call;
+            }
         }
 
         return $value;
@@ -812,7 +812,7 @@ abstract class MUtil_Model_ModelAbstract
         if ($test = $this->get($name, self::SAVE_WHEN_TEST)) {
 
              if (is_callable($test)) {
-                 return call_user_func($test, $name, $value, $new);
+                 return call_user_func($test, $value, $new, $name, $context);
              }
 
              return $test;
@@ -1263,7 +1263,7 @@ abstract class MUtil_Model_ModelAbstract
     public function setSaveWhenNew($name)
     {
         $this->setAutoSave($name);
-        return $this->setSaveWhen($name, array(__CLASS__, 'whenNotNew'));
+        return $this->setSaveWhen($name, array(__CLASS__, 'whenNew'));
     }
 
     /**
@@ -1318,9 +1318,9 @@ abstract class MUtil_Model_ModelAbstract
      * @param array $context Optional, the other values being saved
      * @return boolean
      */
-    public static function whenNotNew($value, $isNew = false, $name = null, array $context = array())
+    public static function whenNew($value, $isNew = false, $name = null, array $context = array())
     {
-        return $new;
+        return $isNew;
     }
 
     /**

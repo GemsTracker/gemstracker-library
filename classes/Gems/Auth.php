@@ -93,7 +93,8 @@ class Gems_Auth extends Zend_Auth
     private function _error($code, $value1 = null, $value2 = null)
     {
         $messages = func_get_args();
-        array_splice($messages, 0, 1, $this->_messageTemplates[$code]);
+        // array_splice($messages, 0, 1, $this->_messageTemplates[$code]);
+        $messages[0] = $this->_messageTemplates[$code];
         return new Zend_Auth_Result($code, null, (array) $messages);
     }
 
