@@ -319,3 +319,7 @@ ALTER TABLE `gems__organizations` ADD UNIQUE INDEX (`gor_code`);
 ALTER TABLE `gems__organizations` ADD gor_accessible_by text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_task,
     ADD gor_has_patients boolean not null default 1 AFTER gor_iso_lang,
     ADD gor_add_patients boolean not null default 1 AFTER gor_has_patients;
+
+-- PATCH: Log failed logins
+INSERT INTO  `zsd`.`gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
+    VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);

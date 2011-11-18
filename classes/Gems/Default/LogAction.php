@@ -166,6 +166,11 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $model->set('staff_name', 'label', $this->_('Staff'));
         $model->set('respondent_name', 'label', $this->_('Respondent'));
 
+        if ($detailed) {
+            $model->set('glua_role', 'label', $this->_('Role'));
+            $model->set('glua_remote_ip', 'label', $this->_('IP address'));
+        }
+
         return $model;
     }
 

@@ -317,8 +317,15 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     }
                     return;
                 } else {
+                    //Now present the user with an error message
                     $errors = $authResult->getMessages();
-                    $this->addMessage($errors);
+                    $this->addMessage($errors);                    
+
+                    //Also log the error to the log table
+                    //when the project has logging enabled
+                    $logErrors = join(' - ', $errors);
+                    $log = Gems_AccessLog::getLog();
+                    $log->log('loginFail', $this->getRequest(), sprintf('Failed login for : %s (%s) - %s', $formValues['userlogin'], $formValues['organization'], $logErrors), null, true);
                 }
             }
         }
