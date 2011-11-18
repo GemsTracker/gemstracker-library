@@ -58,6 +58,14 @@ class GemsEscort extends MUtil_Application_Escort
 
     private $_copyDestinations;
     private $_startFirebird;
+    
+    /**
+     * Lifetime of the session (determines the expiration of the session cookie(s))
+     * Defaults to 1800 seconds = 30 minutes, you override this in your own
+     * Escort class
+     * @var int
+     */
+    protected $_sessionLifetime = 1800;
 
     /**
      * The menu variable
@@ -89,6 +97,9 @@ class GemsEscort extends MUtil_Application_Escort
 
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
+        
+        // expire the session after 30 minutes
+        Zend_Session::rememberMe($this->_sessionLifetime);
 
         $sessionOptions['name'] = GEMS_PROJECT_NAME_UC . 'SESSID';
         $sessionOptions['cookie_path'] = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
