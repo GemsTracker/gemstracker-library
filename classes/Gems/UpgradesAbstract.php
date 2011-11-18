@@ -326,6 +326,19 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Convenience method for cleaning the cache as this is often needed during
+     * upgrades
+     */
+    public function invalidateCache()
+    {
+        $cache = $this->escort->cache;
+        if ($cache instanceof Zend_Cache_Core) {
+            $cache->clean();
+            $this->addMessage($this->_('Cache cleaned'));
+        }
+    }
+
+    /**
      * Register an upgrade in the stack, it can be executed by using $this->execute
      * 
      * Index and context are optional and will be generated when omitted. For the 

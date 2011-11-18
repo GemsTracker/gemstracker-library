@@ -169,8 +169,14 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if ($exists) {
+            /**
+             * automatic_cleaning_factor disables automatic cleaning of the cache and should get rid of
+             *                           random delays on heavy traffic sites with File cache. Apc does
+             *                           not support automatic cleaning.
+             */
             $cacheFrontendOptions = array('automatic_serialization' => true,
-                                          'cache_id_prefix' => GEMS_PROJECT_NAME . '_');
+                                          'cache_id_prefix' => GEMS_PROJECT_NAME . '_',
+                                          'automatic_cleaning_factor' => 0);
 
             $cache = Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
         } else {

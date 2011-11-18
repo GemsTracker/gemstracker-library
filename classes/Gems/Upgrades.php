@@ -66,6 +66,9 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     public function Upgrade143to15()
     {
         $this->patcher->executePatch(42);
+        
+        $this->invalidateCache();
+
         return true;
     }
 }

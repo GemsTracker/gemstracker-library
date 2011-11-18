@@ -352,6 +352,14 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $form->getElement('db_level')->setValue($data['db_level']);
 
                     $this->addMessage(sprintf($this->_('%d patch(es) executed.'), $changed));
+
+                    //As a lot of cache depends on the database, it is best to clean the cache now
+                    //since import tables might have changed
+                    $cache = $this->escort->cache;
+                    if ($cache instanceof Zend_Cache_Core) {
+                        $cache->clean();
+                        $this->addMessage($this->_('Cache cleaned'));
+                    }
                 }
 
                 $tableSql = sprintf(
