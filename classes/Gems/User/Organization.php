@@ -154,6 +154,15 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
         return is_array($this->_organizationData) && parent::checkRegistryRequestsAnswers();
     }
 
+    /**
+     * Get the style attribute.
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->_organizationData['gor_code'];
+    }
 
     /**
      * Get the style attribute.

@@ -91,6 +91,20 @@ class Gems_Project_ProjectSettings extends ArrayObject
         $this->checkRequiredValues();
     }
 
+    protected function _getPasswordRules(array $current, array $keys, array &$rules)
+    {
+        foreach ($current as $key => $value) {
+            if (is_array($value)) {
+                // Only act when this is in the set of key values
+                if (isset($keys[strtolower($key)])) {
+                    $this->_getPasswordRules($value, $keys, $rules);
+                }
+            } else {
+                $rules[$key] = $value;
+            }
+        }
+    }
+
     /**
      * This function checks for the required project settings.
      *
@@ -178,6 +192,26 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function getName()
     {
         return $this->offsetGet('name');
+    }
+
+    /**
+     *
+     * @param string $userDefinition
+     * @param string $role
+     * @return array
+     */
+    public function getPasswordRules($userDefinition, $role)
+    {
+        $args = MUtil_Ra::flatten(func_get_args());
+        $args = array_change_key_case(array_flip(array_filter($args)));
+        //MUtil_Echo::track($args);
+
+        $rules = array();
+        if (isset($this->passwords) && is_array($this->passwords)) {
+            $this->_getPasswordRules($this->passwords, $args, $rules);
+        }
+
+        return $rules;
     }
 
     /**

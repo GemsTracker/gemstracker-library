@@ -159,6 +159,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
             $model->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
             $model->set('gor_url',  'description', 'ENGLISH link preferred. Use translation file to translate.');
             $model->set('gor_task', 'description', 'ENGLISH please! Use translation file to translate.');
+            $model->set('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
         }
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gor');

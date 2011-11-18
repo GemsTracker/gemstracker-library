@@ -60,6 +60,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      *
+     * @var MUtil_Acl
+     */
+    protected $acl;
+
+    /**
+     *
      * @var Gems_User_UserDefinitionInterface
      */
     protected $definition;
@@ -202,7 +208,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
        $authResult = $auth->authenticate($adapter, $formValues);
 
        $this->_authResult = $authResult;
-       
+
        return $authResult;
     }
 
@@ -349,6 +355,18 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Gets the (optional) organization code.
+     *
+     * @return string
+     */
+    public function getOrganizationCode()
+    {
+        $organizationId = $this->getOrganizationId();
+
+        return $this->userLoader->getOrganization($organizationId)->getCode();
+    }
+
+    /**
      * Return a password reset key
      *
      * @return string
@@ -366,6 +384,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getRole()
     {
         return $this->_getVar('user_role');
+    }
+
+    /**
+     * Returns the current user role.
+     *
+     * @return string
+     */
+    public function getRoles()
+    {
+        return $this->acl->getRoleAndParents($this->getRole());
     }
 
     /**
