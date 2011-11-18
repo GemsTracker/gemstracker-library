@@ -329,4 +329,25 @@ class Gems_TabForm extends Gems_Form
 
         return $form;
     }
+
+    /**
+     * Retrieve all form element values
+     *
+     * Fix for ZF error where subform values will be pushed into an array with key: formname
+     * for compatibility both are now in the result array
+     *
+     * @param  bool $suppressArrayNotation
+     * @return array
+     */
+    public function getValues($suppressArrayNotation = false)
+    {
+        $values = parent::getValues($suppressArrayNotation);
+
+        foreach ($this->getSubForms() as $key => $subForm) {
+            $values[$key];
+            $values = $this->_array_replace_recursive($values, $values[$key]);
+        }
+
+        return $values;
+    }
 }
