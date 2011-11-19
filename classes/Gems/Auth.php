@@ -110,7 +110,7 @@ class Gems_Auth extends Zend_Auth
         try {
             $login_name   = $formValues['userlogin'];
             $organization = $formValues['organization'];
-            $sql = "SELECT gula_failed_logins, gula_last_failed FROM gems__user_login_attemps WHERE gula_login = ? AND gula_id_organization = ?";
+            $sql = "SELECT gula_failed_logins, gula_last_failed FROM gems__user_login_attempts WHERE gula_login = ? AND gula_id_organization = ?";
             $values = $this->db->fetchRow($sql, array($login_name, $organization));
 
             if (! $values) {
@@ -168,11 +168,11 @@ class Gems_Auth extends Zend_Auth
 
         try {
             if (isset($values['gula_login'])) {
-                $this->db->insert('gems__user_login_attemps', $values);
+                $this->db->insert('gems__user_login_attempts', $values);
             } else {
                 $where = $this->db->quoteInto('gula_login = ? AND ', $login_name);
                 $where .= $this->db->quoteInto('gula_id_organization = ?', $organization);
-                $this->db->update('gems__user_login_attemps', $values, $where);
+                $this->db->update('gems__user_login_attempts', $values, $where);
             }
         } catch (Zend_Db_Exception $e) {
             // Fall through as this does not work if the database upgrade did not run
