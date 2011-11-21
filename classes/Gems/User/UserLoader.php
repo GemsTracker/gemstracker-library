@@ -115,8 +115,8 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         if (! $this->session instanceof Zend_Session_Namespace) {
             $this->session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
             
-            $idleTimeout = ($this->project->session['idleTimeout'] ? $this->project->session['idleTimeout'] : 1800);
-                        
+            $idleTimeout = $this->project->getSessionTimeout();
+            
             $this->session->setExpirationSeconds($idleTimeout);
 
             $extras['session'] = $this->session;
