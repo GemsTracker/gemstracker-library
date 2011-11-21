@@ -60,14 +60,6 @@ class GemsEscort extends MUtil_Application_Escort
     private $_startFirebird;
     
     /**
-     * Lifetime of the session (determines the expiration of the session cookie(s))
-     * Defaults to 1800 seconds = 30 minutes, you override this in your own
-     * Escort class
-     * @var int
-     */
-    protected $_sessionLifetime = 1800;
-
-    /**
      * The menu variable
      *
      * @var Gems_Menu
@@ -394,7 +386,10 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initSession()
     {
         $session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
-        $session->setExpirationSeconds($this->_sessionLifetime);
+        
+        $idleTimeout = ($this->project->session['idleTimeout'] ? $this->project->session['idleTimeout'] : 1800);
+    
+        $session->setExpirationSeconds($idleTimeout);
 
         if (! isset($session->user_role)) {
             $session->user_role = 'nologin';
