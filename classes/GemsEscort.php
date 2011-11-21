@@ -98,9 +98,6 @@ class GemsEscort extends MUtil_Application_Escort
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
         
-        // expire the session after 30 minutes
-        Zend_Session::rememberMe($this->_sessionLifetime);
-
         $sessionOptions['name'] = GEMS_PROJECT_NAME_UC . 'SESSID';
         $sessionOptions['cookie_path'] = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
 
@@ -397,6 +394,7 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initSession()
     {
         $session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
+        $session->setExpirationSeconds($this->_sessionLifetime);
 
         if (! isset($session->user_role)) {
             $session->user_role = 'nologin';
