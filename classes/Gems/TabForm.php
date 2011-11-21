@@ -57,7 +57,7 @@ class Gems_TabForm extends Gems_Form
      */
     public function addElement($element, $name = null, $options = null)
     {
-        if ($this->currentTab) {
+        if ($this->currentTab && !($element instanceof Zend_Form_Element_Hidden)) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
             return parent::addElement($element, $name, $options);

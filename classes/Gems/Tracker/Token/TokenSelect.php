@@ -100,7 +100,9 @@ class Gems_Tracker_Token_TokenSelect {
      */
     public function andReceptionCodes($fields = '*')
     {
-        $this->sql_select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code');
+        $this->sql_select->join('gems__reception_codes', 
+                                'gto_reception_code = grc_id_reception_code',
+                                $fields);
 
         return $this;
     }
