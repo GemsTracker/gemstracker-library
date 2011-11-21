@@ -320,6 +320,8 @@ ALTER TABLE `gems__organizations` ADD gor_accessible_by text CHARACTER SET 'utf8
     ADD gor_has_patients boolean not null default 1 AFTER gor_iso_lang,
     ADD gor_add_patients boolean not null default 1 AFTER gor_has_patients;
 
+UPDATE `gems__organizations` SET gor_has_patients = COALESCE((SELECT 1 FROM gems__respondent2org WHERE gr2o_id_organization = gor_id_organization GROUP BY gr2o_id_organization), 0);
+
 -- PATCH: Log failed logins
 INSERT INTO  `zsd`.`gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
     VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);

@@ -50,7 +50,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      *
      * @var Zend_Auth_Result
      */
-    private $_authResult;
+    protected $_authResult;
 
     /**
      *

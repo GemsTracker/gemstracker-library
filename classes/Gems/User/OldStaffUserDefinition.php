@@ -58,14 +58,14 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
-    
+
     /**
      * Perform UserDefinition specific post-login logic
      *
      * @param Zend_Auth_Result $authResult
      * @return void
      */
-    public function afterLogin($authResult, $formValues)
+    public function afterLogin(Zend_Auth_Result $authResult, $formValues)
     {
         if ($authResult->isValid()) {
             $login_name   = $formValues['userlogin'];
@@ -142,6 +142,32 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function getUserData($login_name, $organization)
     {
+        $select = $this->getUserSelect($login_name, $organization);
+
+        // For a multi-layout project we need to select the appropriate style too,
+        // but as PATCHES may not be in effect we have to try two selects
+        $select2 = clone $select;
+        $select2->columns(array('user_style' => 'gor_style'), 'gems__organizations');
+
+        try {
+            // Fails before patch has run...
+            return $this->db->fetchRow($select2, array($login_name), Zend_Db::FETCH_ASSOC);
+
+        } catch (Zend_Db_Exception $e) {
+            // So then we try the old method
+            return $this->db->fetchRow($select, array($login_name), Zend_Db::FETCH_ASSOC);
+        }
+    }
+
+    /**
+     * Stub to allow subclasses to add fields to the select.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return Zend_Db_Select
+     */
+    protected function getUserSelect($login_name, $organization)
+    {
         /**
          * Read the needed parameters from the different tables, lots of renames for backward
          * compatibility
@@ -165,19 +191,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                ->where('gsf_login = ?')
                ->limit(1);
 
-        // For a multi-layout project we need to select the appropriate style too,
-        // but as PATCHES may not be in effect we have to try two selects
-        $select2 = clone $select;
-        $select2->columns(array('user_style' => 'gor_style'), 'gems__organizations');
-
-        try {
-            // Fails before patch has run...
-            return $this->db->fetchRow($select2, array($login_name), Zend_Db::FETCH_ASSOC);
-
-        } catch (Zend_Db_Exception $e) {
-            // So then we try the old method
-            return $this->db->fetchRow($select, array($login_name), Zend_Db::FETCH_ASSOC);
-        }
+        return $select;
     }
 
     /**

@@ -166,6 +166,20 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function getUserData($login_name, $organization)
     {
+        $select = $this->getUserSelect($login_name, $organization);
+
+        return $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+    }
+
+    /**
+     * Stub to allow subclasses to add fields to the select.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return Zend_Db_Select
+     */
+    protected function getUserSelect($login_name, $organization)
+    {
         $select = new Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array('user_login_id' => 'gul_id_user'))
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
@@ -192,7 +206,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
                ->where('gul_id_organization = ?')
                ->limit(1);
 
-        return $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+        return $select;
     }
 
     /**
