@@ -263,17 +263,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     public function loginAction()
     {
-        // If already logged in, try to redirect to the first allowed and visible menu item
-        // if that fails, try to reroute to respondent/index
-        if ($this->loader->getCurrentUser()->isActive()) {
-            if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
-                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-                $redirector->gotoRoute($menuItem->toRouteUrl($this->getRequest()));
-            } else {
-                $this->_reroute(array('controller' => 'respondent', 'action'=>'index'));
-            }
-        }
-
         $form = $this->_getLoginForm();
 
         $request = $this->getRequest();
@@ -319,7 +308,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 } else {
                     //Now present the user with an error message
                     $errors = $authResult->getMessages();
-                    $this->addMessage($errors);                    
+                    $this->addMessage($errors);
 
                     //Also log the error to the log table
                     //when the project has logging enabled

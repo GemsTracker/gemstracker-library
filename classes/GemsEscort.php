@@ -1475,7 +1475,7 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         // Gems does not use index/index
-        if (('index' == $request->getControllerName()) && ('index' == $request->getActionName())) {
+        if (('index' == $request->getControllerName()) && (('index' == $request->getActionName()) || ('login' == $request->getActionName()))) {
             // Instead Gems routes to the first available menu item when this is the request target
             if (! $user->gotoStartPage($this->menu, $request)) {
                 $this->setError(
