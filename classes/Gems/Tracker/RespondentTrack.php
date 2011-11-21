@@ -120,7 +120,17 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     private function _ensureFieldData($reload = false)
     {
         if ((null === $this->_fieldData) || $reload) {
-            $this->_fieldData = $this->getTrackEngine()->getFieldsData($this->_respTrackId);
+            $fieldData = $this->getTrackEngine()->getFieldsData($this->_respTrackId);
+            $fieldMap  = $this->getTrackEngine()->getFields();
+
+            //Map the fielddata to the fieldcode
+            foreach($fieldData as $key=>$value) {
+                if (isset($fieldMap[$key])) {
+                    $fieldData[$fieldMap[$key]] = $value;
+                }
+            }
+                
+            $this->_fieldData = $fieldData;
         }
     }
 
