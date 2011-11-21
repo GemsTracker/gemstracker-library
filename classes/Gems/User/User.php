@@ -451,8 +451,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         }
 
         if ($menuItem) {
-            $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-            $redirector->gotoRoute($menuItem->toRouteUrl($request));
+            // Prevent redirecting to the current page.
+            if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
+                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                $redirector->gotoRoute($menuItem->toRouteUrl($request));
+            }
         }
 
         return $menuItem;
