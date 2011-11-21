@@ -47,6 +47,15 @@
 class Gems_Project_ProjectSettings extends ArrayObject
 {
     /**
+     * The default session time out for this project in seconds.
+     *
+     * Can be overruled in sesssion.idleTimeout
+     *
+     * @var int
+     */
+    protected $defaultSessionTimeout = 1800;
+
+    /**
      * The minimum length for the password of a super admin
      * on a production server.
      *
@@ -212,6 +221,20 @@ class Gems_Project_ProjectSettings extends ArrayObject
         }
 
         return $rules;
+    }
+
+    /**
+     * Timeout for sessions in seconds.
+     * 
+     * @return int
+     */
+    public function getSessionTimeOut()
+    {
+        if (isset($this->session, $this->session['idleTimeout'])) {
+            return $this->session['idleTimeout'];
+        } else {
+            return $this->defaultSessionTimeout;
+        }
     }
 
     /**
