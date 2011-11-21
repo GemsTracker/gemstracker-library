@@ -236,6 +236,30 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return $this->defaultSessionTimeout;
         }
     }
+    
+    /**
+     * Returns an array with throttling settings for the ask
+     * controller
+     * 
+     * @return array
+     */
+    public function getAskThrottleSettings()
+    {
+        // Check for the 'askThrottle' config section 
+        if (!empty($this->askThrottle)) {
+            return $this->askThrottle;
+        } else {
+            // Set some sensible defaults
+            // Detection window: 15 minutes
+            // Threshold: 20 requests per minute
+            // Delay: 10 seconds
+            $throttleSettings = array(
+                'period'     => 15 * 60,
+                'threshold'	 => 15 * 20,
+                'delay'      => 10
+            );
+        }
+    }
 
     /**
      * Returns the super admin name, if any

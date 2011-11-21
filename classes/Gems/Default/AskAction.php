@@ -215,9 +215,35 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         $form->addElement($element);
 
         if ($this->_request->isPost()) {
-            if ($form->isValid($_POST)) {
+            $throttleSettings = $this->project->getAskThrottleSettings();
+            
+            // Prune the database for (very) old attempts
+            $this->db->query("DELETE FROM gems__token_attempts WHERE gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)", 
+                $throttleSettings['period'] * 20);
+            
+            // Retrieve the number of failed attempts that occurred within the specified window
+            $attemptData = $this->db->fetchRow("SELECT COUNT(1) AS attempts, UNIX_TIMESTAMP(MAX(gta_datetime)) AS last " . 
+                "FROM gems__token_attempts WHERE gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)", $throttleSettings['period']);
+            
+            $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']) - time();
+            
+            if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
+                $this->escort->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", Zend_Log::ERR);
+                
+                $this->addMessage($this->_('The server is currently busy, please wait a while and try again.'));
+            } else if ($form->isValid($_POST)) {
                 $this->_forward('forward');
                 return;
+            } else {
+                if (isset($_POST[MUtil_Model::REQUEST_ID])) {
+                    $this->db->insert(
+                    	'gems__token_attempts',
+                        array(
+                        	'gta_id_token' => $_POST[MUtil_Model::REQUEST_ID],
+                        	'gta_ip_address' => $this->getRequest()->getClientIp()
+                        )
+                    );
+                }
             }
         } elseif ($id = $this->_getParam(MUtil_Model::REQUEST_ID)) {
             $form->populate(array(MUtil_Model::REQUEST_ID => $id));
