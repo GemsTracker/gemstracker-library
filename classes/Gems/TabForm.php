@@ -60,6 +60,17 @@ class Gems_TabForm extends Gems_Form
         if ($this->currentTab && !($element instanceof Zend_Form_Element_Hidden)) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
+            if ($element instanceof Zend_Form_Element_Hidden) {
+                //Remove decorators
+                $element->removeDecorator('htmlTag');
+                $element->removeDecorator('Label');
+            } else {
+                $error = $element->getDecorator('Errors');
+                if ($error instanceof Zend_Form_Decorator_Errors) {
+                    $element->removeDecorator('Errors');
+                    $element->addDecorator($error);
+                }
+            }
             return parent::addElement($element, $name, $options);
         }
     }
@@ -304,6 +315,14 @@ class Gems_TabForm extends Gems_Form
             'Form'
             ));
         }
+    }
+
+    /**
+     * As addElement and addDisplayGroup provide a fluent way of working with subforms
+     * we need to provide a method to skip back to the main form again.
+     */
+    public function resetContext() {   
+        $this->currentTab = null;
     }
 
     public function selectTab($tabIdx) {
