@@ -215,4 +215,51 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_getClass('translated');
     }
+    
+    /**
+     * Checks if a given IP is allowed according to a set
+     * of IP addresses / ranges.
+     * 
+     * Multiple addresses/ranges are separated by a colon,
+     * an individual range takes the form of
+     * 10.0.0.0-10.0.0.255 (subnet masks are not supported)
+     * 
+     * @param  string $ip
+     * @param  string $ipRanges
+     * @return bool
+     */
+    public static function isAllowedIP($ip, $ipRanges = "")
+    {
+        if (!strlen($ipRanges)) {
+            return true;
+        }
+        
+        $ipLong = ip2long($ip);
+        
+        $ranges = explode(':', $ipRanges);
+        
+        foreach ($ranges as $range) {
+            if (($sep = strpos($range, '-')) !== false) {
+                $min = ip2long(substr($range, 0, $sep));
+                $max = ip2long(substr($range, $sep + 1));
+                
+                $validate = new Zend_Validate_Between(
+                    array(
+                        'min' => $min,
+                        'max' => $max
+                    )
+                );
+                
+                if ($min <= $ipLong && $ipLong <= $max) {
+                    return true;
+                }
+            } else {
+                if ($ipLong == ip2long($range)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
 }
