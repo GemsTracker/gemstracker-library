@@ -147,7 +147,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         // For a multi-layout project we need to select the appropriate style too,
         // but as PATCHES may not be in effect we have to try two selects
         $select2 = clone $select;
-        $select2->columns(array('user_style' => 'gor_style'), 'gems__organizations');
+        $select2->columns(array('user_style' => 'gor_style', 'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges'), 'gems__organizations');
 
         try {
             // Fails before patch has run...

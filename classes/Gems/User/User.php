@@ -204,6 +204,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function authenticate($formValues)
     {
        $auth = Gems_Auth::getInstance();
+       
+       $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
+       
        $adapter = $this->definition->getAuthAdapter($formValues);
        $authResult = $auth->authenticate($adapter, $formValues);
 
@@ -318,6 +321,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getGroup()
     {
         return $this->_getVar('user_group');
+    }
+    
+    /**
+     * Returns the list of allowed IP ranges (separated by colon)
+     * 
+     * @return string
+     */
+    public function getAllowedIPRanges()
+    {
+        return $this->_getVar('user_allowed_ip_ranges');
     }
 
     /**

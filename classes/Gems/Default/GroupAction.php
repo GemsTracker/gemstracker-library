@@ -66,6 +66,7 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $bridge->addCheckbox('ggp_group_active');
         $bridge->addCheckbox('ggp_staff_members');
         $bridge->addCheckbox('ggp_respondent_members');
+        $bridge->addText('ggp_allowed_ip_ranges');
     }
 
     /**
@@ -91,6 +92,8 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $model->set('ggp_group_active', 'label', $this->_('Active'), 'multiOptions', $yesNo);
         $model->set('ggp_staff_members', 'label', $this->_('Staff'), 'multiOptions', $yesNo);
         $model->set('ggp_respondent_members', 'label', $this->_('Respondents'), 'multiOptions', $yesNo);
+        
+        $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'));
 
         Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
 

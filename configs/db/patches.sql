@@ -325,3 +325,6 @@ UPDATE `gems__organizations` SET gor_has_patients = COALESCE((SELECT 1 FROM gems
 -- PATCH: Log failed logins
 INSERT INTO  `gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
     VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);
+
+-- PATCH: IP ranges for groups
+ALTER TABLE `gems__groups` ADD `ggp_allowed_ip_ranges` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `ggp_respondent_members`;

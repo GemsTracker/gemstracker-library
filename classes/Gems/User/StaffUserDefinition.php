@@ -190,7 +190,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
                                           'user_locale'=>'gsf_iso_lang',
                                           'user_logout'=>'gsf_logout_on_survey'))
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
+               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role', 'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges'))
                ->join('gems__organizations', 'gul_id_organization = gor_id_organization',
                        array(
                            'user_organization_id'=>'gor_id_organization',
