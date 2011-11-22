@@ -66,6 +66,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var Gems_User_UserDefinitionInterface
      */
     protected $definition;
@@ -204,9 +210,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function authenticate($formValues)
     {
        $auth = Gems_Auth::getInstance();
-       
+
        $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
-       
+
        $adapter = $this->definition->getAuthAdapter($formValues);
        $authResult = $auth->authenticate($adapter, $formValues);
 
@@ -280,7 +286,23 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $this->setAsCurrentUser();
             }
         }
+
+        if (! $this->_hasVar('__allowedOrgs')) {
+            // Is always requested so no win in waiting.
+            $this->refreshAllowedOrganizations();
+        }
+
         return true;
+    }
+
+    /**
+     * Returns the list of allowed IP ranges (separated by colon)
+     *
+     * @return string
+     */
+    public function getAllowedIPRanges()
+    {
+        return $this->_getVar('user_allowed_ip_ranges');
     }
 
     /**
@@ -290,7 +312,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function getAllowedOrganizations()
     {
-        return $this->_getVar('allowedOrgs');
+        return $this->_getVar('__allowedOrgs');
     }
 
     /**
@@ -345,16 +367,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getGroup()
     {
         return $this->_getVar('user_group');
-    }
-    
-    /**
-     * Returns the list of allowed IP ranges (separated by colon)
-     * 
-     * @return string
-     */
-    public function getAllowedIPRanges()
-    {
-        return $this->_getVar('user_allowed_ip_ranges');
     }
 
     /**
@@ -519,6 +531,17 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns true if the role of the current user has the given privilege
+     *
+     * @param string $privilege
+     * @return bool
+     */
+    public function hasPrivilege($privilege)
+    {
+        return (! $this->acl) || $this->acl->isAllowed($this->getRole(), null, $privilege);
+    }
+
+    /**
      *
      * @return boolean True when a user can log in.
      */
@@ -555,6 +578,47 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function isPasswordResetRequired()
     {
         return (boolean) $this->_getVar('user_password_reset');
+    }
+
+    /**
+     * Allowes a refresh of the existing list of organizations
+     * for this user.
+     *
+     * @return Gems_User_User (continuation pattern)
+     */
+    public function refreshAllowedOrganizations()
+    {
+        $sql = "SELECT gor_id_organization, gor_name FROM gems__organizations WHERE ";
+
+        // Privilege overrules organizational settings
+        if (! $this->hasPrivilege('pr.organization-switch')) {
+            if ($by = $this->_getVar('accessible_by')) {
+                $orgs = explode(':', trim($by, ':'));
+
+                if ($orgs) {
+                    // Not to forget: the users own organization
+                    $orgs[] = $this->getOrganizationId();
+
+                    $sql .= "gor_id_organization IN (";
+                    $sql .= implode(', ', $orgs);
+                    $sql .= ") AND ";
+                } else {
+                    $sql = false;
+                }
+            } else {
+                $sql = false;
+            }
+        }
+        if ($sql) {
+            $sql .= " gor_active = 1 ORDER BY gor_name";
+            $orgs = $this->db->fetchPairs($sql);
+        } else {
+            $orgs = array();
+        }
+
+        $this->_setVar('__allowedOrgs', $orgs);
+
+        return $this;
     }
 
     /**

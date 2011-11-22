@@ -77,7 +77,6 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
             'user_organization_id'   => $organization,
             'user_organization_name' => 'SUPER ADMIN',
             'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
-            'allowedOrgs' => array($organization => 'SUPER ADMIN')
             );
     }
 }

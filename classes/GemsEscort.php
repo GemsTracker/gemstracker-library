@@ -795,7 +795,8 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _layoutOrganizationSwitcher() // Gems_Project_Organization_MultiOrganizationInterface
     {
-        if ($this->hasPrivilege('pr.organization-switch')) {
+        $user = $this->getLoader()->getCurrentUser();
+        if ($orgs = $user->getAllowedOrganizations()) {
             // Organization switcher
             $orgSwitch = MUtil_Html::create('div', array('id' => 'organizations'));
             $currentUri = base64_encode($this->view->url());
@@ -805,9 +806,9 @@ class GemsEscort extends MUtil_Application_Escort
                         'controller' => 'organization',
                         'action' => 'change-ui'), null, true);
             $orgSwitch->raw('<form method="get" action="' . $url . '"><div><input type="hidden" name="current_uri" value="' . $currentUri . '" /><select name="org" onchange="javascript:this.form.submit();">');
-            foreach ($this->getLoader()->getCurrentUser()->getAllowedOrganizations() as $id => $org) {
+            foreach ($orgs as $id => $org) {
                 $selected = '';
-                if ($id == $this->session->user_organization_id) {
+                if ($id == $user->getOrganizationId()) {
                     $selected = ' selected="selected"';
 
                 } else {

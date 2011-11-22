@@ -207,10 +207,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $values['user_active'] = true;
         }
 
-        if (! isset($values['allowedOrgs'])) {
-            //Load the allowed organizations
-            $values['allowedOrgs'] = $this->getAllowedOrganizations();
-        }
         $values['__user_definition'] = $defName;
 
         return $this->_loadClass('User', true, array($values, $definition));

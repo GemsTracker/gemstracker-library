@@ -52,6 +52,10 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
     {
         $org = $this->loader->getOrganization($data['gor_id_organization']);
         $org->invalidateCache();
+
+        // Make sure any changes in the allowed list are reflected.
+        $this->loader->getCurrentUser()->refreshAllowedOrganizations();
+
         return parent::afterSave($data, $isNew);
     }
 
