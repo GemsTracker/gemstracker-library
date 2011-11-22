@@ -1,6 +1,7 @@
 Important changes from 1.4.3 => 1.5
 ============================================================
 Passwords should be set with a project.ini->salt. Salt is now a required project setting!
+Setting rules for user passwords has changed and has become more powerfull, unless you do not set them.
 The table gems__staff is split into gems__staff, gems__user_logins with generic login data and gems__users_passwords containing db stored password information.
 GemsEscort->afterLogin(), ->afterLogout() and ->loadLoginInfo(0 are now all handled by Gems_User_UserDefinitionInterface objects.
 The table gems__user_ids provides unique and non-sequential user ids accross gems__staff and gems__respondents.
