@@ -236,7 +236,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         
         $ipLong = ip2long($ip);
         
-        $ranges = explode(':', $ipRanges);
+        $ranges = explode('|', $ipRanges);
         
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
