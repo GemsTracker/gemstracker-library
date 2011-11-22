@@ -90,6 +90,18 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_BrowseEditAction
         return $this->_('Active tracks');
     }
 
+    /*
+    public function indexAction()
+    {
+        parent::indexAction();
+
+        $user = $this->loader->getCurrentUser();
+        foreach (array('X1X', 'adminijadIran', 'xx!2yy2z', 'admin2') as $password) {
+            $this->addMessage($password);
+            $this->addMessage($user->reportPasswordWeakness($password));
+        }
+    } // */
+
     public function questionsAction()
     {
         if ($sid = $this->_getParam(Gems_Model::SURVEY_ID)) {

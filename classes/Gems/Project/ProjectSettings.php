@@ -213,7 +213,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     {
         $args = MUtil_Ra::flatten(func_get_args());
         $args = array_change_key_case(array_flip(array_filter($args)));
-        //MUtil_Echo::track($args);
+        // MUtil_Echo::track($args);
 
         $rules = array();
         if (isset($this->passwords) && is_array($this->passwords)) {
@@ -225,7 +225,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
     /**
      * Timeout for sessions in seconds.
-     * 
+     *
      * @return int
      */
     public function getSessionTimeOut()
@@ -236,16 +236,16 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return $this->defaultSessionTimeout;
         }
     }
-    
+
     /**
      * Returns an array with throttling settings for the ask
      * controller
-     * 
+     *
      * @return array
      */
     public function getAskThrottleSettings()
     {
-        // Check for the 'askThrottle' config section 
+        // Check for the 'askThrottle' config section
         if (!empty($this->askThrottle)) {
             return $this->askThrottle;
         } else {

@@ -90,7 +90,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         $results = array();
-        if (preg_match_all('/[A-Z]/', $password, $results) < $len) {
+        if ($len && (preg_match_all('/[A-Z]/', $password, $results) < $len)) {
             $this->_addError(sprintf(
                     $this->translate->plural('A password should contain at least one uppercase character.', 'A password should contain at least %d uppercase characters.', $len),
                     $len));
@@ -107,7 +107,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         $results = array();
-        if (preg_match_all('/[a-z]/', $password, $results) < $len) {
+        if ($len && (preg_match_all('/[a-z]/', $password, $results) < $len)) {
             $this->_addError(sprintf(
                     $this->translate->plural('A password should contain at least one lowercase character.', 'A password should contain at least %d lowercase characters.', $len),
                     $len));
@@ -123,7 +123,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     protected function minLength($parameter, $password)
     {
         $len = intval($parameter);
-        if (strlen($password) < $len) {
+        if ($len && (strlen($password) < $len)) {
             $this->_addError(sprintf($this->translate->_('A password should be at least %d characters long.'), $len));
         }
     }
@@ -137,12 +137,14 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     protected function notAlphaCount($parameter, $password)
     {
         $len = intval($parameter);
-        $results = array();
-        $count = preg_match_all('/[A-Za-z]/', $password, $results);
-        if (strlen($password) - $count < $len) {
-            $this->_addError(sprintf(
-                    $this->translate->plural('A password should contain at least one not alphabetic character.', 'A password should contain at least %d not alphabetic characters.', $len),
-                    $len));
+        if ($len) {
+            $results = array();
+            $count = preg_match_all('/[A-Za-z]/', $password, $results);
+            if (strlen($password) - $count < $len) {
+                $this->_addError(sprintf(
+                        $this->translate->plural('A password should contain at least one not alphabetic character.', 'A password should contain at least %d not alphabetic characters.', $len),
+                        $len));
+            }
         }
     }
 
@@ -155,12 +157,14 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     protected function notAlphaNumCount($parameter, $password)
     {
         $len = intval($parameter);
-        $results = array();
-        $count = preg_match_all('/[A-Za-z]/', $password, $results);
-        if (strlen($password) - $count < $len) {
-            $this->_addError(sprintf(
-                    $this->translate->plural('A password should contain at least one not alphanumeric character.', 'A password should contain at least %d not alphanumeric characters.', $len),
-                    $len));
+        if ($len) {
+            $results = array();
+            $count = preg_match_all('/[A-Za-z]/', $password, $results);
+            if (strlen($password) - $count < $len) {
+                $this->_addError(sprintf(
+                        $this->translate->plural('A password should contain at least one not alphanumeric character.', 'A password should contain at least %d not alphanumeric characters.', $len),
+                        $len));
+            }
         }
     }
 
@@ -192,7 +196,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         $results = array();
-        if (preg_match_all('/[0-9]/', $password, $results) < $len) {
+        if ($len && (preg_match_all('/[0-9]/', $password, $results) < $len)) {
             $this->_addError(sprintf(
                     $this->translate->plural('A password should contain at least one number.', 'A password should contain at least %d numbers.', $len),
                     $len));
@@ -211,7 +215,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
         $this->_errors = array();
         $this->user = $user;
 
-        $rules = $this->project->getPasswordRules($user->getOrganizationCode(), $user->getRoles());
+        $rules = $this->project->getPasswordRules($user->getOrganizationCode(), $user->getRoles(), $user->getDefinitionName());
 
         // MUtil_Echo::track($rules);
         foreach ($rules as $rule => $parameter) {
@@ -219,6 +223,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
                 $this->$rule($parameter, $password);
             }
         }
+        // MUtil_Echo::track($this->_errors);
 
         return $this->_errors;
     }

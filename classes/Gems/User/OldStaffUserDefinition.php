@@ -67,6 +67,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function afterLogin(Zend_Auth_Result $authResult, $formValues)
     {
+        // MUtil_Echo::track($authResult->isValid(), $formValues);
         if ($authResult->isValid()) {
             $login_name   = $formValues['userlogin'];
             $organization = $formValues['organization'];

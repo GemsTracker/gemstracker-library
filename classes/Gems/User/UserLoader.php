@@ -114,9 +114,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         // is removed from GemsEscort
         if (! $this->session instanceof Zend_Session_Namespace) {
             $this->session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
-            
+
             $idleTimeout = $this->project->getSessionTimeout();
-            
+
             $this->session->setExpirationSeconds($idleTimeout);
 
             $extras['session'] = $this->session;
@@ -178,6 +178,16 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get password weakness checker.
+     *
+     * @return Gems_User_PasswordChecker
+     */
+    public function getPasswordChecker()
+    {
+        return $this->_getClass('passwordChecker');
+    }
+
+    /**
      * Returns a user object, that may be empty if no user exist.
      *
      * @param string $login_name
@@ -191,6 +201,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         $definition = $this->_getClass($defName);
 
         $values = $definition->getUserData($login_name, $organization);
+        // MUtil_Echo::track($defName, $login_name, $organization, $values);
 
         if (! isset($values['user_active'])) {
             $values['user_active'] = true;
@@ -215,6 +226,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $data = $this->db->fetchRow("SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_id_user = ?", $staff_id);
 
+        // MUtil_Echo::track($data);
         if (false == $data) {
             $data = array('gsf_login' => null, 'gsf_id_organization' => null);
         }

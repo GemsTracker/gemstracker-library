@@ -282,6 +282,13 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
                     $user->afterLogin($form->getValues());
 
+                    //*
+                    if ($messages = $user->reportPasswordWeakness($request->getParam('password'))) {
+                        $user->setPasswordResetRequired(true);
+                        $this->addMessage($this->_('Your password must be changed.'));
+                        $this->addMessage($messages);
+                    } // */
+
                     /**
                      * Fix current locale / organization in cookies
                      */
@@ -301,7 +308,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     if ($previousRequestParameters = $this->session->previousRequestParameters) {
                         $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
                     } else {
-                        // This reroutes to the first available menu page after login
+                        // This reroutes to the first available menu page after login.
+                        //
+                        // Do not user $user->gotoStartPage() as the menu is still set
+                        // for no login.
                         $this->_reroute(array('controller' => null, 'action' => null), true);
                     }
                     return;

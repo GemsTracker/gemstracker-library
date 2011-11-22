@@ -294,6 +294,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns the name of the user definition.
+     *
+     * @return string
+     */
+    public function getDefinitionName()
+    {
+        return $this->_getVar('__user_definition');
+    }
+
+    /**
      * Return true if this user has a password.
      *
      * @return boolean
@@ -301,6 +311,20 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getEmailAddress()
     {
         return $this->_getVar('user_email');
+    }
+
+    /**
+     * Get the array to use for authenticate()
+     *
+     * @param string $password
+     * @return array
+     */
+    public function getFormValuesForPassword($password)
+    {
+        return array(
+            'userlogin'    => $this->getLoginName(),
+            'password'     => $password,
+            'organization' => $this->getOrganizationId());
     }
 
     /**
@@ -531,6 +555,21 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function isPasswordResetRequired()
     {
         return (boolean) $this->_getVar('user_password_reset');
+    }
+
+    /**
+     * Check for password weakness.
+     *
+     * @param string $password
+     * @return mixed String or array of strings containing warning messages or nothing
+     */
+    public function reportPasswordWeakness($password)
+    {
+        if ($this->canSetPassword()) {
+            $checker = $this->userLoader->getPasswordChecker();
+
+            return $checker->reportPasswordWeakness($this, $password);
+        }
     }
 
     /**

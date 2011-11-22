@@ -92,6 +92,14 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        // Sorry, for the time being no password complexity checking on new
+        // users. Can be done, but is to complex for the moment.
+        if ($new) {
+            $user = false;
+        } else {
+            $user = $this->loader->getUserLoader()->getUserByStaffId($data['gsf_id_user']);
+            // MUtil_Echo::track($data['gsf_id_user'], $user->getLoginName());
+        }
         $dbLookup = $this->util->getDbLookup();
 
         switch ($data['gul_user_class']) {
@@ -137,14 +145,17 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
 
         if ($passwordField) {
-            $bridge->addPassword($passwordField,
+            $pwdElem = $bridge->addPassword($passwordField,
                 'label', $this->_('Password'),
-                'minlength', $this->project->passwords['MinimumLength'],
                 // 'renderPassword', true,
                 'repeatLabel', $this->_('Repeat password'),
                 'required', $new,
                 'size', 15
                 );
+
+            if ($user instanceof Gems_User_User) {
+                $pwdElem->addValidator(new Gems_User_UserNewPasswordValidator($user));
+            }
         }
         $bridge->addRadio(   'gsf_gender',         'separator', '');
         $bridge->addText(    'gsf_first_name',     'label', $this->_('First name'));
