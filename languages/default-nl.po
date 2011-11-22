@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-21 13:55+0100\n"
+"POT-Creation-Date: 2011-11-22 15:34+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michiel Rook <info@touchdownconsulting.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -33,9 +33,8 @@ msgid "version"
 msgstr "versie"
 
 #: classes/GemsEscort.php:1342
-#, fuzzy
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
-msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer de gegevens en probeer a.u.b. opnieuw."
+msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
 #: classes/GemsEscort.php:1466
 msgid "Please check back later."
@@ -70,6 +69,21 @@ msgstr "U bent niet meer ingelogd."
 #: classes/GemsEscort.php:1509
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
+
+#: classes/Gems/Pdf.php:195
+#, php-format
+msgid "PDF Source File '%s' not found!"
+msgstr "PDF bron bestand %s niet gevonden!"
+
+#: classes/Gems/Pdf.php:237
+#, php-format
+msgid "Could not create '%s' directory."
+msgstr "Kon de directory '%s' niet aanmaken."
+
+#: classes/Gems/Pdf.php:280
+#, php-format
+msgid " The error message is: %s"
+msgstr "De foutmelding is: %s"
 
 #: classes/Gems/Tracker.php:732
 msgid "Checks performed"
@@ -405,7 +419,7 @@ msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 msgid "Cache cleaned"
 msgstr "Cache opgeschoond"
 
-#: classes/Gems/Auth.php:234
+#: classes/Gems/Auth.php:241
 msgid "Combination of organization, username and password not found."
 msgstr "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 
@@ -536,7 +550,7 @@ msgid "Mr./Mrs."
 msgstr "De heer/Mevrouw"
 
 #: classes/Gems/Util/Translated.php:229
-#: classes/Gems/Controller/BrowseEditAction.php:783
+#: classes/Gems/Controller/BrowseEditAction.php:785
 msgid "No"
 msgstr "Nee"
 
@@ -549,7 +563,7 @@ msgid "Yes (keep answers)"
 msgstr "Ja (met behoud van antwoorden)"
 
 #: classes/Gems/Util/Translated.php:240
-#: classes/Gems/Controller/BrowseEditAction.php:782
+#: classes/Gems/Controller/BrowseEditAction.php:784
 msgid "Yes"
 msgstr "Ja"
 
@@ -561,81 +575,81 @@ msgstr "Annuleren"
 msgid "No data found."
 msgstr "Geen gegevens gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:344
+#: classes/Gems/Controller/BrowseEditAction.php:346
 #, php-format
 msgid "New %s..."
 msgstr "Nieuw %s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:376
+#: classes/Gems/Controller/BrowseEditAction.php:378
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:380
+#: classes/Gems/Controller/BrowseEditAction.php:382
 #, php-format
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s verwijderd"
 
-#: classes/Gems/Controller/BrowseEditAction.php:394
+#: classes/Gems/Controller/BrowseEditAction.php:396
 #, php-format
 msgid "Edit %s"
 msgstr "Bewerk %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:491
+#: classes/Gems/Controller/BrowseEditAction.php:493
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
-#: classes/Gems/Controller/BrowseEditAction.php:562
+#: classes/Gems/Controller/BrowseEditAction.php:564
 msgid "Search"
 msgstr "Zoeken"
 
-#: classes/Gems/Controller/BrowseEditAction.php:578
+#: classes/Gems/Controller/BrowseEditAction.php:580
 #, php-format
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:651
+#: classes/Gems/Controller/BrowseEditAction.php:653
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:766
+#: classes/Gems/Controller/BrowseEditAction.php:768
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:836
+#: classes/Gems/Controller/BrowseEditAction.php:838
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:859
+#: classes/Gems/Controller/BrowseEditAction.php:861
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:867
+#: classes/Gems/Controller/BrowseEditAction.php:869
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:903
+#: classes/Gems/Controller/BrowseEditAction.php:905
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:906
+#: classes/Gems/Controller/BrowseEditAction.php:908
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:915
+#: classes/Gems/Controller/BrowseEditAction.php:917
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:943
+#: classes/Gems/Controller/BrowseEditAction.php:945
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:950
+#: classes/Gems/Controller/BrowseEditAction.php:952
 #, php-format
 msgid "Unknown %s."
 msgstr "%s is onbekend."
@@ -1585,19 +1599,23 @@ msgstr[1] "Het wachtwoord moet minstens %d getallen bevatten."
 msgid "Missing track identifier."
 msgstr "Ontbrekende traject identificatie."
 
-#: classes/Gems/Default/GroupAction.php:88
+#: classes/Gems/Default/GroupAction.php:89
 #: classes/Gems/Default/LogAction.php:170
 #: classes/Gems/Default/RoleAction.php:257
 msgid "Role"
 msgstr "Rol"
 
-#: classes/Gems/Default/GroupAction.php:102
+#: classes/Gems/Default/GroupAction.php:96
+msgid "Allowed IP Ranges"
+msgstr "Toegestane IP adres reeksen"
+
+#: classes/Gems/Default/GroupAction.php:105
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "groep"
 msgstr[1] "groepen"
 
-#: classes/Gems/Default/GroupAction.php:107
+#: classes/Gems/Default/GroupAction.php:110
 msgid "Administrative groups"
 msgstr "Beheer groepen"
 
@@ -3559,93 +3577,97 @@ msgstr "Installatie niet afgerond! Inloggen is nog niet mogelijk!"
 msgid "Your account is temporarily blocked, please wait %s minutes"
 msgstr "Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s minuten."
 
-#: languages/FakeTranslations.php:49
+#: languages/FakeTranslations.php:47
+msgid "You are not allowed to login from this location."
+msgstr "U kunt vanaf deze locatie niet inloggen."
+
+#: languages/FakeTranslations.php:50
 msgid "Not a valid token. The format for valid tokens is: %tokenFormat%."
 msgstr "Geen geldig kenmerk. Uw token moet het volgende formaat volgen: %tokenFormat%."
 
-#: languages/FakeTranslations.php:50
+#: languages/FakeTranslations.php:51
 msgid "Unknown token."
 msgstr "Onbekend kenmerk."
 
-#: languages/FakeTranslations.php:51
+#: languages/FakeTranslations.php:52
 msgid "This token is no longer valid."
 msgstr "Dit kenmerk is niet meer geldig."
 
-#: languages/FakeTranslations.php:52
+#: languages/FakeTranslations.php:53
 msgid "This token cannot be used (any more)."
 msgstr "Dit kenmerk kan niet (meer) gebruikt worden."
 
-#: languages/FakeTranslations.php:53
+#: languages/FakeTranslations.php:54
 msgid "This token cannot be used (yet)."
 msgstr "Dit kenmerk kan (nog) niet gebruikt worden."
 
-#: languages/FakeTranslations.php:56
+#: languages/FakeTranslations.php:57
 #, php-format
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Datum moet later vallen dan '%dateAfter%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:59
+#: languages/FakeTranslations.php:60
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Datum moet vallen voor '%dateBefore%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:62
+#: languages/FakeTranslations.php:63
 msgid "%value% is not a valid date."
 msgstr "%value% is geen geldige datum."
 
-#: languages/FakeTranslations.php:65
+#: languages/FakeTranslations.php:66
 msgid "No record matching %value% was found."
 msgstr "Geen gegevens gevonden die overeenkomen met %value%."
 
-#: languages/FakeTranslations.php:66
+#: languages/FakeTranslations.php:67
 msgid "A duplicate record matching '%value%' was found."
 msgstr "De waarde '%value%' is al in gebruik."
 
-#: languages/FakeTranslations.php:69
+#: languages/FakeTranslations.php:70
 msgid "This is not a valid %testDescription%."
 msgstr "%testDescription% is niet geldig."
 
-#: languages/FakeTranslations.php:70
+#: languages/FakeTranslations.php:71
 msgid "A %testDescription% cannot contain letters."
 msgstr "Een %testDescription% mag geen letters bevatten."
 
-#: languages/FakeTranslations.php:71
+#: languages/FakeTranslations.php:72
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr "%value% is te lang voor een %testDescription%. Die moet %length% cijfers lang zijn."
 
-#: languages/FakeTranslations.php:72
+#: languages/FakeTranslations.php:73
 msgid "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr "%value% is te kort voor een %testDescription%. Die moet %length% cijfers lang zijn."
 
-#: languages/FakeTranslations.php:75
+#: languages/FakeTranslations.php:76
 msgid "Must be the same as %fieldDescription%."
 msgstr "Moet identiek zijn aan %fieldDescription%."
 
-#: languages/FakeTranslations.php:78
+#: languages/FakeTranslations.php:79
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
 
-#: languages/FakeTranslations.php:81
+#: languages/FakeTranslations.php:82
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr " '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen kiezen."
 
-#: languages/FakeTranslations.php:85
+#: languages/FakeTranslations.php:86
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
 
-#: languages/FakeTranslations.php:88
+#: languages/FakeTranslations.php:89
 msgid "'%value%' is not a series of email addresses (e.g. name@somewhere.com, nobody@nowhere.org)."
 msgstr "'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, niemand@nergens.net)."
 
-#: languages/FakeTranslations.php:91
+#: languages/FakeTranslations.php:92
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' mag alleen cijfers bevatten"
 
-#: languages/FakeTranslations.php:92
+#: languages/FakeTranslations.php:93
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is leeg"
 
-#: languages/FakeTranslations.php:93
+#: languages/FakeTranslations.php:94
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
