@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -66,7 +65,13 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     protected $project;
 
-    public function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    protected function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
     {
         $token = strtoupper($tokenId);
 
@@ -82,7 +87,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         $pdf->properties['ModDate'] = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
     }
 
-    public function addTokenToPage(Zend_Pdf_Page $page, $tokenId)
+    protected function addTokenToPage(Zend_Pdf_Page $page, $tokenId)
     {
         // Set $this->pageFont to false to prevent drawing of tokens on page.
         if ($this->pageFont) {
@@ -104,13 +109,24 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         }
     }
 
-    public function echoPdf(Zend_Pdf $pdf, $filename, $download = false)
+    /**
+     * Echos the pdf as output with the specified filename.
+     *
+     * When download is true the file is returned as a download link,
+     * otherwise the pdf is shown in the browser.
+     *
+     * @param Zend_Pdf $pdf
+     * @param string $filename
+     * @param boolean $download
+     */
+    protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false)
     {
         // We do not need to return the layout, just the above table
         Zend_Layout::resetMvcInstance();
 
         $content = $pdf->render();
 
+        MUtil_Echo::track($filename);
         if ($download) {
             // Download & save
 			header('Content-Type: application/x-download');
@@ -126,6 +142,11 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         echo $content;
     }
 
+    /**
+     * Reads the survey pdf and outputs the result (without token id's etc..
+     *
+     * @param string $tokenId
+     */
     public function echoPdfBySurveyId($surveyId)
     {
         $pdf = $this->getSurveyPdf($surveyId);
@@ -133,6 +154,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         $this->echoPdf($pdf, $surveyId . '.pdf');
     }
 
+    /**
+     * Reads the survey pdf belonging to this token, puts the token id
+     * on de pages and outputs the result.
+     *
+     * @param string $tokenId
+     */
     public function echoPdfByTokenId($tokenId)
     {
         $surveyId = $this->db->fetchOne('SELECT gto_id_survey FROM gems__tokens WHERE gto_id_token = ?', $tokenId);
@@ -159,19 +186,26 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
         if (! $filename) {
             $filename = $surveyId . '.pdf';
-            // $this->throwLastError("No PDF Source for survey '$surveyId' does exist!");
         }
 
         $filepath = $this->getSurveysDir() . '/' . $filename;
 
         if (! file_exists($filepath)) {
-            MUtil_Echo::r($filepath);
-            $this->throwLastError("PDF Source File '$filename' not found!");
+            // MUtil_Echo::r($filepath);
+            $this->throwLastError(sprintf($this->translate->_("PDF Source File '%s' not found!"), $filename));
         }
 
         return Zend_Pdf::load($filepath);
     }
 
+    /**
+     * Returns (and optionally creates) the directory where the surveys
+     * are stored.
+     *
+     * Used by the Survey Controller when uploading surveys.
+     *
+     * @return string
+     */
     public function getSurveysDir()
     {
         return $this->getUploadDir('survey_pdfs');
@@ -200,7 +234,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         if (! is_dir($dir)) {
             $oldmask = umask(0777);
             if (! @mkdir($dir, 0777, true)) {
-                $this->throwLastError("Could not create '$dir' directory.");
+                $this->throwLastError(sprintf($this->translate->_("Could not create '%s' directory."), $dir));
             }
             umask($oldmask);
         }
@@ -240,10 +274,10 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         }
     } */
 
-    private function throwLastError($msg)
+    protected function throwLastError($msg)
     {
         if ($last = error_get_last()) {
-            $msg .= ' The error message is: ' . $last['message'];
+            $msg .= sprintf($this->translate->_(' The error message is: %s'), $last['message']);
         }
         throw new Gems_Exception_Coding($msg);
     }
