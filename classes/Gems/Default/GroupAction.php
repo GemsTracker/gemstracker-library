@@ -66,7 +66,7 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $bridge->addCheckbox('ggp_group_active');
         $bridge->addCheckbox('ggp_staff_members');
         $bridge->addCheckbox('ggp_respondent_members');
-        $bridge->addText('ggp_allowed_ip_ranges');
+        $bridge->addText('ggp_allowed_ip_ranges', 'size', 50, 'validator', new Gems_Validate_IPRanges());
     }
 
     /**

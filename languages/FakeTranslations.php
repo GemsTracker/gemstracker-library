@@ -93,6 +93,9 @@ _("'%value%' must contain only digits");
 _("'%value%' is an empty string");
 _("Invalid type given. String, integer or float expected");
 
+// Gems_Validate_IPRanges
+_("One or more IPs are illegal.");
+
 // Zend_Validate_EmailAddress replaced by MUtil_Validate_SimpleEmail
 /*
 _("Invalid type given, value should be a string");
