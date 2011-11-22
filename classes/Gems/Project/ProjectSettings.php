@@ -286,6 +286,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Returns the super admin password, if it exists
+     *
+     * @return string
+     */
+    public function getSuperAdminIPRanges()
+    {
+        if (isset($this->admin['ipRanges'])) {
+            return $this->admin['ipRanges'];
+        }
+    }
+    
+    /**
      * Returns a salted hash on the
      *
      * @param string $value The value to hash
