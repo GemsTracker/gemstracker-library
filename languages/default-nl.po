@@ -1547,7 +1547,7 @@ msgstr "Stijl"
 
 #: classes/Gems/Default/OrganizationAction.php:162
 msgid "Can the organization be used?"
-msgstr "Is de organisatie in gebruik"
+msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:163
 msgid "Accepting"

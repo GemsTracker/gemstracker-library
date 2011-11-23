@@ -80,7 +80,7 @@ class Organization_OrganizationTableSnippet extends Gems_Snippets_ModelTableSnip
         $BR = $HTML->br();
 
         $orgName[] = MUtil_Lazy::iff($bridge->gor_url,
-                MUtil_Html_AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank')),
+                MUtil_Html_AElement::a($bridge->gor_name, array('href' => $bridge->gor_url, 'target' => '_blank', 'class' => 'globe')),
                 $bridge->gor_name);
         $orgName[] = $bridge->createSortLink('gor_name');
 

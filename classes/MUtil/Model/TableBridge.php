@@ -36,7 +36,7 @@
  */
 
 /**
- * 
+ *
  * @package    MUtil
  * @subpackage Model
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -214,7 +214,7 @@ class MUtil_Model_TableBridge extends MUtil_Model_TableBridgeAbstract
         // $sortUrl['RouteReset'] = false; // Prevents tabs from being communicated
         $sortUrl = $sortUrl + $this->baseUrl;
 
-        return MUtil_Html::create()->a($sortUrl, array('class' => $class), $label);
+        return MUtil_Html::create()->a($sortUrl, array('class' => $class, 'title' => $this->model->get($name, 'description')), $label);
     }
 
     /**

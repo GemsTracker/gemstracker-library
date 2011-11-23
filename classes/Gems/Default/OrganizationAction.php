@@ -174,12 +174,12 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
         $tp->apply($model, 'gor_accessible_by');
 
-        if ($this->project->multiLocale) {
+        if ($detailed && $this->project->multiLocale) {
             $model->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
             $model->set('gor_url',  'description', 'ENGLISH link preferred. Use translation file to translate.');
             $model->set('gor_task', 'description', 'ENGLISH please! Use translation file to translate.');
-            $model->set('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
         }
+        $model->setIfExists('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
 
         $model->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
