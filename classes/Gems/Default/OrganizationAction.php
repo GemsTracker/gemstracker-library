@@ -61,17 +61,24 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     protected $createEditSnippets = 'Organization_OrganizationEditSnippet';
 
     /**
+     *
+     * @var Gems_Loader
+     */
+    public $loader;
+
+    /**
      * Switch the active organization
      */
     public function changeUiAction()
     {
-        $request    = $this->getRequest();
-        $org        = urldecode($request->getParam('org'));
-        $url        = base64_decode($request->getParam('current_uri'));
-        $oldOrgId   = $this->session->user_organization_id;
+        $user     = $this->loader->getCurrentUser();
+        $request  = $this->getRequest();
+        $orgId    = urldecode($request->getParam('org'));
+        $url      = base64_decode($request->getParam('current_uri'));
+        $oldOrgId = $user->getOrganizationId();
 
-        $allowedOrganizations = $this->loader->getCurrentUser()->getAllowedOrganizations();
-        if ($orgId = array_search($org, $allowedOrganizations)) {
+        $allowedOrganizations = $user->getAllowedOrganizations();
+        if (isset($allowedOrganizations[$orgId])) {
             $this->session->user_organization_id = $orgId;
             $this->session->user_organization_name = $allowedOrganizations[$orgId];
 
@@ -83,8 +90,8 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
                 );
             }
 
-            //Now update the requestcache to change the oldOrgId to the new orgId
-            //Don't do it when the oldOrgId doesn't match
+            // Now update the requestcache to change the oldOrgId to the new orgId
+            // Don't do it when the oldOrgId doesn't match
             $requestCache = $this->session->requestCache;
 
             //Create the list of request cache keys that match an organization ID (to be extended)
@@ -106,7 +113,11 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             $this->session->requestCache = $requestCache;
 
             if (Gems_Cookies::setOrganization($orgId, $this->basepath->getBasePath())) {
-                $this->getResponse()->setRedirect($url);
+                if ($url) {
+                    $this->getResponse()->setRedirect($url);
+                } else {
+                    $user->gotoStartPage($this->menu, $request);
+                }
                 return;
             }
 
@@ -126,6 +137,27 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         parent::createAction();
     }
 
+
+    public function chooseAction()
+    {
+        $this->addSnippet('Organization_ChooseOrganizationSnippet');
+        $this->html->h3($this->_('Choose an organization'));
+
+        $user = $this->loader->getCurrentUser();
+        $request = $this->getRequest();
+
+        foreach ($user->getAllowedOrganizations() as $orgId => $name) {
+            $org = $this->loader->getOrganization($orgId);
+
+            if ($org->canHaveRespondents()) {
+                $url = array($request->getActionKey() => 'change-ui');
+                $url['org'] = $orgId;
+
+                $this->html->pInfo()->actionLink($url, $name, array('style' => 'font-size: 120%;'));
+            }
+        }
+    }
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -141,7 +173,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     {
         $model = new MUtil_Model_TableModel('gems__organizations');
 
-        $model->setDeleteValues('gor_active', 0, 'gor_add_patients', 0);
+        $model->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
 
         $model->set('gor_name', 'label', $this->_('Name'), 'size', 25);
         $model->set('gor_location', 'label', $this->_('Location'), 'size', 25);
@@ -161,8 +193,8 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         );
         $yesNo = $this->util->getTranslated()->getYesNo();
         $model->set('gor_active', 'label', $this->_('Active'), 'description', $this->_('Can the organization be used?'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
-        $model->set('gor_add_patients', 'label', $this->_('Accepting'), 'description', $this->_('Can new respondents be added to the organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
-        $model->set('gor_has_patients', 'label', $this->_('Respondents'), 'description', $this->_('Does the organization have respondents?'), 'elementClass', 'Exhibitor', 'multiOptions', $yesNo);
+        $model->set('gor_add_respondents', 'label', $this->_('Accepting'), 'description', $this->_('Can new respondents be added to the organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
+        $model->set('gor_has_respondents', 'label', $this->_('Respondents'), 'description', $this->_('Does the organization have respondents?'), 'elementClass', 'Exhibitor', 'multiOptions', $yesNo);
 
         if ($detailed) {
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));

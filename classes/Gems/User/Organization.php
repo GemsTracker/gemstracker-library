@@ -125,6 +125,37 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Set menu parameters from the organization
+     *
+     * @param Gems_Menu_ParameterSource $source
+     * @return Gems_Tracker_Token (continuation pattern)
+     */
+    public function applyToMenuSource(Gems_Menu_ParameterSource $source)
+    {
+        $source->offsetSet('can_add_respondents', $this->canCreateRespondents());
+    }
+
+    /**
+     * Returns true when this organization has or can have respondents
+     *
+     * @return boolean
+     */
+    public function canCreateRespondents()
+    {
+        return (boolean) $this->_organizationData['gor_add_respondents'];
+    }
+
+    /**
+     * Returns true when this organization has or can have respondents
+     *
+     * @return boolean
+     */
+    public function canHaveRespondents()
+    {
+        return (boolean) $this->_organizationData['gor_has_respondents'] || $this->_organizationData['gor_add_respondents'];
+    }
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *

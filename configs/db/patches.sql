@@ -316,11 +316,14 @@ ALTER TABLE `gems__respondents` CHANGE `grs_bsn` `grs_ssn` VARCHAR( 32 ) CHARACT
 
 ALTER TABLE `gems__organizations` ADD UNIQUE INDEX (`gor_code`);
 
-ALTER TABLE `gems__organizations` ADD gor_accessible_by text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_task,
-    ADD gor_has_patients boolean not null default 1 AFTER gor_iso_lang,
-    ADD gor_add_patients boolean not null default 1 AFTER gor_has_patients;
+ALTER TABLE `gems__organizations` ADD gor_accessible_by text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_task;
 
-UPDATE `gems__organizations` SET gor_has_patients = COALESCE((SELECT 1 FROM gems__respondent2org WHERE gr2o_id_organization = gor_id_organization GROUP BY gr2o_id_organization), 0);
+ALTER TABLE `gems__organizations`
+    ADD gor_has_respondents boolean not null default 1 AFTER gor_iso_lang,
+    ADD gor_add_respondents boolean not null default 1 AFTER gor_has_respondents;
+
+UPDATE `gems__organizations` SET gor_has_respondents = COALESCE((SELECT 1 FROM gems__respondent2org WHERE gr2o_id_organization = gor_id_organization GROUP BY gr2o_id_organization), 0);
+UPDATE `gems__organizations` SET gor_add_respondents = CASE WHEN gor_has_respondents = 1 AND gor_active = 1 THEN 1 ELSE 0 END;
 
 -- PATCH: Log failed logins
 INSERT INTO  `gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)

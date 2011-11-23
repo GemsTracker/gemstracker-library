@@ -801,21 +801,20 @@ class GemsEscort extends MUtil_Application_Escort
             $orgSwitch = MUtil_Html::create('div', array('id' => 'organizations'));
             $currentUri = base64_encode($this->view->url());
 
+            $url = $this->view->getHelper('url')->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
 
-            $url = $this->view->getHelper('url')->url(array(
-                        'controller' => 'organization',
-                        'action' => 'change-ui'), null, true);
-            $orgSwitch->raw('<form method="get" action="' . $url . '"><div><input type="hidden" name="current_uri" value="' . $currentUri . '" /><select name="org" onchange="javascript:this.form.submit();">');
+            $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
+            $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => $currentUri));
+
+            $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
             foreach ($orgs as $id => $org) {
                 $selected = '';
                 if ($id == $user->getOrganizationId()) {
-                    $selected = ' selected="selected"';
-
-                } else {
+                    $selected = array('selected' => "selected");
                 }
-                $orgSwitch->raw('<option value="' . urlencode($org) . '"' . $selected . '>' . $org . '</option>');
+                $select->option(array('value' => $id), $org, $selected);
             }
-            $orgSwitch->raw('</select></div></form>');
+
             return $orgSwitch;
         } else {
             return;
@@ -1455,6 +1454,9 @@ class GemsEscort extends MUtil_Application_Escort
         $this->menu = $loader->createMenu($this);
         $this->_updateVariable('menu');
 
+        $source = $this->menu->getParameterSource();
+        $this->getLoader()->getOrganization()->applyToMenuSource($source);
+
         /**
          * Check if we are in maintenance mode or not. This is triggeren by a file in the var/settings
          * directory with the name lock.txt
@@ -1531,7 +1533,7 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if (isset($menuItem)) {
-            $menuItem->applyHiddenParameters($request, $this->menu->getParameterSource());
+            $menuItem->applyHiddenParameters($request, $source);
             $this->menu->setCurrent($menuItem);
         }
     }

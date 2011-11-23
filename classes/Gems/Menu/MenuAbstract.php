@@ -85,7 +85,7 @@ abstract class Gems_Menu_MenuAbstract
         }
     }
 
-    protected function _toNavigationArray(array $parameterSources)
+    protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
         if ($this->_subItems) {
             $lastParams = null;
@@ -93,7 +93,7 @@ abstract class Gems_Menu_MenuAbstract
             $pages = array();
             foreach ($this->_subItems as $item) {
                 if (! $item->get('button_only')) {
-                    $page = $item->_toNavigationArray($parameterSources);
+                    $page = $item->_toNavigationArray($source);
 
                     if (($this instanceof Gems_Menu_SubMenuItem) &&
                         (! $this->notSet('controller', 'action')) &&

@@ -264,7 +264,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
-        $page->addCreateAction('pr.respondent.create');
+        $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);;
         $page->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
 
         /*
@@ -517,6 +517,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         // MAIN RESPONDENTS ITEM
         $this->addRespondentPage($this->_('Respondents'));
 
+        /*
+        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
+            $this->addPage($this->_('Switch'), 'pr.respondent', 'organization', 'choose');
+        } // */
+
         // MAIN PLANNING ITEM
         $this->addPlanPage($this->_('Overview'));
 
@@ -625,14 +630,13 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $parameterSources = func_get_args();
 
         if ($this->_menuParameters) {
-            // array_unshift($parameterSources, $this->_menuParameters);
-            // MUtil_echo::track($this->_menuParameters);
             $parameterSources[] = $this->_menuParameters;
         }
 
+        $source = new Gems_Menu_ParameterCollector($parameterSources);
         // self::$verbose = true;
 
-        $nav = new Zend_Navigation($this->_toNavigationArray($parameterSources));
+        $nav = new Zend_Navigation($this->_toNavigationArray($source));
 
         // MUtil_Echo::r($this->_toNavigationArray($parameterSources));
 

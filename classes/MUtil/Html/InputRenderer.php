@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,20 +25,28 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * This class handles the rendering of input elements.
+ *
+ * If a Zend_Form object is passed as first parameter, then it is rendered appropriately.
+ * Otherwise the constructor tries to handle it as an attempt to create a raw HtmlElement
+ * input element.
+ *
+ * @package    MUtil
  * @subpackage Html
- */
-
-/**
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 {
@@ -48,6 +55,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
     const MODE_ELEMENT = 'except';
     const MODE_EXCEPT = 'except';
     const MODE_FORM = 'form';
+    const MODE_HTML = 'html';
     const MODE_ONLY = 'only';
     const MODE_UNTIL = 'until';
     const MODE_UPTO = 'upto';
@@ -97,8 +105,23 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             $this->_mode       = $mode;
 
         } else {
-            throw new MUtil_Html_HtmlException(sprintf(self::ARGUMENT_ERROR, get_class($element), __CLASS__ . ' constructor'));
+            if (self::MODE_ELEMENT === $mode) {
+                // Was the second argument not specified?
+                // Then the arguments should be passed in $element.
+                $args = $element;
+            } else {
+                // Use all args
+                $args = func_get_args();
+            }
+            if (is_array($args)) {
+                // Treat this as a standard Html Element
+                $this->_element = new MUtil_Html_HtmlElement('input', $args);
+                $this->_mode = self::MODE_HTML;
 
+                // MUtil_Echo::track($args);
+             } else {
+                throw new MUtil_Html_HtmlException(sprintf(self::ARGUMENT_ERROR, (is_object($element) ? get_class($element) : gettype($element)), __CLASS__ . ' constructor'));
+            }
         }
     }
 
@@ -271,6 +294,9 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 
             case self::MODE_FORM:
                 return self::renderForm($view, $this->_element);
+
+            case self::MODE_HTML:
+                return $this->_element->render($view);
 
             case self::MODE_ONLY:
                 return self::renderOnly($view, $this->_element, $this->_decorators);

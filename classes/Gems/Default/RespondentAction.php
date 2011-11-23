@@ -341,6 +341,19 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     }
 
     /**
+     * Overrule default index for the case that the current
+     * organization cannot have users.
+     */
+    public function indexAction()
+    {
+        if ($this->loader->getOrganization()->canHaveRespondents()) {
+            parent::indexAction();
+        } else {
+            $this->addSnippet('Organization_ChooseOrganizationSnippet');
+        }
+    }
+
+    /**
      * Initialize translate and html objects
      *
      * Called from {@link __construct()} as final step of object instantiation.

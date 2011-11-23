@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -51,7 +50,7 @@
  */
 interface Gems_Menu_ParameterSourceInterface
 {
-     /**
+    /**
      * Returns a value to use as parameter for $name or
      * $default if this object does not contain the value.
      *

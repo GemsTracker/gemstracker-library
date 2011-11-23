@@ -20,8 +20,8 @@ CREATE TABLE if not exists gems__organizations (
         gor_iso_lang        char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
                             not null default 'en' references gems__languages (gml_iso_lang),
 
-        gor_has_patients    boolean not null default 1,
-        gor_add_patients    boolean not null default 1,
+        gor_has_respondents boolean not null default 1,
+        gor_add_respondents boolean not null default 1,
         gor_active          boolean not null default 1,
 
         gor_changed         timestamp not null default current_timestamp on update current_timestamp,

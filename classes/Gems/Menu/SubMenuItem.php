@@ -92,11 +92,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return print_r($this->_itemOptions, true);
     }
 
-    private function _applyParameterFilter($source, $paramFunction, $raiseConditions, &$condition)
+    private function _applyParameterFilter(Gems_Menu_ParameterCollector $source, $raiseConditions, &$condition)
     {
         if ($this->_parameterFilter) {
             foreach ($this->_parameterFilter as $name => $testValue) {
-                $paramValue = call_user_func($paramFunction, $source, $name, null);
+                $paramValue = $source->getMenuParameter($name);
 
                 if ($paramValue instanceof MUtil_Lazy_LazyInterface) {
                     if ($raiseConditions) {
@@ -124,20 +124,12 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
-    private function _applyParameterSource($source, $paramFunction, array &$parameters)
+    private function _applyParameterSource(Gems_Menu_ParameterCollector $source, array &$parameters)
     {
         // Fill in required parameters
         if ($this->_parameters && is_array($this->_parameters)) {
             foreach ($this->_parameters as $param => $name) {
-
-                $default = isset($parameters[$param]) ? $parameters[$param] : null;
-
-                $check = $name;
-                if ($source instanceof Zend_Controller_Request_Abstract) $check = $param;
-
-                if ($value = call_user_func($paramFunction, $source, $check, $default)) {
-                    $parameters[$param] = $value;
-                }
+                $parameters[$param] = $source->getMenuParameter($name, $param);
                 // MUtil_Echo::r($param . '/' . $name . ' => ' . $value, $this->get('label'));
             }
         }
@@ -145,31 +137,16 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return false;
     }
 
-    private function _applyParameterSources(array $parameterSources, array &$parameters, $raiseConditions)
+    private function _applyParameterSources(Gems_Menu_ParameterCollector $source, array &$parameters, $raiseConditions)
     {
+        // Gems_Menu::$verbose = true;
         // MUtil_Echo::r($this->get('label'));
         $condition = true;
 
-        foreach ($parameterSources as $source) {
-            if ($source instanceof Zend_Controller_Request_Abstract) {
-                $this->_applyParameterSource($source, array(__CLASS__, '_getRequestValue'), $parameters);
-
-            } elseif ($source instanceof Gems_Menu_ParameterSourceInterface) {
-                if ($this->_applyParameterFilter($source, array(__CLASS__, '_getSourceValue'), $raiseConditions, $condition)) {
-                    return false;
-                }
-                $this->_applyParameterSource($source, array(__CLASS__, '_getSourceValue'), $parameters);
-
-            } elseif ($source instanceof MUtil_Lazy_RepeatableInterface) {
-                if ($this->_applyParameterFilter($source, array(__CLASS__, '_getRepeatableValue'), $raiseConditions, $condition)) {
-                    return false;
-                }
-                $this->_applyParameterSource($source, array(__CLASS__, '_getRepeatableValue'), $parameters);
-
-            } elseif (is_array($source)) {
-                $this->_applyParameterSource($source, array(__CLASS__, '_getArrayValue'), $parameters);
-            }
+        if ($this->_applyParameterFilter($source, $raiseConditions, $condition)) {
+            return false;
         }
+        $this->_applyParameterSource($source, $parameters);
 
         // Test required parameters
         if ($this->_requiredParameters) {
@@ -186,39 +163,14 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $condition;
     }
 
-    private static function _getArrayValue($source, $name, $default)
-    {
-        if (isset($source[$name])) {
-            return $source[$name];
-        } else {
-            return $default;
-        }
-    }
-
-    private static function _getRepeatableValue($source, $name, $default)
-    {
-        return $source->$name;
-    }
-
-    private static function _getRequestValue($source, $name, $default)
-    {
-        return $source->getParam($name, $default);
-    }
-
-    private static function _getSourceValue($source, $name, $default)
-    {
-        return $source->getMenuParameter($name, $default);
-    }
-
-    private function _toHRef(array $parameterSources, &$condition)
+    private function _toHRef(Gems_Menu_ParameterCollector $source, &$condition)
     {
         if ($this->get('allowed')) {
             $parameters = array();
 
-            if ($condition = $this->_applyParameterSources($parameterSources, $parameters, ! $condition)) {
+            if ($condition = $this->_applyParameterSources($source, $parameters, ! $condition)) {
 
                 $url = new MUtil_Html_HrefArrayAttribute($parameters);
-                // $url->setRequest($request); // TODO: Filter from $parameterSources?
                 $url->setRouteReset($this->get('reset_param', true));
 
                 foreach (array('module', 'controller', 'action', 'route') as $name) {
@@ -234,10 +186,10 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
-    private function _toLi(array $parameterSources)
+    private function _toLi(Gems_Menu_ParameterCollector $source)
     {
         $condition = false;
-        if ($href = $this->_toHRef($parameterSources, $condition)) {
+        if ($href = $this->_toHRef($source, $condition)) {
             $li = MUtil_Html::create()->li();
 
             $li->a($href, $this->get('label'));
@@ -246,13 +198,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
-    protected function _toNavigationArray(array $parameterSources)
+    protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
         $result = $this->_itemOptions;
 
         if ($result['visible']) {
             $parameters = array();
-            if ($this->_applyParameterSources($parameterSources, $parameters, true)) {
+            if ($this->_applyParameterSources($source, $parameters, true)) {
                 $result['params'] = $parameters;
             } else {
                 $result['visible'] = false;
@@ -260,7 +212,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
 
         if ($this->hasChildren()) {
-            $result['pages'] = parent::_toNavigationArray($parameterSources);
+            $result['pages'] = parent::_toNavigationArray($source);
         }
 
         // Get any missing MVC keys from children, even when invisible
@@ -301,11 +253,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $result;
     }
 
-    protected function _toRouteArray(array $parameterSources)
+    protected function _toRouteArray(Gems_Menu_ParameterCollector $source)
     {
         if ($this->get('allowed')) {
             $result = array();
-            if ($this->_applyParameterSources($parameterSources, $result, true)) {
+            if ($this->_applyParameterSources($source, $result, true)) {
                 if (isset($this->_itemOptions['controller'])) {
                     $result['controller'] = $this->_itemOptions['controller'];
                 }
@@ -323,7 +275,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                     if ($this->hasChildren()) {
                         foreach ($this->getChildren() as $child) {
                             if ($child->check(array('allowed', true))) {
-                                $firstChild = $firstChild->toRouteArray($parameterSources);
+                                $firstChild = $firstChild->toRouteArray($source);
                                 break;
                             }
                         }
@@ -387,6 +339,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->addAction(null, $this->get('privilege'), 'autofilter');
     }
 
+    /**
+     * Add an "Create new" action to the current subMenuItem
+     *
+     * @param string $privilege     The privilege for the item
+     * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addCreateAction($privilege = null, array $other = array())
     {
         if (isset($other['label'])) {
@@ -725,6 +684,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
     public function is($key, $value)
     {
+        // MUtil_Echo::track($key, $value);
         $target = $this->get($key);
 
         if (is_array($value)) {
@@ -856,7 +816,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             }
 
             $condition = true;
-            if ($href = $this->_toHRef($parameterSources, $condition)) {
+            if ($href = $this->_toHRef(new Gems_Menu_ParameterCollector($parameterSources), $condition)) {
 
                 if ($condition instanceof MUtil_Lazy_LazyInterface) {
                     if ($showDisabled) {
@@ -937,14 +897,14 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         $parameterSources = func_get_args();
 
         $condition = true;
-        return $this->_toHRef($parameterSources, $condition);
+        return $this->_toHRef(new Gems_Menu_ParameterCollector($parameterSources), $condition);
     }
 
     public function toRouteUrl($parameterSources_args = null)
     {
         $parameterSources = func_get_args();
 
-        return $this->_toRouteArray($parameterSources);
+        return $this->_toRouteArray(new Gems_Menu_ParameterCollector($parameterSources));
     }
 
     public function toUl($actionController = null)
@@ -955,7 +915,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             $ul = MUtil_Html_ListElement::ul();
 
             foreach ($this->getChildren() as $menuItem) {
-                if ($li = $menuItem->_toLi($parameterSources)) {
+                if ($li = $menuItem->_toLi(new Gems_Menu_ParameterCollector($parameterSources))) {
                     $ul->append($li);
                 }
             }

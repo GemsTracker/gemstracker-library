@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-23 14:50+0100\n"
+"POT-Creation-Date: 2011-11-23 19:43+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -23,53 +23,53 @@ msgstr ""
 msgid "Path %s not writable"
 msgstr "Path %s niet schrijfbaar"
 
-#: classes/GemsEscort.php:888
+#: classes/GemsEscort.php:887
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:912
+#: classes/GemsEscort.php:911
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1343
+#: classes/GemsEscort.php:1342
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1467
+#: classes/GemsEscort.php:1469
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1469
-#: classes/GemsEscort.php:1473
-#: classes/GemsEscort.php:1474
+#: classes/GemsEscort.php:1471
+#: classes/GemsEscort.php:1475
+#: classes/GemsEscort.php:1476
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1484
+#: classes/GemsEscort.php:1486
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1486
-#: classes/GemsEscort.php:1522
+#: classes/GemsEscort.php:1488
+#: classes/GemsEscort.php:1524
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1502
+#: classes/GemsEscort.php:1504
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1504
+#: classes/GemsEscort.php:1506
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1509
-#: classes/GemsEscort.php:1520
+#: classes/GemsEscort.php:1511
+#: classes/GemsEscort.php:1522
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1510
+#: classes/GemsEscort.php:1512
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
@@ -310,31 +310,31 @@ msgstr "Antwoorden"
 msgid "Respondents"
 msgstr "Patiënten"
 
-#: classes/Gems/Menu.php:521
+#: classes/Gems/Menu.php:526
 msgid "Overview"
 msgstr "Overzicht"
 
-#: classes/Gems/Menu.php:528
+#: classes/Gems/Menu.php:533
 msgid "Project"
 msgstr "Project"
 
-#: classes/Gems/Menu.php:531
+#: classes/Gems/Menu.php:536
 msgid "Setup"
 msgstr "Beheer"
 
-#: classes/Gems/Menu.php:534
+#: classes/Gems/Menu.php:539
 msgid "Mail"
 msgstr "Email"
 
-#: classes/Gems/Menu.php:537
+#: classes/Gems/Menu.php:542
 msgid "Track Builder"
 msgstr "Traject bouwer"
 
-#: classes/Gems/Menu.php:546
+#: classes/Gems/Menu.php:551
 msgid "Contact"
 msgstr "Contact"
 
-#: classes/Gems/Menu.php:559
+#: classes/Gems/Menu.php:564
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -1484,7 +1484,7 @@ msgid "Login Name"
 msgstr "Login Naam"
 
 #: classes/Gems/Default/OptionAction.php:188
-#: classes/Gems/Default/OrganizationAction.php:158
+#: classes/Gems/Default/OrganizationAction.php:191
 #: classes/Gems/Default/RespondentAction.php:173
 #: classes/Gems/Default/StaffAction.php:224
 msgid "Language"
@@ -1513,96 +1513,100 @@ msgstr[1] "items"
 msgid "Item"
 msgstr "Item"
 
-#: classes/Gems/Default/OrganizationAction.php:114
+#: classes/Gems/Default/OrganizationAction.php:124
 msgid "Cookies must be enabled."
 msgstr "Zonder cookies kan de taal niet ingesteld worden."
 
-#: classes/Gems/Default/OrganizationAction.php:117
+#: classes/Gems/Default/OrganizationAction.php:127
 msgid "Invalid organization."
 msgstr "Ongeldige organisatie."
 
-#: classes/Gems/Default/OrganizationAction.php:125
+#: classes/Gems/Default/OrganizationAction.php:135
 msgid "New organization..."
 msgstr "Nieuwe organisatie..."
 
-#: classes/Gems/Default/OrganizationAction.php:147
+#: classes/Gems/Default/OrganizationAction.php:144
+msgid "Choose an organization"
+msgstr "Kies een organisatie"
+
+#: classes/Gems/Default/OrganizationAction.php:180
 msgid "Url"
 msgstr "Url"
 
-#: classes/Gems/Default/OrganizationAction.php:148
+#: classes/Gems/Default/OrganizationAction.php:181
 msgid "Task"
 msgstr "Taak"
 
-#: classes/Gems/Default/OrganizationAction.php:149
+#: classes/Gems/Default/OrganizationAction.php:182
 msgid "Contact name"
 msgstr "Contact naam"
 
-#: classes/Gems/Default/OrganizationAction.php:150
+#: classes/Gems/Default/OrganizationAction.php:183
 msgid "Contact email"
 msgstr "Contact email"
 
-#: classes/Gems/Default/OrganizationAction.php:153
+#: classes/Gems/Default/OrganizationAction.php:186
 msgid "Style"
 msgstr "Stijl"
 
-#: classes/Gems/Default/OrganizationAction.php:162
+#: classes/Gems/Default/OrganizationAction.php:195
 msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
-#: classes/Gems/Default/OrganizationAction.php:163
+#: classes/Gems/Default/OrganizationAction.php:196
 msgid "Accepting"
 msgstr "Accepteerd"
 
-#: classes/Gems/Default/OrganizationAction.php:163
+#: classes/Gems/Default/OrganizationAction.php:196
 msgid "Can new respondents be added to the organization?"
 msgstr "Accepteert de organisatie nieuwe patiënten?"
 
-#: classes/Gems/Default/OrganizationAction.php:164
+#: classes/Gems/Default/OrganizationAction.php:197
 msgid "Does the organization have respondents?"
 msgstr "Heeft de organisatie patiënten?"
 
-#: classes/Gems/Default/OrganizationAction.php:168
+#: classes/Gems/Default/OrganizationAction.php:201
 msgid "Greeting"
 msgstr "Begroeting"
 
-#: classes/Gems/Default/OrganizationAction.php:168
-#: classes/Gems/Default/OrganizationAction.php:169
+#: classes/Gems/Default/OrganizationAction.php:201
+#: classes/Gems/Default/OrganizationAction.php:202
 msgid "For emails and token forward screen."
 msgstr "Voor emails en kenmerk scherm."
 
-#: classes/Gems/Default/OrganizationAction.php:169
+#: classes/Gems/Default/OrganizationAction.php:202
 msgid "Signature"
 msgstr "Handtekening"
 
-#: classes/Gems/Default/OrganizationAction.php:171
+#: classes/Gems/Default/OrganizationAction.php:204
 msgid "Accessible by"
 msgstr "Toegankelijk voor"
 
-#: classes/Gems/Default/OrganizationAction.php:171
+#: classes/Gems/Default/OrganizationAction.php:204
 msgid "Checked organizations see this organizations respondents."
 msgstr "Geselecteerde organizaties kunnen de patiënten van deze organisatie bekijken."
 
-#: classes/Gems/Default/OrganizationAction.php:180
+#: classes/Gems/Default/OrganizationAction.php:214
 msgid "Code name"
 msgstr "Code naam"
 
-#: classes/Gems/Default/OrganizationAction.php:180
+#: classes/Gems/Default/OrganizationAction.php:214
 msgid "Only for programmers."
 msgstr "Uitsluitend voor programmeurs."
 
-#: classes/Gems/Default/OrganizationAction.php:193
+#: classes/Gems/Default/OrganizationAction.php:228
 msgid "Delete organization"
 msgstr "Verwijder organisatie"
 
-#: classes/Gems/Default/OrganizationAction.php:203
+#: classes/Gems/Default/OrganizationAction.php:238
 msgid "Edit organization"
 msgstr "Bewerk organisatie"
 
-#: classes/Gems/Default/OrganizationAction.php:213
+#: classes/Gems/Default/OrganizationAction.php:248
 msgid "Participating organizations"
 msgstr "Deelnemende organisaties"
 
-#: classes/Gems/Default/OrganizationAction.php:223
+#: classes/Gems/Default/OrganizationAction.php:258
 msgid "Show organization"
 msgstr "Toon organisatie"
 
@@ -1942,7 +1946,7 @@ msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:392
+#: classes/Gems/Default/RespondentAction.php:405
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
@@ -2853,15 +2857,15 @@ msgstr "Controleer toewijzingen"
 msgid "Check all assignments"
 msgstr "Controleer alle toewijzingen"
 
-#: classes/Gems/Menu/SubMenuItem.php:396
+#: classes/Gems/Menu/SubMenuItem.php:355
 msgid "New"
 msgstr "Nieuw"
 
-#: classes/Gems/Menu/SubMenuItem.php:450
+#: classes/Gems/Menu/SubMenuItem.php:409
 msgid "Export the current data set to Excel"
 msgstr "Exporteer de huidige gegevens naar Excel"
 
-#: classes/Gems/Menu/SubMenuItem.php:454
+#: classes/Gems/Menu/SubMenuItem.php:413
 msgid "Excel export"
 msgstr "Excel export"
 
@@ -3231,11 +3235,15 @@ msgid "Answers for token %s, patient number %s: %s."
 msgstr "Antwoorden voor kenmerk %s, patientnummer %s: %s."
 
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:223
+#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:124
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:164
 #, php-format
 msgid "Token %s not found."
 msgstr "Kenmerk %s niet gevonden"
 
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:227
+#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:128
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:168
 msgid "No token specified."
 msgstr "Geen kenmerk opgegeven."
 
@@ -3801,12 +3809,10 @@ msgid "Recalculate track"
 msgstr "Berekening traject opnieuw"
 
 #: snippets/RespondentDetailsSnippet.php:59
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:74
 msgid "Respondent information"
 msgstr "Patiënt informatie"
 
 #: snippets/RespondentDetailsSnippet.php:71
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:97
 msgid "Respondent nr: "
 msgstr "Patiënt nr:"
 
@@ -3893,6 +3899,14 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
+
+#: snippets/Organization/ChooseOrganizationSnippet.php:93
+msgid "This organization cannot have any respondents, please choose one that does:"
+msgstr "Deze organisatie heeft geen patiënten. Kies een organisatie met patiënten."
+
+#: snippets/Organization/ChooseOrganizationSnippet.php:105
+msgid "This organization cannot have any respondents."
+msgstr "Deze organisatie heeft geen patiënten."
 
 #~ msgid "Allow new respondents"
 #~ msgstr "Nieuwe patiënten toestaan"

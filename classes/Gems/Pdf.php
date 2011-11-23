@@ -126,7 +126,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
         $content = $pdf->render();
 
-        MUtil_Echo::track($filename);
+        // MUtil_Echo::track($filename);
         if ($download) {
             // Download & save
 			header('Content-Type: application/x-download');
