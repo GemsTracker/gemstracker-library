@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,14 +25,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Class for A/link element. Assumes first passed argument is the href attribute,
+ * unless specified otherwise.
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 
 class MUtil_Html_AElement extends MUtil_Html_HtmlElement
@@ -54,10 +64,6 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Overrule the target attribute and provide the same functionality in a W3C compliant way
-     *
-     * If a realtarget attribute is specified this functionaluti is skipped (and the realtarget attribute is removed).
-     *
      * If the target attribute is specified and no onclick attribute is specified the target is removed and
      * a compatible javascript onclick attribute is created.
      *
@@ -68,15 +74,7 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
      */
     protected function _htmlAttribs($attribs)
     {
-        if (isset($attribs['realtarget'])) {
-            unset($attribs['realtarget']);
-
-        } elseif (isset($attribs['target']) && (! isset($attribs['onclick']))) {
-            // It was so nice, but IE 9 really needs target
-            /*
-            $target = $attribs['target'];
-            $attribs['onclick'] = "event.cancelBubble = true; window.open(this.href, '$target'); return false;";
-            unset($attribs['target']); // */
+        if (isset($attribs['target']) && (! isset($attribs['onclick']))) {
             // Assumption that is not tested, but when clicking on a target link, no further bubble is needed.
             $attribs['onclick'] = "event.cancelBubble = true;";
         }

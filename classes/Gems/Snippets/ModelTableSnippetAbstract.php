@@ -126,7 +126,6 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
         if ($editMenuItem = $this->getEditMenuItem()) {
             $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
         }
-
     }
 
     /**

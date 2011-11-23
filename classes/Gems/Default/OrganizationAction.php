@@ -44,21 +44,25 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction // Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetActionAbstract
 {
-    public $autoFilter = false;
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Organization_OrganizationTableSnippet';
 
-    public function afterSave(array $data, $isNew)
-    {
-        $org = $this->loader->getOrganization($data['gor_id_organization']);
-        $org->invalidateCache();
+    /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'Organization_OrganizationEditSnippet';
 
-        // Make sure any changes in the allowed list are reflected.
-        $this->loader->getCurrentUser()->refreshAllowedOrganizations();
-
-        return parent::afterSave($data, $isNew);
-    }
-
+    /**
+     * Switch the active organization
+     */
     public function changeUiAction()
     {
         $request    = $this->getRequest();
@@ -112,6 +116,15 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
         throw new Exception($this->_('Invalid organization.'));
     }
 
+    /**
+     * Action for showing a create new item page
+     */
+    public function createAction()
+    {
+        $this->createEditParameters['formTitle'] = $this->_('New organization...');
+
+        parent::createAction();
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -128,12 +141,14 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
     {
         $model = new MUtil_Model_TableModel('gems__organizations');
 
+        $model->setDeleteValues('gor_active', 0, 'gor_add_patients', 0);
+
         $model->set('gor_name', 'label', $this->_('Name'), 'size', 25);
         $model->set('gor_location', 'label', $this->_('Location'), 'size', 25);
         $model->set('gor_url', 'label', $this->_('Url'), 'size', 50);
         $model->set('gor_task', 'label', $this->_('Task'), 'size', 25);
         $model->set('gor_contact_name', 'label', $this->_('Contact name'), 'size', 25);
-        $model->set('gor_contact_email', 'label', $this->_('Contact email'), 'size', 50);
+        $model->set('gor_contact_email', 'label', $this->_('Contact email'), 'size', 50, 'validator', 'SimpleEmail');
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $model->setIfExists(
                 'gor_style', 'label', $this->_('Style'),
@@ -145,9 +160,9 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
             'multiOptions', $this->util->getLocalized()->getLanguages(), 'default', 'nl'
         );
         $yesNo = $this->util->getTranslated()->getYesNo();
-        $model->set('gor_active', 'label', $this->_('Active'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
-        $model->set('gor_add_patients', 'label', $this->_('Allow new respondents'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
-
+        $model->set('gor_active', 'label', $this->_('Active'), 'description', $this->_('Can the organization be used?'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
+        $model->set('gor_add_patients', 'label', $this->_('Accepting'), 'description', $this->_('Can new respondents be added to the organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
+        $model->set('gor_has_patients', 'label', $this->_('Respondents'), 'description', $this->_('Does the organization have respondents?'), 'elementClass', 'Exhibitor', 'multiOptions', $yesNo);
 
         if ($detailed) {
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));
@@ -166,18 +181,50 @@ class Gems_Default_OrganizationAction extends Gems_Controller_BrowseEditAction /
             $model->set('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
         }
 
+        $model->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+
         Gems_Model::setChangeFieldsByPrefix($model, 'gor');
 
         return $model;
     }
 
-    public function getTopic($count = 1)
+    /**
+     * Action for showing a delete item page
+     */
+    public function deleteAction()
     {
-        return $this->plural('organization', 'organizations', $count);
+        $this->html->h3($this->_('Delete organization'));
+
+        parent::deleteAction();
     }
 
-    public function getTopicTitle()
+    /**
+     * Action for showing a edit item page
+     */
+    public function editAction()
     {
-        return $this->_('Participating organizations');
+        $this->createEditParameters['formTitle'] = $this->_("Edit organization");
+
+        parent::editAction();
+    }
+
+    /**
+     * Action for showing a browse page
+     */
+    public function indexAction()
+    {
+        $this->html->h3($this->_('Participating organizations'));
+
+        parent::indexAction();
+    }
+
+    /**
+     * Action for showing an item page
+     */
+    public function showAction()
+    {
+        $this->html->h3($this->_('Show organization'));
+
+        parent::showAction();
     }
 }

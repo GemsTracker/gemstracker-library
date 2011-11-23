@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-22 16:14+0100\n"
+"POT-Creation-Date: 2011-11-23 14:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -23,53 +23,53 @@ msgstr ""
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:887
+#: classes/GemsEscort.php:888
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:911
+#: classes/GemsEscort.php:912
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1342
+#: classes/GemsEscort.php:1343
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1466
+#: classes/GemsEscort.php:1467
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1468
-#: classes/GemsEscort.php:1472
+#: classes/GemsEscort.php:1469
 #: classes/GemsEscort.php:1473
+#: classes/GemsEscort.php:1474
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1483
+#: classes/GemsEscort.php:1484
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1485
-#: classes/GemsEscort.php:1521
+#: classes/GemsEscort.php:1486
+#: classes/GemsEscort.php:1522
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1501
+#: classes/GemsEscort.php:1502
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1503
+#: classes/GemsEscort.php:1504
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1508
-#: classes/GemsEscort.php:1519
+#: classes/GemsEscort.php:1509
+#: classes/GemsEscort.php:1520
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1509
+#: classes/GemsEscort.php:1510
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -1484,7 +1484,7 @@ msgid "Login Name"
 msgstr "Login Name"
 
 #: classes/Gems/Default/OptionAction.php:188
-#: classes/Gems/Default/OrganizationAction.php:140
+#: classes/Gems/Default/OrganizationAction.php:158
 #: classes/Gems/Default/RespondentAction.php:173
 #: classes/Gems/Default/StaffAction.php:224
 msgid "Language"
@@ -1513,76 +1513,98 @@ msgstr[1] "items"
 msgid "Item"
 msgstr "Item"
 
-#: classes/Gems/Default/OrganizationAction.php:105
+#: classes/Gems/Default/OrganizationAction.php:114
 msgid "Cookies must be enabled."
 msgstr "Cookies must be enabled."
 
-#: classes/Gems/Default/OrganizationAction.php:108
+#: classes/Gems/Default/OrganizationAction.php:117
 msgid "Invalid organization."
 msgstr "Invalid organization."
 
-#: classes/Gems/Default/OrganizationAction.php:129
+#: classes/Gems/Default/OrganizationAction.php:125
+msgid "New organization..."
+msgstr "New organization..."
+
+#: classes/Gems/Default/OrganizationAction.php:147
 msgid "Url"
 msgstr "Url"
 
-#: classes/Gems/Default/OrganizationAction.php:130
+#: classes/Gems/Default/OrganizationAction.php:148
 msgid "Task"
 msgstr "Task"
 
-#: classes/Gems/Default/OrganizationAction.php:131
+#: classes/Gems/Default/OrganizationAction.php:149
 msgid "Contact name"
 msgstr "Contact name"
 
-#: classes/Gems/Default/OrganizationAction.php:132
+#: classes/Gems/Default/OrganizationAction.php:150
 msgid "Contact email"
 msgstr "Contact email"
 
-#: classes/Gems/Default/OrganizationAction.php:135
+#: classes/Gems/Default/OrganizationAction.php:153
 msgid "Style"
 msgstr "Style"
 
-#: classes/Gems/Default/OrganizationAction.php:145
-msgid "Allow new respondents"
-msgstr "Allow new patients"
+#: classes/Gems/Default/OrganizationAction.php:162
+msgid "Can the organization be used?"
+msgstr "Can the organization be used?"
 
-#: classes/Gems/Default/OrganizationAction.php:150
+#: classes/Gems/Default/OrganizationAction.php:163
+msgid "Accepting"
+msgstr "Accepting"
+
+#: classes/Gems/Default/OrganizationAction.php:163
+msgid "Can new respondents be added to the organization?"
+msgstr "Can new patients  be added to the organization?"
+
+#: classes/Gems/Default/OrganizationAction.php:164
+msgid "Does the organization have respondents?"
+msgstr "Does the organization have patients?"
+
+#: classes/Gems/Default/OrganizationAction.php:168
 msgid "Greeting"
 msgstr "Greeting"
 
-#: classes/Gems/Default/OrganizationAction.php:150
-#: classes/Gems/Default/OrganizationAction.php:151
+#: classes/Gems/Default/OrganizationAction.php:168
+#: classes/Gems/Default/OrganizationAction.php:169
 msgid "For emails and token forward screen."
 msgstr "For emails and token forward screen."
 
-#: classes/Gems/Default/OrganizationAction.php:151
+#: classes/Gems/Default/OrganizationAction.php:169
 msgid "Signature"
 msgstr "Signature"
 
-#: classes/Gems/Default/OrganizationAction.php:153
+#: classes/Gems/Default/OrganizationAction.php:171
 msgid "Accessible by"
 msgstr "Accessible by"
 
-#: classes/Gems/Default/OrganizationAction.php:153
+#: classes/Gems/Default/OrganizationAction.php:171
 msgid "Checked organizations see this organizations respondents."
 msgstr "Checked organizations see this organizations patients."
 
-#: classes/Gems/Default/OrganizationAction.php:162
+#: classes/Gems/Default/OrganizationAction.php:180
 msgid "Code name"
 msgstr "Code name"
 
-#: classes/Gems/Default/OrganizationAction.php:162
+#: classes/Gems/Default/OrganizationAction.php:180
 msgid "Only for programmers."
 msgstr "Only for programmers."
 
-#: classes/Gems/Default/OrganizationAction.php:172
-msgid "organization"
-msgid_plural "organizations"
-msgstr[0] "organization"
-msgstr[1] "organizations"
+#: classes/Gems/Default/OrganizationAction.php:193
+msgid "Delete organization"
+msgstr "Delete organization"
 
-#: classes/Gems/Default/OrganizationAction.php:177
+#: classes/Gems/Default/OrganizationAction.php:203
+msgid "Edit organization"
+msgstr "Edit organization"
+
+#: classes/Gems/Default/OrganizationAction.php:213
 msgid "Participating organizations"
 msgstr "Participating organizations"
+
+#: classes/Gems/Default/OrganizationAction.php:223
+msgid "Show organization"
+msgstr "Show organization"
 
 #: classes/Gems/Default/OverviewPlanAction.php:115
 #: classes/Gems/Default/ProjectSurveysAction.php:88
@@ -3693,6 +3715,10 @@ msgstr "'%value%' is an empty string"
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Invalid type given. String, integer or float expected"
 
+#: languages/FakeTranslations.php:97
+msgid "One or more IPs are illegal."
+msgstr "One or more IPs are illegal."
+
 #: snippets/AddTracksSnippet.php:95
 msgid "by Respondents"
 msgstr "by Patients"
@@ -3867,6 +3893,9 @@ msgstr "This survey can be assigned since %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#~ msgid "Allow new respondents"
+#~ msgstr "Allow new patients"
 
 #~ msgid "Please update the database"
 #~ msgstr "Please update the database"
