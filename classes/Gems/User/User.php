@@ -230,6 +230,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
        $auth = Gems_Auth::getInstance();
 
        $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
+       $formValues['organization'] = $this->getBaseOrganizationId();
 
        $adapter = $this->definition->getAuthAdapter($formValues);
        $authResult = $auth->authenticate($adapter, $formValues);
@@ -305,11 +306,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             }
         }
 
-        if (! $this->_hasVar('__allowedOrgs')) {
-            // Is always requested so no win in waiting.
-            $this->refreshAllowedOrganizations();
-        }
-
         return (boolean) $this->acl && $this->basepath && $this->userLoader;
     }
 
@@ -330,7 +326,22 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function getAllowedOrganizations()
     {
+
+        if (! $this->_hasVar('__allowedOrgs')) {
+            $this->refreshAllowedOrganizations();
+        }
+
         return $this->_getVar('__allowedOrgs');
+    }
+
+    /**
+     * Returns the original (not the current) organization used by this user.
+     *
+     * @return Gems_User_Organization
+     */
+    public function getBaseOrganization()
+    {
+        return $this->userLoader->getOrganization($this->getBaseOrganizationId());
     }
 
     /**
@@ -605,33 +616,14 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function refreshAllowedOrganizations()
     {
-        $sql = "SELECT gor_id_organization, gor_name FROM gems__organizations WHERE ";
-
         // Privilege overrules organizational settings
-        if (! $this->hasPrivilege('pr.organization-switch')) {
-            if ($by = $this->_getVar('accessible_by')) {
-                $orgs = explode(':', trim($by, ':'));
-
-                if ($orgs) {
-                    // Not to forget: the users own organization
-                    $orgs[] = $this->getBaseOrganizationId();
-
-                    $sql .= "gor_id_organization IN (";
-                    $sql .= implode(', ', $orgs);
-                    $sql .= ") AND ";
-                } else {
-                    $sql = false;
-                }
-            } else {
-                $sql = false;
-            }
-        }
-        if ($sql) {
-            $sql .= " gor_active = 1 ORDER BY gor_name";
-            $orgs = $this->db->fetchPairs($sql);
+        if ($this->hasPrivilege('pr.organization-switch')) {
+            $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
         } else {
-            $orgs = array();
+            $orgs = $this->getBaseOrganization()->getAllowedOrganizations();
         }
+        natsort($orgs);
+        // MUtil_Echo::track($orgs);
 
         $this->_setVar('__allowedOrgs', $orgs);
 

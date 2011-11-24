@@ -192,16 +192,9 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
                                            'user_base_org_id' => 'gsf_id_organization'))
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role', 'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges'))
-               ->join('gems__organizations', 'gul_id_organization = gor_id_organization',
-                       array(
-                           'user_organization_id' => 'gor_id_organization',
-                           'user_organization_name' => 'gor_name',
-                           'user_style' => 'gor_style',
-                           'accessible_by' => 'gor_accessible_by'))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user',
                        array('user_password_reset' => 'gup_reset_required'))
                ->where('ggp_group_active = 1')
-               ->where('gor_active = 1')
                ->where('gsf_active = 1')
                ->where('gul_can_login = 1')
                ->where('gul_login = ?')

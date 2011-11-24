@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $id: Organization.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
@@ -57,12 +57,21 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
         'gor_id_organization' => 1,
         'gor_name'            => 'NO ORGANIZATION',
         'gor_code'            => null,
+        'gor_location'        => null,
+        'gor_url'             => null,
+        'gor_task'            => null,
+        'gor_accessible_by'   => null,
+        'gor_contact_name'    => null,
+        'gor_contact_email'   => null,
+        'gor_welcome'         => null,
+        'gor_signature'       => null,
         'gor_style'           => null,
         'gor_iso_lang'        => 'en',
+        'gor_has_respondents' => 0,
+        'gor_add_respondents' => 0,
         'gor_active'          => 0,
-        'gor_has_respondents' => false,
-        'gor_add_respondents' => false
-    );
+        'can_access'          => array(),
+        );
 
     /**
      *
@@ -173,18 +182,43 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
         }
 
         if (! $this->_organizationData) {
-            $this->_organizationData = $this->db->fetchRow('SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1', $this->_organizationId);
+            $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
+            $this->_organizationData = $this->db->fetchRow($sql, $this->_organizationId);
 
             if (! $this->_organizationData) {
                 $this->_organizationData = $this->_noOrganization;
+            } else {
+                $dbOrgId = $this->db->quote($this->_organizationId, Zend_Db::INT_TYPE);
+                $sql = "SELECT gor_id_organization, gor_name
+                    FROM gems__organizations
+                    WHERE gor_active = 1 AND
+                        (
+                          gor_id_organization = $dbOrgId OR
+                          gor_accessible_by LIKE '%:$dbOrgId:%'
+                        )
+                    ORDER BY gor_name";
+                $this->_organizationData['can_access'] = $this->db->fetchPairs($sql);
+
+                // MUtil_Echo::track($sql, $this->_organizationData['can_access']);
             }
 
             if ($cacheId) {
                 $this->cache->save($this->_organizationData, $cacheId);
             }
         }
+        // MUtil_Echo::track($this->_organizationData);
 
         return is_array($this->_organizationData) && parent::checkRegistryRequestsAnswers();
+    }
+
+    /**
+     * Get the organizations this organizations can access.
+     *
+     * @return array Of type orgId => orgName
+     */
+    public function getAllowedOrganizations()
+    {
+        return $this->_organizationData['can_access'];
     }
 
     /**

@@ -126,16 +126,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Get an array of OrgId => Org Name for all allowed organizations for the current loggedin user
-     *
-     * @return array
-     */
-    public function getAllowedOrganizations()
-    {
-        return $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
-    }
-
-    /**
      * Get the currently loggin in user
      *
      * @return Gems_User_User
@@ -194,14 +184,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @param int $organization
      * @return Gems_User_User But ! ->isActive when the user does not exist
      */
-    public function getUser($login_name, $organization)
+    public function getUser($login_name, $currentOrganization)
     {
-        $defName = $this->getUserClassName($login_name, $organization);
+        list($defName, $userOrganization) = $this->getUserClassInfo($login_name, $currentOrganization);
+        // MUtil_Echo::track($defName, $userOrganization);
 
         $definition = $this->_getClass($defName);
 
-        $values = $definition->getUserData($login_name, $organization);
-        // MUtil_Echo::track($defName, $login_name, $organization, $values);
+        $values = $definition->getUserData($login_name, $userOrganization);
+        // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
 
         if (! isset($values['user_active'])) {
             $values['user_active'] = true;
@@ -211,7 +202,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         $user = $this->_loadClass('User', true, array($values, $definition));
 
-        $user->setCurrentOrganization($organization);
+        $user->setCurrentOrganization($currentOrganization);
 
         return $user;
     }
@@ -239,21 +230,51 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return string
+     * @return array Containing definitionName, organizationId
      */
-    protected function getUserClassName($login_name, $organization)
+    protected function getUserClassInfo($login_name, $organization)
     {
         if ((null == $login_name) || (null == $organization)) {
-            return 'NoLoginDefinition';
+            return array('NoLoginDefinition', $organization);
         }
         if ($this->isProjectUser($login_name)) {
-            return 'ProjectUserDefinition';
+            return array('ProjectUserDefinition', $organization);
         }
 
         try {
-            $sql = "SELECT gul_user_class FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?";
-            if ($class = $this->db->fetchOne($sql, array($login_name, $organization))) {
-                return $class . 'Definition';
+            $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization
+                FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization = gul_id_organization
+                WHERE gor_active = 1 AND
+                    gul_can_login = 1 AND
+                    gul_login = ? AND
+                    gul_id_organization = ?
+                LIMIT 1";
+
+            $params[] = $login_name;
+            $params[] = $organization;
+            // MUtil_Echo::track($sql, $params);
+
+            $row = $this->db->fetchRow($sql, $params, Zend_Db::FETCH_NUM);
+
+            if (! $row) {
+                // Try to get see if this is another allowed organization for this user
+                $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization
+                    FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization != gul_id_organization
+                    WHERE gor_active = 1 AND
+                        gul_can_login = 1 AND
+                        gul_login = ? AND
+                        gor_id_organization = ? AND
+                        gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%')
+                    LIMIT 1";
+
+                // MUtil_Echo::track($sql, $params);
+
+                $row = $this->db->fetchRow($sql, $params, Zend_Db::FETCH_NUM);
+            }
+
+            if ($row) {
+                // MUtil_Echo::track($row);
+                return $row;
             }
 
         } catch (Zend_Db_Exception $e) {
@@ -261,7 +282,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         }
 
         // Fail over for pre 1.5 projects
-        $sql = "SELECT gsf_id_user FROM gems__staff WHERE gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
+        //
+        // No login as other organization for first login
+        $sql = "SELECT gsf_id_user
+            FROM gems__staff INNER JOIN
+                    gems__organizations ON gsf_id_organization = gor_id_organization
+                    WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
 
         if ($user_id = $this->db->fetchOne($sql, array($login_name, $organization))) {
             // Move user to new staff.
@@ -281,10 +307,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 // MUtil_Echo::r($e);
             }
 
-            return self::USER_OLD_STAFF . 'Definition';
+            return array(self::USER_OLD_STAFF . 'Definition', $organization);
         }
 
-        return 'NoLoginDefinition';
+        return array('NoLoginDefinition', $organization);
     }
 
     protected function isProjectUser($login_name)

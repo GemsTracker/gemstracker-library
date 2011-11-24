@@ -148,7 +148,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         // For a multi-layout project we need to select the appropriate style too,
         // but as PATCHES may not be in effect we have to try two selects
         $select2 = clone $select;
-        $select2->columns(array('user_style' => 'gor_style', 'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges', 'accessible_by' => 'gor_accessible_by'), 'gems__organizations');
+        $select2->columns(array('user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges'), 'gems__groups');
 
         try {
             // Fails before patch has run...
@@ -184,7 +184,6 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
                ->where('ggp_group_active = 1')
-               ->where('gor_active = 1')
                ->where('gsf_active = 1')
                ->where('gsf_login = ?')
                ->limit(1);
