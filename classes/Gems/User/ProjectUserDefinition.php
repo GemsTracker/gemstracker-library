@@ -68,14 +68,13 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
     public function getUserData($login_name, $organization)
     {
         return array(
-            'user_id'    => 1,
-            'user_login'  => $login_name,
-            'user_name'  => $login_name,
-            'user_group' => 800,
-            'user_role'  => 'master',
-            'user_style' => 'gems',
-            'user_organization_id'   => $organization,
-            'user_organization_name' => 'SUPER ADMIN',
+            'user_id'          => 1,
+            'user_login'       => $login_name,
+            'user_name'        => $login_name,
+            'user_group'       => 800,
+            'user_role'        => 'master',
+            'user_style'       => 'gems',
+            'user_base_org_id' => $organization,
             'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
             );
     }

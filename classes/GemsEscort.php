@@ -376,7 +376,6 @@ class GemsEscort extends MUtil_Application_Escort
      * -- user_role
      * -- user_locale
      * -- user_organization_id
-     * -- user_organization_name
      *
      * Use $this->session to access afterwards
      *
@@ -538,19 +537,21 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _layoutContact(array $args = null)
     {
-        $menuItem = $this->menu->find(array('controller' => 'contact',  'action' => 'index'));
+        if ($this->menu instanceof Gems_Menu) {
+            $menuItem = $this->menu->find(array('controller' => 'contact', 'action' => 'index'));
 
-        if ($menuItem) {
-            $contactDiv = MUtil_Html::create()->div(
-                $args,
-                array('id' => 'contact'));  // tooltip
-            $contactDiv->a($menuItem->toHRefAttribute(), $menuItem->get('label'));
+            if ($menuItem) {
+                $contactDiv = MUtil_Html::create()->div(
+                    $args,
+                    array('id' => 'contact'));  // tooltip
+                $contactDiv->a($menuItem->toHRefAttribute(), $menuItem->get('label'));
 
-            $ul = $menuItem->toUl();
-            $ul->class = 'dropdownContent tooltip';
-            $contactDiv->append($ul);
+                $ul = $menuItem->toUl();
+                $ul->class = 'dropdownContent tooltip';
+                $contactDiv->append($ul);
 
-            return $contactDiv;
+                return $contactDiv;
+            }
         }
     }
 
@@ -798,7 +799,8 @@ class GemsEscort extends MUtil_Application_Escort
         $user = $this->getLoader()->getCurrentUser();
         if ($orgs = $user->getAllowedOrganizations()) {
             // Organization switcher
-            $orgSwitch = MUtil_Html::create('div', array('id' => 'organizations'));
+            $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
+            $currentId  = $user->getCurrentOrganizationId();
             $currentUri = base64_encode($this->view->url());
 
             $url = $this->view->getHelper('url')->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
@@ -809,7 +811,7 @@ class GemsEscort extends MUtil_Application_Escort
             $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
             foreach ($orgs as $id => $org) {
                 $selected = '';
-                if ($id == $user->getOrganizationId()) {
+                if ($id == $currentId) {
                     $selected = array('selected' => "selected");
                 }
                 $select->option(array('value' => $id), $org, $selected);
@@ -902,7 +904,8 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $div = MUtil_Html::create()->div($args, array('id' => 'version'));
         $version = $this->loader->getVersions()->getVersion();
-        if ($item = $this->menu->findFirst(array('controller'=>'project-information', 'action'=>'changelog'))->toHRefAttribute()) {
+        if (($this->menu instanceof Gems_Menu) &&
+                ($item = $this->menu->findFirst(array('controller'=>'project-information', 'action'=>'changelog'))->toHRefAttribute())) {
             $link = MUtil_Html::create()->a($version, $item);
         } else {
             $link = $version;
@@ -1073,7 +1076,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function getCurrentOrganization()
     {
-        return $this->getLoader()->getCurrentUser()->getOrganizationId();
+        return $this->getLoader()->getCurrentUser()->getCurrentOrganizationId();
     }
 
     /**

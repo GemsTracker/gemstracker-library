@@ -94,6 +94,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $session;
 
     /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
      * Required
      *
      * @var Gems_User_UserLoader
@@ -328,14 +334,40 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Returns the name of the user definition.
+     * Returns the original (not the current) organization id of this user.
      *
-     * @return string
-     * NOT NEEDED FOR THE MOMENT  /
-    public function getDefinitionName()
+     * @return int
+     */
+    public function getBaseOrganizationId()
     {
-        return $this->_getVar('__user_definition');
-    } // */
+        return $this->_getVar('user_base_org_id');
+    }
+
+    /**
+     * Returns the organization that is currently used by this user.
+     *
+     * @return Gems_User_Organization
+     */
+    public function getCurrentOrganization()
+    {
+        return $this->userLoader->getOrganization($this->getCurrentOrganizationId());
+    }
+
+    /**
+     * Returns the organization id that is currently used by this user.
+     *
+     * @return int
+     */
+    public function getCurrentOrganizationId()
+    {
+        $orgId = $this->_getVar('user_organization_id');
+
+        //If not set, read it from the cookie
+        if (is_null($orgId)) {
+            $orgId = Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
+        }
+        return $orgId;
+    }
 
     /**
      * Return true if this user has a password.
@@ -358,7 +390,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         return array(
             'userlogin'    => $this->getLoginName(),
             'password'     => $password,
-            'organization' => $this->getOrganizationId());
+            'organization' => $this->getCurrentOrganizationId());
     }
 
     /**
@@ -399,42 +431,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         return $this->_getVar('user_login');
     }
-
-    /**
-     *
-     * @return Gems_User_Organization
-     */
-    public function getOrganization()
-    {
-        return $this->userLoader->getOrganization($this->getOrganizationId());
-    }
-
-    /**
-     *
-     * @return int
-     */
-    public function getOrganizationId()
-    {
-        $orgId = $this->_getVar('user_organization_id');
-
-        //If not set, read it from the cookie
-        if (is_null($orgId)) {
-            $orgId = Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
-        }
-        return $orgId;
-    }
-
-    /**
-     * Gets the (optional) organization code.
-     *
-     * @return string
-     * NOT NEEDED FOR THE MOMENT /
-    public function getOrganizationCode()
-    {
-        $organizationId = $this->getOrganizationId();
-
-        return $this->userLoader->getOrganization($organizationId)->getCode();
-    } // */
 
     /**
      * Return a password reset key
@@ -618,7 +614,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
                 if ($orgs) {
                     // Not to forget: the users own organization
-                    $orgs[] = $this->getOrganizationId();
+                    $orgs[] = $this->getBaseOrganizationId();
 
                     $sql .= "gor_id_organization IN (";
                     $sql .= implode(', ', $orgs);
@@ -653,7 +649,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($this->canSetPassword()) {
             $checker = $this->userLoader->getPasswordChecker();
 
-            $codes[] = $this->getOrganization()->getCode();
+            $codes[] = $this->getCurrentOrganization()->getCode();
             $codes[] = $this->getRoles();
             $codes[] = $this->_getVar('__user_definition');
 
@@ -707,44 +703,47 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $organization = $this->userLoader->getOrganization($organizationId);
         }
 
-        $oldOrganizationId = $this->getOrganizationId();
+        $oldOrganizationId = $this->getCurrentOrganizationId();
 
-        if ($organizationId != $oldOrganizationId) {
-            $this->_setVar('user_organization_id', $organizationId);
+        if ($organizationId) {
+            if ($organizationId != $oldOrganizationId) {
+                $this->_setVar('user_organization_id', $organizationId);
 
-            // Depreciation warning: the settings will be removed in
-            // version 1.6 at the latest.
-            $this->_setVar('user_organization_name', $organization->getName());
-            $this->_setVar('user_style', $organization->getStyle());
-            // End depreciation warning
+                // Depreciation warning: the settings will be removed in
+                // version 1.6 at the latest.
+                $this->_setVar('user_organization_name', $organization->getName());
+                $this->_setVar('user_style', $organization->getStyle());
+                // End depreciation warning
 
-            if ($this->isCurrentUser()) {
-                // Now update the requestcache to change the oldOrgId to the new orgId
-                // Don't do it when the oldOrgId doesn't match
-                $requestCache = $this->session->requestCache;
+                if ($this->isCurrentUser()) {
+                    // Now update the requestcache to change the oldOrgId to the new orgId
+                    // Don't do it when the oldOrgId doesn't match
+                    if ($requestCache = $this->session->requestCache) {
 
-                //Create the list of request cache keys that match an organization ID (to be extended)
-                $possibleOrgIds = array(
-                    'gr2o_id_organization',
-                    'gto_id_organization');
+                        //Create the list of request cache keys that match an organization ID (to be extended)
+                        $possibleOrgIds = array(
+                            'gr2o_id_organization',
+                            'gto_id_organization');
 
-                foreach ($requestCache as $key => $value) {
-                    if (is_array($value)) {
-                        foreach ($value as $paramKey => $paramValue) {
-                            if (in_array($paramKey, $possibleOrgIds)) {
-                                if ($paramValue == $oldOrganizationId) {
-                                    $requestCache[$key][$paramKey] = $organizationId;
+                        foreach ($requestCache as $key => $value) {
+                            if (is_array($value)) {
+                                foreach ($value as $paramKey => $paramValue) {
+                                    if (in_array($paramKey, $possibleOrgIds)) {
+                                        if ($paramValue == $oldOrganizationId) {
+                                            $requestCache[$key][$paramKey] = $organizationId;
+                                        }
+                                    }
                                 }
                             }
                         }
+                        $this->session->requestCache = $requestCache;
                     }
                 }
-                $this->session->requestCache = $requestCache;
             }
-        }
 
-        if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
-            throw new Exception($this->_('Cookies must be enabled for this site.'));
+            if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+                throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
+            }
         }
 
         return $this;

@@ -167,7 +167,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         static $organizations = array();
 
         if (null === $organizationId) {
-            $organizationId = intval(self::$currentUser->getOrganizationId());
+            $organizationId = intval(self::$currentUser->getCurrentOrganizationId());
         }
 
         if (! isset($organizations[$organizationId])) {
@@ -209,7 +209,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         $values['__user_definition'] = $defName;
 
-        return $this->_loadClass('User', true, array($values, $definition));
+        $user = $this->_loadClass('User', true, array($values, $definition));
+
+        $user->setCurrentOrganization($organization);
+
+        return $user;
     }
 
     /**

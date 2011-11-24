@@ -216,6 +216,16 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the signature of the organization.
+     *
+     * @return string
+     */
+    public function getSignature()
+    {
+        return $this->_organizationData['gor_signature'];
+    }
+
+    /**
      * Get the style attribute.
      *
      * @return string
@@ -223,6 +233,16 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     public function getStyle()
     {
         return $this->_organizationData['gor_style'];
+    }
+
+    /**
+     * Get the welcome message for the organization.
+     *
+     * @return string
+     */
+    public function getWelcome()
+    {
+        return $this->_organizationData['gor_welcome'];
     }
 
     public function invalidateCache() {

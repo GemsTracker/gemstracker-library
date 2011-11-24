@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -71,7 +71,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      * @var MUtil_Snippets_SnippetLoader
      */
     protected $snippetLoader;
-    
+
     /**
      * The current html/head/title for this page.
      *
@@ -131,7 +131,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      * @param array $urlOptions Url parts
      * @param boolean $reset Use default module, action and controller instead of current when not specified in $urlOptions
      * @param string $routeName
-     * @param boolean $encode 
+     * @param boolean $encode
      */
     protected function _reroute(array $urlOptions = array(), $reset = false, $routeName = null, $encode = true)
     {
@@ -172,7 +172,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     {
         $extraSource = MUtil_Ra::pairs(func_get_args(), 1);
         $snippet = $this->getSnippet($filename, $extraSource);
-        
+
         if ($snippet->hasHtmlOutput()) {
             $this->html[] = $snippet;
             return $snippet;
@@ -202,7 +202,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
                 if ($snippet->hasHtmlOutput()) {
                     $this->html[] = $snippet;
                     $results[$filename] = $snippet;
-                    
+
                 } elseif ($snippet->getRedirectRoute()) {
                     $snippet->redirectRoute();
                     return false;
@@ -263,12 +263,12 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
         } else {
             $extraSourceParameters = array();
         }
-        
+
         $loader = $this->getSnippetLoader();
-        
+
         return $loader->getSnippet($filename, $extraSourceParameters);
     }
-    
+
     /**
      * Returns a source of values for snippets.
      *
@@ -285,7 +285,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
 
     /**
      * Returns the current html/head/title for this page.
-     * 
+     *
      * If the title is an array the seperator concatenates the parts.
      *
      * @param string $separator
@@ -371,7 +371,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
             $this->_helper->viewRenderer->setScriptAction('html-view');
         }
     }
-    
+
     /**
      * Stub for overruling default snippet loader initiation.
      */

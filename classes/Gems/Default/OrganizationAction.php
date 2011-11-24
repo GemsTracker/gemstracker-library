@@ -75,7 +75,6 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $request  = $this->getRequest();
         $orgId    = urldecode($request->getParam('org'));
         $url      = base64_decode($request->getParam('current_uri'));
-        $oldOrgId = $user->getOrganizationId();
 
         $allowedOrganizations = $user->getAllowedOrganizations();
         if (isset($allowedOrganizations[$orgId])) {

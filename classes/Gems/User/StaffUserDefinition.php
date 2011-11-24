@@ -183,12 +183,13 @@ class Gems_User_StaffUserDefinition extends Gems_User_UserDefinitionAbstract
         $select = new Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array('user_login_id' => 'gul_id_user'))
                 ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
-                                          'user_login' => 'gsf_login',
-                                          'user_id' => 'gsf_id_user',
-                                          'user_email'=>'gsf_email',
-                                          'user_group'=>'gsf_id_primary_group',
-                                          'user_locale'=>'gsf_iso_lang',
-                                          'user_logout'=>'gsf_logout_on_survey'))
+                                           'user_id'          => 'gsf_id_user',
+                                           'user_login'       => 'gsf_login',
+                                           'user_email'       => 'gsf_email',
+                                           'user_group'       => 'gsf_id_primary_group',
+                                           'user_locale'      => 'gsf_iso_lang',
+                                           'user_logout'      => 'gsf_logout_on_survey',
+                                           'user_base_org_id' => 'gsf_id_organization'))
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role', 'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges'))
                ->join('gems__organizations', 'gul_id_organization = gor_id_organization',

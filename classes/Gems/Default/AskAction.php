@@ -121,7 +121,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                             $this->view->headMeta()->appendHttpEquiv('Refresh', $delay . '; url=' . $url);
                         }
 
-                        $organizationData = $this->db->fetchRow("SELECT * FROM gems__organizations WHERE gor_id_organization = ?", $token->getOrganizationId());
+                        $organization = $this->loader->getOrganization($token->getOrganizationId());
 
                         Gems_Html::init(); // Turn on Gems specific html like pInfo
                         $this->html->h3($this->_('Token'));
@@ -131,8 +131,8 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                             $this->html->pInfo(sprintf($this->_('Thank you for answering the survey for token %s.'), strtoupper($this->_getParam(MUtil_Model::REQUEST_ID))));
                             $this->html->pInfo($this->_('Please click the button below to answer the next survey.'));
                         } else {
-                            if ($organizationData['gor_welcome']) {
-                                $this->html->pInfo()->raw(MUtil_Markup::render($this->_($organizationData['gor_welcome']), 'Bbcode', 'Html'));
+                            if ($welcome = $organization->getWelcome()) {
+                                $this->html->pInfo()->raw(MUtil_Markup::render($this->_($welcome), 'Bbcode', 'Html'));
                             }
                             $this->html->pInfo(sprintf($this->_('Please click the button below to answer the survey for token %s.'), strtoupper($tokenId)));
                         }
@@ -157,8 +157,8 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                                 'After this survey there are another %d surveys we would like you to answer.',
                                 $next), $next));
                         }
-                        if ($organizationData['gor_signature']) {
-                            $this->html->pInfo()->raw(MUtil_Markup::render($this->_($organizationData['gor_signature']), 'Bbcode', 'Html'));
+                        if ($sig = $organization->getSignature()) {
+                            $this->html->pInfo()->raw(MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
                         }
                         return;
 
@@ -216,20 +216,20 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
         if ($this->_request->isPost()) {
             $throttleSettings = $this->project->getAskThrottleSettings();
-            
+
             // Prune the database for (very) old attempts
-            $this->db->query("DELETE FROM gems__token_attempts WHERE gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)", 
+            $this->db->query("DELETE FROM gems__token_attempts WHERE gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)",
                 $throttleSettings['period'] * 20);
-            
+
             // Retrieve the number of failed attempts that occurred within the specified window
-            $attemptData = $this->db->fetchRow("SELECT COUNT(1) AS attempts, UNIX_TIMESTAMP(MAX(gta_datetime)) AS last " . 
+            $attemptData = $this->db->fetchRow("SELECT COUNT(1) AS attempts, UNIX_TIMESTAMP(MAX(gta_datetime)) AS last " .
                 "FROM gems__token_attempts WHERE gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)", $throttleSettings['period']);
-            
+
             $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']) - time();
-            
+
             if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
                 $this->escort->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", Zend_Log::ERR);
-                
+
                 $this->addMessage($this->_('The server is currently busy, please wait a while and try again.'));
             } else if ($form->isValid($_POST)) {
                 $this->_forward('forward');

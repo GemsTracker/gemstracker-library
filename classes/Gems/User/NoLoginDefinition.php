@@ -69,7 +69,6 @@ class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
         return array(
             'user_active'          => false,
             'user_role'            => 'nologin',
-            //'user_organization_id' => 0, //REMOVED AS IT BREAKS STORING LAST ORGANIZATION
             );
     }
 }

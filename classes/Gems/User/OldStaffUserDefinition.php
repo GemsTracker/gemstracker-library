@@ -174,18 +174,15 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
          * compatibility
          */
         $select = new Zend_Db_Select($this->db);
-        $select->from('gems__staff', array('user_id'=>'gsf_id_user',
-                                           'user_login'=>'gsf_login',
-                                           'user_email'=>'gsf_email',
-                                           'user_group'=>'gsf_id_primary_group',
-                                           'user_locale'=>'gsf_iso_lang',
-                                           'user_logout'=>'gsf_logout_on_survey'))
+        $select->from('gems__staff', array('user_id'          => 'gsf_id_user',
+                                           'user_login'       => 'gsf_login',
+                                           'user_email'       => 'gsf_email',
+                                           'user_group'       => 'gsf_id_primary_group',
+                                           'user_locale'      => 'gsf_iso_lang',
+                                           'user_logout'      => 'gsf_logout_on_survey',
+                                           'user_base_org_id' => 'gsf_id_organization'))
                ->columns(array('user_name'=>"(concat(coalesce(concat(`gems__staff`.`gsf_first_name`,_utf8' '),_utf8''),coalesce(concat(`gems__staff`.`gsf_surname_prefix`,_utf8' '),_utf8''),coalesce(`gems__staff`.`gsf_last_name`,_utf8'')))"))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array('user_role'=>'ggp_role'))
-               ->join('gems__organizations', 'gsf_id_organization = gor_id_organization',
-                       array(
-                           'user_organization_id'=>'gor_id_organization',
-                           'user_organization_name'=>'gor_name'))
                ->where('ggp_group_active = 1')
                ->where('gor_active = 1')
                ->where('gsf_active = 1')

@@ -164,7 +164,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $element->setRequired(true);
 
             if (! $this->_request->isPost()) {
-                $element->setValue($this->loader->getCurrentUser()->getOrganizationId());
+                $element->setValue($this->loader->getCurrentUser()->getCurrentOrganizationId());
             }
         }
 
@@ -293,7 +293,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                      * Fix current locale / organization in cookies
                      */
                     Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
-                    Gems_Cookies::setOrganization($user->getOrganizationId(), $this->basepath->getBasePath());
 
                     /**
                      * Ready
