@@ -186,13 +186,33 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get the style attribute.
+     * Get the code attribute.
      *
      * @return string
      */
     public function getCode()
     {
         return $this->_organizationData['gor_code'];
+    }
+
+    /**
+     * Get the organization id.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->_organizationData['gor_id_organization'];
+    }
+
+    /**
+     * Get the name of the organization.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->_organizationData['gor_name'];
     }
 
     /**

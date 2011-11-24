@@ -59,30 +59,42 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     private $_vars;
 
     /**
+     * Required
      *
      * @var MUtil_Acl
      */
     protected $acl;
 
     /**
+     * Required
+     *
+     * @var Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
+     * Required
      *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
+     * Required, set in constructor
      *
      * @var Gems_User_UserDefinitionInterface
      */
     protected $definition;
 
     /**
+     * Required
      *
      * @var Zend_Session_Namespace
      */
     protected $session;
 
     /**
+     * Required
      *
      * @var Gems_User_UserLoader
      */
@@ -260,7 +272,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function checkRegistryRequestsAnswers()
     {
-        if (! $this->session instanceof Zend_Session_Namespace) {
+        if (! (($this->db instanceof Zend_Db_Adapter_Abstract) && ($this->session instanceof Zend_Session_Namespace))) {
             return false;
         }
 
@@ -292,7 +304,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $this->refreshAllowedOrganizations();
         }
 
-        return true;
+        return (boolean) $this->acl && $this->basepath && $this->userLoader;
     }
 
     /**
@@ -319,11 +331,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Returns the name of the user definition.
      *
      * @return string
-     */
+     * NOT NEEDED FOR THE MOMENT  /
     public function getDefinitionName()
     {
         return $this->_getVar('__user_definition');
-    }
+    } // */
 
     /**
      * Return true if this user has a password.
@@ -390,6 +402,15 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      *
+     * @return Gems_User_Organization
+     */
+    public function getOrganization()
+    {
+        return $this->userLoader->getOrganization($this->getOrganizationId());
+    }
+
+    /**
+     *
      * @return int
      */
     public function getOrganizationId()
@@ -407,13 +428,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Gets the (optional) organization code.
      *
      * @return string
-     */
+     * NOT NEEDED FOR THE MOMENT /
     public function getOrganizationCode()
     {
         $organizationId = $this->getOrganizationId();
 
         return $this->userLoader->getOrganization($organizationId)->getCode();
-    }
+    } // */
 
     /**
      * Return a password reset key
@@ -632,7 +653,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($this->canSetPassword()) {
             $checker = $this->userLoader->getPasswordChecker();
 
-            return $checker->reportPasswordWeakness($this, $password);
+            $codes[] = $this->getOrganization()->getCode();
+            $codes[] = $this->getRoles();
+            $codes[] = $this->_getVar('__user_definition');
+
+            return $checker->reportPasswordWeakness($this, $password, MUtil_Ra::flatten($codes));
         }
     }
 
@@ -667,6 +692,63 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Set the currently selected organization for this user
+     *
+     * @param mixed $organization Gems_User_Organization or an organization id.
+     * @return Gems_User_User (continuation pattern)
+     */
+    public function setCurrentOrganization($organization)
+    {
+        if ($organization instanceof Gems_User_Organization) {
+            $organizationId = $organization->getId();
+        } else {
+            $organizationId = $organization;
+            $organization = $this->userLoader->getOrganization($organizationId);
+        }
+
+        $oldOrganizationId = $this->getOrganizationId();
+
+        if ($organizationId != $oldOrganizationId) {
+            $this->_setVar('user_organization_id', $organizationId);
+
+            // Depreciation warning: the settings will be removed in
+            // version 1.6 at the latest.
+            $this->_setVar('user_organization_name', $organization->getName());
+            $this->_setVar('user_style', $organization->getStyle());
+            // End depreciation warning
+
+            if ($this->isCurrentUser()) {
+                // Now update the requestcache to change the oldOrgId to the new orgId
+                // Don't do it when the oldOrgId doesn't match
+                $requestCache = $this->session->requestCache;
+
+                //Create the list of request cache keys that match an organization ID (to be extended)
+                $possibleOrgIds = array(
+                    'gr2o_id_organization',
+                    'gto_id_organization');
+
+                foreach ($requestCache as $key => $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $paramKey => $paramValue) {
+                            if (in_array($paramKey, $possibleOrgIds)) {
+                                if ($paramValue == $oldOrganizationId) {
+                                    $requestCache[$key][$paramKey] = $organizationId;
+                                }
+                            }
+                        }
+                    }
+                }
+                $this->session->requestCache = $requestCache;
+            }
+        }
+
+        if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+            throw new Exception($this->_('Cookies must be enabled for this site.'));
+        }
+
+        return $this;
+    }
 
     /**
      * Set the password, if allowed for this user type.

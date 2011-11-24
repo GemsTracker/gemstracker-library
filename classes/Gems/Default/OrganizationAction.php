@@ -79,49 +79,14 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
 
         $allowedOrganizations = $user->getAllowedOrganizations();
         if (isset($allowedOrganizations[$orgId])) {
-            $this->session->user_organization_id = $orgId;
-            $this->session->user_organization_name = $allowedOrganizations[$orgId];
+            $user->setCurrentOrganization($orgId);
 
-            if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-                $this->session->user_style = $this->db->fetchOne(
-                    "SELECT gor_style
-                        FROM gems__organizations
-                        WHERE gor_id_organization = ?", $orgId
-                );
+            if ($url) {
+                $this->getResponse()->setRedirect($url);
+            } else {
+                $user->gotoStartPage($this->menu, $request);
             }
-
-            // Now update the requestcache to change the oldOrgId to the new orgId
-            // Don't do it when the oldOrgId doesn't match
-            $requestCache = $this->session->requestCache;
-
-            //Create the list of request cache keys that match an organization ID (to be extended)
-            $possibleOrgIds = array(
-                'gr2o_id_organization',
-                'gto_id_organization');
-
-            foreach ($requestCache as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $paramKey => $paramValue) {
-                        if (in_array($paramKey, $possibleOrgIds)) {
-                            if ($paramValue == $oldOrgId) {
-                                $requestCache[$key][$paramKey] = $orgId;
-                            }
-                        }
-                    }
-                }
-            }
-            $this->session->requestCache = $requestCache;
-
-            if (Gems_Cookies::setOrganization($orgId, $this->basepath->getBasePath())) {
-                if ($url) {
-                    $this->getResponse()->setRedirect($url);
-                } else {
-                    $user->gotoStartPage($this->menu, $request);
-                }
-                return;
-            }
-
-            throw new Exception($this->_('Cookies must be enabled.'));
+            return;
         }
 
         throw new Exception($this->_('Invalid organization.'));
@@ -135,27 +100,6 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $this->createEditParameters['formTitle'] = $this->_('New organization...');
 
         parent::createAction();
-    }
-
-
-    public function chooseAction()
-    {
-        $this->addSnippet('Organization_ChooseOrganizationSnippet');
-        $this->html->h3($this->_('Choose an organization'));
-
-        $user = $this->loader->getCurrentUser();
-        $request = $this->getRequest();
-
-        foreach ($user->getAllowedOrganizations() as $orgId => $name) {
-            $org = $this->loader->getOrganization($orgId);
-
-            if ($org->canHaveRespondents()) {
-                $url = array($request->getActionKey() => 'change-ui');
-                $url['org'] = $orgId;
-
-                $this->html->pInfo()->actionLink($url, $name, array('style' => 'font-size: 120%;'));
-            }
-        }
     }
 
     /**

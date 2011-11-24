@@ -299,7 +299,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $checker = $this->_getClass('passwordChecker');
 
-        return $checker->reportPasswordWeakness($user, $password);
+        return $user->reportPasswordWeakness($password);
     }
 
     /**

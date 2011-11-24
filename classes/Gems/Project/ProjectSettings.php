@@ -100,13 +100,21 @@ class Gems_Project_ProjectSettings extends ArrayObject
         $this->checkRequiredValues();
     }
 
-    protected function _getPasswordRules(array $current, array $keys, array &$rules)
+    /**
+     * Add recursively the rules active for this specific set of codes.
+     *
+     * @param array $current The current (part)sub) array of $this->passwords to check
+     * @param array $codes An array of code names that identify rules that should be used only for those codes.
+     * @param array $rules The array that stores the activated rules.
+     * @return void
+     */
+    protected function _getPasswordRules(array $current, array $codes, array &$rules)
     {
         foreach ($current as $key => $value) {
             if (is_array($value)) {
                 // Only act when this is in the set of key values
-                if (isset($keys[strtolower($key)])) {
-                    $this->_getPasswordRules($value, $keys, $rules);
+                if (isset($codes[strtolower($key)])) {
+                    $this->_getPasswordRules($value, $codes, $rules);
                 }
             } else {
                 $rules[$key] = $value;
@@ -195,49 +203,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Returns the public name of this project.
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->offsetGet('name');
-    }
-
-    /**
-     *
-     * @param string $userDefinition
-     * @param string $role
-     * @return array
-     */
-    public function getPasswordRules($userDefinition, $role)
-    {
-        $args = MUtil_Ra::flatten(func_get_args());
-        $args = array_change_key_case(array_flip(array_filter($args)));
-        // MUtil_Echo::track($args);
-
-        $rules = array();
-        if (isset($this->passwords) && is_array($this->passwords)) {
-            $this->_getPasswordRules($this->passwords, $args, $rules);
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Timeout for sessions in seconds.
-     *
-     * @return int
-     */
-    public function getSessionTimeOut()
-    {
-        if (isset($this->session, $this->session['idleTimeout'])) {
-            return $this->session['idleTimeout'];
-        } else {
-            return $this->defaultSessionTimeout;
-        }
-    }
-
-    /**
      * Returns an array with throttling settings for the ask
      * controller
      *
@@ -258,6 +223,49 @@ class Gems_Project_ProjectSettings extends ArrayObject
                 'threshold'	 => 15 * 20,
                 'delay'      => 10
             );
+        }
+    }
+
+    /**
+     * Returns the public name of this project.
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->offsetGet('name');
+    }
+
+    /**
+     * Get the rules active for this specific set of codes.
+     *
+     * @param array $codes An array of code names that identify rules that should be used only for those codes.
+     * @return array
+     */
+    public function getPasswordRules(array $codes)
+    {
+        // Process the codes array to a format better used for filtering
+        $codes = array_change_key_case(array_flip(array_filter($codes)));
+        // MUtil_Echo::track($codes);
+
+        $rules = array();
+        if (isset($this->passwords) && is_array($this->passwords)) {
+            $this->_getPasswordRules($this->passwords, $codes, $rules);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Timeout for sessions in seconds.
+     *
+     * @return int
+     */
+    public function getSessionTimeOut()
+    {
+        if (isset($this->session, $this->session['idleTimeout'])) {
+            return $this->session['idleTimeout'];
+        } else {
+            return $this->defaultSessionTimeout;
         }
     }
 
@@ -296,7 +304,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return $this->admin['ipRanges'];
         }
     }
-    
+
     /**
      * Returns a salted hash on the
      *

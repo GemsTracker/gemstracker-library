@@ -206,16 +206,16 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     /**
      * Check for password weakness.
      *
-     * @param Gems_User_User $user The user for e.g. name checks
      * @param string $password
+     * @param array  $codes An array of code names that identify rules that should be used only for those codes.
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(Gems_User_User $user, $password)
+    public function reportPasswordWeakness(Gems_User_User $user, $password, array $codes)
     {
-        $this->_errors = array();
         $this->user = $user;
+        $this->_errors = array();
 
-        $rules = $this->project->getPasswordRules($user->getOrganizationCode(), $user->getRoles(), $user->getDefinitionName());
+        $rules = $this->project->getPasswordRules($codes);
 
         // MUtil_Echo::track($rules);
         foreach ($rules as $rule => $parameter) {
