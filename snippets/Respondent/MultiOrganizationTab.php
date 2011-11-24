@@ -71,7 +71,7 @@ class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
 
     protected function getParameterKey()
     {
-        return 'filter';
+        return 'id2';
     }
 
     protected function getTabs()
@@ -81,6 +81,11 @@ class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
         $sql  = "SELECT gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ? AND gr2o_id_organization = ?";
         $resp = $this->respondentData['grs_id_user'];
 
+        // TODO:
+        // Shows tabs only for existing respondents
+        // Tabslinks should contain two parameters
+        // No option for difference active / inactive
+        
         foreach ($orgs as $orgId => $name) {
             if ($patientNr = $this->db->fetchOne($sql, array($resp, $orgId))) {
                 $tabs[$orgId] = $name;
