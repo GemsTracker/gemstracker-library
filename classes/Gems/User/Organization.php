@@ -60,7 +60,9 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
         'gor_style'           => null,
         'gor_iso_lang'        => 'en',
         'gor_active'          => 0,
-        );
+        'gor_has_respondents' => false,
+        'gor_add_respondents' => false
+    );
 
     /**
      *
