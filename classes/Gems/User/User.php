@@ -374,7 +374,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $orgId = $this->_getVar('user_organization_id');
 
         //If not set, read it from the cookie
-        if (is_null($orgId)) {
+        if ($this->isCurrentUser() && is_null($orgId)) {
             $orgId = Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
         }
         return $orgId;
@@ -579,6 +579,19 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Is this organization in the list of currently allowed organizations?
+     *
+     * @param int $organizationId
+     * @return boolean
+     */
+    public function isAllowedOrganization($organizationId)
+    {
+        $orgs = $this->getAllowedOrganizations();
+
+        return isset($orgs[$organizationId]);
+    }
+
+    /**
      * Checks if this user is the current user
      *
      * @return boolean
@@ -731,10 +744,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                         $this->session->requestCache = $requestCache;
                     }
                 }
-            }
 
-            if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
-                throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
+                if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+                    throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
+                }
             }
         }
 
