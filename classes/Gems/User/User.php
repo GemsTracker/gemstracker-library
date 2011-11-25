@@ -531,7 +531,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             // Prevent redirecting to the current page.
             if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-                $redirector->gotoRoute($menuItem->toRouteUrl($request));
+                $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
             }
         }
 
