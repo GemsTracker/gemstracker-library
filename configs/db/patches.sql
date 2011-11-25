@@ -325,9 +325,15 @@ ALTER TABLE `gems__organizations`
 UPDATE `gems__organizations` SET gor_has_respondents = COALESCE((SELECT 1 FROM gems__respondent2org WHERE gr2o_id_organization = gor_id_organization GROUP BY gr2o_id_organization), 0);
 UPDATE `gems__organizations` SET gor_add_respondents = CASE WHEN gor_has_respondents = 1 AND gor_active = 1 THEN 1 ELSE 0 END;
 
+ALTER TABLE `gems__organizations` ADD gor_respondent_group bigint unsigned null AFTER gor_add_respondents;
+
 -- PATCH: Log failed logins
 INSERT INTO  `gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
     VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);
 
 -- PATCH: IP ranges for groups
 ALTER TABLE `gems__groups` ADD `ggp_allowed_ip_ranges` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `ggp_respondent_members`;
+
+-- PATCH: Roles fields sometimes empty
+ALTER TABLE gems__roles CHANGE grl_parents grl_parents  text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+ALTER TABLE gems__roles CHANGE grl_privileges grl_privileges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;

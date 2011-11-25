@@ -138,6 +138,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $model->set('gor_active', 'label', $this->_('Active'), 'description', $this->_('Can the organization be used?'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
         $model->set('gor_add_respondents', 'label', $this->_('Accepting'), 'description', $this->_('Can new respondents be added to the organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
         $model->set('gor_has_respondents', 'label', $this->_('Respondents'), 'description', $this->_('Does the organization have respondents?'), 'elementClass', 'Exhibitor', 'multiOptions', $yesNo);
+        $model->set('gor_respondent_group', 'label', $this->_('Respondent group'), 'description', $this->_('Allows respondents to login.'), 'multiOptions', $this->util->getDbLookup()->getAllowedRespondentGroups());
 
         if ($detailed) {
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));

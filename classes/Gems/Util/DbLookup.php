@@ -128,6 +128,18 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      *
      * @return array
      */
+    public function getAllowedRespondentGroups()
+    {
+        return $this->util->getTranslated()->getEmptyDropdownArray() +
+            $this->db->fetchPairs('SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_group_active=1 AND ggp_respondent_members=1 ORDER BY ggp_name');
+    }
+
+    /**
+     * Retrieve an array of groups the user is allowed to assign: his own group and all groups
+     * he inherits rights from
+     *
+     * @return array
+     */
     public function getAllowedStaffGroups()
     {
         $groups = $this->getActiveStaffGroups();

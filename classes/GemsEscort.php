@@ -884,9 +884,11 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _layoutUser(array $args = null)
     {
-        if (isset($this->session->user_name)) {
+        $user = $this->getLoader()->getCurrentUser();
+
+        if ($user->isActive()) {
             return MUtil_Html::create()->div(
-                    sprintf($this->_('User: %s'), $this->session->user_name),
+                    sprintf($this->_('User: %s'), $user->getFullName()),
                     $args,
                     array('id' => 'username')
                     );

@@ -411,6 +411,22 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function getFullName()
     {
+        if (! $this->_getVar('user_name')) {
+            $name = ltrim($this->_getVar('user_first_name') . ' ') .
+                    ltrim($this->_getVar('user_surname_prefix') . ' ') .
+                    $this->_getVar('user_last_name');
+
+            if (! $name) {
+                // Use obfuscated login name
+                $name = $this->getLoginName();
+                $name = subs($name, 0, 3) . str_repeat('*', strlen($name) - 2);
+            }
+
+            $this->_setVar('user_name', $name);
+
+            // MUtil_Echo::track($name);
+        }
+
         return $this->_getVar('user_name');
     }
 

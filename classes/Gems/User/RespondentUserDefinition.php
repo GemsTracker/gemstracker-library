@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
+class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstract
 {
     /**
      * A select used by subclasses to add fields to the select.
@@ -55,36 +55,35 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
      */
     protected function getUserSelect($login_name, $organization)
     {
-        /**
-         * Read the needed parameters from the different tables, lots of renames
-         * for compatibility accross implementations.
-         */
+        // 'user_group'       => 'gsf_id_primary_group', 'user_logout'      => 'gsf_logout_on_survey',
         $select = new Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
                     'user_login_id' => 'gul_id_user',
                     ))
-                ->join('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array(
-                    'user_id'             => 'gsf_id_user',
-                    'user_login'          => 'gsf_login',
-                    'user_email'          => 'gsf_email',
-                    'user_first_name'     => 'gsf_first_name',
-                    'user_surname_prefix' => 'gsf_surname_prefix',
-                    'user_last_name'      => 'gsf_last_name',
-                    'user_gender'         => 'gsf_gender',
-                    'user_group'          => 'gsf_id_primary_group',
-                    'user_locale'         => 'gsf_iso_lang',
-                    'user_logout'         => 'gsf_logout_on_survey',
-                    'user_base_org_id'    => 'gsf_id_organization',
+                ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
+                    'user_login'       => 'gr2o_patient_nr',
+                    'user_base_org_id' => 'gr2o_id_organization',
                     ))
-               ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
+               ->join('gems__respondents', 'gr2o_id_user = grs_id_user', array(
+                    'user_id'             => 'grs_id_user',
+                    'user_email'          => 'grs_email',
+                    'user_first_name'     => 'grs_first_name',
+                    'user_surname_prefix' => 'grs_surname_prefix',
+                    'user_last_name'      => 'grs_last_name',
+                    'user_gender'         => 'grs_gender',
+                    'user_locale'         => 'grs_iso_lang',
+                    ))
+               ->join('gems__organizations', 'gr2o_id_organization=gor_id_organization', array())
+               ->join('gems__groups', 'gor_respondent_group=ggp_id_group', array(
                    'user_role'=>'ggp_role',
                    'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
                    ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
                    ))
+               ->joinLeft('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', array())
                ->where('ggp_group_active = 1')
-               ->where('gsf_active = 1')
+               ->where('grc_success = 1')
                ->where('gul_can_login = 1')
                ->where('gul_login = ?')
                ->where('gul_id_organization = ?')
