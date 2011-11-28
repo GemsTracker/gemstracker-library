@@ -294,22 +294,24 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     public function loginAction()
     {
-        $form = $this->_getLoginForm();
-        
         $request = $this->getRequest();
-        
+
         // Allow layout switching based on request base url
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $hostUrl = $this->escort->loader->getUtil()->getCurrentURI();
-            
+
+            // MUtil_Echo::track($hostUrl);
+
             $organizationId = $this->util->getDbLookup()->getOrganizationForUrl($hostUrl);
-            
+
             if ($organizationId) {
                 $user = $this->escort->getLoader()->getUserLoader()->getCurrentUser();
                 $user->setCurrentOrganization($organizationId);
                 $this->escort->layoutSwitch($request);
             }
         }
+
+        $form = $this->_getLoginForm();
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost(), false)) {

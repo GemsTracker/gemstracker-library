@@ -1123,7 +1123,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         if ($comment) {
             $values['gto_comment'] = $comment;
         }
-        MUtil_Echo::track($values);
+        // MUtil_Echo::track($values);
 
         $changed = $this->_updateToken($values, $userId);
 
