@@ -207,7 +207,7 @@ class MUtil_Date extends Zend_Date
         $difference = $date->getUnixTimeStamp() - $this->getUnixTimestamp();
 
         //second, minute, hour, day, week, month, year, decade
-        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
+        $lengths = array("60", "60", "24", "7", "4.34", "12", "10");
 
         if ($difference > 0) { // this was in the past
             $ending = $translate->_("%s ago");
@@ -215,11 +215,11 @@ class MUtil_Date extends Zend_Date
             $difference = -$difference;
             $ending = $translate->_("%s to go");
         }
-
-        for ($j = 0; $difference >= $lengths[$j] && $j<8; $j++) {
+        
+        for ($j = 0; $j < 7 && $difference >= $lengths[$j]; $j++) {
             $difference /= $lengths[$j];
         }
-
+        
         $difference = round($difference);
 
         switch ($j) {
