@@ -100,6 +100,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     *
      * @param mixed $respTracksData Track Id or array containing reps2track record
      */
     public function __construct($respTracksData)
@@ -110,6 +116,40 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         } else {
             $this->_respTrackId = $respTracksData;
         }
+    }
+
+    /**
+     * Check this respondent track for the number of tokens completed / to do
+     *
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @return int 1 if the track was changed by this code
+     */
+    public function _checkTrackCount($userId)
+    {
+        $sqlCount  = 'SELECT COUNT(*) AS count, COALESCE(SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END), 0) AS completed
+            FROM gems__tokens
+            JOIN gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
+            WHERE gto_id_respondent_track = ?';
+
+        if ($counts = $this->db->fetchRow($sqlCount, $this->_respTrackId)) {
+            $values['gr2t_count']      = intval($counts['count']);
+            $values['gr2t_completed']  = intval($counts['completed']);
+
+            if ($values['gr2t_count'] == $values['gr2t_completed']) {
+                $tokenSelect = $this->tracker->getTokenSelect(array('MAX(gto_completion_time)'));
+                $tokenSelect->andReceptionCodes(array())
+                        ->forRespondentTrack($this->_respTrackId)
+                        ->onlySucces();
+
+                $values['gr2t_end_date'] = $tokenSelect->fetchOne();
+            } else {
+                $values['gr2t_end_date'] = null;
+            }
+
+            return $this->_updateTrack($values, $userId);
+        }
+
+        return 0;
     }
 
     /**
@@ -129,7 +169,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
                     $fieldData[$fieldMap[$key]] = $value;
                 }
             }
-                
+
             $this->_fieldData = $fieldData;
         }
     }
@@ -137,19 +177,23 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * Makes sure the receptioncode data is part of the $this->_respTrackData
      *
-     * @param boolean $reload Optional parameter to force reload.
+     * @param boolean $reload Optional parameter to force reload or array with new values.
      */
     private function _ensureReceptionCode($reload = false)
     {
         if ($reload || (! isset($this->_respTrackData['grc_success']))) {
-            $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
-            $code = $this->_respTrackData['gr2t_reception_code'];
-
-            if ($row = $this->db->fetchRow($sql, $code)) {
-                $this->_respTrackData = $row + $this->_respTrackData;
+            if (is_array($reload)) {
+                $this->_respTrackData = $reload + $this->_respTrackData;
             } else {
-                $trackId = $this->_respTrackId;
-                throw new Gems_Exception("Reception code $code is missing for track $trackId.");
+                $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
+                $code = $this->_respTrackData['gr2t_reception_code'];
+
+                if ($row = $this->db->fetchRow($sql, $code)) {
+                    $this->_respTrackData = $row + $this->_respTrackData;
+                } else {
+                    $trackId = $this->_respTrackId;
+                    throw new Gems_Exception("Reception code $code is missing for track $trackId.");
+                }
             }
         }
     }
@@ -292,31 +336,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function checkTrackTokens($userId, Gems_Tracker_Token $fromToken = null)
     {
-        $sqlCount  = 'SELECT COUNT(*) AS count, COALESCE(SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END), 0) AS completed
-            FROM gems__tokens
-            JOIN gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
-            WHERE gto_id_respondent_track = ?';
-
-        if ($counts = $this->db->fetchRow($sqlCount, $this->_respTrackId)) {
-            $values['gr2t_count']      = intval($counts['count']);
-            $values['gr2t_completed']  = intval($counts['completed']);
-
-            if ($values['gr2t_count'] == $values['gr2t_completed']) {
-                $tokenSelect = $this->tracker->getTokenSelect(array('MAX(gto_completion_time)'));
-                $tokenSelect->andReceptionCodes(array())
-                        ->forRespondentTrack($this->_respTrackId)
-                        ->onlySucces();
-
-                $values['gr2t_end_date'] = $tokenSelect->fetchOne();
-            } else {
-                $values['gr2t_end_date'] = null;
-            }
-
-            $this->_updateTrack($values, $userId);
-        }
+        // Update token completion count.
+        $this->_checkTrackCount($userId);
 
         $engine = $this->getTrackEngine();
 
+        // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
             return $engine->checkTokensFrom($this, $fromToken, $userId);
         } elseif ($this->_checkStart) {
@@ -619,7 +644,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
             $this->_respTrackData = $this->db->fetchRow($sql, $this->_respTrackId);
         }
-        
+
         $this->_ensureFieldData(true);
 
         return $this;
@@ -629,30 +654,57 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * Set the reception code for this respondent track and make sure the
      * necessary cascade to the tokens and thus the source takes place.
      *
-     * @param string $code The new reception code
+     * @param string $code The new (non-success) reception code or a Gems_Util_ReceptionCode object
      * @param string $comment Comment for tokens. False values leave value unchanged
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
     public function setReceptionCode($code, $comment, $userId)
     {
-        $values['gr2t_reception_code'] = $code;
+        // Make sure it is a Gems_Util_ReceptionCode object
+        if (! $code instanceof Gems_Util_ReceptionCode) {
+            $code = $this->util->getReceptionCode($code);
+        }
+        $changed = 0;
 
-        $changed = $this->_updateTrack($values, $userId);
+        // Apply this code both only when it is a track code.
+        // Patient level codes are just cascaded to the tokens.
+        //
+        // The exception is of course when the exiting values must
+        // be overwritten, e.g. when cooperation is retracted.
+        if ($code->isForTracks() || $code->isOverwriter()) {
+            $values['gr2t_reception_code'] = $code->getCode();
 
-        if ($changed) {
-            // Reload reception code values
-            $this->_ensureReceptionCode(true);
+            $changed = $this->_updateTrack($values, $userId);
 
-            // Cascade to tokens
-            if (! $this->hasSuccesCode()) {
-                foreach ($this->getTokens() as $token) {
-                    if ($token->hasSuccesCode()) {
-                        $token->setReceptionCode($code, $comment, $userId);
-                    }
+            if ($changed) {
+                // Reload reception code values
+                $this->_ensureReceptionCode($code->getAllData());
+            }
+        }
+
+        // Stopcodes have a different logic.
+        if ($code->isStopCode()) {
+            // Cascade stop to tokens
+            foreach ($this->getTokens() as $token) {
+                if ($token->hasSuccesCode() && (! $token->isCompleted())) {
+                    $changed += $token->setReceptionCode($code, $comment, $userId);
+                }
+            }
+            $changed = max($changed, 1);
+
+            // Update token count / completion
+            $this->_checkTrackCount($userId);
+
+        } elseif (! $code->isSuccess()) {
+            // Cascade code to tokens
+            foreach ($this->getTokens() as $token) {
+                if ($token->hasSuccesCode()) {
+                    $token->setReceptionCode($code, $comment, $userId);
                 }
             }
         }
+
         return $changed;
     }
 }

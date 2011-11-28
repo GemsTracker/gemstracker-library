@@ -5,7 +5,7 @@ CREATE TABLE if not exists gems__reception_codes (
 
       grc_success           boolean not null default 0,
 
-      grc_for_surveys       boolean not null default 0,
+      grc_for_surveys       tinyint not null default 0,
       grc_redo_survey       tinyint not null default 0,
       grc_for_tracks        boolean not null default 0,
       grc_for_respondents   boolean not null default 0,
@@ -25,9 +25,9 @@ CREATE TABLE if not exists gems__reception_codes (
    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_success,
-      grc_for_surveys, grc_redo_survey, grc_for_tracks, grc_for_respondents, grc_active,
+      grc_for_surveys, grc_redo_survey, grc_for_tracks, grc_for_respondents, grc_overwrite_answers, grc_active,
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
-    ('OK', '', 1, 1, 0, 1, 1, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
-
+    ('OK', '', 1, 1, 0, 1, 1, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('skip', 'Skipped by calculation', 0, 1, 0, 0, 0, 1, 0, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('stop', 'Stop surveys', 0, 2, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -42,10 +43,6 @@
  */
 class Gems_Util_Translated extends Gems_Registry_TargetAbstract
 {
-    const REDO_NONE = 0;
-    const REDO_ONLY = 1;
-    const REDO_COPY = 2;
-
     protected $phpDateFormatString = 'd-m-Y';
 
     /**
@@ -209,27 +206,6 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     public function getGenderHello()
     {
         return array('M' => $this->_('Mr.'), 'F' => $this->_('Mrs.'), 'U' => $this->_('Mr./Mrs.'));
-    }
-
-    /**
-     * Return the field values for the redo code.
-     *
-     * <ul><li>0: do not redo</li>
-     * <li>1: redo but do not copy answers</li>
-     * <li>2: redo and copy answers</li></ul>
-     *
-     * @staticvar array $data
-     * @return array
-     */
-    public function getRedoCodes()
-    {
-        static $data;
-
-        if (! $data) {
-            $data = array(self::REDO_NONE => $this->_('No'), self::REDO_ONLY => $this->_('Yes (forget answers)'), self::REDO_COPY => $this->_('Yes (keep answers)'));
-        }
-
-        return $data;
     }
 
     public function getYesNo()

@@ -227,8 +227,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         // Log
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
 
-        $sql = 'SELECT grc_id_reception_code, grc_description FROM gems__reception_codes WHERE grc_active = 1 AND grc_for_respondents = 1 ORDER BY grc_description';
-        $options = $this->db->fetchPairs($sql);
+        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
         $bridge = new MUtil_Model_FormBridge($model, $this->createForm());
         $bridge->addSelect('gr2o_reception_code',
@@ -245,53 +244,39 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         if ($request->isPost()) {
             $data = $_POST + $data;
             if ($form->isValid($data )) {
-                // Is really removed
-                if ($data['gr2o_reception_code'] != GemsEscort::RECEPTION_OK) {
 
-                    // Perform actual save
-                    $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
-                    $where = $this->db->quoteInto($where, $data['gr2o_id_user'], null, 1);
-                    $where = $this->db->quoteInto($where, $data['gr2o_id_organization'], null, 1);
-                    $this->db->update('gems__respondent2org', array(
-                        'gr2o_reception_code' => $data['gr2o_reception_code'],
-                        'gr2o_changed' => new Zend_Db_Expr('CURRENT_TIMESTAMP'),
-                        'gr2o_changed_by' => $this->session->user_id),
-                        $where);
+                $code = $this->util->getReceptionCode($data['gr2o_reception_code']);
 
-                    // Check for redo or overwrite answer in reception code.
-                    $sql = 'SELECT grc_overwrite_answers
-                                FROM gems__reception_codes
-                                WHERE grc_overwrite_answers = 1 AND grc_id_reception_code = ? LIMIT 1';
-                    if ($this->db->fetchOne($sql, $data['gr2o_reception_code'])) {
-                        // Update consent for tokens
-                        $consentCode = $this->util->getConsentRejected();
+                // Is the respondent really removed
+                if (! $code->isSuccess()) {
+                    $userId = $this->loader->getCurrentUser()->getUserId();
 
-                        $tracker = $this->loader->getTracker();
-                        $tokenSelect = $tracker->getTokenSelect(true);
-                        $tokenSelect
-                                ->andReceptionCodes()
-                                ->andRespondentOrganizations()
-                                ->andConsents()
-                                ->forRespondent($data['gr2o_id_user'], $data['gr2o_id_organization']);
-
-                        // Update reception code for tokens
-                        $tokens  = $tokenSelect->fetchAll();
-
-                        // When a TRACK is removed, all tokens are automatically revoked
-                        foreach ($tokens as $tokenData) {
-                            $token = $tracker->getToken($tokenData);
-                            if ($token->hasSuccesCode() && $token->inSource()) {
-
-                                $token->getSurvey()->updateConsent($token, $consentCode);
-
-                                // TODO: Decide what to do: now we only update the consent codes, not
-                                // the token and respondentTrack consent codes
-                                // $token->setReceptionCode($data['gr2t_reception_code'], null, $this->session->user_id);
-                            }
-                        }
+                    // Cascade to tracks
+                    // the responsiblilty to handle it correctly is on the sub objects now.
+                    $tracks = $this->loader->getTracker()->getRespondentTracks($data['gr2o_id_user'], $data['gr2o_id_organization']);
+                    foreach ($tracks as $track) {
+                        $track->setReceptionCode($code, null, $userId);
                     }
-                    $this->addMessage($this->_('Respondent deleted.'));
-                    $this->_reroute(array('action' => 'index'), true);
+
+                    // Perform actual save, but not simple stop codes.
+                    if ($code->isForRespondents()) {
+                        $values['gr2o_reception_code'] = $data['gr2o_reception_code'];
+                        $values['gr2o_changed']        = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                        $values['gr2o_changed_by']     = $userId;
+
+                        $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
+                        $where = $this->db->quoteInto($where, $data['gr2o_id_user'], null, 1);
+                        $where = $this->db->quoteInto($where, $data['gr2o_id_organization'], null, 1);
+
+                        $this->db->update('gems__respondent2org', $values, $where);
+
+                        $this->addMessage($this->_('Respondent deleted.'));
+                        $this->_reroute(array('action' => 'index'), true);
+                    } else {
+                        // Just a stop code
+                        $this->addMessage($this->_('Respondent tracks stopped.'));
+                        $this->_reroute(array('action' => 'show'));
+                    }
                 } else {
                     $this->addMessage($this->_('Choose a reception code to delete.'));
                 }

@@ -67,6 +67,12 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
 
     /**
      *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     *
      * @var Zend_View
      */
     protected $view;
@@ -229,10 +235,13 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
      */
     protected function saveData()
     {
-        // Use the token function as that cascades the consent code
-        $changed = $this->token->setReceptionCode($this->formData['gto_reception_code'], $this->formData['gto_comment'], $this->session->user_id);
+        // Get the code object
+        $code = $this->util->getReceptionCode($this->formData['gto_reception_code']);
 
-        if ($this->token->hasRedoCode()) {
+        // Use the token function as that cascades the consent code
+        $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $this->session->user_id);
+
+        if ($code->hasRedoCode()) {
             $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
             if ($this->formData['gto_comment']) {
                 $newComment .= "\n\n";
@@ -266,7 +275,7 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
             $this->token->setNextToken($newToken);
 
             // Copy answers when requested.
-            if ($this->token->hasRedoCopyCode()) {
+            if ($code->hasRedoCopyCode()) {
                 $newToken->setRawAnswers($this->token->getRawAnswers());
             }
         }

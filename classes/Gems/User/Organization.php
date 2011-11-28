@@ -46,8 +46,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Organization extends Gems_Registry_TargetAbstract
+class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
 {
+    /**
+     * Variable to add tags to the cache for cleanup.
+     *
+     * @var array
+     */
+    protected $_cacheTags = array('organization');
+
     /**
      * The default organization data for 'no organization'.
      *
@@ -56,16 +63,6 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
     protected $_noOrganization = array(
         'gor_id_organization' => 1,
         'gor_name'            => 'NO ORGANIZATION',
-        'gor_code'            => null,
-        'gor_location'        => null,
-        'gor_url'             => null,
-        'gor_task'            => null,
-        'gor_accessible_by'   => null,
-        'gor_contact_name'    => null,
-        'gor_contact_email'   => null,
-        'gor_welcome'         => null,
-        'gor_signature'       => null,
-        'gor_style'           => null,
         'gor_iso_lang'        => 'en',
         'gor_has_respondents' => 0,
         'gor_add_respondents' => 0,
@@ -75,37 +72,9 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var array
-     */
-    protected $_organizationData;
-
-    /**
-     *
-     * @var int
-     */
-    protected $_organizationId;
-
-    /**
-     *
-     * @var Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
-
-    /**
-     * Creates the organization object.
-     *
-     * @param int $organizationId
-     */
-    public function __construct($organizationId)
-    {
-        $this->_organizationId = $organizationId;
-    }
 
     /**
      * Returns a callable if a method is called as a variable
@@ -116,23 +85,11 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function __get($name)
     {
-        if (method_exists($this, $name)) {
-            // Return a callable
-            return array($this, $name);
-        } elseif (isset($this->_organizationData[$name])) {
-            return $this->_organizationData[$name];
+        if (isset($this->_data[$name])) {
+            return $this->_data[$name];
         }
 
-        throw new Gems_Exception_Coding("Unknown method '$name' requested as callable.");
-    }
-
-    /**
-     * Get the cacheId for the organization
-     *
-     * @return string
-     */
-    private function _getCacheId() {
-        return GEMS_PROJECT_NAME . '__' . __CLASS__ . '__' . $this->_organizationId;
+        return parent::__get($name);
     }
 
     /**
@@ -153,7 +110,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function canCreateRespondents()
     {
-        return (boolean) $this->_organizationData['gor_add_respondents'];
+        return (boolean) $this->_get('gor_add_respondents');
     }
 
     /**
@@ -163,52 +120,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function canHaveRespondents()
     {
-        return (boolean) $this->_organizationData['gor_has_respondents'] || $this->_organizationData['gor_add_respondents'];
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->cache) {
-            $cacheId = $this->_getCacheId();
-            $this->_organizationData = $this->cache->load($cacheId);
-        } else {
-            $cacheId = false;
-        }
-
-        if (! $this->_organizationData) {
-            $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
-            $this->_organizationData = $this->db->fetchRow($sql, $this->_organizationId);
-
-            if (! $this->_organizationData) {
-                $this->_organizationData = $this->_noOrganization;
-            } else {
-                $dbOrgId = $this->db->quote($this->_organizationId, Zend_Db::INT_TYPE);
-                $sql = "SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE gor_active = 1 AND
-                        (
-                          gor_id_organization = $dbOrgId OR
-                          gor_accessible_by LIKE '%:$dbOrgId:%'
-                        )
-                    ORDER BY gor_name";
-                $this->_organizationData['can_access'] = $this->db->fetchPairs($sql);
-
-                // MUtil_Echo::track($sql, $this->_organizationData['can_access']);
-            }
-
-            if ($cacheId) {
-                $this->cache->save($this->_organizationData, $cacheId);
-            }
-        }
-        // MUtil_Echo::track($this->_organizationData);
-
-        return is_array($this->_organizationData) && parent::checkRegistryRequestsAnswers();
+        return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
     }
 
     /**
@@ -218,7 +130,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getAllowedOrganizations()
     {
-        return $this->_organizationData['can_access'];
+        return $this->_get('can_access');
     }
 
     /**
@@ -228,7 +140,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getCode()
     {
-        return $this->_organizationData['gor_code'];
+        return $this->_get('gor_code');
     }
 
     /**
@@ -238,7 +150,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getId()
     {
-        return $this->_organizationData['gor_id_organization'];
+        return $this->_get('gor_id_organization');
     }
 
     /**
@@ -248,7 +160,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getName()
     {
-        return $this->_organizationData['gor_name'];
+        return $this->_get('gor_name');
     }
 
     /**
@@ -258,7 +170,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getSignature()
     {
-        return $this->_organizationData['gor_signature'];
+        return $this->_get('gor_signature');
     }
 
     /**
@@ -268,7 +180,39 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getStyle()
     {
-        return $this->_organizationData['gor_style'];
+        return $this->_get('gor_style');
+    }
+
+    /**
+     * Load the data when the cache is empty.
+     *
+     * @param mixed $id
+     * @return array The array of data values
+     */
+    protected function loadData($id)
+    {
+        $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
+        $data = $this->db->fetchRow($sql, $id);
+
+        if ($data) {
+            $dbOrgId = $this->db->quote($id, Zend_Db::INT_TYPE);
+            $sql = "SELECT gor_id_organization, gor_name
+                FROM gems__organizations
+                WHERE gor_active = 1 AND
+                    (
+                      gor_id_organization = $dbOrgId OR
+                      gor_accessible_by LIKE '%:$dbOrgId:%'
+                    )
+                ORDER BY gor_name";
+            $data['can_access'] = $this->db->fetchPairs($sql);
+            natsort($data['can_access']);
+
+            // MUtil_Echo::track($sql, $data['can_access']);
+        } else {
+            $data = $this->_noOrganization;
+        }
+
+        return $data;
     }
 
     /**
@@ -278,20 +222,7 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function getWelcome()
     {
-        return $this->_organizationData['gor_welcome'];
-    }
-
-    /**
-     * Empty the cache of the organization
-     *
-     * @return Gems_User_Organization (continutation pattern)
-     */
-    public function invalidateCache() {
-        if ($this->cache) {
-            $cacheId = $this->_getCacheId();
-            $this->cache->remove($cacheId);
-        }
-        return $this;
+        return $this->_get('gor_welcome');
     }
 
     /**
@@ -304,17 +235,17 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
      */
     public function setHasRespondents($userId)
     {
-        if (0 == $this->_organizationData['gor_has_respondents']) {
-            $this->_organizationData['gor_has_respondents'] = 1;
-
+        if (! $this->_get('gor_has_respondents')) {
             $values['gor_has_respondents'] = 1;
             $values['gor_changed']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
             $values['gor_changed_by']      = $userId;
 
-            $where = $this->db->quoteInto('gor_id_organization = ?', $this->_organizationId);
+            $where = $this->db->quoteInto('gor_id_organization = ?', $this->_id);
 
             $this->db->update('gems__organizations', $values, $where);
-            $this->invalidateCache();
+
+            // Invalidate cache / change value
+            $this->_set('gor_has_respondents', 1);
         }
 
         return $this;

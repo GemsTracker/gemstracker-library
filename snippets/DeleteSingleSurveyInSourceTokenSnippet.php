@@ -51,19 +51,19 @@ class DeleteSingleSurveyInSourceTokenSnippet extends Gems_Tracker_Snippets_EditS
      * @var string
      */
     protected $_replacementTokenId;
-    
-    /**
-     *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    protected $db;
 
     /**
      *
      * @var Zend_Session_Namespace
      */
     protected $session;
-    
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
     /**
      *
      * @var Zend_View
@@ -146,18 +146,13 @@ class DeleteSingleSurveyInSourceTokenSnippet extends Gems_Tracker_Snippets_EditS
     {
         $model = parent::createModel();
 
-        $sql = 'SELECT grc_id_reception_code, grc_description 
-            FROM gems__reception_codes 
-            WHERE grc_active = 1 AND (grc_for_surveys = 1 OR grc_for_tracks = 1)';
-        if (! $this->token->isCompleted()) {
-            $sql .= ' AND grc_redo_survey = 0';
-        }
-        $sql .= ' ORDER BY grc_description';
-        
+        $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
+
         $model->set('gto_reception_code',
             'label',        $model->get('grc_description', 'label'),
-            'multiOptions', $this->db->fetchPairs($sql),
-            'required',     true);
+            'multiOptions', $options,
+            'required',     true,
+            'size',         max(7, min(3, count($options) + 1)));
 
         return $model;
     }
@@ -219,9 +214,14 @@ class DeleteSingleSurveyInSourceTokenSnippet extends Gems_Tracker_Snippets_EditS
      */
     protected function saveData()
     {
-        $changed = $this->token->setReceptionCode($this->formData['gto_reception_code'], $this->formData['gto_comment'], $this->session->user_id);
+        $code = $this->util->getReceptionCode($this->formData['gto_reception_code']);
 
-        if ($this->token->hasRedoCode()) {
+        $changed = $this->token->setReceptionCode($code, $this->formData['gto_comment'], $this->session->user_id);
+
+        // NOTE:
+        // Currently this code is never used, as the user
+        // does not get an option to select these codes.
+        if ($code->hasRedoCode()) {
             $newComment = sprintf($this->_('Redo of token %s.'), $this->tokenId);
             if ($this->formData['gto_comment']) {
                 $newComment .= "\n\n";
@@ -247,11 +247,22 @@ class DeleteSingleSurveyInSourceTokenSnippet extends Gems_Tracker_Snippets_EditS
 
             // Tell what the user what happened
             $this->addMessage(sprintf($this->_('Created replacement token %2$s for token %1$s.'), $oldTokenUrl, strtoupper($this->_replacementTokenId)));
+
+            // Lookup token
+            $newToken = $this->loader->getTracker()->getToken($this->_replacementTokenId);
+
+            // Make sure the Next token is set right
+            $this->token->setNextToken($newToken);
+
+            // Copy answers when requested.
+            if ($code->hasRedoCopyCode()) {
+                $newToken->setRawAnswers($this->token->getRawAnswers());
+            }
         } else {
             $respTrack = $this->token->getRespondentTrack();
 
             // Use the repesondent track function as that cascades the consent code
-            $changed = $respTrack->setReceptionCode($this->formData['gto_reception_code'], $this->formData['gto_comment'], $this->session->user_id);            
+            $changed = $respTrack->setReceptionCode($this->formData['gto_reception_code'], $this->formData['gto_comment'], $this->session->user_id);
         }
 
         // Tell the user what happened

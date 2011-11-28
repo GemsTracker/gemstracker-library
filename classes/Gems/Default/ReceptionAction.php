@@ -71,9 +71,10 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        $rcLib = $this->util->getReceptionCodeLibrary();
+        $yesNo  = $this->util->getTranslated()->getYesNo();
 
-        $model = new MUtil_Model_TableModel('gems__reception_codes');
+        $model  = new MUtil_Model_TableModel('gems__reception_codes');
         $model->copyKeys(); // The user can edit the keys.
 
         $model->set('grc_id_reception_code', 'label', $this->_('Code'), 'size', '10');
@@ -85,11 +86,11 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code is a success code.'));
         $model->set('grc_active',            'label', $this->_('Active'),
-            'multiOptions', $yesNo ,
+            'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('Only active codes can be selected.'));
         $model->set('grc_for_respondents',   'label', $this->_('For respondents'),
-            'multiOptions', $yesNo ,
+            'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a respondent.'));
         $model->set('grc_for_tracks',        'label', $this->_('For tracks'),
@@ -97,15 +98,13 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a track.'));
         $model->set('grc_for_surveys',       'label', $this->_('For surveys'),
-            'multiOptions', $yesNo ,
-            'elementClass', 'CheckBox',
+            'multiOptions', $rcLib->getSurveyApplicationValues(),
             'description', $this->_('This reception code can be assigned to a survey.'));
         $model->set('grc_redo_survey',       'label', $this->_('Redo survey'),
-            'multiOptions', $this->util->getTranslated()->getRedoCodes(),
-            'elementClass', 'Select',
+            'multiOptions', $rcLib->getRedoValues(),
             'description', $this->_('Redo a survey on this reception code.'));
         $model->set('grc_overwrite_answers', 'label', $this->_('Overwrite ansers'),
-            'multiOptions', $yesNo ,
+            'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('Remove the consent from already answered surveys.'));
 

@@ -648,10 +648,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         // Privilege overrules organizational settings
         if ($this->hasPrivilege('pr.organization-switch')) {
             $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
+            natsort($orgs);
         } else {
             $orgs = $this->getBaseOrganization()->getAllowedOrganizations();
         }
-        natsort($orgs);
         // MUtil_Echo::track($orgs);
 
         $this->_setVar('__allowedOrgs', $orgs);

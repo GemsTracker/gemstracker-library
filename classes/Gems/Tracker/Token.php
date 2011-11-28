@@ -147,19 +147,23 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     /**
      * Makes sure the receptioncode data is part of the $this->_gemsData
      *
-     * @param boolean $reload Optional parameter to force reload.
+     * @param boolean $reload Optional parameter to force reload or an array with the new values.
      */
     private function _ensureReceptionCode($reload = false)
     {
         if ($reload || (! isset($this->_gemsData['grc_success']))) {
-            $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
-            $code = $this->_gemsData['gto_reception_code'];
-
-            if ($row = $this->db->fetchRow($sql, $code)) {
-                $this->_gemsData = $row + $this->_gemsData;
+            if (is_array($reload)) {
+                $this->_gemsData = $reload + $this->_gemsData;
             } else {
-                $token = $this->_tokenId;
-                throw new Gems_Exception("Reception code $code is missing for token $token.");
+                $sql  = "SELECT * FROM gems__reception_codes WHERE grc_id_reception_code = ?";
+                $code = $this->_gemsData['gto_reception_code'];
+
+                if ($row = $this->db->fetchRow($sql, $code)) {
+                    $this->_gemsData = $row + $this->_gemsData;
+                } else {
+                    $token = $this->_tokenId;
+                    throw new Gems_Exception("Reception code $code is missing for token $token.");
+                }
             }
         }
     }
@@ -973,6 +977,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @deprecated Use the ReceptionCode->hadRedoCode
      * @return boolean
      */
     public function hasRedoCode()
@@ -987,6 +992,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     /**
      * True if the reception code is a redo survey copy.
      *
+     * @deprecated Use the ReceptionCode->hasRedoCopyCode
      * @return boolean
      */
     public function hasRedoCopyCode()
@@ -995,7 +1001,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $this->_ensureReceptionCode();
         }
 
-        return Gems_Util_Translated::REDO_COPY == $this->_gemsData['grc_redo_survey'];
+        return Gems_Util_ReceptionCodeLibrary::REDO_COPY == $this->_gemsData['grc_redo_survey'];
     }
 
     /**
@@ -1101,25 +1107,31 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * Set the reception code for this token and make sure the necessary
      * cascade to the source takes place.
      *
-     * @param string $code The new reception code
+     * @param string $code The new (non-success) reception code or a Gems_Util_ReceptionCode object
      * @param string $comment Comment False values leave value unchanged
      * @param int $userId The current user
      * @return int 1 if the token has changed, 0 otherwise
      */
     public function setReceptionCode($code, $comment, $userId)
     {
-        $values['gto_reception_code'] = $code;
+        // Make sure it is a Gems_Util_ReceptionCode object
+        if (! $code instanceof Gems_Util_ReceptionCode) {
+            $code = $this->util->getReceptionCode($code);
+        }
+
+        $values['gto_reception_code'] = $code->getCode();
         if ($comment) {
             $values['gto_comment'] = $comment;
         }
+        MUtil_Echo::track($values);
 
         $changed = $this->_updateToken($values, $userId);
 
         if ($changed) {
             // Reload reception code values
-            $this->_ensureReceptionCode(true);
+            $this->_ensureReceptionCode($code->getAllData());
 
-            if (! $this->hasSuccesCode()) {
+            if ($code->isOverwriter() || (! $code->isSuccess())) {
                 $survey = $this->getSurvey();
 
                 // Update the consent code in the source

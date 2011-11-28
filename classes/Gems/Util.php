@@ -79,6 +79,12 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Gems_Util_ReceptionCodeLibrary
+     */
+    protected $receptionCodeLibrary;
+
+    /**
+     *
      * @var Gems_Util_RequestCache
      */
     protected $requestCache;
@@ -188,6 +194,33 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a single reception code object.
+     *
+     * @param string $code
+     * @return Gems_Util_ReceptionCode
+     */
+    public function getReceptionCode($code)
+    {
+        static $codes = array();
+
+        if (! isset($codes[$code])) {
+            $codes[$code] = $this->_loadClass('receptionCode', true, array($code));
+        }
+
+        return $codes[$code];
+    }
+
+    /**
+     * Returns a
+     *
+     * @return Gems_Util_ReceptionCodeLibrary
+     */
+    public function getReceptionCodeLibrary()
+    {
+        return $this->_getClass('receptionCodeLibrary');
+    }
+
+    /**
      *
      * @param string  $sourceAction    The action to get the cache from if not the current one.
      * @param boolean $readonly        Optional, tell the cache not to store any new values
@@ -215,15 +248,15 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_getClass('translated');
     }
-    
+
     /**
      * Checks if a given IP is allowed according to a set
      * of IP addresses / ranges.
-     * 
+     *
      * Multiple addresses/ranges are separated by a colon,
      * an individual range takes the form of
      * 10.0.0.0-10.0.0.255 (subnet masks are not supported)
-     * 
+     *
      * @param  string $ip
      * @param  string $ipRanges
      * @return bool
@@ -233,23 +266,23 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         if (!strlen($ipRanges)) {
             return true;
         }
-        
+
         $ipLong = ip2long($ip);
-        
+
         $ranges = explode('|', $ipRanges);
-        
+
         foreach ($ranges as $range) {
             if (($sep = strpos($range, '-')) !== false) {
                 $min = ip2long(substr($range, 0, $sep));
                 $max = ip2long(substr($range, $sep + 1));
-                
+
                 $validate = new Zend_Validate_Between(
                     array(
                         'min' => $min,
                         'max' => $max
                     )
                 );
-                
+
                 if ($min <= $ipLong && $ipLong <= $max) {
                     return true;
                 }
@@ -259,7 +292,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
                 }
             }
         }
-        
+
         return false;
     }
 }

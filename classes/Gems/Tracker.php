@@ -331,6 +331,27 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      *
+     * @param int $userId
+     * @param int $organizationId
+     * @return array of Gems_Tracker_RespondentTrack
+     */
+    public function getRespondentTracks($userId, $organizationId)
+    {
+        $sql    = "SELECT *
+                    FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
+                    WHERE gr2t_id_user = ? AND gr2t_id_organization = ?";
+        $rows   = $this->db->fetchAll($sql, array($userId, $organizationId));
+        $tracks = array();
+
+        foreach ($rows as $row) {
+            $tracks[$row['gr2t_id_respondent_track']] = $this->getRespondentTrack($row);
+        }
+
+        return $tracks;
+    }
+
+    /**
+     *
      * @param mixed $respTrackData Track id or array containing trackdata
      * @return Gems_Tracker_RespondentTrack
      */

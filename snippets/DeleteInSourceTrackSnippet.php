@@ -47,15 +47,15 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
      * @var Zend_Session_Namespace
      */
     protected $session;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -103,9 +103,8 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
     {
         $model = parent::createModel();
 
-        $sql = 'SELECT grc_id_reception_code, grc_description FROM gems__reception_codes WHERE grc_active = 1 AND grc_for_tracks = 1 ORDER BY grc_description';
-        $options = $this->db->fetchPairs($sql);
-
+        $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
+        
         $model->set('gr2t_reception_code',
             'label',        $this->_('Rejection code'),
             'multiOptions', $options,

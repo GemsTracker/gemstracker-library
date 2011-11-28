@@ -344,3 +344,10 @@ ALTER TABLE gems__roles CHANGE grl_privileges grl_privileges text CHARACTER SET 
 
 -- PATCH: Base URL / installation URL to facilitate org switching
 ALTER TABLE gems__organizations ADD `gor_url_base` VARCHAR(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gor_url`;
+
+-- PATCH: New fundamental reception code 'STOP'
+INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_success,
+      grc_for_surveys, grc_redo_survey, grc_for_tracks, grc_for_respondents, grc_overwrite_answers, grc_active,
+      grc_changed, grc_changed_by, grc_created, grc_created_by)
+    VALUES
+        ('stop', 'Stop surveys', 0, 2, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
