@@ -75,23 +75,6 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      */
     protected $session;
 
-    public function getActiveOrganizations()
-    {
-        static $organizations;
-
-        if (! $organizations) {
-            $orgId = GemsEscort::getInstance()->getCurrentOrganization();
-            $organizations = $this->db->fetchPairs('
-                SELECT gor_id_organization, gor_name
-                    FROM gems__organizations
-                    WHERE (gor_active=1 AND
-                            gor_id_organization IN (SELECT gr2o_id_organization FROM gems__respondent2org)) OR
-                        gor_id_organization = ?
-                    ORDER BY gor_name', $orgId);
-        }
-
-        return $organizations;
-    }
 
     /**
      * Return key/value pairs of all active staff members
@@ -224,6 +207,42 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if (! $organizations) {
             $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 ORDER BY gor_name');
+            natsort($organizations);
+        }
+
+        return $organizations;
+    }
+
+    /**
+     * Returns a list of the organizations where users can login.
+     *
+     * @staticvar array $organizations
+     * @return array List of the active organizations
+     */
+    public function getOrganizationsForLogin()
+    {
+        static $organizations;
+
+        if (! $organizations) {
+            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 ORDER BY gor_name');
+            natsort($organizations);
+        }
+
+        return $organizations;
+    }
+
+    /**
+     * Returns a list of the organizations that have respondents.
+     *
+     * @staticvar array $organizations
+     * @return array List of the active organizations
+     */
+    public function getOrganizationsWithRespondents()
+    {
+        static $organizations;
+
+        if (! $organizations) {
+            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_respondents=1 ORDER BY gor_name');
             natsort($organizations);
         }
 

@@ -71,6 +71,20 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public $project;
 
     /**
+     * The default behaviour for showing a lost password button
+     *
+     * @var boolean
+     */
+    protected $showPasswordLostButton = true;
+
+    /**
+     * The default behaviour for showing an 'ask token' button
+     *
+     * @var boolean
+     */
+    protected $showTokenButton = true;
+
+    /**
      * Returns a link for the token input page.
      *
      * @return MUtil_Form_Element_Html
@@ -117,17 +131,24 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Returns a login form
      *
+     * @param boolean $showTokenButton Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
+     * @param boolean $showPasswordLostButton Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
      * @return Gems_Form
      */
-    protected function _getLoginForm()
+    protected function _getLoginForm($showTokenButton = null, $showPasswordLostButton = null)
     {
         $form = $this->_getBasicForm($this->_('Login to %s application'));
         $form->addElement($this->_getOrganizationElement());
         $form->addElement($this->_getUserLoginElement());
         $form->addElement($this->_getPasswordElement());
         $form->addElement($this->_getSubmitButton($this->_('Login')));
-        $form->addElement($this->_getAskTokenLinkElement());
-        $form->addElement($this->_getResetLinkElement());
+
+        if (null === $showTokenButton ? $this->showTokenButton : $showTokenButton) {
+            $form->addElement($this->_getAskTokenLinkElement());
+        }
+        if (null === $showPasswordLostButton ? $this->showPasswordLostButton : $showPasswordLostButton) {
+            $form->addElement($this->_getResetLinkElement());
+        }
 
         return $form;
     }
@@ -154,17 +175,27 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     protected function _getOrganizationElement()
     {
-        if ($this->escort instanceof Gems_Project_Organization_SingleOrganizationInterface) {
+        $hidden = $this->escort instanceof Gems_Project_Organization_SingleOrganizationInterface;
+        if ($hidden) {
+            $org = $this->escort->getRespondentOrganization();
+        } else {
+            $org = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+            $orgs = $this->util->getDbLookup()->getOrganizationsForLogin();
+            $hidden = count($orgs) < 2;
+        }
+
+        if ($hidden) {
             $element = new Zend_Form_Element_Hidden('organization');
-            $element->setValue($this->escort->getRespondentOrganization());
+            $element->setValue($org);
         } else {
             $element = new Zend_Form_Element_Select('organization');
             $element->setLabel($this->_('Organization'));
-            $element->setMultiOptions($this->util->getDbLookup()->getOrganizations());
+            $element->setMultiOptions($orgs);
             $element->setRequired(true);
+            $element->setAttrib('size', max(count($orgs) + 1, 6));
 
             if (! $this->_request->isPost()) {
-                $element->setValue($this->loader->getCurrentUser()->getCurrentOrganizationId());
+                $element->setValue($org);
             }
         }
 

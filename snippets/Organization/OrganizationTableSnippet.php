@@ -90,8 +90,8 @@ class Organization_OrganizationTableSnippet extends Gems_Snippets_ModelTableSnip
         $mailName[] = $bridge->createSortLink('gor_contact_name');
 
         $bridge->addMultiSort($orgName, $BR, 'gor_task', $BR, 'gor_location');
-        $bridge->addMultiSort($mailName, $BR, 'gor_style', $BR, 'gor_iso_lang');
-        $bridge->addMultiSort('gor_active', $BR, 'gor_add_respondents', $BR, 'gor_has_respondents');
+        $bridge->addMultiSort($mailName, $BR, 'gor_active', $BR, 'gor_has_login');
+        $bridge->addMultiSort('gor_add_respondents', $BR, 'gor_has_respondents', $BR, 'gor_respondent_group');
         $bridge->add('gor_accessible_by');
 
         if ($editMenuItem = $this->getEditMenuItem()) {

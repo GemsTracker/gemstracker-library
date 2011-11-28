@@ -327,6 +327,10 @@ UPDATE `gems__organizations` SET gor_add_respondents = CASE WHEN gor_has_respond
 
 ALTER TABLE `gems__organizations` ADD gor_respondent_group bigint unsigned null AFTER gor_add_respondents;
 
+ALTER TABLE `gems__organizations` ADD gor_has_login boolean not null default 1 AFTER gor_iso_lang;
+
+UPDATE `gems__organizations` SET gor_has_login = COALESCE((SELECT 1 FROM gems__staff WHERE gsf_id_organization = gor_id_organization GROUP BY gsf_id_organization), 0);
+
 -- PATCH: Log failed logins
 INSERT INTO  `gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
     VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);

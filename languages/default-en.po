@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-25 17:05+0100\n"
+"POT-Creation-Date: 2011-11-28 12:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1023,7 +1023,7 @@ msgid "%s records found."
 msgstr "%s records found."
 
 #: classes/Gems/Default/ExportAction.php:172
-#: classes/Gems/Default/IndexAction.php:162
+#: classes/Gems/Default/IndexAction.php:179
 #: classes/Gems/Default/MailJobAction.php:119
 msgid "Organization"
 msgstr "Organization"
@@ -1056,88 +1056,88 @@ msgstr[1] "groups"
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
-#: classes/Gems/Default/IndexAction.php:83
+#: classes/Gems/Default/IndexAction.php:91
 msgid "Enter your token..."
 msgstr "Enter your token..."
 
-#: classes/Gems/Default/IndexAction.php:124
+#: classes/Gems/Default/IndexAction.php:132
 #, php-format
 msgid "Login to %s application"
 msgstr "Login to %s application"
 
-#: classes/Gems/Default/IndexAction.php:128
+#: classes/Gems/Default/IndexAction.php:136
 msgid "Login"
 msgstr "Login"
 
-#: classes/Gems/Default/IndexAction.php:145
+#: classes/Gems/Default/IndexAction.php:153
 msgid "Back to login"
 msgstr "Back to login"
 
-#: classes/Gems/Default/IndexAction.php:183
+#: classes/Gems/Default/IndexAction.php:201
 msgid "Password"
 msgstr "Password"
 
-#: classes/Gems/Default/IndexAction.php:198
+#: classes/Gems/Default/IndexAction.php:216
 #, php-format
 msgid "Reset password for %s application"
 msgstr "Reset password for %s application"
 
-#: classes/Gems/Default/IndexAction.php:202
+#: classes/Gems/Default/IndexAction.php:220
 msgid "Reset password"
 msgstr "Reset password"
 
-#: classes/Gems/Default/IndexAction.php:248
+#: classes/Gems/Default/IndexAction.php:266
 msgid "Username"
 msgstr "Username"
 
-#: classes/Gems/Default/IndexAction.php:288
+#: classes/Gems/Default/IndexAction.php:306
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:300
+#: classes/Gems/Default/IndexAction.php:318
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:340
+#: classes/Gems/Default/IndexAction.php:358
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:365
+#: classes/Gems/Default/IndexAction.php:383
 msgid "Reset accepted, enter your new password."
 msgstr "Reset accepted, enter your new password."
 
-#: classes/Gems/Default/IndexAction.php:369
+#: classes/Gems/Default/IndexAction.php:387
 msgid "This key timed out or does not belong to this user."
 msgstr "This key timed out or does not belong to this user."
 
-#: classes/Gems/Default/IndexAction.php:386
+#: classes/Gems/Default/IndexAction.php:404
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:387
+#: classes/Gems/Default/IndexAction.php:405
 #, php-format
 msgid "To reset your password for %s, please click this link: %s"
 msgstr "To reset your password for %s, please click this link: %s"
 
-#: classes/Gems/Default/IndexAction.php:392
+#: classes/Gems/Default/IndexAction.php:410
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:394
+#: classes/Gems/Default/IndexAction.php:412
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/Default/IndexAction.php:399
+#: classes/Gems/Default/IndexAction.php:417
 msgid "No such user found or no e-mail address known or user cannot be reset."
 msgstr "No such user found or no e-mail address known or user cannot be reset."
 
-#: classes/Gems/Default/IndexAction.php:403
+#: classes/Gems/Default/IndexAction.php:421
 msgid "We received your password reset key."
 msgstr "We received your password reset key."
 
-#: classes/Gems/Default/IndexAction.php:404
+#: classes/Gems/Default/IndexAction.php:422
 msgid "Please enter the organization and username belonging to this key."
 msgstr "Please enter the organization and username belonging to this key."
 
@@ -1546,67 +1546,71 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:139
+msgid "Can people login for this organization?"
+msgstr "Can people login for this organization?"
+
+#: classes/Gems/Default/OrganizationAction.php:140
 msgid "Accepting"
 msgstr "Accepting"
 
-#: classes/Gems/Default/OrganizationAction.php:139
+#: classes/Gems/Default/OrganizationAction.php:140
 msgid "Can new respondents be added to the organization?"
 msgstr "Can new patients  be added to the organization?"
 
-#: classes/Gems/Default/OrganizationAction.php:140
+#: classes/Gems/Default/OrganizationAction.php:141
 msgid "Does the organization have respondents?"
 msgstr "Does the organization have patients?"
 
-#: classes/Gems/Default/OrganizationAction.php:141
+#: classes/Gems/Default/OrganizationAction.php:142
 msgid "Respondent group"
 msgstr "Patient group"
 
-#: classes/Gems/Default/OrganizationAction.php:141
+#: classes/Gems/Default/OrganizationAction.php:142
 msgid "Allows respondents to login."
 msgstr "Allow patients to login."
 
-#: classes/Gems/Default/OrganizationAction.php:145
+#: classes/Gems/Default/OrganizationAction.php:146
 msgid "Greeting"
 msgstr "Greeting"
 
-#: classes/Gems/Default/OrganizationAction.php:145
 #: classes/Gems/Default/OrganizationAction.php:146
+#: classes/Gems/Default/OrganizationAction.php:147
 msgid "For emails and token forward screen."
 msgstr "For emails and token forward screen."
 
-#: classes/Gems/Default/OrganizationAction.php:146
+#: classes/Gems/Default/OrganizationAction.php:147
 msgid "Signature"
 msgstr "Signature"
 
-#: classes/Gems/Default/OrganizationAction.php:148
+#: classes/Gems/Default/OrganizationAction.php:149
 msgid "Accessible by"
 msgstr "Accessible by"
 
-#: classes/Gems/Default/OrganizationAction.php:148
+#: classes/Gems/Default/OrganizationAction.php:149
 msgid "Checked organizations see this organizations respondents."
 msgstr "Checked organizations see this organizations patients."
 
-#: classes/Gems/Default/OrganizationAction.php:158
+#: classes/Gems/Default/OrganizationAction.php:159
 msgid "Code name"
 msgstr "Code name"
 
-#: classes/Gems/Default/OrganizationAction.php:158
+#: classes/Gems/Default/OrganizationAction.php:159
 msgid "Only for programmers."
 msgstr "Only for programmers."
 
-#: classes/Gems/Default/OrganizationAction.php:172
+#: classes/Gems/Default/OrganizationAction.php:173
 msgid "Delete organization"
 msgstr "Delete organization"
 
-#: classes/Gems/Default/OrganizationAction.php:182
+#: classes/Gems/Default/OrganizationAction.php:183
 msgid "Edit organization"
 msgstr "Edit organization"
 
-#: classes/Gems/Default/OrganizationAction.php:192
+#: classes/Gems/Default/OrganizationAction.php:193
 msgid "Participating organizations"
 msgstr "Participating organizations"
 
-#: classes/Gems/Default/OrganizationAction.php:202
+#: classes/Gems/Default/OrganizationAction.php:203
 msgid "Show organization"
 msgstr "Show organization"
 
@@ -1912,41 +1916,41 @@ msgstr "Settings"
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Has the patient signed the informed consent letter?"
 
-#: classes/Gems/Default/RespondentAction.php:199
+#: classes/Gems/Default/RespondentAction.php:204
 msgid "Comments"
 msgstr "Comments"
 
-#: classes/Gems/Default/RespondentAction.php:200
+#: classes/Gems/Default/RespondentAction.php:205
 msgid "Physician"
 msgstr "Physician"
 
-#: classes/Gems/Default/RespondentAction.php:201
+#: classes/Gems/Default/RespondentAction.php:206
 msgid "Treatment"
 msgstr "Treatment"
 
-#: classes/Gems/Default/RespondentAction.php:230
+#: classes/Gems/Default/RespondentAction.php:235
 msgid "Rejection code"
 msgstr "Rejection code"
 
-#: classes/Gems/Default/RespondentAction.php:237
+#: classes/Gems/Default/RespondentAction.php:242
 msgid "Delete respondent"
 msgstr "Delete patient"
 
-#: classes/Gems/Default/RespondentAction.php:288
+#: classes/Gems/Default/RespondentAction.php:293
 msgid "Respondent deleted."
 msgstr "Patient deleted"
 
-#: classes/Gems/Default/RespondentAction.php:291
+#: classes/Gems/Default/RespondentAction.php:296
 msgid "Choose a reception code to delete."
 msgstr "Choose a reception code to delete."
 
-#: classes/Gems/Default/RespondentAction.php:335
+#: classes/Gems/Default/RespondentAction.php:340
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patient"
 msgstr[1] "patients"
 
-#: classes/Gems/Default/RespondentAction.php:405
+#: classes/Gems/Default/RespondentAction.php:410
 msgid "Please settle the informed consent form for this respondent."
 msgstr "Please settle the informed consent form for this patient."
 
