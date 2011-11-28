@@ -70,14 +70,14 @@ class Gems_Menu_ParameterCollector
      * @param mixed $default
      * @return mixed
      */
-   public function getMenuParameter($name, $altname = null)
-   {
-       if (array_key_exists($name, $this->values)) {
-           return $this->values[$name];
-       }
+    public function getMenuParameter($name, $altname = null)
+    {
+        if (array_key_exists($name, $this->values)) {
+            return $this->values[$name];
+        }
 
-       $this->values[$name] = null;
-       foreach ($this->sources as $source) {
+        $this->values[$name] = null;
+        foreach ($this->sources as $source) {
             if ($source instanceof Zend_Controller_Request_Abstract) {
                 $value = $source->getParam($name, null);
                 if (null === $value) {
@@ -99,7 +99,7 @@ class Gems_Menu_ParameterCollector
             if (null !== $this->values[$name]) {
                 break;
             }
-       }
-       return $this->values[$name];
-   }
+        }
+        return $this->values[$name];
+    }
 }
