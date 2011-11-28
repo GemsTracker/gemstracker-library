@@ -300,7 +300,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         
         // Allow layout switching based on request base url
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $hostUrl = $request->getScheme() . '://' . $request->getHttpHost() . $request->getBasePath();
+            $hostUrl = $this->escort->loader->getUtil()->getCurrentURI();
             
             $organizationId = $this->util->getDbLookup()->getOrganizationForUrl($hostUrl);
             
