@@ -281,10 +281,42 @@ class Gems_User_Organization extends Gems_Registry_TargetAbstract
         return $this->_organizationData['gor_welcome'];
     }
 
+    /**
+     * Empty the cache of the organization
+     *
+     * @return Gems_User_Organization (continutation pattern)
+     */
     public function invalidateCache() {
         if ($this->cache) {
             $cacheId = $this->_getCacheId();
             $this->cache->remove($cacheId);
         }
+        return $this;
+    }
+
+    /**
+     * Tell the organization there is at least one respondent attached to it.
+     *
+     * Does nothing if this is already known.
+     *
+     * @param int $userId The current user
+     * @return Gems_User_Organization (continutation pattern)
+     */
+    public function setHasRespondents($userId)
+    {
+        if (0 == $this->_organizationData['gor_has_respondents']) {
+            $this->_organizationData['gor_has_respondents'] = 1;
+
+            $values['gor_has_respondents'] = 1;
+            $values['gor_changed']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gor_changed_by']      = $userId;
+
+            $where = $this->db->quoteInto('gor_id_organization = ?', $this->_organizationId);
+
+            $this->db->update('gems__organizations', $values, $where);
+            $this->invalidateCache();
+        }
+
+        return $this;
     }
 }
