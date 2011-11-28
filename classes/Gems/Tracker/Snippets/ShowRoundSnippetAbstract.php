@@ -155,17 +155,17 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends MUtil_Snippets_Mode
         $links = $this->menu->getMenuList();
         $links->addParameterSources($this->request, $this->menu->getParameterSource());
 
-        $linkData = array(
+        $source = new Gems_Menu_ParameterSource(array(
             'gro_id_track' => $this->trackId,
             'gro_id_round' => $this->trackEngine->getPreviousRoundId($this->roundId),
-            'gtr_track_type' => $this->trackEngine->getTrackType());
+            'gtr_track_type' => $this->trackEngine->getTrackType()));
 
-        $links->append($this->menu->getCurrent()->toActionLink(true, MUtil_Html::raw($this->_('&lt; Previous')), $linkData));
+        $links->append($this->menu->getCurrent()->toActionLink(true, MUtil_Html::raw($this->_('&lt; Previous')), $source));
         $links->addCurrentParent($this->_('Cancel'));
         $links->addCurrentSiblings();
 
-        $linkData['gro_id_round'] = $this->trackEngine->getNextRoundId($this->roundId);
-        $links->append($this->menu->getCurrent()->toActionLink(true, MUtil_Html::raw($this->_('Next &gt;')), $linkData));
+        $source->offsetSet('gro_id_round', $this->trackEngine->getNextRoundId($this->roundId));
+        $links->append($this->menu->getCurrent()->toActionLink(true, MUtil_Html::raw($this->_('Next &gt;')), $source));
 
         return $links;
     }
