@@ -224,7 +224,11 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         static $organizations;
 
         if (! $organizations) {
-            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 ORDER BY gor_name');
+            try {
+                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 ORDER BY gor_name');
+            } catch (Exception $e) {
+                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 ORDER BY gor_name');
+            }
             natsort($organizations);
         }
 
