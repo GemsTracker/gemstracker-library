@@ -274,6 +274,20 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $organizations;
     }
+    
+    /**
+     * Returns the organization
+     * @param  string   $url
+     * @return int|null the organization
+     */
+    public function getOrganizationForUrl($url)
+    {
+        try {
+            return $this->db->fetchOne("SELECT gor_id_organization FROM gems__organizations WHERE gor_active=1 AND gor_url_base = ?", $url);
+        } catch (Exception $e) {
+            return null;
+        }
+    }
 
     public function getRoles()
     {

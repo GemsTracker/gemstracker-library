@@ -341,3 +341,6 @@ ALTER TABLE `gems__groups` ADD `ggp_allowed_ip_ranges` TEXT CHARACTER SET 'utf8'
 -- PATCH: Roles fields sometimes empty
 ALTER TABLE gems__roles CHANGE grl_parents grl_parents  text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
 ALTER TABLE gems__roles CHANGE grl_privileges grl_privileges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+
+-- PATCH: Base URL / installation URL to facilitate org switching
+ALTER TABLE gems__organizations ADD `gor_url_base` VARCHAR(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gor_url`;
