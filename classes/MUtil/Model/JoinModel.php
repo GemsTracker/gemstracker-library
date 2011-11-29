@@ -175,6 +175,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $filter = $this->_checkFilterUsed($filter);
 
         if ($this->_deleteValues) {
+            // MUtil_Model::$verbose = true;
             $changed = $this->save($this->_deleteValues + $filter, $filter, $saveTables);
         } else {
             $changed = 0;
@@ -255,8 +256,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
         $oldChanged = $this->getChanged();
 
-        // MUtil_Echo::r($newValues,  __CLASS__ . '->' . __FUNCTION__);
-        // MUtil_Echo::r($saveTables, __CLASS__ . '->' . __FUNCTION__);
+        // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
 
         $oldValues = $newValues;
         foreach ($saveTables as $table_name) {
@@ -265,6 +265,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                 // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
                 if (! (is_string($target) && isset($newValues[$target]) && $newValues[$target])) {
                     if (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
+                        // MUtil_Echo::track('Missing: ' . $source . ' -> ' . $target);
                         continue;
                     }
                     $newValues[$target] = $newValues[$source];
@@ -276,8 +277,8 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
             //$this->_saveTableData returns the new row values, including any automatic changes.
             $newValues = $this->_saveTableData($this->_tables[$table_name], $newValues, $filter) + $oldValues;
+            // MUtil_Echo::track($oldValues, $newValues);
             $oldValues = $newValues;
-            // MUtil_Echo::r($newValues, 'JoinModel, after: ' . $table_name);
         }
 
         // If anything has changed, it counts as only one item for the user.

@@ -353,7 +353,3 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
         ('stop', 'Stop surveys', 0, 2, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
-
--- PATCH: Defaults for non-null columns
-ALTER TABLE `gems__user_logins` CHANGE `gul_login` `gul_login` varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default '';
-ALTER TABLE `gems__user_logins` CHANGE `gul_id_organization` `gul_id_organization` bigint not null default 0;
