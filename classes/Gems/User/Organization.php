@@ -195,17 +195,21 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         $data = $this->db->fetchRow($sql, $id);
 
         if ($data) {
-            $dbOrgId = $this->db->quote($id, Zend_Db::INT_TYPE);
-            $sql = "SELECT gor_id_organization, gor_name
-                FROM gems__organizations
-                WHERE gor_active = 1 AND
-                    (
-                      gor_id_organization = $dbOrgId OR
-                      gor_accessible_by LIKE '%:$dbOrgId:%'
-                    )
-                ORDER BY gor_name";
-            $data['can_access'] = $this->db->fetchPairs($sql);
-            natsort($data['can_access']);
+            try {
+                $dbOrgId = $this->db->quote($id, Zend_Db::INT_TYPE);
+                $sql = "SELECT gor_id_organization, gor_name
+                    FROM gems__organizations
+                    WHERE gor_active = 1 AND
+                        (
+                          gor_id_organization = $dbOrgId OR
+                          gor_accessible_by LIKE '%:$dbOrgId:%'
+                        )
+                    ORDER BY gor_name";
+                $data['can_access'] = $this->db->fetchPairs($sql);
+                natsort($data['can_access']);
+            } catch (Exception $e) {
+                $data['can_access'] = array();
+            }
 
             // MUtil_Echo::track($sql, $data['can_access']);
         } else {
