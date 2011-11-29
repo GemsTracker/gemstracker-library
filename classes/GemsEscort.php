@@ -797,7 +797,7 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _layoutOrganizationSwitcher() // Gems_Project_Organization_MultiOrganizationInterface
     {
         $user = $this->getLoader()->getCurrentUser();
-        if ($orgs = $user->getAllowedOrganizations()) {
+        if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
             // Organization switcher
             $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
             $currentId  = $user->getCurrentOrganizationId();
