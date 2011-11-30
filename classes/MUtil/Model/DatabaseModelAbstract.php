@@ -417,12 +417,14 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     $wheres[] = $adapter->quoteInto($text, $value);
                 }
                 // Retrieve the record from the database
-                $oldValues = $table->fetchRow('(' . implode(' ) AND (', $wheres) . ')')->toArray();
+                $oldValues = $table->fetchRow('(' . implode(' ) AND (', $wheres) . ')');
 
                 if (! $oldValues) {
                     // MUtil_Echo::r('INSERT!!', 'Old not found');
                     // Apparently the record does not exist in the database
                     $update = false;
+                } else {
+                    $oldValues = $oldValues->toArray();
                 }
             }
 
