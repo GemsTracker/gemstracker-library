@@ -292,8 +292,39 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      *
      * @param string $table_name    Does not test for existence
-     * @param bool   $saveable      Will changes to this table be saved
-     * @return MUtil_Model_JoinModel
+     * @return MUtil_Model_JoinModel (continuation pattern)
+     */
+    public function setTableKeysToJoin($table_name)
+    {
+        $origKeys = $this->_getKeysFor($table_name);
+
+        // First remove old keys
+        foreach ($origKeys as $key) {
+            $this->del($key, 'key');
+        }
+
+        foreach ($this->_joinFields as $left => $right) {
+            if (is_string($left) && $this->is($left, 'table', $table_name)) {
+                $this->set($left, 'key', true);
+            }
+            if (is_string($right) && $this->is($right, 'table', $table_name)) {
+                $this->set($right, 'key', true);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add the table to the default save tables.
+     *
+     * Only tables marked as save tables are saved during a save() or delete(),
+     * unless this is overuled by the extra parameter for those functions in
+     * this object.
+     *
+     * @param string $table_name    Does not test for existence
+     * @param boolean $saveable     Will changes to this table be saved
+     * @return MUtil_Model_JoinModel (continuation pattern)
      */
     public function setTableSaveable($table_name, $saveable = true)
     {

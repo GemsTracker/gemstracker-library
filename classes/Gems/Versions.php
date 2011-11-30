@@ -43,7 +43,7 @@ class Gems_Versions
 {
     public final function getBuild()
     {
-        return 42;
+        return 43;
     }
 
     public final function getGemsVersion()
