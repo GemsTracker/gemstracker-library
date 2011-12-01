@@ -51,9 +51,18 @@ class Gems_Menu_ParameterCollector
 
     public function __construct()
     {
-        $sources = MUtil_Ra::flatten(func_get_args());
-        foreach ($sources as $source) {
-            $this->addSource($source);
+        $sources = MUtil_Ra::args(func_get_args());
+        $array   = array();
+        foreach ($sources as $key => $source) {
+            // Fix for array sources.
+            if (is_string($key)) {
+                $array[$key] = $source;
+            } else {
+                $this->addSource($source);
+            }
+        }
+        if ($array) {
+            $this->addSource($array);
         }
     }
 
@@ -92,6 +101,7 @@ class Gems_Menu_ParameterCollector
                 $this->values[$name] = $source->__get($name);
 
             } elseif (is_array($source)) {
+                MUtil_Echo::track($name, $source);
                 if (isset($source[$name])) {
                     $this->values[$name] = $source[$name];
                 }
