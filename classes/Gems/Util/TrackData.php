@@ -95,12 +95,36 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         return $surveys;
     } // */
 
+
+    /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     *
+     * @staticvar array $surveys
+     * @return array
+     */
     public function getAllSurveys()
     {
         static $surveys;
 
         if (! $surveys) {
             $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name');
+        }
+
+        return $surveys;
+    }
+
+    /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name plus gsu_survey_description
+     *
+     * @staticvar array $surveys
+     * @return array
+     */
+    public function getAllSurveysAndDescriptions()
+    {
+        static $surveys;
+
+        if (! $surveys) {
+            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, LEFT(CONCAT_WS(" - ", gsu_survey_name, gsu_survey_description),50) FROM gems__surveys ORDER BY gsu_survey_name');
         }
 
         return $surveys;

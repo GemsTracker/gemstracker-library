@@ -351,3 +351,7 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
         ('stop', 'Stop surveys', 0, 2, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+--PATCH: Remove unique constraint for staff email
+ALTER TABLE  `gems__staff` DROP INDEX  `gsf_email` ,
+ADD INDEX  `gsf_email` (  `gsf_email` )

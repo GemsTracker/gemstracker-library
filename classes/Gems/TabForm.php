@@ -60,18 +60,22 @@ class Gems_TabForm extends Gems_Form
         if ($this->currentTab && !($element instanceof Zend_Form_Element_Hidden)) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
+            parent::addElement($element, $name, $options);
+            if (is_string($element)) {
+                $element = $this->getElement($element);
+            }
             if ($element instanceof Zend_Form_Element_Hidden) {
                 //Remove decorators
                 $element->removeDecorator('htmlTag');
                 $element->removeDecorator('Label');
-            } else {
+            } elseif ($element instanceof Zend_Form_Element) {
                 $error = $element->getDecorator('Errors');
                 if ($error instanceof Zend_Form_Decorator_Errors) {
                     $element->removeDecorator('Errors');
                     $element->addDecorator($error);
                 }
             }
-            return parent::addElement($element, $name, $options);
+            return $this;
         }
     }
 
@@ -337,6 +341,13 @@ class Gems_TabForm extends Gems_Form
      * @return Gems_TabForm
      */
     public function setView(Zend_View_Interface $view = null) {
+        /**
+         * If the form is populated... and we have a tab set... select it
+         */
+        if ($tab = $this->getValue('tab')) {
+            $this->selectTab($tab);
+        }
+
         $form = parent::setView($view);
         
         if ($view) {

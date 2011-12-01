@@ -97,6 +97,8 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         parent::__construct($array, ArrayObject::ARRAY_AS_PROPS);
 
+        //@@TODO: some checks should not be done on each and every request!
+        //        this can be a problem when testing
         $this->checkRequiredValues();
     }
 
@@ -276,7 +278,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getSuperAdminName()
     {
-        if (isset($this->admin['user'])) {
+        if (isset($this->admin) && isset($this->admin['user'])) {
             return $this->admin['user'];
         }
     }
@@ -288,7 +290,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     protected function getSuperAdminPassword()
     {
-        if (isset($this->admin['pwd'])) {
+        if (isset($this->admin) && isset($this->admin['pwd'])) {
             return $this->admin['pwd'];
         }
     }

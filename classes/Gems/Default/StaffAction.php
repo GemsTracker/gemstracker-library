@@ -44,6 +44,8 @@
  */
 class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
+    //@@TODO What if we want a different one per organization?
+    //Maybe check if org has a default and otherwise use this one?
     public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
 
     public $filterStandard = array('gsf_active' => 1);
@@ -102,21 +104,22 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
         $dbLookup = $this->util->getDbLookup();
 
-        switch ($data['gul_user_class']) {
-            case Gems_User_UserLoader::USER_STAFF:
+        $passwordField = false;
+
+        //@@TODO Like this? should work when user is not saved, but storing the password should be done when
+        //we do have a user...
+        $definition = $this->loader->getUserLoader()->getUserDefinition($data['gul_user_class'].'Definition');
+
+        if ($definition->canSetPassword()) {
+            //@@TODO: Should we handle it like this? The userdef has a setpassword method...
+            if ($definition instanceof Gems_User_StaffUserDefinition) {
                 Gems_Model::addUserPassword($model);
                 $passwordField = 'gup_password';
                 $model->setOnSave($passwordField, array($this->project, 'getValueHash'));
-                break;
-
-            case Gems_User_UserLoader::USER_OLD_STAFF:
+            } elseif ($definition instanceof Gems_User_OldStaffUserDefinition) {
                 $passwordField = 'gsf_password';
                 $model->setOnSave($passwordField, array($this, 'getOldPasswordHash'));
-                break;
-
-            default:
-                $passwordField = false;
-                break;
+        }
         }
 
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
@@ -133,8 +136,10 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addHidden(  'gul_id_user');
         $bridge->addHidden(  'gup_id_user');
         $bridge->addHidden(  'gul_user_class');
+        //@@TODO: How do we change this? Only per org, or allow per user?
+        //What classes are available? Maybe use something like event loader and add a little desc. to each type?
         $bridge->addText(    'gsf_login', 'size', 15, 'minlength', 4,
-            'validator', $model->createUniqueValidator('gsf_login', array('gsf_id_user')));
+            'validator', $model->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user')));
 
         // Can the organization be changed?
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
@@ -163,7 +168,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addText(    'gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
         $bridge->addText(    'gsf_last_name',      'label', $this->_('Last name'), 'required', true);
         $bridge->addFilter(  'gsf_last_name',      $ucfirst);
-        $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail')->addValidator($model->createUniqueValidator('gsf_email'));
+        $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail');
 
         $bridge->addSelect('gsf_id_primary_group');
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));

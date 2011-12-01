@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -260,6 +259,15 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     {
         $source = $this->getSource();
         return $source->getDatesList($language, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+    }
+
+    /**
+     *
+     * @return string Description of the survey
+     */
+    public function getDescription()
+    {
+        return $this->_gemsSurvey['gsu_survey_description'];
     }
 
 

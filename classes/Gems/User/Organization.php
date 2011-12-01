@@ -77,22 +77,6 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
-     * Returns a callable if a method is called as a variable
-     * or the value from the organizationData if it exists
-     *
-     * @param string $name
-     * @return Callable
-     */
-    public function __get($name)
-    {
-        if (isset($this->_data[$name])) {
-            return $this->_data[$name];
-        }
-
-        return parent::__get($name);
-    }
-
-    /**
      * Set menu parameters from the organization
      *
      * @param Gems_Menu_ParameterSource $source
@@ -121,6 +105,22 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function canHaveRespondents()
     {
         return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
+    }
+	
+	/**
+     * Returns the $key in organizationData when set otherwise the default value
+     * 
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        if (array_key_exists($key, $this->_data)) {
+            return $this->_data[$key];
+        } else {
+            return $default;
+        }
     }
 
     /**

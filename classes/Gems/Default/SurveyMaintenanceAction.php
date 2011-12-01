@@ -344,11 +344,11 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $model->resetOrder();
 
         $model->set('gsu_survey_name',        'label', $this->_('Name'));
+        $model->set('gsu_survey_description', 'label', $this->_('Description'), 'formatFunction', array(__CLASS__, 'formatDescription'));
         $model->set('gso_source_name',        'label', $this->_('Source'));
         $model->set('gsu_status_show',        'label', $this->_('Status in source'));
 
         if ($detailed) {
-            $model->set('gsu_survey_description', 'label', $this->_('Description'), 'formatFunction', array(__CLASS__, 'formatDescription'));
             $model->set('gsu_surveyor_active',    'label', $this->_('Active in source'));
             $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), GEMS_PROJECT_NAME_UC));
         } else {
