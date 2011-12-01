@@ -64,6 +64,19 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     protected $_anonymizedField = 'private';
 
     /**
+     * A map containing attributename => databasefieldname mappings
+     *
+     * Should contain maps for respondentid, organizationid and consentcode.
+     *
+     * @var array
+     */
+    protected $_attributeMap = array(
+        'respondentid'   => 'attribute_1',
+        'organizationid' => 'attribute_2',
+        'consentcode'    => 'attribute_3',
+        'resptrackid'    => 'attribute_4');
+
+    /**
      *
      * @var array of Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
@@ -104,6 +117,21 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @var Gems_Util
      */
     protected $util;
+
+    /**
+     * Returns a list of field names that should be set in a newly inserted token.
+     *
+     * @param Gems_Tracker_Token $token
+     */
+    protected function _fillAttributeMap(Gems_Tracker_Token $token)
+    {
+        $values[$this->_attributeMap['respondentid']]   = (string) $token->getRespondentId();
+        $values[$this->_attributeMap['organizationid']] = (string) $token->getOrganizationId();
+        $values[$this->_attributeMap['consentcode']]    = (string) $token->getConsentCode();
+        $values[$this->_attributeMap['resptrackid']]    = (string) $token->getRespondentTrackId();
+
+        return $values;
+    }
 
     /**
      * Filters an answers array, return only those fields that where answered by the user.
@@ -362,10 +390,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
          * Insert token in table (if not there) *
          ****************************************/
 
-        $values['completed']   = 'N';  // Apparently it is possible to have this value filled without a survey questionnaire.
-        $values['attribute_1'] = (string) $token->getRespondentId();
-        $values['attribute_2'] = (string) $token->getOrganizationId();
-        $values['attribute_3'] = (string) $token->getConsentCode();
+        // Get the mapped values
+        $values = $this->_fillAttributeMap($token);
+        $values['completed'] = 'N';  // Apparently it is possible to have this value filled without a survey questionnaire.
 
         $result = 0;
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
@@ -614,9 +641,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $quotedSurveyTable = $lsDb->quoteIdentifier($lsSurveyTable . '.token');
 
         $select = $lsDb->select();
-        $select->from($lsTokenTable, array('respondentid'   => 'attribute_1',
-                                           'organizationid' => 'attribute_2',
-                                           'consentcode'    => 'attribute_3'))
+        $select->from($lsTokenTable, $this->_attributeMap)
                ->join($lsSurveyTable, $quotedTokenTable . ' = ' . $quotedSurveyTable);
 
         //Now process the filters
@@ -632,18 +657,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 unset($filter['token']);
             }
 
-            //now map the attributes to the right fields
-            if (isset($filter['respondentid'])) {
-                $filter['attribute_1'] = $filter['respondentid'];
-                unset($filter['respondentid']);
-            }
-            if (isset($filter['organizationid'])) {
-                $filter['attribute_2'] = $filter['organizationid'];
-                unset($filter['organizationid']);
-            }
-            if (isset($filter['consentcode'])) {
-                $filter['attribute_3'] = $filter['consentcode'];
-                unset($filter['consentcode']);
+            // now map the attributes to the right fields
+            foreach ($this->_attributeMap as $name => $field) {
+                if (isset($filter[$name])) {
+                    $filter[$field] = $filter[$name];
+                    unset($filter[organizationid]);
+                }
             }
         }
 
@@ -917,10 +936,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             if ($surveyor_survey[$this->_anonymizedField] == 'Y') {
                 $surveyor_status .= 'Uses anonymous answers. ';
             } elseif ($surveyor_survey[$this->_anonymizedField] !== 'N') {
-                //This is for the case that $this->_anonymizedField is empty, we show an update statement.
-                //The answers already in the table can only be linked to the repsonse based on the completion time
-                //this requires a manual action as token table only hold minuts while survey table holds seconds
-                //and we might have responses with the same timestamp.
+                // This is for the case that $this->_anonymizedField is empty, we show an update statement.
+                // The answers already in the table can only be linked to the repsonse based on the completion time
+                // this requires a manual action as token table only hold minuts while survey table holds seconds
+                // and we might have responses with the same timestamp.
                 $update = "UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = " . $sid . ';';
                 $update .= "ALTER TABLE " . $this->_getSurveyTableName($sid) . " ADD `token` varchar(36) default NULL;";
                 MUtil_Echo::r($update);
@@ -977,6 +996,24 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                             $surveyor_status .= 'Token field length is too short. ';
                         }
 
+                        $missingFields = array();
+                        foreach ($this->_attributeMap as $name => $field) {
+                            if (! isset($tokenTable[$field])) {
+                                $missingFields[] = "ADD $field varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
+                            }
+                        }
+                        if ($missingFields) {
+                            $sql = "ALTER TABLE " . $this->_getTokenTableName($sid) . " " . implode(', ', $missingFields);
+                            MUtil_Echo::track($sql);
+                            try {
+                                $lsDb->query($sql);
+                            } catch (Zend_Exception $e) {
+                                $surveyor_status .= 'Token attributes could not be created. ';
+                                $surveyor_status .= $e->getMessage() . ' ';
+                                // MUtil_Echo::track($e);
+                            }
+                        }
+                        /*
                         $attrCount = 0;
                         for ($i = 1; $i < 10; $i++) {
                             $attrFields[$i] = isset($tokenTable['attribute_' . $i]);
@@ -997,7 +1034,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                                     $surveyor_status .= sprintf('Token attribute field %d is missing. ', $i);
                                 }
                             }
-                        }
+                        } // */
                     }
 
                     if ($updateTokens && (! $surveyor_status)) {
@@ -1047,7 +1084,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 if (substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
                     if ($surveyor_status) {
                         $values['gsu_status'] = substr($surveyor_status,  0,  127);
-                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $data['gsu_status']);
+                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } else {
                         $values['gsu_status'] = new Zend_Db_Expr('NULL');
                         $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
@@ -1098,7 +1135,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if (null === $consentCode) {
             $consentCode = (string) $token->getConsentCode();
         }
-        $values['attribute_3'] = $consentCode;
+        $values[$this->_attributeMap['consentcode']] = $consentCode;
 
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
 
