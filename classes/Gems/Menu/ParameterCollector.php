@@ -101,7 +101,7 @@ class Gems_Menu_ParameterCollector
                 $this->values[$name] = $source->__get($name);
 
             } elseif (is_array($source)) {
-                MUtil_Echo::track($name, $source);
+                // MUtil_Echo::track($name, $source);
                 if (isset($source[$name])) {
                     $this->values[$name] = $source[$name];
                 }
