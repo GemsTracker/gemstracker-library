@@ -86,7 +86,7 @@ class MUtil_Model_Type_ConcatenatedRow
     }
 
     /**
-     * A ModelAbstract->setOnSave() function that concatenates the
+     * A ModelAbstract->setOnLoad() function that concatenates the
      * value if it is an array.
      *
      * @see Gems_Model_ModelAbstract
