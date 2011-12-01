@@ -308,7 +308,6 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                     WHERE gsu_active=1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        gtr_track_type='T' AND
                         INSTR(gtr_organizations, '|$orgId|') > 0";
         /* TODO: use this when we can update this list using ajax
         if (isset($data['gsu_id_primary_group'])) {
