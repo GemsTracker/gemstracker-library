@@ -248,6 +248,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         $sql = "SELECT gro_id_round, gro_id_survey, gro_id_order, gro_round_description
             FROM gems__rounds
             WHERE gro_id_track = ? AND
+                gro_active = 1 AND
                 gro_id_round NOT IN (SELECT gto_id_round FROM gems__tokens WHERE gto_id_respondent_track = ?)
             ORDER BY gro_id_order";
 
@@ -389,10 +390,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         //Step one: update existing tokens
         $changes->roundChangeUpdates += $this->checkExistingRoundsFor($respTrack, $userId);
 
-        // Step two: create lacking tokens
+        //Step two: deactivate inactive rounds
+        $changes->deletedTokens += $this->removeInactiveRounds($respTrack, $userId);
+
+        // Step three: create lacking tokens
         $changes->createdTokens += $this->addNewTokens($respTrack, $userId);
 
-        // Step three: set the dates and times
+        // Step four: set the dates and times
         $changed = $this->checkTokensFromStart($respTrack, $userId);
         if ($changed) {
             $changes->tokenDateCauses++;
@@ -755,6 +759,28 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     public function getTrackName()
     {
         return $this->_trackData['gtr_track_name'];
+    }
+
+    /**
+     * Remove the unanswered tokens for inactive rounds.
+     *
+     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @return int The number of tokens changed by this code
+     */
+    protected function removeInactiveRounds(Gems_Tracker_RespondentTrack $respTrack, $userId)
+    {
+        $qTrackId     = $this->db->quote($this->_trackId);
+        $qRespTrackId = $this->db->quote($respTrack->getRespondentTrackId());
+
+        $where = "gto_start_time IS NULL AND
+            gto_id_respondent_track = $qRespTrackId AND
+            gto_id_round IN (SELECT gro_id_round
+                    FROM gems__rounds
+                    WHERE gro_active = 0 AND
+                        gro_id_track = $qTrackId)";
+
+        return $this->db->delete('gems__tokens', $where);
     }
 
     /**
