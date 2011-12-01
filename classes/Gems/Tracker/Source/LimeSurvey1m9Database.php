@@ -1004,7 +1004,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         }
                         if ($missingFields) {
                             $sql = "ALTER TABLE " . $this->_getTokenTableName($sid) . " " . implode(', ', $missingFields);
-                            MUtil_Echo::track($sql);
+                            // MUtil_Echo::track($sql);
                             try {
                                 $lsDb->query($sql);
                             } catch (Zend_Exception $e) {
