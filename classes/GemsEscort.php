@@ -1512,6 +1512,9 @@ class GemsEscort extends MUtil_Application_Escort
                         );
 
                 } else { // No longer logged in
+                    if ($request->getActionName() == 'autofilter') {
+                        throw new Gems_Exception("Session expired", 401);
+                    }
                     if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
                         $this->addMessage($this->_('You are no longer logged in.'));
                         $this->addMessage($this->_('You must login to access this page.'));
