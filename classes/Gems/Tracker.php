@@ -485,7 +485,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $surveyData['gsu_surveyor_id'] = $sourceSurveyId;
             $surveyData['gsu_id_source']   = $sourceId;
 
-            MUtil_Echo::track($surveyData);
+            // MUtil_Echo::track($surveyData);
         }
 
         return $this->getSurvey($surveyData);

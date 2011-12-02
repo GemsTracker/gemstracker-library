@@ -289,26 +289,28 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         // Add track selection
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
-            $sql = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_active=1 AND gtr_track_type='T' AND INSTR(gtr_organizations, '|$orgId|') > 0";
+            $sql = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_active=1 AND gtr_track_type='T' AND INSTR(gtr_organizations, '|$orgId|') > 0 ORDER BY gtr_track_name";
             $elements[] = $this->_createSelectElement('gto_id_track', $sql, $this->_('(all tracks)'));
         }
 
-        $sql = "SELECT gro_round_description, gro_round_description
+        $sql = "SELECT DISTINCT gro_round_description, gro_round_description
                     FROM gems__rounds INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gro_active=1 AND
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0
+                    ORDER BY gro_round_description";
         $elements[] = $this->_createSelectElement('gto_round_description', $sql, $this->_('(all rounds)'));
 
-        $sql = "SELECT gsu_id_survey, gsu_survey_name
+        $sql = "SELECT DISTINCT gsu_id_survey, gsu_survey_name
                     FROM gems__surveys INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE gsu_active=1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0
+                    ORDER BY gsu_survey_name";
         /* TODO: use this when we can update this list using ajax
         if (isset($data['gsu_id_primary_group'])) {
             $sql .= $this->db->quoteInto(" AND gsu_id_primary_group = ?", $data['gsu_id_primary_group']);
@@ -326,7 +328,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
             );
         $elements[] = $this->_createSelectElement('main_filter', $options);
 
-        $sql = "SELECT ggp_id_group, ggp_name
+        $sql = "SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                         INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
@@ -334,7 +336,8 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                         gro_active=1 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0";
+                        INSTR(gtr_organizations, '|$orgId|') > 0
+                    ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 
         if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) &&
@@ -344,7 +347,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
             $elements[] = $this->_createSelectElement('gto_id_organization', $options);
         }
 
-        $sql = "SELECT gsf_id_user, CONCAT(
+        $sql = "SELECT DISTINCT gsf_id_user, CONCAT(
                         COALESCE(gems__staff.gsf_last_name, ''),
                         ', ',
                         COALESCE(gems__staff.gsf_first_name, ''),
@@ -352,7 +355,8 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                     ) AS gsf_name
                 FROM gems__staff INNER JOIN gems__respondent2track ON gsf_id_user = gr2t_created_by
                 WHERE gr2t_id_organization = $orgId AND
-                    gr2t_active = 1";
+                    gr2t_active = 1
+                ORDER BY 2";
         $elements[] = $this->_createSelectElement('gr2t_created_by', $sql, $this->_('(all staff)'));
 
         return $elements;

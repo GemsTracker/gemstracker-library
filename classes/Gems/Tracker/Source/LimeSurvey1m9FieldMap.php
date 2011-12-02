@@ -287,20 +287,19 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                             $row['sq_title'] = 'other';
                             $row['code'] = $row['title'] . '_' . $row['sq_title'];
                             $row['sq_question'] = $this->translate->_('Other');
-                            if ($row['type'] === 'P') {
+                            if ($row['type'] === 'P' || $row['type'] === 'M') {
                                 $row['type'] = 'S';
                             }
                             $map[$row['sgq']] = $row;
 
-                            // Removed if, this field is always added with questions
-                            // if ($row['type'] !== 'M') {
-                            $row['sgq'] .= 'comment';
-                            $row['code'] .= 'comment';
-                            $row['sq_title'] .= 'comment';
-                            $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
-                            $row['type'] = 'S';
-                            $map[$row['sgq']] = $row;
-                            //}
+                            if ($rows[$i]['type'] !== 'M') {
+                                $row['sgq'] .= 'comment';
+                                $row['code'] .= 'comment';
+                                $row['sq_title'] .= 'comment';
+                                $row['sq_question'] = ($rows[$i]['type'] === 'O') ? $this->translate->_('Comment') : $row['sq_question'] . $this->translate->_(' (comment)');
+                                $row['type'] = 'S';
+                                $map[$row['sgq']] = $row;
+                            }
                         }
                         break;
 
@@ -613,6 +612,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 // $tmpres['formatFunction']
             }
 
+            MUtil_Echo::track($field);
             if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
                 $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['question']));
             }
@@ -620,7 +620,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             // Juggle the labels for sub-questions etc..
             if (isset($field['sq_question'])) {
                 if (isset($field['sq_question1'])) {
-                    $field['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']));
+                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']));
                 }
                 if (! isset($tmpres['label'])) {
                     $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
@@ -729,7 +729,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             // Optional type check
             if ((! $forType) || ($field['type'] == $forType)) {
-
                 // Juggle the labels for sub-questions etc..
                 if (isset($field['sq_question1'])) {
                     $squestion = sprintf($this->translate->_('%s: %s'), $this->removeMarkup($field['sq_question']), $this->removeMarkup($field['sq_question1']));

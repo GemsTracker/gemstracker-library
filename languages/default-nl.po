@@ -3389,7 +3389,7 @@ msgstr "Opmerkingen"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:277
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:300
 msgid " (comment)"
-msgstr "(opmerkingen)"
+msgstr " (opmerkingen)"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:475
 msgid "Free number"
