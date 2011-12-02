@@ -324,6 +324,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $authResult = $user->authenticate($formValues);
 
                 if ($authResult->isValid()) {
+                    $previousRequestParameters = $this->session->previousRequestParameters;
 
                     $user->setAsCurrentUser();
 
@@ -351,7 +352,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                      */
                     Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
 
-                    if ($previousRequestParameters = $this->session->previousRequestParameters) {
+                    if ($previousRequestParameters) {
                         $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
                     } else {
                         // This reroutes to the first available menu page after login.
