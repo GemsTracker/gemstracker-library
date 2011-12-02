@@ -1512,16 +1512,19 @@ class GemsEscort extends MUtil_Application_Escort
                         );
 
                 } else { // No longer logged in
+                    // Throw an exception + HTTP 401 when an autofilter is called
                     if ($request->getActionName() == 'autofilter') {
                         throw new Gems_Exception("Session expired", 401);
-                    }
-                    if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
-                        $this->addMessage($this->_('You are no longer logged in.'));
-                        $this->addMessage($this->_('You must login to access this page.'));
-
-                        // save original request, we will redirect back once the user succesfully logs in
-                        $this->session->previousRequestParameters = $request->getParams();
-                        $this->session->previousRequestMode = ($request->isPost() ? "POST" : "GET");
+                    } else if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
+                        // Do not store previous request & show message when the intended action is logoff
+                        if (!($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
+                            $this->addMessage($this->_('You are no longer logged in.'));
+                            $this->addMessage($this->_('You must login to access this page.'));
+    
+                            // save original request, we will redirect back once the user succesfully logs in
+                            $this->session->previousRequestParameters = $request->getParams();
+                            $this->session->previousRequestMode = ($request->isPost() ? "POST" : "GET");
+                        }
 
                         $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                         $redirector->gotoRoute($menuItem->toRouteUrl($request));
