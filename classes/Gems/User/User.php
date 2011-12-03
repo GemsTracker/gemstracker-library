@@ -779,6 +779,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function setPassword($password)
     {
         $this->definition->setPassword($this, $password);
+        $this->setPasswordResetRequired(false);
         return $this;
     }
 

@@ -612,7 +612,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 // $tmpres['formatFunction']
             }
 
-            MUtil_Echo::track($field);
+            // MUtil_Echo::track($field);
             if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
                 $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['question']));
             }

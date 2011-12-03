@@ -798,29 +798,30 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $user = $this->getLoader()->getCurrentUser();
         if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
-            // Organization switcher
-            $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
-            $currentId  = $user->getCurrentOrganizationId();
-            $currentUri = base64_encode($this->view->url());
+            if (count($orgs) > 1) {
+                // Organization switcher
+                $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
+                $currentId  = $user->getCurrentOrganizationId();
+                $currentUri = base64_encode($this->view->url());
 
-            $url = $this->view->getHelper('url')->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
+                $url = $this->view->getHelper('url')->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
 
-            $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
-            $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => $currentUri));
+                $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
+                $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => $currentUri));
 
-            $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
-            foreach ($orgs as $id => $org) {
-                $selected = '';
-                if ($id == $currentId) {
-                    $selected = array('selected' => "selected");
+                $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
+                foreach ($orgs as $id => $org) {
+                    $selected = '';
+                    if ($id == $currentId) {
+                        $selected = array('selected' => "selected");
+                    }
+                    $select->option(array('value' => $id), $org, $selected);
                 }
-                $select->option(array('value' => $id), $org, $selected);
-            }
 
-            return $orgSwitch;
-        } else {
-            return;
+                return $orgSwitch;
+            }
         }
+        return;
     }
 
     /**
@@ -1520,7 +1521,7 @@ class GemsEscort extends MUtil_Application_Escort
                         if (!($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
                             $this->addMessage($this->_('You are no longer logged in.'));
                             $this->addMessage($this->_('You must login to access this page.'));
-    
+
                             // save original request, we will redirect back once the user succesfully logs in
                             $this->session->previousRequestParameters = $request->getParams();
                             $this->session->previousRequestMode = ($request->isPost() ? "POST" : "GET");

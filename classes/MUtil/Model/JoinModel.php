@@ -272,12 +272,25 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
                 } elseif (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
                     $newValues[$source] = $newValues[$target];
+
+                } elseif ((strlen($newValues[$target]) > 0) && (strlen($newValues[$source]) > 0) && $newValues[$target] != $newValues[$source]) {
+                    // Join key values changed.
+                    //
+                    // Set the old values as the filter
+                    $filter[$target] = $newValues[$target];
+                    $filter[$source] = $newValues[$source];
+
+                    // Switch the target value to the value in the source field.
+                    //
+                    // JOIN FIELD ORDER IS IMPORTANT!!!
+                    // The changed field must be stated first.
+                    $newValues[$target] = $newValues[$source];
                 }
             }
 
             //$this->_saveTableData returns the new row values, including any automatic changes.
             $newValues = $this->_saveTableData($this->_tables[$table_name], $newValues, $filter) + $oldValues;
-            // MUtil_Echo::track($oldValues, $newValues);
+            // MUtil_Echo::track($oldValues, $newValues, $filter);
             $oldValues = $newValues;
         }
 
