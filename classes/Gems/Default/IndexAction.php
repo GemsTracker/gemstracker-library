@@ -70,6 +70,15 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public $project;
 
     /**
+     * For small numbers of organizations a multiline selectbox will be nice. This
+     * setting handles how many lines will display at once. Use 1 for the normal
+     * dropdown selectbox
+     *
+     * @var int
+     */
+    protected $organizationMaxLines = 6;
+
+    /**
      * The default behaviour for showing a lost password button
      *
      * @var boolean
@@ -191,7 +200,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $element->setLabel($this->_('Organization'));
             $element->setMultiOptions($orgs);
             $element->setRequired(true);
-            $element->setAttrib('size', max(count($orgs) + 1, 6));
+            if ($this->organizationMaxLines > 1) {
+                $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
+            }
 
             if (! $this->_request->isPost()) {
                 $element->setValue($org);
