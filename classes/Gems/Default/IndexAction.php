@@ -306,6 +306,12 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     {
         $request = $this->getRequest();
 
+        /**
+         * @@TODO: Start block to move to Gems_User_User->getCurrentOrganizationId()
+         *
+         * At that place the cookie is read, but this could be changed to use url like here
+         * or maybe referrer, ip-range, get-param etc.
+         */
         // Allow layout switching based on request base url
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $hostUrl = $this->escort->loader->getUtil()->getCurrentURI();
@@ -320,6 +326,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $this->escort->layoutSwitch($request);
             }
         }
+        /**
+         * End block to move to Gems_User_User->getCurrentOrganizationId()
+         */
 
         $form = $this->_getLoginForm();
 
