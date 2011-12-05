@@ -417,11 +417,17 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                         $this->addMessage($this->_('This key timed out or does not belong to this user.'));
                     }
                 } else {
-                    // P{ass mail by key
+                    // Pass mail by key
                     $mail = new MUtil_Mail();
-                    $mail->setFrom('mjong@magnafacta.nl');
                     $mail->addTo($user->getEmailAddress(), $user->getFullName());
 
+                    if (isset($this->escort->project->email['site'])) {
+                        $mail->setFrom($this->escort->project->email['site']);
+                    } elseif ($from = $user->getCurrentOrganization()->getEmail()) {
+                        $mail->setFrom($from);
+                    } elseif ($from = $user->getBaseOrganization()->getEmail()) {
+                        $mail->setFrom($from);
+                    }
                     if (isset($this->escort->project->email) && isset($this->escort->project->email['bcc'])) {
                         $mail->addBcc($this->escort->project->email['bcc']);
                     }

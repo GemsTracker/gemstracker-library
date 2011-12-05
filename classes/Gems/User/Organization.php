@@ -144,6 +144,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Get the email attribute.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->_get('gor_contact_email');
+    }
+
+    /**
      * Get the organization id.
      *
      * @return int

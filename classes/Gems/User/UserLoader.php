@@ -189,7 +189,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         list($defName, $userOrganization) = $this->getUserClassInfo($login_name, $currentOrganization);
         // MUtil_Echo::track($defName, $userOrganization);
 
-        $definition = $this->_getClass($defName);
+        $definition = $this->getUserDefinition($defName);
 
         $values = $definition->getUserData($login_name, $userOrganization);
         // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
@@ -205,6 +205,20 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         $user->setCurrentOrganization($currentOrganization);
 
         return $user;
+    }
+
+    /**
+     * Retrieve a userdefinition, so we can check it's capabilities without
+     * instantiating a user
+     *
+     * @param string $userClassName
+     * @return Gems_User_UserDefinitionInterface
+     */
+    public function getUserDefinition($userClassName)
+    {
+        $definition = $this->_getClass($userClassName);
+
+        return $definition;
     }
 
     /**

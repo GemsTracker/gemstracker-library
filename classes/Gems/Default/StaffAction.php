@@ -44,6 +44,8 @@
  */
 class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
+    //@@TODO What if we want a different one per organization?
+    //Maybe check if org has a default and otherwise use this one?
     public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
 
     public $filterStandard = array('gsf_active' => 1);
@@ -102,21 +104,23 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
         $dbLookup = $this->util->getDbLookup();
 
-        switch ($data['gul_user_class']) {
-            case Gems_User_UserLoader::USER_STAFF:
+        $passwordField = false;
+
+        //@@TODO Like this? should work when user is not saved, but storing the password should be done when
+        //we do have a user...
+        $definition = $this->loader->getUserLoader()->getUserDefinition($data['gul_user_class'].'Definition');
+
+        if ($definition->canSetPassword()) {
+            //@@TODO: Should we handle it like this? The userdef has a setpassword method...
+            if ($definition instanceof Gems_User_StaffUserDefinition) {
                 Gems_Model::addUserPassword($model);
                 $passwordField = 'gup_password';
                 $model->setOnSave($passwordField, array($this->project, 'getValueHash'));
-                break;
 
-            case Gems_User_UserLoader::USER_OLD_STAFF:
+            } elseif ($definition instanceof Gems_User_OldStaffUserDefinition) {
                 $passwordField = 'gsf_password';
                 $model->setOnSave($passwordField, array($this, 'getOldPasswordHash'));
-                break;
-
-            default:
-                $passwordField = false;
-                break;
+            }
         }
 
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
