@@ -661,7 +661,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             foreach ($this->_attributeMap as $name => $field) {
                 if (isset($filter[$name])) {
                     $filter[$field] = $filter[$name];
-                    unset($filter[organizationid]);
+                    unset($filter[$name]);
                 }
             }
         }
