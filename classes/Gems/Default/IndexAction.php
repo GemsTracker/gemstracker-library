@@ -343,6 +343,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $authResult = $user->authenticate($formValues);
 
                 if ($authResult->isValid()) {
+                    $previousRequestParameters = $this->session->previousRequestParameters;
 
                     $user->setAsCurrentUser();
 
@@ -370,7 +371,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                      */
                     Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
 
-                    if ($previousRequestParameters = $this->session->previousRequestParameters) {
+                    if ($previousRequestParameters) {
                         $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
                     } else {
                         // This reroutes to the first available menu page after login.
@@ -441,8 +442,12 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
                     if (isset($this->escort->project->email['site'])) {
                         $mail->setFrom($this->escort->project->email['site']);
+                    } elseif ($from = $user->getCurrentOrganization()->getEmail()) {
+                        $mail->setFrom($from);
+                    } elseif ($from = $user->getBaseOrganization()->getEmail()) {
+                        $mail->setFrom($from);
                     }
-                    if (isset($this->escort->project->email['bcc'])) {
+                    if (isset($this->escort->project->email) && isset($this->escort->project->email['bcc'])) {
                         $mail->addBcc($this->escort->project->email['bcc']);
                     }
 

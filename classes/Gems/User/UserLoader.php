@@ -210,8 +210,8 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * Retrieve a userdefinition, so we can check it's capabilities without
      * instantiating a user
-     * 
-     * @param type $userClassName
+     *
+     * @param string $userClassName
      * @return Gems_User_UserDefinitionInterface
      */
     public function getUserDefinition($userClassName)

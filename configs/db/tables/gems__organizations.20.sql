@@ -21,7 +21,7 @@ CREATE TABLE if not exists gems__organizations (
                              not null default 'en' references gems__languages (gml_iso_lang),
 
         gor_has_login        boolean not null default 1,
-        gor_has_respondents  boolean not null default 1,
+        gor_has_respondents  boolean not null default 0,
         gor_add_respondents  boolean not null default 1,
         gor_respondent_group bigint unsigned references gems__groups (ggp_id_group) null,
         gor_active           boolean not null default 1,

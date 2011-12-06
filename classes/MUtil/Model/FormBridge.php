@@ -80,7 +80,7 @@ class MUtil_Model_FormBridge
         self::AUTO_OPTIONS     => array('elementClass'),
         self::CHECK_OPTIONS    => array('checkedValue', 'uncheckedValue'),
         self::DATE_OPTIONS     => array('dateFormat', 'storageFormat'),
-        self::DISPLAY_OPTIONS  => array('accesskey', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex'),
+        self::DISPLAY_OPTIONS  => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex'),
         self::EXHIBIT_OPTIONS  => array('formatFunction'),
         self::FILE_OPTIONS     => array('accept', 'count', 'destination', 'valueDisabled'),
         self::GROUP_OPTIONS    => array('elements', 'legend', 'separator'),

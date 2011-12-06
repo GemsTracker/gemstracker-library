@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -49,6 +49,7 @@ class Gems_Tracker_ChangeTracker
     public $checkedTokens           = 0;
     public $createdTokens           = 0;
     public $checkedRespondentTracks = 0;
+    public $deletedTokens           = 0;
     public $resultDataChanges       = 0;
     public $roundChangeUpdates      = 0;
     public $roundCompletionCauses   = 0;
@@ -81,6 +82,9 @@ class Gems_Tracker_ChangeTracker
             }
             if ($this->roundChangeUpdates) {
                 $messages[] = sprintf($t->_('Round changes propagated to %d tokens.'), $this->roundChangeUpdates);
+            }
+            if ($this->deletedTokens) {
+                $messages[] = sprintf($t->_('%d tokens deleted by round changes.'), $this->deletedTokens);
             }
             if ($this->createdTokens) {
                 $messages[] = sprintf($t->_('%d tokens created to by round changes.'), $this->createdTokens);

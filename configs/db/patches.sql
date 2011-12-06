@@ -331,6 +331,8 @@ ALTER TABLE `gems__organizations` ADD gor_has_login boolean not null default 1 A
 
 UPDATE `gems__organizations` SET gor_has_login = COALESCE((SELECT 1 FROM gems__staff WHERE gsf_id_organization = gor_id_organization GROUP BY gsf_id_organization), 0);
 
+ALTER TABLE `gems__organizations` CHANGE `gor_has_respondents` `gor_has_respondents` TINYINT( 1 ) NOT NULL DEFAULT '0';
+
 -- PATCH: Log failed logins
 INSERT INTO  `gems__log_actions` (`glac_id_action`, `glac_name`, `glac_change`, `glac_log`, `glac_created`)
     VALUES (NULL ,  'loginFail',  '0',  '1', CURRENT_TIMESTAMP);

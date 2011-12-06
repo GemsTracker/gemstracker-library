@@ -239,7 +239,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                     $this->db->insert(
                     	'gems__token_attempts',
                         array(
-                        	'gta_id_token' => $_POST[MUtil_Model::REQUEST_ID],
+                        	'gta_id_token' => substr($_POST[MUtil_Model::REQUEST_ID], 0, $max_length),
                         	'gta_ip_address' => $this->getRequest()->getClientIp()
                         )
                     );

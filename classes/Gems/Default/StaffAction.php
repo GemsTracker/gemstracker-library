@@ -119,7 +119,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             } elseif ($definition instanceof Gems_User_OldStaffUserDefinition) {
                 $passwordField = 'gsf_password';
                 $model->setOnSave($passwordField, array($this, 'getOldPasswordHash'));
-        }
+            }
         }
 
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
@@ -132,18 +132,15 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
 
-        $bridge->addHidden(  'gsf_id_user');
-        $bridge->addHidden(  'gul_id_user');
-        $bridge->addHidden(  'gup_id_user');
-        $bridge->addHidden(  'gul_user_class');
+        $bridge->addHiddenMulti('gsf_id_user', 'gul_id_user', 'gup_id_user', 'gul_user_class', 'gul_login', 'gul_id_organization');
         //@@TODO: How do we change this? Only per org, or allow per user?
         //What classes are available? Maybe use something like event loader and add a little desc. to each type?
-        $bridge->addText(    'gsf_login', 'size', 15, 'minlength', 4,
+        $bridge->addText('gsf_login', 'size', 15, 'minlength', 4,
             'validator', $model->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user')));
 
         // Can the organization be changed?
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $bridge->addHiddenMulti($model->getKeyCopyName('gsf_id_organization'));
+            // $bridge->addHiddenMulti($model->getKeyCopyName('gsf_id_organization'));
             $bridge->addSelect('gsf_id_organization');
         } else {
             $bridge->addExhibitor('gsf_id_organization');
@@ -171,6 +168,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail');
 
         $bridge->addSelect('gsf_id_primary_group');
+        $bridge->addCheckbox('gul_can_login', 'description', $this->_('Users can only login when this box is checked.'));
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 
         $bridge->addSelect('gsf_iso_lang');
@@ -227,10 +225,11 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if ($detailed) {
             $model->set('gul_user_class',       'default', $this->defaultStaffDefinition);
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
+            $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo());
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         }
 
-        $model->setDeleteValues('gsf_active', 0);
+        $model->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
         return $model;
     }

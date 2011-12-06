@@ -244,6 +244,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $this->_filterDataForSave($tableData, $isNew);
     }
 
+    /**
+     *
+     * @param string $table_name  Does not test for existence
+     * @return array Numeric array containing the key field names.
+     */
     protected function _getKeysFor($table_name)
     {
         $keys = array();
@@ -277,7 +282,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     {
         $table_name = $this->_getTableName($table);
 
-        // MUtil_Echo::r($table->info('metadata'));
+        // MUtil_Echo::track($table->info('metadata'));
         foreach ($table->info('metadata') as $field) {
             $name = $field['COLUMN_NAME'];
             $finfo = array('table' => $table_name);
@@ -406,15 +411,20 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             if ($update) {
                 // MUtil_Echo::r($filter, 'Filter');
 
+                $adapter = $this->getAdapter();
+                $wheres   = array();
+                foreach ($filter as $text => $value) {
+                    $wheres[] = $adapter->quoteInto($text, $value);
+                }
                 // Retrieve the record from the database
-                $oldValueSet = call_user_func_array(array($table, 'find'),  $filter);
+                $oldValues = $table->fetchRow('(' . implode(' ) AND (', $wheres) . ')');
 
-                if ($oldValueSet->count()) {
-                    $oldValues = $oldValueSet->current()->toArray();
-                } else {
+                if (! $oldValues) {
                     // MUtil_Echo::r('INSERT!!', 'Old not found');
                     // Apparently the record does not exist in the database
                     $update = false;
+                } else {
+                    $oldValues = $oldValues->toArray();
                 }
             }
 
@@ -441,14 +451,19 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                                 // Update the row
                                 if ($changed = $table->update($returnValues, $filter)) {
                                     $this->addChanged($changed);
-                                    return $this->_updateCopyKeys($primaryKeys, $returnValues);
+                                    // Make sure the copy keys (if any) have the new values as well
+                                    $returnValues = $this->_updateCopyKeys($primaryKeys, $returnValues);
+
+                                    // Add the old values as we have them and they may be of use later on.
+                                    $returnValues = $returnValues + $oldValues;
+
+                                    return $returnValues;
                                 }
                             }
                         }
                     }
-                    // No changes were made, return empty array.
-                    // The non-abstract child class should take care
-                    // of returning the original values.
+                    // Add the old values as we have them and they may be of use later on.
+                    return $returnValues + $oldValues;
 
                 } else {
                     // Perform insert
@@ -782,6 +797,12 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
     // abstract public function save(array $newValues);
 
+    /**
+     * Function to turn database insertion on or off for this model.
+     *
+     * @param boolean $value
+     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
+     */
     public function setCreate($value = true)
     {
         $this->canCreate = (bool) $value;
@@ -795,7 +816,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * @param mxied $value1
      * @param string $field2
      * @param mixed $key2
-     * @return MUtil_Model_TableModel
+     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
      */
     public function setDeleteValues($arrayOrField1 = null, $value1 = null, $field2 = null, $key2 = null)
     {
@@ -804,6 +825,15 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $this;
     }
 
+    /**
+     * When passed an array this method set the keys of this database object
+     * to those keys.
+     * When passed a string it is assumed to be a table name and the keys of
+     * this object are set to those of that table.
+     *
+     * @param mixed $keysOrTableName array or string
+     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
+     */
     public function setKeysToTable($keysOrTableName)
     {
         if (is_string($keysOrTableName)) {
@@ -812,8 +842,17 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             $keys = $keysOrTableName;
         }
         $this->setKeys($keys);
+
+        return $this;
     }
 
+    /**
+     * Changes the key copy string that is used to create a new identifier
+     * for keys.
+     *
+     * @param string $value A sting of at least 3 characters containing %s.
+     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
+     */
     public function setKeyCopier($value = self::KEY_COPIER)
     {
         $this->keyCopier = $value;

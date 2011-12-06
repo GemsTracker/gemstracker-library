@@ -419,7 +419,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             if (! $name) {
                 // Use obfuscated login name
                 $name = $this->getLoginName();
-                $name = subs($name, 0, 3) . str_repeat('*', strlen($name) - 2);
+                $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
             }
 
             $this->_setVar('user_name', $name);
@@ -779,6 +779,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function setPassword($password)
     {
         $this->definition->setPassword($this, $password);
+        $this->setPasswordResetRequired(false);
         return $this;
     }
 

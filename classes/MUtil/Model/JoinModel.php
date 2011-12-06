@@ -175,6 +175,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $filter = $this->_checkFilterUsed($filter);
 
         if ($this->_deleteValues) {
+            // MUtil_Model::$verbose = true;
             $changed = $this->save($this->_deleteValues + $filter, $filter, $saveTables);
         } else {
             $changed = 0;
@@ -255,8 +256,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
         $oldChanged = $this->getChanged();
 
-        // MUtil_Echo::r($newValues,  __CLASS__ . '->' . __FUNCTION__);
-        // MUtil_Echo::r($saveTables, __CLASS__ . '->' . __FUNCTION__);
+        // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
 
         $oldValues = $newValues;
         foreach ($saveTables as $table_name) {
@@ -265,19 +265,33 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                 // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
                 if (! (is_string($target) && isset($newValues[$target]) && $newValues[$target])) {
                     if (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
+                        // MUtil_Echo::track('Missing: ' . $source . ' -> ' . $target);
                         continue;
                     }
                     $newValues[$target] = $newValues[$source];
 
                 } elseif (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
                     $newValues[$source] = $newValues[$target];
+
+                } elseif ((strlen($newValues[$target]) > 0) && (strlen($newValues[$source]) > 0) && $newValues[$target] != $newValues[$source]) {
+                    // Join key values changed.
+                    //
+                    // Set the old values as the filter
+                    $filter[$target] = $newValues[$target];
+                    $filter[$source] = $newValues[$source];
+
+                    // Switch the target value to the value in the source field.
+                    //
+                    // JOIN FIELD ORDER IS IMPORTANT!!!
+                    // The changed field must be stated first.
+                    $newValues[$target] = $newValues[$source];
                 }
             }
 
             //$this->_saveTableData returns the new row values, including any automatic changes.
             $newValues = $this->_saveTableData($this->_tables[$table_name], $newValues, $filter) + $oldValues;
+            // MUtil_Echo::track($oldValues, $newValues, $filter);
             $oldValues = $newValues;
-            // MUtil_Echo::r($newValues, 'JoinModel, after: ' . $table_name);
         }
 
         // If anything has changed, it counts as only one item for the user.
@@ -291,8 +305,39 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      *
      * @param string $table_name    Does not test for existence
-     * @param bool   $saveable      Will changes to this table be saved
-     * @return MUtil_Model_JoinModel
+     * @return MUtil_Model_JoinModel (continuation pattern)
+     */
+    public function setTableKeysToJoin($table_name)
+    {
+        $origKeys = $this->_getKeysFor($table_name);
+
+        // First remove old keys
+        foreach ($origKeys as $key) {
+            $this->del($key, 'key');
+        }
+
+        foreach ($this->_joinFields as $left => $right) {
+            if (is_string($left) && $this->is($left, 'table', $table_name)) {
+                $this->set($left, 'key', true);
+            }
+            if (is_string($right) && $this->is($right, 'table', $table_name)) {
+                $this->set($right, 'key', true);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add the table to the default save tables.
+     *
+     * Only tables marked as save tables are saved during a save() or delete(),
+     * unless this is overuled by the extra parameter for those functions in
+     * this object.
+     *
+     * @param string $table_name    Does not test for existence
+     * @param boolean $saveable     Will changes to this table be saved
+     * @return MUtil_Model_JoinModel (continuation pattern)
      */
     public function setTableSaveable($table_name, $saveable = true)
     {
