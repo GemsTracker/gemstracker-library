@@ -353,3 +353,7 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
       grc_changed, grc_changed_by, grc_created, grc_created_by)
     VALUES
         ('stop', 'Stop surveys', 0, 2, 0, 0, 0, 0, 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+
+-- GEMS VERSION: 43
+-- PATCH: Add comment field to respondent tracks
+ALTER TABLE `gems__respondent2track` ADD gr2t_comment varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER `gr2t_reception_code`;

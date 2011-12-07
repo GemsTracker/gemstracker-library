@@ -154,6 +154,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
             'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
         $model->set('gr2t_reception_code');
+        $model->set('gr2t_comment',      'label', $this->_('Comment'));
 
         return $model;
     }

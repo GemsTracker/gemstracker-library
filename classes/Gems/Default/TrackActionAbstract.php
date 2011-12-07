@@ -211,6 +211,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             'formatFunction', $this->util->getTranslated()->formatDate,
             'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
         $model->set('gr2t_reception_code');
+        $model->set('gr2t_comment',       'label', $this->_('Comment'));
 
         return $model;
     }
