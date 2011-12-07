@@ -60,7 +60,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      *
      * @var array The gems token data
      */
-    private $_gemsData;
+    private $_gemsData = array();
 
     /**
      *
