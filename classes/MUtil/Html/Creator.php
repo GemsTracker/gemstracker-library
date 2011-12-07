@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -81,6 +81,8 @@ class MUtil_Html_Creator
         'menu'              => 'MUtil_Html_ListElement::menu',
         'ol'                => 'MUtil_Html_ListElement::ol',
         'pagePanel'         => 'MUtil_Html_PagePanel::pagePanel',
+        'progress'          => 'MUtil_Html_ProgressPanel::progress',
+        'progressPanel'     => 'MUtil_Html_ProgressPanel::progress',
         'raw'               => 'MUtil_Html_Raw::raw',
         'seq'               => 'MUtil_Html_Sequence::createSequence',
         'sequence'          => 'MUtil_Html_Sequence::createSequence',   // A sequence can contain another sequence, so other function name used
