@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id$
  */
 
 /**
@@ -44,77 +44,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
+class MUtil_Html_Link_JavaScript extends MUtil_Html_Link_LinkAbstract
 {
     /**
-     * Usually no text is appended after an element, but for certain elements we choose
-     * to add a "\n" newline character instead, to keep the output readable in source
-     * view.
-     *
-     * @var string Content added after the element.
-     */
-    protected $_appendString = "\n";
-
-    /**
-     * Default attributes.
-     *
-     * @var array The actual storage of the attributes.
-     */
-    protected $_attribs = array(
-        'class' => 'progress',
-        'id' => 'progress_bar'
-    );
-
-    /**
-     * Usually no text is appended before an element, but for certain elements we choose
-     * to add a "\n" newline character instead, to keep the output readable in source
-     * view.
-     *
-     * @var string Content added before the element.
-     */
-    protected $_prependString = "\n";
-
-    /**
-     * Creates a 'div' progress panel
-     *
-     * @param mixed $arg_array A MUtil_Ra::args data collection.
-     */
-    public function __construct($arg_array = null)
-    {
-        $args = MUtil_Ra::args(func_get_args());
-
-        parent::__construct('div', $args);
-    }
-
-    /**
-     * Creates a 'div' progress panel
-     *
-     * @param mixed $arg_array A MUtil_Ra::args data collection.
-     * @return self
-     */
-    public static function progress($arg_array = null)
-    {
-        $args = func_get_args();
-        return new self($args);
-    }
-
-    /**
-     * Function to allow overloading  of tag rendering only
-     *
-     * Renders the element tag with it's content into a html string
+     * Renders the element into a html string
      *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    protected function renderElement(Zend_View_Abstract $view)
+    public function render(Zend_View_Abstract $view)
     {
-        $js = new MUtil_Html_Link_JavaScript(dirname(__FILE__) . '/ProgressPanel.js');
-        $js->setField('FUNCTION_PREFIX', __CLASS__);
+        $content = $this->getContentOutput($view);
 
-        $this->append($js);
+        $view->inlineScript()->appendScript($content);
 
-        return parent::renderElement($view);
+        return '';
     }
 }
