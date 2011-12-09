@@ -215,6 +215,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function afterLogin($formValues) {
         if (is_callable(array($this->definition, 'afterLogin'))) {
+            // Use the USERS organization, not the one he or she is using currently
+			$formValues['organization'] = $this->getBaseOrganizationId();
             $this->definition->afterLogin($this->_authResult, $formValues);
         }
     }
