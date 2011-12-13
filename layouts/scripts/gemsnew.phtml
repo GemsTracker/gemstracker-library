@@ -1,10 +1,10 @@
 <?php echo $this->doctype(); ?>
 <html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
 <head><?php
+    echo $this->headMeta();
     echo $this->headTitle();
     echo $this->headLink();
     echo $this->headStyle();
-    echo $this->headMeta();
 
     // Check if jQuery library is needed
     if ($this->jQuery) {

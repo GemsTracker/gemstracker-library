@@ -478,14 +478,15 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initView()
     {
+        $this->bootstrap('project');
         // Initialize view
         $view = new Zend_View();
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
-        $view->doctype('XHTML1_STRICT');
-        $view->headTitle($this->project->name);
+        $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
+        $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
-        $view->headMeta('text/html;charset=UTF-8', 'Content-Type', 'http-equiv');
+        $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
 
         // Add it to the ViewRenderer
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
