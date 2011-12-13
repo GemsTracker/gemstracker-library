@@ -674,15 +674,17 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         // be overwritten, e.g. when cooperation is retracted.
         if ($code->isForTracks() || $code->isOverwriter()) {
             $values['gr2t_reception_code'] = $code->getCode();
-
-            $changed = $this->_updateTrack($values, $userId);
-
-            if ($changed) {
-                // Reload reception code values
-                $this->_ensureReceptionCode($code->getAllData());
-            }
         }
 
+        $values['gr2t_comment'] = $comment;
+
+        $changed = $this->_updateTrack($values, $userId);
+
+        if ($changed) {
+            // Reload reception code values
+            $this->_ensureReceptionCode($code->getAllData());
+        }
+        
         // Stopcodes have a different logic.
         if ($code->isStopCode()) {
             // Cascade stop to tokens

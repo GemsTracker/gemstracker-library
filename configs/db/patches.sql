@@ -356,4 +356,8 @@ INSERT INTO gems__reception_codes (grc_id_reception_code, grc_description, grc_s
 
 --PATCH: Remove unique constraint for staff email
 ALTER TABLE  `gems__staff` DROP INDEX  `gsf_email` ,
-ADD INDEX  `gsf_email` (  `gsf_email` )
+ADD INDEX  `gsf_email` (  `gsf_email` );
+
+-- GEMS VERSION: 43
+-- PATCH: Add comment field to respondent tracks
+ALTER TABLE `gems__respondent2track` ADD gr2t_comment varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER `gr2t_reception_code`;

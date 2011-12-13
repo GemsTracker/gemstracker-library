@@ -89,6 +89,9 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
 
         // The edit element
         $bridge->addList('gr2t_reception_code');
+        
+        // Comment text
+        $bridge->addTextarea('gr2t_comment', 'rows', 3, 'cols', 50);
 
         // Change the button
         $this->saveLabel = $this->getTitle();
@@ -170,7 +173,7 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
     protected function saveData()
     {
         // Use the repesondent track function as that cascades the consent code
-        $changed = $this->respondentTrack->setReceptionCode($this->formData['gr2t_reception_code'], $this->_('Track deleted.'), $this->session->user_id);
+        $changed = $this->respondentTrack->setReceptionCode($this->formData['gr2t_reception_code'], $this->formData['gr2t_comment'], $this->session->user_id);
 
         // Tell the user what happened
         $this->afterSave($changed);
