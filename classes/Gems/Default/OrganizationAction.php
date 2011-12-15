@@ -163,6 +163,21 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         }
         $model->setIfExists('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
 
+        if($model->has('gor_user_class')) {
+            $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+            //Use first element as default
+            $default = array_shift(array_keys($definitions));
+            $model->set('gor_user_class', 'default', $default);
+            if (count($definitions)>1) {
+                if ($action !== 'create') {
+                    $model->set('gor_user_class', 'elementClass', 'Exhibitor', 'description', $this->_('This can not be changed yet'));
+                }
+                $model->set('gor_user_class', 'label', $this->_('User Definition'), 'multiOptions', $definitions);
+            } else {
+                $model->set('elementClass', 'hidden');
+            }
+        }
+
         $model->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gor');
