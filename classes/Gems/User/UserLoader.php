@@ -249,10 +249,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     protected function getUserClassInfo($login_name, $organization)
     {
         if ((null == $login_name) || (null == $organization)) {
-            return array('NoLoginDefinition', $organization);
+            return array(self::USER_NOLOGIN . 'Definition', $organization);
         }
         if ($this->isProjectUser($login_name)) {
-            return array('ProjectUserDefinition', $organization);
+            return array(self::USER_PROJECT . 'Definition', $organization);
         }
 
         try {
@@ -324,7 +324,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             return array(self::USER_OLD_STAFF . 'Definition', $organization);
         }
 
-        return array('NoLoginDefinition', $organization);
+        return array(self::USER_NOLOGIN . 'Definition', $organization);
     }
 
     protected function isProjectUser($login_name)

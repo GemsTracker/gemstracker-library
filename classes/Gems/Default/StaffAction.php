@@ -111,15 +111,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $definition = $this->loader->getUserLoader()->getUserDefinition($data['gul_user_class'].'Definition');
 
         if ($definition->canSetPassword()) {
-            //@@TODO: Should we handle it like this? The userdef has a setpassword method...
-            if ($definition instanceof Gems_User_StaffUserDefinition) {
-                Gems_Model::addUserPassword($model);
-                $passwordField = 'gup_password';
-                $model->setOnSave($passwordField, array($this->project, 'getValueHash'));
-            } elseif ($definition instanceof Gems_User_OldStaffUserDefinition) {
-                $passwordField = 'gsf_password';
-                $model->setOnSave($passwordField, array($this, 'getOldPasswordHash'));
-            }
+            $passwordField = 'fld_password';
         }
 
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
