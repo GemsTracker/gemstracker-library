@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -49,10 +48,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * User class constants
      */
-    const USER_NOLOGIN   = 'NoLogin';
-    const USER_OLD_STAFF = 'OldStaffUser';
-    const USER_PROJECT   = 'ProjectUser';
-    const USER_STAFF     = 'StaffUser';
+    const USER_NOLOGIN    = 'NoLogin';
+    const USER_OLD_STAFF  = 'OldStaffUser';
+    const USER_PROJECT    = 'ProjectUser';
+    const USER_RESPONDENT = 'RespondentUser';
+    const USER_STAFF      = 'StaffUser';
 
     /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
@@ -84,6 +84,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @var Zend_Session_Namespace
      */
     protected $session;
+
+    /**
+     * @var Zend_Translate_Adapter
+     */
+    protected $translate;
 
     /**
      * There can be only one, current user that is.
@@ -123,6 +128,34 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         }
 
         $this->addRegistryContainer($extras);
+    }
+
+    /**
+     * Get userclass / description array of available UserDefinitions for respondents
+     *
+     * @return array
+     */
+    public function getAvailableRespondentDefinitions()
+    {
+        $definitions = array(
+            self::USER_RESPONDENT => $this->translate->_('Db storage')
+        );
+
+        return $definitions;
+    }
+
+    /**
+     * Get userclass / description array of available UserDefinitions for staff
+     *
+     * @return array
+     */
+    public function getAvailableStaffDefinitions()
+    {
+        $definitions = array(
+            self::USER_STAFF => $this->translate->_('Db storage')
+        );
+        
+        return $definitions;
     }
 
     /**
