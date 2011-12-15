@@ -9,16 +9,19 @@ function FUNCTION_PREFIX_Start()
 
 function FUNCTION_PREFIX_Update(data)
 {
-    document.getElementById('pg-percent').style.width = data.percent + '%';
+    main = document.getElementById('{ID}'); // .style.width = data.percent + '%';
 
-    document.getElementById('pg-text-1').innerHTML = data.text;
-    document.getElementById('pg-text-2').innerHTML = data.text;
+    inner = main.getElementsByTagName('{CHILD}')[0];
+    inner.style.width = data.percent + '%';
+    inner.innerHTML = data.text;
 }
 
 function FUNCTION_PREFIX_Finish()
 {
-    document.getElementById('pg-percent').style.width = '100%';
+    document.getElementById('{id}').style.width = '100%';
 
     document.getElementById('pg-text-1').innerHTML = 'Demo done';
     document.getElementById('pg-text-2').innerHTML = 'Demo done';
 }
+
+// FUNCTION_PREFIX_Start();

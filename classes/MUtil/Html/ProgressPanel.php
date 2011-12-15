@@ -49,6 +49,21 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     const CODE = "MUtil_Html_ProgressPanel_Code";
 
     /**
+     * For some elements (e.g. table and tbody) the logical thing to do when content
+     * is added that does not have an $_allowedChildTags is to add that content to
+     * the last item (i.e. row: tr) instead of adding a new row to the table or element.
+     *
+     * This is different from the standard behaviour: if you add a non-li item to an ul
+     * item it is added in a new li item.
+     *
+     * @see $_allowedChildTags
+     * @see $_lastChild
+     *
+     * @var boolean When true new content not having a $_allowedChildTags is added to $_lastChild.
+     */
+    protected $_addtoLastChild = true;
+
+    /**
      * Usually no text is appended after an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
      * view.
@@ -68,6 +83,33 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     );
 
     /**
+     * When content must contain certain element types only the default child tag contains
+     * the tagname of the element that is created to contain the content.
+     *
+     * When not in $_allowedChildTags the value is added to it in __construct().
+     *
+     * When empty set to the first value of $_allowedChildTags (if any) in __construct().
+     *
+     * @see $_allowedChildTags
+     *
+     * @var string The tagname of the element that should be created for content not having an $_allowedChildTags.
+     */
+    protected $_defaultChildTag = 'div';
+
+    /**
+     * Name to prefix the functions, to avoid naming clashes.
+     *
+     * @var string Default is the classname with an extra underscore
+     */
+    protected $_functionPrefix;
+
+    /**
+     *
+     * @var MUtil_Html_HtmlElement
+     */
+    protected $_innerElement;
+
+    /**
      * Usually no text is appended before an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
      * view.
@@ -75,6 +117,20 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      * @var string Content added before the element.
      */
     protected $_prependString = "\n";
+
+    /**
+     * The name of the parameter used for progress panel signals
+     *
+     * @var string
+     */
+    public $progressParameterName = 'progress';
+
+    /**
+     * The value required for the progress panel to start running
+     *
+     * @var string
+     */
+    public $progressParameterRunValue = 'run';
 
     /**
      * Creates a 'div' progress panel
@@ -99,15 +155,31 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      */
     public function getCode()
     {
-        if (! $this->offsetExists(self::CODE)) {
+        if (! isset($this->_content[self::CODE])) {
             $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/ProgressPanel.js');
             // $js->setInHeader(false);
-            $js->setField('FUNCTION_PREFIX', __CLASS__);
+            $js->setField('FUNCTION_PREFIX_', $this->getFunctionPrefix());
+            $js->setField('{CHILD}', $this->_defaultChildTag);
+            $js->setField('{ID}', $this->getAttrib('id'));
 
-            $this->offsetSet(self::CODE, $js);
+            $this->_content[self::CODE] = $js;
         }
 
-        return $this->offsetGet(self::CODE);
+        return $this->_content[self::CODE];
+    }
+
+    /**
+     * Returns the prefix used for the function names to avoid naming clashes.
+     *
+     * @return string
+     */
+    public function getFunctionPrefix()
+    {
+        if (! $this->_functionPrefix) {
+            $this->setFunctionPrefix(__CLASS__ . '_');
+        }
+
+        return (string) $this->_functionPrefix;
     }
 
     /**
@@ -134,9 +206,37 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      */
     protected function renderElement(Zend_View_Abstract $view)
     {
-        // Make sure the JS code is added
-        $this->getCode();
+        $js = $this->getCode();
+        if (! $js->hasField('{URL}')) {
+            $js->setField('{URL}', $view->url(array($this->progressParameterName => $this->progressParameterRunValue)));
+        }
 
         return parent::renderElement($view);
+    }
+
+    /**
+     * Checks whether the progress panel should be running
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return boolean
+     */
+    public function run(Zend_Controller_Request_Abstract $request)
+    {
+        return $request->getParam($this->progressParameterName) === $this->progressParameterRunValue;
+    }
+
+    /**
+     * Name prefix for functions.
+     *
+     * Set automatically to __CLASS___, use different name
+     * in case of name clashes.
+     *
+     * @param string $prefix
+     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     */
+    public function setFunctionPrefix($prefix)
+    {
+        $this->_functionPrefix = $prefix;
+        return $this;
     }
 }

@@ -243,7 +243,11 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $this->html->h3($this->_('Synchronize all sources of surveys'));
         $this->html->pInfo($this->_('Synchronization will update the status of all surveys imported into this project to the status at the sources.'));
-        // $progress = $this->html->progress('0%');
+        /*
+        $progress = $this->html->progress('0%');
+        if ($progress->run($this->getRequest())) {
+            MUtil_Echo::track('running');
+        } // */
 
         if ($data) {
             $rdata = MUtil_Lazy::repeat($data);

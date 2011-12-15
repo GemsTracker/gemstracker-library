@@ -134,6 +134,36 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
     }
 
     /**
+     * Returns the current field value.
+     *
+     * No markers are used. If you want to replace '{path}' with 'x', you
+     * must specificy the name '{path}', not 'path'.
+     *
+     * @param string $name Full name of the field.
+     * @return string The value placed.
+     */
+    public function getField($name)
+    {
+        if (isset($this->_fields[$name])) {
+            return $this->_fields[$name];
+        }
+    }
+
+    /**
+     * Checks for the existence of a field value.
+     *
+     * No markers are used. If you want to replace '{path}' with 'x', you
+     * must specificy the name '{path}', not 'path'.
+     *
+     * @param string $name Full name of the field.
+     * @return boolean True if it exists
+     */
+    public function hasField($name)
+    {
+        return array_key_exists($name, $this->_fields);
+    }
+
+    /**
      * Set a field to search and replace in the content.
      *
      * No markers are used. If you want to replace '{path}' with 'x', you

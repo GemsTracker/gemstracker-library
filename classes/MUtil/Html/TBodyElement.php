@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,21 +25,29 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * A standaard TBODY element, that puts all contents in TR elements, implements the
+ * ColomInterface and allows you to specify a row class.
+ *
+ * You can alternate row classes by using a lazy value.
+ *
+ * @see MUtil_Html_TableElement
+ *
+ * @package    MUtil
  * @subpackage Html
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Html_ColumnInterface
 {
@@ -58,6 +65,16 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     protected $_onEmptyLocal = null;
 
+    /**
+     * Create an default element for content.
+     *
+     * Some elements put their content in a fixed sub element, e.g. table uses tbody,
+     * tbody uses tr and tr uses td or th.
+     *
+     * @param mixed $value
+     * @param string $offset or null
+     * @return MUtil_Html_HtmlElement
+     */
     protected function _createDefaultTag($value, $offset = null)
     {
         $row = parent::_createDefaultTag($value, $offset = null);
@@ -73,29 +90,29 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Returns the cell or a MUtil_MultiWrapper containing cells that occupy the column position, taking colspan and other functions into account.
-     * 
+     *
      * @param int $col The numeric column position, starting at 0;
      * @return MUtil_Html_HtmlElement Probably an element of this type, but can also be something else, posing as an element.
      */
     public function getColumn($col)
     {
         $results = $this->getColumnArray($col);
-        
+
         switch (count($results)) {
             case 0:
                 return null;
-                
+
             case 1:
                 return reset($results);
-                
+
             default:
                 return new MUtil_MultiWrapper($results);
         }
     }
-    
+
     /**
      * Returns the cells that occupies the column position, taking colspan and other functions into account, in an array.
-     * 
+     *
      * @param int $col The numeric column position, starting at 0;
      * @return array Of probably one MUtil_Html_HtmlElement
      */
@@ -111,10 +128,10 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
         return $results;
     }
-    
+
     /**
      * Return the number of columns, taking such niceties as colspan into account
-     * 
+     *
      * @return int
      */
     public function getColumnCount()
@@ -201,12 +218,12 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     }
 
     /**
-     * Repeat the element when rendering. 
-     * 
-     * When repeatTags is false (the default) only the content is repeated but 
+     * Repeat the element when rendering.
+     *
+     * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
      * content are repeated.
-     * 
+     *
      * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @param mixed $onEmptyContent Optional. When not null the content to display when the repeater does not result in data is set.
      * @param boolean $repeatTags Optional when not null the repeatTags switch is set.
@@ -248,7 +265,7 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Static helper function for creation, used by @see MUtil_Html_Creator.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement with tag 'tbody'
      */
@@ -260,7 +277,7 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Static helper function for creation, used by @see MUtil_Html_Creator.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement with tag 'tfoot'
      */
@@ -272,7 +289,7 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
     /**
      * Static helper function for creation, used by @see MUtil_Html_Creator.
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TBodyElement with tag 'thead'
      */

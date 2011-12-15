@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -286,7 +285,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
 
     /**
-     * @var boolean|string When true, no content is used, when a string content is added to an attribute with that name.
+     * Allows the addition of any string content to an attribute with the name specified.
+     *
+     * E.g. in the ImgElement all content is added to the 'alt' attribute.
+     *
+     * @var boolean|string When not false, content is not used as element content, but added to the attribute
      */
     protected $_contentToTag = false;
 
@@ -476,8 +479,24 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     protected $_repeatTags = false;
 
 
+    /**
+     * Extra array with special types for subclasses.
+     *
+     * When an object of one of the key types is used, then use
+     * the class method defined as the value.
+     *
+     * @see $_specialTypesDefault
+     *
+     * @var array Of 'class or interfacename' => 'class method' of null
+     */
     protected $_specialTypes;
 
+    /**
+     * When an object of one of the key types is used, then use
+     * the class method defined as the value.
+     *
+     * @var array Of 'class or interfacename' => 'class method'
+     */
     private $_specialTypesDefault = array(
         'MUtil_Lazy_RepeatableInterface' => 'setRepeater',
         'Zend_Paginator'                 => 'setRepeater',
@@ -608,6 +627,16 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         unset($this->_attribs[$name]);
     }
 
+    /**
+     * Create an default element for content.
+     *
+     * Some elements put their content in a fixed sub element, e.g. table uses tbody,
+     * tbody uses tr and tr uses td or th.
+     *
+     * @param mixed $value
+     * @param string $offset or null
+     * @return MUtil_Html_HtmlElement
+     */
     protected function _createDefaultTag($value, $offset = null)
     {
         if (null === $offset) {
