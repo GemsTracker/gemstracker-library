@@ -131,8 +131,10 @@ class Gems_Model_StaffModel extends Gems_Model_JoinModel implements MUtil_Regist
             if ($this->getChanged()<1) {
                 $this->setChanged(1);
             }
-            //Now load the userclass and save the password
-            $user = $this->loader->getUserLoader()->getUserByStaffId($newValues['gsf_id_user']);
+
+            //Now load the userclass and save the password use the $savedValues as for a new
+            //user we might not have the id in the $newValues
+            $user = $this->loader->getUserLoader()->getUserByStaffId($savedValues['gsf_id_user']);
             if ($user->canSetPassword()) {
                 $user->setPassword($newValues['fld_password']);
             }
