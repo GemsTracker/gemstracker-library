@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,15 +25,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
+ *
+ *
  * @package MUtil
  * @subpackage Controller
- * @copyright  Copyright (c) 2010 Erasmus MC (www.erasmusmc.nl) & MagnaFacta (www.magnafacta.nl)
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -44,15 +42,18 @@
  *  - title attribute for use in htm/head/title element
  *  - flashMessenger use standardised and simplified
  *  - use of Zend_Translate simplified and shortened in code
+ *  - disable Zend_Layout and Zend_View with initRawOutput() and $useRawOutput.
  *
  * MUtil_Html functionality provided:
  *  - semi automatic MUtil_Html_Sequence initiation
  *  - view script set to html-view.phtml when using html
  *  - snippet usage for repeatably used snippets of html on a page
  *
- * @author Matijs de Jong
  * @package MUtil
  * @subpackage Controller
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 abstract class MUtil_Controller_Action extends Zend_Controller_Action
 {
@@ -94,11 +95,26 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     /**
      * Set to true in child class for automatic creation of $this->html.
      *
-     * Otherwise call $this->initHtml()
+     * To initiate the use of $this->html from the code call $this->initHtml()
      *
+     * Overrules $useRawOutput.
+     *
+     * @see $useRawOutput
      * @var boolean $useHtmlView
      */
     public $useHtmlView = false;
+
+    /**
+     * Set to true in child class for automatic use of raw (e.g. echo) output only.
+     *
+     * Otherwise call $this->initRawOutput() to switch to raw echo output.
+     *
+     * Overruled in initialization if $useHtmlView is true.
+     *
+     * @see $useHtmlView
+     * @var boolean $useRawOutput
+     */
+    public $useRawOutput = false;
 
     /**
      * A ssession based message store.
@@ -232,6 +248,24 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     }
 
     /**
+     * Disable the use of Zend_Layout
+     *
+     * @return Zend_Controller_Action (continuation pattern)
+     */
+    public function disableLayout()
+    {
+        // Actually I would like a check if there is a
+        // layout instance in the first place.
+        $layout = Zend_Layout::getMvcInstance();
+        if ($layout instanceof Zend_Layout) {
+            $layout->disableLayout();
+        }
+        // Zend_Layout::resetMvcInstance();
+
+        return $this;
+    }
+
+    /**
      * Returns a session based message store for adding messages to.
      *
      * @return Zend_Controller_Action_Helper_FlashMessenger
@@ -318,6 +352,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
             if (null === $translate) {
                 // Make sure there always is a translator
                 $translate = new MUtil_Translate_Adapter_Potemkin();
+                Zend_Registry::set('Zend_Translate', $translate);
             }
 
             $this->setTranslate($translate);
@@ -348,6 +383,8 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
 
         if ($this->useHtmlView) {
             $this->initHtml();
+        } elseif ($this->useRawOutput) {
+            $this->initRawOutput();
         }
     }
 
@@ -369,7 +406,27 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
             $this->view->setScriptPath(dirname(__FILE__));
             $this->_helper->viewRenderer->setNoController();
             $this->_helper->viewRenderer->setScriptAction('html-view');
+
+            $this->useHtmlView  = true;
+            $this->useRawOutput = false;
         }
+    }
+
+    /**
+     * Intializes the raw (echo) output component.
+     *
+     * @return void
+     */
+    public function initRawOutput()
+    {
+        // Disable layout ((if any)
+        $this->disableLayout();
+
+        // Set view rendering off
+        $this->_helper->viewRenderer->setNoRender(true);
+
+        $this->useHtmlView  = false;
+        $this->useRawOutput = true;
     }
 
     /**

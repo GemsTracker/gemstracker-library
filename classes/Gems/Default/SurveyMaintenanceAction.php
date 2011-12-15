@@ -415,6 +415,10 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
     public function pdfAction()
     {
+        // Make sure nothing else is output
+        $this->initRawOutput();
+
+        // Output the PDF
         $this->loader->getPdf()->echoPdfBySurveyId($this->_getParam(MUtil_Model::REQUEST_ID));
     }
 

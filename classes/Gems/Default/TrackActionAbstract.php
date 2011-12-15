@@ -400,6 +400,10 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
      */
     public function pdfAction()
     {
+        // Make sure nothing else is output
+        $this->initRawOutput();
+
+        // Output the PDF
         $this->loader->getPdf()->echoPdfByTokenId($this->_getIdParam());
     }
 

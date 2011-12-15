@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Html_Link_LinkAbstract implements MUtil_Html_HtmlInterface
+abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterface
 {
     /**
      * Contains the content to output. Can be a mix of filenames and string content.

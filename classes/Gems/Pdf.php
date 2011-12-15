@@ -118,12 +118,10 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      * @param Zend_Pdf $pdf
      * @param string $filename
      * @param boolean $download
+     * @param boolean $exit Should the application stop running after output
      */
-    protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false)
+    protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false, $exit = true)
     {
-        // We do not need to return the layout, just the above table
-        Zend_Layout::resetMvcInstance();
-
         $content = $pdf->render();
 
         // MUtil_Echo::track($filename);
@@ -140,6 +138,11 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         header('Pragma: public');
 
         echo $content;
+
+        if ($exit) {
+            // No further output
+            exit;
+        }
     }
 
     /**

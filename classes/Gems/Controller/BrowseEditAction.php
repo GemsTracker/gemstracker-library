@@ -275,7 +275,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         // MUtil_Model::$verbose = true;
 
         // We do not need to return the layout, just the above table
-        Zend_Layout::resetMvcInstance();
+        $this->disableLayout();
 
         $this->html[] = $this->_createTable();
         $this->html->raw(MUtil_Echo::out());

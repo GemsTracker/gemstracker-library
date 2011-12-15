@@ -46,6 +46,8 @@
  */
 class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
 {
+    const CODE = "MUtil_Html_ProgressPanel_Code";
+
     /**
      * Usually no text is appended after an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
@@ -87,6 +89,28 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     }
 
     /**
+     * Returns the JavaScript object associated with this object.
+     *
+     * WARNING: calling this object sets it's position in the order the
+     * objects are rendered. If you use MUtil_Lazy objects, make sure they
+     * have the correct value when rendering.
+     *
+     * @return MUtil_Html_Code_JavaScript
+     */
+    public function getCode()
+    {
+        if (! $this->offsetExists(self::CODE)) {
+            $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/ProgressPanel.js');
+            // $js->setInHeader(false);
+            $js->setField('FUNCTION_PREFIX', __CLASS__);
+
+            $this->offsetSet(self::CODE, $js);
+        }
+
+        return $this->offsetGet(self::CODE);
+    }
+
+    /**
      * Creates a 'div' progress panel
      *
      * @param mixed $arg_array A MUtil_Ra::args data collection.
@@ -110,10 +134,8 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      */
     protected function renderElement(Zend_View_Abstract $view)
     {
-        $js = new MUtil_Html_Link_JavaScript(dirname(__FILE__) . '/ProgressPanel.js');
-        $js->setField('FUNCTION_PREFIX', __CLASS__);
-
-        $this->append($js);
+        // Make sure the JS code is added
+        $this->getCode();
 
         return parent::renderElement($view);
     }

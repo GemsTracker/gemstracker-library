@@ -44,8 +44,24 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Html_Link_JavaScript extends MUtil_Html_Link_LinkAbstract
+class MUtil_Html_Code_JavaScript extends MUtil_Html_Code_DynamicAbstract
 {
+    protected $_inHeader = true;
+
+    /**
+     * When true the output should be displayed in the result HEAD,
+     * otherwise in the BODY.
+     *
+     * @return boolean
+     */
+    public function getInHeader()
+    {
+        if ($this->_inHeader instanceof MUtil_Lazy_LazyInterface) {
+            return (boolean) MUtil_Lazy::raise($this->_inHeader);
+        } else {
+            return (boolean) $this->_inHeader;
+        }
+    }
     /**
      * Renders the element into a html string
      *
@@ -58,8 +74,29 @@ class MUtil_Html_Link_JavaScript extends MUtil_Html_Link_LinkAbstract
     {
         $content = $this->getContentOutput($view);
 
-        $view->inlineScript()->appendScript($content);
+        // Of course this setting makes little difference if you have optimized
+        // your JavaScript loading by putting all script tags at the end of
+        // your body. (Except that inlineScript is always loaded last.)
+        if ($this->getInHeader()) {
+            $scriptTag = $view->headScript();
+        } else {
+            $scriptTag = $view->inlineScript();
+        }
+        $scriptTag->appendScript($content);
 
         return '';
+    }
+
+    /**
+     * When true the result is displayed in the result HEAD,
+     * otherwise in the BODY.
+     *
+     * @param boolean $value
+     * @return MUtil_Html_Code_JavaScript (continuation pattern)
+     */
+    public function setInHeader($value = true)
+    {
+        $this->_inHeader = $value;
+        return $this;
     }
 }
