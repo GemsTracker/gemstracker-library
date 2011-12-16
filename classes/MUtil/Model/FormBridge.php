@@ -701,4 +701,17 @@ class MUtil_Model_FormBridge
     {
         return $this->model;
     }
+
+    /**
+     * Retrieve a tab from a Gems_TabForm to add extra content to it
+     *
+     * @param string $name
+     * @return Gems_Form_TabSubForm
+     */
+    public function getTab($name)
+    {
+        if (method_exists($this->form, 'getTab')) {
+            return $this->form->getTab($name);
+        }
+    }
 }
