@@ -60,6 +60,13 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     protected $_form;
 
     /**
+     * Array of item names still to be added to the form
+     *
+     * @var array
+     */
+    protected $_items;
+
+    /**
      *
      * @var Zend_Form_Element_Submit
      */
@@ -149,8 +156,37 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
+        //Get all elements in the model if not already done
+        $this->initItems();
+
+        //And any remaining item
+        $this->addItems($bridge, $this->_items);
+    }
+
+    /**
+     * Add items to the bridge, and remove them from the items array
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param string $element1
+     *
+     * @return void
+     */
+    protected function addItems(MUtil_Model_FormBridge $bridge, $element1)
+    {
+        $args = func_get_args();
+        if (count($args)<2) {
+            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more idividual items');
+        }
+
+        $bridge   = array_shift($args);
+        $elements = MUtil_Ra::flatten($args);
+
+        //Remove the elements from the _items variable
+        $this->_items = array_diff($this->_items, $elements);
+
+        //And add them to the bridge
+        foreach($elements as $name) {
+            if ($label = $this->model->get($name, 'label')) {
                 $bridge->add($name);
             } else {
                 $bridge->addHidden($name);
@@ -319,6 +355,16 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     {
         if (parent::hasHtmlOutput()) {
             return $this->processForm();
+        }
+    }
+
+    /**
+     * Initialize the _items variable to hold all items from the model
+     */
+    protected function initItems()
+    {
+        if (is_null($this->_items)) {
+            $this->_items = $this->model->getItemsOrdered();
         }
     }
 

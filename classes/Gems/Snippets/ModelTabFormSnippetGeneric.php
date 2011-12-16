@@ -55,69 +55,6 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
     protected $_form;
 
     /**
-     * Array of item names still to be added to the form
-     *
-     * @var array
-     */
-    protected $_items;
-
-    /**
-     * Add items to the bridge, and remove them from the items array
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param string $element1
-     *
-     * @return void
-     */
-    protected function addItems($bridge, $element1)
-    {
-        $args = func_get_args();
-        if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more idividual items');
-        }
-        
-        $bridge   = array_shift($args);
-        $elements = $args;
-
-        //Remove the elements from the _items variable
-        $this->_items = array_diff($this->_items, $elements);
-
-        //And add them to the bridge
-        foreach($elements as $name) {
-            if ($label = $this->model->get($name, 'label')) {
-                $bridge->add($name);
-            } else {
-                $bridge->addHidden($name);
-            }
-        }
-    }
-
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $items
-     */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $items = null)
-    {
-        //Get all elements in the model if not already done
-        $this->initItems();
-
-        //Now add all remaining items to the last last tab (if any)
-        foreach($this->_items as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $bridge->add($name);
-            } else {
-                $bridge->addHidden($name);
-            }
-        }
-    }
-
-    /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
@@ -155,15 +92,5 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
         $this->addSaveButton();
 
         return $form;
-    }
-
-    /**
-     * Initialize the _items variable to hold all items from the model
-     */
-    protected function initItems()
-    {
-        if (is_null($this->_items)) {
-            $this->_items = $this->model->getItemsOrdered();
-        }
     }
 }
