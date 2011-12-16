@@ -218,9 +218,9 @@ class Gems_Form_TableForm extends Gems_Form {
         $element->setDecorators($decorators);
 
         if ($element instanceof Zend_Form_Element_Hidden) {
-            //Add 1000 to the order to place them last and fix some layout problems
-            $order = $element->getOrder();
-            $element->setOrder($order+1000);
+            //Make row hidden so it takes no height
+            $decorator = $element->getDecorator('row');
+            $decorator->setOption('style', 'display:none;');
 
         } else {
             $decorator = $element->getDecorator('row');

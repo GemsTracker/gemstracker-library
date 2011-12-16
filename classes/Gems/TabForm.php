@@ -57,7 +57,7 @@ class Gems_TabForm extends Gems_Form
      */
     public function addElement($element, $name = null, $options = null)
     {
-        if ($this->currentTab && !($element instanceof Zend_Form_Element_Hidden)) {
+        if ($this->currentTab) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
             parent::addElement($element, $name, $options);
@@ -163,6 +163,19 @@ class Gems_TabForm extends Gems_Form
             }
             return;
         }
+    }
+
+    /**
+     * Retrieve a named tab (subform) and set the active tab to this one
+     *
+     * @param type $name
+     * @return Gems_Form_TabSubForm
+     */
+    public function getTab($name)
+    {
+        $tab = $this->getSubForm($name);
+        $this->currentTab = $tab;
+        return $tab;
     }
 
     /**
@@ -374,7 +387,6 @@ class Gems_TabForm extends Gems_Form
         $values = parent::getValues($suppressArrayNotation);
 
         foreach ($this->getSubForms() as $key => $subForm) {
-            $values[$key];
             $values = $this->_array_replace_recursive($values, $values[$key]);
         }
 
