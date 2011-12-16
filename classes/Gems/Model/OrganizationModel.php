@@ -131,7 +131,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil
             $class      = $newValues['gor_user_class'] . 'Definition';
             $definition = $this->loader->getUserLoader()->getUserDefinition($class);
 
-            if ($definition->hasConfig()) {
+            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $savedValues['config'] = $definition->saveConfig($savedValues,$newValues['config']);
                 if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {
                     $this->setChanged(1);
@@ -150,7 +150,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil
             $class      = $data['gor_user_class'] . 'Definition';
             $definition = $this->loader->getUserLoader()->getUserDefinition($class);
 
-            if ($definition->hasConfig()) {
+            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $data['config'] = $definition->loadConfig($data);
             }
         }

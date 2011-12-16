@@ -93,7 +93,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             $class      = $this->formData['gor_user_class'] . 'Definition';
             $definition = $this->loader->getUserLoader()->getUserDefinition($class);
 
-            if ($definition->hasConfig()) {
+            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $definition->appendConfigFields($bridge);
             }
 
