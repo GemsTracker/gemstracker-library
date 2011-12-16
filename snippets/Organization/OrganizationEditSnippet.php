@@ -89,8 +89,17 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         }
         $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by', 'gor_user_class');
 
-        //now add remaining items if any
+        if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
+            $class      = $this->formData['gor_user_class'] . 'Definition';
+            $definition = $this->loader->getUserLoader()->getUserDefinition($class);
 
+            if ($definition->hasConfig()) {
+                $definition->appendConfigFields($bridge);
+            }
+
+        }
+
+        //now add remaining items if any
         if (count($this->_items)>0 && !($bridge->getTab('other'))) {
             $bridge->addTab('other', 'value', $this->_('Other'));
         }
@@ -99,7 +108,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
 
     public function afterSave($changed)
     {
-        $org = $this->loader->getOrganization($data['gor_id_organization']);
+        $org = $this->loader->getOrganization($changed['gor_id_organization']);
         $org->invalidateCache();
 
         // Make sure any changes in the allowed list are reflected.

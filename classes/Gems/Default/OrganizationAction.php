@@ -114,7 +114,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__organizations');
+        $model = $this->loader->getModels()->getOrganizationModel();
 
         $model->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
 

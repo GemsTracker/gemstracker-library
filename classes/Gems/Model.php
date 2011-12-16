@@ -171,6 +171,13 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         return $model;
     }
 
+    public function getOrganizationModel()
+    {
+        $model = $this->_loadClass('OrganizationModel', true);
+
+        return $model;
+    }
+
     /**
      * Load project specific model or general Gems model otherwise
      *
