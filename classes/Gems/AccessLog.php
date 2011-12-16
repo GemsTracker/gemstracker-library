@@ -194,7 +194,7 @@ class Gems_AccessLog
             $values['glua_by']           = $this->_userInfo->user_id ? $this->_userInfo->user_id  : 0;
             $values['glua_organization'] = $this->_userInfo->user_organization_id ? $this->_userInfo->user_organization_id : 0;
             $values['glua_action']       = $this->getActionId($action);
-            $values['glua_role']         = $this->_userInfo->user_role;
+            $values['glua_role']         = $this->_userInfo->user_role ? $this->_userInfo->user_role : '--not set--' ;
             $values['glua_created']      = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
             if ($request instanceof Zend_Controller_Request_Http) {

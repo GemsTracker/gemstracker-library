@@ -406,7 +406,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         $this->addMessage(sprintf($this->_('Good bye: %s.'), $user->getFullName()));
         $user->unsetAsCurrentUser();
-        Zend_Session::regenerateId();
+        Zend_Session::destroy();
         $this->_reroute(array('action' => 'index'), true);
     }
 
