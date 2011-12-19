@@ -101,6 +101,17 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      */
     protected $translated;
 
+    /**
+     * Returns the AccessLogActions
+     *
+     * @param string $code
+     * @return Gems_Util_AccessLogActions
+     */
+    public function getAccessLogActions()
+    {
+        return $this->_getClass('accessLogActions', null, array('AccessLogActions'));
+    }
+
 
     public function getConsentRejected()
     {

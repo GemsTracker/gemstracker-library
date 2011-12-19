@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -56,7 +56,7 @@ class Gems_AccessLog
      * Convenience calls to the log method:
      *
      * When you try to call 'log' + anything it will be interpreted as a call to the log
-     * method where the part following log is the action and the first argument is the 
+     * method where the part following log is the action and the first argument is the
      * respondentId. When you want to utilize the full power of the logging system, use
      * the log method directly.
      *
@@ -86,12 +86,12 @@ class Gems_AccessLog
         $this->_userInfo = GemsEscort::getInstance()->session;
         $this->loadActions();
     }
-    
+
     /**
      * Return an instance of the Gems_AccesLog class
-     * 
+     *
      * @param Zend_Db_Adapter_Abstract $db
-     * @return Gems_AccessLog 
+     * @return Gems_AccessLog
      */
     public static function getLog(Zend_Db_Adapter_Abstract $db = null)
     {
@@ -107,58 +107,55 @@ class Gems_AccessLog
 
     protected function getActionId($action)
     {
-        if (! array_key_exists($action,  $this->_sessionStore->actions)) {
+        if (! array_key_exists($action,  $this->_actions)) {
             //Check if a refresh fixes the problem
             $this->loadActions(true);
-            if (! array_key_exists($action,  $this->_sessionStore->actions)) {
+            if (! array_key_exists($action,  $this->_actions)) {
                 $values['glac_name']    = $action;
                 $values['glac_change']  = preg_match('/(save|add|store|delete|remove|create)/', $action);
-                
-                /* 
+
+                /*
                  * For 1.3 release the default behaviour is to disable logging for all actions,
                  * so we get an opt-in per action
-                 */                
+                 */
                 $values['glac_log']     = 0;
-                
+
                 /*
                  * Later on, we can set some rules like below to disable logging for
                  * actions like the autofilter
                  */
                 //$values['glac_log']  = !substr_count($action, '.autofilter');
                 $values['glac_created'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-                
+
                 $this->_db->insert('gems__log_actions', $values);
 
                 $this->loadActions(true);
             }
         }
 
-        return $this->_sessionStore->actions[$action]['id'];
+        return $this->_actions[$action]['id'];
     }
 
     /**
      * Load the actions into memory, use optional parameter to enforce refreshing
-     * 
-     * @param type $reset 
+     *
+     * @param type $reset
      */
     public function loadActions($reset = false)
     {
         //When project escort doesn't implement the log interface, we disable logging and don't load actions
-        if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface && 
-             ($reset || (! isset($this->_sessionStore->actions)))) {
-            
-             $actions = array();
-             
-             try {
-                 $actionRows = $this->_db->fetchAll('SELECT glac_name, glac_id_action, glac_log FROM gems__log_actions ORDER BY glac_name');
-                 foreach($actionRows as $actionRow) {
-                     $actions[$actionRow['glac_name']]['id'] = $actionRow['glac_id_action'];
-                     $actions[$actionRow['glac_name']]['log'] = $actionRow['glac_log'];
-                 }
-             } catch (Exception $e) {
-             }
-             
-             $this->_sessionStore->actions = $actions;
+        if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface &&
+             ($reset || (! isset($this->_actions)))) {
+
+            $actions = GemsEscort::getInstance()->getUtil()->getAccessLogActions();
+            if ($reset) {
+                $actions->invalidateCache();
+                //Now unset to force a reload
+                unset(GemsEscort::getInstance()->getUtil()->accessLogActions);
+                $actions = GemsEscort::getInstance()->getUtil()->getAccessLogActions();
+            }
+
+            $this->_actions = $actions->getAllData();
         }
     }
 
@@ -176,14 +173,14 @@ class Gems_AccessLog
     {
         try {
             //When project escort doesn't implement the log interface, we disable logging
-            if (!(GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface) 
+            if (!(GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface)
                 || (!isset($this->_userInfo->user_id) && $force === false ) ) {
                 return $this;
             }
 
-            /* 
+            /*
              * For backward compatibility, get the request from the frontcontroller when it
-             * is not supplied in the 
+             * is not supplied in the
              */
             if (!($request instanceof Zend_Controller_Request_Abstract)) {
                 $request = Zend_Controller_Front::getInstance()->getRequest();
@@ -202,12 +199,12 @@ class Gems_AccessLog
             } else {
                 $values['glua_remote_ip'] = '';
             }
-                
-            /* 
-             * Now we know for sure that the action is in the sessionstore, check if we 
+
+            /*
+             * Now we know for sure that the action is in the list, check if we
              * need to log this action
              */
-            if (!($this->_sessionStore->actions[$action]['log']) && !$force) return $this;
+            if (!($this->_actions[$action]['log']) && !$force) return $this;
 
             if (isset($this->_sessionStore->glua_action)) {
                 //If we don't force a logentry, check if it is a duplicate
@@ -239,5 +236,5 @@ class Gems_AccessLog
             MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Database needs to be updated!'));
             return $this;
         }
-    }        
+    }
 }

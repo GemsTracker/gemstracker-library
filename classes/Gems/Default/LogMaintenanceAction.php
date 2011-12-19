@@ -55,9 +55,10 @@ class Gems_Default_LogMaintenanceAction extends Gems_Controller_BrowseEditAction
         return $model;
     }
 
-    public function getAfterSaveRoute($data) {
-        Gems_AccessLog::getLog()->loadActions(true);
-        return parent::getAfterSaveRoute($data);
+    public function afterSave(array $data, $isNew)
+    {
+        $this->loader->getUtil()->getAccessLogActions()->invalidateCache();
+        return parent::afterSave($data, $isNew);
     }
 
     public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
