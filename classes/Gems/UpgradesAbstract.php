@@ -29,7 +29,7 @@
  * @subpackage Upgrades
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**

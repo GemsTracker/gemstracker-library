@@ -30,7 +30,7 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DatabaseAction.php 28 2011-09-16 06:24:15Z mennodekker $
+ * @version    $Id$
  */
 
 /**

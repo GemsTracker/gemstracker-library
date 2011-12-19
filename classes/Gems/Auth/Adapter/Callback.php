@@ -25,26 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
  * @subpackage Auth
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
- * Short description for Callback
- *
- * Long description for class Callback (if any)...
+ * A wrapper to use any valid callback for authentication
  *
  * @package    Gems
  * @subpackage Auth
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5
  */
 class Gems_Auth_Adapter_Callback implements Zend_Auth_Adapter_Interface
 {
