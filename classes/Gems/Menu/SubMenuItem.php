@@ -96,6 +96,14 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
     {
         if ($this->_parameterFilter) {
             foreach ($this->_parameterFilter as $name => $testValue) {
+                //Transform single value to array for uniform processing
+                if (!is_array($testValue)) {
+                    $testArray = array();
+                    $testArray[] = $testValue;
+                } else {
+                    $testArray = $testValue;
+                }
+
                 $paramValue = $source->getMenuParameter($name);
 
                 if ($paramValue instanceof MUtil_Lazy_LazyInterface) {
@@ -103,7 +111,8 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                         $paramValue = MUtil_Lazy::rise($paramValue);
 
                     } else {
-                        $newCondition = MUtil_Lazy::comp($testValue, '==', $paramValue);
+                        $newCondition = new MUtil_Lazy_Call('in_array', array($paramValue, $testArray));
+                        //$newCondition = MUtil_Lazy::comp($testValue, '==', $paramValue);
                         if ($condition instanceof MUtil_Lazy_LazyInterface) {
                             $condition = $condition->if($newCondition);
                         } else {
@@ -113,13 +122,22 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                     }
 
                 }
-                if ($testValue !== $paramValue) {
-                    if (Gems_Menu::$verbose) {
-                        // Mutil_Echo::backtrace();
-                        MUtil_Echo::r($name . ' => ' . $testValue . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+
+                foreach($testArray as $currentTestValue) {
+                    if ($currentTestValue == $paramValue) {
+                        if (Gems_Menu::$verbose) {
+                            // Mutil_Echo::backtrace();
+                            MUtil_Echo::r($name . ' => ' . $currentTestValue . ' == ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                        }
+                        return;
+                    } else {
+                        if (Gems_Menu::$verbose) {
+                            // Mutil_Echo::backtrace();
+                            MUtil_Echo::r($name . ' => ' . $currentTestValue . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                        }
                     }
-                    return true;
                 }
+                return true;
             }
         }
     }

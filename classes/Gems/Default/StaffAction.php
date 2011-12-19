@@ -204,7 +204,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
         if ($detailed || $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
+            //$this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
 
             $model->set('gsf_id_organization',  'label', $this->_('Organization'),
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),

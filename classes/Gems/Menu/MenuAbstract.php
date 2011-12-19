@@ -385,8 +385,8 @@ abstract class Gems_Menu_MenuAbstract
         $editPage = $page->addEditAction();
         $delPage  = $page->addDeleteAction();
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
-            $editPage->setParameterFilter('gsf_id_organization', $this->escort->getCurrentOrganization());
-            $delPage->setParameterFilter('gsf_id_organization', $this->escort->getCurrentOrganization());
+            $editPage->setParameterFilter('gsf_id_organization', array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations()));
+            $delPage->setParameterFilter('gsf_id_organization', array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations()));
         }
 
         return $page;
