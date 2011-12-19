@@ -25,8 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * Short description of file
- *
  * @package    Gems
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -35,16 +33,19 @@
  */
 
 /**
- * Short description for ModelTabFormSnippetGeneric
+ * Displays an edit form using tabs based on the model the model set through the $model snippet parameter.
  *
- * Long description for class ModelTabFormSnippetGeneric (if any)...
+ * If you want to use this class "as is" use the 'Generic_ModelTabFormSnippet' snippet.
+ *
+ * This class is not in the standard snippet loading directories and does not follow
+ * their naming conventions, but exists only to make it simple to extend this class
+ * for a specific implementation.
  *
  * @package    Gems
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5
  */
 class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSnippetGeneric
 {

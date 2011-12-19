@@ -124,7 +124,6 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $bridge->addSelect(     'gsu_result_field',          'label', $this->_('Result field'),     'multiOptions', $surveyFields);
         $bridge->addSelect(     'gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $this->loader->getEvents()->listSurveyBeforeAnsweringEvents());
         $bridge->addSelect(     'gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $this->loader->getEvents()->listSurveyCompletionEvents());
-        // TODO: gsu_completed_event
 
         $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
                 'accept', 'application/pdf',
