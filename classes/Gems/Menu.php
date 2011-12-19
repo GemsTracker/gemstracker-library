@@ -551,7 +551,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $this->addContactPage($this->_('Contact'));
 
         // Privileges not associated with menu item
-        $this->addHiddenPrivilige('pr.plan.choose-org');
+        //$this->addHiddenPrivilige('pr.plan.choose-org');
         $this->addHiddenPrivilige('pr.plan.mail-as-application');
         $this->addHiddenPrivilige('pr.respondent.result');
         $this->addHiddenPrivilige('pr.respondent.who');

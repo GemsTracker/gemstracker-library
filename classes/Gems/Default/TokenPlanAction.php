@@ -340,10 +340,13 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                     ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 
-        if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) &&
-            $this->escort->hasPrivilege('pr.plan.choose-org')){
-            // Select organisation
-            $options = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+        // Select organisation
+        if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface)) {
+            $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
+            
+            $options = array_intersect($availableOrganizations, $allowedOrganizations);
+
             $elements[] = $this->_createSelectElement('gto_id_organization', $options);
         }
 
