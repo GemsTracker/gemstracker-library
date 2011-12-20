@@ -87,7 +87,26 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         if (!($bridge->getTab('access'))) {
             $bridge->addTab('access', 'value', $this->_('Access'));
         }
-        $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by', 'gor_user_class');
+
+        //Strip self from list of organizations
+        if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
+            $multiOptions = $model->get('gor_accessible_by', 'multiOptions');
+            unset($multiOptions[$this->formData['gor_id_organization']]);
+            $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
+        }
+        $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by');
+        
+        //Show what organizations we can access
+        if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
+            $org = $this->loader->getOrganization($this->formData['gor_id_organization']);
+            $allowedOrgs = $org->getAllowedOrganizations();
+            //Strip self
+            unset($allowedOrgs[$this->formData['gor_id_organization']]);
+            $display = join(', ', $allowedOrgs);
+            $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
+        }
+
+        $this->addItems($bridge, 'gor_user_class');
 
         if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
             $class      = $this->formData['gor_user_class'] . 'Definition';
