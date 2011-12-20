@@ -92,18 +92,18 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return print_r($this->_itemOptions, true);
     }
 
+    /**
+     * Return true when then $source does NOT contain all items in the parameterFilter
+     *
+     * @param Gems_Menu_ParameterCollector $source
+     * @param type $raiseConditions
+     * @param type $condition
+     * @return boolean
+     */
     private function _applyParameterFilter(Gems_Menu_ParameterCollector $source, $raiseConditions, &$condition)
     {
         if ($this->_parameterFilter) {
             foreach ($this->_parameterFilter as $name => $testValue) {
-                //Transform single value to array for uniform processing
-                if (!is_array($testValue)) {
-                    $testArray = array();
-                    $testArray[] = $testValue;
-                } else {
-                    $testArray = $testValue;
-                }
-
                 $paramValue = $source->getMenuParameter($name);
 
                 if ($paramValue instanceof MUtil_Lazy_LazyInterface) {
@@ -111,8 +111,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                         $paramValue = MUtil_Lazy::rise($paramValue);
 
                     } else {
-                        $newCondition = new MUtil_Lazy_Call('in_array', array($paramValue, $testArray));
-                        //$newCondition = MUtil_Lazy::comp($testValue, '==', $paramValue);
+                        if (is_array($testValue)) {
+                            $newCondition = new MUtil_Lazy_Call('in_array', array($paramValue, $testValue));
+                        } else {
+                            $newCondition = MUtil_Lazy::comp($testValue, '==', $paramValue);
+                        }
                         if ($condition instanceof MUtil_Lazy_LazyInterface) {
                             $condition = $condition->if($newCondition);
                         } else {
@@ -123,21 +126,23 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
                 }
 
-                foreach($testArray as $currentTestValue) {
-                    if ($currentTestValue == $paramValue) {
+                if (is_array($testValue)) {
+                    if (!in_array($paramValue, $testValue)) {
                         if (Gems_Menu::$verbose) {
                             // Mutil_Echo::backtrace();
-                            MUtil_Echo::r($name . ' => ' . $currentTestValue . ' == ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                            MUtil_Echo::r($name . ' => ' . print_r($testValue,true) . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                         }
-                        return;
-                    } else {
+                        return true;
+                    }
+                } else {
+                    if ($testValue !== $paramValue) {
                         if (Gems_Menu::$verbose) {
                             // Mutil_Echo::backtrace();
-                            MUtil_Echo::r($name . ' => ' . $currentTestValue . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
+                            MUtil_Echo::r($name . ' => ' . $testValue . ' !== ' . $paramValue, $this->get('label') . ' (' . $this->get('controller') . '/' . $this->get('action') . ')');
                         }
+                        return true;
                     }
                 }
-                return true;
             }
         }
     }
