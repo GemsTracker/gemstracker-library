@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -175,8 +174,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $sql = "SELECT ggp_id_group,ggp_role FROM gems__groups WHERE ggp_id_group = " . (int) $data['gsf_id_primary_group'];
         $groups = $this->db->fetchPairs($sql);
 
+        if (!isset($data['gsf_id_organization']) || empty($data['gsf_id_organization'])) {
+            $data['gsf_id_organization'] = $this->menu->getParameterSource()->getMenuParameter('gsf_id_organization', $this->loader->getCurrentUser()->getCurrentOrganizationId());
+        }
+
         if (! ($this->escort->hasPrivilege('pr.staff.edit.all') ||
-             $data['gsf_id_organization'] == $this->escort->getCurrentOrganization())) {
+               array_key_exists($data['gsf_id_organization'], $this->loader->getCurrentUser()->getAllowedOrganizations()))) {
                 throw new Zend_Exception($this->_('You are not allowed to edit this staff member.'));
         }
     }
@@ -203,19 +206,25 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
-        if ($detailed || $this->escort->hasPrivilege('pr.staff.see.all')) {
-            //$this->menu->getParameterSource()->offsetSet('gsf_id_organization', $this->escort->getCurrentOrganization());
-
-            $model->set('gsf_id_organization',  'label', $this->_('Organization'),
-                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
-                'default', $this->escort->getCurrentOrganization());
+        $availableOrganizations = $this->util->getDbLookup()->getOrganizations();
+        if ($this->escort->hasPrivilege('pr.staff.see.all')) {
+            // Select organization
+            $options = array('' => $this->_('(all organizations)')) + $availableOrganizations;
+        } else {
+            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
+            $options = array_intersect($availableOrganizations, $allowedOrganizations);
         }
+        $model->set('gsf_id_organization',  'label', $this->_('Organization'), 'multiOptions', $options);
 
         $model->set('gsf_id_primary_group', 'label', $this->_('Primary function'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getStaffGroups));
         $model->set('gsf_gender',           'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders());
 
         if ($detailed) {
-            $model->set('gul_user_class',       'default', $this->defaultStaffDefinition);
+            //Now try to load the current organization and find out if it has a default user definition
+            //otherwise use the defaultStaffDefinition
+            $org    = $this->loader->getOrganization($this->menu->getParameterSource()->getMenuParameter('gsf_id_organization', $this->loader->getCurrentUser()->getCurrentOrganizationId()));
+            $orgDef = $org->get('gor_user_class', $this->defaultStaffDefinition);
+            $model->set('gul_user_class',       'default', $orgDef);
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
             $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo());
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
@@ -230,9 +239,16 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
+        $availableOrganizations = $this->util->getDbLookup()->getOrganizations();
         if ($this->escort->hasPrivilege('pr.staff.see.all')) {
             // Select organization
-            $options = array('' => $this->_('(all organizations)')) + $this->getModel()->get('gsf_id_organization', 'multiOptions');
+            $options = array('' => $this->_('(all organizations)')) + $availableOrganizations;
+        } else {
+            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
+            $options = array_intersect($availableOrganizations, $allowedOrganizations);
+        }
+
+        if (count($options)>1) {
             $select = new Zend_Form_Element_Select('gsf_id_organization', array('multiOptions' => $options));
 
             // Position as second element
@@ -244,22 +260,20 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Additional data filter statements for the user input.
+     * Returns the default search values for this class instance.
      *
-     * User input that has the same name as a model field is automatically
-     * used as a filter, but if the name is different processing is needed.
-     * That processing should happen here.
+     * Used to specify the filter when no values have been entered by the user.
      *
-     * @param array $data The current user input
-     * @return array New filter statements
+     * @return array
      */
-    protected function getDataFilter(array $data)
+    public function getDefaultSearchData()
     {
-        $filter = parent::getDataFilter($data);
+        $filter = parent::getDefaultSearchData();
 
-        if (! $this->escort->hasPrivilege('pr.staff.see.all')) {
-            $filter['gsf_id_organization'] = $this->escort->getCurrentOrganization();
+        if (!isset($filter['gsf_id_organization']) || empty($filter['gsf_id_organization'])) {
+            $filter['gsf_id_organization'] = $this->loader->getCurrentUser()->getCurrentOrganizationId();
         }
+        
         return $filter;
     }
 
@@ -294,5 +308,21 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     public function getTopicTitle()
     {
         return $this->_('Staff');
+    }
+
+    public function init()
+    {
+        parent::init();
+
+        //Make sure the menu always has the gsd_id_organization parameter
+        $orgId = $this->getRequest()->getParam('gsf_id_organization');
+        
+        if (is_null($orgId)) {
+            //Get the selected gsf_id_organization used in the index
+            $dataIdx = $this->getCachedRequestData(true, 'index', true);
+            $orgId = isset($dataIdx['gsf_id_organization']) ? $dataIdx['gsf_id_organization'] : $this->loader->getCurrentUser()->getCurrentOrganizationId();
+        }
+
+        $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $orgId);
     }
 }
