@@ -134,9 +134,16 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $formValues['organization']));
 
-        $config  = array('ip'           => $configData['grcfg_ip'],
-                         'port'         => $configData['grcfg_port'],
-                         'sharedsecret' => $configData['grcfg_secret']);
+        $config  = array('ip'                 => $configData['grcfg_ip'],
+                         'authenticationport' => $configData['grcfg_port'],
+                         'sharedsecret'       => $configData['grcfg_secret']);
+        
+        //Unset empty
+        foreach($config as $key=>$value) {
+            if (empty($value)) {
+                unset($config[$key]);
+            }
+        }
         $adapter = new Gems_User_Adapter_Radius($config);
 
         $adapter->setIdentity($formValues['userlogin'])
