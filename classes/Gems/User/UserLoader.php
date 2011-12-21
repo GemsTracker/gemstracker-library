@@ -152,7 +152,8 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     public function getAvailableStaffDefinitions()
     {
         $definitions = array(
-            self::USER_STAFF => $this->translate->_('Db storage')
+            self::USER_STAFF => $this->translate->_('Db storage'),
+            'RadiusUser'     => $this->translate->_('Radius storage')
         );
         
         return $definitions;
