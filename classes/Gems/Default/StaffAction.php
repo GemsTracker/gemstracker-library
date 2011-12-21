@@ -123,7 +123,16 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
 
-        $bridge->addHiddenMulti('gsf_id_user', 'gul_id_user', 'gup_id_user', 'gul_user_class', 'gul_login', 'gul_id_organization');
+        $bridge->addHiddenMulti('gsf_id_user', 'gul_id_user', 'gup_id_user', 'gul_login', 'gul_id_organization');
+
+        //Escape for local users when using radius, should be changed to something more elegant later
+        //@@TODO: Think of a better way to allow multiple methods per organization
+        if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
+            $model->set('gul_user_class', 'label', $this->_('User Definition'));
+            $bridge->add('gul_user_class');
+        } else {
+            $bridge->addHidden('gul_user_class');
+        }
         //@@TODO: How do we change this? Only per org, or allow per user?
         //What classes are available? Maybe use something like event loader and add a little desc. to each type?
         $bridge->addText('gsf_login', 'size', 15, 'minlength', 4,
@@ -224,7 +233,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             //otherwise use the defaultStaffDefinition
             $org    = $this->loader->getOrganization($this->menu->getParameterSource()->getMenuParameter('gsf_id_organization', $this->loader->getCurrentUser()->getCurrentOrganizationId()));
             $orgDef = $org->get('gor_user_class', $this->defaultStaffDefinition);
-            $model->set('gul_user_class',       'default', $orgDef);
+            $model->set('gul_user_class',       'default', $orgDef, 'multiOptions', $this->loader->getUserLoader()->getAvailableStaffDefinitions());
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
             $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo());
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
