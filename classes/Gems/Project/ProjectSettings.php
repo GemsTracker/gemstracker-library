@@ -166,10 +166,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
             throw new Gems_Exception_Coding($error);
         }
 
-        if (strpos($this->offsetGet('salt'), '%s') === false) {
-            throw new Gems_Exception_Coding("Required project setting 'salt' must contain '%s'.");
-        }
-
         $superPassword = $this->getSuperAdminPassword();
         if ((APPLICATION_ENV === 'production') && $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {

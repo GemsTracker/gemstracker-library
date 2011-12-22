@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -155,7 +156,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             self::USER_STAFF => $this->translate->_('Db storage'),
             'RadiusUser'     => $this->translate->_('Radius storage')
         );
-        
+
         return $definitions;
     }
 
@@ -191,7 +192,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         static $organizations = array();
 
         if (null === $organizationId) {
-            $organizationId = intval(self::$currentUser->getCurrentOrganizationId());
+            $organizationId = intval(self::getCurrentUser()->getCurrentOrganizationId());
         }
 
         if (! isset($organizations[$organizationId])) {

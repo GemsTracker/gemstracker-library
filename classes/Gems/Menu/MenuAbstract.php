@@ -263,8 +263,8 @@ abstract class Gems_Menu_MenuAbstract
     /**
      * Add a page to the menu
      *
-     * @param string $label         The label to display for the menu item
-     * @param string $privilege     The privilege for the item
+     * @param string $label         The label to display for the menu item, null for access without display
+     * @param string $privilege     The privilege for the item, null is always, 'pr.islogin' must be logged in, 'pr.nologin' only when not logged in.
      * @param string $controller    What controller to use
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
