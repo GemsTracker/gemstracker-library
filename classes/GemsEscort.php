@@ -1450,6 +1450,9 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
+        // Npow is a good time to check for required values
+        $this->project->checkRequiredValues();
+
         $loader = $this->getLoader();
         $user   = $loader->getCurrentUser();
 

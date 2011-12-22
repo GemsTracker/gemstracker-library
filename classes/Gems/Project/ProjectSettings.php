@@ -97,9 +97,11 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         parent::__construct($array, ArrayObject::ARRAY_AS_PROPS);
 
-        //@@TODO: some checks should not be done on each and every request!
-        //        this can be a problem when testing
-        $this->checkRequiredValues();
+        if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
+            $this->offsetSet('name', GEMS_PROJECT_NAME);
+        }
+
+        $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
     }
 
     /**
@@ -133,7 +135,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      *
      * @return void
      */
-    protected function checkRequiredValues()
+    public function checkRequiredValues()
     {
         $missing = array();
         foreach ($this->requiredKeys as $key => $names) {
@@ -164,6 +166,10 @@ class Gems_Project_ProjectSettings extends ArrayObject
             throw new Gems_Exception_Coding($error);
         }
 
+        if (strpos($this->offsetGet('salt'), '%s') === false) {
+            throw new Gems_Exception_Coding("Required project setting 'salt' must contain '%s'.");
+        }
+
         $superPassword = $this->getSuperAdminPassword();
         if ((APPLICATION_ENV === 'production') && $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
@@ -171,12 +177,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
                 throw new Gems_Exception_Coding($error);
             }
         }
-
-        if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
-            $this->offsetSet('name', GEMS_PROJECT_NAME);
-        }
-
-        $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
     }
 
     /**
