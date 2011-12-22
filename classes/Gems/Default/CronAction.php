@@ -157,6 +157,9 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
         $startUser  = $userLoader->getCurrentUser();
         $user       = $startUser;
 
+        // Check for unprocessed tokens
+        $this->loader->getTracker()->processCompletedTokens(null, $startUser->getUserId());
+
         $model  = $this->loader->getTracker()->getTokenModel();
         $mailer = new Gems_Email_TemplateMailer($this->escort);
 
