@@ -46,6 +46,23 @@ class Gems_Default_LogAction extends Gems_Controller_BrowseEditAction {
     public $maxPeriod = 1;
     public $minPeriod = -15;
 
+    public function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        // Add edit button if allowed, otherwise show, again if allowed
+        if ($menuItem = $this->findAllowedMenuItem('edit', 'show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+
+        $html = MUtil_Html::create();
+        $br   = $html->br();
+
+        $bridge->addSortable('glua_created');
+        $bridge->addSortable('glac_name');
+        $bridge->addSortable('glua_message');
+        $bridge->addMultiSort('staff_name', $br, 'glua_organization');
+        $bridge->addSortable('respondent_name');
+    }
+
     public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
         $elements = parent::getAutoSearchElements($model, $data);
 
@@ -93,19 +110,29 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         $elements[] = null; // break into separate spans
 
+        $elements[] = $this->_('Organization:');
+        $sql = 'SELECT gor_id_organization, gor_name FROM gems__organizations';
+        $elements[] = $this->_createSelectElement('glua_organization', $sql, $this->_('All organizations'));
+
         $elements[] = $this->_('Staff:');
         $sql = "SELECT glua_by, CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
              . "JOIN gems__staff ON glua_by = gsf_id_user";
+        /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
+            $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
+        }*/
         $elements[] = $this->_createSelectElement('glua_by', $sql, $this->_('All staff'));
 
+        $elements[] = MUtil_Html::create('br');
         $elements[] = $this->_('Patient:');
-        $sql = "SELECT glua_by, CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS name "
+        $sql = "SELECT glua_to, CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
-             . "JOIN gems__respondents ON glua_by = grs_id_user";
+             . "JOIN gems__respondents ON glua_to = grs_id_user";
+        /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
+            $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
+        }*/
         $elements[] = $this->_createSelectElement('glua_to', $sql, $this->_('All patients'));
 
-        $elements[] = MUtil_Html::create('br');
         $elements[] = $this->_('Action:');
         $sql = "SELECT glac_id_action, glac_name "
              . "FROM gems__log_actions ";
@@ -164,6 +191,10 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $model->set('glac_name', 'label', $this->_('Action'));
         $model->set('glua_message', 'label', $this->_('Message'));
         $model->set('staff_name', 'label', $this->_('Staff'));
+
+        //Not only active, we want to be able to read the log for inactive organizations too
+        $orgs = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations');
+        $model->set('glua_organization', 'label', $this->_('Organization'), 'multiOptions', $orgs);
         $model->set('respondent_name', 'label', $this->_('Respondent'));
 
         if ($detailed) {
