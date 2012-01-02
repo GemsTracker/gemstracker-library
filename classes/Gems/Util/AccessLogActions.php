@@ -75,6 +75,12 @@ class Gems_Util_AccessLogActions extends Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
-        return $this->db->fetchAssoc('SELECT glac_name, glac_id_action AS id, glac_log AS log FROM gems__log_actions ORDER BY glac_name');
+        try {
+            $data = $this->db->fetchAssoc('SELECT glac_name, glac_id_action AS id, glac_log AS log FROM gems__log_actions ORDER BY glac_name');
+        } catch (Exception $exc) {
+            $data = array();
+        }
+
+        return $data;
     }
 }

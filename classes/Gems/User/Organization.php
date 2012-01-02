@@ -201,8 +201,12 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
      */
     protected function loadData($id)
     {
-        $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
-        $data = $this->db->fetchRow($sql, $id);
+        try {
+            $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
+            $data = $this->db->fetchRow($sql, $id);
+        } catch (Exception $e) {
+            $data = false;
+        }
 
         if ($data) {
             try {
