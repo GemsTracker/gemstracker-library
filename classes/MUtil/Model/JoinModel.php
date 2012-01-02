@@ -175,8 +175,11 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $filter = $this->_checkFilterUsed($filter);
 
         if ($this->_deleteValues) {
-            // MUtil_Model::$verbose = true;
-            $changed = $this->save($this->_deleteValues + $filter, $filter, $saveTables);
+            // First get the old values so we can have all the key values
+            $oldValues = $this->loadFirst($filter);
+
+            // Add the oldValues to the save
+            $changed = $this->save($this->_deleteValues + $oldValues, $filter, $saveTables);
         } else {
             $changed = 0;
             foreach ($saveTables as $table_name) {

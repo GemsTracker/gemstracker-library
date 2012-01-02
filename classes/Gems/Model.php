@@ -171,6 +171,11 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         return $model;
     }
 
+    /**
+     * Load the organization model
+     *
+     * @return Gems_Model_OrganizationModel
+     */
     public function getOrganizationModel()
     {
         $model = $this->_loadClass('OrganizationModel', true);
@@ -227,6 +232,11 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         return $model;
     }
 
+    /**
+     * Load the staffmodel
+     *
+     * @return Gems_Model_StaffModel
+     */
     public function getStaffModel()
     {
         $model = $this->_loadClass('StaffModel', true);

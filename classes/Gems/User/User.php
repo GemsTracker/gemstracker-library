@@ -222,6 +222,17 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Helper method for the case a user tries to authenticate while he is inactive
+     *
+     * @param array $params
+     * @return boolean
+     */
+    public function alwaysFalse($params)
+    {
+        return false;
+    }
+
+    /**
      * Authenticate a users credentials using the submitted form
      *
      * @param array $formValues the array containing all formvalues from the login form
@@ -229,17 +240,21 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function authenticate($formValues)
     {
-       $auth = Gems_Auth::getInstance();
+        $auth = Gems_Auth::getInstance();
 
-       $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
-       $formValues['organization'] = $this->getBaseOrganizationId();
+        $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
+        $formValues['organization'] = $this->getBaseOrganizationId();
 
-       $adapter = $this->definition->getAuthAdapter($formValues);
-       $authResult = $auth->authenticate($adapter, $formValues);
+        if ($this->isActive()) {
+            $adapter = $this->definition->getAuthAdapter($formValues);
+        } else {
+            $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin'], $formValues);
+        }
 
-       $this->_authResult = $authResult;
+        $authResult = $auth->authenticate($adapter, $formValues);
+        $this->_authResult = $authResult;
 
-       return $authResult;
+        return $authResult;
     }
 
     /**

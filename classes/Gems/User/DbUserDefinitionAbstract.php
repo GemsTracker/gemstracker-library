@@ -168,7 +168,20 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     {
         $select = $this->getUserSelect($login_name, $organization);
 
-        return $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+        $result = $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+
+        /*
+         * Handle the case that we have a login record, but no matching userdata (ie. user is inactive)
+         * if you want some kind of auto-register you should change this
+         */
+        if ($result == false) {
+            $result = array(
+                'user_active'          => false,
+                'user_role'            => 'nologin',
+            );   
+        }
+
+        return $result;
     }
 
     /**
