@@ -70,7 +70,8 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
             $js[] = "  });";
             $js[] = '}';
 
-            $this->view->inlineScript()->appendScript(implode("\n", $js)); // */
+            $this->jquery->addOnLoad(implode("\n", $js));
+            //$this->view->inlineScript()->appendScript(implode("\n", $js)); // */
         }
         return $result;
     }

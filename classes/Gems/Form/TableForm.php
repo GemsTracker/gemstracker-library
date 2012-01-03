@@ -110,11 +110,6 @@ class Gems_Form_TableForm extends Gems_Form {
         //Add the group as usual
         parent::addDisplayGroup($elements, $name, $options);
 
-        //Fix alternation when number of elements is not even
-        if (count($elements) % 2) {
-            $dropMe = $this->_alternate->__toString();
-        }
-
         //Retrieve it and set decorators
         $group = $this->getDisplayGroup($name);
         $group->setDecorators( array('FormElements',
@@ -123,7 +118,7 @@ class Gems_Form_TableForm extends Gems_Form {
                             'Tooltip',
                             array('Description', array('tag'=>'label', 'class'=>'optional', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'escape'=>false)),
                             array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
-                            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $this->_alternate . ' ' . $group->getName(). ' ' . $group->getAttrib('class')))
+                            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $group->getName(). ' ' . $group->getAttrib('class')))
                             ));
 
         //Now add the right decorators to the elements
@@ -217,16 +212,6 @@ class Gems_Form_TableForm extends Gems_Form {
         if (!is_null($dec1)) array_unshift($decorators, $dec1);
         $element->setDecorators($decorators);
 
-        if ($element instanceof Zend_Form_Element_Hidden) {
-            //Make row hidden so it takes no height
-            $decorator = $element->getDecorator('row');
-            $decorator->setOption('style', 'display:none;');
-
-        } else {
-            $decorator = $element->getDecorator('row');
-            $decorator->setOption('class', $this->_alternate . ' ' . $element->getName());
-        }
-
         return $this;
     }
 
@@ -249,5 +234,24 @@ class Gems_Form_TableForm extends Gems_Form {
                  ->addDecorator('Form');
         }
         return $this;
+    }
+
+    public function setView(Zend_View_Interface $view = null)
+    {
+        //If we set the view, fix the alternating rows
+        if ($view) {
+            foreach($this as $name => $element) {
+                $decorator = $element->getDecorator('row');
+                if ($decorator) {
+                    if ($element instanceof Zend_Form_Element_Hidden) {
+                        $decorator->setOption('style', 'display:none;');
+                    } else {
+                        $decorator->setOption('class', $this->_alternate . ' ' . $name);
+                    }
+                }
+            }
+        }
+        
+        return parent::setView($view);
     }
 }

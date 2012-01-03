@@ -465,7 +465,7 @@ class MUtil_Model_FormBridge
         }
 
         $element = new Zend_Form_Element_Password($name, $options);
-        $this->form->addElement($element);
+        $this->_applyValidators($name, $element);
 
         if ($stringlength) {
             $element->addValidator('StringLength', true, $stringlength);
@@ -483,7 +483,7 @@ class MUtil_Model_FormBridge
             $repeatElement->addValidator(new MUtil_Validate_IsConfirmed($name, isset($options['label']) ? $options['label'] : null));
         }
 
-        return $this->_addToForm($name, $element);
+        return $element;
     }
 
     public function addRadio($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)

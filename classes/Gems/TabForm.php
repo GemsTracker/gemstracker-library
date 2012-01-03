@@ -324,8 +324,8 @@ class Gems_TabForm extends Gems_Form
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->setDecorators(array(
-            array('TabErrors'),
-            array('decorator' => array('SubformElements' => 'FormElements')),
+            'TabErrors',
+            array(array('SubformElements' => 'FormElements')),
             array('HtmlTag', array('tag' => 'div', 'id' => 'tabContainer', 'class' => 'mainForm')),
             array('TabContainer', array('id' => 'tabContainer', 'style' => 'width: 99%;')),
             'FormElements',
