@@ -1011,7 +1011,7 @@ class GemsEscort extends MUtil_Application_Escort
             'showOn' => 'button',
         );
 
-        Zend_Registry::set('MUtil_Model_FormBridge', array('date' => $dateFormOptions));
+        Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));
     }
 
     protected function createProjectClass($className, $param1 = null, $param2 = null)

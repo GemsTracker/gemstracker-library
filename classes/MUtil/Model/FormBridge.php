@@ -64,6 +64,11 @@ class MUtil_Model_FormBridge
     const TEXT_OPTIONS     = 'text';
     const TEXTAREA_OPTIONS = 'textarea';
 
+    /**
+     * The key to use in the Zend_Registry to store global fixed options
+     */
+    const REGISTRY_KEY = 'MUtil_Model_FormBridge';
+
     protected $form;
     protected $model;
 
@@ -670,7 +675,11 @@ class MUtil_Model_FormBridge
         static $typeOptions;
 
         if (! $typeOptions) {
-            $typeOptions = Zend_Registry::get('MUtil_Model_FormBridge');
+            if (Zend_Registry::isRegistered(self::REGISTRY_KEY)) {
+                $typeOptions = Zend_Registry::get(self::REGISTRY_KEY);
+            } else {
+                $typeOptions = array();
+            }
         }
 
         if (substr($type, 0, 3) == 'add') {
