@@ -299,7 +299,8 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if ($this->acl) {
             foreach ($this->acl->getRoles() as $role) {
-                $roles[$role] = $this->translate->_(ucfirst($role));
+                //Do not translate, only make first one uppercase
+                $roles[$role] = ucfirst($role);
             }
         }
 
