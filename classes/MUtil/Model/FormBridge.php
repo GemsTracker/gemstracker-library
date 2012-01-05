@@ -156,6 +156,12 @@ class MUtil_Model_FormBridge
 
     private function _mergeOptions($name, array $options, $allowedOptionKeys_array)
     {
+        //If not explicitly set, use the form value for translatorDisabled, since we
+        //create the element outside the form scope and later add it
+        if (!isset($options['disableTranslator'])) {
+            $options['disableTranslator'] = $this->form->translatorIsDisabled();
+        }
+
         $args = func_get_args();
         $allowedOptionsKeys = MUtil_Ra::args($args, 2);
 

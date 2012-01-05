@@ -62,7 +62,7 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $bridge->addHidden('ggp_id_group');
         $bridge->addText('ggp_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
         $bridge->addText('ggp_description', 'size', 40);
-        $bridge->addSelect('ggp_role', 'disableTranslator', true);
+        $bridge->addSelect('ggp_role');
         $bridge->addCheckbox('ggp_group_active');
         $bridge->addCheckbox('ggp_staff_members');
         $bridge->addCheckbox('ggp_respondent_members');

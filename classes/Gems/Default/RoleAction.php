@@ -77,9 +77,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         $roles = $this->acl->getRoles();
         $parents = array_combine($roles, $roles);
-        $bridge->addMultiCheckbox('grl_parents', 'disableTranslator', true, 'multiOptions', $parents, 'required', false);
+        $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $parents, 'required', false);
 
-        $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'disableTranslator', true, 'multiOptions', $this->getUsedPrivileges(), 'required', false);
+        $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $this->getUsedPrivileges(), 'required', false);
 
         //Get inherited privileges and disable tem
         $result = $this->escort->acl->getRolePrivileges();
