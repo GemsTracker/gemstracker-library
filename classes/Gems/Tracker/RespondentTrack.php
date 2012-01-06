@@ -534,7 +534,9 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             if (true === $refresh) {
                 unset($this->_tokens);
                 unset($this->_activeTokens);
-                unset($this->_firstToken);
+                //Next line will cause errors later on when we refresh the tokens, getFirstToken() will then throw an error
+                //unset($this->_firstToken); 
+                $this->_firstToken = null;
             }
             $this->_tokens       = array();
             $this->_activeTokens = array();
