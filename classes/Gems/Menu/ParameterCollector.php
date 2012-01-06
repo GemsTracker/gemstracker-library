@@ -81,7 +81,7 @@ class Gems_Menu_ParameterCollector
      */
     public function getMenuParameter($name, $altname = null)
     {
-        if (array_key_exists($name, $this->values)) {
+        if (array_key_exists($name, $this->values) && ! empty($this->values[$name])) {
             return $this->values[$name];
         }
 
@@ -89,7 +89,7 @@ class Gems_Menu_ParameterCollector
         foreach ($this->sources as $source) {
             if ($source instanceof Zend_Controller_Request_Abstract) {
                 $value = $source->getParam($name, null);
-                if (null === $value) {
+                if (null === $value || empty($value)) {
                     $value = $source->getParam($altname, $this->values[$name]);
                 }
                 $this->values[$name] = $value;
@@ -106,7 +106,7 @@ class Gems_Menu_ParameterCollector
                     $this->values[$name] = $source[$name];
                 }
             }
-            if (null !== $this->values[$name]) {
+            if (null !== $this->values[$name] && ! empty($this->values[$name])) {
                 break;
             }
         }

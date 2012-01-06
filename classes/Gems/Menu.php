@@ -451,7 +451,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
     /**
      *
-     * @return Gems_Menu_MenuAbstract
+     * @return Gems_Menu_SubMenuItem
      */
     public function getCurrentParent()
     {

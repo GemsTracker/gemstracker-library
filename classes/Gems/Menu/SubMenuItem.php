@@ -153,7 +153,9 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         if ($this->_parameters && is_array($this->_parameters)) {
             foreach ($this->_parameters as $param => $name) {
                 $parameters[$param] = $source->getMenuParameter($name, $param);
-                // MUtil_Echo::r($param . '/' . $name . ' => ' . $value, $this->get('label'));
+                if (Gems_Menu::$verbose) {
+                        MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
+                }
             }
         }
 
