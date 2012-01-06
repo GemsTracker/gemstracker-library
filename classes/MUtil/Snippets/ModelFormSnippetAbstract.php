@@ -157,10 +157,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         //Get all elements in the model if not already done
-        $this->initItems();
+        $this->initItems($model);
 
         //And any remaining item
-        $this->addItems($bridge, $this->_items);
+        $this->addItems($bridge, $model, $this->_items);
     }
 
     /**
@@ -171,22 +171,23 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      *
      * @return void
      */
-    protected function addItems(MUtil_Model_FormBridge $bridge, $element1)
+    protected function addItems(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $element1)
     {
         $args = func_get_args();
-        if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more idividual items');
+        if (count($args) < 3) {
+            throw new Gems_Exception_Coding('Use at least 3 arguments; bridge, model and then one or more individual items');
         }
 
         $bridge   = array_shift($args);
+        $model = array_shift($args);
         $elements = MUtil_Ra::flatten($args);
 
         //Remove the elements from the _items variable
         $this->_items = array_diff($this->_items, $elements);
-
+        
         //And add them to the bridge
         foreach($elements as $name) {
-            if ($label = $this->model->get($name, 'label')) {
+            if ($label = $model->get($name, 'label')) {
                 $bridge->add($name);
             } else {
                 $bridge->addHidden($name);
@@ -361,10 +362,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Initialize the _items variable to hold all items from the model
      */
-    protected function initItems()
+    protected function initItems(MUtil_Model_ModelAbstract $model)
     {
         if (is_null($this->_items)) {
-            $this->_items = $this->model->getItemsOrdered();
+            $this->_items = $model->getItemsOrdered();
         }
     }
 
