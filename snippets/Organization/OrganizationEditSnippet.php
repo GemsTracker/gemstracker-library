@@ -64,7 +64,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         //Get all elements in the model if not already done
-        $this->initItems($model);
+        $this->initItems();
 
         //Create our tab structure first check if tab already exists to allow extension
         if (!($bridge->getTab('general'))) {
@@ -72,17 +72,17 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         }
         //Need the first two together for validation
         $bridge->addHtml('org')->b($this->_('Organization'));
-        $this->addItems($bridge, $model, 'gor_name', 'gor_id_organization', 'gor_location', 'gor_url', 'gor_active');
+        $this->addItems($bridge, 'gor_name', 'gor_id_organization', 'gor_location', 'gor_url', 'gor_active');
         $bridge->addHtml('contact')->b($this->_('Contact'));
         $bridge->addHtml('contact_desc')->i($this->_('The contact details for this organization, used for emailing.'));
-        $this->addItems($bridge, $model, 'gor_contact_name', 'gor_contact_email');
+        $this->addItems($bridge, 'gor_contact_name', 'gor_contact_email');
         $bridge->addHtml('general_other')->b($this->_('Other'));
-        $this->addItems($bridge, $model, 'gor_iso_lang', 'gor_code', 'gor_has_respondents');
+        $this->addItems($bridge, 'gor_iso_lang', 'gor_code', 'gor_has_respondents');
 
         if (!($bridge->getTab('email'))) {
             $bridge->addTab('email', 'value', $this->_('Email') . ' & ' . $this->_('Token'));
         }
-        $this->addItems($bridge, $model, 'gor_welcome', 'gor_signature');
+        $this->addItems($bridge, 'gor_welcome', 'gor_signature');
 
         if (!($bridge->getTab('access'))) {
             $bridge->addTab('access', 'value', $this->_('Access'));
@@ -94,7 +94,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             unset($multiOptions[$this->formData['gor_id_organization']]);
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
         }
-        $this->addItems($bridge, $model, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by');
+        $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by');
         
         //Show what organizations we can access
         if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
@@ -106,7 +106,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
         }
 
-        $this->addItems($bridge, $model, 'gor_user_class');
+        $this->addItems($bridge, 'gor_user_class');
 
         if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
             $class      = $this->formData['gor_user_class'] . 'Definition';
