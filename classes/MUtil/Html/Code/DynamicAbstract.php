@@ -164,6 +164,26 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
     }
 
     /**
+     * Sets the default value for a field to search and replace in the content.
+     *
+     * Used to set the value only when it is empty.
+     *
+     * No markers are used. If you want to replace '{path}' with 'x', you
+     * must specificy the name '{path}', not 'path'.
+     *
+     * @param string $name Full name to replace.
+     * @param string $value The value placed.
+     * @return MUtil_Html_Link_LinkAbstract (continuation pattern)
+     */
+    public function setDefault($name, $value)
+    {
+        if (! isset($this->_fields[$name])) {
+            $this->_fields[$name] = $value;
+        }
+        return $this;
+    }
+
+    /**
      * Set a field to search and replace in the content.
      *
      * No markers are used. If you want to replace '{path}' with 'x', you

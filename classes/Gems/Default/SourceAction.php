@@ -253,7 +253,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             // ../handlers/add name="CGI-exe"
             // add attribute responseBufferLimit="1024"
 
-            for ($i = 0; $i < 100; $i += 1) {
+            for ($i = 50; $i < 100; $i += 10) {
                 if ($i < 20) {
                     $text = 'Just beginning';
                 } else if ($i < 50) {
@@ -264,9 +264,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
                     $text = 'Nearly done';
                 }
                 // IIS?
-                echo str_repeat(' ',1024*3);
+                // echo str_repeat(' ',1024*3);
                 $progress->update($i, ' ' . $text);
-                sleep(15);
+                sleep(1);
             }
             $progress->finish();
         } // */

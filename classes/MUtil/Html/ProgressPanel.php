@@ -83,6 +83,13 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     );
 
     /**
+     * When true the progressbar should start immediately. When false the user has to perform an action.
+     *
+     * @var boolean
+     */
+    protected $_autoStart = true;
+
+    /**
      * When content must contain certain element types only the default child tag contains
      * the tagname of the element that is created to contain the content.
      *
@@ -138,6 +145,13 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
         'Zend_ProgressBar' => 'setProgressBar',
         'Zend_ProgressBar_Adapter' => 'setProgressBarAdapter',
         );
+
+    /**
+     * The mode to use for the panel: push or pull
+     *
+     * @var string
+     */
+    public $method = 'Pull';
 
     /**
      * The name of the parameter used for progress panel signals
@@ -196,12 +210,8 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     public function getCode()
     {
         if (! isset($this->_content[self::CODE])) {
-            $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/ProgressPanelPush.js');
-            // $js->setInHeader(false);
-            $js->setField('FUNCTION_PREFIX_', $this->getFunctionPrefix());
-            $js->setField('{TEXT_TAG}', $this->_defaultChildTag);
-            $js->setField('{TEXT_CLASS}', $this->progressTextClass);
-            $js->setField('{ID}', $this->getAttrib('id'));
+            $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/ProgressPanel' . $this->method . '.js');
+            $js->setInHeader(false);
 
             $this->_content[self::CODE] = $js;
         }
@@ -242,7 +252,11 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     public function getProgressBarAdapter()
     {
         if (! $this->_progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
-            $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPush());
+            if ($this->method == 'Pull') {
+                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
+            } else {
+                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPush());
+            }
         }
 
         return $this->_progressBarAdapter;
@@ -274,11 +288,15 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     {
         ZendX_JQuery::enableView($view);
 
-        if ($this->getProgressBarAdapter() instanceof Zend_ProgressBar_Adapter_JsPush) {
+        if ($this->getProgressBarAdapter() instanceof Zend_ProgressBar_Adapter) {
             $js = $this->getCode();
-            if (! $js->hasField('{URL}')) {
-                $js->setField('{URL}', $view->url(array($this->progressParameterName => $this->progressParameterRunValue)));
-            }
+
+            // Set the fields, in case they where not set earlier
+            $js->setDefault('__AUTOSTART__', $this->_autoStart ? 'true' : 'false');
+            $js->setDefault('{ID}', $this->getAttrib('id'));
+            $js->setDefault('{TEXT_TAG}', $this->_defaultChildTag);
+            $js->setDefault('{TEXT_CLASS}', $this->progressTextClass);
+            $js->setDefault('{URL}', addcslashes($view->url(array($this->progressParameterName => $this->progressParameterRunValue)), "/"));
         }
 
         if ($this->_lastChild) {
@@ -344,7 +362,11 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     public function setProgressBarAdapter(Zend_ProgressBar_Adapter $adapter)
     {
         if ($adapter instanceof Zend_ProgressBar_Adapter_JsPush) {
+            $js = $this->getCode();
             $prefix = $this->getFunctionPrefix();
+
+            // Set the fields, in case they where not set earlier
+            $js->setDefault('FUNCTION_PREFIX_', $prefix);
             $adapter->setUpdateMethodName($prefix . 'Update');
             $adapter->setFinishMethodName($prefix . 'Finish');
         }

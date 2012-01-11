@@ -16,13 +16,13 @@ function FUNCTION_PREFIX_Update(data)
         value: data.percent
     });
 
-    inner = main.find('.{TEXT_CLASS}');
+    inner = main.find('{TEXT_TAG}.{TEXT_CLASS}');
     if (inner) {
-        inner.empty();
-        inner.append(data.percent + '%');
+        text = data.percent + '%';
         if (data.text) {
-            inner.append(data.text);
+            text = text + data.text;
         }
+        inner.html(text);
     }
 }
 
@@ -39,8 +39,8 @@ function FUNCTION_PREFIX_Finish()
 }
 
 
-// FUNCTION_PREFIX_Start();
-
-// jQuery().ready(FUNCTION_PREFIX_Update({percent: 20, text: 'Hi'}));
-// jQuery().ready(FUNCTION_PREFIX_Update({percent: 20, text: ''}));
-jQuery().ready(FUNCTION_PREFIX_Start());
+if (__AUTOSTART__) {
+    // jQuery().ready(FUNCTION_PREFIX_Update({percent: 20, text: 'Hi'}));
+    // jQuery().ready(FUNCTION_PREFIX_Update({percent: 20, text: ''}));
+    jQuery().ready(FUNCTION_PREFIX_Start());
+}
