@@ -54,7 +54,7 @@
  * extension) and TokenValidator.
  *
  * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * preocessCompletedTokens() and recalculateTokens().
+ * processCompletedTokens() and recalculateTokens().
  *
  * @package    Gems
  * @subpackage Tracker

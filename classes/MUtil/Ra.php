@@ -404,6 +404,12 @@ class MUtil_Ra
         return self::$_toArrayConverter;
     }
 
+    /**
+     * Returns true if the $object either is an array or can be converted to an array.
+     *
+     * @param mixed $object
+     * @return boolean
+     */
     public static function is($object)
     {
         if (is_array($object)) {
@@ -411,6 +417,33 @@ class MUtil_Ra
         }
 
         return self::getToArrayConverter()->get($object);
+    }
+
+    /**
+     * Test whether the value is scalar or an array containing
+     * scalars or scalar arrays.
+     *
+     * @param mixed $value
+     * @return boolean
+     */
+    public static function isScalar($value)
+    {
+        if (null === $value) {
+            return true;
+
+        }
+
+        if (is_array($value)) {
+            foreach($value as $sub_value) {
+                if (! self::isScalar($sub_value)) {
+                    return false;
+                }
+            }
+            return true;
+
+        }
+        
+        return is_scalar($value);
     }
 
     /**

@@ -48,7 +48,7 @@
  * extension) and TokenValidator.
  *
  * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * preocessCompletedTokens() and recalculateTokens().
+ * processCompletedTokens() and recalculateTokens().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -822,6 +822,36 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     }
 
     /**
+     * Checks the token table to see if there are any answered surveys to be processed
+     *
+     * If the survey was started (and the token was forwarded to limesurvey) we need to check
+     * if is was completed. If so, we might want to check the track the survey is in to enable
+     * or disable future rounds
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param Gems_Tracker_Token_TokenSelect Select statements selecting tokens
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     */
+    protected function processTokensBatch(Gems_Tracker_Token_TokenSelect $tokenSelect, $userId)
+    {
+        $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
+
+        $batch = new Gems_Tracker_Batch_ProcessTokensBatch($where, $this);
+
+        if (! $batch->isLoaded()) {
+            $tokenRows = $tokenSelect->fetchAll();
+
+            foreach ($tokenRows as $tokenData) {
+                $batch->addToken($tokenData, $userId);
+            }
+        }
+
+        return $batch;
+    }
+
+    /**
      * Recalculates all token dates, timing and results
      * and outputs text messages.
      *
@@ -848,5 +878,32 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $changes = $this->processTokens($tokenSelect, $userId);
 
         return $changes->getMessages($this->translate);
+    }
+
+    /**
+     * Recalculates all token dates, timing and results
+     * and outputs text messages.
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param Zend_Translate $t
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param string $cond
+     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     */
+    public function recalculateTokensBatch($userId = null, $cond = null)
+    {
+        $userId = $this->_checkUserId($userId);
+        $tokenSelect = $this->getTokenSelect();
+        $tokenSelect->andReceptionCodes();
+        if ($cond) {
+            $tokenSelect->forWhere($cond);
+        }
+        //Only select surveys that are active in the source (so we can recalculate inactive in Gems)
+        $tokenSelect->andSurveys();
+        $tokenSelect->forWhere('gsu_surveyor_active = 1');
+
+        self::$verbose = true;
+        return $this->processTokensBatch($tokenSelect, $userId);
     }
 }

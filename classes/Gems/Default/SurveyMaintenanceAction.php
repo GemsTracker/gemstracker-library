@@ -268,6 +268,26 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $surveyId = $this->_getParam(MUtil_Model::REQUEST_ID);
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
+        /*
+        $batch = $this->loader->getTracker()->recalculateTokensBatch($this->loader->getCurrentUser()->getUserId(), $where);
+
+        if ($batch->hasStarted($this->getRequest())) {
+            // TODO
+        } else {
+            $this->html->h3(
+                sprintf($this->_('Checking survey results for the %s survey.'),
+                $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId)));
+
+            if ($batch->isLoaded()) {
+                $this->html->pInfo(sprintf($this->_('Running check for %s tokens...'), $batch->count()));
+                $this->html->append($batch->getPanel());
+            } else {
+                $this->html->pInfo($this->_('No tokens to check.'));
+            }
+        }
+        // */
+
+        //*
         $this->addMessage(sprintf($this->_(
                 'Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId)));
@@ -275,6 +295,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $this->addMessage($this->loader->getTracker()->recalculateTokens($this->session->user_id, $where));
 
         $this->afterSaveRoute($this->getRequest());
+
+        // */
     }
 
     public function checkAllAction()

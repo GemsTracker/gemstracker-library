@@ -244,7 +244,25 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $this->html->h3($this->_('Synchronize all sources of surveys'));
         $this->html->pInfo($this->_('Synchronization will update the status of all surveys imported into this project to the status at the sources.'));
         /*
+        $batch = new Gems_Tracker_Batch_SynchronizeSourceBatch();
+        // $batch->method = 'Push';
+        if (! $batch->isLoaded()) {
+            foreach ($data as $row) {
+                $batch->addSource($row['gso_id_source'], $row['gso_source_name']);
+            }
+        }
+        if ($batch->run($this->getRequest())) {
+            if ($batch->isReady()) {
+                $this->addMessage($batch->getMessages());
+                $this->afterSaveRoute($this->getRequest());
+            }
+        } else {
+            $this->html[] = $batch->getPanel();
+        }
+        // */
+        /*
         $progress = $this->html->progress('0%');
+        $progress->method = 'Push';
         // $progress = $this->html->progress();
         if ($progress->run($this->getRequest())) {
 
@@ -253,7 +271,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             // ../handlers/add name="CGI-exe"
             // add attribute responseBufferLimit="1024"
 
-            for ($i = 50; $i < 100; $i += 10) {
+            for ($i = 50; $i < 100; $i += 1) {
                 if ($i < 20) {
                     $text = 'Just beginning';
                 } else if ($i < 50) {
