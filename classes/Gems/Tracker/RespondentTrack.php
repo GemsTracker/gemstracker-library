@@ -459,13 +459,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getFirstToken()
     {
         if (! $this->_firstToken) {
-            if ($this->_tokens) {
-                $this->_firstToken = reset($this->_tokens);
-            } else {
+            if (! $this->_tokens) {
                 //No cache yet, but we might need all tokens later
-                $tokens = $this->getTokens();
-                $this->_firstToken = reset($tokens);
+                $this->getTokens();
             }
+            $this->_firstToken = reset($this->_tokens);
         }
 
         return $this->_firstToken;
@@ -526,16 +524,13 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * Returns all the tokens in this track
      *
+     * @param boolean $refresh When true, always reload
      * @return array of Gems_Tracker_Token
      */
     public function getTokens($refresh = false)
     {
-        if (! $this->_tokens || true === $refresh) {
-            if (true === $refresh) {
-                unset($this->_tokens);
-                unset($this->_activeTokens);
-                //Next line will cause errors later on when we refresh the tokens, getFirstToken() will then throw an error
-                //unset($this->_firstToken); 
+        if (! $this->_tokens || $refresh) {
+            if ($refresh) {
                 $this->_firstToken = null;
             }
             $this->_tokens       = array();
@@ -686,7 +681,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             // Reload reception code values
             $this->_ensureReceptionCode($code->getAllData());
         }
-        
+
         // Stopcodes have a different logic.
         if ($code->isStopCode()) {
             // Cascade stop to tokens
