@@ -90,7 +90,7 @@ class GemsEscort extends MUtil_Application_Escort
         $firebug = $application->getOption('firebug');
         $this->_startFirebird = $firebug['log'];
 
-        $sessionOptions['name'] = GEMS_PROJECT_NAME_UC . 'SESSID';
+        $sessionOptions['name'] = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
         $sessionOptions['cookie_path'] = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
 
         Zend_Session::start($sessionOptions);
