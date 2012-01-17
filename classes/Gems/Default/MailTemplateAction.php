@@ -58,6 +58,7 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
     public function createModel($detailed, $action)
     {
         $model = new MUtil_Model_TableModel('gems__mail_templates');
+        $model->addSort(array('gmt_subject' => SORT_ASC));
         $model->set('gmt_subject', 'label', $this->_('Subject'));
 
         if ($detailed) {
