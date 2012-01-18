@@ -194,6 +194,83 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Modified createAction to allow reactivation of deleted users
+     *
+     * When the gsf_login had the 'recordFound' error, we check if the user is deactivated.
+     * If so present the user and ask to confirm reactivation, otherwise show the erroneous form.
+     *
+     * When activated, we reroute to the edit action after reactivation (gsf_active => 1 and gul_can_login => 1)
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function createAction()
+    {
+        $this->html->h3(sprintf($this->_('New %s...'), $this->getTopic()));
+        
+        $confirmed = $this->getRequest()->getParam('confirmed');
+        $id        = $this->getRequest()->getParam('id');
+        if (!is_null($confirmed)) {
+            if ($confirmed == true && intval($id) > 0) {
+                $id    = intval($id);
+                $model = $this->getModel();
+                $model->setFilter(array('gsf_id_user' => $id));
+                $result       = $model->loadFirst();
+                if ($result) {
+                    if ($result['gsf_active'] == 0 || $result['gul_can_login'] == 0) {
+                        $result['gsf_active']    = 1;
+                        $result['gul_can_login'] = 1;
+                        $model->save($result);
+                        $this->_reroute(array('action' => 'edit', 'id'     => $id), true);
+                    }
+                }
+            }
+            //Not confirmed or id invalid redirect to index
+            $this->_reroute(array('action' => 'index'), true);
+        }
+
+        if ($form = $this->processForm()) {
+            if ($element = $form->getElement('gsf_login')) {
+                $errors = $element->getErrors();
+                if (array_search('recordFound', $errors) !== false) {
+                    //We have a duplicate login!
+                    $model = $this->getModel();
+                    $model->setFilter(array(
+                        'gsf_login'           => $form->getValue('gsf_login'),
+                        'gsf_id_organization' => $form->getValue('gsf_id_organization')
+                    ));
+                    $result = $model->load();
+
+                    if (count($result) == 1) {
+                        $result = array_shift($result); //Get the first (only) row
+                        if ($result['gsf_active'] == 0 || $result['gul_can_login'] == 0) {
+                            //Ok we try to add an inactive user...
+                            //now ask if this is the one we would like to reactivate?
+                            $question = sprintf($this->_('User with id %s already exists but is deleted, do you want to reactivate the account?'), $result['gsf_login']);
+
+                            $repeater = $model->loadRepeatable();
+                            $table    = $this->getShowTable();
+                            $table->caption($question);
+                            $table->setRepeater($repeater);
+
+                            $footer = $table->tfrow($question, ' ', array('class' => 'centerAlign'));
+                            $footer->actionLink(array('confirmed' => true, 'id' => $result['gsf_id_user']), $this->_('Yes'));
+                            $footer->actionLink(array('confirmed' => 0), $this->_('No'));
+
+                            $this->html[] = $table;
+                            $this->html->buttonDiv($this->createMenuLinks());
+                            return;
+                        } else {
+                            //User is active... this is a real duplicate so continue the flow
+                        }
+                    }
+                }
+            }
+            $this->html[] = $form;
+        }
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
