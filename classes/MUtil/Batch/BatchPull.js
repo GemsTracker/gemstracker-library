@@ -70,7 +70,7 @@ jQuery.widget("ui.pullProgressPanel", {
 });
 
 jQuery(document).ready(function() {
-    jQuery("#{ID}").pullProgressPanel({"url":"{URL}","autoStart":__AUTOSTART__,"target":"#{ID} {TEXT_TAG}.{TEXT_CLASS}"});
+    jQuery("#{ID}").pullProgressPanel({"url":"{URL_START}","autoStart":__AUTOSTART__,"target":"#{ID} {TEXT_TAG}.{TEXT_CLASS}"});
 });
 
 function FUNCTION_PREFIX_Finish()

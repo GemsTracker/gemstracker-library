@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
@@ -40,7 +40,7 @@
  *
  * @package    Gems
  * @subpackage Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
@@ -70,8 +70,10 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
             $tokenId = $tokenData;
         }
 
-        MUtil_Echo::track($tokenData);
-        $this->addStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenData);
+        // MUtil_Echo::track($tokenData);
+        $this->setStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenData);
+
+        return $this;
     }
 
     protected function checkTrackTokens($respTrackData, $userId)
@@ -99,7 +101,7 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
 
         if ($token->isCompleted()) {
-            $this->addStep('processTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
+            $this->setStep('processTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
         }
     }
 
@@ -116,7 +118,7 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
             }
 
             $trackId = $respTrack->getRespondentTrackId();
-            $this->addStep('checkTrackTokens', 'chktrck-' . $trackId, $trackId, $userid);
+            $this->setStep('checkTrackTokens', 'chktrck-' . $trackId, $trackId, $userid);
         }
     }
 }

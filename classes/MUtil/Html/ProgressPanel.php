@@ -46,8 +46,6 @@
  */
 class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
 {
-    const CODE = "MUtil_Html_ProgressPanel_Code";
-
     /**
      * For some elements (e.g. table and tbody) the logical thing to do when content
      * is added that does not have an $_allowedChildTags is to add that content to
@@ -83,13 +81,6 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     );
 
     /**
-     * When true the progressbar should start immediately. When false the user has to perform an action.
-     *
-     * @var boolean
-     */
-    protected $_autoStart = true;
-
-    /**
      * When content must contain certain element types only the default child tag contains
      * the tagname of the element that is created to contain the content.
      *
@@ -104,13 +95,6 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     protected $_defaultChildTag = 'div';
 
     /**
-     * Name to prefix the functions, to avoid naming clashes.
-     *
-     * @var string Default is the classname with an extra underscore
-     */
-    protected $_functionPrefix;
-
-    /**
      * Usually no text is appended before an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
      * view.
@@ -118,54 +102,6 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      * @var string Content added before the element.
      */
     protected $_prependString = "\n";
-
-    /**
-     *
-     * @var Zend_ProgressBar
-     */
-    protected $_progressBar;
-
-    /**
-     *
-     * @var Zend_ProgressBar_Adapter
-     */
-    protected $_progressBarAdapter;
-
-    /**
-     * Extra array with special types for subclasses.
-     *
-     * When an object of one of the key types is used, then use
-     * the class method defined as the value.
-     *
-     * @see $_specialTypesDefault
-     *
-     * @var array Of 'class or interfacename' => 'class method' of null
-     */
-    protected $_specialTypes = array(
-        'Zend_ProgressBar' => 'setProgressBar',
-        'Zend_ProgressBar_Adapter' => 'setProgressBarAdapter',
-        );
-
-    /**
-     * The mode to use for the panel: push or pull
-     *
-     * @var string
-     */
-    public $method = 'Pull';
-
-    /**
-     * The name of the parameter used for progress panel signals
-     *
-     * @var string
-     */
-    public $progressParameterName = 'progress';
-
-    /**
-     * The value required for the progress panel to start running
-     *
-     * @var string
-     */
-    public $progressParameterRunValue = 'run';
 
     /**
      * Class name of inner element that displays text
@@ -187,79 +123,17 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Update the progess panel
+     * Returns the tag name for the default child.
      *
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
-     */
-    public function finish()
-    {
-        $bar = $this->getProgressBar();
-        $bar->finish();
-
-        return $this;
-    }
-    /**
-     * Returns the JavaScript object associated with this object.
+     * Exposed as needed by some classes using this class.
      *
-     * WARNING: calling this object sets it's position in the order the
-     * objects are rendered. If you use MUtil_Lazy objects, make sure they
-     * have the correct value when rendering.
-     *
-     * @return MUtil_Html_Code_JavaScript
-     */
-    public function getCode()
-    {
-        if (! isset($this->_content[self::CODE])) {
-            $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/ProgressPanel' . $this->method . '.js');
-            $js->setInHeader(false);
-
-            $this->_content[self::CODE] = $js;
-        }
-
-        return $this->_content[self::CODE];
-    }
-
-    /**
-     * Returns the prefix used for the function names to avoid naming clashes.
+     * @see MUtil_Batch_BatchAbstract
      *
      * @return string
      */
-    public function getFunctionPrefix()
+    public function getDefaultChildTag()
     {
-        if (! $this->_functionPrefix) {
-            $this->setFunctionPrefix(__CLASS__ . '_' . $this->getAttrib('id'). '_');
-        }
-
-        return (string) $this->_functionPrefix;
-    }
-
-    /**
-     *
-     * @return Zend_ProgressBar
-     */
-    public function getProgressBar()
-    {
-        if (! $this->_progressBar instanceof Zend_ProgressBar) {
-            $this->setProgressBar(new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100));
-        }
-        return $this->_progressBar;
-    }
-
-    /**
-     *
-     * @return Zend_ProgressBar_Adapter
-     */
-    public function getProgressBarAdapter()
-    {
-        if (! $this->_progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
-            if ($this->method == 'Pull') {
-                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
-            } else {
-                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPush());
-            }
-        }
-
-        return $this->_progressBarAdapter;
+        return $this->_defaultChildTag;
     }
 
     /**
@@ -275,7 +149,7 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
     }
 
     /**
-     * Function to allow overloading  of tag rendering only
+     * Function to allow overloading of tag rendering only
      *
      * Renders the element tag with it's content into a html string
      *
@@ -286,19 +160,6 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
      */
     protected function renderElement(Zend_View_Abstract $view)
     {
-        ZendX_JQuery::enableView($view);
-
-        if ($this->getProgressBarAdapter() instanceof Zend_ProgressBar_Adapter) {
-            $js = $this->getCode();
-
-            // Set the fields, in case they where not set earlier
-            $js->setDefault('__AUTOSTART__', $this->_autoStart ? 'true' : 'false');
-            $js->setDefault('{ID}', $this->getAttrib('id'));
-            $js->setDefault('{TEXT_TAG}', $this->_defaultChildTag);
-            $js->setDefault('{TEXT_CLASS}', $this->progressTextClass);
-            $js->setDefault('{URL}', addcslashes($view->url(array($this->progressParameterName => $this->progressParameterRunValue)), "/"));
-        }
-
         if ($this->_lastChild) {
             $this->_lastChild->class = $this->progressTextClass;
 
@@ -315,78 +176,5 @@ class MUtil_Html_ProgressPanel extends MUtil_Html_HtmlElement
         }
 
         return parent::renderElement($view);
-    }
-
-    /**
-     * Checks whether the progress panel should be running
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return boolean
-     */
-    public function run(Zend_Controller_Request_Abstract $request)
-    {
-        return $request->getParam($this->progressParameterName) === $this->progressParameterRunValue;
-    }
-
-    /**
-     * Name prefix for functions.
-     *
-     * Set automatically to __CLASS___, use different name
-     * in case of name clashes.
-     *
-     * @param string $prefix
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
-     */
-    public function setFunctionPrefix($prefix)
-    {
-        $this->_functionPrefix = $prefix;
-        return $this;
-    }
-
-    /**
-     *
-     * @param Zend_ProgressBar $progressBar
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
-     */
-    public function setProgressBar(Zend_ProgressBar $progressBar)
-    {
-        $this->_progressBar = $progressBar;
-        return $this;
-    }
-
-    /**
-     *
-     * @param Zend_ProgressBar_Adapter_Interface $adapter
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
-     */
-    public function setProgressBarAdapter(Zend_ProgressBar_Adapter $adapter)
-    {
-        if ($adapter instanceof Zend_ProgressBar_Adapter_JsPush) {
-            $js = $this->getCode();
-            $prefix = $this->getFunctionPrefix();
-
-            // Set the fields, in case they where not set earlier
-            $js->setDefault('FUNCTION_PREFIX_', $prefix);
-            $adapter->setUpdateMethodName($prefix . 'Update');
-            $adapter->setFinishMethodName($prefix . 'Finish');
-        }
-
-        $this->_progressBarAdapter = $adapter;
-        return $this;
-    }
-
-    /**
-     * Update the progess panel
-     *
-     * @param int $value
-     * @param string $text
-     * @return MUtil_Html_ProgressPanel (continuation pattern)
-     */
-    public function update($value, $text = null)
-    {
-        $bar = $this->getProgressBar();
-        $bar->update($value, $text);
-
-        return $this;
     }
 }

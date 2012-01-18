@@ -243,8 +243,38 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $this->html->h3($this->_('Synchronize all sources of surveys'));
         $this->html->pInfo($this->_('Synchronization will update the status of all surveys imported into this project to the status at the sources.'));
+
         /*
-        $batch = new Gems_Tracker_Batch_SynchronizeSourceBatch();
+        $batch = new MUtil_Batch_WaitBatch();
+        $batch->method = MUtil_Batch_BatchAbstract::PUSH;
+        if ($batch->isLoaded()) {
+            if ($batch->isFinished()) {
+                if (! $batch->showReport($this->getRequest())) {
+                    $batch->reset();
+                }
+            } else {
+                if ($batch->hasStarted($this->getRequest())) {
+                    $batch->runAll();
+                    exit;
+                }
+            }
+        } else {
+            $batch->addWaits(4, 2);
+            $batch->addWaitsLater(15, 1);
+            $batch->addWaits(1, 1);
+            $batch->addWaitsLater(1, 2);
+            $batch->addWaits(4);
+        }
+        if ($batch->showReport($this->getRequest())) {
+            $this->addMessage($batch->getReport());
+            $batch->reset();
+            $this->html->pInfo()->actionLink(array($batch->progressParameterName => null), $this->_('Restart'));
+        } else {
+            $this->html->append($batch->getPanel($this->view));
+        }
+        // */
+        /*
+        // $batch = new Gems_Tracker_Batch_SynchronizeSourceBatch();
         // $batch->method = 'Push';
         if (! $batch->isLoaded()) {
             foreach ($data as $row) {
