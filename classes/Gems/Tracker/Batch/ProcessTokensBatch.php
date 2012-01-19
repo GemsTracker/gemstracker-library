@@ -50,14 +50,13 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
      *
      * @var Gems_Tracker
      */
-    public $tracker;
+    protected $tracker;
 
-    public function __construct($where, Gems_Tracker $tracker)
-    {
-        parent::__construct(__CLASS__ . '::' . $where);
-
-        $this->tracker = $tracker;
-    }
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
 
     public function addToken($tokenData, $userId)
     {
@@ -71,7 +70,7 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
 
         // MUtil_Echo::track($tokenData);
-        $this->setStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenData);
+        $this->setStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenData, $userId);
 
         return $this;
     }
@@ -105,6 +104,68 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
     }
 
+    public function getCounterMessages()
+    {
+        if ($this->getCounter('checkedRespondentTracks')) {
+            $messages[] = sprintf($this->translate->_('Checked %d tracks.'), $this->getCounter('checkedRespondentTracks'));
+        }
+        if ($this->getCounter('checkedTokens') || (! $this->getCounter('checkedRespondentTracks'))) {
+            $messages[] = sprintf($this->translate->_('Checked %d tokens.'), $this->getCounter('checkedTokens'));
+        }
+
+        if ($this->hasChanged()) {
+            if ($this->getCounter('surveyCompletionChanges')) {
+                $messages[] = sprintf($this->translate->_('Answers changed by survey completion event for %d tokens.'), $this->getCounter('surveyCompletionChanges'));
+            }
+            if ($this->getCounter('resultDataChanges')) {
+                $messages[] = sprintf($this->translate->_('Results and timing changed for %d tokens.'), $this->getCounter('resultDataChanges'));
+            }
+            if ($this->getCounter('roundCompletionChanges')) {
+                $messages[] = sprintf($this->translate->_('%d token round completion events caused changed to %d tokens.'), $this->getCounter('roundCompletionCauses'), $this->getCounter('roundCompletionChanges'));
+            }
+            if ($this->getCounter('tokenDateChanges')) {
+                $messages[] = sprintf($this->translate->_('%2$d token date changes in %1$d tracks.'), $this->getCounter('tokenDateCauses'), $this->getCounter('tokenDateChanges'));
+            }
+            if ($this->getCounter('roundChangeUpdates')) {
+                $messages[] = sprintf($this->translate->_('Round changes propagated to %d tokens.'), $this->getCounter('roundChangeUpdates'));
+            }
+            if ($this->getCounter('deletedTokens')) {
+                $messages[] = sprintf($this->translate->_('%d tokens deleted by round changes.'), $this->getCounter('deletedTokens'));
+            }
+            if ($this->getCounter('createdTokens')) {
+                $messages[] = sprintf($this->translate->_('%d tokens created to by round changes.'), $this->getCounter('createdTokens'));
+            } 
+        } else {
+            $messages[] = $this->translate->_('No tokens were changed.');
+        }
+
+        return $messages;
+    }
+
+    /**
+     * String of messages from the batch
+     *
+     * Do not forget to reset() the batch if you're done with it after
+     * displaying the report.
+     *
+     * @param boolean $reset When true the batch is reset afterwards
+     * @return array
+     */
+    public function getMessages($reset = false)
+    {
+        return array_merge($this->getCounterMessages(), parent::getMessages($reset));
+    }
+
+    public function hasChanged()
+    {
+        return $this->getCounter('resultDataChanges') ||
+                $this->getCounter('surveyCompletionChanges') ||
+                $this->getCounter('roundCompletionChanges') ||
+                $this->getCounter('tokenDateCauses') ||
+                $this->getCounter('roundChangeUpdates') ||
+                $this->getCounter('createdTokens');
+    }
+
     protected function processTokenCompletion($tokenData, $userId)
     {
         $token = $this->tracker->getToken($tokenData);
@@ -118,7 +179,7 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
             }
 
             $trackId = $respTrack->getRespondentTrackId();
-            $this->setStep('checkTrackTokens', 'chktrck-' . $trackId, $trackId, $userid);
+            $this->setStep('checkTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
         }
     }
 }

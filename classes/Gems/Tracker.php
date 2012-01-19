@@ -838,7 +838,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
 
-        $batch = new Gems_Tracker_Batch_ProcessTokensBatch($where, $this);
+        $batch = $this->_loadClass('Batch_ProcessTokensBatch', true); //, array($where, $this));
 
         if (! $batch->isLoaded()) {
             $tokenRows = $tokenSelect->fetchAll();

@@ -46,10 +46,14 @@
  * Each step in the sequence consists of a method name of the child object
  * and any number of scalar variables and array's containing scalar variables.
  *
+ * See MUtil_Batch_WaitBatch for example usage.
+ *
  * A nice future extension would be to separate the storage engine used so we
  * could use e.g. Zend_Queue as an alternative for storing the command stack.
  * However, as this package needs more state info than available in Zend_Queue
  * we would need an extra extension for that.
+ *
+ * @see MUtil_Batch_WaitBatch
  *
  * @package    MUtil
  * @subpackage Batch
@@ -94,14 +98,37 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      *
      * @var boolean
      */
-    public $autoStart = true;
+    public $autoStart = false;
 
     /**
-     * The mode to use for the panel: push or pull
+     * The number of bytes to pad during push communication in Kilobytes.
+     *
+     * This is needed as many servers need extra output passing to avoid buffering.
+     *
+     * Also this allows you to keep the server buffer high while using this JsPush.
+     *
+     * @var int
+     */
+    public $extraPushPaddingKb = 0;
+
+    /**
+     * The mode to use for the panel: PUSH or PULL
      *
      * @var string
      */
-    public $method = self::PULL;
+    protected $method = self::PULL;
+
+    /**
+     * The minimal time used between send progress reports.
+     *
+     * This enables quicker processing as multiple steps can be taken in a single
+     * run(), without the run taking too long to answer.
+     *
+     * Set to 0 to report back on each step.
+     *
+     * @var int
+     */
+    public $minimalStepDurationMs = 1000;
 
     /**
      *
@@ -230,66 +257,108 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     protected function addToCounter($name, $add = 1)
     {
-        if (! isset($this->session->counters[$name])) {
-            $this->session->counters[$name] = 0;
+        if (! isset($this->_session->counters[$name])) {
+            $this->_session->counters[$name] = 0;
         }
-        $this->session->counters[$name] += $add;
+        $this->_session->counters[$name] += $add;
 
-        return $this->session->counters[$name];
-    }
-
-	/**
-	 * Count the number of commands
-     *
-	 * @return int The custom count as an integer.
-	 */
-	public function count()
-    {
-        return count($this->_session->commands);
+        return $this->_session->counters[$name];
     }
 
     /**
-     * Returns the prefix used for the function names to avoid naming clashes.
+     * The number of commands in this batch (both processed
+     * and unprocessed).
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->_session->commands) + $this->_session->processed;
+    }
+
+    /**
+     * Return the value of a named counter
+     *
+     * @param string $name
+     * @return integer
+     */
+    public function getCounter($name)
+    {
+        MUtil_Echo::track($this->_session->counters);
+        if (isset($this->_session->counters[$name])) {
+            return $this->_session->counters[$name];
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the prefix used for the function names for the PUSH method to avoid naming clashes.
+     *
+     * Set automatically to get_class($this) . '_' $this->_id . '_', use different name
+     * in case of name clashes.
+     *
+     * @see setFunctionPrefix()
      *
      * @return string
      */
-    public function getFunctionPrefix()
+    protected function getFunctionPrefix()
     {
         if (! $this->_functionPrefix) {
-            $this->setFunctionPrefix(__CLASS__ . '_' . $this->_id . '_');
+            $this->setFunctionPrefix(get_class($this) . '_' . $this->_id . '_');
         }
 
         return (string) $this->_functionPrefix;
     }
 
     /**
-     * Return
-     * @return MUtil_Html_ProgressPanel
+     * String of messages from the batch
+     *
+     * Do not forget to reset() the batch if you're done with it after
+     * displaying the report.
+     *
+     * @param boolean $reset When true the batch is reset afterwards
+     * @return array
      */
-    public function getPanel(Zend_View_Abstract $view)
+    public function getMessages($reset = false)
     {
-        ZendX_JQuery::enableView($view);
+        $messages = $this->_session->messages;
 
-        if ($this->isFinished()) {
-            $content = '100%';
-        } else {
-            $content = '100%';
+        if ($reset) {
+            $this->reset();
         }
 
-        $panel = new MUtil_Html_ProgressPanel('0%');
+        return $messages;
+    }
 
+    /**
+     * Return a progress panel object, set up to be used by
+     * this batch.
+     *
+     * @param Zend_View_Abstract $view
+     * @param mixed $arg_array MUtil_Ra::args() arguments to populate progress bar with
+     * @return MUtil_Html_ProgressPanel
+     */
+    public function getPanel(Zend_View_Abstract $view, $arg_array = null)
+    {
+        $args = func_get_args();
+
+        ZendX_JQuery::enableView($view);
+
+        $urlFinish = $view->url(array($this->progressParameterName => $this->progressParameterReportValue));
+        $urlRun    = $view->url(array($this->progressParameterName => $this->progressParameterRunValue));
+
+        $panel = new MUtil_Html_ProgressPanel($args);
         $panel->id = $this->_id;
-        $panel->method = $this->method;
 
         $js = new MUtil_Html_Code_JavaScript(dirname(__FILE__) . '/Batch' . $this->method . '.js');
         $js->setInHeader(false);
         // Set the fields, in case they where not set earlier
         $js->setDefault('__AUTOSTART__', $this->autoStart ? 'true' : 'false');
-        $js->setDefault('{ID}', $this->_id);
-        $js->setDefault('{TEXT_TAG}', $panel->getDefaultChildTag());
-        $js->setDefault('{TEXT_CLASS}', $panel->progressTextClass);
-        $js->setDefault('{URL_FINISH}', addcslashes($view->url(array($this->progressParameterName => $this->progressParameterReportValue)), "/"));
-        $js->setDefault('{URL_START}', addcslashes($view->url(array($this->progressParameterName => $this->progressParameterRunValue)), "/"));
+        $js->setDefault('{PANEL_ID}', '#' . $this->_id);
+        $js->setDefault('{TEXT_ID}', $panel->getDefaultChildTag() . '.' . $panel->progressTextClass);
+        $js->setDefault('{URL_FINISH}', addcslashes($urlFinish, "/"));
+        $js->setDefault('{URL_START_RUN}', addcslashes($urlRun, "/"));
         $js->setDefault('FUNCTION_PREFIX_', $this->getFunctionPrefix());
 
         $panel->append($js);
@@ -298,61 +367,111 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * The Zend ProgressBar handles the communication through
+     * an adapter interface.
      *
      * @return Zend_ProgressBar
      */
     public function getProgressBar()
     {
         if (! $this->progressBar instanceof Zend_ProgressBar) {
-            $this->setProgressBar(new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100));
+            $this->setProgressBar(new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100, $this->_session->getNamespace() . '_pb'));
         }
         return $this->progressBar;
     }
 
     /**
+     * The communication adapter for the ProgressBar.
      *
      * @return Zend_ProgressBar_Adapter
      */
     public function getProgressBarAdapter()
     {
-        if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
-            if ($this->method == self::PULL) {
+        // Does the current adapter accord with the method?
+        if ($this->progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
+            if ($this->isPull()) {
+                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPull) {
+                    $this->progressBarAdapter = null;
+                }
+            } else {
+                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPush) {
+                    $this->progressBarAdapter = null;
+                }
+            }
+        } else {
+            $this->progressBarAdapter = null;
+        }
+
+        // Create when needed
+        if ($this->progressBarAdapter === null) {
+            if ($this->isPull()) {
                 $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
             } else {
                 $this->setProgressBarAdapter(new MUtil_ProgressBar_Adapter_JsPush());
-                $this->progressBarAdapter->extraPaddingKb = 3;
             }
+        }
+
+        // Check for extra padding
+        if ($this->progressBarAdapter instanceof MUtil_ProgressBar_Adapter_JsPush) {
+            $this->progressBarAdapter->extraPaddingKb = $this->extraPushPaddingKb;
         }
 
         return $this->progressBarAdapter;
     }
 
-    public function getReport()
-    {
-        $messages = $this->_session->messages;
-
-        return $messages;
-    }
-
     /**
-     * Returns true when the parameters passed mean the program has started.
+     * Returns a button that can be clicked to restart the progress bar.
      *
-     * @param Zend_Controller_Request_Abstract $request
-     * @return boolean
+     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
+     * @return MUtil_Html_HtmlElement
      */
-    public function hasStarted(Zend_Controller_Request_Abstract $request)
+    public function getRestartButton($args_array = 'Restart')
     {
-        return $request->getParam($this->progressParameterName) === $this->progressParameterRunValue;
+        $args = MUtil_Ra::args(func_get_args());
+        $args['onclick'] = new MUtil_Html_OnClickArrayAttribute(
+            new MUtil_Html_Raw('if (! this.disabled) {location.href = "'),
+            new MUtil_Html_HrefArrayAttribute(array($this->progressParameterName => null)),
+            new MUtil_Html_Raw('";} this.disabled = true; event.cancelBubble=true;'));
+
+        return new MUtil_Html_HtmlElement('button', $args);
     }
 
     /**
-     * Return true after commands all have been ran and there was at least one command to run.
+     * Returns a link that can be clicked to restart the progress bar.
+     *
+     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
+     * @return MUtil_Html_AElement
+     */
+    public function getRestartLink($args_array = 'Restart')
+    {
+        $args = MUtil_Ra::args(func_get_args());
+        $args['href'] = array($this->progressParameterName => null);
+
+        return new MUtil_Html_AElement($args);
+    }
+
+    /**
+     * Returns a button that can be clicked to start the progress bar.
+     *
+     * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
+     * @return MUtil_Html_HtmlElement
+     */
+    public function getStartButton($args_array = 'Start')
+    {
+        $args = MUtil_Ra::args(func_get_args());
+        $args['onclick'] = 'if (! this.disabled) {' . $this->getFunctionPrefix() . 'Start();} this.disabled = true; event.cancelBubble=true;';
+
+        return new MUtil_Html_HtmlElement('button', $args);
+    }
+
+    /**
+     * Return true after commands all have been ran.
      *
      * @return boolean
      */
     public function isFinished()
     {
-        return (0 == $this->count()) && ($this->_session->processed > 0);
+        return $this->_session->finished;
     }
 
     /**
@@ -362,18 +481,102 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function isLoaded()
     {
-        return $this->count() || $this->_session->processed;
+        return $this->_session->commands || $this->_session->processed;
     }
 
+    /**
+     * Does the batch use the PULL method for communication.
+     *
+     * @return boolean
+     */
+    public function isPull()
+    {
+        return $this->method === self::PULL;
+    }
+
+    /**
+     * Does the batch use the PUSH method for communication.
+     *
+     * @return boolean
+     */
+    public function isPush()
+    {
+        return $this->method === self::PUSH;
+    }
+
+    /**
+     * Reset and empty the session storage
+     *
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     */
     public function reset()
     {
         $this->_session->commands  = array();
         $this->_session->counters  = array();
         $this->_session->count     = 0;
+        $this->_session->finished  = false;
         $this->_session->messages  = array();
         $this->_session->processed = 0;
+
+        return $this;
     }
 
+    /**
+     * Run as much code as possible, but do report back.
+     *
+     * Returns true if any output was communicated, i.e. the "normal"
+     * page should not be displayed.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return boolean
+     */
+    public function run(Zend_Controller_Request_Abstract $request)
+    {
+        // Is there something to run?
+        if ($this->isFinished() || (! $this->isLoaded())) {
+            return false;
+        }
+
+        // Check for run url
+        if ($request->getParam($this->progressParameterName) === $this->progressParameterRunValue) {
+            $bar = $this->getProgressBar();
+
+            $isPull    = $this->isPull();
+            $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
+            // error_log('Rep: ' . $reportRun);
+            while ($this->step()) {
+                // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
+                if (microtime(true) > $reportRun) {
+                    // Communicate progress
+                    $percent = round($this->_session->processed / (count($this->_session->commands) + $this->_session->processed) * 100, 2);
+
+                    $bar->update($percent, end($this->_session->messages));
+
+                    // INFO: When using PULL $bar->update() should exit the program,
+                    // but just let us make sure.
+                    if ($isPull) {
+                        return true;
+                    }
+                }
+            }
+            if (! $this->_session->commands) {
+                $this->_session->finished  = true;
+                $bar->finish();
+            }
+
+            // There is progressBar output
+            return true;
+        } else {
+            // No ProgressBar output
+            return false;
+        }
+    }
+
+    /**
+     * Run the whole batch at once, without communicating with a progress bar.
+     *
+     * @return int Number of steps taken
+     */
     public function runAll()
     {
         while ($this->step());
@@ -382,9 +585,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
-     * Name prefix for functions.
+     * Name prefix for PUSH functions.
      *
-     * Set automatically to __CLASS___, use different name
+     * Set automatically to get_class($this) . '_' $this->_id . '_', use different name
      * in case of name clashes.
      *
      * @param string $prefix
@@ -411,6 +614,80 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Sets the communication method for progress reporting.
+     *
+     * @param string $method One of the constants of this object
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setMethod($method)
+    {
+        switch ($method) {
+            case self::PULL:
+            case self::PUSH:
+                $this->method = $method;
+                return $this;
+
+            default:
+                throw new MUtil_Batch_BatchException("Invalid batch usage method '$method'.");
+        }
+    }
+
+    /**
+     * Set the communication method used by this batch to PULL.
+     *
+     * This is the most stable method as it works independently of
+     * server settings. Therefore it is the default method.
+     *
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setMethodPull()
+    {
+        $this->setMethod(self::PULL);
+
+        return $this;
+    }
+
+    /**
+     * Set the communication method used by this batch to PUSH.
+     *
+     * I.e. the start page opens an iFrame, the url of the iFrame calls the
+     * batch with the RUN parameter and the process returns JavaScript tags
+     * that handle the progress reporting.
+     *
+     * This is a very fast and resource inexpensive method for batch processing
+     * but it is only suitable for short running processes as servers tend to
+     * cut off http calls that take more than some fixed period of time to run -
+     * even when those processes keep returning data.
+     *
+     * Another problem with this method is buffering, i.e. the tendency of servers
+     * to wait sending data back until a process has been completed or enough data
+     * has been send.
+     *
+     * E.g. on IIS 7 you have to adjust the file %windir%\System32\inetsrv\config\applicationHost.config
+     * and add the attribute responseBufferLimit="1024" twice, both to
+     * ../handlers/add name="PHP_via_FastCGI" and to ../handlers/add name="CGI-exe".
+     *
+     * Still the above works only partially, IIS tends to wait longer before sending the
+     * first batch of data. The trick is to add extra spaces to the output until the
+     * threshold is reached. This is done by specifying the $extraPaddingKb parameter.
+     * Just increase it until it works.
+     *
+     * @param int $extraPaddingKb
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setMethodPush($extraPaddingKb = null)
+    {
+        $this->setMethod(self::PUSH);
+        if ((null !== $extraPaddingKb) && is_numeric($extraPaddingKb)) {
+            $this->extraPushPaddingKb = $extraPaddingKb;
+        }
+
+        return $this;
+    }
+
+    /**
+     * The Zend ProgressBar handles the communication through
+     * an adapter interface.
      *
      * @param Zend_ProgressBar $progressBar
      * @return MUtil_Html_ProgressPanel (continuation pattern)
@@ -422,6 +699,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * The communication adapter for the ProgressBar.
      *
      * @param Zend_ProgressBar_Adapter_Interface $adapter
      * @return MUtil_Html_ProgressPanel (continuation pattern)
@@ -458,40 +736,20 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
-     * Returns true when the parameters passed mean the program has started.
+     * Progress a single step on the command stack
      *
-     * @param Zend_Controller_Request_Abstract $request
      * @return boolean
      */
-    public function showReport(Zend_Controller_Request_Abstract $request)
+    protected function step()
     {
-        return $request->getParam($this->progressParameterName) === $this->progressParameterReportValue;
-    }
-
-    /**
-     * Workhorse function that does all the real work.
-     *
-     * @return int
-     */
-    public function step()
-    {
-        $bar = $this->getProgressBar();
-
         if (isset($this->_session->commands) && $this->_session->commands) {
             $command = array_shift($this->_session->commands);
             $this->_session->processed++;
 
             call_user_func_array(array($this, $command['method']), $command['parameters']);
-
-            $percent = round($this->_session->processed / ($this->count() + $this->_session->processed) * 100, 2);
-
-            $bar->update($percent, end($this->_session->messages));
             return true;
         } else {
-            $bar->finish();
-
             return false;
         }
-        return count($this->_session->commands) > 0;
     }
 }

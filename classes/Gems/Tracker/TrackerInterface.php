@@ -288,4 +288,17 @@ interface Gems_Tracker_TrackerInterface {
      * @return array of translated messages
      */
     public function recalculateTokens($userId = null, $cond = null);
+
+    /**
+     * Recalculates all token dates, timing and results
+     * and outputs text messages.
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param Zend_Translate $t
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param string $cond
+     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     */
+    public function recalculateTokensBatch($userId = null, $cond = null);
 }

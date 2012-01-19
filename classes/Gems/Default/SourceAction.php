@@ -246,77 +246,34 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         /*
         $batch = new MUtil_Batch_WaitBatch();
-        $batch->method = MUtil_Batch_BatchAbstract::PUSH;
-        if ($batch->isLoaded()) {
-            if ($batch->isFinished()) {
-                if (! $batch->showReport($this->getRequest())) {
-                    $batch->reset();
-                }
-            } else {
-                if ($batch->hasStarted($this->getRequest())) {
-                    $batch->runAll();
-                    exit;
-                }
-            }
-        } else {
-            $batch->addWaits(4, 2);
-            $batch->addWaitsLater(15, 1);
-            $batch->addWaits(1, 1);
-            $batch->addWaitsLater(1, 2);
-            $batch->addWaits(4);
-        }
-        if ($batch->showReport($this->getRequest())) {
-            $this->addMessage($batch->getReport());
-            $batch->reset();
-            $this->html->pInfo()->actionLink(array($batch->progressParameterName => null), $this->_('Restart'));
-        } else {
-            $this->html->append($batch->getPanel($this->view));
-        }
-        // */
-        /*
-        // $batch = new Gems_Tracker_Batch_SynchronizeSourceBatch();
-        // $batch->method = 'Push';
-        if (! $batch->isLoaded()) {
-            foreach ($data as $row) {
-                $batch->addSource($row['gso_id_source'], $row['gso_source_name']);
-            }
-        }
+        // $batch->setMethodPush(5);
+        // $batch->autoStart = true;
+        // $batch->minimalStepDurationMs = 2000;
         if ($batch->run($this->getRequest())) {
-            if ($batch->isReady()) {
-                $this->addMessage($batch->getMessages());
-                $this->afterSaveRoute($this->getRequest());
-            }
+            exit;
         } else {
-            $this->html[] = $batch->getPanel();
-        }
-        // */
-        /*
-        $progress = $this->html->progress('0%');
-        $progress->method = 'Push';
-        // $progress = $this->html->progress();
-        if ($progress->run($this->getRequest())) {
-
-            // IIS 7: %windir%\System32\inetsrv\config\applicationHost.config
-            // ../handlers/add name="PHP_via_FastCGI"
-            // ../handlers/add name="CGI-exe"
-            // add attribute responseBufferLimit="1024"
-
-            for ($i = 50; $i < 100; $i += 1) {
-                if ($i < 20) {
-                    $text = 'Just beginning';
-                } else if ($i < 50) {
-                    $text = 'A bit done';
-                } else if ($i < 80) {
-                    $text = 'Getting closer';
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare restart'), array('class' => 'actionlink')));
+            } else {
+                // Populate the batch (from scratch).
+                $batch->reset();
+                if (true) {
+                    $batch->addWaitsMs(400, 20);
+                    $batch->addWaits(2, 1, 'Har har');
+                    $batch->addWaitsMs(20, 50);
                 } else {
-                    $text = 'Nearly done';
+                    $batch->addWaits(4, 2);
+                    $batch->addWaits(2, 1);
+                    $batch->addWaitsLater(15, 1);
+                    $batch->addWait(4, 'That took some time!');
+                    $batch->addWait(4, 'So we see the message. :)');
+                    $batch->addWaitsLater(1, 2);
+                    $batch->addWaits(4);
                 }
-                // IIS?
-                // echo str_repeat(' ',1024*3);
-                $progress->update($i, ' ' . $text);
-                sleep(1);
+                $this->html->pInfo($batch->getStartButton($this->_('Start synchronization')));
+                $this->html->append($batch->getPanel($this->view, '0%'));
             }
-            $progress->finish();
         } // */
 
         if ($data) {

@@ -268,42 +268,52 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $surveyId = $this->_getParam(MUtil_Model::REQUEST_ID);
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
-        /*
         $batch = $this->loader->getTracker()->recalculateTokensBatch($this->loader->getCurrentUser()->getUserId(), $where);
 
-        if ($batch->hasStarted($this->getRequest())) {
-            // TODO
+        if ($batch->run($this->getRequest())) {
+            exit;
         } else {
             $this->html->h3(
                 sprintf($this->_('Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId)));
 
-            if ($batch->isLoaded()) {
-                $this->html->pInfo(sprintf($this->_('Running check for %s tokens...'), $batch->count()));
-                $this->html->append($batch->getPanel());
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
             } else {
-                $this->html->pInfo($this->_('No tokens to check.'));
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
+                    $this->html->append($batch->getPanel($this->view, '0%'));
+                } else {
+                    $this->html->pInfo($this->_('No tokens to check.'));
+                }
             }
         }
-        // */
-
-        //*
-        $this->addMessage(sprintf($this->_(
-                'Checking survey results for the %s survey.'),
-                $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId)));
-
-        $this->addMessage($this->loader->getTracker()->recalculateTokens($this->session->user_id, $where));
-
-        $this->afterSaveRoute($this->getRequest());
-
-        // */
     }
 
     public function checkAllAction()
     {
-        $this->addMessage($this->loader->getTracker()->recalculateTokens($this->session->user_id));
+        $batch = $this->loader->getTracker()->recalculateTokensBatch($this->loader->getCurrentUser()->getUserId());
 
-        $this->afterSaveRoute($this->getRequest());
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $this->html->h3($this->_('Checking survey results for all surveys.'));
+
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
+            } else {
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
+                    $this->html->append($batch->getPanel($this->view, '0%'));
+                } else {
+                    $this->html->pInfo($this->_('No tokens to check.'));
+                }
+            }
+        }
     }
 
     /**

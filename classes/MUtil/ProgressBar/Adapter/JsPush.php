@@ -47,7 +47,7 @@
 class MUtil_ProgressBar_Adapter_JsPush extends Zend_ProgressBar_Adapter_JsPush
 {
     /**
-     * The number of bytes to padd in Kilobytes
+     * The number of bytes to pad in Kilobytes
      *
      * This is needed as many servers need extra output passing to avoid buffering.
      *

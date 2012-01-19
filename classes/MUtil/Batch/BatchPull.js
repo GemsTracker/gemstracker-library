@@ -5,82 +5,101 @@ jQuery.widget("ui.pullProgressPanel", {
 
     // default options
     options: {
-        autoStart: false,
-        // target: the element whose content is replaced
-        timeout: 2000
-        // url: the request url
+        // finishUrl: the request url
+        // panelId: text id:,
+        // runUrl: the request url
+        // targetId: search for the element whose content is replaced
+        timeout: 60000
     },
 
     _init: function() {
-        if (this.options.autoStart) {
-            this.start();
+        this.progressTarget = jQuery(this.options.panelId);
+        if (this.progressTarget.length) {
+            this.textTarget = this.progressTarget.find(this.options.targetId);
+            // this.textTarget = this.find(this.options.targetId);
+
+            if (this.textTarget.length) {
+                this.start();
+            } else {
+                alert('Did not find the text element: "' + this.options.targetId + '" in element id: "' + this.options.panelId + '".');
+            }
+        } else {
+            alert('Did not find the panel id: "' + this.options.panelId + '".');
         }
     },
 
     complete: function (request, status) {
         this.request = null;
-
-        // Check for changes
-        // - if the input field was changed since the last request
-        //   filter() will search on the new value
-        // - if the input field has not changed, then no new request
-        //   is made.
-        // this.start();
     },
 
-    error: function (request, status) {
-        console.log(status);
-        /* if (request.status === 401) {
-            location.href = location.href;
-        } // */
+    error: function (request, status, error) {
+        alert('Communication error: ' + status);
     },
+
+    progressTarget: null,
 
     start: function() {
         if (this.request == null) {
-            if (this.options.url) {
+            if (this.options.runUrl) {
                 var self = this;
                 this.request = jQuery.ajax({
-                    url: this.options.url,
+                    url: this.options.runUrl,
                     type: "GET",
                     dataType: "json",
                     // data: postData,
-                    error: function(request, status, error) {self.error(request, status);},
+                    error: function(request, status, error) {self.error(request, status, error);},
                     complete: function(request, status) {self.complete(request, status);},
                     success: function(data, status, request) {self.success(data, status, request);}
                     });
-
+            } else {
+                alert("No runUrl specified.");
             }
         }
     },
 
     success: function (data, status, request) {
-        // console.log(stringdata);
-        // data = jQuery.parseJSON(stringdata);
-        console.log(data);
+        // console.log(data);
+        if (data.finished) {
+            data.percent = 100;
+            data.text = false;
+        }
+
+        // For some reason the next two lines are both needed for the code to work
+        this.progressTarget.progressbar("option", "value", data.percent);
+        this.progressTarget.progressbar({value: data.percent});
 
         text = data.percent + '%';
         if (data.text) {
-            text = text + data.text;
+            text = text + ' ' + data.text;
         }
 
-        jQuery(this.options.target).html(text);
+        this.textTarget.html(text);
+
+        if (data.finished) {
+            if (this.options.finishUrl.length > 0) {
+                location.href = this.options.finishUrl;
+            }
+        } else {
+            this.request = null;
+            this.start();
+        }
     },
+
+    textTarget: null,
 
     request: null
 });
 
-jQuery(document).ready(function() {
-    jQuery("#{ID}").pullProgressPanel({"url":"{URL_START}","autoStart":__AUTOSTART__,"target":"#{ID} {TEXT_TAG}.{TEXT_CLASS}"});
-});
-
-function FUNCTION_PREFIX_Finish()
+function FUNCTION_PREFIX_Start()
 {
-    main = jQuery("#{ID}");
-    main.progressbar( "option", "value", 100);
+    jQuery("{PANEL_ID}").pullProgressPanel({
+        "finishUrl": "{URL_FINISH}",
+        "panelId":   "{PANEL_ID}",
+        "runUrl":    "{URL_START_RUN}",
+        "targetId":  "{TEXT_ID}"
+    });
+}
 
-    inner = main.find('{TEXT_TAG}.{TEXT_CLASS}');
-    if (inner) {
-        inner.empty();
-        inner.append('100% Done!');
-    }
+if (__AUTOSTART__) {
+    jQuery().ready(FUNCTION_PREFIX_Start());
 }
