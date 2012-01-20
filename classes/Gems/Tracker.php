@@ -830,15 +830,16 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * Does not reflect changes to tracks or rounds.
      *
+     * @param string $batch_id A unique identifier for the current batch
      * @param Gems_Tracker_Token_TokenSelect Select statements selecting tokens
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
      */
-    protected function processTokensBatch(Gems_Tracker_Token_TokenSelect $tokenSelect, $userId)
+    protected function processTokensBatch($batch_id, Gems_Tracker_Token_TokenSelect $tokenSelect, $userId)
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
 
-        $batch = $this->_loadClass('Batch_ProcessTokensBatch', true); //, array($where, $this));
+        $batch = $this->_loadClass('Batch_ProcessTokensBatch', true, array($batch_id));
 
         if (! $batch->isLoaded()) {
             $tokenRows = $tokenSelect->fetchAll();
@@ -886,12 +887,12 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param Zend_Translate $t
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param string $batch_id A unique identifier for the current batch
+     * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond
      * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
      */
-    public function recalculateTokensBatch($userId = null, $cond = null)
+    public function recalculateTokensBatch($batch_id, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect();
@@ -904,6 +905,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $tokenSelect->forWhere('gsu_surveyor_active = 1');
 
         self::$verbose = true;
-        return $this->processTokensBatch($tokenSelect, $userId);
+        return $this->processTokensBatch($batch_id, $tokenSelect, $userId);
     }
 }

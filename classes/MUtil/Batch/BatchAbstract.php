@@ -420,6 +420,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Get the current progress percentage
+     *
+     * @return float
+     */
+    public function getProgressPercentage()
+    {
+        return round($this->_session->processed / (count($this->_session->commands) + $this->_session->processed) * 100, 2);
+    }
+
+    /**
      * Returns a button that can be clicked to restart the progress bar.
      *
      * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
@@ -548,9 +558,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
                 if (microtime(true) > $reportRun) {
                     // Communicate progress
-                    $percent = round($this->_session->processed / (count($this->_session->commands) + $this->_session->processed) * 100, 2);
-
-                    $bar->update($percent, end($this->_session->messages));
+                    $bar->update($this->getProgressPercentage(), end($this->_session->messages));
 
                     // INFO: When using PULL $bar->update() should exit the program,
                     // but just let us make sure.

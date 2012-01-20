@@ -295,10 +295,10 @@ interface Gems_Tracker_TrackerInterface {
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param Zend_Translate $t
+     * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param string $cond
      * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
      */
-    public function recalculateTokensBatch($userId = null, $cond = null);
+    public function recalculateTokensBatch($batch_id, $userId = null, $cond = null);
 }

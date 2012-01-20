@@ -134,7 +134,7 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
             }
             if ($this->getCounter('createdTokens')) {
                 $messages[] = sprintf($this->translate->_('%d tokens created to by round changes.'), $this->getCounter('createdTokens'));
-            } 
+            }
         } else {
             $messages[] = $this->translate->_('No tokens were changed.');
         }

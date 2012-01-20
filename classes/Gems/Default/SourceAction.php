@@ -107,20 +107,52 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
-        $this->addMessage(sprintf($this->_(
-                'Checking survey results for %s source.'),
+        $batch = $this->loader->getTracker()->recalculateTokensBatch('sourceCheck' . $sourceId, $this->loader->getCurrentUser()->getUserId(), $where);
+
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $this->html->h3(
+                sprintf($this->_('Checking survey results for %s source.'),
                 $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId)));
 
-        $this->addMessage($this->loader->getTracker()->recalculateTokens($this->session->user_id, $where));
-
-        $this->afterSaveRoute($this->getRequest());
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
+            } else {
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
+                    $this->html->append($batch->getPanel($this->view, '0%'));
+                } else {
+                    $this->html->pInfo($this->_('No tokens to check.'));
+                }
+            }
+        }
     }
 
     public function checkAllAction()
     {
-        $this->addMessage($this->loader->getTracker()->recalculateTokens($this->session->user_id));
+        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
-        $this->afterSaveRoute($this->getRequest());
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $this->html->h3($this->_('Checking survey results for all sources.'));
+
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
+            } else {
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
+                    $this->html->append($batch->getPanel($this->view, '0%'));
+                } else {
+                    $this->html->pInfo($this->_('No tokens to check.'));
+                }
+            }
+        }
     }
 
     /**
@@ -258,18 +290,19 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             } else {
                 // Populate the batch (from scratch).
                 $batch->reset();
-                if (true) {
+                if (! true) {
                     $batch->addWaitsMs(400, 20);
                     $batch->addWaits(2, 1, 'Har har');
                     $batch->addWaitsMs(20, 50);
                 } else {
-                    $batch->addWaits(4, 2);
-                    $batch->addWaits(2, 1);
-                    $batch->addWaitsLater(15, 1);
-                    $batch->addWait(4, 'That took some time!');
-                    $batch->addWait(4, 'So we see the message. :)');
-                    $batch->addWaitsLater(1, 2);
-                    $batch->addWaits(4);
+                    $batch->addWaits(1440, 10);
+                    //$batch->addWaits(4, 2);
+                    //$batch->addWaits(2, 1);
+                    //$batch->addWaitsLater(15, 1);
+                    //$batch->addWait(4, 'That took some time!');
+                    //$batch->addWait(4, 'So we see the message. :)');
+                    //$batch->addWaitsLater(1, 2);
+                    //$batch->addWaits(4);
                 }
                 $this->html->pInfo($batch->getStartButton($this->_('Start synchronization')));
                 $this->html->append($batch->getPanel($this->view, '0%'));

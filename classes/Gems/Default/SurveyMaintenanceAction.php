@@ -268,7 +268,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $surveyId = $this->_getParam(MUtil_Model::REQUEST_ID);
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
-        $batch = $this->loader->getTracker()->recalculateTokensBatch($this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
 
         if ($batch->run($this->getRequest())) {
             exit;
@@ -294,7 +294,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokensBatch($this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         if ($batch->run($this->getRequest())) {
             exit;
