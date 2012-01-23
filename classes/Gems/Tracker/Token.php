@@ -1052,7 +1052,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         if (is_array($gemsData)) {
             $this->_gemsData = $gemsData + $this->_gemsData;
         } else {
-            $tokenSelect = $this->tracker->getTokenSelect(true);
+            $tokenSelect = $this->tracker->getTokenSelect();
 
             $tokenSelect
                     ->andReceptionCodes()

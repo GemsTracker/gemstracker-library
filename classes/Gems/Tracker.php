@@ -845,7 +845,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $tokenRows = $tokenSelect->fetchAll();
 
             foreach ($tokenRows as $tokenData) {
-                $batch->addToken($tokenData, $userId);
+                $batch->addToken($tokenData['gto_id_token'], $userId);
             }
         }
 
@@ -867,7 +867,10 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect();
-        $tokenSelect->andReceptionCodes();
+        $tokenSelect->andReceptionCodes()
+                    ->andRespondents()
+                    ->andRespondentOrganizations()
+                    ->andConsents();
         if ($cond) {
             $tokenSelect->forWhere($cond);
         }
@@ -896,7 +899,10 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect();
-        $tokenSelect->andReceptionCodes();
+        $tokenSelect->andReceptionCodes()
+                    ->andRespondents()
+                    ->andRespondentOrganizations()
+                    ->andConsents();
         if ($cond) {
             $tokenSelect->forWhere($cond);
         }
