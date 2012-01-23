@@ -106,7 +106,7 @@ class Gems_Event_EventCalculations
         foreach ($fieldNames as $name) {
             if (isset($tokenAnswers[$name]) && is_int(intval($tokenAnswers[$name]))) {
                 $count++;
-                $sum += $tokenAnswers[$name];
+                $sum += intval($tokenAnswers[$name]);
             }
         }
         return $count ? $sum / $count : null;
@@ -206,7 +206,7 @@ class Gems_Event_EventCalculations
      * @param mixed $fieldNames An array of those names that should be used or a string that should occur in all names that have to be selected.
      * @return int
      */
-    protected function sumInt(array $tokenAnswers, $fieldNames)
+    public function sumInt(array $tokenAnswers, $fieldNames)
     {
         if (is_string($fieldNames)) {
             $fieldNames = $this->_arrayFindName($tokenAnswers, $fieldNames);
@@ -214,7 +214,7 @@ class Gems_Event_EventCalculations
 
         $sum = 0;
         foreach ($fieldNames as $name) {
-            if (isset($tokenAnswers[$name]) && is_int(intval($tokenAnswers[$name]))) {
+            if (isset($tokenAnswers[$name]) && intval($tokenAnswers[$name])== $tokenAnswers[$name]) {
                 $sum += $tokenAnswers[$name];
             }
         }
