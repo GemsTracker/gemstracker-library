@@ -477,6 +477,7 @@ class MUtil_Model_FormBridge
 
         $element = new Zend_Form_Element_Password($name, $options);
         $this->_applyValidators($name, $element);
+        $this->form->addElement($element);
 
         if ($stringlength) {
             $element->addValidator('StringLength', true, $stringlength);
