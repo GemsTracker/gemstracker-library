@@ -978,16 +978,18 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @deprecated Use the ReceptionCode->hadRedoCode
+     * @deprecated Use the ReceptionCode->hasRedoCode
      * @return boolean
      */
     public function hasRedoCode()
     {
-        if (! isset($this->_gemsData['grc_redo_survey'])) {
+        return $this->getReceptionCode()->hasRedoCode();
+        /*if (! isset($this->_gemsData['grc_redo_survey'])) {
             $this->_ensureReceptionCode();
         }
 
         return (boolean) $this->_gemsData['grc_redo_survey'];
+         */
     }
 
     /**
@@ -998,24 +1000,31 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function hasRedoCopyCode()
     {
+        return $this->getReceptionCode()->hasRedoCopyCode();
+        /*
         if (! isset($this->_gemsData['grc_redo_survey'])) {
             $this->_ensureReceptionCode();
         }
 
         return Gems_Util_ReceptionCodeLibrary::REDO_COPY == $this->_gemsData['grc_redo_survey'];
+         */
     }
 
     /**
      *
+     * @deprecated Use the ReceptionCode->isSuccess
      * @return boolean
      */
     public function hasSuccesCode()
     {
+        return $this->getReceptionCode()->isSuccess();
+        /*
         if (! isset($this->_gemsData['grc_success'])) {
             $this->_ensureReceptionCode();
         }
 
         return $this->_gemsData['grc_success'];
+         */
     }
 
     /**
