@@ -670,12 +670,13 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the Gems_Util_ReceptionCode object
      *
-     * @return string reception code
+     * @return Gems_Util_ReceptionCode reception code
      */
     public function getReceptionCode()
     {
-        return $this->_gemsData['gto_reception_code'];
+        return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
 
     /**

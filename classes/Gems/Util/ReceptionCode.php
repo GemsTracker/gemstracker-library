@@ -59,6 +59,16 @@ class Gems_Util_ReceptionCode extends Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
+     * Compatibility mode, for use with logical operators returns this->getCode()
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getCode();
+    }
+
+    /**
      * Returns the complete record.
      *
      * @return array
