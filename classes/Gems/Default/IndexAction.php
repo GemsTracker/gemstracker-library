@@ -190,6 +190,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $org = $this->loader->getCurrentUser()->getCurrentOrganizationId();
             $orgs = $this->util->getDbLookup()->getOrganizationsForLogin();
             $hidden = count($orgs) < 2;
+            if ($hidden) {
+                $org = array_shift(array_keys($orgs));
+            }
         }
 
         if ($hidden) {
