@@ -129,6 +129,14 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         //@@TODO: Think of a better way to allow multiple methods per organization
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
             $model->set('gul_user_class', 'label', $this->_('User Definition'));
+            
+            //Make sure old or experimental userdefinitions don't have to be changed to something that is
+            //allowed at the moment. For example the oldStaffUser can stay when editing a user.
+            $options = $model->get('gul_user_class', 'multiOptions');
+            if (!array_key_exists($data['gul_user_class'], $options)) {
+                $options[$data['gul_user_class']] = $this->_('Unsupported UserDefinition');
+                $model->set('gul_user_class', 'multiOptions', $options);
+            }
             $bridge->add('gul_user_class');
         } else {
             $bridge->addHidden('gul_user_class');
