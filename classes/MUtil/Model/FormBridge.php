@@ -82,7 +82,7 @@ class MUtil_Model_FormBridge
 
     // First list html attributes, then Zend attributes, lastly own attributes
     private $_allowedOptions = array(
-        self::AUTO_OPTIONS     => array('elementClass'),
+        self::AUTO_OPTIONS     => array('elementClass', 'multiOptions'),
         self::CHECK_OPTIONS    => array('checkedValue', 'uncheckedValue'),
         self::DATE_OPTIONS     => array('dateFormat', 'storageFormat'),
         self::DISPLAY_OPTIONS  => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex'),
@@ -90,7 +90,7 @@ class MUtil_Model_FormBridge
         self::FILE_OPTIONS     => array('accept', 'count', 'destination', 'valueDisabled'),
         self::GROUP_OPTIONS    => array('elements', 'legend', 'separator'),
         self::JQUERY_OPTIONS   => array('jQueryParams'),
-        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size'),
+        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
         self::PASSWORD_OPTIONS => array('repeatLabel'),
         self::TAB_OPTIONS      => array('value'),
         self::TEXT_OPTIONS     => array('maxlength', 'minlength', 'onchange', 'onfocus', 'onselect', 'size'),
@@ -159,17 +159,20 @@ class MUtil_Model_FormBridge
         return isset($stringlength) ? $stringlength : null;
     }
 
+    /**
+     * Returns the options from the allowedoptions array, using the supplied options first and trying
+     * to find the missing ones in the model.
+     *
+     * @param string $name
+     * @param array $options
+     * @param array $allowedOptionKeys_array
+     * @return array
+     */
     private function _mergeOptions($name, array $options, $allowedOptionKeys_array)
     {
-        //If not explicitly set, use the form value for translatorDisabled, since we
-        //create the element outside the form scope and later add it
-        if (!isset($options['disableTranslator'])) {
-            $options['disableTranslator'] = $this->form->translatorIsDisabled();
-        }
-
         $args = func_get_args();
         $allowedOptionsKeys = MUtil_Ra::args($args, 2);
-
+        
         $allowedOptions = array();
         foreach ($allowedOptionsKeys as $allowedOptionsKey) {
             if (is_array($allowedOptionsKey)) {
@@ -183,6 +186,12 @@ class MUtil_Model_FormBridge
             }
         }
 
+        //If not explicitly set, use the form value for translatorDisabled, since we
+        //create the element outside the form scope and later add it
+        if (!isset($options['disableTranslator']) && array_search('disableTranslator', $allowedOptions) !== false) {
+            $options['disableTranslator'] = $this->form->translatorIsDisabled();
+        }
+
         // Move options to model.
         if (isset($options['validator'])) {
             $this->model->set($name, 'validators[]', $options['validator']);
@@ -192,6 +201,16 @@ class MUtil_Model_FormBridge
         if ($allowedOptions) {
             // Remove options already filled. Using simple array addition
             // might trigger a lot of lazy calculations that are not needed.
+
+            //First strip the options that are not allowed           
+            if (MUtil_Model::$verbose) {
+                $strippedKeys = array_keys(array_diff_key($options, array_flip($allowedOptions)));
+                if (!empty($strippedKeys)) {
+                    MUtil_Echo::r($strippedKeys, 'stripped from options for ' . $name);
+                }
+            }
+            $options = array_intersect_key($options, array_flip($allowedOptions));
+
             foreach ($allowedOptions as $key => $option) {
                 if (array_key_exists($option, $options)) {
                     unset($allowedOptions[$key]);
@@ -201,7 +220,7 @@ class MUtil_Model_FormBridge
             if ($allowedOptions) {
                 // MUtil_Echo::r($allowedOptions);
                 $result = $this->model->get($name, $allowedOptions);
-                return $result + $options;
+                return (array) $result + (array) $options;
             }
         }
 
@@ -224,8 +243,7 @@ class MUtil_Model_FormBridge
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
 
-        $options = $this->_mergeOptions($name, $options,
-            self::AUTO_OPTIONS, self::CHECK_OPTIONS, self::DISPLAY_OPTIONS, self::GROUP_OPTIONS, self::MULTI_OPTIONS, self::TAB_OPTIONS, self::TEXT_OPTIONS, self::TEXTAREA_OPTIONS);
+        $options = $this->_mergeOptions($name, $options, self::AUTO_OPTIONS);
 
         if (isset($options['elementClass'])) {
             $method = 'add' . $options['elementClass'];

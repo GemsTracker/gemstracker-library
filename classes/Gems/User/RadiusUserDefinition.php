@@ -76,6 +76,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         $bridge->getTab('access');
         foreach ($model->getItemNames() as $name) {
             if ($label = $model->get($name, 'label')) {
+                //We supply all options from the model as the bridge doesn't know about this model
                 $element = $bridge->add($name, $model->get($name));
             } else {
                 $element = $bridge->addHidden($name);
