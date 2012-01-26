@@ -93,7 +93,10 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $model->set('ggp_staff_members', 'label', $this->_('Staff'), 'multiOptions', $yesNo);
         $model->set('ggp_respondent_members', 'label', $this->_('Respondents'), 'multiOptions', $yesNo);
         
-        $model->set('ggp_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'));
+        $model->set('ggp_allowed_ip_ranges', 
+            'label', $this->_('Allowed IP Ranges'),
+            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)')
+            );
 
         Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
 
