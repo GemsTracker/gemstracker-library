@@ -147,13 +147,17 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initCache()
     {
-        $cache = null;
-        $exists = false;
+        $cache       = null;
+        $exists      = false;
+        $cachePrefix = GEMS_PROJECT_NAME . '_';
+
 
         // Check if APC extension is loaded
         if( extension_loaded('apc') ) {
             $cacheBackend = 'Apc';
             $cacheBackendOptions = array();
+            //Add path to the prefix as APC is a SHARED cache
+            $cachePrefix .= md5(APPLICATION_PATH);
             $exists = true;
         } else {
             $cacheBackend = 'File';
@@ -175,7 +179,7 @@ class GemsEscort extends MUtil_Application_Escort
              *                           not support automatic cleaning.
              */
             $cacheFrontendOptions = array('automatic_serialization' => true,
-                                          'cache_id_prefix' => GEMS_PROJECT_NAME . '_',
+                                          'cache_id_prefix' => $cachePrefix,
                                           'automatic_cleaning_factor' => 0);
 
             $cache = Zend_Cache::factory('Core', $cacheBackend, $cacheFrontendOptions, $cacheBackendOptions);
