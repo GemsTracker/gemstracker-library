@@ -66,6 +66,8 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     public function Upgrade143to15()
     {
         $this->patcher->executePatch(42);
+        $this->patcher->executePatch(43);
+        //Also create new tables or do so in patches...
         
         $this->invalidateCache();
 
