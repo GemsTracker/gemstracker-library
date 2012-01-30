@@ -243,7 +243,11 @@ class MUtil_Model_FormBridge
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
 
-        $options = $this->_mergeOptions($name, $options, self::AUTO_OPTIONS);
+        /**
+         * As this method redirects to the correct 'add' method, we preserve the original options
+         * while trying to find the needed ones in the model
+         */
+        $options = $options + $this->_mergeOptions($name, $options, self::AUTO_OPTIONS);
 
         if (isset($options['elementClass'])) {
             $method = 'add' . $options['elementClass'];

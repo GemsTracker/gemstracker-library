@@ -188,9 +188,6 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $this->_instanceId = $data['gsf_login'];
         }
 
-        $sql = "SELECT ggp_id_group,ggp_role FROM gems__groups WHERE ggp_id_group = " . (int) $data['gsf_id_primary_group'];
-        $groups = $this->db->fetchPairs($sql);
-
         if (!isset($data['gsf_id_organization']) || empty($data['gsf_id_organization'])) {
             $data['gsf_id_organization'] = $this->menu->getParameterSource()->getMenuParameter('gsf_id_organization', $this->loader->getCurrentUser()->getCurrentOrganizationId());
         }
