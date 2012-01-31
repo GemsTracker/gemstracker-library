@@ -167,8 +167,9 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     }
 
     /**
+     * Retrieve the header title to display
      *
-     * @return string The header title to display
+     * @return string
      */
     protected function getTitle()
     {

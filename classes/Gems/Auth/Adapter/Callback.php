@@ -43,8 +43,25 @@
  */
 class Gems_Auth_Adapter_Callback implements Zend_Auth_Adapter_Interface
 {
+    /**
+     * The callback to use
+     *
+     * @var callback
+     */
     private $_callback;
+
+    /**
+     * The identity to check
+     *
+     * @var string
+     */
     private $_identity;
+
+    /**
+     * The optional parameters to pass to the callback
+     *
+     * @var array
+     */
     private $_params;
 
     /**
@@ -54,9 +71,9 @@ class Gems_Auth_Adapter_Callback implements Zend_Auth_Adapter_Interface
      * return true or false and in that case this adapter will wrap the result
      * in a Zend_Auth_Result
      *
-     * @param type $callback A valid callback
-     * @param type $identity The identity to use
-     * @param type $params   Array of parameters needed for the callback
+     * @param callback $callback A valid callback
+     * @param string $identity The identity to use
+     * @param array $params   Array of parameters needed for the callback
      */
     public function __construct($callback, $identity, $params)
     {

@@ -40,7 +40,7 @@
  * the model set through the $model snippet parameter.
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4.4
