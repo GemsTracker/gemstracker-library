@@ -292,7 +292,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     public function beforeFormDisplay ($form, $isNew)
     {
-        if ($this->useTabbedForms) {
+        if ($this->useTabbedForms || $form instanceof Gems_Form_TableForm) {
             /* Not needed anymore @@TODO: Remove when proven, as there is a set tab
             //Create the tabs tried in $form->render() but somehow that is never reached
             if ($form instanceof Gems_TabForm) {
@@ -304,10 +304,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 $element = new MUtil_Form_Element_Html('formLinks');
                 $element->setValue($links);
                 $element->setOrder(999);
-                $form->resetContext();
+                if ($form instanceof Gems_TabForm)  {
+                    $form->resetContext();
+                }
                 $form->addElement($element);
+                $form->addDisplayGroup(array('formLinks'), 'form_buttons');
             }
-        } else {
+        } else { 
             $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
             $table->setAsFormLayout($form, true, true);
             $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
@@ -359,6 +362,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $form = new Gems_TabForm($options);
         } else {
             $form = parent::createForm($options);
+            //$form = new Gems_Form_TableForm($options);
         }
 
         return $form;
@@ -713,6 +717,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $data = $newData + $data;
         }
 
+        if ($form instanceof Gems_TabForm)  {
+            $form->resetContext();
+        }
         return $form;
     }
 
