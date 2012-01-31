@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Snippets\Generic
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -40,7 +40,7 @@
  *
  * Usage snippet for Gems_Snippets_ModelTableSnippetGeneric
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
