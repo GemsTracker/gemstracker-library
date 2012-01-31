@@ -225,6 +225,24 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Returns an (optional) default organization from the project settings
+     *
+     * @return int Organization number or -1 when not set
+     */
+    public function getDefaultOrganization()
+    {
+        if ($this->offsetExists('organization')) {
+            $orgs = $this->offsetGet('organization');
+
+            if (isset($orgs['default'])) {
+                return $orgs['default'];
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Returns the public name of this project.
      * @return string
      */

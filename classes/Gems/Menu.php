@@ -282,7 +282,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
             $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr')
-                ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', 'T');
+                ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
 
             $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')

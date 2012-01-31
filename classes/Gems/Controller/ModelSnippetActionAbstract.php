@@ -208,6 +208,47 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Return the current request ID, if any.
+     *
+     * Overrule this function if the last item in the page title
+     * should be something other than te value of
+     * MUtil_Model::REQUEST_ID.
+     *
+     * @return mixed
+     */
+    public function getInstanceId()
+    {
+        if ($id = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+            return $id;
+        }
+    }
+
+    /**
+     * Returns the current html/head/title for this page.
+     *
+     * If the title is an array the seperator concatenates the parts.
+     *
+     * @param string $separator
+     * @return string
+     */
+    public function getTitle($separator = null)
+    {
+        if ($title_set = parent::getTitle($separator)) {
+            return $title_set;
+        }
+
+        $title = array();
+        foreach($this->menu->getActivePath($this->getRequest()) as $menuItem) {
+            $title[] = $menuItem->get('label');
+        }
+        if ($id = $this->getInstanceId()) {
+            $title[] = $id;
+        }
+
+        return implode($separator, $title);
+    }
+
+    /**
      * Intializes the html component.
      *
      * @param boolean $reset Throws away any existing html output when true

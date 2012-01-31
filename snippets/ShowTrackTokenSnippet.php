@@ -72,7 +72,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
         $bridge->addItem('gto_id_token', null, array('colspan' => 1.5));
 
         $buttons = $links->getActionLinks(true, 'ask', 'take', 'pdf', 'show', $controller, 'questions', $controller, 'answer');
-        if ($buttons) {
+        if (count($buttons)) {
             $bridge->tr();
             $bridge->tdh($this->_('Actions'));
             $bridge->td($buttons, array('colspan' => 2, 'skiprowclass' => true));
@@ -144,7 +144,10 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
                 ->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addByController('track', 'index', $this->_('Show tracks'))
                 ->addCurrentSiblings()
+                ->addCurrentChildren()
                 ->showDisabled();
+
+        MUtil_Echo::track($links->count());
 
         return $links;
     }
