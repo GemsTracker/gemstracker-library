@@ -201,7 +201,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * Makes sure the respondent data is part of the $this->_respTrackData
      */
-    private function _ensureRespondentData()
+    protected function _ensureRespondentData()
     {
         if (! isset($this->_respTrackData['grs_id_user'], $this->_respTrackData['gr2o_id_user'], $this->_respTrackData['gco_code'])) {
             $sql = "SELECT *
@@ -449,6 +449,16 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $this->_ensureFieldData();
 
         return $this->_fieldData;
+    }
+
+    /**
+     * Returns the description of this track as stored in the fields.
+     *
+     * @return string
+     */
+    public function getFieldsInfo()
+    {
+        return $this->_respTrackData['gr2t_track_info'];
     }
 
     /**

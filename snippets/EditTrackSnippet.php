@@ -153,7 +153,6 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
         }
 
         if ($refresh) {
-            Gems_Tracker::$verbose;
             // Perform a refresh from the database, to avoid date trouble
             $this->respondentTrack->refresh();
             $this->respondentTrack->checkTrackTokens($this->userId);
