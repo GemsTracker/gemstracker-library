@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,27 +25,56 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: Creator.php 362 2011-12-15 17:21:17Z matijsdejong $
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Class for storing references for creating html attributes, elements and other objects.
+ *
+ * Basically this class stores list of element and attributes names that should be treated
+ * in different from just creating the most basic of element types.
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 
 class MUtil_Html_Creator
 {
+    /**
+     *
+     * @var MUtil_Util_LookupList
+     */
     protected $_attributeFunctionList;
+
+    /**
+     *
+     * @var MUtil_Util_LookupList
+     */
     protected $_elementFunctionList;
 
+    /**
+     *
+     * @var array
+     */
     protected $_initialAttributeFunctions = array(
         'href'    => 'MUtil_Html_HrefArrayAttribute::hrefAttribute',
         'onclick' => 'MUtil_Html_OnClickArrayAttribute::onclickAttribute',
         'style'   => 'MUtil_Html_StyleArrayAttribute::styleAttribute',
     );
 
+    /**
+     *
+     * @var array
+     */
     protected $_initalElementFunctions = array(
         'a'                 => 'MUtil_Html_AElement::a',
         'array'             => 'MUtil_Html_Sequence::createSequence',
@@ -86,6 +114,7 @@ class MUtil_Html_Creator
         'raw'               => 'MUtil_Html_Raw::raw',
         'seq'               => 'MUtil_Html_Sequence::createSequence',
         'sequence'          => 'MUtil_Html_Sequence::createSequence',   // A sequence can contain another sequence, so other function name used
+        'snippet'           => 'MUtil_Html::snippet',
         'spaced'            => 'MUtil_Html_Sequence::createSpaced',     // A sequence can contain another sequence, so other function name used
         'table'             => 'MUtil_Html_TableElement::table',
         'tbody'             => 'MUtil_Html_TBodyElement::tbody',

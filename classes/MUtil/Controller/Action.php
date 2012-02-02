@@ -397,6 +397,8 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     public function initHtml($reset = false)
     {
         if ($reset || (! $this->html)) {
+            MUtil_Html::setSnippetLoader($this->getSnippetLoader());
+
             $this->html = new MUtil_Html_Sequence();
 
             // Add this variable to the view.
