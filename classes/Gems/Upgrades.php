@@ -61,14 +61,36 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
 
     /**
      * To upgrade from 143 to 15 we need to do some work:
-     * 1. execute db patches
+     * 1. execute db patches 42 and 43
+     * 2. create new tables
      */
     public function Upgrade143to15()
-    {
+    {     
         $this->patcher->executePatch(42);
         $this->patcher->executePatch(43);
-        //Also create new tables or do so in patches...
-        
+
+        $this->invalidateCache();
+
+        $this->createNewTables();
+
+        $this->invalidateCache();
+
+        //Now sync the db sources to allow limesurvey source to add a field to the tokentable
+        $model = new MUtil_Model_TableModel('gems__sources');
+        $data  = $model->load(false);
+
+        $tracker = $this->loader->getTracker();
+
+        foreach ($data as $row) {
+            $source = $tracker->getSource($row['gso_id_source']);
+
+            if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
+                foreach ($messages as $message) {
+                    $this->addMessage($message);
+                }
+            }
+        }
+
         $this->invalidateCache();
 
         return true;

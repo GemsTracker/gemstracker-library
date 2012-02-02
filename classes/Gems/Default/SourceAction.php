@@ -231,7 +231,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     {
         $source = $this->getSourceById();
 
-        if ($source->checkSourceActive($this->session->user_id)) {
+        if ($source->checkSourceActive($this->loader->getCurrentUser()->getUserId())) {
             $this->addMessage($this->_('This installation is active.'));
         } else {
             $this->addMessage($this->_('Inactive installation.'));
@@ -244,7 +244,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     {
         $source = $this->getSourceById();
 
-        if ($messages = $source->synchronizeSurveys($this->session->user_id)) {
+        if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
             $this->addMessage($messages);
         } else {
             $this->addMessage($this->_('No changes.'));
@@ -263,7 +263,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
                 $source = $this->getSourceById($row['gso_id_source']);
 
                 $this->addMessage(sprintf($this->_('Synchronization of source %s:'), $row['gso_source_name']));
-                if ($messages = $source->synchronizeSurveys($this->session->user_id)) {
+                if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
                     $this->addMessage($messages);
                 } else {
                     $this->addMessage($this->_('No changes.'));
