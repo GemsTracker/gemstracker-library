@@ -293,7 +293,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function getSuperAdminName()
     {
         if (isset($this->admin) && isset($this->admin['user'])) {
-            return $this->admin['user'];
+            return trim($this->admin['user']);
         }
     }
 
@@ -305,7 +305,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     protected function getSuperAdminPassword()
     {
         if (isset($this->admin) && isset($this->admin['pwd'])) {
-            return $this->admin['pwd'];
+            return trim($this->admin['pwd']);
         }
     }
 
