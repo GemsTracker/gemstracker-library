@@ -90,6 +90,13 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $showButtons = true;
 
     /**
+     * Switch to put the display of the headers on or off
+     *
+     * @var boolean
+     */
+    protected $showHeaders = true;
+
+    /**
      * Switch to put the display of the current token as select to true or false.
      *
      * @var boolean
@@ -204,14 +211,16 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
 
         if ($this->tokenId) {
             if ($this->token->exists) {
-                $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
+                if ($this->showHeaders) {
+                    $htmlDiv->h3(sprintf($this->_('%s answers for patient number %s'), $this->token->getSurveyName(), $this->token->getPatientNumber()));
 
-                $htmlDiv->pInfo(sprintf(
-                        $this->_('Answers for token %s, patient number %s: %s.'),
-                        strtoupper($this->tokenId),
-                        $this->token->getPatientNumber(),
-                        $this->token->getRespondentName()))
-                        ->appendAttrib('class', 'noprint');
+                    $htmlDiv->pInfo(sprintf(
+                            $this->_('Answers for token %s, patient number %s: %s.'),
+                            strtoupper($this->tokenId),
+                            $this->token->getPatientNumber(),
+                            $this->token->getRespondentName()))
+                            ->appendAttrib('class', 'noprint');
+                }
 
                 $table = parent::getHtmlOutput($view);
                 $table->setPivot(true, 2, 1);

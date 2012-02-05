@@ -73,6 +73,20 @@ class MUtil_Lazy
         return new MUtil_Lazy_Call($lambda, array($opLeft, $opRight));
     }
 
+    /**
+     * The arguments are flattened lazily into one single array
+     * and then joined together without separator.
+     *
+     * @param mixed $arg_array
+     * @return MUtil_Lazy_Call
+     */
+    public static function concat($arg_array = null)
+    {
+        $args = func_get_args();
+
+        return new MUtil_Lazy_Call('implode', array('', new MUtil_Lazy_Call('MUtil_Ra::flatten', $args)));
+    }
+
     public static function first($args_array)
     {
         $args = func_get_args();

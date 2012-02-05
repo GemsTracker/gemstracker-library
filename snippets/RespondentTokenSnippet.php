@@ -186,7 +186,8 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        $filter['gto_id_respondent'] = $this->respondentData['grs_id_user'];
+        $filter['gto_id_respondent']   = $this->respondentData['grs_id_user'];
+        $filter['gto_id_organization'] = $this->respondentData['gr2o_id_organization'];
 
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
