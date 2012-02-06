@@ -61,19 +61,26 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        if ($this->getRequest()->getActionName() == 'index') {
+        $request = $this->getRequest();
+
+        if ($request->getActionName() == 'index') {
             if ($menuItem = $this->findAllowedMenuItem('show')) {
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
             }
-            if ($menuItem = $this->findAllowedMenuItem('edit')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-            }
+
+            $menuItem = $this->findAllowedMenuItem('edit');
+        } else {
+            $menuItem = null;
         }
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
                 $bridge->addSortable($name, $label);
             }
+        }
+
+        if ($menuItem) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
     }
 

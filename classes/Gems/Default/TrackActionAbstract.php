@@ -203,6 +203,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 
+        $model->resetOrder();
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gr2t_track_info',   'label', $this->_('Description'),
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));

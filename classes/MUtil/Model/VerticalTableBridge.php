@@ -215,10 +215,6 @@ class MUtil_Model_VerticalTableBridge extends MUtil_Model_TableBridgeAbstract
                     $this->table->td();
                     $this->currentColumn++;
                 }
-
-                // Reset row
-                $this->table->tr();
-                $this->currentColumn = 0;
             }
         }
 

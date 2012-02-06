@@ -172,7 +172,7 @@ class MUtil_Model_FormBridge
     {
         $args = func_get_args();
         $allowedOptionsKeys = MUtil_Ra::args($args, 2);
-        
+
         $allowedOptions = array();
         foreach ($allowedOptionsKeys as $allowedOptionsKey) {
             if (is_array($allowedOptionsKey)) {
@@ -202,7 +202,7 @@ class MUtil_Model_FormBridge
             // Remove options already filled. Using simple array addition
             // might trigger a lot of lazy calculations that are not needed.
 
-            //First strip the options that are not allowed           
+            //First strip the options that are not allowed
             if (MUtil_Model::$verbose) {
                 $strippedKeys = array_keys(array_diff_key($options, array_flip($allowedOptions)));
                 if (!empty($strippedKeys)) {
@@ -283,6 +283,13 @@ class MUtil_Model_FormBridge
         return $this->_addToForm($name, $element);
     }
 
+    /**
+     * Add a ZendX date picker to the form
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return ZendX_JQuery_Form_Element_ColorPicker
+     */
     public function addDate($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
