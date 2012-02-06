@@ -193,7 +193,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getAccountDelayFactor()
     {
-        if (isset($this->account['delayFactor'])) {
+        if (isset($this->account) && isset($this->account['delayFactor'])) {
             return intval($this->account['delayFactor']);
         } else {
             return 4;
