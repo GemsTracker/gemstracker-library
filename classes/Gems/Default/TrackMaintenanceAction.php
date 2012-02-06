@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -46,6 +45,13 @@
  */
 class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAction
 {
+    /**
+     * Mode for the current addBrowse drawing.
+     *
+     * @var string
+     */
+    protected $browseMode;
+
     public $sortKey = array('gtr_track_name' => SORT_ASC);
 
     public $summarizedActions = array('index', 'autofilter', 'check-all');
@@ -63,15 +69,15 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     {
         $request = $this->getRequest();
 
-        if ($request->getActionName() == 'index') {
-            if ($menuItem = $this->findAllowedMenuItem('show')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-            }
+        $actionKey  = $request->getActionKey();
+        $contrKey   = $request->getControllerKey();
+        $controller = $this->browseMode ? $this->browseMode : $request->getControllerName();
 
-            $menuItem = $this->findAllowedMenuItem('edit');
-        } else {
-            $menuItem = null;
+        if ($menuItem = $this->menu->find(array($contrKey => $controller, $actionKey => 'show'))) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
+
+        $menuItem = $this->menu->find(array($contrKey => $controller, $actionKey => 'edit'));
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -290,23 +296,12 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $model = $this->getModel();
         $repeatable = $model->loadRepeatable();
 
+        $this->browseMode = 'track-' . $mode;
+
         $table = $this->getBrowseTable($baseurl);
         $table->setOnEmpty(sprintf($this->_('No %s found'), $this->_($mode)));
         $table->getOnEmpty()->class = 'centerAlign';
         $table->setRepeater($repeatable);
-
-        $url = array(
-        	'controller' => 'track-' . $mode,
-            'action' => 'edit'
-        );
-
-        foreach ($keys as $idx => $key) {
-            $url[$idx] = $repeatable->$key;
-        }
-
-        $href = new MUtil_Html_HrefArrayAttribute($url);
-        $body = $table->tbody();
-        $body[0]->onclick = array('location.href=\'', $href, '\';');
 
         $this->html->h3(sprintf($this->_('%s in track'), $this->_(ucfirst($mode))));
         $this->html[] = $table;

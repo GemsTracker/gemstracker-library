@@ -69,7 +69,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         // Add pdf button if allowed
         if ($menuItem = $this->findAllowedMenuItem('pdf')) {
-            $bridge->addItemLink(iif($bridge->gsu_has_pdf,$menuItem->toActionLinkLower($this->getRequest(), $bridge)));
+            $bridge->addItemLink(MUtil_Lazy::iif($bridge->gsu_has_pdf, $menuItem->toActionLinkLower($this->getRequest(), $bridge)));
         }
     }
 

@@ -502,9 +502,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
 
                 foreach ($fieldValues as $field) {
+                    $table->tr();
                     $table->tdh($field['gtf_field_name']);
                     $table->td($field['gr2t2f_value']);
-                    $table->tr();
                 }
 
                 $this->html[] = $table;
