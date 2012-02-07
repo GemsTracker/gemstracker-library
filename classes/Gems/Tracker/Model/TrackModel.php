@@ -95,7 +95,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
      * Sets the labels, format functions, etc...
      *
      * @param boolean $detailed True when shopwing detailed information
-     * @return Gems_Tracker_Model_StandardTokenModel
+     * @return Gems_Tracker_Model_TrackModel
      */
     public function applyFormatting($detailed = false)
     {

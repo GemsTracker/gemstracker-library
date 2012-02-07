@@ -288,7 +288,7 @@ class MUtil_Model_FormBridge
      *
      * @param string $name Name of element
      * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return ZendX_JQuery_Form_Element_ColorPicker
+     * @return ZendX_JQuery_Form_Element_DatePicker
      */
     public function addDate($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
