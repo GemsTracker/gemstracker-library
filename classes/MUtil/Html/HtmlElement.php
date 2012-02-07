@@ -646,6 +646,18 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Make sure a default child tag element exists.
+     */
+    protected function _ensureDefaultTag()
+    {
+        if ($this->_defaultChildTag && (! $this->_content)) {
+            $value = MUtil_Html::create($this->_defaultChildTag);
+            $this->_lastChild = $value;
+            $this->_content[] = $value;
+        }
+    }
+
     private function _notAllowedChild($element)
     {
         if ($this->_allowedChildTags) {
@@ -858,9 +870,41 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this->_defaultChildTag;
     }
 
+    /**
+     * Get the first child element.
+     *
+     * @param boolean $create A default child tag is created if the element does not exist and has a default child tag
+     * @return MUtil_Html_HtmlElement or another MUtil_Html_HtmlInterface element
+     */
+    public function getFirst($create = false)
+    {
+        if ($create && (! $this->_content)) {
+            $this->_ensureDefaultTag();
+        }
+        if ($this->_content) {
+            return reset($this->_content);
+        }
+    }
+
     public function getIterator()
     {
         return new ArrayIterator($this->_content);
+    }
+
+    /**
+     * Get the last child element.
+     *
+     * @param boolean $create A default child tag is created if the element does not exist
+     * @return MUtil_Html_HtmlElement or another MUtil_Html_HtmlInterface element
+     */
+    public function getLast($create = false)
+    {
+        if ($create && (! $this->_content)) {
+            $this->_ensureDefaultTag();
+        }
+        if ($this->_content) {
+            return end($this->_content);
+        }
     }
 
     public function getOnEmpty()

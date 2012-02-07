@@ -64,6 +64,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public $db;
 
     /**
+     * @var Gems_Model_DbaModel
+     */
+    public $dbaModel;
+
+    /**
      * @var GemsEscort
      */
     public $escort;
@@ -78,6 +83,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_Util_DatabasePatcher
      */
     public $patcher;
+
+    /**
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
 
     /**
      * @var Zend_Translate_Adapter
@@ -126,8 +136,17 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public function checkRegistryRequestsAnswers() {
         //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
         $this->patcher = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
-        //No load all patches, and save the resulting changed patches for later (not used yet)
+        //Now load all patches, and save the resulting changed patches for later (not used yet)
         $changed  = $this->patcher->uploadPatches($this->loader->getVersions()->getBuild());
+
+        //Load the dbaModel
+        $paths = $this->escort->getDatabasePaths();
+        $model = new Gems_Model_DbaModel($this->db, array_values($paths));
+        $model->setLocations(array_keys($paths));
+        if ($this->project->databaseFileEncoding) {
+            $model->setFileEncoding($this->project->databaseFileEncoding);
+        }
+        $this->dbaModel = $model;
 
         return true;
     }
@@ -138,6 +157,29 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     protected function clearMessages()
     {
         $this->_messages = array();
+    }
+
+    /**
+     * Create all new tables according to the dba model
+     */
+    protected function createNewTables()
+    {
+        //Now create all new tables
+        $todo    = $this->dbaModel->load(array('state'=>  Gems_Model_DbaModel::STATE_DEFINED));
+        $i       = 1;
+        $oCount  = count($todo);
+        $results = array();
+        foreach($todo as $tableData) {
+            $result = $this->dbaModel->runScript($tableData);
+            $results = array_merge($results, $result);
+            $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($tableData['type'])), $i, $oCount) . '<br/>';
+            $i++;
+        }
+
+        foreach ($results as $result)
+        {
+            $this->addMessage($result);
+        }
     }
 
     /**

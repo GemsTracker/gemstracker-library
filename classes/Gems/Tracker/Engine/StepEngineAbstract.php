@@ -311,7 +311,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     public function checkTokensFromStart(Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
-        return $this->checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
+        $token = $respTrack->getFirstToken();
+        if ($token instanceof Gems_Tracker_Token) {
+            return $this->checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
+        } else {
+            return 0;
+        }
     }
 
     /**

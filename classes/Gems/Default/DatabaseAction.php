@@ -48,50 +48,6 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 {
     public $sortKey = array('group' => SORT_ASC, 'type' => SORT_ASC, 'name' => SORT_ASC);
 
-    private function _runScript(array $data, $includeResultSets = false)
-    {
-        $results = array();
-        $this->_runScripts($data, $results, $includeResultSets);
-        return $results;
-    }
-
-    private function _runScripts(array $data, array &$results, $includeResultSets = false)
-    {
-        if ($data['script']) {
-            $queries = MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
-            $qCount  = count($queries);
-
-            $results[] = sprintf($this->_('Executed %2$s creation script %1$s:'), $data['name'], $this->_(strtolower($data['type'])));
-            $i = 1;
-            $resultSet = 1;
-
-            foreach ($queries as $query) {
-                $sql = (string) $query;
-                try {
-                    $stmt = $this->db->query($sql);
-                    if ($rows = $stmt->rowCount()) {
-                        if ($includeResultSets && ($data = $stmt->fetchAll())) {
-                            $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $i, $qCount);
-                            $results[] = $data;
-                            $resultSet++;
-                        } else {
-                            $results[] = sprintf($this->_('%d record(s) updated in step %d of %d.'), $rows, $i, $qCount);
-                        }
-                    } else {
-                        $results[] = sprintf($this->_('Script ran step %d of %d succesfully.'), $i, $qCount);
-                    }
-                } catch (Zend_Db_Statement_Exception $e) {
-                    $results[] = $e->getMessage() . $this->_('  in step ') . $i . ':<pre>' . $sql . '</pre>';
-                }
-                $i++;
-            }
-        } else {
-            $results[] = sprintf($this->_('No script for %1$s.'), $data['name']);
-        }
-
-        return $results;
-    }
-
     /**
      * Set the parameters needed by the menu.
      *
@@ -168,10 +124,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $model->set('location', 'label', $this->_('Location'));
         }
         // $model->set('path',      'label', $this->_('Path'));
-        $model->set('state',        'label', $this->_('Status'), 'multiOptions', array(
-            Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
-            Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
-            Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
+        $model->set('state',        'label', $this->_('Status'));
 
         if ($detailed) {
             $model->set('script',   'label', $this->_('Script'), 'itemDisplay', 'pre');
@@ -482,7 +435,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $model  = $this->getModel();
             $data   = $model->loadFirst();
 
-            $results = $this->_runScript($data);
+            $results = $model->runScript($data);
 
             $this->addMessage($results);
             $this->_reroute(array('action' => 'show'));
@@ -497,11 +450,13 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
         if ($this->_getParam('confirmed')) {
             if ($objects) {
+                $results = array();
                 $results[] = sprintf($this->_('Starting %d object creation scripts.'), $oCount) . '<br/>';
                 $i         = 1;
                 foreach ($objects as $data) {
 
-                    $this->_runScripts($data, $results);
+                    $result = $model->runScript($data);
+                    $results = array_merge($results, $result);
                     $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount) . '<br/>';
                     $i++;
                 }
@@ -559,7 +514,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $data['name'] = '';
             $data['type'] = $this->_('raw');
 
-            $results   = $this->_runScript($data, true);
+            $model = $this->getModel();
+            $results   = $model->runScript($data, true);
             $resultSet = 1;
             $echos     = MUtil_Html::create()->array();
             foreach ($results as $result) {

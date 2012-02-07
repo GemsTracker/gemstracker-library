@@ -73,6 +73,20 @@ class MUtil_Lazy
         return new MUtil_Lazy_Call($lambda, array($opLeft, $opRight));
     }
 
+    /**
+     * The arguments are flattened lazily into one single array
+     * and then joined together without separator.
+     *
+     * @param mixed $arg_array
+     * @return MUtil_Lazy_Call
+     */
+    public static function concat($arg_array = null)
+    {
+        $args = func_get_args();
+
+        return new MUtil_Lazy_Call('implode', array('', new MUtil_Lazy_Call('MUtil_Ra::flatten', $args)));
+    }
+
     public static function first($args_array)
     {
         $args = func_get_args();
@@ -86,11 +100,27 @@ class MUtil_Lazy
         return $result;
     }
 
+    /**
+     * Lazy if statement
+     *
+     * @param mixed $if The value tested during raise
+     * @param mixed $then The value after raise when $if is true
+     * @param mixed $else The value after raise when $if is false
+     * @return MUtil_Lazy_Call
+     */
     public static function iff($if, $then, $else = null)
     {
         return new MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
     }
 
+    /**
+     * Lazy if statement
+     *
+     * @param mixed $if The value tested during raise
+     * @param mixed $then The value after raise when $if is true
+     * @param mixed $else The value after raise when $if is false
+     * @return MUtil_Lazy_Call
+     */
     public static function iif($if, $then, $else = null)
     {
         return new MUtil_Lazy_Call(array($if, 'if'), array($then, $else));

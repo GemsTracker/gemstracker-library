@@ -147,13 +147,30 @@ abstract class Gems_Controller_ModelActionAbstract extends MUtil_Controller_Mode
         }
     }
 
+    /**
+     * Return the current request ID, if any.
+     *
+     * Overrule this function if the last item in the page title
+     * should be something other than te value of
+     * MUtil_Model::REQUEST_ID.
+     *
+     * @return mixed
+     */
     public function getInstanceId()
     {
-        if ($id = $this->request->getParam(MUtil_Model::REQUEST_ID)) {
+        if ($id = $this->_getParam(MUtil_Model::REQUEST_ID)) {
             return $id;
         }
     }
 
+    /**
+     * Returns the current html/head/title for this page.
+     *
+     * If the title is an array the seperator concatenates the parts.
+     *
+     * @param string $separator
+     * @return string
+     */
     public function getTitle($separator = null)
     {
         if ($title_set = parent::getTitle($separator)) {

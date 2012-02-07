@@ -60,6 +60,10 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
     protected $file_encoding;
     protected $locations;
     protected $mainDirectory;
+    /**
+     * @var Zend_Translate_Adapter
+     */
+    protected $translate;
 
     private $_sorts;
 
@@ -72,6 +76,9 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         $this->setLocations();
 
         $this->db = $db;
+
+        //Grab translate object from the Escort
+        $this->translate = GemsEscort::getInstance()->translate;
 
         $this->set('group',       'maxlength', 40, 'type', MUtil_Model::TYPE_STRING);
         $this->set('name',        'key', true, 'maxlength', 40, 'type', MUtil_Model::TYPE_STRING);
@@ -86,6 +93,23 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         $this->set('script',      'type', MUtil_Model::TYPE_STRING);
         $this->set('lastChanged', 'type', MUtil_Model::TYPE_DATETIME);
         $this->set('location',    'maxlength', 12, 'type', MUtil_Model::TYPE_STRING);
+        $this->set('state',       'multiOptions', array(
+            Gems_Model_DbaModel::STATE_CREATED => $this->_('created'),
+            Gems_Model_DbaModel::STATE_DEFINED => $this->_('not created'),
+            Gems_Model_DbaModel::STATE_UNKNOWN => $this->_('unknown')));
+    }
+
+    /**
+     * proxy for easy access to translations
+     *
+     * @param  string             $messageId Translation string
+     * @param  string|Zend_Locale $locale    (optional) Locale/Language to use, identical with locale
+     *                                       identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    private function _($messageId, $locale = null)
+    {
+        return $this->translate->_($messageId, $locale);
     }
 
     private function _getGroupName($name)
@@ -372,6 +396,56 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
     public function loadTable($tableName)
     {
         return $this->loadFirst(array('name' => $tableName), false);
+    }
+
+    /**
+     * Run a sql statement from an object loaded through this model
+     *
+     * $data is an array with the following keys:
+     * script   The sql statement to be executed
+     * name     The name of the table, used in messages
+     * type     Type of db element (table or view), used in messages
+     *
+     * @param array $data
+     * @param type $includeResultSets
+     * @return type
+     */
+    public function runScript(array $data, $includeResultSets = false)
+    {
+        $results = array();
+        if ($data['script']) {
+            $queries = MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
+            $qCount  = count($queries);
+
+            $results[] = sprintf($this->_('Executed %2$s creation script %1$s:'), $data['name'], $this->_(strtolower($data['type'])));
+            $i = 1;
+            $resultSet = 1;
+
+            foreach ($queries as $query) {
+                $sql = (string) $query;
+                try {
+                    $stmt = $this->db->query($sql);
+                    if ($rows = $stmt->rowCount()) {
+                        if ($includeResultSets && ($data = $stmt->fetchAll())) {
+                            $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $i, $qCount);
+                            $results[] = $data;
+                            $resultSet++;
+                        } else {
+                            $results[] = sprintf($this->_('%d record(s) updated in step %d of %d.'), $rows, $i, $qCount);
+                        }
+                    } else {
+                        $results[] = sprintf($this->_('Script ran step %d of %d succesfully.'), $i, $qCount);
+                    }
+                } catch (Zend_Db_Statement_Exception $e) {
+                    $results[] = $e->getMessage() . $this->_('  in step ') . $i . ':<pre>' . $sql . '</pre>';
+                }
+                $i++;
+            }
+        } else {
+            $results[] = sprintf($this->_('No script for %1$s.'), $data['name']);
+        }
+
+        return $results;
     }
 
     public function save(array $newValues, array $filter = null)

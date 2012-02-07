@@ -842,9 +842,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $batch = $this->_loadClass('Batch_ProcessTokensBatch', true, array($batch_id));
 
         if (! $batch->isLoaded()) {
-            $tokenRows = $tokenSelect->fetchAll();
-
-            foreach ($tokenRows as $tokenData) {
+            $statement = $tokenSelect->getSelect()->query();
+            //Process one row at a time to prevent out of memory errors for really big resultsets
+            while ($tokenData  = $statement->fetch()) {
                 $batch->addToken($tokenData['gto_id_token'], $userId);
             }
         }
@@ -898,16 +898,16 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     public function recalculateTokensBatch($batch_id, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect();
-        $tokenSelect->andReceptionCodes()
-                    ->andRespondents()
-                    ->andRespondentOrganizations()
-                    ->andConsents();
+        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
+        $tokenSelect->andReceptionCodes(array())
+                    ->andRespondents(array())
+                    ->andRespondentOrganizations(array())
+                    ->andConsents(array());
         if ($cond) {
             $tokenSelect->forWhere($cond);
         }
         //Only select surveys that are active in the source (so we can recalculate inactive in Gems)
-        $tokenSelect->andSurveys();
+        $tokenSelect->andSurveys(array());
         $tokenSelect->forWhere('gsu_surveyor_active = 1');
 
         self::$verbose = true;

@@ -111,6 +111,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                 $this->db->update('gems__staff', $values, $this->db->quoteInto('gsf_id_user = ?', $staff_id));
 
             } catch (Zend_Db_Exception $e) {
+                GemsEscort::getInstance()->logger->log($e->getMessage(), Zend_Log::ERR);
                 // Fall through as this does not work if the database upgrade did not run
                 // MUtil_Echo::r($e);
 

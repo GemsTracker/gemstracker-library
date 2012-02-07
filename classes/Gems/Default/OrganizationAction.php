@@ -166,7 +166,8 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         if($model->has('gor_user_class')) {
             $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
             //Use first element as default
-            $default = array_shift(array_keys($definitions));
+            $tmp = array_keys($definitions);
+            $default = array_shift($tmp);
             $model->set('gor_user_class', 'default', $default);
             if (count($definitions)>1) {
                 if ($action !== 'create') {

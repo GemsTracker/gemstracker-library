@@ -88,7 +88,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
@@ -167,7 +167,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */

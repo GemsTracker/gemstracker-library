@@ -193,7 +193,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getAccountDelayFactor()
     {
-        if (isset($this->account['delayFactor'])) {
+        if (isset($this->account) && isset($this->account['delayFactor'])) {
             return intval($this->account['delayFactor']);
         } else {
             return 4;
@@ -222,6 +222,24 @@ class Gems_Project_ProjectSettings extends ArrayObject
                 'delay'      => 10
             );
         }
+    }
+
+    /**
+     * Returns an (optional) default organization from the project settings
+     *
+     * @return int Organization number or -1 when not set
+     */
+    public function getDefaultOrganization()
+    {
+        if ($this->offsetExists('organization')) {
+            $orgs = $this->offsetGet('organization');
+
+            if (isset($orgs['default'])) {
+                return $orgs['default'];
+            }
+        }
+
+        return -1;
     }
 
     /**
@@ -275,7 +293,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function getSuperAdminName()
     {
         if (isset($this->admin) && isset($this->admin['user'])) {
-            return $this->admin['user'];
+            return trim($this->admin['user']);
         }
     }
 
@@ -287,7 +305,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     protected function getSuperAdminPassword()
     {
         if (isset($this->admin) && isset($this->admin['pwd'])) {
-            return $this->admin['pwd'];
+            return trim($this->admin['pwd']);
         }
     }
 

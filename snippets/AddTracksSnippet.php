@@ -84,6 +84,28 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
      */
     public $session;
 
+    /**
+     * Switch to set display of respondent dropdown on or off
+     *
+     * @var boolean
+     */
+    public $showForRespondents = true;
+
+    /**
+     * Switch to set display of staff dropdown on or off
+     *
+     * @var boolean
+     */
+    public $showForStaff = true;
+
+
+    /**
+     * Switch to set display of track dropdown on or off
+     *
+     * @var boolean
+     */
+    public $showForTracks = true;
+
     protected function _getTracks($trackType, $pageRef)
     {
         switch ($trackType) {
@@ -193,6 +215,10 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
+        if (! $this->escort) {
+            $this->escort = GemsEscort::getInstance();
+        }
+
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface ||
             $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
 
@@ -200,12 +226,16 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
 
             $addToLists = MUtil_Html::create()->div(array('class' => 'tooldock'));
             $addToLists->strong($this->_('Add'));
-            if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
+            if ($this->showForTracks && ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface)) {
                 $addToLists[] = $this->_getTracks('T', $pageRef);
             }
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
-                $addToLists[] = $this->_getTracks('S', $pageRef);
-                $addToLists[] = $this->_getTracks('M', $pageRef);
+                if ($this->showForRespondents) {
+                    $addToLists[] = $this->_getTracks('S', $pageRef);
+                }
+                if ($this->showForStaff) {
+                    $addToLists[] = $this->_getTracks('M', $pageRef);
+                }
             }
 
             return $addToLists;

@@ -89,6 +89,18 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     }
 
     /**
+     * Make sure a default child tag element exists.
+     *
+     * Overruled because of the extra actions in $this->tr()
+     */
+    protected function _ensureDefaultTag()
+    {
+        if ($this->_defaultChildTag && (! $this->_content)) {
+            $this->tr();
+        }
+    }
+
+    /**
      * Returns the cell or a MUtil_MultiWrapper containing cells that occupy the column position, taking colspan and other functions into account.
      *
      * @param int $col The numeric column position, starting at 0;
@@ -241,27 +253,6 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         return $this;
     }
 
-    public function tr($arg_array = null)
-    {
-        $args = func_get_args();
-
-        // Set default child tag first and het because otherwise
-        // the children are created first and the default child tag
-        // is set afterwards.
-        if (! array_key_exists('DefaultChildTag', $args)) {
-            array_unshift($args, array('DefaultChildTag' => $this->getDefaultRowChildTag()));
-        }
-
-        $tr = MUtil_Html::createArray('tr', $args);
-
-        $this[] = $tr;
-
-        if ((! isset($tr->class)) && ($class = $this->getDefaultRowClass())) {
-            $tr->class = $class;
-        }
-
-        return $tr;
-    }
 
     /**
      * Static helper function for creation, used by @see MUtil_Html_Creator.
@@ -297,5 +288,33 @@ class MUtil_Html_TBodyElement extends MUtil_Html_HtmlElement implements MUtil_Ht
     {
         $args = func_get_args();
         return new self(__FUNCTION__, array('DefaultRowChildTag' => 'th'), $args);
+    }
+
+    /**
+     * Add a row with a class and the correct type of default child tag to this element
+     *
+     * @param mixed $arg_array MUtil::args() values
+     * @return MUtil_Html_TrElement
+     */
+    public function tr($arg_array = null)
+    {
+        $args = func_get_args();
+
+        // Set default child tag first and het because otherwise
+        // the children are created first and the default child tag
+        // is set afterwards.
+        if (! array_key_exists('DefaultChildTag', $args)) {
+            array_unshift($args, array('DefaultChildTag' => $this->getDefaultRowChildTag()));
+        }
+
+        $tr = MUtil_Html::createArray('tr', $args);
+
+        $this[] = $tr;
+
+        if ((! isset($tr->class)) && ($class = $this->getDefaultRowClass())) {
+            $tr->class = $class;
+        }
+
+        return $tr;
     }
 }

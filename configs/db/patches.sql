@@ -364,3 +364,4 @@ ALTER TABLE `gems__respondent2track` ADD gr2t_comment varchar(250) CHARACTER SET
 
 -- PATCH: Default userdefinition per organization
 ALTER TABLE gems__organizations ADD `gor_user_class` VARCHAR( 30 ) NOT NULL DEFAULT 'StaffUser' AFTER  `gor_code`;
+ALTER TABLE `gems__radius_config` CHANGE  `grcfg_ip`  `grcfg_ip` VARCHAR( 39 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL

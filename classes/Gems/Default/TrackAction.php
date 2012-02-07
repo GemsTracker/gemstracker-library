@@ -71,7 +71,8 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $bridge->gr2t_id_respondent_track; //For show and edit button
-        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+
+        $bridge->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
 
         // Add edit button if allowed, otherwise show, again if allowed
         if ($menuItem = $this->findAllowedMenuItem('show-track')) {
@@ -461,6 +462,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         }
     }
 
+    /**
+     * Show information on a single track assigned to a respondent
+     */
     public function showTrackAction()
     {
         $request = $this->getRequest();
@@ -498,9 +502,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
 
                 foreach ($fieldValues as $field) {
+                    $table->tr();
                     $table->tdh($field['gtf_field_name']);
                     $table->td($field['gr2t2f_value']);
-                    $table->tr();
                 }
 
                 $this->html[] = $table;

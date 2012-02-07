@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,28 +25,43 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: Html.php 362 2011-12-15 17:21:17Z matijsdejong $
  */
 
 /**
  * Collections of static function for using the Html subpackage.
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html
 {
+    /**
+     *
+     * @var MUtil_Html_Creator
+     */
     private static $_creator;
+
+    /**
+     *
+     * @var MUtil_Html_Renderer
+     */
     private static $_renderer;
+
+    /**
+     *
+     * @var type MUtil_Snippets_SnippetLoader
+     */
+    private static $_snippetLoader;
 
     /**
      * Static variable for debuggging purposes. Toggles the echoing of e.g. of sql
@@ -65,9 +79,10 @@ class MUtil_Html
      */
     public static $verbose = false;
 
-    public static function canRender($value)
+    public static function addUrl2Page(Zend_Navigation_Container $menu, $label, $arg_array = null)
     {
-        return self::getRenderer()->canRender($value);
+        $args = array_slice(func_get_args(), 2);
+        $menu->addPage(self::url($args)->toPage($label));
     }
 
     public static function attrib($attributeName, $args_array = null)
@@ -75,6 +90,11 @@ class MUtil_Html
         $args = MUtil_Ra::args(func_get_args(), 1);
 
         return self::getCreator()->createAttribute($attributeName, $args);
+    }
+
+    public static function canRender($value)
+    {
+        return self::getRenderer()->canRender($value);
     }
 
     /**
@@ -101,7 +121,7 @@ class MUtil_Html
 
     /**
      * Creates a new HtmlElement with the arguments specfied in a single array.
-     * 
+     *
      * @param string $tagName (or a Lazy object)
      * @param array $args
      * @return MUtil_Html_ElementInterface
@@ -118,17 +138,17 @@ class MUtil_Html
 
     /**
      * Creates a div element
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_HtmlElement (with div tagName)
      */
     public static function div($arg_array = null)
     {
         $args = func_get_args();
-        
+
         return self::getCreator()->create('div', $args);
     }
-    
+
     public static function element2id(Zend_Form_Element $element)
     {
         return self::name2id($element->getName(), $element->getBelongsTo());
@@ -143,6 +163,12 @@ class MUtil_Html
         return self::$_creator;
     }
 
+    /**
+     * Returns the class used to perform the actual rendering
+     * of objects and items into html.
+     *
+     * @return MUtil_Html_Renderer
+     */
     public static function getRenderer()
     {
         if (! self::$_renderer) {
@@ -150,6 +176,19 @@ class MUtil_Html
         }
 
         return self::$_renderer;
+    }
+
+    /**
+     * Get the snippet loader for use by self::snippet().
+     *
+     * @return MUtil_Snippets_SnippetLoader
+     */
+    public static function getSnippetLoader()
+    {
+        if (! self::$_snippetLoader) {
+            self::setSnippetLoader(new MUtil_Snippets_SnippetLoader());
+        }
+        return self::$_snippetLoader;
     }
 
     public static function name2id($name, $belongsTo = null)
@@ -183,17 +222,17 @@ class MUtil_Html
 
     /**
      * Creates a table element
-     * 
+     *
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TableElement
      */
     public static function table($arg_array = null)
     {
         $args = func_get_args();
-        
+
         return self::getCreator()->create('table', $args);
     }
-    
+
     public static function setCreator(MUtil_Html_Creator $creator)
     {
         self::$_creator = $creator;
@@ -206,15 +245,40 @@ class MUtil_Html
         return self::$_renderer;
     }
 
+    /**
+     * Set the snippet loader for use by self::snippet().
+     *
+     * @param MUtil_Snippets_SnippetLoader $snippetLoader
+     * @return MUtil_Snippets_SnippetLoader
+     */
+    public static function setSnippetLoader(MUtil_Snippets_SnippetLoader $snippetLoader)
+    {
+        self::$_snippetLoader = $snippetLoader;
+        return self::$_snippetLoader;
+    }
+
+    /**
+     *
+     * @param string $name Snippet name
+     * @param MUtil_Ra::pairs $parameter_value_pairs Optional extra snippets
+     * @return
+     */
+    public static function snippet($name, $parameter_value_pairs = null)
+    {
+        if (func_num_args() > 1) {
+            $extraSourceParameters = MUtil_Ra::pairs(func_get_args(), 1);
+        } else {
+            $extraSourceParameters = array();
+        }
+
+        $loader = self::getSnippetLoader();
+
+        return $loader->getSnippet($name, $extraSourceParameters);
+    }
+
     public static function url($arg_array = null)
     {
         $args = func_get_args();
         return new MUtil_Html_HrefArrayAttribute($args);
-    }
-
-    public static function addUrl2Page(Zend_Navigation_Container $menu, $label, $arg_array = null)
-    {
-        $args = array_slice(func_get_args(), 2);
-        $menu->addPage(self::url($args)->toPage($label));
     }
 }

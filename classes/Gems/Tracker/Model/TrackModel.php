@@ -95,7 +95,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
      * Sets the labels, format functions, etc...
      *
      * @param boolean $detailed True when shopwing detailed information
-     * @return Gems_Tracker_Model_StandardTokenModel
+     * @return Gems_Tracker_Model_TrackModel
      */
     public function applyFormatting($detailed = false)
     {
@@ -110,6 +110,8 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
         $this->set('gtr_active',        'label', $this->translate->_('Active'), 'multiOptions', $translated->getYesNo());
         $this->set('gtr_date_start',    'label', $this->translate->_('From'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDate);
         $this->set('gtr_date_until',    'label', $this->translate->_('Use until'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDateForever);
+
+        return $this;
     }
 
     /**

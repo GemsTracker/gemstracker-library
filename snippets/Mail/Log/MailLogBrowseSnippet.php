@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Mail\Log
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -40,7 +40,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets\Mail\Log
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4.4

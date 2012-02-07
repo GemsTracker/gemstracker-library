@@ -33,6 +33,8 @@
  */
 
 /**
+ * Creates a form using tab-layout where each tab is a subform
+ *
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -41,6 +43,8 @@
 class Gems_TabForm extends Gems_Form
 {
     /**
+     * Holds the last tab we added information to
+     *
      * @var Gems_Form_TabSubForm
      */
     private $currentTab = null;
@@ -168,7 +172,7 @@ class Gems_TabForm extends Gems_Form
     /**
      * Retrieve a named tab (subform) and set the active tab to this one
      *
-     * @param type $name
+     * @param string $name
      * @return Gems_Form_TabSubForm
      */
     public function getTab($name)
@@ -316,6 +320,11 @@ class Gems_TabForm extends Gems_Form
         $jquery->addOnLoad($js);
     }
 
+    /**
+     * Load the default decorators
+     *
+     * @return void
+     */
     public function loadDefaultDecorators() {
         if ($this->loadDefaultDecoratorsIsDisabled()) {
             return;
@@ -335,6 +344,8 @@ class Gems_TabForm extends Gems_Form
     }
 
     /**
+     * Reset the currentTab to be the main form again
+     *
      * As addElement and addDisplayGroup provide a fluent way of working with subforms
      * we need to provide a method to skip back to the main form again.
      */
@@ -342,6 +353,11 @@ class Gems_TabForm extends Gems_Form
         $this->currentTab = null;
     }
 
+    /**
+     * Select a tab by it's numerical index
+     * 
+     * @param int $tabIdx
+     */
     public function selectTab($tabIdx) {
         $this->getElement('tab')->setValue($tabIdx);
         $this->setAttrib('selected', $tabIdx);

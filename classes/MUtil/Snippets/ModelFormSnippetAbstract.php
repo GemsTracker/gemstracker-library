@@ -175,7 +175,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     {
         $args = func_get_args();
         if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more idividual items');
+            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
         }
 
         $bridge   = array_shift($args);

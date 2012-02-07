@@ -321,6 +321,23 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 $row = $this->db->fetchRow($sql, $params, Zend_Db::FETCH_NUM);
             }
 
+            if ((! $row) && ($organization == $this->project->getDefaultOrganization())) {
+                // Check for the current organization being the default one
+                //
+                // For optimization do set the allowed organizations
+                // Try to get see if this is another allowed organization for this user
+                $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization
+                    FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization != gul_id_organization
+                    WHERE gor_active = 1 AND
+                        gul_can_login = 1 AND
+                        gul_login = ?
+                    LIMIT 1";
+
+                // MUtil_Echo::track($sql, $login_name);
+
+                $row = $this->db->fetchRow($sql, $login_name, Zend_Db::FETCH_NUM);
+            }
+
             if ($row) {
                 // MUtil_Echo::track($row);
                 return $row;
@@ -338,7 +355,20 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                     gems__organizations ON gsf_id_organization = gor_id_organization
                     WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
 
-        if ($user_id = $this->db->fetchOne($sql, array($login_name, $organization))) {
+        $user_id = $this->db->fetchOne($sql, $params);
+
+        if ((! $user_id) && ($organization == $this->project->getDefaultOrganization())) {
+            $sql = "SELECT gsf_id_user
+                FROM gems__staff INNER JOIN
+                        gems__organizations ON gsf_id_organization = gor_id_organization
+                        WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ?";
+
+            // MUtil_Echo::track($sql, $login_name);
+
+            $user_id = $this->db->fetchOne($sql, $login_name);
+        }
+
+        if ($user_id) {
             // Move user to new staff.
             $values['gul_login']           = $login_name;
             $values['gul_id_organization'] = $organization;

@@ -56,6 +56,19 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
     protected $_form;
 
     /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addSaveButton()
+    {
+        $this->_form->resetContext();
+        parent::addSaveButton();
+    }
+
+
+    /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
