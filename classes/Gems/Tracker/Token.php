@@ -349,6 +349,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                     //Set completion time for completion event
                     if ($setCompletionTime) {
                         $values['gto_completion_time'] = $complTime->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+                        //Save the old value
+                        $originalCompletionTime = $this->_gemsData['gto_completion_time'];
                         $this->_gemsData['gto_completion_time'] = $values['gto_completion_time'];
                     }
 
@@ -364,8 +366,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                     }
 
                     if ($setCompletionTime) {
-                        //Make sure to unset otherwise it won't get saved
-                        $this->_gemsData['gto_completion_time'] = null;
+                        //Reset to old value, so changes will be picked up
+                        $this->_gemsData['gto_completion_time'] = $originalCompletionTime;
                     }
                     $values['gto_duration_in_sec'] = max($complTime->diffSeconds($startTime), 0);
 
