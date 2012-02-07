@@ -71,7 +71,14 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     {
         if ($user) {
             // Depends on the user.
-            return $user->hasEmailAddress() && $user->canSetPassword();
+            if ($user->hasEmailAddress() && $user->canSetPassword()) {
+                $email = $user->getEmailAddress();
+                if (empty($email)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         } else {
             return true;
         }
