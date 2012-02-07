@@ -65,16 +65,20 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      * 2. create new tables
      */
     public function Upgrade143to15()
-    {     
+    {
+        $this->addMessage($this->_('Executing patchlevel 42'));
         $this->patcher->executePatch(42);
+        $this->addMessage($this->_('Executing patchlevel 43'));
         $this->patcher->executePatch(43);
 
         $this->invalidateCache();
 
+        $this->addMessage($this->_('Creating new tables'));
         $this->createNewTables();
 
         $this->invalidateCache();
 
+        $this->addMessage($this->_('Syncing surveys for all sources'));
         //Now sync the db sources to allow limesurvey source to add a field to the tokentable
         $model = new MUtil_Model_TableModel('gems__sources');
         $data  = $model->load(false);
