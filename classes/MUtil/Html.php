@@ -163,6 +163,12 @@ class MUtil_Html
         return self::$_creator;
     }
 
+    /**
+     * Returns the class used to perform the actual rendering
+     * of objects and items into html.
+     *
+     * @return MUtil_Html_Renderer
+     */
     public static function getRenderer()
     {
         if (! self::$_renderer) {
