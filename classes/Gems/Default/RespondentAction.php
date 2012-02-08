@@ -202,7 +202,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         if ($detailed) {
         	$model->set('gr2o_comments',     'label', $this->_('Comments'));
-        	$model->set('gr2o_id_physician', 'label', $this->_('Physician'), 'multiOptions', MUtil_Lazy::call(array($this, 'getPhysicians')));
         	$model->set('gr2o_treatment',    'label', $this->_('Treatment'));
 
             $model->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
