@@ -168,7 +168,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     private function _checkUserId($userId = null) {
         if (empty($userId)) {
-            $userId = $this->session->user_id;
+            $userId = isset($this->session->user_id) ? $this->session->user_id : 0;
         }
         return $userId;
     }

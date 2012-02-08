@@ -384,7 +384,7 @@ msgstr "Postcode"
 
 #: classes/Gems/Model.php:224
 msgid "City"
-msgstr "Stad"
+msgstr "Woonplaats"
 
 #: classes/Gems/Model.php:226
 msgid "Phone"
