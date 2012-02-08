@@ -105,7 +105,10 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
             $table->addColumn($link->toActionLinkLower($trackRepeater));
         }
 
-        $table->addColumn($trackRepeater->gsu_survey_name,       $this->_('Survey'));
+        $surveyName[] = $trackRepeater->gsu_survey_name;
+        $surveyName[] = MUtil_Lazy::iif($trackRepeater->gro_icon_file, MUtil_Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
+
+        $table->addColumn($surveyName,                           $this->_('Survey'));
         $table->addColumn($trackRepeater->gro_round_description, $this->_('Details'));
         $table->addColumn($trackRepeater->ggp_name,              $this->_('By'));
         $table->addColumn($trackRepeater->gsu_survey_description->call(array(__CLASS__, 'oneLine')),
@@ -116,7 +119,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
     private function getRepeater($trackId)
     {
         $sql = "
-            SELECT gro_id_round, gro_id_track, gro_round_description, gro_valid_after, gro_valid_for, gro_used_date, gro_active,
+            SELECT gro_id_round, gro_id_track, gro_round_description, gro_icon_file, gro_valid_after, gro_valid_for, gro_used_date, gro_active,
                 gsu_id_survey, gsu_survey_name, gsu_survey_description, gsu_survey_pdf, gsu_active,
                 ggp_name
             FROM gems__rounds LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey

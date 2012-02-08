@@ -186,11 +186,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Add edit button if allowed, otherwise show, again if allowed
-        if ($menuItem = $this->findAllowedMenuItem('edit', 'show')) {
+        if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
 
         parent::addBrowseTableColumns($bridge, $model);
+
+        // Add edit button if allowed, otherwise show, again if allowed
+        if ($menuItem = $this->findAllowedMenuItem('edit')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
     }
 
     /**
@@ -959,6 +964,11 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $table->setOnEmpty(sprintf($this->_('Unknown %s.'), $this->getTopic(1)));
         $table->setRepeater($repeater);
         $table->tfrow($this->createMenuLinks($this->menuShowIncludeLevel), array('class' => 'centerAlign'));
+        
+        if ($menuItem = $this->findAllowedMenuItem('edit')) {
+            $table->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->getRequest()), '\';');
+        }
+
 
         $this->html[] = $table;
     }

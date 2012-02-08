@@ -104,6 +104,8 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
         $roundDescription[] = $HTML->if($bridge->calc_round_description, $HTML->small(' [', $bridge->calc_round_description, ']'));
         $roundDescription[] = $HTML->small(' [', $bridge->createSortLink('calc_round_description'), ']');
 
+        $roundIcon[] = MUtil_Lazy::iif($bridge->gro_icon_file, MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon')));
+
         if ($menuItem = $this->findMenuItem('track', 'show-track')) {
             $href = $menuItem->toHRefAttribute($this->request, $bridge);
             $track1 = $HTML->if($bridge->calc_track_name, $HTML->a($href, $bridge->calc_track_name));
@@ -120,7 +122,7 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
         // $bridge->colgroup(array('span' => 3, 'width' => '9em'));
 
         $bridge->addMultiSort($track);
-        $bridge->addMultiSort('gsu_survey_name', $roundDescription);
+        $bridge->addMultiSort('gsu_survey_name', $roundDescription, $roundIcon);
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
@@ -135,10 +137,6 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
 
         $bridge->useRowHref = false;
 
-        $title = $HTML->strong($this->_('+'));
-
-        $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
-        $showLinks[]   = $this->createMenuLink($bridge, 'survey', 'show', $title);
         $actionLinks[] = $this->createMenuLink($bridge, 'track',  'answer');
         $actionLinks[] = $this->createMenuLink($bridge, 'survey', 'answer');
         $actionLinks[] = array(
@@ -149,18 +147,13 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
         // MUtil_Lazy::comp($bridge->val1, '==', $bridge->val2)->if($bridge->val3, 'broehaha');
 
         // Remove nulls
-        $showLinks   = array_filter($showLinks);
         $actionLinks = array_filter($actionLinks);
 
-        if ($showLinks || $actionLinks) {
-            foreach ($showLinks as $showLink) {
-                if ($showLink) {
-                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
-                }
-            }
+        if ($actionLinks) {
             $bridge->addItemLink($actionLinks);
-            $bridge->addItemLink($showLinks);
         }
+
+        $this->addTokenLinks($bridge);
     }
 
     /**

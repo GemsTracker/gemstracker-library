@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,24 +26,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * File description of Gems_Html
+ * Gems specific Html elements and settings
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.0
- * @version 1.4
- * @package Gems
+ * @package    Gems
  * @subpackage Html
- */
-
-/**
- * Class description of Gems_Html
- *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
- * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class Gems_Html
 {
@@ -87,6 +87,7 @@ class Gems_Html
 
         // Set the image directories
         MUtil_Html_ImgElement::addImageDir('gems/images');
+        MUtil_Html_ImgElement::addImageDir('gems/icons');
         $escort = GemsEscort::getInstance();
         if (isset($escort->project->imagedir)) {
             MUtil_Html_ImgElement::addImageDir($escort->project->imagedir);
@@ -146,7 +147,7 @@ class Gems_Html
         } else {
             $args['class'] = new MUtil_Html_ClassArrayAttribute('browselink');
         }
-        
+
         // MUtil_Echo::r($args);
         $pager = new MUtil_Html_PagePanel($panel_args);
 

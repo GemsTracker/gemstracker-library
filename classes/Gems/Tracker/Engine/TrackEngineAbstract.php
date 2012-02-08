@@ -112,6 +112,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     protected $util;
 
     /**
+     *
+     * @var Zend_View
+     */
+    protected $view;
+
+    /**
      * Copy from Zend_Translate_Adapter
      *
      * Translates the given string
@@ -188,6 +194,27 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
                 }
             }
         }
+    }
+
+    /**
+     * Returns a list of available icons under 'htdocs/pulse/icons'
+     * @return string[]
+     */
+    protected function _getAvailableIcons()
+    {
+        $icons = array();
+        $iterator = new DirectoryIterator(realpath(GEMS_WEB_DIR . '/gems/icons'));
+
+        foreach ($iterator as $fileinfo) {
+            if ($fileinfo->isFile()) {
+                // $icons[$fileinfo->getFilename()] = $fileinfo->getFilename();
+                $filename = $fileinfo->getFilename();
+                $url = $this->view->baseUrl() . MUtil_Html_ImgElement::getImageDir($filename);
+                $icons[$fileinfo->getFilename()] = MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
+            }
+        }
+
+        return $icons;
     }
 
     /**
@@ -707,17 +734,29 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         }
 
         $model->set('gro_id_survey',         'label', $this->_('Survey'),       'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions());
+        $model->set('gro_icon_file',         'label', $this->_('Icon'));
         $model->set('gro_id_order',          'label', $this->_('Order'),        'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
         $model->set('gro_round_description', 'label', $this->_('Description'),  'size', '30'); //, 'minlength', 4, 'required', true);
         $model->set('gro_changed_event',     'label', $this->_('After change'), 'multiOptions', $this->events->listRoundChangedEvents());
         $model->set('gro_active',            'label', $this->_('Active'),       'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
 
-        if ($action == 'create') {
-            $this->_ensureRounds();
+        switch ($action) {
+            case 'create':
+                $this->_ensureRounds();
 
-            if ($this->_rounds && ($round = end($this->_rounds))) {
-                $model->set('gro_id_order', 'default', $round['gro_id_order'] + 10);
-            }
+                if ($this->_rounds && ($round = end($this->_rounds))) {
+                    $model->set('gro_id_order', 'default', $round['gro_id_order'] + 10);
+                }
+                // Intentional fall through
+                // break;
+            case 'edit':
+            	$model->set('gro_icon_file', 'multiOptions', $this->util->getTranslated()->getEmptyDropdownArray() + $this->_getAvailableIcons());
+                break;
+
+            default:
+                $model->set('gro_icon_file', 'formatFunction', array('MUtil_Html_ImgElement', 'imgFile'));
+                break;
+
         }
 
         return $model;

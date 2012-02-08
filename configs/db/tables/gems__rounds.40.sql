@@ -12,6 +12,7 @@ CREATE TABLE if not exists gems__rounds (
         gro_survey_name varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
         gro_round_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gro_icon_file VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gro_changed_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         -- depreciated
