@@ -366,5 +366,6 @@ ALTER TABLE `gems__respondent2track` ADD gr2t_comment varchar(250) CHARACTER SET
 ALTER TABLE gems__organizations ADD `gor_user_class` VARCHAR( 30 ) NOT NULL DEFAULT 'StaffUser' AFTER  `gor_code`;
 ALTER TABLE `gems__radius_config` CHANGE  `grcfg_ip`  `grcfg_ip` VARCHAR( 39 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL
 
+-- GEMS VERSION: 44
 -- PATCH: Add icon field to rounds
 ALTER TABLE `gems__rounds` ADD gro_icon_file VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gro_round_description`;

@@ -719,6 +719,36 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
+     * Display either a link to the login screen or displays the name of the current user
+     * and a logoff link.
+     *
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as Zend_View variable name.
+     */
+    protected function _layoutLogin(array $args = null)
+    {
+        $user = $this->getLoader()->getCurrentUser();
+
+        $div = MUtil_Html::create('div', array('id' => 'login'), $args);
+
+        $p = $div->p();
+        if ($user->isActive()) {
+            $p->append(sprintf($this->_('You are logged in as %s'), $user->getFullName()));
+            $item = $this->menu->findFirst(array($this->request->getControllerKey() => 'index', $this->request->getActionKey() => 'logoff'));
+            $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
+        } else {
+            $item = $this->menu->findFirst(array($this->request->getControllerKey() => 'index', $this->request->getActionKey() => 'login'));
+            $p->a($item->toHRefAttribute(), $this->_('You are not logged in'), array('class' => 'logout'));
+        }
+        $item->set('visible', false);
+
+        return $div;
+    }
+
+    /**
      * Function called if specified in the Project.ini layoutPrepare section before
      * the layout is drawn, but after the rest of the program has run it's course.
      *
@@ -1609,6 +1639,13 @@ class GemsEscort extends MUtil_Application_Escort
         return $this;
     }
 
+    /**
+     * Returns an array of {field_names} => values for this token for
+     * use in an e-mail tamplate.
+     *
+     * @param array $tokenData
+     * @return array
+     */
     public function tokenMailFields(array $tokenData)
     {
         $locale = isset($tokenData['grs_iso_lang']) ? $tokenData['grs_iso_lang'] : $this->locale;
@@ -1667,6 +1704,19 @@ class GemsEscort extends MUtil_Application_Escort
         $result['{token_url_input}'] = $url_input;
 
         $result['{track}']           = $tokenData['gtr_track_name'];
+
+        $join = $this->db->quoteInto('gtf_id_field = gr2t2f_id_field AND gr2t2f_id_respondent_track = ?', $tokenData['gto_id_respondent_track']);
+        $select = $this->db->select();
+        $select->from('gems__track_fields', array(new Zend_Db_Expr("CONCAT('{track.', gtf_field_code, '}')")))
+                ->joinLeft('gems__respondent2track2field', $join, array('gr2t2f_value'))
+                ->distinct()
+                ->where('gtf_field_code IS NOT NULL')
+                ->order('gtf_field_code');
+        $codes = $this->db->fetchPairs($select);
+
+        $result = $result + $codes;
+        // MUtil_Echo::track($codes);
+
 
         return $result;
     }

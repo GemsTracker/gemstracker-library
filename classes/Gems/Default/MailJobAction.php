@@ -111,7 +111,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
             $model->set('gmj_from_fixed',      'label', $this->_('From other'),
                     'description', sprintf($this->_("Only when '%s' is '%s'."), $model->get('gmj_from_method', 'label'), end($fromMethods)));
         }
-        $model->set('gmj_process_method',      'label', $this->_('Processing Method'), 'multiOptions', $unselected + $translated->getBulkMailProcessOptions());
+        $model->set('gmj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gmj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
         $model->set('gmj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
 
