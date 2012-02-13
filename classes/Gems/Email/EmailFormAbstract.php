@@ -54,7 +54,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
      */
     protected $escort;
 
-    protected $messages;
+    protected $messages = array();
 
     protected $model;
 
