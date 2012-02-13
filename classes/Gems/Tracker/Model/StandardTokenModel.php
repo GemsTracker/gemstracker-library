@@ -175,7 +175,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         if ($escort->hasPrivilege('pr.respondent.result')) {
             $this->addColumn('gto_result', 'calc_result', 'gto_result');
         } else {
-            $this->addColumn('NULL', 'calc_result', 'gto_result');
+            $this->addColumn(new Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
 
         $this->useTokenAsKey();
