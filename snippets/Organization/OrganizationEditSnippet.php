@@ -54,7 +54,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelFormSnippe
 
     public function afterSave($changed)
     {
-        $org = $this->loader->getOrganization($data['gor_id_organization']);
+        $org = $this->loader->getOrganization($changed['gor_id_organization']);
         $org->invalidateCache();
 
         // Make sure any changes in the allowed list are reflected.
