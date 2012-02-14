@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-24 12:42+0100\n"
+"POT-Creation-Date: 2012-02-14 10:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -18,58 +18,72 @@ msgstr ""
 "X-Poedit-KeywordsList: plural:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/GemsEscort.php:207
+#: classes/GemsEscort.php:211
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:893
+#: classes/GemsEscort.php:739
+#, php-format
+msgid "You are logged in as %s"
+msgstr "You are logged in as %s"
+
+#: classes/GemsEscort.php:741
+#: classes/Gems/Menu.php:248
+msgid "Logoff"
+msgstr "Logoff"
+
+#: classes/GemsEscort.php:744
+msgid "You are not logged in"
+msgstr "You are not logged in"
+
+#: classes/GemsEscort.php:927
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:918
+#: classes/GemsEscort.php:952
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1349
+#: classes/GemsEscort.php:1383
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1479
+#: classes/GemsEscort.php:1513
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1481
-#: classes/GemsEscort.php:1485
-#: classes/GemsEscort.php:1486
+#: classes/GemsEscort.php:1515
+#: classes/GemsEscort.php:1519
+#: classes/GemsEscort.php:1520
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1496
+#: classes/GemsEscort.php:1530
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1498
-#: classes/GemsEscort.php:1540
+#: classes/GemsEscort.php:1532
+#: classes/GemsEscort.php:1574
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1514
+#: classes/GemsEscort.php:1548
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1516
+#: classes/GemsEscort.php:1550
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1526
-#: classes/GemsEscort.php:1538
+#: classes/GemsEscort.php:1560
+#: classes/GemsEscort.php:1572
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1527
+#: classes/GemsEscort.php:1561
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -81,31 +95,31 @@ msgstr "Database needs to be updated!"
 msgid "Combination of organization, username and password not found."
 msgstr "Combination of organization, username and password not found."
 
-#: classes/Gems/Html.php:154
+#: classes/Gems/Html.php:155
 msgid "<< First"
 msgstr "<< First"
 
-#: classes/Gems/Html.php:155
+#: classes/Gems/Html.php:156
 msgid "< Previous"
 msgstr "< Previous"
 
-#: classes/Gems/Html.php:156
+#: classes/Gems/Html.php:157
 msgid "Next >"
 msgstr "Next >"
 
-#: classes/Gems/Html.php:157
+#: classes/Gems/Html.php:158
 msgid "Last >>"
 msgstr "Last >>"
 
-#: classes/Gems/Html.php:158
+#: classes/Gems/Html.php:159
 msgid " | "
 msgstr " | "
 
-#: classes/Gems/Html.php:162
+#: classes/Gems/Html.php:163
 msgid "to"
 msgstr "to"
 
-#: classes/Gems/Html.php:163
+#: classes/Gems/Html.php:164
 msgid "of"
 msgstr "of"
 
@@ -250,10 +264,6 @@ msgstr "Change password"
 #: classes/Gems/Menu.php:322
 msgid "Token"
 msgstr "Token"
-
-#: classes/Gems/Menu.php:248
-msgid "Logoff"
-msgstr "Logoff"
 
 #: classes/Gems/Menu.php:283
 msgid "Track"
@@ -413,114 +423,138 @@ msgstr " The error message is: %s"
 msgid "Checks performed"
 msgstr "Checks performed"
 
-#: classes/Gems/UpgradesAbstract.php:164
+#: classes/Gems/Upgrades.php:69
+#: classes/Gems/Upgrades.php:71
+#, php-format
+msgid "Executing patchlevel %d"
+msgstr "Executing patchlevel %d"
+
+#: classes/Gems/Upgrades.php:76
+msgid "Creating new tables"
+msgstr "Creating new tables"
+
+#: classes/Gems/Upgrades.php:81
+msgid "Syncing surveys for all sources"
+msgstr "Syncing surveys for all sources"
+
+#: classes/Gems/UpgradesAbstract.php:175
+#, php-format
+msgid "Finished %s creation script for object %d of %d"
+msgstr "Finished %s creation script for object %d of %d"
+
+#: classes/Gems/UpgradesAbstract.php:206
 msgid "Already at max. level."
 msgstr "Already at max. level."
 
-#: classes/Gems/UpgradesAbstract.php:171
+#: classes/Gems/UpgradesAbstract.php:213
 #, php-format
 msgid "Trying upgrade for %s from level %s to level %s"
 msgstr "Trying upgrade for %s from level %s to level %s"
 
-#: classes/Gems/UpgradesAbstract.php:179
+#: classes/Gems/UpgradesAbstract.php:221
 #, php-format
 msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
-#: classes/Gems/UpgradesAbstract.php:337
+#: classes/Gems/UpgradesAbstract.php:379
 msgid "Cache cleaned"
 msgstr "Cache cleaned"
 
-#: classes/Gems/Controller/BrowseEditAction.php:346
+#: classes/Gems/Controller/BrowseEditAction.php:352
 #, php-format
 msgid "New %s..."
 msgstr "New %s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:378
+#: classes/Gems/Controller/BrowseEditAction.php:385
 #, php-format
 msgid "Delete %s"
 msgstr "Delete %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:382
+#: classes/Gems/Controller/BrowseEditAction.php:389
 #, php-format
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s deleted"
 
-#: classes/Gems/Controller/BrowseEditAction.php:396
+#: classes/Gems/Controller/BrowseEditAction.php:403
 #, php-format
 msgid "Edit %s"
 msgstr "Edit %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:493
+#: classes/Gems/Controller/BrowseEditAction.php:500
 msgid "Free search text"
 msgstr "Free search text"
 
-#: classes/Gems/Controller/BrowseEditAction.php:564
+#: classes/Gems/Controller/BrowseEditAction.php:571
 msgid "Search"
 msgstr "Search"
 
-#: classes/Gems/Controller/BrowseEditAction.php:580
+#: classes/Gems/Controller/BrowseEditAction.php:587
 #, php-format
 msgid "No %s found"
 msgstr "No %s found"
 
-#: classes/Gems/Controller/BrowseEditAction.php:653
+#: classes/Gems/Controller/BrowseEditAction.php:660
+#: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "No %s found."
 
-#: classes/Gems/Controller/BrowseEditAction.php:768
+#: classes/Gems/Controller/BrowseEditAction.php:778
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:784
+#: classes/Gems/Controller/BrowseEditAction.php:794
+#: classes/Gems/Default/DatabaseAction.php:171
+#: classes/Gems/Default/DatabaseAction.php:483
 msgid "Yes"
 msgstr "Yes"
 
-#: classes/Gems/Controller/BrowseEditAction.php:785
+#: classes/Gems/Controller/BrowseEditAction.php:795
+#: classes/Gems/Default/DatabaseAction.php:172
+#: classes/Gems/Default/DatabaseAction.php:484
 msgid "No"
 msgstr "No"
 
-#: classes/Gems/Controller/BrowseEditAction.php:838
+#: classes/Gems/Controller/BrowseEditAction.php:848
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Unknown %s requested"
 
-#: classes/Gems/Controller/BrowseEditAction.php:861
+#: classes/Gems/Controller/BrowseEditAction.php:871
 #, php-format
 msgid "New %1$s..."
 msgstr "New %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:869
+#: classes/Gems/Controller/BrowseEditAction.php:879
 msgid "Save"
 msgstr "Save"
 
-#: classes/Gems/Controller/BrowseEditAction.php:905
+#: classes/Gems/Controller/BrowseEditAction.php:915
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s saved"
 
-#: classes/Gems/Controller/BrowseEditAction.php:908
+#: classes/Gems/Controller/BrowseEditAction.php:918
 msgid "No changes to save."
 msgstr "No changes to save."
 
-#: classes/Gems/Controller/BrowseEditAction.php:917
+#: classes/Gems/Controller/BrowseEditAction.php:927
 msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:945
+#: classes/Gems/Controller/BrowseEditAction.php:955
 #, php-format
 msgid "Show %s"
 msgstr "Show %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:952
+#: classes/Gems/Controller/BrowseEditAction.php:962
 #, php-format
 msgid "Unknown %s."
 msgstr "Unknown %s."
 
 #: classes/Gems/Controller/ModelActionAbstract.php:97
 #: classes/Gems/Default/AskAction.php:150
-#: classes/Gems/Default/DatabaseAction.php:532
+#: classes/Gems/Default/DatabaseAction.php:487
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -634,7 +668,7 @@ msgid "Description"
 msgstr "Description"
 
 #: classes/Gems/Default/ConsentAction.php:70
-#: classes/Gems/Default/DatabaseAction.php:167
+#: classes/Gems/Default/DatabaseAction.php:123
 msgid "Order"
 msgstr "Order"
 
@@ -700,306 +734,260 @@ msgstr "No mails sent."
 msgid "On this test system all mail will be delivered to the from address."
 msgstr "On this test system all mail will be delivered to the from address."
 
-#: classes/Gems/Default/DatabaseAction.php:64
-#, php-format
-msgid "Executed %2$s creation script %1$s:"
-msgstr "Executed %2$s creation script %1$s:"
-
-#: classes/Gems/Default/DatabaseAction.php:74
-#, php-format
-msgid "%d record(s) returned as result set %d in step %d of %d."
-msgstr "%d record(s) returned as result set %d in step %d of %d."
-
-#: classes/Gems/Default/DatabaseAction.php:78
-#, php-format
-msgid "%d record(s) updated in step %d of %d."
-msgstr "%d record(s) updated in step %d of %d."
-
-#: classes/Gems/Default/DatabaseAction.php:81
-#, php-format
-msgid "Script ran step %d of %d succesfully."
-msgstr "Script ran step %d of %d succesfully."
-
-#: classes/Gems/Default/DatabaseAction.php:84
-msgid "  in step "
-msgstr "  in step "
-
 #: classes/Gems/Default/DatabaseAction.php:89
-#, php-format
-msgid "No script for %1$s."
-msgstr "No script for %1$s."
-
-#: classes/Gems/Default/DatabaseAction.php:133
 #, php-format
 msgid "No rows in %s."
 msgstr "No rows in %s."
 
-#: classes/Gems/Default/DatabaseAction.php:162
+#: classes/Gems/Default/DatabaseAction.php:118
 msgid "Type"
 msgstr "Type"
 
-#: classes/Gems/Default/DatabaseAction.php:166
+#: classes/Gems/Default/DatabaseAction.php:122
 msgid "Group"
 msgstr "Group"
 
-#: classes/Gems/Default/DatabaseAction.php:168
+#: classes/Gems/Default/DatabaseAction.php:124
 msgid "Location"
 msgstr "Location"
 
-#: classes/Gems/Default/DatabaseAction.php:171
+#: classes/Gems/Default/DatabaseAction.php:127
 msgid "Status"
 msgstr "Status"
 
-#: classes/Gems/Default/DatabaseAction.php:172
-msgid "created"
-msgstr "created"
-
-#: classes/Gems/Default/DatabaseAction.php:173
-msgid "not created"
-msgstr "not created"
-
-#: classes/Gems/Default/DatabaseAction.php:174
-msgid "unknown"
-msgstr "unknown"
-
-#: classes/Gems/Default/DatabaseAction.php:177
+#: classes/Gems/Default/DatabaseAction.php:130
 msgid "Script"
 msgstr "Script"
 
-#: classes/Gems/Default/DatabaseAction.php:179
+#: classes/Gems/Default/DatabaseAction.php:132
 msgid "Changed on"
 msgstr "Changed on"
 
-#: classes/Gems/Default/DatabaseAction.php:198
+#: classes/Gems/Default/DatabaseAction.php:151
 msgid "This database object does not exist. You cannot delete it."
 msgstr "This database object does not exist. You cannot delete it."
 
-#: classes/Gems/Default/DatabaseAction.php:203
+#: classes/Gems/Default/DatabaseAction.php:156
 #, php-format
 msgid "Drop %s"
 msgstr "Drop %s"
 
-#: classes/Gems/Default/DatabaseAction.php:211
+#: classes/Gems/Default/DatabaseAction.php:164
 #, php-format
 msgid "There are %d rows in the table."
 msgstr "There are %d rows in the table."
 
-#: classes/Gems/Default/DatabaseAction.php:213
+#: classes/Gems/Default/DatabaseAction.php:166
 #, php-format
 msgid "Drop table with %d rows"
 msgstr "Drop table with %d rows"
 
-#: classes/Gems/Default/DatabaseAction.php:214
+#: classes/Gems/Default/DatabaseAction.php:167
 msgid "Are you really sure?"
 msgstr "Are you really sure?"
 
-#: classes/Gems/Default/DatabaseAction.php:230
+#: classes/Gems/Default/DatabaseAction.php:183
 #, php-format
 msgid "%1$s %2$s dropped"
 msgstr "%1$s %2$s dropped"
 
-#: classes/Gems/Default/DatabaseAction.php:235
+#: classes/Gems/Default/DatabaseAction.php:188
 msgid " during statement "
 msgstr " during statement "
 
-#: classes/Gems/Default/DatabaseAction.php:246
+#: classes/Gems/Default/DatabaseAction.php:199
 #, php-format
 msgid "%s no longer exists in the database."
 msgstr "%s no longer exists in the database."
 
-#: classes/Gems/Default/DatabaseAction.php:249
+#: classes/Gems/Default/DatabaseAction.php:202
 #, php-format
 msgid "%s does not yet exist in the database."
 msgstr "%s does not yet exist in the database."
 
-#: classes/Gems/Default/DatabaseAction.php:252
+#: classes/Gems/Default/DatabaseAction.php:205
 #, php-format
 msgid "%s object does exist."
 msgstr "%s object does exist."
 
-#: classes/Gems/Default/DatabaseAction.php:270
+#: classes/Gems/Default/DatabaseAction.php:223
 msgid "Object is not a table."
 msgstr "Object is not a table."
 
-#: classes/Gems/Default/DatabaseAction.php:293
+#: classes/Gems/Default/DatabaseAction.php:246
 msgid "Structure"
 msgstr "Structure"
 
-#: classes/Gems/Default/DatabaseAction.php:302
+#: classes/Gems/Default/DatabaseAction.php:255
 msgid "database object"
 msgid_plural "database objects"
 msgstr[0] "database object"
 msgstr[1] "database objects"
 
-#: classes/Gems/Default/DatabaseAction.php:307
+#: classes/Gems/Default/DatabaseAction.php:260
 msgid "Database object overview"
 msgstr "Database object overview"
 
-#: classes/Gems/Default/DatabaseAction.php:316
-#: classes/Gems/Default/DatabaseAction.php:368
+#: classes/Gems/Default/DatabaseAction.php:269
+#: classes/Gems/Default/DatabaseAction.php:321
 msgid "Level"
 msgstr "Level"
 
-#: classes/Gems/Default/DatabaseAction.php:317
-#: classes/Gems/Default/DatabaseAction.php:369
+#: classes/Gems/Default/DatabaseAction.php:270
+#: classes/Gems/Default/DatabaseAction.php:322
 msgid "Subtype"
 msgstr "Subtype"
 
-#: classes/Gems/Default/DatabaseAction.php:319
+#: classes/Gems/Default/DatabaseAction.php:272
 msgid "To be executed"
 msgstr "To be executed"
 
-#: classes/Gems/Default/DatabaseAction.php:320
-#: classes/Gems/Default/DatabaseAction.php:372
+#: classes/Gems/Default/DatabaseAction.php:273
+#: classes/Gems/Default/DatabaseAction.php:325
 msgid "Executed"
 msgstr "Executed"
 
-#: classes/Gems/Default/DatabaseAction.php:321
-#: classes/Gems/Default/DatabaseAction.php:373
+#: classes/Gems/Default/DatabaseAction.php:274
+#: classes/Gems/Default/DatabaseAction.php:326
 msgid "Finished"
 msgstr "Finished"
 
-#: classes/Gems/Default/DatabaseAction.php:324
+#: classes/Gems/Default/DatabaseAction.php:277
 msgid "Create the patch table!"
 msgstr "Create the patch table!"
 
-#: classes/Gems/Default/DatabaseAction.php:326
+#: classes/Gems/Default/DatabaseAction.php:279
 #, php-format
 msgid "%d new or changed patch(es)."
 msgstr "%d new or changed patch(es)."
 
-#: classes/Gems/Default/DatabaseAction.php:331
+#: classes/Gems/Default/DatabaseAction.php:284
 msgid "Gems build"
 msgstr "Gems build"
 
-#: classes/Gems/Default/DatabaseAction.php:332
+#: classes/Gems/Default/DatabaseAction.php:285
 msgid "Database build"
 msgstr "Database build"
 
-#: classes/Gems/Default/DatabaseAction.php:334
+#: classes/Gems/Default/DatabaseAction.php:287
 msgid "Execute level"
 msgstr "Execute level"
 
-#: classes/Gems/Default/DatabaseAction.php:338
+#: classes/Gems/Default/DatabaseAction.php:291
 msgid "Ignore finished"
 msgstr "Ignore finished"
 
-#: classes/Gems/Default/DatabaseAction.php:339
+#: classes/Gems/Default/DatabaseAction.php:292
 msgid "Ignore executed"
 msgstr "Ignore executed"
 
-#: classes/Gems/Default/DatabaseAction.php:340
+#: classes/Gems/Default/DatabaseAction.php:293
 msgid "Show patches"
 msgstr "Show patches"
 
-#: classes/Gems/Default/DatabaseAction.php:354
+#: classes/Gems/Default/DatabaseAction.php:307
 #, php-format
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) executed."
 
-#: classes/Gems/Default/DatabaseAction.php:367
+#: classes/Gems/Default/DatabaseAction.php:320
 msgid "Patch"
 msgstr "Patch"
 
-#: classes/Gems/Default/DatabaseAction.php:371
+#: classes/Gems/Default/DatabaseAction.php:324
 msgid "Query"
 msgstr "Query"
 
-#: classes/Gems/Default/DatabaseAction.php:374
+#: classes/Gems/Default/DatabaseAction.php:327
 msgid "Result"
 msgstr "Result"
 
-#: classes/Gems/Default/DatabaseAction.php:398
+#: classes/Gems/Default/DatabaseAction.php:351
 msgid "Patch maintenance"
 msgstr "Patch maintenance"
 
-#: classes/Gems/Default/DatabaseAction.php:402
+#: classes/Gems/Default/DatabaseAction.php:355
 msgid "Patch overview"
 msgstr "Patch overview"
 
-#: classes/Gems/Default/DatabaseAction.php:464
+#: classes/Gems/Default/DatabaseAction.php:417
 msgid "This database object does not exist. You cannot create it."
 msgstr "This database object does not exist. You cannot create it."
 
-#: classes/Gems/Default/DatabaseAction.php:470
+#: classes/Gems/Default/DatabaseAction.php:423
 msgid "This database object has no script. You cannot execute it."
 msgstr "This database object has no script. You cannot execute it."
 
-#: classes/Gems/Default/DatabaseAction.php:481
+#: classes/Gems/Default/DatabaseAction.php:434
 #, php-format
 msgid "Run %s"
 msgstr "Run %s"
 
-#: classes/Gems/Default/DatabaseAction.php:500
+#: classes/Gems/Default/DatabaseAction.php:454
 #, php-format
 msgid "Starting %d object creation scripts."
 msgstr "Starting %d object creation scripts."
 
-#: classes/Gems/Default/DatabaseAction.php:505
-#, php-format
-msgid "Finished %s creation script for object %d of %d"
-msgstr "Finished %s creation script for object %d of %d"
-
-#: classes/Gems/Default/DatabaseAction.php:509
+#: classes/Gems/Default/DatabaseAction.php:464
 msgid "All objects exist. Nothing was executed."
 msgstr "All objects exist. Nothing was executed."
 
-#: classes/Gems/Default/DatabaseAction.php:515
+#: classes/Gems/Default/DatabaseAction.php:470
 msgid "Create not-existing database objects"
 msgstr "Create not-existing database objects"
 
-#: classes/Gems/Default/DatabaseAction.php:517
+#: classes/Gems/Default/DatabaseAction.php:472
 #, php-format
 msgid "One database object does not exist."
 msgid_plural "These %d database objects do not exist."
 msgstr[0] "One database object does not exist."
 msgstr[1] "These %d database objects do not exist."
 
-#: classes/Gems/Default/DatabaseAction.php:518
+#: classes/Gems/Default/DatabaseAction.php:473
 msgid "Are you sure you want to create it?"
 msgid_plural "Are you sure you want to create them all?"
 msgstr[0] "Are you sure you want to create it?"
 msgstr[1] "Are you sure you want to create them all?"
 
-#: classes/Gems/Default/DatabaseAction.php:531
+#: classes/Gems/Default/DatabaseAction.php:486
 msgid "All database objects exist. There is nothing to create."
 msgstr "All database objects exist. There is nothing to create."
 
-#: classes/Gems/Default/DatabaseAction.php:544
+#: classes/Gems/Default/DatabaseAction.php:499
 msgid "Separate multiple commands with semicolons (;)."
 msgstr "Separate multiple commands with semicolons (;)."
 
-#: classes/Gems/Default/DatabaseAction.php:551
+#: classes/Gems/Default/DatabaseAction.php:506
 msgid "Run"
 msgstr "Run"
 
-#: classes/Gems/Default/DatabaseAction.php:560
+#: classes/Gems/Default/DatabaseAction.php:515
 msgid "raw"
 msgstr "raw"
 
-#: classes/Gems/Default/DatabaseAction.php:569
+#: classes/Gems/Default/DatabaseAction.php:525
 #, php-format
 msgid "Result set %s."
 msgstr "Result set %s."
 
-#: classes/Gems/Default/DatabaseAction.php:592
+#: classes/Gems/Default/DatabaseAction.php:548
 msgid "Execute raw SQL"
 msgstr "Execute raw SQL"
 
-#: classes/Gems/Default/DatabaseAction.php:595
+#: classes/Gems/Default/DatabaseAction.php:551
 msgid "Result sets"
 msgstr "Result sets"
 
-#: classes/Gems/Default/DatabaseAction.php:620
+#: classes/Gems/Default/DatabaseAction.php:576
 msgid "This database object does not exist. You cannot view it."
 msgstr "This database object does not exist. You cannot view it."
 
-#: classes/Gems/Default/DatabaseAction.php:625
+#: classes/Gems/Default/DatabaseAction.php:581
 #, php-format
 msgid "The data in table %s"
 msgstr "The data in table %s"
 
-#: classes/Gems/Default/DatabaseAction.php:626
+#: classes/Gems/Default/DatabaseAction.php:582
 #, php-format
 msgid "Contents of %s %s"
 msgstr "Contents of %s %s"
@@ -1013,7 +1001,6 @@ msgid "Export data"
 msgstr "Export data"
 
 #: classes/Gems/Default/ExportAction.php:153
-#: classes/Gems/Default/MailJobAction.php:121
 msgid "Survey"
 msgstr "Survey"
 
@@ -1023,9 +1010,8 @@ msgid "%s records found."
 msgstr "%s records found."
 
 #: classes/Gems/Default/ExportAction.php:172
-#: classes/Gems/Default/IndexAction.php:200
+#: classes/Gems/Default/IndexAction.php:203
 #: classes/Gems/Default/LogAction.php:197
-#: classes/Gems/Default/MailJobAction.php:119
 msgid "Organization"
 msgstr "Organization"
 
@@ -1039,21 +1025,24 @@ msgid "Role"
 msgstr "Role"
 
 #: classes/Gems/Default/GroupAction.php:92
-#: classes/Gems/Default/MailJobAction.php:104
 msgid "Active"
 msgstr "Active"
 
-#: classes/Gems/Default/GroupAction.php:96
+#: classes/Gems/Default/GroupAction.php:97
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
-#: classes/Gems/Default/GroupAction.php:105
+#: classes/Gems/Default/GroupAction.php:98
+msgid "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
+msgstr "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
+
+#: classes/Gems/Default/GroupAction.php:108
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "group"
 msgstr[1] "groups"
 
-#: classes/Gems/Default/GroupAction.php:110
+#: classes/Gems/Default/GroupAction.php:113
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
@@ -1074,71 +1063,71 @@ msgstr "Login"
 msgid "Back to login"
 msgstr "Back to login"
 
-#: classes/Gems/Default/IndexAction.php:224
+#: classes/Gems/Default/IndexAction.php:227
 msgid "Password"
 msgstr "Password"
 
-#: classes/Gems/Default/IndexAction.php:239
+#: classes/Gems/Default/IndexAction.php:242
 #, php-format
 msgid "Reset password for %s application"
 msgstr "Reset password for %s application"
 
-#: classes/Gems/Default/IndexAction.php:243
+#: classes/Gems/Default/IndexAction.php:246
 msgid "Reset password"
 msgstr "Reset password"
 
-#: classes/Gems/Default/IndexAction.php:289
+#: classes/Gems/Default/IndexAction.php:292
 msgid "Username"
 msgstr "Username"
 
-#: classes/Gems/Default/IndexAction.php:355
+#: classes/Gems/Default/IndexAction.php:358
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:367
+#: classes/Gems/Default/IndexAction.php:370
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:407
+#: classes/Gems/Default/IndexAction.php:410
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:432
+#: classes/Gems/Default/IndexAction.php:435
 msgid "Reset accepted, enter your new password."
 msgstr "Reset accepted, enter your new password."
 
-#: classes/Gems/Default/IndexAction.php:436
+#: classes/Gems/Default/IndexAction.php:439
 msgid "This key timed out or does not belong to this user."
 msgstr "This key timed out or does not belong to this user."
 
-#: classes/Gems/Default/IndexAction.php:459
+#: classes/Gems/Default/IndexAction.php:462
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:460
+#: classes/Gems/Default/IndexAction.php:463
 #, php-format
 msgid "To reset your password for %s, please click this link: %s"
 msgstr "To reset your password for %s, please click this link: %s"
 
-#: classes/Gems/Default/IndexAction.php:465
+#: classes/Gems/Default/IndexAction.php:468
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:467
+#: classes/Gems/Default/IndexAction.php:470
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/Default/IndexAction.php:472
+#: classes/Gems/Default/IndexAction.php:475
 msgid "No such user found or no e-mail address known or user cannot be reset."
 msgstr "No such user found or no e-mail address known or user cannot be reset."
 
-#: classes/Gems/Default/IndexAction.php:476
+#: classes/Gems/Default/IndexAction.php:479
 msgid "We received your password reset key."
 msgstr "We received your password reset key."
 
-#: classes/Gems/Default/IndexAction.php:477
+#: classes/Gems/Default/IndexAction.php:480
 msgid "Please enter the organization and username belonging to this key."
 msgstr "Please enter the organization and username belonging to this key."
 
@@ -1261,6 +1250,7 @@ msgid "New automatic mail job..."
 msgstr "New automatic mail job..."
 
 #: classes/Gems/Default/MailJobAction.php:100
+#: classes/Gems/Default/MailLogAction.php:116
 msgid "Template"
 msgstr "Template"
 
@@ -1432,7 +1422,7 @@ msgstr "User ID"
 #: classes/Gems/Default/OptionAction.php:113
 #: classes/Gems/Default/OptionAction.php:118
 #: classes/Gems/Default/SourceAction.php:95
-#: classes/Gems/Default/StaffAction.php:153
+#: classes/Gems/Default/StaffAction.php:161
 msgid "Repeat password"
 msgstr "Repeat password"
 
@@ -1453,8 +1443,8 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/StaffAction.php:298
-#: classes/Gems/Default/StaffAction.php:331
+#: classes/Gems/Default/StaffAction.php:303
+#: classes/Gems/Default/StaffAction.php:336
 msgid "(all organizations)"
 msgstr "(all organizations)"
 
@@ -1496,7 +1486,7 @@ msgstr "Login Name"
 #: classes/Gems/Default/OptionAction.php:188
 #: classes/Gems/Default/OrganizationAction.php:139
 #: classes/Gems/Default/RespondentAction.php:173
-#: classes/Gems/Default/StaffAction.php:314
+#: classes/Gems/Default/StaffAction.php:319
 msgid "Language"
 msgstr "Language"
 
@@ -1617,34 +1607,33 @@ msgstr "Code name"
 msgid "Only for programmers."
 msgstr "Only for programmers."
 
-#: classes/Gems/Default/OrganizationAction.php:173
+#: classes/Gems/Default/OrganizationAction.php:174
 msgid "This can not be changed yet"
 msgstr "This can not be changed yet"
 
-#: classes/Gems/Default/OrganizationAction.php:175
+#: classes/Gems/Default/OrganizationAction.php:176
 #: classes/Gems/Default/StaffAction.php:131
 msgid "User Definition"
 msgstr "User Definition"
 
-#: classes/Gems/Default/OrganizationAction.php:193
+#: classes/Gems/Default/OrganizationAction.php:194
 msgid "Delete organization"
 msgstr "Delete organization"
 
-#: classes/Gems/Default/OrganizationAction.php:203
+#: classes/Gems/Default/OrganizationAction.php:204
 msgid "Edit organization"
 msgstr "Edit organization"
 
-#: classes/Gems/Default/OrganizationAction.php:213
+#: classes/Gems/Default/OrganizationAction.php:214
 msgid "Participating organizations"
 msgstr "Participating organizations"
 
-#: classes/Gems/Default/OrganizationAction.php:223
+#: classes/Gems/Default/OrganizationAction.php:224
 msgid "Show organization"
 msgstr "Show organization"
 
 #: classes/Gems/Default/OverviewPlanAction.php:115
 #: classes/Gems/Default/ProjectSurveysAction.php:88
-#: classes/Gems/Default/SurveyAction.php:203
 msgid "survey"
 msgid_plural "surveys"
 msgstr[0] "survey"
@@ -1767,19 +1756,16 @@ msgid "Session"
 msgstr "Session"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:68
-#: classes/Gems/Default/SurveyAction.php:192
 msgid "By"
 msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:69
 #: classes/Gems/Default/ProjectTracksAction.php:67
-#: classes/Gems/Default/SurveyAction.php:193
 msgid "From"
 msgstr "From"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:70
 #: classes/Gems/Default/ProjectTracksAction.php:68
-#: classes/Gems/Default/SurveyAction.php:195
 msgid "Until"
 msgstr "Until"
 
@@ -1807,7 +1793,6 @@ msgid "Questions in survey %s"
 msgstr "Questions in survey %s"
 
 #: classes/Gems/Default/ProjectTracksAction.php:118
-#: classes/Gems/Default/SurveyAction.php:85
 #, php-format
 msgid "Survey %s does not exist."
 msgstr "Survey %s does not exist."
@@ -1949,45 +1934,40 @@ msgid "Comments"
 msgstr "Comments"
 
 #: classes/Gems/Default/RespondentAction.php:205
-msgid "Physician"
-msgstr "Physician"
-
-#: classes/Gems/Default/RespondentAction.php:206
 msgid "Treatment"
 msgstr "Treatment"
 
-#: classes/Gems/Default/RespondentAction.php:234
+#: classes/Gems/Default/RespondentAction.php:233
 msgid "Rejection code"
 msgstr "Rejection code"
 
-#: classes/Gems/Default/RespondentAction.php:241
+#: classes/Gems/Default/RespondentAction.php:240
 msgid "Delete respondent"
 msgstr "Delete patient"
 
-#: classes/Gems/Default/RespondentAction.php:273
+#: classes/Gems/Default/RespondentAction.php:272
 msgid "Respondent deleted."
 msgstr "Patient deleted"
 
-#: classes/Gems/Default/RespondentAction.php:277
+#: classes/Gems/Default/RespondentAction.php:276
 msgid "Respondent tracks stopped."
 msgstr "Patient tracks stopped."
 
-#: classes/Gems/Default/RespondentAction.php:281
+#: classes/Gems/Default/RespondentAction.php:280
 msgid "Choose a reception code to delete."
 msgstr "Choose a reception code to delete."
 
-#: classes/Gems/Default/RespondentAction.php:325
+#: classes/Gems/Default/RespondentAction.php:324
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patient"
 msgstr[1] "patients"
 
-#: classes/Gems/Default/RespondentAction.php:395
+#: classes/Gems/Default/RespondentAction.php:394
 msgid "Please settle the informed consent form for this respondent."
 msgstr "Please settle the informed consent form for this patient."
 
 #: classes/Gems/Default/RespondentPlanAction.php:67
-#: classes/Gems/Default/SurveyAction.php:171
 msgid "Show respondent"
 msgstr "Show patient"
 
@@ -2169,36 +2149,40 @@ msgstr "Synchronization will update the status of all surveys imported into this
 msgid "Are you sure you want to synchronize all survey sources?"
 msgstr "Are you sure you want to synchronize all survey sources?"
 
-#: classes/Gems/Default/StaffAction.php:171
+#: classes/Gems/Default/StaffAction.php:137
+msgid "Unsupported UserDefinition"
+msgstr "Unsupported UserDefinition"
+
+#: classes/Gems/Default/StaffAction.php:179
 msgid "Users can only login when this box is checked."
 msgstr "Users can only login when this box is checked."
 
-#: classes/Gems/Default/StaffAction.php:172
+#: classes/Gems/Default/StaffAction.php:180
 msgid "If checked the user will logoff when answering a survey."
 msgstr "If checked the user will logoff when answering a survey."
 
-#: classes/Gems/Default/StaffAction.php:192
+#: classes/Gems/Default/StaffAction.php:197
 msgid "You are not allowed to edit this staff member."
 msgstr "You are not allowed to edit this staff member."
 
-#: classes/Gems/Default/StaffAction.php:249
+#: classes/Gems/Default/StaffAction.php:254
 #, php-format
 msgid "User with id %s already exists but is deleted, do you want to reactivate the account?"
 msgstr "User with id %s already exists but is deleted, do you want to reactivate the account?"
 
-#: classes/Gems/Default/StaffAction.php:305
+#: classes/Gems/Default/StaffAction.php:310
 msgid "Primary function"
 msgstr "Primary function"
 
-#: classes/Gems/Default/StaffAction.php:315
+#: classes/Gems/Default/StaffAction.php:320
 msgid "Can login"
 msgstr "Can login"
 
-#: classes/Gems/Default/StaffAction.php:316
+#: classes/Gems/Default/StaffAction.php:321
 msgid "Logout on survey"
 msgstr "Logout on survey"
 
-#: classes/Gems/Default/StaffAction.php:391
+#: classes/Gems/Default/StaffAction.php:396
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "staff member"
@@ -2440,7 +2424,7 @@ msgid "+"
 msgstr "+"
 
 #: classes/Gems/Default/TokenPlanAction.php:483
-#: classes/Gems/Default/TrackAction.php:449
+#: classes/Gems/Default/TrackAction.php:450
 msgid "token"
 msgid_plural "tokens"
 msgstr[0] "token"
@@ -2450,68 +2434,68 @@ msgstr[1] "tokens"
 msgid "Token planning"
 msgstr "Token planning"
 
-#: classes/Gems/Default/TrackAction.php:120
+#: classes/Gems/Default/TrackAction.php:121
 msgid "Respondent number"
 msgstr "Patient number"
 
-#: classes/Gems/Default/TrackAction.php:121
+#: classes/Gems/Default/TrackAction.php:122
 msgid "Respondent name"
 msgstr "Patient name"
 
-#: classes/Gems/Default/TrackAction.php:171
+#: classes/Gems/Default/TrackAction.php:172
 #, php-format
 msgid "Assignments of this track to %s"
 msgstr "Assignments of this track to %s"
 
-#: classes/Gems/Default/TrackAction.php:268
-#: classes/Gems/Default/TrackAction.php:281
+#: classes/Gems/Default/TrackAction.php:269
+#: classes/Gems/Default/TrackAction.php:282
 msgid "Show tracks"
 msgstr "Show tracks"
 
-#: classes/Gems/Default/TrackAction.php:273
+#: classes/Gems/Default/TrackAction.php:274
 msgid "Show token"
 msgstr "Show token"
 
-#: classes/Gems/Default/TrackAction.php:366
+#: classes/Gems/Default/TrackAction.php:367
 msgid "Track deleted!"
 msgstr "Track deleted!"
 
-#: classes/Gems/Default/TrackAction.php:386
+#: classes/Gems/Default/TrackAction.php:387
 msgid "Track was already deleted."
 msgstr "Track was already deleted."
 
-#: classes/Gems/Default/TrackAction.php:394
+#: classes/Gems/Default/TrackAction.php:395
 #, php-format
 msgid "Delete %s!"
 msgstr "Delete %s!"
 
-#: classes/Gems/Default/TrackAction.php:398
+#: classes/Gems/Default/TrackAction.php:399
 #, php-format
 msgid "Watch out! You cannot undo a %s deletion!"
 msgstr "Watch out! You cannot undo a %s deletion!"
 
-#: classes/Gems/Default/TrackAction.php:409
+#: classes/Gems/Default/TrackAction.php:410
 msgid "Do you want to delete this track?"
 msgstr "Do you want to delete this track?"
 
-#: classes/Gems/Default/TrackAction.php:411
+#: classes/Gems/Default/TrackAction.php:412
 msgid "Delete track"
 msgstr "Delete track"
 
-#: classes/Gems/Default/TrackAction.php:460
+#: classes/Gems/Default/TrackAction.php:461
 msgid "Assigned tracks"
 msgstr "Assigned tracks"
 
-#: classes/Gems/Default/TrackAction.php:482
+#: classes/Gems/Default/TrackAction.php:486
 #, php-format
 msgid "%s track for respondent nr %s"
 msgstr "%s track for patient  nr %s"
 
-#: classes/Gems/Default/TrackAction.php:538
+#: classes/Gems/Default/TrackAction.php:542
 msgid "Add track"
 msgstr "Add track"
 
-#: classes/Gems/Default/TrackAction.php:539
+#: classes/Gems/Default/TrackAction.php:543
 msgid "This respondent does not yet have an active track. Add one here."
 msgstr "This paitent does not yet have an active track. Add one here."
 
@@ -2533,38 +2517,38 @@ msgstr "Token answers: %s"
 msgid "Adding the %s track to respondent %s"
 msgstr "Adding the %s track to patient %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:208
+#: classes/Gems/Default/TrackActionAbstract.php:209
 msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Enter the particulars concerning the assignment to this patient."
 
-#: classes/Gems/Default/TrackActionAbstract.php:209
+#: classes/Gems/Default/TrackActionAbstract.php:210
 msgid "Assigned by"
 msgstr "Assigned by"
 
-#: classes/Gems/Default/TrackActionAbstract.php:210
+#: classes/Gems/Default/TrackActionAbstract.php:211
 msgid "Start"
 msgstr "Start"
 
-#: classes/Gems/Default/TrackActionAbstract.php:214
+#: classes/Gems/Default/TrackActionAbstract.php:215
 msgid "Comment"
 msgstr "Comment"
 
-#: classes/Gems/Default/TrackActionAbstract.php:301
+#: classes/Gems/Default/TrackActionAbstract.php:302
 #, php-format
 msgid "Email %s %s"
 msgstr "Email %s %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:307
+#: classes/Gems/Default/TrackActionAbstract.php:308
 #, php-format
 msgid "%s %s not found."
 msgstr "%s %s not found."
 
-#: classes/Gems/Default/TrackActionAbstract.php:487
+#: classes/Gems/Default/TrackActionAbstract.php:488
 #, php-format
 msgid "Overview of %s track for respondent %s"
 msgstr "Overview of %s track for patient %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:491
+#: classes/Gems/Default/TrackActionAbstract.php:492
 msgid "This track is currently not assigned to this respondent."
 msgstr "This track is currently not assigned to this patient."
 
@@ -2601,12 +2585,12 @@ msgid "Code Name"
 msgstr "Code Name"
 
 #: classes/Gems/Default/TrackFieldsAction.php:121
-#: classes/Gems/Default/TrackMaintenanceAction.php:211
+#: classes/Gems/Default/TrackMaintenanceAction.php:224
 msgid "Values"
 msgstr "Values"
 
 #: classes/Gems/Default/TrackFieldsAction.php:123
-#: classes/Gems/Default/TrackMaintenanceAction.php:213
+#: classes/Gems/Default/TrackMaintenanceAction.php:226
 msgid "Required"
 msgstr "Required"
 
@@ -2624,31 +2608,31 @@ msgstr[1] "fields"
 msgid "Fields"
 msgstr "Fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:149
+#: classes/Gems/Default/TrackMaintenanceAction.php:162
 msgid "This may take a while!"
 msgstr "This may take a while!"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:150
+#: classes/Gems/Default/TrackMaintenanceAction.php:163
 msgid "Check all tracks"
 msgstr "Check all tracks"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:151
+#: classes/Gems/Default/TrackMaintenanceAction.php:164
 msgid "Checking all tracks will update all existing rounds to the current surveys in the tracks instead of those in use when the track was created."
 msgstr "Checking all tracks will update all existing rounds to the current surveys in the tracks instead of those in use when the track was created."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:152
+#: classes/Gems/Default/TrackMaintenanceAction.php:165
 msgid "Completed tracks will not be changed. No new tokens will be created when later tokens were completed."
 msgstr "Completed tracks will not be changed. No new tokens will be created when later tokens were completed."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:266
+#: classes/Gems/Default/TrackMaintenanceAction.php:279
 msgid "fields"
 msgstr "fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:267
+#: classes/Gems/Default/TrackMaintenanceAction.php:280
 msgid "rounds"
 msgstr "rounds"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:304
+#: classes/Gems/Default/TrackMaintenanceAction.php:306
 #, php-format
 msgid "%s in track"
 msgstr "%s in track"
@@ -2946,6 +2930,47 @@ msgstr "Export the current data set to Excel"
 msgid "Excel export"
 msgstr "Excel export"
 
+#: classes/Gems/Model/DbaModel.php:97
+msgid "created"
+msgstr "created"
+
+#: classes/Gems/Model/DbaModel.php:98
+msgid "not created"
+msgstr "not created"
+
+#: classes/Gems/Model/DbaModel.php:99
+msgid "unknown"
+msgstr "unknown"
+
+#: classes/Gems/Model/DbaModel.php:420
+#, php-format
+msgid "Executed %2$s creation script %1$s:"
+msgstr "Executed %2$s creation script %1$s:"
+
+#: classes/Gems/Model/DbaModel.php:430
+#, php-format
+msgid "%d record(s) returned as result set %d in step %d of %d."
+msgstr "%d record(s) returned as result set %d in step %d of %d."
+
+#: classes/Gems/Model/DbaModel.php:434
+#, php-format
+msgid "%d record(s) updated in step %d of %d."
+msgstr "%d record(s) updated in step %d of %d."
+
+#: classes/Gems/Model/DbaModel.php:437
+#, php-format
+msgid "Script ran step %d of %d succesfully."
+msgstr "Script ran step %d of %d succesfully."
+
+#: classes/Gems/Model/DbaModel.php:440
+msgid "  in step "
+msgstr "  in step "
+
+#: classes/Gems/Model/DbaModel.php:445
+#, php-format
+msgid "No script for %1$s."
+msgstr "No script for %1$s."
+
 #: classes/Gems/Selector/DateSelectorAbstract.php:309
 msgid "<<"
 msgstr "<<"
@@ -3166,141 +3191,145 @@ msgstr "Single Survey"
 msgid "This track type does not allow the creation of new rounds."
 msgstr "This track type does not allow the creation of new rounds."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:365
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:370
 msgid "Track start"
 msgstr "Track start"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:366
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:371
 msgid "Track end"
 msgstr "Track end"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:382
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:387
 msgid "Start time"
 msgstr "Start time"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:383
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:388
 msgid "Completion time"
 msgstr "Completion time"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:398
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:403
 msgid "Minutes"
 msgstr "Minutes"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:399
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:404
 msgid "Hours"
 msgstr "Hours"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:400
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:405
 msgid "Days"
 msgstr "Days"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:401
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:406
 msgid "Weeks"
 msgstr "Weeks"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:402
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:407
 msgid "Months"
 msgstr "Months"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:403
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:408
 msgid "Quarters"
 msgstr "Quarters"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:404
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:409
 msgid "Years"
 msgstr "Years"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:438
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:444
 msgid "Valid from calculation"
 msgstr "Valid from calculation"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:439
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:447
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:445
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:453
 msgid "Date source"
 msgstr "Date source"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:440
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:448
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:446
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:454
 msgid "Round used"
 msgstr "Round used"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:441
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:449
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:447
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:455
 msgid "Date used"
 msgstr "Date used"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:442
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:450
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:448
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:456
 msgid "Add to date"
 msgstr "Add to date"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:443
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:451
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:449
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:457
 msgid "Add to date unit"
 msgstr "Add to date unit"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:446
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:452
 msgid "Valid for calculation"
 msgstr "Valid for calculation"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:480
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:486
 msgid "Does not expire"
 msgstr "Does not expire"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:483
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:489
 msgid "Use an answer from a survey."
 msgstr "Use an answer from a survey."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:484
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:490
 msgid "Use a standard token date."
 msgstr "Use a standard token date."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:486
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:492
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:418
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:445
 #, php-format
 msgid "%s track engines cannot be converted to %s track engines."
 msgstr "%s track engines cannot be converted to %s track engines."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:661
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:688
 #, php-format
 msgid "%d: %s - %s"
 msgstr "%d: %s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:664
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:667
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:691
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:694
 #, php-format
 msgid "%d: %s"
 msgstr "%d: %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:670
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:697
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:712
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:737
+msgid "Icon"
+msgstr "Icon"
+
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:740
 msgid "After change"
 msgstr "After change"
 
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:209
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:215
 msgid "Measure(d) on"
 msgstr "Measure(d) on"
 
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:212
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:218
 msgid "Completed"
 msgstr "Completed"
 
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:213
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:219
 msgid "Duration in seconds"
 msgstr "Duration in seconds"
 
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:214
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:220
 msgid "Score"
 msgstr "Score"
 
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:223
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:229
 msgid "Assigned to"
 msgstr "Assigned to"
 
@@ -3312,44 +3341,49 @@ msgstr "Track Engine"
 msgid "Use until"
 msgstr "Use until"
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:138
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:145
 msgid "Question"
 msgstr "Question"
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:207
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:215
 #, php-format
 msgid "%s answers for patient number %s"
 msgstr "%s answers for patient number %s"
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:210
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:218
 #, php-format
 msgid "Answers for token %s, patient number %s: %s."
 msgstr "Answers for token %s, patient number %s: %s."
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:223
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:232
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:124
 #: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:164
 #, php-format
 msgid "Token %s not found."
 msgstr "Token %s not found."
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:227
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:236
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:128
 #: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:168
 msgid "No token specified."
 msgstr "No token specified."
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:232
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:241
 msgid "Close"
 msgstr "Close"
 
-#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:233
+#: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:242
 msgid "Print"
 msgstr "Print"
 
 #: classes/Gems/Tracker/Snippets/EditRoundSnippetAbstract.php:129
 msgid "Add new round"
 msgstr "Add new round"
+
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:198
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:234
+msgid "Add new track"
+msgstr "Add new track"
 
 #: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:132
 #, php-format
@@ -3529,7 +3563,7 @@ msgid_plural "A password should contain at least %d numbers."
 msgstr[0] "A password should contain at least one number."
 msgstr[1] "A password should contain at least %d numbers."
 
-#: classes/Gems/User/RadiusUserDefinition.php:174
+#: classes/Gems/User/RadiusUserDefinition.php:175
 msgid "Shared secret"
 msgstr "Shared secret"
 
@@ -3839,19 +3873,19 @@ msgstr "Invalid type given. String, integer or float expected"
 msgid "One or more IPs are illegal."
 msgstr "One or more IPs are illegal."
 
-#: snippets/AddTracksSnippet.php:95
+#: snippets/AddTracksSnippet.php:117
 msgid "by Respondents"
 msgstr "by Patients"
 
-#: snippets/AddTracksSnippet.php:99
+#: snippets/AddTracksSnippet.php:121
 msgid "by Staff"
 msgstr "by Staff"
 
-#: snippets/AddTracksSnippet.php:173
+#: snippets/AddTracksSnippet.php:195
 msgid "info"
 msgstr "info"
 
-#: snippets/AddTracksSnippet.php:178
+#: snippets/AddTracksSnippet.php:200
 msgid "None available"
 msgstr "None available"
 
@@ -3892,6 +3926,7 @@ msgid "Deleted token %s for survey %s."
 msgstr "Deleted token %s for survey %s."
 
 #: snippets/DeleteTrackTokenSnippet.php:286
+#: snippets/EditTrackTokenSnippet.php:174
 #, php-format
 msgid "%d token changed by recalculation."
 msgid_plural "%d tokens changed by recalculation."
@@ -3903,14 +3938,8 @@ msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
-#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Show survey"
-
-#: snippets/EditTrackEngineSnippet.php:198
-#: snippets/EditTrackEngineSnippet.php:234
-msgid "Add new track"
-msgstr "Add new track"
 
 #: snippets/EditTrackTokenSnippet.php:129
 msgid "Recalculate track"
@@ -3981,7 +4010,7 @@ msgstr "Answer options"
 msgid "Surveys in %s track"
 msgstr "Surveys in %s track"
 
-#: snippets/TrackSurveyOverviewSnippet.php:109
+#: snippets/TrackSurveyOverviewSnippet.php:112
 msgid "Details"
 msgstr "Details"
 
@@ -4045,6 +4074,9 @@ msgstr "Can access"
 #: views/scripts/index/login.phtml:12
 msgid "The Pulse software was made possible thanks to support from "
 msgstr "The Pulse software was made possible thanks to support from "
+
+#~ msgid "Physician"
+#~ msgstr "Physician"
 
 #~ msgid "Track deleted."
 #~ msgstr "Track deleted."
@@ -4272,9 +4304,6 @@ msgstr "The Pulse software was made possible thanks to support from "
 
 #~ msgid "Left"
 #~ msgstr "Left"
-
-#~ msgid "Creation date"
-#~ msgstr "Creation date"
 
 #~ msgid "Created by"
 #~ msgstr "Created by"

@@ -438,6 +438,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set('gro_id_survey');
             $model->set('gro_round_description');
             $model->set('gro_id_order');
+            $model->set('gro_icon_file');
 
             // Calculate valid from
             $model->set('valid_after', 'elementClass', 'html', 'label', ' ', 'value', MUTil_Html::create()->h4($this->_('Valid from calculation')));

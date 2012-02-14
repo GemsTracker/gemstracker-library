@@ -54,6 +54,26 @@ class Gems_Snippets_TokenModelSnippetAbstract extends Gems_Snippets_ModelTableSn
      */
     public $loader;
 
+    protected function addTokenLinks(MUtil_Model_TableBridge $bridge)
+    {
+        $title = MUtil_Html::create()->strong($this->_('+'));
+
+        $showLinks[]   = $this->createMenuLink($bridge, 'track',  'show', $title);
+        $showLinks[]   = $this->createMenuLink($bridge, 'survey', 'show', $title);
+
+        // Remove nulls
+        $showLinks   = array_filter($showLinks);
+
+        if ($showLinks) {
+            foreach ($showLinks as $showLink) {
+                if ($showLink) {
+                    $showLink->title = array($this->_('Token'), $bridge->gto_id_token->strtoupper());
+                }
+            }
+        }
+        $bridge->addItemLink($showLinks);
+    }
+
     /**
      * Creates the model
      *
@@ -71,10 +91,12 @@ class Gems_Snippets_TokenModelSnippetAbstract extends Gems_Snippets_ModelTableSn
             'calc_valid_from',
             'gto_valid_from');
         $model->addColumn(
-            'CASE WHEN gto_completion_time IS NULL THEN gto_id_token ELSE NULL END',
+            'CASE WHEN gto_completion_time IS NULL AND grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND (gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP) THEN gto_id_token ELSE NULL END',
             'calc_id_token',
             'gto_id_token');
-
+        $model->addColumn(
+            'CASE WHEN gto_completion_time IS NULL AND grc_success = 1 AND gto_valid_from <= CURRENT_TIMESTAMP AND gto_completion_time IS NULL AND gto_valid_until < CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
+            'was_missed');
         return $model;
     }
 

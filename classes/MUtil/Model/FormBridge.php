@@ -553,7 +553,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new Zend_Form_Element_Select($name, $options);
+        $element = new MUtil_Form_Element_Select($name, $options);
 
         return $this->_addToForm($name, $element);
     }
@@ -603,7 +603,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new Zend_Form_Element_Multiselect($name, $options);
+        $element = new MUtil_Form_Element_Multiselect($name, $options);
 
         return $this->_addToForm($name, $element);
     }

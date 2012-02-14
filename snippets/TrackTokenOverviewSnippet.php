@@ -103,7 +103,8 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
         $showLinks   = array_filter($showLinks);
 
         // Columns
-        $bridge->addSortable('gsu_survey_name');
+        $bridge->addSortable('gsu_survey_name')
+                ->append(MUtil_Lazy::iif($bridge->gro_icon_file, MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon'))));
         $bridge->addSortable('gto_round_description');
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('gto_valid_from',      null, 'date');
@@ -133,7 +134,6 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
             }
             $bridge->addItemLink($showLinks);
         }
-
     }
 
     /**

@@ -94,6 +94,7 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
         $bridge->addItem('gro_id_survey');
         $bridge->addItem('gro_round_description');
         $bridge->addItem('gro_id_order');
+        $bridge->addItem('gro_icon_file');
 
         $bridge->addItem($model->get('valid_after', 'value'));
         $this->_addIf(array('grp_valid_after_source', 'grp_valid_after_id', 'grp_valid_after_field'), $bridge, $model);
@@ -109,6 +110,13 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
 
         $bridge->addItem('gro_active');
         $bridge->addItem('gro_changed_event');
+
+        $menuItem = $this->menu->find(array(
+            $this->request->getControllerKey() => $this->request->getControllerName(),
+            $this->request->getActionKey() => 'edit'));
+        if ($menuItem) {
+            $bridge->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->request), '\';');
+        }
     }
 
     /**

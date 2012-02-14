@@ -167,9 +167,15 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         }
 
         //If we are allowed to see who filled out a survey, modify the model accordingly
-        if (GemsEscort::getInstance()->hasPrivilege('pr.respondent.who')) {
+        $escort = GemsEscort::getInstance();
+        if ($escort->hasPrivilege('pr.respondent.who')) {
             $this->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
             $this->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN ggp_name ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
+        }
+        if ($escort->hasPrivilege('pr.respondent.result')) {
+            $this->addColumn('gto_result', 'calc_result', 'gto_result');
+        } else {
+            $this->addColumn(new Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
 
         $this->useTokenAsKey();
