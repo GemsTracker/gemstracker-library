@@ -148,7 +148,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addDate(    'grs_birthday',       'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => ($year - 130) . ':' . $year))
             ->addValidator(new MUtil_Validate_Date_DateBefore());
 
-        $bridge->addSelect(  'gr2o_id_physician');
+        //$bridge->addSelect(  'gr2o_id_physician');
         $bridge->addText(    'gr2o_treatment',     'size', 30, 'description', $this->_('DBC\'s, etc...'));
         $bridge->addTextarea('gr2o_comments',      'rows', 4, 'cols', 60);
 
