@@ -66,9 +66,9 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade143to15()
     {
-        $this->addMessage($this->_('Executing patchlevel 42'));
+        $this->addMessage(sprintf($this->_('Executing patchlevel %d'),42));
         $this->patcher->executePatch(42);
-        $this->addMessage($this->_('Executing patchlevel 43'));
+        $this->addMessage(sprintf($this->_('Executing patchlevel %d'),43));
         $this->patcher->executePatch(43);
 
         $this->invalidateCache();
