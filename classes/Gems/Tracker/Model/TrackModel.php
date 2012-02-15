@@ -124,7 +124,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
 
         if ($detailed) {
             $this->setIfExists('gtr_completed_event',
-                'label', $this->translate->_('Track completion event'),
+                'label', $this->translate->_('After completion'),
                 'multiOptions', $this->loader->getEvents()->listTrackCompletionEvents());
         }
 

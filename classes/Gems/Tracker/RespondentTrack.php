@@ -143,7 +143,8 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
                 $values['gr2t_end_date'] = $tokenSelect->fetchOne();
 
-                //Handle TrackCompletionEvent
+                //Handle TrackCompletionEvent, send only changed fields in $values array
+                $this->tracker->filterChangesOnly($this->_respTrackData, $values);
                 $this->handleTrackCompletion($values, $userId);
             } else {
                 $values['gr2t_end_date'] = null;
@@ -628,7 +629,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * Find out if there are track completion events and delegate to the event if needed
      *
-     * @param array $values
+     * @param array $values The values changed before entering this event
      * @param int $userId
      */
     public function handleTrackCompletion(&$values, $userId) {
