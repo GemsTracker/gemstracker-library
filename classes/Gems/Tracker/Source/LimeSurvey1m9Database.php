@@ -296,6 +296,39 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     }
 
     /**
+     * Add the commands to update this source to a source synchornization batch
+     *
+     * @param Gems_Tracker_Batch_SynchronizesSourceBatch $batch
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
+     * /
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizesSourceBatch $batch, $userId, $updateTokens = true)
+    {
+        // Surveys in LS
+        $lsDb = $this->getSourceDatabase();
+        $select = $lsDb->select();
+        $select->from($this->_getSurveysTableName(), 'sid')
+                ->order('sid');
+        $lsSurveys = $lsDb->fetchCol($select);
+        $lsSurveys = array_combine($lsSurveys, $lsSurveys);
+
+        // Surveys in Gems
+        $gemsSurveys = $this->_getGemsSurveysForSynchronisation();
+
+        foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
+            if (isset($lsSurveys[$sourceSurveyId])) {
+                $batch->addSourceFunction('checkSurvey', $sourceSurveyId, $surveyId, $userId, $updateTokens);
+            } else {
+                $batch->addSourceFunction('checkSurvey', null, $surveyId, $userId, $updateTokens);
+            }
+        }
+
+        foreach (array_diff($lsSurveys, $gemsSurveys) as $sourceSurveyId) {
+            $batch->addSourceFunction('checkSurvey', $sourceSurveyId, null, $userId, $updateTokens);
+        }
+    }
+
+    /**
      * Check if the tableprefix exists in the source database, and change the status of this
      * adapter in the gems_sources table accordingly
      *
@@ -319,6 +352,165 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $this->_updateSource($values, $userId);
 
         return $active;
+    }
+
+    /**
+     * Internal function used for source synchronization
+     *
+     * @param int $sourceSurveyId
+     * @param int $surveyId
+     * @param int $userId
+     * @param boolean $updateTokens
+     */
+    public function checkSurvey($sourceSurveyId, $surveyId, $userId, $updateTokens)
+    {
+        $messages = array();
+        $survey   = $this->tracker->getSurveyBySourceId($surveyId, $sourceSurveyId);
+
+        if (null === $sourceSurveyId) {
+            // Was removed
+            $values['gsu_active'] = 0;
+            $values['gsu_surveyor_active'] = 0;
+            $values['gsu_status'] = 'Survey was removed from source.';
+
+            if ($survey->saveSurvey($values, $userId)) {
+                $messages[] = sprintf($this->translate->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
+            }
+        } else {
+            $lsDb          = $this->getSourceDatabase();
+
+            // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
+            $select = $lsDb->select();
+            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', $this->_anonymizedField))
+                    ->joinInner(
+                            $this->_getSurveyLanguagesTableName(),
+                            'sid = surveyls_survey_id AND language = surveyls_language',
+                            array('surveyls_title', 'surveyls_description'))
+                    ->where('sid = ?', $sourceSurveyId);
+            $lsSurvey = $lsDb->fetchRow($select);
+
+            $surveyor_title = substr($lsSurvey['surveyls_title'], 0, 100);
+            $surveyor_status = '';
+
+            // ANONIMIZATION
+            switch ($lsSurvey[$this->_anonymizedField]) {
+                case 'Y':
+                    $surveyor_status .= 'Uses anonymous answers. ';
+                    break;
+                case 'N':
+                    break;
+                default:
+                    // This is for the case that $this->_anonymizedField is empty, we show an update statement.
+                    // The answers already in the table can only be linked to the repsonse based on the completion time
+                    // this requires a manual action as token table only hold minuts while survey table holds seconds
+                    // and we might have responses with the same timestamp.
+                    $lsDb->query("UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = ?;", $sourceSurveyId);
+                    $messages[] = sprintf($this->translate->_("Corrected anonymization for survey '%s'"), $surveyor_title);
+
+                    $lsDb->query("ALTER TABLE " . $this->_getSurveyTableName($sourceSurveyId) . " ADD `token` varchar(36) default NULL;");
+            }
+
+            // DATESTAMP
+            if ($lsSurvey['datestamp'] == 'N') {
+                $surveyor_status .= 'Not date stamped. ';
+            }
+
+            // IS ACTIVE
+            if ($lsSurvey['active'] == 'Y') {
+                $surveyor_active = true;
+                try {
+                    $tokenTable = $lsDb->fetchAssoc('SHOW COLUMNS FROM ' . $this->_getTokenTableName($sourceSurveyId));
+                } catch (Zend_Exception $e) {
+                    $tokenTable = false;
+                }
+
+                if ($tokenTable) {
+                    $lengths = array();
+                    if (preg_match('/\(([^\)]+)\)/', $tokenTable['token']['Type'], $lengths)) {
+                        $tokenLength = $lengths[1];
+                    } else {
+                        $tokenLength = 0;
+                    }
+                    if ($tokenLength < $token_library->getLength()) {
+                        $surveyor_status .= 'Token field length is too short. ';
+                    }
+
+                    $missingFields = array();
+                    foreach ($this->_attributeMap as $name => $field) {
+                        if (! isset($tokenTable[$field])) {
+                            $missingFields[$field] = "ADD $field varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
+                        }
+                    }
+                    if ($missingFields) {
+                        $sql = "ALTER TABLE " . $this->_getTokenTableName($sid) . " " . implode(', ', $missingFields);
+                        try {
+                            $lsDb->query($sql);
+                            $messages[] = sprintf($this->translate->_("Added attribute fields to token table for '%s'"), $surveyor_title);
+                        } catch (Zend_Exception $e) {
+                            $surveyor_status .= 'Token attributes could not be created. ';
+                            $surveyor_status .= $e->getMessage() . ' ';
+
+                            $messages[] = sprintf($this->translate->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
+                            $messages[] = sprintf($this->translate->_('Required fields: %s', implode($this->_(', '), array_keys($missingFields))));
+                            $messages[] = $e->getMessage();
+
+                            // Maximum reporting for this case
+                            MUtil_Echo::r($missingFields, 'Missing fields for ' . $surveyor_title);
+                            MUtil_Echo::r($e);
+                        }
+                    }
+                } else {
+                    $surveyor_status .= 'No token table created. ';
+                }
+
+
+            } else {
+                $surveyor_active = false;
+                $surveyor_status .= 'Not active. ';
+            }
+
+            // Update Gems
+            $values = array();
+
+            if ($survey->exists) {   // Update
+                if ($survey->isActiveInSource() != $surveyor_active) {
+                    $values['gsu_surveyor_active'] = $surveyor_active ? 1 : 0;
+
+                    $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed.'), $survey->getName());
+                }
+
+                // Reset to inactive if the surveyor survey has become inactive.
+                if ($survey->isActive() && $surveyor_status) {
+                    $values['gsu_active'] = 0;
+                    $messages[] = sprintf($this->translate->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
+                }
+
+                if (substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
+                    if ($surveyor_status) {
+                        $values['gsu_status'] = substr($surveyor_status,  0,  127);
+                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
+                    } else {
+                        $values['gsu_status'] = 'OK';
+                        $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
+                    }
+                }
+
+                if ($survey->getName() != $surveyor_title) {
+                    $values['gsu_survey_name'] = $surveyor_title;
+                    $messages[] = sprintf($this->translate->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
+                }
+
+            } else { // New record
+                $values['gsu_survey_name']        = $surveyor_title;
+                $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
+                $values['gsu_active']             = 0;
+                $values['gsu_status']             = $surveyor_status;
+
+                $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
+            }
+            $values['gsu_survey_description'] = strtr(substr($surveyor_survey['description'], 0, 100), "\xA0\xC2", '  ');
+            $survey->saveSurvey($values, $userId);
+        }
     }
 
     /**

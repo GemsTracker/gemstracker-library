@@ -87,6 +87,21 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     }
 
     /**
+     * Returns all surveys for synchronization
+     *
+     * @return array Pairs if
+     */
+    protected function _getGemsSurveysForSynchronisation()
+    {
+        $select = $this->_gemsDb->select();
+        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
+                ->where('gsu_id_source = ', $this->getId())
+                ->order('gsu_surveyor_id');
+
+        return $this->_gemsDb->fetchPairs($select);
+    }
+
+    /**
      * Creates a where filter statement for tokens that do not
      * have a correct name and are in a tokens table
      *
@@ -205,6 +220,18 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
         return ($addDatabaseName && $this->_sourceData['gso_ls_database'] ? $this->_sourceData['gso_ls_database'] . '.' : '') .
             $this->_sourceData['gso_ls_table_prefix'] .
             $tableName;
+    }
+
+    /**
+     * Add the commands to update this source to a source synchornization batch
+     *
+     * @param Gems_Tracker_Batch_SynchronizesSourceBatch $batch
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
+     */
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizesSourceBatch $batch, $userId, $updateTokens = true)
+    {
+        // Do nothing is default
     }
 
     /**

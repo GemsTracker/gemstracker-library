@@ -754,7 +754,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             $command = array_shift($this->_session->commands);
             $this->_session->processed++;
 
-            call_user_func_array(array($this, $command['method']), $command['parameters']);
+            try {
+                call_user_func_array(array($this, $command['method']), $command['parameters']);
+            } catch (Exception $e) {
+                $this->addMessage('ERROR!!!');
+                $this->addMessage('While calling:' . $command['method'] . '(', implode(',', MUtil_Ra::flatten($command['parameters'])), ')');
+                $this->addMessage($e->getMessage());
+            }
             return true;
         } else {
             return false;

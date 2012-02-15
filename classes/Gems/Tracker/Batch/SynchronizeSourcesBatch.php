@@ -44,18 +44,63 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Batch_SynchronizeSourceBatch extends MUtil_Batch_BatchAbstract
+class Gems_Tracker_Batch_SynchronizesSourceBatch extends MUtil_Batch_BatchAbstract
 {
     /**
-     * Construct as standard batch
+     *
+     * @var Gems_Tracker_Source_SourceInterface
      */
-    public function __construct()
+    private $_currentSource;
+
+    /**
+     *
+     * @var Gems_Tracker
+     */
+    protected $tracker;
+
+    /**
+     *
+     * @param mixed $sourceData Source Id or array containing source data
+     */
+    public function addSource($sourceData, $userId, $updateTokens = true)
     {
-        parent::__construct(__CLASS__);
+        $this->_currentSource = $this->tracker->getSource($sourceData);
+        $this->_currentSource->addSynchronizeSurveyCommands($this, $userId, $updateTokens);
+        $this->_currentSource = null;
     }
 
-    public function addSource($sourceId, $sourceName)
+    /**
+     *
+     * @param mixed $sourceData Source Id or array containing source data
+     */
+    public function addSourceFunction($function, $param_args = null)
     {
+        if (null === $this->_currentSource) {
+            throw new Gems_Exception_Coding('Trying to add a Source Function without a current source.');
+        }
 
+        $params = array_slice(func_get_args(), 1);
+
+        $this->addStep('sourceStep', $this->_currentSource->getId(), $function, $params);
+    }
+
+    /**
+     * The basic steps
+     *
+     * @param int $sourceId
+     * @param string $function
+     * @param array $params
+     */
+    protected function sourceStep($sourceId, $function, array $params)
+    {
+        $source = $this->tracker->getSource($sourceData);
+
+        $messages = call_user_func_array(array($source, $function), $params);
+
+        if ($messages) {
+            foreach ((array) $messages as $message) {
+                $this->addMessage($message);
+            }
+        }
     }
 }
