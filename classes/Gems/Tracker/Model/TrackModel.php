@@ -187,7 +187,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
 
         if (array_key_exists('gtr_completed_event', $track)) {
             if (!empty($track['gtr_completed_event'])) {
-                return $track['gtr_completed_event'];
+                return $this->loader->getEvents()->loadTrackCompletionEvent($track['gtr_completed_event']);
             }
         }
     }

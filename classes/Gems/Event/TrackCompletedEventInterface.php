@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-class Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterface
+interface Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterface
 {
     /**
      * Process the data and return the answers that should be changed.

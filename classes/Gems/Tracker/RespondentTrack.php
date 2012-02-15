@@ -633,11 +633,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function handleTrackCompletion(&$values, $userId) {
         // Process any events
-        $trackEngine = $this->getTrackEngine();
+        $trackModel = $this->tracker->getTrackModel();
 
         //to be backward compatible, first check if the engine has a
-        if (is_callable(array($trackEngine, 'getTrackCompletionEvent'))) {
-            if ($event = $this->tracker->getTrackModel()->getTrackCompletionEvent($this->getTrackId())) {
+        if (is_callable(array($trackModel, 'getTrackCompletionEvent'))) {
+            if ($event = $trackModel->getTrackCompletionEvent($this->getTrackId())) {
                 $event->processTrackCompletion($this, $values, $userId);
             }
         }

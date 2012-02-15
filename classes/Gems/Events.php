@@ -236,7 +236,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      * @param string $eventName
      * @return Gems_Event_TrackCompletedEventInterface
      */
-    public function loadTrackCompletionEvent($evetName)
+    public function loadTrackCompletionEvent($eventName)
     {
         return $this->_loadEvent($eventName, self::TRACK_COMPLETION_EVENT);
     }
