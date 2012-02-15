@@ -147,7 +147,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
                 ->addCurrentChildren()
                 ->showDisabled();
 
-        MUtil_Echo::track($links->count());
+        // MUtil_Echo::track($links->count());
 
         return $links;
     }
