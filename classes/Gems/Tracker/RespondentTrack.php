@@ -126,7 +126,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function _checkTrackCount($userId)
     {
-        $sqlCount  = 'SELECT COUNT(*) AS count, COALESCE(SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END), 0) AS completed
+        $sqlCount  = 'SELECT COUNT(*) AS count, SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END) AS completed
             FROM gems__tokens
             JOIN gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
             WHERE gto_id_respondent_track = ?';
@@ -142,6 +142,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
                         ->onlySucces();
 
                 $values['gr2t_end_date'] = $tokenSelect->fetchOne();
+
+                //Handle TrackCompletionEvent, send only changed fields in $values array
+                $this->tracker->filterChangesOnly($this->_respTrackData, $values);
+                $this->handleTrackCompletion($values, $userId);
             } else {
                 $values['gr2t_end_date'] = null;
             }
@@ -620,6 +624,24 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         }
 
         return 0;
+    }
+
+    /**
+     * Find out if there are track completion events and delegate to the event if needed
+     *
+     * @param array $values The values changed before entering this event
+     * @param int $userId
+     */
+    public function handleTrackCompletion(&$values, $userId) {
+        // Process any events
+        $trackModel = $this->tracker->getTrackModel();
+
+        //to be backward compatible, first check if the engine has a
+        if (is_callable(array($trackModel, 'getTrackCompletionEvent'))) {
+            if ($event = $trackModel->getTrackCompletionEvent($this->getTrackId())) {
+                $event->processTrackCompletion($this, $values, $userId);
+            }
+        }
     }
 
     /**

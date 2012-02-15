@@ -134,6 +134,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         }
+        if ($model->has('gtr_completed_event')) {
+            $bridge->add('gtr_completed_event');
+        }
         $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
     }
 

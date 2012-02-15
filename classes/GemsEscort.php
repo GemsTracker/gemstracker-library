@@ -1650,7 +1650,8 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $locale = isset($tokenData['grs_iso_lang']) ? $tokenData['grs_iso_lang'] : $this->locale;
 
-        $genderHello = $this->getUtil()->getTranslated()->getGenderHello();
+        // Prepare values
+        $genderHello = $this->getUtil()->getTranslated()->getGenderHello($locale);
         $hello[] = $genderHello[$tokenData['grs_gender']];
         $hello[] = $tokenData['grs_first_name'];
         if ($tokenData['grs_surname_prefix']) {
@@ -1658,13 +1659,24 @@ class GemsEscort extends MUtil_Application_Escort
         }
         $hello[] = $tokenData['grs_last_name'];
 
-        $genderGreeting = $this->getUtil()->getTranslated()->getGenderGreeting();
+        $genderGreeting = $this->getUtil()->getTranslated()->getGenderGreeting($locale);
         $greeting[] = $genderGreeting[$tokenData['grs_gender']];
         if ($tokenData['grs_surname_prefix']) {
             $greeting[] = $tokenData['grs_surname_prefix'];
         }
         $greeting[] = $tokenData['grs_last_name'];
 
+        // Count todo
+        $tSelect = $this->getLoader()->getTracker()->getTokenSelect(array(
+            'all'   => 'COUNT(*)',
+            'track' => $this->db->quoteInto('SUM(CASE WHEN gto_id_respondent_track = ? THEN 1 ELSE 0 END)', $tokenData['gto_id_respondent_track'])));
+        $tSelect->andSurveys(array())
+            ->forRespondent($tokenData['gto_id_respondent'], $tokenData['gto_id_organization'])
+            ->forGroupId($tokenData['gsu_id_primary_group'])
+            ->onlyValid();
+        $todo = $tSelect->fetchRow();
+
+        // Set the basic fields
         $result['{email}']      = $tokenData['grs_email'];
         $result['{first_name}'] = $tokenData['grs_first_name'];
         $result['{full_name}']  = implode(' ', $hello);
@@ -1681,30 +1693,34 @@ class GemsEscort extends MUtil_Application_Escort
         $result['{organization_url}']        = $tokenData['gor_url'];
         $result['{organization_welcome}']    = $tokenData['gor_welcome'];
 
-        $result['{physician}'] = ($tokenData['gsf_surname_prefix'] ? $tokenData['grs_surname_prefix'] . ' ' : '') . $tokenData['gsf_last_name'];
+        $result['{round}']                   = $tokenData['gto_round_description'];
 
-        $result['{round}']     = $tokenData['gto_round_description'];
-
-        $result['{site_ask_url}'] = $this->util->getCurrentURI('ask/');
-
-        $result['{survey}'] = $tokenData['gsu_survey_name'];
-
+        $result['{site_ask_url}']            = $this->util->getCurrentURI('ask/');
+        // Url's
         $url       = $this->util->getCurrentURI('ask/forward/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token']);
         $url_input = $result['{site_ask_url}'] . 'index/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
 
-        $result['{token}']           = strtoupper($tokenData['gto_id_token']);
-        $result['{token_from}']      = MUtil_Date::format($tokenData['gto_valid_from'],  Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
-        // $result['{token_input}']     = MUtil_Html::create()->a($url_input, $tokenData['gsu_survey_name']);
-        // $result['{token_link}']      = MUtil_Html::create()->a($url, $tokenData['gsu_survey_name']);
-        // $result['{token_link}']      = '<a href="' . $url . '">' . $tokenData['gsu_survey_name'] . '</a>';
-        $result['{token_link}']      = '[url=' . $url . ']' . $tokenData['gsu_survey_name'] . '[/url]';
+        $result['{survey}']           = $tokenData['gsu_survey_name'];
 
-        $result['{token_until}']     = MUtil_Date::format($tokenData['gto_valid_until'], Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
-        $result['{token_url}']       = $url;
-        $result['{token_url_input}'] = $url_input;
+        $result['{todo_all}']         = sprintf($this->translate->plural('%d survey', '%d surveys', $todo['all'], $locale), $todo['all']);
+        $result['{todo_all_count}']   = $todo['all'];
+        $result['{todo_track}']       = sprintf($this->translate->plural('%d survey', '%d surveys', $todo['track'], $locale), $todo['track']);
+        $result['{todo_track_count}'] = $todo['track'];
 
-        $result['{track}']           = $tokenData['gtr_track_name'];
+        $result['{token}']            = strtoupper($tokenData['gto_id_token']);
+        $result['{token_from}']       = MUtil_Date::format($tokenData['gto_valid_from'],  Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
+        // $result['{token_input}']      = MUtil_Html::create()->a($url_input, $tokenData['gsu_survey_name']);
+        // $result['{token_link}']       = MUtil_Html::create()->a($url, $tokenData['gsu_survey_name']);
+        // $result['{token_link}']       = '<a href="' . $url . '">' . $tokenData['gsu_survey_name'] . '</a>';
+        $result['{token_link}']       = '[url=' . $url . ']' . $tokenData['gsu_survey_name'] . '[/url]';
 
+        $result['{token_until}']      = MUtil_Date::format($tokenData['gto_valid_until'], Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
+        $result['{token_url}']        = $url;
+        $result['{token_url_input}']  = $url_input;
+
+        $result['{track}']            = $tokenData['gtr_track_name'];
+
+        // Add the code fields
         $join = $this->db->quoteInto('gtf_id_field = gr2t2f_id_field AND gr2t2f_id_respondent_track = ?', $tokenData['gto_id_respondent_track']);
         $select = $this->db->select();
         $select->from('gems__track_fields', array(new Zend_Db_Expr("CONCAT('{track.', gtf_field_code, '}')")))
@@ -1721,4 +1737,3 @@ class GemsEscort extends MUtil_Application_Escort
         return $result;
     }
 }
-

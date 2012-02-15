@@ -369,3 +369,9 @@ ALTER TABLE `gems__radius_config` CHANGE  `grcfg_ip`  `grcfg_ip` VARCHAR( 39 ) C
 -- GEMS VERSION: 44
 -- PATCH: Add icon field to rounds
 ALTER TABLE `gems__rounds` ADD gro_icon_file VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gro_round_description`;
+
+-- PATCH: Add index for receptioncode to token table
+ALTER TABLE  `gems__tokens` ADD INDEX (  `gto_reception_code` )
+
+-- PATCH: Add track completion event
+ALTER TABLE `gems__tracks` ADD gtr_completed_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;

@@ -48,7 +48,18 @@
 class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MUtil_Registry_TargetInterface
 {
     /**
-     *
+     * Holds the trackData in array with key trackId, for internal caching use only
+     * 
+     * @var array
+     */
+    protected $_trackData = array();
+
+    /**
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * @var Gems_Tracker
      */
     protected $tracker;
@@ -111,6 +122,12 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
         $this->set('gtr_date_start',    'label', $this->translate->_('From'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDate);
         $this->set('gtr_date_until',    'label', $this->translate->_('Use until'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDateForever);
 
+        if ($detailed) {
+            $this->setIfExists('gtr_completed_event',
+                'label', $this->translate->_('After completion'),
+                'multiOptions', $this->loader->getEvents()->listTrackCompletionEvents());
+        }
+
         return $this;
     }
 
@@ -146,5 +163,32 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
     public function getRegistryRequests()
     {
         return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
+    }
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @param int $trackId
+     * @return Gems_Event_TrackCompletedEventInterface|null
+     */
+    public function getTrackCompletionEvent($trackId)
+    {
+        static $trackData = array();
+
+        if (array_key_exists($trackId, $trackData)) {
+            $track = $trackData[$trackId];
+        } else {
+            if ($track = $this->loadFirst(array('gtr_id_track' => $trackId))) {
+                $trackData[$trackId] = $track;
+            } else {
+                $track = array();
+            }
+        }
+
+        if (array_key_exists('gtr_completed_event', $track)) {
+            if (!empty($track['gtr_completed_event'])) {
+                return $this->loader->getEvents()->loadTrackCompletionEvent($track['gtr_completed_event']);
+            }
+        }
     }
 }

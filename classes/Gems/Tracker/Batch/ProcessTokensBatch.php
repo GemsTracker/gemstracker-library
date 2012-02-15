@@ -58,6 +58,11 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
      */
     protected $translate;
 
+    /**
+     * Set a little higher, to reduce the effect of the server response time and application startup
+     */
+    public $minimalStepDurationMs = 3000;
+
     public function addToken($tokenData, $userId)
     {
         if (is_array($tokenData)) {

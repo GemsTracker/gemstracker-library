@@ -48,6 +48,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 {
     const EVENTS_DIR              = 'events';
 
+    const TRACK_COMPLETION_EVENT        = 'track/completed';
     const ROUND_CHANGED_EVENT           = 'round/changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'survey/beforeanswering';
     const SURVEY_COMPLETION_EVENT       = 'survey/completed';
@@ -61,6 +62,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      * @var array containing eventType => eventClass for all event classes
      */
     protected $_eventClasses = array(
+        self::TRACK_COMPLETION_EVENT        => 'Gems_Event_TrackCompletedEventInterface',
         self::ROUND_CHANGED_EVENT           => 'Gems_Event_RoundChangedEventInterface',
         self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface',
         self::SURVEY_COMPLETION_EVENT       => 'Gems_Event_SurveyCompletedEventInterface',
@@ -174,16 +176,6 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param string $eventName
-     * @return Gems_Event_RoundChangedEventInterface
-     */
-    public function loadRoundChangedEvent($eventName)
-    {
-        return $this->_loadEvent($eventName, self::ROUND_CHANGED_EVENT);
-    }
-
-    /**
-     *
      * @return Gems_Event_SurveyCompletedEventInterface
      */
     public function listSurveyBeforeAnsweringEvents()
@@ -198,6 +190,25 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     public function listSurveyCompletionEvents()
     {
         return $this->_listEvents(self::SURVEY_COMPLETION_EVENT);
+    }
+
+    /**
+     *
+     * @return Gems_Event_TrackCompletedEventInterface
+     */
+    public function listTrackCompletionEvents()
+    {
+        return $this->_listEvents(self::TRACK_COMPLETION_EVENT);
+    }
+
+    /**
+     *
+     * @param string $eventName
+     * @return Gems_Event_RoundChangedEventInterface
+     */
+    public function loadRoundChangedEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::ROUND_CHANGED_EVENT);
     }
 
     /**
@@ -218,5 +229,15 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     public function loadSurveyCompletionEvent($eventName)
     {
         return $this->_loadEvent($eventName, self::SURVEY_COMPLETION_EVENT);
+    }
+
+    /**
+     *
+     * @param string $eventName
+     * @return Gems_Event_TrackCompletedEventInterface
+     */
+    public function loadTrackCompletionEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::TRACK_COMPLETION_EVENT);
     }
 }

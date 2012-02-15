@@ -193,27 +193,27 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
         return self::$emptyDropdownArray;
     }
 
-    public function getGenders()
+    public function getGenders($locale = null)
     {
-        return array('M' => $this->_('Male'), 'F' => $this->_('Female'), 'U' => $this->_('Unknown'));
+        return array('M' => $this->_('Male', $locale), 'F' => $this->_('Female', $locale), 'U' => $this->_('Unknown', $locale));
     }
 
-    public function getGenderGreeting()
+    public function getGenderGreeting($locale = null)
     {
-        return array('M' => $this->_('mr.'), 'F' => $this->_('mrs.'), 'U' => $this->_('mr./mrs.'));
+        return array('M' => $this->_('mr.', $locale), 'F' => $this->_('mrs.', $locale), 'U' => $this->_('mr./mrs.', $locale));
     }
 
-    public function getGenderHello()
+    public function getGenderHello($locale = null)
     {
-        return array('M' => $this->_('Mr.'), 'F' => $this->_('Mrs.'), 'U' => $this->_('Mr./Mrs.'));
+        return array('M' => $this->_('Mr.', $locale), 'F' => $this->_('Mrs.', $locale), 'U' => $this->_('Mr./Mrs.', $locale));
     }
 
-    public function getYesNo()
+    public function getYesNo($locale = null)
     {
         static $data;
 
         if (! $data) {
-            $data = array(1 => $this->_('Yes'), 0 => $this->_('No'));
+            $data = array(1 => $this->_('Yes', $locale), 0 => $this->_('No', $locale));
         }
 
         return $data;
