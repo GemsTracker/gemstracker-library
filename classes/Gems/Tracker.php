@@ -887,6 +887,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         return $batch;
 
     }
+
     /**
      * Recalculates all token dates, timing and results
      * and outputs text messages.
@@ -915,5 +916,38 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
         self::$verbose = true;
         return $this->processTokensBatch($batch_id, $tokenSelect, $userId);
+    }
+
+    /**
+     * Refreshes the tokens in the source
+     *
+     * @param string $batch_id A unique identifier for the current batch
+     * @param string $cond An optional where statement
+     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     */
+    public function refreshTokenAttributesBatch($batch_id, $cond = null)
+    {
+        $batch = $this->_loadClass('Batch_RefreshTokenAttributesBatch', true, array($batch_id));
+
+        if (! $batch->isLoaded()) {
+            $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
+            $tokenSelect->andSurveys(array())
+                        ->forWhere('gsu_surveyor_active = 1')
+                        ->forWhere('gto_in_source = 1');
+
+            if ($cond) {
+                // Add all connections for filtering, but select only surveys that are active in the source
+                $tokenSelect->andReceptionCodes(array())
+                        ->andRespondents(array())
+                        ->andRespondentOrganizations(array())
+                        ->andConsents(array())
+                        ->forWhere($cond);
+            }
+
+            $batch->addTokens($this->db->fetchCol($tokenSelect->getSelect()));
+        }
+        self::$verbose = true;
+
+        return $batch;
     }
 }

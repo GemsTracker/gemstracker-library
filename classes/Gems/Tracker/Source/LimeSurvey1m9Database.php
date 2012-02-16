@@ -48,8 +48,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 {
     const CACHE_TOKEN_INFO = 'tokenInfo';
 
-    const LS_DB_DATE_FORMAT     = 'yyyy-MM-dd';
-    const LS_DB_DATETIME_FORMAT = 'yyyy-MM-dd HH:mm:ss';
+    const LS_DB_COMPLETION_FORMAT = 'yyyy-MM-dd HH:mm';
+    const LS_DB_DATE_FORMAT       = 'yyyy-MM-dd';
+    const LS_DB_DATETIME_FORMAT   = 'yyyy-MM-dd HH:mm:ss';
 
     const QUESTIONS_TABLE    = 'questions';
     const SURVEY_TABLE       = 'survey_';
@@ -119,9 +120,41 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     protected $util;
 
     /**
+     * Check a token table for any changes needed by this version.
+     *
+     * @param array $tokenTable
+     * @return array Fieldname => change field commands
+     */
+    protected function _checkTokenTable(array $tokenTable)
+    {
+        $missingFields = array();
+
+        $lengths = array();
+        if (preg_match('/\(([^\)]+)\)/', $tokenTable['token']['Type'], $lengths)) {
+            $tokenLength = $lengths[1];
+        } else {
+            $tokenLength = 0;
+        }
+        $token_library = $this->tracker->getTokenLibrary();
+        if ($tokenLength < $token_library->getLength()) {
+            $tokenLength = $token_library->getLength();
+            $missingFields['token'] = "CHANGE COLUMN `token` `token` varchar($tokenLength) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
+        }
+
+        foreach ($this->_attributeMap as $name => $field) {
+            if (! isset($tokenTable[$field])) {
+                $missingFields[$field] = "ADD $field varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
+            }
+        }
+
+        return $missingFields;
+    }
+
+    /**
      * Returns a list of field names that should be set in a newly inserted token.
      *
      * @param Gems_Tracker_Token $token
+     * @return array Of fieldname => value type
      */
     protected function _fillAttributeMap(Gems_Tracker_Token $token)
     {
@@ -377,7 +410,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 $messages[] = sprintf($this->translate->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
             }
         } else {
-            $lsDb          = $this->getSourceDatabase();
+            $lsDb = $this->getSourceDatabase();
 
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
             $select = $lsDb->select();
@@ -401,7 +434,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     break;
                 default:
                     // This is for the case that $this->_anonymizedField is empty, we show an update statement.
-                    // The answers already in the table can only be linked to the repsonse based on the completion time
+                    // The answers already in the table can only be linked to the response based on the completion time
                     // this requires a manual action as token table only hold minuts while survey table holds seconds
                     // and we might have responses with the same timestamp.
                     $lsDb->query("UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = ?;", $sourceSurveyId);
@@ -425,34 +458,21 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 }
 
                 if ($tokenTable) {
-                    $lengths = array();
-                    if (preg_match('/\(([^\)]+)\)/', $tokenTable['token']['Type'], $lengths)) {
-                        $tokenLength = $lengths[1];
-                    } else {
-                        $tokenLength = 0;
-                    }
-                    $token_library = $this->tracker->getTokenLibrary();
-                    if ($tokenLength < $token_library->getLength()) {
-                        $surveyor_status .= 'Token field length is too short. ';
-                    }
+                    $missingFields = $this->_checkTokenTable($tokenTable);
 
-                    $missingFields = array();
-                    foreach ($this->_attributeMap as $name => $field) {
-                        if (! isset($tokenTable[$field])) {
-                            $missingFields[$field] = "ADD $field varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
-                        }
-                    }
                     if ($missingFields) {
-                        $sql = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
+                        $sql    = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
+                        $fields = implode($this->translate->_(', '), array_keys($missingFields));
+                        // MUtil_Echo::track($missingFields, $sql);
                         try {
                             $lsDb->query($sql);
-                            $messages[] = sprintf($this->translate->_("Added attribute fields to token table for '%s'"), $surveyor_title);
+                            $messages[] = sprintf($this->translate->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
                         } catch (Zend_Exception $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 
                             $messages[] = sprintf($this->translate->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
-                            $messages[] = sprintf($this->translate->_('Required fields: %s', implode($this->translate->_(', '), array_keys($missingFields))));
+                            $messages[] = sprintf($this->translate->_('Required fields: %s', $fields));
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
@@ -587,7 +607,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         // Get the mapped values
         $values = $this->_fillAttributeMap($token);
-        $values['completed'] = 'N';  // Apparently it is possible to have this value filled without a survey questionnaire.
+        // Apparently it is possible to have this value filled without a survey questionnaire.
+        if ($token->isCompleted()) {
+            $values['completed'] = $token->getCompletionTime()->toString(self::LS_DB_COMPLETION_FORMAT);
+        } else {
+            $values['completed'] = 'N';
+        }
 
         $result = 0;
         if ($oldValues = $lsDb->fetchRow("SELECT * FROM $lsTokens WHERE token = ? LIMIT 1", $tokenId)) {
@@ -974,7 +999,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $result = $token->cacheGet(self::CACHE_TOKEN_INFO);
         }
 
-        if ($fields !== null) $result = array_intersect_key((array) $result, array_flip ($fields));
+        if ($fields !== null) $result = array_intersect_key((array) $result, array_flip($fields));
 
         return $result;
     }

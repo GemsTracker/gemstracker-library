@@ -412,6 +412,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Check answers'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all answers'), 'pr.source.check-answers-all', 'check-all');
 

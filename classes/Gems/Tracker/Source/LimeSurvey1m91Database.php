@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -54,4 +55,38 @@ class Gems_Tracker_Source_LimeSurvey1m91Database extends Gems_Tracker_Source_Lim
      */
     protected $_anonymizedField = 'anonymized';
 
+    /**
+     * Returns a list of field names that should be set in a newly inserted token.
+     *
+     * Added the usesleft value.
+     *
+     * @param Gems_Tracker_Token $token
+     * @return array Of fieldname => value type
+     */
+    protected function _fillAttributeMap(Gems_Tracker_Token $token)
+    {
+        $values = parent::_fillAttributeMap($token);
+
+        // Not really an attribute, but it is the best place to set this
+        $values['usesleft'] = $token->isCompleted() ? 0 : 1;
+
+        return $values;
+    }
+
+    /**
+     * Check a token table for any changes needed by this version.
+     *
+     * @param array $tokenTable
+     * @return array Fieldname => change field commands
+     */
+    protected function _checkTokenTable(array $tokenTable)
+    {
+        $missingFields = parent::_checkTokenTable($tokenTable);
+
+        if (! isset($tokenTable['usesleft'])) {
+            $missingFields['usesleft'] = "ADD `usesleft` INT( 11 ) NULL DEFAULT '1' AFTER `completed`";
+        }
+
+        return $missingFields;
+    }
 }

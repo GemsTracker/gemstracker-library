@@ -301,4 +301,13 @@ interface Gems_Tracker_TrackerInterface {
      * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
      */
     public function recalculateTokensBatch($batch_id, $userId = null, $cond = null);
+
+    /**
+     * Refreshes the tokens in the source
+     *
+     * @param string $batch_id A unique identifier for the current batch
+     * @param string $cond An optional where statement
+     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     */
+    public function refreshTokenAttributesBatch($batch_id, $cond = null);
 }

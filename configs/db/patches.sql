@@ -375,3 +375,7 @@ ALTER TABLE  `gems__tokens` ADD INDEX (  `gto_reception_code` )
 
 -- PATCH: Add track completion event
 ALTER TABLE `gems__tracks` ADD gtr_completed_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;
+
+-- GEMS VERSION: 45
+-- PATCH: Assign attribute sync to super role
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.source.check-attributes') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.source.check-attributes%';
