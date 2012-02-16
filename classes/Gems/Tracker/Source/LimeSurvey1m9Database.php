@@ -300,9 +300,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      *
      * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId, $updateTokens = true)
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId)
     {
         // Surveys in LS
         $lsDb = $this->getSourceDatabase();
@@ -317,15 +316,15 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
             if (isset($lsSurveys[$sourceSurveyId])) {
-                $batch->addSourceFunction('checkSurvey', $sourceSurveyId, $surveyId, $userId, $updateTokens);
+                $batch->addSourceFunction('checkSurvey', $sourceSurveyId, $surveyId, $userId);
             } else {
-                $batch->addSourceFunction('checkSurvey', null, $surveyId, $userId, $updateTokens);
+                $batch->addSourceFunction('checkSurvey', null, $surveyId, $userId);
             }
             $batch->addToSurveyCounter();
         }
 
         foreach (array_diff($lsSurveys, $gemsSurveys) as $sourceSurveyId) {
-            $batch->addSourceFunction('checkSurvey', $sourceSurveyId, null, $userId, $updateTokens);
+            $batch->addSourceFunction('checkSurvey', $sourceSurveyId, null, $userId);
             $batch->addToSurveyCounter();
         }
     }
@@ -362,9 +361,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param int $sourceSurveyId
      * @param int $surveyId
      * @param int $userId
-     * @param boolean $updateTokens
      */
-    public function checkSurvey($sourceSurveyId, $surveyId, $userId, $updateTokens)
+    public function checkSurvey($sourceSurveyId, $surveyId, $userId)
     {
         $messages = array();
         $survey   = $this->tracker->getSurvey($surveyId);

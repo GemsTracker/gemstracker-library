@@ -862,18 +862,12 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * @param int $sourceId A source identifier
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param boolean $updateTokens When true each individual token must be synchronized as well
      * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
      */
-    public function synchronizeSourcesBatch($sourceId = null, $userId = null, $updateTokens = false)
+    public function synchronizeSourcesBatch($sourceId = null, $userId = null)
     {
         $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
         $batch = $this->_loadClass('Batch_SynchronizeSourcesBatch', true, array($batch_id));
-
-        if ($updateTokens  != $batch->getTokenUpdate()) {
-            $batch->reset();
-        }
-        $batch->setTokenUpdate($updateTokens);
 
         if (! $batch->isLoaded()) {
             if ($sourceId) {

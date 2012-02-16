@@ -59,9 +59,8 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      *
      * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId, $updateTokens = true);
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId);
 
     /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.

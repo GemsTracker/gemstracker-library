@@ -227,11 +227,13 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
      *
      * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId, $updateTokens = true)
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId)
     {
-        // Do nothing is default
+        // Do nothing or add the old method is the default
+        if (method_exists($this, 'synchronizeSurveys')) {
+            $batch->addSourceFunction('synchronizeSurveys', $userId);
+        }
     }
 
     /**

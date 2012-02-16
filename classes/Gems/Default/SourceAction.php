@@ -253,7 +253,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     {
         $sourceId = $this->getSourceId();
 
-        $batch = $this->loader->getTracker()->synchronizeSourcesBatch($sourceId, $this->loader->getCurrentUser()->getUserId(), false);
+        $batch = $this->loader->getTracker()->synchronizeSourcesBatch($sourceId, $this->loader->getCurrentUser()->getUserId());
 
         if ($batch->run($this->getRequest())) {
             exit;
@@ -275,45 +275,39 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
                 }
             }
         }
-        /*
-        $source = $this->getSourceById();
-
-        if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
-            $this->addMessage($messages);
-        } else {
-            $this->addMessage($this->_('No changes.'));
-        }
-
-        $this->afterSaveRoute($this->getRequest());
-        // */
     }
 
+    /**
+     * Synchronize survey status for the surveys in all sources
+     */
     public function synchronizeAllAction()
     {
-        $model = $this->getModel();
-        $data  = $model->load(null, $this->sortKey);
+        //*
+        $batch = $this->loader->getTracker()->synchronizeSourcesBatch(null, $this->loader->getCurrentUser()->getUserId());
 
-        if ($this->_getParam('confirmed')) {
-            foreach ($data as $row) {
-                $source = $this->getSourceById($row['gso_id_source']);
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $this->html->h3($this->_('Synchronize all sources.'));
 
-                $this->addMessage(sprintf($this->_('Synchronization of source %s:'), $row['gso_source_name']));
-                if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
-                    $this->addMessage($messages);
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
+            } else {
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->plural('Check %s source', 'Check %s sources', $batch->getSourceCounter()), $batch->getSourceCounter())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
                 } else {
-                    $this->addMessage($this->_('No changes.'));
+                    $this->html->pInfo($this->_('No sources to check.'));
                 }
             }
-
-            $this->afterSaveRoute($this->getRequest());
-        }
-
-        $this->html->h3($this->_('Synchronize all sources of surveys'));
-        $this->html->pInfo($this->_('Synchronization will update the status of all surveys imported into this project to the status at the sources.'));
+        } // */
 
         /*
         $batch = new MUtil_Batch_WaitBatch();
-        // $batch->setMethodPush(5);
+        $batch->setMethodPush(5);
+        $batch->progressParameterName = 'waitprogress';
         // $batch->autoStart = true;
         // $batch->minimalStepDurationMs = 2000;
         if ($batch->run($this->getRequest())) {
@@ -325,7 +319,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             } else {
                 // Populate the batch (from scratch).
                 $batch->reset();
-                if (! true) {
+                if (true) {
                     $batch->addWaitsMs(400, 20);
                     $batch->addWaits(2, 1, 'Har har');
                     $batch->addWaitsMs(20, 50);
@@ -344,18 +338,6 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             }
         } // */
 
-        if ($data) {
-            $rdata = MUtil_Lazy::repeat($data);
-            $table = $this->html->table($rdata, array('class' => 'browser'));
-            $table->th($this->getTopicTitle());
-            $table->td()->a(array('action' => 'show', MUtil_Model::REQUEST_ID => $rdata->gso_id_source), $rdata->gso_source_name);
-
-            $this->html->h4($this->_('Are you sure you want to synchronize all survey sources?'));
-            $this->html->actionLink(array('confirmed' => 1), $this->_('Yes'));
-            $this->html->actionLink(array('action' => 'index'), $this->_('No'));
-        } else {
-            $this->html->pInfo(sprintf($this->_('No %s found'), $this->getTopic(0)));
-        }
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
     }
 }
