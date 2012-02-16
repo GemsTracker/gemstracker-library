@@ -553,6 +553,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $elem;
     }
 
+    /**
+     * Make an element with the specified tag name.
+     *
+     * @param string $tagName
+     * @param mixed $arg_array MUtil_Ra::args arguments
+     */
     public function __construct($tagName, $arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args(), 1);

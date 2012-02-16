@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -72,6 +71,13 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
      * @var boolean|string When true, no content is used, when a string content is added to an attribute with that name.
      */
     protected $_contentToTag = 'alt';
+
+    /**
+     * By default this element is not generated when the 'src' is empty.
+     *
+     * @var boolean The element is rendered even without content when true.
+     */
+    public $renderWithoutSrc = false;
 
     /**
      * Converts an associative array to a string of tag attributes.
@@ -216,6 +222,29 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
         }
 
         return new self('img', $args);
+    }
+
+    /**
+     * Function to allow overloading  of tag rendering only
+     *
+     * Renders the element tag with it's content into a html string
+     *
+     * The $view is used to correctly encode and escape the output
+     *
+     * @param Zend_View_Abstract $view
+     * @return string Correctly encoded and escaped html output
+     */
+    protected function renderElement(Zend_View_Abstract $view)
+    {
+        if (isset($this->_attribs['src'])) {
+            $src = MUtil_Html::renderAny($view, $this->_attribs['src']);
+        } else {
+            $src = false;
+        }
+
+        if ($src || $this->renderWithoutSrc) {
+            return parent::renderElement($view);
+        }
     }
 
     /**
