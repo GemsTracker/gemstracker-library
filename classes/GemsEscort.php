@@ -274,6 +274,10 @@ class GemsEscort extends MUtil_Application_Escort
         return $acl->getAcl();
     }
 
+    protected function _initActionHelpers() {
+        Zend_Controller_Action_HelperBroker::addPrefix('Gems_Controller_Action_Helper');
+    }
+
     /**
      * Initialize the Project or Gems loader.
      *

@@ -273,26 +273,9 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
 
-        if ($batch->run($this->getRequest())) {
-            exit;
-        } else {
-            $this->html->h3(
-                sprintf($this->_('Checking survey results for the %s survey.'),
-                $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId)));
-
-            if ($batch->isFinished()) {
-                $this->addMessage($batch->getMessages(true));
-                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
-            } else {
-                if ($batch->count()) {
-                    // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
-                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
-                } else {
-                    $this->html->pInfo($this->_('No tokens to check.'));
-                }
-            }
-        }
+        $title = sprintf($this->_('Checking survey results for the %s survey.'),
+                $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
+        $this->_helper->BatchRunner($batch, $title);
     }
 
     /**
@@ -302,24 +285,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     {
         $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
-        if ($batch->run($this->getRequest())) {
-            exit;
-        } else {
-            $this->html->h3($this->_('Checking survey results for all surveys.'));
-
-            if ($batch->isFinished()) {
-                $this->addMessage($batch->getMessages(true));
-                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
-            } else {
-                if ($batch->count()) {
-                    // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
-                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
-                } else {
-                    $this->html->pInfo($this->_('No tokens to check.'));
-                }
-            }
-        }
+        $title = $this->_('Checking survey results for all surveys.');
+        $this->_helper->BatchRunner($batch, $title);
     }
 
     /**

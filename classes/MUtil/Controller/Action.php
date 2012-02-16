@@ -64,7 +64,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      *
      * @var MUtil_Html_Sequence $html The html object to add content to.
      */
-    protected $html;
+    public $html;
 
     /**
      * The loader for snippets.
