@@ -263,6 +263,9 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         return true;
     }
 
+    /**
+     * Check the tokens for a single survey
+     */
     public function checkAction()
     {
         $surveyId = $this->_getParam(MUtil_Model::REQUEST_ID);
@@ -283,8 +286,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
             } else {
                 if ($batch->count()) {
                     // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
-                    $this->html->append($batch->getPanel($this->view, '0%'));
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
                 } else {
                     $this->html->pInfo($this->_('No tokens to check.'));
                 }
@@ -292,6 +295,9 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         }
     }
 
+    /**
+     * Check the tokens for all surveys
+     */
     public function checkAllAction()
     {
         $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
@@ -307,8 +313,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
             } else {
                 if ($batch->count()) {
                     // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
-                    $this->html->append($batch->getPanel($this->view, '0%'));
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
                 } else {
                     $this->html->pInfo($this->_('No tokens to check.'));
                 }

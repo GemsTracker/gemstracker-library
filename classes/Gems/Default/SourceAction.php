@@ -102,6 +102,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $bridge->addExhibitor('gso_last_synch');
     }
 
+    /**
+     * Check all the tokens for a single source
+     */
     public function checkAction()
     {
         $sourceId = $this->getSourceId();
@@ -114,7 +117,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         } else {
             $this->html->h3(
                 sprintf($this->_('Checking survey results for %s source.'),
-                $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId)));
+                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId)));
 
             if ($batch->isFinished()) {
                 $this->addMessage($batch->getMessages(true));
@@ -122,8 +125,8 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             } else {
                 if ($batch->count()) {
                     // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
-                    $this->html->append($batch->getPanel($this->view, '0%'));
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
                 } else {
                     $this->html->pInfo($this->_('No tokens to check.'));
                 }
@@ -131,6 +134,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         }
     }
 
+    /**
+     * Check all the tokens for all sources
+     */
     public function checkAllAction()
     {
         $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
@@ -146,8 +152,8 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             } else {
                 if ($batch->count()) {
                     // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->count())));
-                    $this->html->append($batch->getPanel($this->view, '0%'));
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s tokens'), $batch->getTokenCount())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
                 } else {
                     $this->html->pInfo($this->_('No tokens to check.'));
                 }
@@ -240,8 +246,36 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $this->afterSaveRoute($this->getRequest());
     }
 
+    /**
+     * Synchronize survey status for the surveys in a source
+     */
     public function synchronizeAction()
     {
+        $sourceId = $this->getSourceId();
+
+        $batch = $this->loader->getTracker()->synchronizeSourcesBatch($sourceId, $this->loader->getCurrentUser()->getUserId(), false);
+
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $this->html->h3(
+                sprintf($this->_('Synchronize the %s source.'),
+                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId)));
+
+            if ($batch->isFinished()) {
+                $this->addMessage($batch->getMessages(true));
+                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
+            } else {
+                if ($batch->count()) {
+                    // Batch is loaded by Tracker
+                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s surveys'), $batch->getSurveyCounter())));
+                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+                } else {
+                    $this->html->pInfo($this->_('No surveys to check.'));
+                }
+            }
+        }
+        /*
         $source = $this->getSourceById();
 
         if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
@@ -251,6 +285,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         }
 
         $this->afterSaveRoute($this->getRequest());
+        // */
     }
 
     public function synchronizeAllAction()

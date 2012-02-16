@@ -298,11 +298,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     /**
      * Add the commands to update this source to a source synchornization batch
      *
-     * @param Gems_Tracker_Batch_SynchronizesSourceBatch $batch
+     * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param bool $updateTokens Wether the tokens should be updated or not, default is true
-     * /
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizesSourceBatch $batch, $userId, $updateTokens = true)
+     */
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId, $updateTokens = true)
     {
         // Surveys in LS
         $lsDb = $this->getSourceDatabase();
@@ -321,10 +321,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             } else {
                 $batch->addSourceFunction('checkSurvey', null, $surveyId, $userId, $updateTokens);
             }
+            $batch->addToSurveyCounter();
         }
 
         foreach (array_diff($lsSurveys, $gemsSurveys) as $sourceSurveyId) {
             $batch->addSourceFunction('checkSurvey', $sourceSurveyId, null, $userId, $updateTokens);
+            $batch->addToSurveyCounter();
         }
     }
 
@@ -365,7 +367,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     public function checkSurvey($sourceSurveyId, $surveyId, $userId, $updateTokens)
     {
         $messages = array();
-        $survey   = $this->tracker->getSurveyBySourceId($surveyId, $sourceSurveyId);
+        $survey   = $this->tracker->getSurvey($surveyId);
 
         if (null === $sourceSurveyId) {
             // Was removed
@@ -431,6 +433,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     } else {
                         $tokenLength = 0;
                     }
+                    $token_library = $this->tracker->getTokenLibrary();
                     if ($tokenLength < $token_library->getLength()) {
                         $surveyor_status .= 'Token field length is too short. ';
                     }
@@ -442,7 +445,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                         }
                     }
                     if ($missingFields) {
-                        $sql = "ALTER TABLE " . $this->_getTokenTableName($sid) . " " . implode(', ', $missingFields);
+                        $sql = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
                         try {
                             $lsDb->query($sql);
                             $messages[] = sprintf($this->translate->_("Added attribute fields to token table for '%s'"), $surveyor_title);
@@ -451,7 +454,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                             $surveyor_status .= $e->getMessage() . ' ';
 
                             $messages[] = sprintf($this->translate->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
-                            $messages[] = sprintf($this->translate->_('Required fields: %s', implode($this->_(', '), array_keys($missingFields))));
+                            $messages[] = sprintf($this->translate->_('Required fields: %s', implode($this->translate->_(', '), array_keys($missingFields))));
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
@@ -489,7 +492,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     if ($surveyor_status) {
                         $values['gsu_status'] = substr($surveyor_status,  0,  127);
                         $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
-                    } else {
+                    } elseif ($survey->getStatus() != 'OK') {
                         $values['gsu_status'] = 'OK';
                         $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
                     }
@@ -508,9 +511,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
                 $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
-            $values['gsu_survey_description'] = strtr(substr($surveyor_survey['description'], 0, 100), "\xA0\xC2", '  ');
+            $values['gsu_survey_description'] = strtr(substr($lsSurvey['surveyls_description'], 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
         }
+
+        return $messages;
     }
 
     /**

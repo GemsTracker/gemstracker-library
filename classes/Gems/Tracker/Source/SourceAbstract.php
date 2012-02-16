@@ -95,7 +95,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     {
         $select = $this->_gemsDb->select();
         $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
-                ->where('gsu_id_source = ', $this->getId())
+                ->where('gsu_id_source = ?', $this->getId())
                 ->order('gsu_surveyor_id');
 
         return $this->_gemsDb->fetchPairs($select);
@@ -225,11 +225,11 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     /**
      * Add the commands to update this source to a source synchornization batch
      *
-     * @param Gems_Tracker_Batch_SynchronizesSourceBatch $batch
+     * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizesSourceBatch $batch, $userId, $updateTokens = true)
+    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId, $updateTokens = true)
     {
         // Do nothing is default
     }

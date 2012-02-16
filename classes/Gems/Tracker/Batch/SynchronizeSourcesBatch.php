@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Batch_SynchronizesSourceBatch extends MUtil_Batch_BatchAbstract
+class Gems_Tracker_Batch_SynchronizeSourcesBatch extends MUtil_Batch_BatchAbstract
 {
     /**
      *
@@ -60,12 +60,19 @@ class Gems_Tracker_Batch_SynchronizesSourceBatch extends MUtil_Batch_BatchAbstra
 
     /**
      *
-     * @param mixed $sourceData Source Id or array containing source data
+     * @var Zend_Translate
      */
-    public function addSource($sourceData, $userId, $updateTokens = true)
+    protected $translate;
+
+    /**
+     *
+     * @param mixed $sourceData Source Id or array containing source data
+     * @param int $userId Gems user id
+     */
+    public function addSource($sourceData, $userId)
     {
         $this->_currentSource = $this->tracker->getSource($sourceData);
-        $this->_currentSource->addSynchronizeSurveyCommands($this, $userId, $updateTokens);
+        $this->_currentSource->addSynchronizeSurveyCommands($this, $userId, $this->getTokenUpdate());
         $this->_currentSource = null;
     }
 
@@ -85,6 +92,67 @@ class Gems_Tracker_Batch_SynchronizesSourceBatch extends MUtil_Batch_BatchAbstra
     }
 
     /**
+     * Add one to the number of surveys checked
+     *
+     * @param int $add
+     * @return int
+     */
+    public function addToSurveyCounter($add = 1)
+    {
+        return $this->addToCounter('surveys', $add);
+    }
+
+    /**
+     * String of messages from the batch
+     *
+     * Do not forget to reset() the batch if you're done with it after
+     * displaying the report.
+     *
+     * @param boolean $reset When true the batch is reset afterwards
+     * @return array
+     */
+    public function getMessages($reset = false)
+    {
+        $scounter = $this->getSurveyCounter();
+
+        $messages = parent::getMessages($reset);
+
+        if (! $messages) {
+            $messages[] = $this->translate->_('No surveys were changed.');
+        }
+        array_unshift($messages, sprintf($this->translate->_('%d surveys checked.'), $scounter));
+
+        return $messages;
+    }
+    /**
+     * Get the number of surveys checked
+     *
+     * @return int
+     */
+    public function getSurveyCounter()
+    {
+        return $this->getCounter('surveys');
+    }
+
+    /**
+     * Is tokenUpdate on or off.
+     *
+     * @return boolean
+     */
+    public function getTokenUpdate()
+    {
+        return $this->getVar('tokenUpdate');
+    }
+
+    /**
+     * Set tokenUpdate on or off.
+     */
+    public function setTokenUpdate($value = true)
+    {
+        $this->setVar('tokenUpdate', $value);
+    }
+
+    /**
      * The basic steps
      *
      * @param int $sourceId
@@ -93,7 +161,7 @@ class Gems_Tracker_Batch_SynchronizesSourceBatch extends MUtil_Batch_BatchAbstra
      */
     protected function sourceStep($sourceId, $function, array $params)
     {
-        $source = $this->tracker->getSource($sourceData);
+        $source = $this->tracker->getSource($sourceId);
 
         $messages = call_user_func_array(array($source, $function), $params);
 

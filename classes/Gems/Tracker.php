@@ -48,7 +48,7 @@
  * extension) and TokenValidator.
  *
  * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * processCompletedTokens() and recalculateTokens().
+ * processCompletedTokens() and recalculateTokensBatch().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -304,13 +304,15 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function filterChangesOnly(array $oldValues, array &$newValues)
     {
-        if ($newValues) {
+        if ($newValues && $oldValues) {
             // MUtil_Echo::track($newValues);
             // Remove up unchanged values
             foreach ($newValues as $name => $value) {
-                // Extra condition for empty time in date values
-                if (($value === $oldValues[$name]) || ($value === $oldValues[$name] . ' 00:00:00')) {
-                    unset($newValues[$name]);
+                if (array_key_exists($name, $oldValues)) {
+                    // Extra condition for empty time in date values
+                    if (($value === $oldValues[$name]) || ($value === $oldValues[$name] . ' 00:00:00')) {
+                        unset($newValues[$name]);
+                    }
                 }
             }
         }
@@ -858,32 +860,39 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param Zend_Translate $t
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @param string $cond
-     * @return array of translated messages
+     * @param int $sourceId A source identifier
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param boolean $updateTokens When true each individual token must be synchronized as well
+     * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
      */
-    public function recalculateTokens($userId = null, $cond = null)
+    public function synchronizeSourcesBatch($sourceId = null, $userId = null, $updateTokens = false)
     {
-        $userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect();
-        $tokenSelect->andReceptionCodes()
-                    ->andRespondents()
-                    ->andRespondentOrganizations()
-                    ->andConsents();
-        if ($cond) {
-            $tokenSelect->forWhere($cond);
+        $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
+        $batch = $this->_loadClass('Batch_SynchronizeSourcesBatch', true, array($batch_id));
+
+        if ($updateTokens  != $batch->getTokenUpdate()) {
+            $batch->reset();
         }
-        //Only select surveys that are active in the source (so we can recalculate inactive in Gems)
-        $tokenSelect->andSurveys();
-        $tokenSelect->forWhere('gsu_surveyor_active = 1');
+        $batch->setTokenUpdate($updateTokens);
 
-        self::$verbose = true;
-        $changes = $this->processTokens($tokenSelect, $userId);
+        if (! $batch->isLoaded()) {
+            if ($sourceId) {
+                $sources = array($sourceId);
+            } else {
+                $select = $this->db->select();
+                $select->from('gems__sources', array('gso_id_source'))
+                        ->where('gso_active = 1');
+                $sources = $this->db->fetchCol($select);
+            }
 
-        return $changes->getMessages($this->translate);
+            foreach ($sources as $source) {
+                $batch->addSource($source, $userId);
+            }
+        }
+
+        return $batch;
+
     }
-
     /**
      * Recalculates all token dates, timing and results
      * and outputs text messages.

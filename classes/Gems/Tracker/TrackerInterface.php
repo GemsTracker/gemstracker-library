@@ -54,7 +54,7 @@
  * extension) and TokenValidator.
  *
  * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * processCompletedTokens() and recalculateTokens().
+ * processCompletedTokens() and recalculateTokensBatch().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -283,12 +283,13 @@ interface Gems_Tracker_TrackerInterface {
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @param string $cond
-     * @return array of translated messages
+     * @param int $sourceId A source identifier
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param boolean $updateTokens When true each individual token must be synchronized as well
+     * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
      */
-    public function recalculateTokens($userId = null, $cond = null);
-
+    public function synchronizeSourcesBatch($sourceId = null, $userId = null, $updateTokens = false);
+    
     /**
      * Recalculates all token dates, timing and results
      * and outputs text messages.

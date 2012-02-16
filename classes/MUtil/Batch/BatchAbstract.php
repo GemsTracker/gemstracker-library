@@ -202,6 +202,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $command['method']     = $method;
         $command['parameters'] = $params;
 
+        // MUtil_Echo::track($command);
+        
         return $command;
     }
 
@@ -284,7 +286,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function getCounter($name)
     {
-        MUtil_Echo::track($this->_session->counters);
+        // MUtil_Echo::track($this->_session->counters);
         if (isset($this->_session->counters[$name])) {
             return $this->_session->counters[$name];
         }
@@ -475,6 +477,30 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Batch duration variable storage for the process
+     *
+     * @param string $name Name
+     * @return mixed The scalar value, if any
+     */
+    protected function getVar($name)
+    {
+        if (isset($this->_session->vars[$name])) {
+            return $this->_session->vars[$name];
+        }
+    }
+
+    /**
+     * Batch duration variable storage for the process
+     *
+     * @param string $name Name
+     * @return boolean
+     */
+    protected function hasVar($name)
+    {
+        return array_key_exists($name, $this->_session->vars);
+    }
+
+    /**
      * Return true after commands all have been ran.
      *
      * @return boolean
@@ -527,6 +553,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $this->_session->finished  = false;
         $this->_session->messages  = array();
         $this->_session->processed = 0;
+        $this->_session->vars      = array();
 
         return $this;
     }
@@ -744,6 +771,21 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Batch duration variable storage for the process
+     *
+     * @param string $name Name
+     * @param mixed $value Scalar value
+     */
+    protected function setVar($name, $value)
+    {
+        if (! MUtil_Ra::isScalar($value)) {
+            throw new MUtil_Batch_BatchException("Non scalar batch value named '$name'.");
+        }
+
+        $this->_session->vars[$name] = $value;
+    }
+
+    /**
      * Progress a single step on the command stack
      *
      * @return boolean
@@ -758,12 +800,24 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 call_user_func_array(array($this, $command['method']), $command['parameters']);
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
-                $this->addMessage('While calling:' . $command['method'] . '(', implode(',', MUtil_Ra::flatten($command['parameters'])), ')');
+                $this->addMessage('While calling:' . $command['method'] . '(' . implode(',', MUtil_Ra::flatten($command['parameters'])) . ')');
                 $this->addMessage($e->getMessage());
+
+                MUtil_Echo::r($e);
             }
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Batch duration variable storage for the process
+     *
+     * @param string $name Name
+     */
+    protected function unsetVar($name)
+    {
+        unset($this->_session->vars[$name]);
     }
 }

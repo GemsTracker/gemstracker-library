@@ -63,6 +63,13 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
      */
     public $minimalStepDurationMs = 3000;
 
+    /**
+     * Add the check of a single token to the batch.
+     *
+     * @param mixed $tokenData Array or token id
+     * @param int $userId Gems user id
+     * @return Gems_Tracker_Batch_ProcessTokensBatch (Continuation pattern)
+     */
     public function addToken($tokenData, $userId)
     {
         if (is_array($tokenData)) {
@@ -75,11 +82,18 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
 
         // MUtil_Echo::track($tokenData);
-        $this->setStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenData, $userId);
+        $this->setStep('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+        $this->addToCounter('tokens');
 
         return $this;
     }
 
+    /**
+     * Check a single track for the effects of token completion.
+     *
+     * @param mixed $respTrackData Data array or a respondent track id
+     * @param int $userId Gems user id
+     */
     protected function checkTrackTokens($respTrackData, $userId)
     {
         $respTrack = $this->tracker->getRespondentTrack($respTrackData);
@@ -90,6 +104,18 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
     }
 
+    /**
+     * Check for token completion and adds the processTokenCompletion
+     * command when the token is indeed completed.
+     *
+     * NOTE: The reasons to add the extra commands in this process are
+     * (1) that we are not sure in advance for which tokens we should
+     * process and (2) the processing commands should be executed
+     * AFTER all tokens have been checked for completion.
+     *
+     * @param mixed $tokenData Array or token id
+     * @param int $userId Gems user id
+     */
     protected function checkTokenCompletion($tokenData, $userId)
     {
         $this->addToCounter('checkedTokens');
@@ -109,6 +135,11 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         }
     }
 
+    /**
+     * Returns a description of what was changed during this batch.
+     *
+     * @return array Of message strings
+     */
     public function getCounterMessages()
     {
         if ($this->getCounter('checkedRespondentTracks')) {
@@ -161,6 +192,21 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
         return array_merge($this->getCounterMessages(), parent::getMessages($reset));
     }
 
+    /**
+     * The number of tokens to check
+     *
+     * @return int
+     */
+    public function getTokenCount()
+    {
+        return $this->getCounter('tokens');
+    }
+
+    /**
+     * True when the batch changed anything.
+     *
+     * @return boolean
+     */
     public function hasChanged()
     {
         return $this->getCounter('resultDataChanges') ||
@@ -171,6 +217,18 @@ class Gems_Tracker_Batch_ProcessTokensBatch extends MUtil_Batch_BatchAbstract
                 $this->getCounter('createdTokens');
     }
 
+    /**
+     * Processes token completion and adds the checkTrackTokens
+     * command when the token is indeed completed.
+     *
+     * NOTE: The reasons we add the checkTrackTokens command are
+     * that (1) we do not know in advance which tracks to check
+     * and (2) the tracks should be checked AFTER all tokens have
+     * been processed.
+     *
+     * @param mixed $tokenData Array or token id
+     * @param int $userId Gems user id
+     */
     protected function processTokenCompletion($tokenData, $userId)
     {
         $token = $this->tracker->getToken($tokenData);
