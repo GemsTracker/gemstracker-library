@@ -96,7 +96,6 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         }
 
         $this->addTable(    'gems__tracks',           array('gto_id_track' => 'gtr_id_track'));
-        $this->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
         $this->addTable(    'gems__surveys',          array('gto_id_survey' => 'gsu_id_survey'));
         $this->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
         $this->addTable(    'gems__respondents',      array('gto_id_respondent' => 'grs_id_user'));
@@ -104,6 +103,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         $this->addTable(    'gems__respondent2track', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'), $this->saveRespondentTracks);
         $this->addTable(    'gems__organizations',    array('gto_id_organization' => 'gor_id_organization'));
         $this->addTable(    'gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
+        $this->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
         $this->addLeftTable('gems__staff',            array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
 
         $this->addColumn(
