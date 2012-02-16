@@ -96,7 +96,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         }
 
         $this->addTable(    'gems__tracks',           array('gto_id_track' => 'gtr_id_track'));
-        $this->addTable(    'gems__rounds',           array('gto_id_round' => 'gro_id_round'));
+        $this->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
         $this->addTable(    'gems__surveys',          array('gto_id_survey' => 'gsu_id_survey'));
         $this->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
         $this->addTable(    'gems__respondents',      array('gto_id_respondent' => 'grs_id_user'));
