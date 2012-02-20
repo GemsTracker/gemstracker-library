@@ -81,6 +81,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     private $_id;
 
     /**
+     * Holds the last message set by the batch job
+     *
+     * @var string
+     */
+    private $_lastMessage = null;
+
+    /**
      * Stack to keep existing id's.
      *
      * @var array
@@ -246,6 +253,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     protected function addMessage($text)
     {
         $this->_session->messages[] = $text;
+        $this->_lastMessage = $text;
 
         return $this;
     }
@@ -311,6 +319,11 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         }
 
         return (string) $this->_functionPrefix;
+    }
+
+    protected function getLastMessage()
+    {
+        return $this->_lastMessage;
     }
 
     /**
@@ -560,7 +573,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
                 if (microtime(true) > $reportRun) {
                     // Communicate progress
-                    $bar->update($this->getProgressPercentage(), end($this->_session->messages));
+                    $bar->update($this->getProgressPercentage(), $this->getLastMessage());
 
                     // INFO: When using PULL $bar->update() should exit the program,
                     // but just let us make sure.
@@ -619,6 +632,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     protected function setMessage($id, $text)
     {
         $this->_session->messages[$id] = $text;
+        $this->_lastMessage = $text;
 
         return $this;
     }

@@ -203,6 +203,24 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @return Gems_Task_TaskAbstract
+     */
+    public function getTask($name) {
+        return $this->_getClass('task', 'Task_' . ucfirst($name));
+    }
+
+    /**
+     *
+     * @param type $id
+     * @return Gems_Task_TaskRunnerBatch
+     */
+    public function getTaskRunnerBatch($id)
+    {
+        return $this->_loadClass('Task_TaskRunnerBatch', true, array($id));
+    }
+
+    /**
+     *
      * @return Gems_Tracker_TrackerInterface
      */
     public function getTracker()

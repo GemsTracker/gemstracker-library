@@ -128,6 +128,12 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var Zend_Translate
      */
     protected $translate;
@@ -841,6 +847,19 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
 
+        $batch = $this->loader->getTaskRunnerBatch($batch_id);
+
+        if (! $batch->isLoaded()) {
+            $statement = $tokenSelect->getSelect()->query();
+            //Process one row at a time to prevent out of memory errors for really big resultsets
+            while ($tokenData  = $statement->fetch()) {
+                $tokenId = $tokenData['gto_id_token'];
+                $batch->setTask('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                $batch->addToCounter('tokens');
+            }
+        }
+
+        /*
         $batch = $this->_loadClass('Batch_ProcessTokensBatch', true, array($batch_id));
 
         if (! $batch->isLoaded()) {
@@ -850,6 +869,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
                 $batch->addToken($tokenData['gto_id_token'], $userId);
             }
         }
+         */
 
         return $batch;
     }
