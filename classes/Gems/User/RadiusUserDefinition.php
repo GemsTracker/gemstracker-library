@@ -29,7 +29,7 @@
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RadiusUserDefinition.php 228 2011-12-21 09:39:34Z 175780 $
+ * @version    $Id$
  */
 
 /**

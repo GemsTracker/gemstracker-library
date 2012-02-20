@@ -26,30 +26,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
- * @subpackage
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
- * Short description for TaskAbstract
- *
- * Long description for class TaskAbstract (if any)...
+ * Describes the interface for a Gems_Task
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
 interface Gems_Task_TaskInterface
 {
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute();
-    
+
+    /**
+     * Sets the batch this task belongs to
+     *
+     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * task. It allows the task to communicate with the batch queue.
+     */
     public function setBatch(Gems_Task_TaskRunnerBatch $batch);
 }

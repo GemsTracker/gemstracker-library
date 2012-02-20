@@ -30,7 +30,7 @@
  * @subpackage Util
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ReceptionCode.php 370 2011-12-19 09:27:19Z mennodekker $
+ * @version    $Id$
  */
 
 /**

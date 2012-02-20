@@ -25,27 +25,22 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
- * Short description for CheckTrackTokens
- *
- * Long description for class CheckTrackTokens (if any)...
+ * Checks a respondentTrack for changes, mostly started by Gems_Task_ProcessTokenCompletion
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
 class Gems_Task_CheckTrackTokens extends Gems_Task_TaskAbstract
 {

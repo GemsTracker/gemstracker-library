@@ -25,27 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
- * Short description for TaskAbstract
- *
- * Long description for class TaskAbstract (if any)...
+ * Abstract class for easier implementation of the Gems_Task for usage with
+ * Gems_Task_TaskRunnerBatch providing some convenience methods to loading and
+ * translation.
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
 abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract implements Gems_Task_TaskInterface
 {
@@ -53,11 +50,6 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
      * @var Gems_Task_TaskRunnerBatch 
      */
     protected $_batch;
-
-    /**
-     * @var array
-     */
-    protected $_params;
 
     /**
      * @var Gems_Loader
@@ -73,4 +65,12 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
     {
         $this->_batch = $batch;
     }
+
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
+    abstract public function execute();
 }

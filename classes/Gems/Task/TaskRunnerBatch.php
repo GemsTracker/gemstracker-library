@@ -25,27 +25,27 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
- * Short description for TaskRunnerBatch
+ * Handles running tasks independent on the kind of task
  *
- * Long description for class TaskRunnerBatch (if any)...
+ * Continues on the MUtil_Batch_BatchAbstract, exposing some methods to allow the task
+ * to interact with the batch queue.
+ *
+ * Tasks added to the queue should be loadable via Gems_Loader and implement the Gems_Task_TaskInterface
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.6
  */
 class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
 {

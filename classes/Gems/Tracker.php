@@ -841,13 +841,15 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param string $batch_id A unique identifier for the current batch
      * @param Gems_Tracker_Token_TokenSelect Select statements selecting tokens
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     protected function processTokensBatch($batch_id, Gems_Tracker_Token_TokenSelect $tokenSelect, $userId)
     {
         $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
 
         $batch = $this->loader->getTaskRunnerBatch($batch_id);
+        //Now set the step duration
+        $batch->minimalStepDurationMs = 3000;
 
         if (! $batch->isLoaded()) {
             $statement = $tokenSelect->getSelect()->query();
@@ -858,18 +860,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
                 $batch->addToCounter('tokens');
             }
         }
-
-        /*
-        $batch = $this->_loadClass('Batch_ProcessTokensBatch', true, array($batch_id));
-
-        if (! $batch->isLoaded()) {
-            $statement = $tokenSelect->getSelect()->query();
-            //Process one row at a time to prevent out of memory errors for really big resultsets
-            while ($tokenData  = $statement->fetch()) {
-                $batch->addToken($tokenData['gto_id_token'], $userId);
-            }
-        }
-         */
 
         return $batch;
     }
@@ -917,7 +907,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond
-     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function recalculateTokensBatch($batch_id, $userId = null, $cond = null)
     {
