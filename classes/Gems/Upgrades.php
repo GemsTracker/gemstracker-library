@@ -56,6 +56,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->setContext('gems');
         //And add our patches
         $this->register('Upgrade143to15', 'Upgrade from 1.43 to 1.5');
+        $this->register('Upgrade15to151', 'Upgrade from 1.5.0. to 1.5.1');
     }
 
 
@@ -94,6 +95,19 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
                 }
             }
         }
+
+        $this->invalidateCache();
+
+        return true;
+    }
+
+    /**
+     * To upgrade to 1.5.1 just execute patchlevel 44
+     */
+    public function Upgrade15to151()
+    {
+        $this->addMessage(sprintf($this->_('Executing patchlevel %d'),44));
+        $this->patcher->executePatch(44);
 
         $this->invalidateCache();
 
