@@ -741,10 +741,10 @@ class GemsEscort extends MUtil_Application_Escort
         $p = $div->p();
         if ($user->isActive()) {
             $p->append(sprintf($this->_('You are logged in as %s'), $user->getFullName()));
-            $item = $this->menu->findFirst(array($this->request->getControllerKey() => 'index', $this->request->getActionKey() => 'logoff'));
+            $item = $this->menu->findController('index', 'logoff');
             $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
         } else {
-            $item = $this->menu->findFirst(array($this->request->getControllerKey() => 'index', $this->request->getActionKey() => 'login'));
+            $item = $this->menu->findController('index', 'login');
             $p->a($item->toHRefAttribute(), $this->_('You are not logged in'), array('class' => 'logout'));
         }
         $item->set('visible', false);
@@ -947,7 +947,7 @@ class GemsEscort extends MUtil_Application_Escort
         $div = MUtil_Html::create()->div($args, array('id' => 'version'));
         $version = $this->loader->getVersions()->getVersion();
         if (($this->menu instanceof Gems_Menu) &&
-                ($item = $this->menu->findFirst(array('controller'=>'project-information', 'action'=>'changelog'))->toHRefAttribute())) {
+                ($item = $this->menu->findController('project-information', 'changelog')->toHRefAttribute())) {
             $link = MUtil_Html::create()->a($version, $item);
         } else {
             $link = $version;

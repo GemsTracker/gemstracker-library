@@ -48,6 +48,10 @@
  */
 abstract class Gems_Menu_MenuAbstract
 {
+    /**
+     *
+     * @var GemsEscort
+     */
     public $escort;
 
     protected $_subItems;
@@ -596,5 +600,38 @@ abstract class Gems_Menu_MenuAbstract
             }
         }
         return $this;
+    }
+
+    /**
+     * Sorts the childeren on their order attribute (instead of the order the were added)
+     *
+     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     */
+    public function sortByOrder()
+    {
+        uasort($this->_subItems, array(__CLASS__, 'sortOrder'));
+
+        return $this;
+    }
+
+    /**
+     * uasort() function for sortByOrder()
+     *
+     * @see sortByOrder();
+     *
+     * @param self $aItem
+     * @param self $bItem
+     * @return int
+     */
+    public static function sortOrder($aItem, $bItem)
+    {
+        $a = $aItem->get('order');
+        $b = $bItem->get('order');
+
+        if ($a == $b) {
+            return 0;
+        }
+
+        return $a > $b ? 1 : -1;
     }
  }

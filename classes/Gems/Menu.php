@@ -417,6 +417,18 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         }
     }
 
+    /**
+     * Find a menu item through specifying the controller and action
+     *
+     * @param string $controller
+     * @param string $action
+     * @return Gems_SubMenuItem
+     */
+    public function findController($controller, $action = 'index')
+    {
+        return $this->findItem(array('controller' => $controller, 'action' => $action), false);
+    }
+
     public function findFirst($request)
     {
         $find = $this->request2find($request);

@@ -77,6 +77,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
+     * When true respondents of this organization may login
+     *
+     * @return boolean
+     */
+    public function allowsRespondentLogin()
+    {
+        return (boolean) $this->_get('gor_respondent_group') && $this->canHaveRespondents();
+    }
+
+    /**
      * Set menu parameters from the organization
      *
      * @param Gems_Menu_ParameterSource $source
@@ -106,10 +116,10 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     {
         return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
     }
-	
+
 	/**
      * Returns the $key in organizationData when set otherwise the default value
-     * 
+     *
      * @param string $key
      * @param mixed $default
      * @return mixed

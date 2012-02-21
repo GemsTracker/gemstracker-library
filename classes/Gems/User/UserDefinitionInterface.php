@@ -102,6 +102,15 @@ interface Gems_User_UserDefinitionInterface
     public function getUserData($login_name, $organization);
 
     /**
+     * Returns true when users using this definition are staff members.
+     *
+     * Used only when the definition does not return a user_staff field.
+     *
+     * @return boolean
+     */
+    public function isStaff();
+
+    /**
      * Return true if the user has a password.
      *
      * @param Gems_User_User $user The user to check

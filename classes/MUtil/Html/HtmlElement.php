@@ -504,6 +504,19 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         );
 
     /**
+     * Some elements, e.g. iframe elements, must always be rendered with a closing
+     * tag because otherwise some poor browsers get confused.
+     *
+     * Overrules $renderWithoutContent: the element is always rendered when
+     * $renderClosingTag is true.
+     *
+     * @see $renderWithoutContent
+     *
+     * @var boolean The element is always rendered with a closing tag.
+     */
+    public $renderClosingTag = false;
+
+    /**
      * Most elements must be rendered even when empty, others should - according to the
      * xhtml specifications - only be rendered when the element contains some content.
      *
@@ -1071,7 +1084,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         $content     = $this->renderContent($view);
         $has_content = (null !== $content);
 
-        if ($has_content || $this->renderWithoutContent) {
+        if ($has_content || $this->renderWithoutContent || $this->renderClosingTag) {
 
             $html = '<' . $this->tagName;
 
@@ -1079,7 +1092,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
                 $html .= $this->_htmlAttribs($this->_renderAttributes($view));
             }
 
-            if ($has_content) {
+            if ($has_content || $this->renderClosingTag) {
                 $html .= '>';
 
                 $html .= $content;

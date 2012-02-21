@@ -116,6 +116,19 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     * Add the table and field to check for respondent login checks
+     *
+     * @return Gems_Model_RespondentModel (continuation pattern)
+     */
+    public function addLoginCheck()
+    {
+        $this->addLeftTable('gems__user_logins', array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'), 'gul');
+        $this->addColumn('CASE WHEN gul_id_user IS NULL THEN 0 ELSE 1 END', 'has_login');
+
+        return $this;
+    }
+
+    /**
      * Apply hash function for array_walk_recursive in _checkFilterUsed()
      *
      * @see _checkFilterUsed()

@@ -232,6 +232,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         if (! isset($values['user_active'])) {
             $values['user_active'] = true;
         }
+        if (! isset($values['user_staff'])) {
+            $values['user_staff'] = $definition->isStaff();
+        }
 
         $values['__user_definition'] = $defName;
 

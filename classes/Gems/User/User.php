@@ -107,6 +107,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $userLoader;
 
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * Creates the class for this user.
      *
      * @param mixed $settings Array, Zend_Session_Namespace or ArrayObject for this user.
@@ -448,6 +454,38 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns a standard greeting for the current user.
+     *
+     * @return int
+     */
+    public function getGreeting()
+    {
+        if (! $this->_getVar('user_greeting')) {
+            $greeting  = array();
+            $greetings = $this->util->getTranslated()->getGenderGreeting();
+
+            if (isset($greetings[$this->_getVar('user_gender')])) {
+                $greeting[] = $greetings[$this->_getVar('user_gender')];
+            }
+            if ($this->_getVar('user_last_name')) {
+                if ($this->_getVar('user_surname_prefix')) {
+                    $greeting[] = $this->_getVar('user_surname_prefix');
+                }
+                $greeting[] = $this->_getVar('user_last_name');
+            } else {
+                $name = $this->getLoginName();
+                $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
+                $greeting[] = $name;
+            }
+
+            $this->_setVar('user_greeting', implode(' ', $greeting));
+        }
+
+        return $this->_getVar('user_greeting');
+    }
+
+
+    /**
      * Returns the group number of the current user.
      *
      * @return int
@@ -552,7 +590,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             // Set menu OFF
             $menu->setVisible(false);
 
-            $menuItem = $menu->findFirst(array($request->getControllerKey() => 'option', $request->getActionKey() => 'change-password'));
+            $menuItem = $menu->findController('option', 'change-password');
             // This may not yet be true, but is needed for the redirect.
             $menuItem->set('allowed', true);
             $menuItem->set('visible', true);
@@ -563,6 +601,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($menuItem) {
             // Prevent redirecting to the current page.
             if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
+                echo $menuItem->get('label') . '<br/>';
+
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                 $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
             }
@@ -652,6 +692,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function isPasswordResetRequired()
     {
         return (boolean) $this->_getVar('user_password_reset');
+    }
+
+    /**
+     * Returns true when this user is a staff member.
+     *
+     * @return boolean
+     */
+    public function isStaff()
+    {
+        return (boolean) $this->_getVar('user_staff');
     }
 
     /**

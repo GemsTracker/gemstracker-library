@@ -91,4 +91,16 @@ class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstr
 
         return $select;
     }
+
+    /**
+     * Returns true when users using this definition are staff members.
+     *
+     * Used only when the definition does not return a user_staff field.
+     *
+     * @return boolean
+     */
+    public function isStaff()
+    {
+        return false;
+    }
 }

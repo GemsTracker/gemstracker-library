@@ -189,7 +189,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
             $this->addMessage(sprintf($this->_('Automatic mails have been turned off since %s.'), $lock->getLockTime()));
 
             $request = $this->getRequest();
-            if ($menuItem = $this->menu->findFirst(array($request->getControllerKey() => 'cron', $request->getActionKey() => 'cron-lock'))) {
+            if ($menuItem = $this->menu->findController('cron', 'cron-lock')) {
                 $menuItem->set('label', $this->_('Turn Automatic Mail Jobs ON'));
             }
         }
