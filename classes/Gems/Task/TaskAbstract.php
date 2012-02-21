@@ -72,5 +72,8 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    abstract public function execute();
+    public function execute()
+    {
+        
+    }
 }
