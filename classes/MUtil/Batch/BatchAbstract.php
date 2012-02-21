@@ -777,7 +777,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 $this->addMessage('While calling:' . $command['method'] . '(' . implode(',', MUtil_Ra::flatten($command['parameters'])) . ')');
                 $this->addMessage($e->getMessage());
 
-                MUtil_Echo::r($e);
+                //MUtil_Echo::r($e);
             }
             return true;
         } else {
