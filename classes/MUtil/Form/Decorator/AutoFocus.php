@@ -92,7 +92,7 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
 
         if (($view !== null) && ($focus !== null)) {
             // Use try {} around e.select as nog all elements have a select() function
-            $script = "e = document.getElementById('$focus'); if (e) {e.focus(); try { e.select(); } catch (ex) {}}";
+            $script = "e = document.getElementById('$focus'); if (e) {e.focus(); try { if (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement) {e.select();} } catch (ex) {}}";
             $view->inlineScript()->appendScript($script);
         }
 
