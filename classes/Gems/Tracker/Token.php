@@ -60,7 +60,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      *
      * @var array The gems token data
      */
-    private $_gemsData = array();
+    protected $_gemsData = array();
 
     /**
      *
@@ -84,7 +84,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      *
      * @var string The id of the token
      */
-    private $_tokenId;
+    protected $_tokenId;
 
     /**
      *
@@ -171,7 +171,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     /**
      * Makes sure the respondent data is part of the $this->_gemsData
      */
-    private function _ensureRespondentData()
+    protected function _ensureRespondentData()
     {
         if (! isset($this->_gemsData['grs_id_user'], $this->_gemsData['gr2o_id_user'], $this->_gemsData['gco_code'])) {
             $sql = "SELECT *
