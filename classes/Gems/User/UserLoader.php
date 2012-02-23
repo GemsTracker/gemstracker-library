@@ -132,6 +132,33 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a user object, that may be empty if no user exist.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @param string $userClassName
+     * @param int $userId The person creating the user.
+     * @return Gems_User_User Newly created
+     */
+    public function createUser($login_name, $organization, $userClassName, $userId)
+    {
+        $now = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+        $values['gul_login']           = $login_name;
+        $values['gul_id_organization'] = $organization;
+        $values['gul_user_class']      = $userClassName;
+        $values['gul_can_login']       = 1;
+        $values['gul_changed']         = $now;
+        $values['gul_changed_by']      = $userId;
+        $values['gul_created']         = $now;
+        $values['gul_created_by']      = $userId;
+
+        $this->db->insert('gems__user_logins', $values);
+
+        return $this->getUser($login_name, $organization);
+    }
+
+    /**
      * Get userclass / description array of available UserDefinitions for respondents
      *
      * @return array
@@ -216,7 +243,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Returns a user object, that may be empty if no user exist.
      *
      * @param string $login_name
-     * @param int $organization
+     * @param int $currentOrganization
      * @return Gems_User_User But ! ->isActive when the user does not exist
      */
     public function getUser($login_name, $currentOrganization)

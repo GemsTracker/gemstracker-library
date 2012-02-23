@@ -242,6 +242,21 @@ class Gems_Project_ProjectSettings extends ArrayObject
         return -1;
     }
 
+
+    /**
+     * Returns the initial password specified for users - if any.
+     *
+     * @return String
+     */
+    public function getInitialPassword()
+    {
+        if (isset($this['password']['initialPassword'])) {
+            return $this['password']['initialPassword'];
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Returns the public name of this project.
      * @return string
@@ -340,5 +355,15 @@ class Gems_Project_ProjectSettings extends ArrayObject
         // MUtil_Echo::track($value, md5($salted));
 
         return md5($salted, false);
+    }
+
+    /**
+     * True if an initial password was specified for users.
+     *
+     * @return boolean
+     */
+    public function hasInitialPassword()
+    {
+        return isset($this['password']['initialPassword']);
     }
 }
