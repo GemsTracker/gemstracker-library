@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -33,12 +32,15 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: AttributeAbstract.php 514 2012-02-23 15:00:56Z matijsdejong $
  */
 
 /**
- * Basic class for all attributes, does the rendering and attribute name parts,
- * but no value processing.
+ * Src attribute, i.e the name is fixed.
+ *
+ * Behaves as parent class otherwise
+ *
+ * @see MUtil_Html_UrlArrayAttribute
  *
  * @package    MUtil
  * @subpackage Html
@@ -46,63 +48,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInterface
+class MUtil_Html_SrcArrayAttribute extends MUtil_Html_UrlArrayAttribute
 {
-    public $view;
-
-    protected $_name;
-
-    public function __construct($name, $value = null)
+    public function __construct($args_array = null)
     {
-        $this->_name = $name;
-
-        if ($value) {
-            $this->set($value);
-        }
+        $args = func_get_args();
+        parent::__construct('src', $args);
     }
 
-    public function __toString()
+    public static function srcAttribute(array $commands = null)
     {
-        // Output escaping is done in Zend_View_Helper_HtmlElement->_htmlAttribs()
-        //
-        // If the attribute needs the view to get the right data it must overrule __toString().
-        return $this->get();
-    }
-
-    // public function add($value);
-    // public function get();
-
-    public function getAttributeName()
-    {
-        return $this->_name;
-    }
-
-    public function getView()
-    {
-        if (! $this->view) {
-            require_once 'Zend/Controller/Action/HelperBroker.php';
-            $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
-            $this->setView($viewRenderer->view);
-        }
-
-        return $this->view;
-    }
-
-    public function render(Zend_View_Abstract $view)
-    {
-        $this->setView($view);
-
-        // Output escaping is done in Zend_View_Helper_HtmlElement->_htmlAttribs()
-        //
-        // The reason for using render($view) is only in case the attribute needs the view to get the right data.
-        // Those attributes must overrule render().
-        return $this->get();
-    }
-
-    // public function set($value);
-
-    public function setView(Zend_View_Abstract $view)
-    {
-        $this->view = $view;
+        return new self($commands);
     }
 }

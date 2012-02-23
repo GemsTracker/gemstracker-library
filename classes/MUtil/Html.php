@@ -154,6 +154,11 @@ class MUtil_Html
         return self::name2id($element->getName(), $element->getBelongsTo());
     }
 
+    /**
+     * Helper function to access the core creator.
+     *
+     * @return MUtil_Html_Creator
+     */
     public static function getCreator()
     {
         if (! self::$_creator) {

@@ -569,6 +569,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     /**
      * Make an element with the specified tag name.
      *
+     * Any extra parameters are added as either content, attributes or handled
+     * as special types, if defined as such for this element.
+     *
      * @param string $tagName
      * @param mixed $arg_array MUtil_Ra::args arguments
      */

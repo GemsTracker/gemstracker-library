@@ -68,6 +68,7 @@ class MUtil_Html_Creator
     protected $_initialAttributeFunctions = array(
         'href'    => 'MUtil_Html_HrefArrayAttribute::hrefAttribute',
         'onclick' => 'MUtil_Html_OnClickArrayAttribute::onclickAttribute',
+        'src'     => 'MUtil_Html_SrcArrayAttribute::srcAttribute',
         'style'   => 'MUtil_Html_StyleArrayAttribute::styleAttribute',
     );
 

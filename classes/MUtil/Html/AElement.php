@@ -50,6 +50,15 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
 {
     public $renderWithoutContent = true;
 
+    /**
+     * An A element, shows the url as content when no other content is available.
+     *
+     * Any extra parameters are added as either content, attributes or handled
+     * as special types, if defined as such for this element.
+     *
+     * @param mixed $href We assume the first element contains the href, unless a later element is explicitly specified as such
+     * @param mixed $arg_array MUtil_Ra::args arguments
+     */
     public function __construct($href, $arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
@@ -81,6 +90,15 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
         return parent::_htmlAttribs($attribs);
     }
 
+    /**
+     * Static helper function to create an A element.
+     *
+     * Any extra parameters are added as either content, attributes or handled
+     * as special types, if defined as such for this element.
+     *
+     * @param mixed $href We assume the first element contains the href, unless a later element is explicitly specified as such
+     * @param mixed $arg_array MUtil_Ra::args arguments
+     */
     public static function a($href, $arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args(), array('href' => 'MUtil_Html_HrefArrayAttribute'));
