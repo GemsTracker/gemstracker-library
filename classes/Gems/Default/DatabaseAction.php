@@ -243,6 +243,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $model = $this->getModel();
 
         if ($model->isMeta('action', 'show')) {
+            $table->tr();
             $table->tdh($this->_('Structure'));
             $table->td($this->getFieldTable($this->_getParam(MUtil_Model::REQUEST_ID)));
         }
