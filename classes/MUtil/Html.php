@@ -261,7 +261,7 @@ class MUtil_Html
      *
      * @param string $name Snippet name
      * @param MUtil_Ra::pairs $parameter_value_pairs Optional extra snippets
-     * @return
+     * @return MUtil_Snippets_SnippetInterface
      */
     public static function snippet($name, $parameter_value_pairs = null)
     {
@@ -273,7 +273,11 @@ class MUtil_Html
 
         $loader = self::getSnippetLoader();
 
-        return $loader->getSnippet($name, $extraSourceParameters);
+        $snippet = $loader->getSnippet($name, $extraSourceParameters);
+
+        if ($snippet->hasHtmlOutput()) {
+            return $snippet;
+        }
     }
 
     public static function url($arg_array = null)

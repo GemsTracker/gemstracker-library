@@ -725,11 +725,26 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
+    /**
+     * True when allowed
+     *
+     * @return boolean
+     */
+    public function isAllowed()
+    {
+        return $this->get('allowed', true);
+    }
+
     public function isTopLevel()
     {
         return ! $this->has('controller');
     }
 
+    /**
+     * True when visible
+     *
+     * @return boolean
+     */
     public function isVisible()
     {
         return $this->get('visible', true);

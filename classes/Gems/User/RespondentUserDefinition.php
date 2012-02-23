@@ -73,11 +73,13 @@ class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstr
                     'user_gender'         => 'grs_gender',
                     'user_locale'         => 'grs_iso_lang',
                     ))
-               ->join('gems__organizations', 'gr2o_id_organization=gor_id_organization', array())
-               ->join('gems__groups', 'gor_respondent_group=ggp_id_group', array(
-                   'user_role'=>'ggp_role',
-                   'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
-                   ))
+               ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', array(
+                    'user_group' => 'gor_respondent_group',
+                    ))
+                ->join('gems__groups', 'gor_respondent_group = ggp_id_group', array(
+                    'user_role'              => 'ggp_role',
+                    'user_allowed_ip_ranges' => 'ggp_allowed_ip_ranges',
+                    ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
                    ))
