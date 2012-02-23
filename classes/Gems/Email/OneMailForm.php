@@ -132,6 +132,7 @@ class Gems_Email_OneMailForm extends Gems_Email_EmailFormAbstract
         } else {
             $tokenData = $this->getTokenData();
 
+            $this->mailer->setFrom($this->getValue('from'));
             $this->mailer->setSubject($this->getValue('gmt_subject'));
             $this->mailer->setBody($this->getValue('gmt_body'));
             $this->mailer->setTemplateId($this->getValue('select_subject'));

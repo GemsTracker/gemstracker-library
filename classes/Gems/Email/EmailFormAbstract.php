@@ -241,6 +241,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
             if ($email = $this->escort->project->email['site']) {
                 $options['S'] = $this->_createMultiOption(array(), $this->escort->project->name, $email);
+                $valid[]     = 'S';
             }
         }
 
@@ -251,6 +252,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
             'multiOptions' => $options,
             'required'     => true,
             ));
+
 
         $element->addValidator('InArray', false, array('haystack' => $valid));
 
