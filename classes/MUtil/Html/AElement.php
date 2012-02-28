@@ -36,7 +36,7 @@
  */
 
 /**
- * Class for A/link element. Assumes first passed argument is the href attribute,
+ * Class for A link element. Assumes first passed argument is the href attribute,
  * unless specified otherwise.
  *
  * @package    MUtil
@@ -45,7 +45,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-
 class MUtil_Html_AElement extends MUtil_Html_HtmlElement
 {
     public $renderWithoutContent = true;

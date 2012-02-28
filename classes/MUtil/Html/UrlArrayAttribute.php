@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -62,7 +62,9 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             if (is_numeric($key)) {
                 $url_string .= $value;
             } else {
-                $url_parameters[$key] = $value;
+                // Prevent double escaping by using rawurlencode() instead
+                // of urlencode() that is used by Zend_Controller_Router_Route
+                $url_parameters[$key] =  rawurlencode($value);
             }
         }
 
@@ -83,7 +85,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             // Make sure controllor, action, module are specified
             $url_parameters = self::rerouteUrl($this->getRequest(), $url_parameters);
 
-            return $this->getView()->url($url_parameters, null, $this->getRouteReset());
+            return $this->getView()->url($url_parameters, null, $this->getRouteReset(), false);
         }
 
         return null;

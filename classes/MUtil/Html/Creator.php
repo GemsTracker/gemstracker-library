@@ -91,6 +91,7 @@ class MUtil_Html_Creator
         'if'                => 'MUtil_Lazy::iff',
         'iflink'            => 'MUtil_Html_AElement::iflink',
         'ifmail'            => 'MUtil_Html_AElement::ifmail',
+        'iframe'            => 'MUtil_Html_IFrameElement::iFrame',
         'img'               => 'MUtil_Html_ImgElement::img',
         'image'             => 'MUtil_Html_ImgElement::img',
         'input'             => 'MUtil_Html_InputRenderer::input',
