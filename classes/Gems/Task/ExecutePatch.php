@@ -25,82 +25,68 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
- * @subpackage Upgrades
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: CheckTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
  */
 
 /**
- * Short description for Upgrades
+ * Execute a certain patchlevel
  *
- * Long description for class Upgrades (if any)...
+ * Cleans the cache when patches where executed
  *
  * @package    Gems
- * @subpackage Upgrades
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.6
  */
-class Gems_Upgrades extends Gems_UpgradesAbstract
+class Gems_Task_ExecutePatch extends Gems_Task_TaskAbstract
 {
-    public function __construct()
-    {
-        //Important, ALWAYS run the contruct of our parent object
-        parent::__construct();
-
-        //Now set the context
-        $this->setContext('gems');
-        //And add our patches
-        $this->register('Upgrade143to15', 'Upgrade from 1.43 to 1.5');
-        $this->register('Upgrade15to151', 'Upgrade from 1.5.0. to 1.5.1');
-    }
-
+    /**
+     * @var Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
-     * To upgrade from 143 to 15 we need to do some work:
-     * 1. execute db patches 42 and 43
-     * 2. create new tables
+     * @var GemsEscort
      */
-    public function Upgrade143to15()
+    public $escort;
+
+    /**
+     *
+     * @var Gems_Util_DatabasePatcher
+     */
+    public $patcher;
+
+    public function execute($patchLevel = null, $ignoreCompleted = true, $ignoreExecuted = false)
     {
-        $this->_batch->addTask('ExecutePatch', 42);
-        $this->_batch->addTask('ExecutePatch', 43);
+        $this->_batch->addMessage(sprintf($this->translate->_('Executing patchlevel %d'), $patchLevel));
+        $result = $this->patcher->executePatch($patchLevel, $ignoreCompleted, $ignoreExecuted);
+        $this->_batch->addMessage($this->translate->_(sprintf('Executed %s patches', $result)));
 
-        $this->_batch->addTask('CreateNewTables');
-
-        $this->addMessage($this->_('Syncing surveys for all sources'));
-        //Now sync the db sources to allow limesurvey source to add a field to the tokentable
-        $model = new MUtil_Model_TableModel('gems__sources');
-        $data  = $model->load(false);
-
-        $tracker = $this->loader->getTracker();
-
-        foreach ($data as $row) {
-            $source = $tracker->getSource($row['gso_id_source']);
-
-            if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
-                foreach ($messages as $message) {
-                    $this->addMessage($message);
-                }
-            }
+        if ($result>0) {
+            //Perform a clean cache only when needed
+            $this->_batch->setTask('CleanCache', 'cleancache'); //If already scheduled, don't reschedule
         }
-
-        $this->invalidateCache();
-
-        return true;
     }
 
     /**
-     * To upgrade to 1.5.1 just execute patchlevel 44
+     * Now we have the requests answered, add the DatabasePatcher as it needs the db object
+     *
+     * @return boolean
      */
-    public function Upgrade15to151()
-    {
-        $this->_batch->addTask('ExecutePatch', 44);
+    public function checkRegistryRequestsAnswers() {
+        $this->escort = GemsEscort::getInstance();
         
+        //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
+        $this->patcher = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
+
+        //Now load all patches, and save the resulting changed patches for later (not used yet)
+        $changed  = $this->patcher->uploadPatches($this->loader->getVersions()->getBuild());
+
         return true;
     }
 }

@@ -54,6 +54,11 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     protected $upgradeFile;
 
     /**
+     * @var Gems_Task_TaskRunnerBatch
+     */
+    protected $_batch;
+
+    /**
      * @var Zend_Config_Ini
      */
     protected $_info;
@@ -423,6 +428,16 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
             return true;
         }
         return false;
+    }
+
+    /**
+     * Set the batch to use
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
+     */
+    public function setBatch($batch)
+    {
+        $this->_batch = $batch;
     }
 
     /**

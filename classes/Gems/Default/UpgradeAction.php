@@ -84,16 +84,16 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
 
         $this->html->h3(sprintf($this->_('Upgrading %s'), $context));
 
-        $this->_upgrades->execute($context, $to, $from);
-        $messages = $this->_upgrades->getMessages();
-        foreach($messages as $message) {
-            $this->html->p($message);
+        $batch = $this->loader->getTaskRunnerBatch('upgrade' . $context);
+        $batch->minimalStepDurationMs = 0;
+
+        if (!$batch->isLoaded()) {
+            $this->_upgrades->setBatch($batch);
+            $this->_upgrades->execute($context, $to, $from);
         }
 
-        if ($menuItem = $this->menu->find(array('controller' => $this->_getParam('controller'), 'action' => 'show', 'allowed' => true))) {
-            $this->html->br();
-            $this->html[] = $menuItem->toActionLinkLower($this->getRequest(), array('id'=>$context), $this->_('Back'));
-        }
+        $title = $this->_('Performing upgrade');
+        $this->_helper->BatchRunner($batch, $title);
     }
 
     /**

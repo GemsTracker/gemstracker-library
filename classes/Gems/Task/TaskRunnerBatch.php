@@ -103,8 +103,12 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
     {
         $params = array_slice(func_get_args(), 1);
         $taskClass = $this->loader->getTask($task);
-        $taskClass->setBatch($this);
-        call_user_func_array(array($taskClass, 'execute'), $params[0]);
+        if ($taskClass instanceof Gems_Task_TaskInterface) {
+            $taskClass->setBatch($this);
+            call_user_func_array(array($taskClass, 'execute'), $params[0]);
+        } else {
+            throw new Gems_Exception(sprintf('ERROR: Task by name %s not found', $task));
+        }
     }
 
     /**
