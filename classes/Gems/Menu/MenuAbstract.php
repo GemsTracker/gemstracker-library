@@ -412,7 +412,6 @@ abstract class Gems_Menu_MenuAbstract
 
         // SURVEY SOURCES CONTROLLER
         $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
-        $page->addDeleteAction();
         $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Check answers'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
