@@ -82,17 +82,15 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
         $from    = $this->getRequest()->getParam('from');
         $to      = $this->getRequest()->getParam('to');
 
-        $this->html->h3(sprintf($this->_('Upgrading %s'), $context));
-
         $batch = $this->loader->getTaskRunnerBatch('upgrade' . $context);
-        $batch->minimalStepDurationMs = 0;
+        $batch->minimalStepDurationMs = 0; //One step at a time, can be higher to improve speed
 
         if (!$batch->isLoaded()) {
             $this->_upgrades->setBatch($batch);
             $this->_upgrades->execute($context, $to, $from);
         }
 
-        $title = $this->_('Performing upgrade');
+        $title = sprintf($this->_('Upgrading %s'), $context);
         $this->_helper->BatchRunner($batch, $title);
     }
 

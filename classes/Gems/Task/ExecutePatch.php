@@ -65,7 +65,7 @@ class Gems_Task_ExecutePatch extends Gems_Task_TaskAbstract
     {
         $this->_batch->addMessage(sprintf($this->translate->_('Executing patchlevel %d'), $patchLevel));
         $result = $this->patcher->executePatch($patchLevel, $ignoreCompleted, $ignoreExecuted);
-        $this->_batch->addMessage($this->translate->_(sprintf('Executed %s patches', $result)));
+        $this->_batch->addMessage($this->translate->_(sprintf('%d patch(es) executed.', $result)));
 
         if ($result>0) {
             //Perform a clean cache only when needed
