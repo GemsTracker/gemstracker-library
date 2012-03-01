@@ -191,7 +191,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      */
     public function deleteAction()
     {
-        $this->html->h3($this->_('Delete organization'));
+        $this->indexParameters['contentTitle'] = $this->_('Delete organization');
 
         parent::deleteAction();
     }
@@ -211,7 +211,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      *
      * @return string
      */
-    public function getOnEmpty()
+    public function getOnEmptyText()
     {
         return $this->_('No organization found...');
     }
@@ -221,7 +221,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      */
     public function indexAction()
     {
-        $this->html->h3($this->_('Participating organizations'));
+        $this->indexParameters['contentTitle'] = $this->_('Participating organizations');
 
         parent::indexAction();
     }
@@ -231,7 +231,7 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      */
     public function showAction()
     {
-        $this->html->h3($this->_('Show organization'));
+        $this->indexParameters['contentTitle'] = $this->_('Show organization');
 
         parent::showAction();
     }

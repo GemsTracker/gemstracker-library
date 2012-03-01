@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class Generic_AutosearchForm extends MUtil_Snippets_SnippetAbstract
+class Generic_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 {
     /**
      *

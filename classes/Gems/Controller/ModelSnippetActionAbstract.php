@@ -56,7 +56,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         'browse' => true,
         'containingId' => 'autofilter_target',
         'keyboard' => true,
-        'onEmpty' => 'getOnEmpty',
+        'onEmpty' => 'getOnEmptyText',
         );
 
     /**
@@ -78,7 +78,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Generic_ModelItemYesNoDeleteSnippet';
+    protected $deleteSnippets = array('Generic_ContentTitleSnippet', 'Generic_ModelItemYesNoDeleteSnippet');
 
     /**
      *
@@ -97,7 +97,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = 'Generic_AutosearchForm';
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Generic_AutosearchFormSnippet');
 
     /**
      * The snippets used for the index action, after those in autofilter
@@ -111,7 +111,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = 'Generic_ModelItemTableSnippet';
+    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Generic_ModelItemTableSnippet');
 
     /**
      *
@@ -245,7 +245,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @return string
      */
-    public function getOnEmpty()
+    public function getOnEmptyText()
     {
         return $this->_('Nothing found...');
     }

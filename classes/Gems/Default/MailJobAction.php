@@ -170,7 +170,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @return string
      */
-    public function getOnEmpty()
+    public function getOnEmptyText()
     {
         return $this->_('No automatic mail jobs found...');
     }
@@ -180,7 +180,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function indexAction()
     {
-        $this->html->h3($this->_('Automatic mail jobs'));
+        $this->indexParameters['contentTitle'] = $this->_('Automatic mail jobs');
 
         $lock = $this->util->getCronJobLock();
         if ($lock->isLocked()) {

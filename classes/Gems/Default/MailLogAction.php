@@ -138,7 +138,7 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @return string
      */
-    public function getOnEmpty()
+    public function getOnEmptyText()
     {
         return $this->_('No mail activity found...');
     }
@@ -148,7 +148,7 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function indexAction()
     {
-        $this->html->h3($this->_('Mail Activity Log'));
+        $this->indexParameters['contentTitle'] = $this->_('Mail Activity Log');
 
         parent::indexAction();
     }
