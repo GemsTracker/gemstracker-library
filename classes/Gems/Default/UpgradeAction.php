@@ -83,7 +83,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
         $to      = $this->getRequest()->getParam('to');
 
         $batch = $this->loader->getTaskRunnerBatch('upgrade' . $context);
-        $batch->minimalStepDurationMs = 0; //One step at a time, can be higher to improve speed
+        $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
 
         if (!$batch->isLoaded()) {
             $this->_upgrades->setBatch($batch);
