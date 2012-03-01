@@ -933,11 +933,11 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
-     * @return Gems_Tracker_Batch_RefreshTokenAttributesBatch A batch to process the changes
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function refreshTokenAttributesBatch($batch_id, $cond = null)
     {
-        $batch = $this->_loadClass('Batch_RefreshTokenAttributesBatch', true, array($batch_id));
+        $batch = $this->loader->getTaskRunnerBatch($batch_id);
 
         if (! $batch->isLoaded()) {
             $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
@@ -954,7 +954,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
                         ->forWhere($cond);
             }
 
-            $batch->addTokens($this->db->fetchCol($tokenSelect->getSelect()));
+            foreach ($this->db->fetchCol($tokenSelect->getSelect()) as $token) {
+                $batch->addTask('Tracker_RefreshTokenAttributes', $token);
+            }
         }
         self::$verbose = true;
 
