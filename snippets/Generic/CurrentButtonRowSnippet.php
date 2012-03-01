@@ -26,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
  *
  * @package    Gems
  * @subpackage Snippets\Generic
@@ -37,9 +36,8 @@
  */
 
 /**
- * Short description for class
- *
- * Long description for class (if any)...
+ * Displays the parent menu item (if existing) plus any current
+ * level buttons that are visible
  *
  * @package    Gems
  * @subpackage Snippets\Generic
@@ -47,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-class Generic_CurrentButtonRow extends MUtil_Snippets_SnippetAbstract
+class Generic_CurrentButtonRowSnippet extends MUtil_Snippets_SnippetAbstract
 {
     /**
      * Required
