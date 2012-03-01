@@ -41,16 +41,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_SourceSyncSurveys
+class Gems_Task_SourceSyncSurveys extends Gems_Task_TaskAbstract
 {
-    /**
-     * @var Gems_Tracker
-     */
-    public $tracker;
-
     public function execute($id = null)
     {
-        $source = $tracker->getSource($id);
+        $source = $this->loader->getTracker()->getSource($id);
 
         if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
             foreach ($messages as $message) {
