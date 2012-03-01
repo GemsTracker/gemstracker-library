@@ -33,9 +33,7 @@
  */
 
 /**
- * Create a single new table
- *
- * Cleans the cache when a new tables was created
+ * Schedules creation of new tables
  *
  * @package    Gems
  * @subpackage Task
@@ -43,7 +41,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_CreateNewTable extends Gems_Task_TaskAbstract
+class Gems_Task_Db_CreateNewTables extends Gems_Task_TaskAbstract
 {
     /**
      * @var Zend_Db_Adapter_Abstract
@@ -65,20 +63,14 @@ class Gems_Task_CreateNewTable extends Gems_Task_TaskAbstract
      */
     public $project;
 
-    public function execute($tableData = array())
+    public function execute()
     {
-        $this->_batch->addToCounter('createTableStep');
-        
-        $result = $this->dbaModel->runScript($tableData);
-        $result[] = sprintf($this->translate->_('Finished %s creation script for object %d of %d'), $this->translate->_(strtolower($tableData['type'])), $this->_batch->getCounter('createTableStep'), $this->_batch->getCounter('NewTableCount')) . '<br/>';
+        //Now create all new tables
+        $todo    = $this->dbaModel->load(array('state'=>  Gems_Model_DbaModel::STATE_DEFINED));
 
-        if (count($result)>0) {
-            foreach ($result as $result)
-            {
-                $this->_batch->addMessage($result);
-            }
-            //Perform a clean cache only when needed
-            $this->_batch->setTask('CleanCache', 'cleancache'); //If already scheduled, don't reschedule
+        foreach($todo as $tableData) {
+            $this->_batch->addToCounter('NewTableCount');
+            $this->_batch->setTask('Db_CreateNewTable', 'create-tbl-' . $tableData['name'], $tableData);
         }
     }
 

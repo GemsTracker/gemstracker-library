@@ -70,7 +70,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->_batch->addTask('ExecutePatch', 42);
         $this->_batch->addTask('ExecutePatch', 43);
 
-        $this->_batch->addTask('CreateNewTables');
+        $this->_batch->addTask('Db_CreateNewTables');
 
         $this->_batch->addTask('Echo', $this->_('Syncing surveys for all sources'));
 
