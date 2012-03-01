@@ -124,11 +124,13 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
 
+        $bridge->addTab(    'caption1')->h4($this->_('Identification'));
+        //Add the hidden fields after the tab, so validation will work. They need to be in the
+        //same tab where they are needed
         $bridge->addHidden(  'grs_id_user');
         $bridge->addHidden(  'gr2o_id_organization');
         $bridge->addHidden(   $model->getKeyCopyName('gr2o_patient_nr'));
 
-        $bridge->addTab(    'caption1')->h4($this->_('Identification'));
         $bridge->addText(    'grs_ssn',            'label', $this->_('SSN'), 'size', 10, 'maxlength', 12)
             ->addValidator(  new MUtil_Validate_Dutch_Burgerservicenummer())
             ->addValidator(  $model->createUniqueValidator('grs_ssn'))
