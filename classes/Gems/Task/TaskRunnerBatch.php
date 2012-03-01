@@ -71,6 +71,7 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
     public function addMessage($text)
     {
         parent::addMessage($text);
+        return $this;
     }
 
     /**
@@ -120,7 +121,8 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
      */
     public function setMessage($id, $text)
     {
-        return parent::setMessage($id, $text);
+        parent::setMessage($id, $text);
+        return $this;
     }
 
     /**

@@ -69,11 +69,6 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
     public $db;
 
     /**
-     * @var Gems_Model_DbaModel
-     */
-    public $dbaModel;
-
-    /**
      * @var GemsEscort
      */
     public $escort;
@@ -82,12 +77,6 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_Loader
      */
     public $loader;
-
-    /**
-     *
-     * @var Gems_Util_DatabasePatcher
-     */
-    public $patcher;
 
     /**
      * @var Gems_Project_ProjectSettings
@@ -130,61 +119,15 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
      */
     protected function addMessage($message)
     {
-        $this->_messages[] = $message;
+        $this->_batch->addMessage($message);
     }
 
-    /**
-     * Now we have the requests answered, add the DatabasePatcher as it needs the db object
-     *
-     * @return boolean
-     */
-    public function checkRegistryRequestsAnswers() {
-        //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
-        $this->patcher = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
-        //Now load all patches, and save the resulting changed patches for later (not used yet)
-        $changed  = $this->patcher->uploadPatches($this->loader->getVersions()->getBuild());
-
-        //Load the dbaModel
-        $paths = $this->escort->getDatabasePaths();
-        $model = new Gems_Model_DbaModel($this->db, array_values($paths));
-        $model->setLocations(array_keys($paths));
-        if ($this->project->databaseFileEncoding) {
-            $model->setFileEncoding($this->project->databaseFileEncoding);
-        }
-        $this->dbaModel = $model;
-
-        return true;
-    }
-
-    /**
+     /**
      * Reset the message stack
      */
     protected function clearMessages()
     {
         $this->_messages = array();
-    }
-
-    /**
-     * Create all new tables according to the dba model
-     */
-    protected function createNewTables()
-    {
-        //Now create all new tables
-        $todo    = $this->dbaModel->load(array('state'=>  Gems_Model_DbaModel::STATE_DEFINED));
-        $i       = 1;
-        $oCount  = count($todo);
-        $results = array();
-        foreach($todo as $tableData) {
-            $result = $this->dbaModel->runScript($tableData);
-            $results = array_merge($results, $result);
-            $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($tableData['type'])), $i, $oCount) . '<br/>';
-            $i++;
-        }
-
-        foreach ($results as $result)
-        {
-            $this->addMessage($result);
-        }
     }
 
     /**
@@ -226,7 +169,6 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
                 $this->addMessage(sprintf($this->_('Trying upgrade for %s to level %s: %s'), $context, $level, $this->_upgradeStack[$context][$level]['info']));
                 if (call_user_func($upgrade['upgrade'])) {
                     $success = $level;
-                    $this->addMessage('OK');
                 } else {
                     $this->addMessage('FAILED');
                     break;
@@ -369,19 +311,6 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
             if (isset($result[$requestedContext])) {
                 return $result[$requestedContext];
             }
-        }
-    }
-
-    /**
-     * Convenience method for cleaning the cache as this is often needed during
-     * upgrades
-     */
-    public function invalidateCache()
-    {
-        $cache = $this->escort->cache;
-        if ($cache instanceof Zend_Cache_Core) {
-            $cache->clean();
-            $this->addMessage($this->_('Cache cleaned'));
         }
     }
 

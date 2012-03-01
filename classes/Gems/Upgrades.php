@@ -72,19 +72,16 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
 
         $this->_batch->addTask('CreateNewTables');
 
-        $this->addMessage($this->_('Syncing surveys for all sources'));
+        $this->_batch->addTask('Echo', $this->_('Syncing surveys for all sources'));
+
 
         //Now sync the db sources to allow limesurvey source to add a field to the tokentable
         $model = new MUtil_Model_TableModel('gems__sources');
         $data  = $model->load(false);
 
-        $tracker = $this->loader->getTracker();
-
         foreach ($data as $row) {
             $this->_batch->addTask('SourceSyncSurveys', $row['gso_id_source']);
         }
-
-        $this->invalidateCache();
 
         return true;
     }
