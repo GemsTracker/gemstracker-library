@@ -571,7 +571,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             // error_log('Rep: ' . $reportRun);
             while ($this->step()) {
                 // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
-                if (microtime(true) > $reportRun) {
+                if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
                     // Communicate progress
                     $bar->update($this->getProgressPercentage(), $this->getLastMessage());
 
