@@ -298,7 +298,7 @@ interface Gems_Tracker_TrackerInterface {
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param string $cond
-     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function recalculateTokensBatch($batch_id, $userId = null, $cond = null);
 
@@ -307,7 +307,7 @@ interface Gems_Tracker_TrackerInterface {
      *
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
-     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function refreshTokenAttributesBatch($batch_id, $cond = null);
 }

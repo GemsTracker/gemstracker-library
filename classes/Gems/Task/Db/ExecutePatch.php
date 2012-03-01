@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: CheckTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
@@ -38,12 +38,12 @@
  * Cleans the cache when patches where executed
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_ExecutePatch extends Gems_Task_TaskAbstract
+class Gems_Task_Db_ExecutePatch extends Gems_Task_TaskAbstract
 {
     /**
      * @var Zend_Db_Adapter_Abstract
@@ -65,7 +65,7 @@ class Gems_Task_ExecutePatch extends Gems_Task_TaskAbstract
     {
         $this->_batch->addMessage(sprintf($this->translate->_('Executing patchlevel %d'), $patchLevel));
         $result = $this->patcher->executePatch($patchLevel, $ignoreCompleted, $ignoreExecuted);
-        $this->_batch->addMessage($this->translate->_(sprintf('%d patch(es) executed.', $result)));
+        $this->_batch->addMessage(sprintf($this->translate->_('%d patch(es) executed.'), $result));
 
         if ($result>0) {
             //Perform a clean cache only when needed

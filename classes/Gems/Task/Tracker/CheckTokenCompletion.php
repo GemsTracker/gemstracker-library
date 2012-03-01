@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage TaskTracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: CheckTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
  */
 
 /**
@@ -39,12 +39,12 @@
  * when needed.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_CheckTokenCompletion extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_CheckTokenCompletion extends Gems_Task_TaskAbstract
 {
     /**
      * @var Gems_Tracker
@@ -67,7 +67,7 @@ class Gems_Task_CheckTokenCompletion extends Gems_Task_TaskAbstract
         }
 
         if ($token->isCompleted()) {
-            $this->_batch->setTask('processTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
+            $this->_batch->setTask('Tracker_ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
         }
 
         if ($this->_batch->getCounter('surveyCompletionChanges')) {

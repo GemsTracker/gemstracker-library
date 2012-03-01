@@ -856,7 +856,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             //Process one row at a time to prevent out of memory errors for really big resultsets
             while ($tokenData  = $statement->fetch()) {
                 $tokenId = $tokenData['gto_id_token'];
-                $batch->setTask('checkTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
                 $batch->addToCounter('tokens');
             }
         }
@@ -933,7 +933,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
-     * @return Gems_Tracker_Batch_ProcessTokensBatch A batch to process the changes
+     * @return Gems_Tracker_Batch_RefreshTokenAttributesBatch A batch to process the changes
      */
     public function refreshTokenAttributesBatch($batch_id, $cond = null)
     {

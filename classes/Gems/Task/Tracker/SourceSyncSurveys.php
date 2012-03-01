@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -27,43 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Checks a respondentTrack for changes, mostly started by Gems_Task_ProcessTokenCompletion
+ * Executes the syncSurveys method for a given sourceId
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_CheckTrackTokens extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_SourceSyncSurveys extends Gems_Task_TaskAbstract
 {
-    /**
-     * @var Gems_Tracker
-     */
-    public $tracker;
-
-    public function execute($respTrackData = null, $userId = null)
+    public function execute($id = null, $userId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $respTrack = $this->tracker->getRespondentTrack($respTrackData);
-        $this->_batch->addToCounter('checkedRespondentTracks');
+        $source = $this->loader->getTracker()->getSource($id);
 
-        if ($result = $respTrack->checkTrackTokens($userId)) {
-            $this->_batch->addToCounter('tokenDateCauses');
-            $this->_batch->addToCounter('tokenDateChanges', $result);
+        if (is_null($userId)) {
+            $userId = $this->loader->getCurrentUser()->getUserId();
         }
-
-        if ($this->_batch->getCounter('tokenDateChanges')) {
-                $this->_batch->setMessage('tokenDateChanges', sprintf($this->translate->_('%2$d token date changes in %1$d tracks.'), $this->_batch->getCounter('tokenDateCauses'), $this->_batch->getCounter('tokenDateChanges')));
+        
+        if ($messages = $source->synchronizeSurveys($userId)) {
+            foreach ($messages as $message) {
+                $this->_batch->addMessage($message);
+            }
         }
-
-        $this->_batch->setMessage('checkedRespondentTracks', sprintf($this->translate->_('Checked %d tracks.'), $this->_batch->getCounter('checkedRespondentTracks')));
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: CheckTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
@@ -38,7 +38,7 @@
  * Cleans the cache when a new tables was created
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6

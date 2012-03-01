@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,31 +27,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id: ProcessTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
  */
 
 /**
- * Executes the syncSurveys method for a given sourceId
+ * Handles completion of a token, mostly started by Gems_Task_CheckTokenCompletion
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Task_SourceSyncSurveys extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_ProcessTokenCompletion extends Gems_Task_TaskAbstract
 {
-    public function execute($id = null)
-    {
-        $source = $this->loader->getTracker()->getSource($id);
+    /**
+     * @var Gems_Tracker
+     */
+    public $tracker;
 
-        if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
-            foreach ($messages as $message) {
-                $this->_batch->addMessage($message);
+    public function execute($tokenData = null, $userId = null)
+    {
+        $this->tracker = $this->loader->getTracker();
+        $token = $this->tracker->getToken($tokenData);
+
+        if ($token->isCompleted()) {
+            $respTrack = $token->getRespondentTrack();
+
+            if ($result = $respTrack->handleRoundCompletion($token, $userId)) {
+                $this->_batch->addToCounter('roundCompletionCauses');
+                $this->_batch->addToCounter('roundCompletionChanges', $result);
             }
+
+            $trackId = $respTrack->getRespondentTrackId();
+            $this->_batch->setTask('Tracker_CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
+        }
+
+        if ($this->_batch->getCounter('roundCompletionChanges')) {
+            $this->_batch->setMessage('roundCompletionChanges', sprintf($this->translate->_('%d token round completion events caused changed to %d tokens.'), $this->_batch->getCounter('roundCompletionCauses'), $this->_batch->getCounter('roundCompletionChanges')));
         }
     }
 }

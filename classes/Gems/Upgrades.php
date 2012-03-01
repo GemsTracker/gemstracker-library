@@ -67,20 +67,19 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade143to15()
     {
-        $this->_batch->addTask('ExecutePatch', 42);
-        $this->_batch->addTask('ExecutePatch', 43);
+        $this->_batch->addTask('Db_ExecutePatch', 42);
+        $this->_batch->addTask('Db_ExecutePatch', 43);
 
         $this->_batch->addTask('Db_CreateNewTables');
 
         $this->_batch->addTask('Echo', $this->_('Syncing surveys for all sources'));
-
 
         //Now sync the db sources to allow limesurvey source to add a field to the tokentable
         $model = new MUtil_Model_TableModel('gems__sources');
         $data  = $model->load(false);
 
         foreach ($data as $row) {
-            $this->_batch->addTask('SourceSyncSurveys', $row['gso_id_source']);
+            $this->_batch->addTask('Tracker_SourceSyncSurveys', $row['gso_id_source']);
         }
 
         return true;
@@ -91,7 +90,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade15to151()
     {
-        $this->_batch->addTask('ExecutePatch', 44);
+        $this->_batch->addTask('Db_ExecutePatch', 44);
         
         return true;
     }
