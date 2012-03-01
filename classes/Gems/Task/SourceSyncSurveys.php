@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *
+ *      
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,77 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
- * @subpackage Upgrades
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Short description for Upgrades
- *
- * Long description for class Upgrades (if any)...
+ * Executes the syncSurveys method for a given sourceId
  *
  * @package    Gems
- * @subpackage Upgrades
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.6
  */
-class Gems_Upgrades extends Gems_UpgradesAbstract
+class Gems_Task_SourceSyncSurveys
 {
-    public function __construct()
-    {
-        //Important, ALWAYS run the contruct of our parent object
-        parent::__construct();
-
-        //Now set the context
-        $this->setContext('gems');
-        //And add our patches
-        $this->register('Upgrade143to15', 'Upgrade from 1.43 to 1.5');
-        $this->register('Upgrade15to151', 'Upgrade from 1.5.0. to 1.5.1');
-    }
-
-
     /**
-     * To upgrade from 143 to 15 we need to do some work:
-     * 1. execute db patches 42 and 43
-     * 2. create new tables
+     * @var Gems_Tracker
      */
-    public function Upgrade143to15()
+    public $tracker;
+
+    public function execute($id = null)
     {
-        $this->_batch->addTask('ExecutePatch', 42);
-        $this->_batch->addTask('ExecutePatch', 43);
+        $source = $tracker->getSource($id);
 
-        $this->_batch->addTask('CreateNewTables');
-
-        $this->addMessage($this->_('Syncing surveys for all sources'));
-
-        //Now sync the db sources to allow limesurvey source to add a field to the tokentable
-        $model = new MUtil_Model_TableModel('gems__sources');
-        $data  = $model->load(false);
-
-        $tracker = $this->loader->getTracker();
-
-        foreach ($data as $row) {
-            $this->_batch->addTask('SourceSyncSurveys', $row['gso_id_source']);
+        if ($messages = $source->synchronizeSurveys($this->loader->getCurrentUser()->getUserId())) {
+            foreach ($messages as $message) {
+                $this->_batch->addMessage($message);
+            }
         }
-
-        $this->invalidateCache();
-
-        return true;
-    }
-
-    /**
-     * To upgrade to 1.5.1 just execute patchlevel 44
-     */
-    public function Upgrade15to151()
-    {
-        $this->_batch->addTask('ExecutePatch', 44);
-        
-        return true;
     }
 }
