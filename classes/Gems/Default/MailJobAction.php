@@ -53,18 +53,6 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     public $project;
 
     /**
-     * The automatically filtered result
-     *
-     * @param $resetMvc When true only the filtered resulsts
-     */
-    public function autofilterAction($resetMvc = true)
-    {
-        $this->autofilterParameters['onEmpty'] = $this->_('No automatic mail jobs found...');
-
-        parent::autofilterAction($resetMvc);
-    }
-
-    /**
      * Action for showing a create new item page
      */
     public function createAction()
@@ -175,6 +163,16 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $results['F'] = $this->_('Other');
 
         return $results;
+    }
+
+    /**
+     * Returns the on empty texts for the autofilter snippets
+     *
+     * @return string
+     */
+    public function getOnEmpty()
+    {
+        return $this->_('No automatic mail jobs found...');
     }
 
     /**

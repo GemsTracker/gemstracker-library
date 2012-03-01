@@ -47,14 +47,16 @@
 abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controller_ModelSnippetActionAbstract
 {
     /**
-     * The parameters used for the autofilter action.
+     * Gems only parameters used for the autofilter action. Can be overruled
+     * by setting $this->autofilterParameters
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array(
+    private $_autofilterExtraParameters = array(
         'browse' => true,
         'containingId' => 'autofilter_target',
         'keyboard' => true,
+        'onEmpty' => 'getOnEmpty',
         );
 
     /**
@@ -116,6 +118,21 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var Gems_Util
      */
     public $util;
+
+    /**
+     * The automatically filtered result
+     *
+     * @param $resetMvc When true only the filtered resulsts
+     */
+    public function autofilterAction($resetMvc = true)
+    {
+        // Already done when this value is false
+        if ($resetMvc) {
+            $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+        }
+
+        return parent::autofilterAction($resetMvc);
+    }
 
     /**
      * Outputs the model to excel, applying all filters and searches needed
@@ -224,6 +241,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Returns the on empty texts for the autofilter snippets
+     *
+     * @return string
+     */
+    public function getOnEmpty()
+    {
+        return $this->_('Nothing found...');
+    }
+
+    /**
      * Returns the current html/head/title for this page.
      *
      * If the title is an array the seperator concatenates the parts.
@@ -246,6 +273,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         }
 
         return implode($separator, $title);
+    }
+
+    /**
+     * Action for showing a browse page
+     */
+    public function indexAction()
+    {
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
+        return parent::indexAction();
     }
 
     /**

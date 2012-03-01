@@ -207,6 +207,16 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     }
 
     /**
+     * Returns the on empty texts for the autofilter snippets
+     *
+     * @return string
+     */
+    public function getOnEmpty()
+    {
+        return $this->_('No organization found...');
+    }
+
+    /**
      * Action for showing a browse page
      */
     public function indexAction()

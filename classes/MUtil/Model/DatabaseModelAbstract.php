@@ -722,7 +722,15 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                             $wheres[] = $sqlField . ' LIKE \'%' . $search . '%\'';
                         }
                     }
-                    $filter[] = implode(' ' . Zend_Db_Select::SQL_OR . ' ', $wheres);
+
+                    if ($wheres) {
+                        $filter[] = implode(' ' . Zend_Db_Select::SQL_OR . ' ', $wheres);
+                    } else {
+                        // When all fields are multiOption fields that do not result in a
+                        // filter, then there is no existing filter and the result set
+                        // should always be empty.
+                        $filter[] = '1=0';
+                    }
                 }
             }
         }

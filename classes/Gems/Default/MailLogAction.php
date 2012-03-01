@@ -48,24 +48,26 @@
 class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraFilter' => 'getExtraFilter',
+        'extraSort'   => array('grco_created' => SORT_DESC),
+        );
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Mail_Log_MailLogBrowseSnippet';
-
-    /**
-     * The automatically filtered result
-     */
-    public function autofilterAction($resetMvc = true)
-    {
-        $filter = array('grco_organization' => $this->escort->getCurrentOrganization());
-
-        $this->autofilterParameters['extraFilter']     = $filter;
-        $this->autofilterParameters['extraSort']       = array('grco_created' => SORT_DESC);
-
-        return parent::autofilterAction($resetMvc);
-    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -119,6 +121,26 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         }
 
         return $model;
+    }
+
+    /**
+     * Returns an extra filter for this action
+     *
+     * @return array
+     */
+    protected function getExtraFilter()
+    {
+        return array('grco_organization' => $this->escort->getCurrentOrganization());
+    }
+
+    /**
+     * Returns the on empty texts for the autofilter snippets
+     *
+     * @return string
+     */
+    public function getOnEmpty()
+    {
+        return $this->_('No mail activity found...');
     }
 
     /**

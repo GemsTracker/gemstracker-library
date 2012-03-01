@@ -49,6 +49,52 @@
 abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Controller_Action
 {
     /**
+     * Default parameters for createAction, can be overruled by $this->createParameters
+     * or $this->createEditParameters values with the same key.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array
+     */
+    private $_defaultCreateParameters = array(
+        'createData' => true,
+        );
+
+    /**
+     * Default parameters for editAction, can be overruled by $this->editParameters
+     * or $this->createEditParameters values with the same key.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array
+     */
+    private $_defaultEditParameters = array(
+        'createData' => false,
+        );
+
+    /**
+     * Default parameters for all actions, unless overruled by values with the same key at
+     * the action level
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array
+     */
+    private $_defaultParameters = array(
+        'model'   => 'getModel',
+        'request' => 'getRequest',
+        );
+
+    /**
      * Created in createModel().
      *
      * Always retrieve using $this->getModel().
@@ -59,6 +105,11 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
     /**
      * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -74,9 +125,28 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     /**
      * The parameters used for the create and edit actions.
      *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createEditParameters = array();
+
+    /**
+     * The parameters used for the edit actions, overrules any values in
+     * $this->createEditParameters.
+     *
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createParameters = array();
 
     /**
      * The snippets used for the create and edit actions.
@@ -87,6 +157,11 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
     /**
      * The parameters used for the delete action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -100,7 +175,25 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $deleteSnippets = 'ModelYesNoDeleteSnippet';
 
     /**
+     * The parameters used for the edit actions, overrules any values in
+     * $this->createEditParameters.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $editParameters = array();
+
+    /**
      * The parameters used for the index action minus those in autofilter.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -122,6 +215,11 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
     /**
      * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
      * @var array Mixed key => value array for snippet initialization
      */
@@ -165,6 +263,29 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     *
+     * @param array $input
+     * @return array
+     */
+    protected function _processParameters(array $input)
+    {
+        $output = array();
+
+        foreach ($input + $this->_defaultParameters as $key => $value) {
+            if (is_string($value) && method_exists($this, $value)) {
+                $value = $this->$value($key);
+
+                if (is_integer($key) || ($value === null)) {
+                    continue;
+                }
+            }
+            $output[$key] = $value;
+        }
+
+        return $output;
+    }
+
+    /**
      * Set the action key in request
      *
      * Use this when an action is a Ajax action for retrieving
@@ -197,10 +318,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         }
 
         if ($this->autofilterSnippets) {
-            $this->autofilterParameters['model']   = $this->getModel();
-            $this->autofilterParameters['request'] = $this->getRequest();
+            $params = $this->_processParameters($this->autofilterParameters);
 
-            $this->addSnippets($this->autofilterSnippets, $this->autofilterParameters);
+            $this->addSnippets($this->autofilterSnippets, $params);
         }
 
         if ($resetMvc && MUtil_Echo::hasOutput()) {
@@ -216,24 +336,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     public function createAction()
     {
         if ($this->createEditSnippets) {
-            $this->createEditParameters['createData'] = true;
-            $this->createEditParameters['model']      = $this->getModel();
-            $this->createEditParameters['request']    = $this->getRequest();
+            $params = $this->_processParameters($this->createParameters + $this->createEditParameters + $this->_defaultCreateParameters);
 
-            $this->addSnippets($this->createEditSnippets, $this->createEditParameters);
-        }
-    }
-
-    /**
-     * Action for showing a delete item page
-     */
-    public function deleteAction()
-    {
-        if ($this->deleteSnippets) {
-            $this->deleteParameters['model']      = $this->getModel();
-            $this->deleteParameters['request']    = $this->getRequest();
-
-            $this->addSnippets($this->deleteSnippets, $this->deleteParameters);
+            $this->addSnippets($this->createEditSnippets, $params);
         }
     }
 
@@ -251,16 +356,26 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     abstract protected function createModel($detailed, $action);
 
     /**
+     * Action for showing a delete item page
+     */
+    public function deleteAction()
+    {
+        if ($this->deleteSnippets) {
+            $params = $this->_processParameters($this->deleteParameters);
+
+            $this->addSnippets($this->deleteSnippets, $params);
+        }
+    }
+
+    /**
      * Action for showing a edit item page
      */
     public function editAction()
     {
         if ($this->createEditSnippets) {
-            $this->createEditParameters['createData'] = false;
-            $this->createEditParameters['model']      = $this->getModel();
-            $this->createEditParameters['request']    = $this->getRequest();
+            $params = $this->_processParameters($this->editParameters + $this->createEditParameters + $this->_defaultEditParameters);
 
-            $this->addSnippets($this->createEditSnippets, $this->createEditParameters);
+            $this->addSnippets($this->createEditSnippets, $params);
         }
     }
 
@@ -293,27 +408,23 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         return $this->_model;
     }
 
-
     /**
      * Action for showing a browse page
      */
     public function indexAction()
     {
         if ($this->indexStartSnippets || $this->indexStopSnippets) {
-            $this->indexParameters = $this->indexParameters + $this->autofilterParameters;
-
-            $this->indexParameters['model']   = $this->getModel();
-            $this->indexParameters['request'] = $this->getRequest();
+            $params = $this->_processParameters($this->indexParameters + $this->autofilterParameters);
 
             if ($this->indexStartSnippets) {
-                $this->addSnippets($this->indexStartSnippets, $this->indexParameters);
+                $this->addSnippets($this->indexStartSnippets, $params);
             }
         }
 
         $this->autofilterAction(false);
 
         if ($this->indexStopSnippets) {
-            $this->addSnippets($this->indexStopSnippets, $this->indexParameters);
+            $this->addSnippets($this->indexStopSnippets, $params);
         }
     }
 
@@ -323,10 +434,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     public function showAction()
     {
         if ($this->showSnippets) {
-            $this->showParameters['model']   = $this->getModel();
-            $this->showParameters['request'] = $this->getRequest();
+            $params = $this->_processParameters($this->showParameters);
 
-            $this->addSnippets($this->showSnippets, $this->showParameters);
+            $this->addSnippets($this->showSnippets, $params);
         }
     }
 }
