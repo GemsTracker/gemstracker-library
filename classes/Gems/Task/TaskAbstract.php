@@ -42,7 +42,7 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.2
  */
 abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract implements Gems_Task_TaskInterface
 {
@@ -61,6 +61,14 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
      */
     public $translate;
 
+    /**
+     * Sets the batch this task belongs to
+     *
+     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * task. It allows the task to communicate with the batch queue.
+     * 
+     * @param Gems_Task_TaskRunnerBatch $batch 
+     */
     public function setBatch(Gems_Task_TaskRunnerBatch $batch)
     {
         $this->_batch = $batch;

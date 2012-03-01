@@ -40,7 +40,7 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.2
  */
 interface Gems_Task_TaskInterface
 {
@@ -57,6 +57,8 @@ interface Gems_Task_TaskInterface
      *
      * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
      * task. It allows the task to communicate with the batch queue.
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
      */
     public function setBatch(Gems_Task_TaskRunnerBatch $batch);
 }

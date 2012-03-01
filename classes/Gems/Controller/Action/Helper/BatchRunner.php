@@ -25,27 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage Controller_Action_Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
 /**
- * Short description for BatchRunner
+ * This helper provides an easy method for running tasks in batch.
  *
- * Long description for class BatchRunner (if any)...
+ * Just provide the batch and the title to use and you will be fine.
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Controller_Action_Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5.2
  */
 class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_Helper_Abstract
 {

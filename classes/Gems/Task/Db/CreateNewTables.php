@@ -29,7 +29,7 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTokenCompletion.php 502 2012-02-20 14:13:20Z mennodekker $
+ * @version    $Id$
  */
 
 /**
@@ -39,7 +39,7 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.2
  */
 class Gems_Task_Db_CreateNewTables extends Gems_Task_TaskAbstract
 {

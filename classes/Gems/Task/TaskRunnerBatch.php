@@ -45,7 +45,7 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.2
  */
 class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
 {

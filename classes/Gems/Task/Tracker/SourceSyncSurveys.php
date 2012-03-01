@@ -29,7 +29,7 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 /**
@@ -39,7 +39,7 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.2
  */
 class Gems_Task_Tracker_SourceSyncSurveys extends Gems_Task_TaskAbstract
 {
