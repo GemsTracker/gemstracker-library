@@ -241,6 +241,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         $map[$row1['sgq']] = $row1;
 
                         $row2 = $row;
+                        $row2['scale_id'] = 1;
                         $row2['sgq'] .= $row['sq_title'] . '#1';
                         $row2['code'] = $row['title'] . '_' . $row['sq_title'] . '#1';
                         $row2['sq_question1'] = $this->_getQuestionAttribute($row['qid'], 'dualscale_headerB', 'scale 2');
@@ -619,16 +620,13 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             // Juggle the labels for sub-questions etc..
             if (isset($field['sq_question'])) {
-                if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $field['sq_question'], $field['sq_question1']));
-                }
-                if (! isset($tmpres['label'])) {
-                    $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
-                } else {
+                if (isset($tmpres['label'])) {
                     // Add non answered question for grouping
                     $model->set('_' . $name . '_', $tmpres);
-
-                    // "Next" question
+                }
+                if (isset($field['sq_question1'])) {
+                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeHtml($field['sq_question']), $this->removeHtml($field['sq_question1'])));
+                } else {
                     $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
                 }
                 $tmpres['thClass'] = 'question_sub';
