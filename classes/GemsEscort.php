@@ -1488,9 +1488,6 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function routeShutdown(Zend_Controller_Request_Abstract $request)
     {
-        // Npow is a good time to check for required values
-        $this->project->checkRequiredValues();
-
         $loader = $this->getLoader();
         $user   = $loader->getCurrentUser();
 
@@ -1501,6 +1498,10 @@ class GemsEscort extends MUtil_Application_Escort
         // PS: The REQUEST is needed because otherwise the locale for translate is not certain.
         $this->menu = $loader->createMenu($this);
         $this->_updateVariable('menu');
+
+        // Now is a good time to check for required values
+        // Moved down here to prevent unit test from failing on missing salt
+        $this->project->checkRequiredValues();
 
         $source = $this->menu->getParameterSource();
         $this->getLoader()->getOrganization()->applyToMenuSource($source);

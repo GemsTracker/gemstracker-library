@@ -601,7 +601,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($menuItem) {
             // Prevent redirecting to the current page.
             if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
-                echo $menuItem->get('label') . '<br/>';
+                //Probably a debug statement so commented out MD20120308
+                //echo $menuItem->get('label') . '<br/>';
 
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                 $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);

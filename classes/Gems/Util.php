@@ -113,15 +113,33 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     }
 
 
+    /**
+     * Retrieve the consentCODE to use for rejected responses by the survey system
+     * The mapping of actual consents to consentCODEs is done in the gems__consents table
+     *
+     * @return string Default value is 'do not use'
+     * @throws Gems_Exception_Coding
+     */
     public function getConsentRejected()
     {
+        if (isset($this->project->consentRejected)) {
+            return $this->project->consentRejected;
+        }
+
         if (isset($this->project->concentRejected)) {
+            throw new Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
             return $this->project->concentRejected;
         }
 
         return 'do not use';
     }
 
+    /**
+     * Retrieve the array of possible consentCODEs to use for responses by the survey system
+     * The mapping of actual consents to consentCODEs is done in the gems__consents table
+     *
+     * @return array Default consent codes are 'do not use' and 'consent given'
+     */
     public function getConsentTypes()
     {
         if (isset($this->project->consentTypes)) {
@@ -169,6 +187,22 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         }
 
         return $uri . $subpath;
+    }
+
+    /**
+     * Get the default user consent
+     *
+     * This is de consent description from gems__consents, not the consentCODE
+     * 
+     * @return string
+     */
+    public function getDefaultConsent()
+    {
+        if (isset($this->project->consentDefault)) {
+            return $this->project->consentDefault;
+        }
+
+        return 'Unkown';
     }
 
     /**
