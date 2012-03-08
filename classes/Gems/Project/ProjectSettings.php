@@ -193,7 +193,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getAccountDelayFactor()
     {
-        if (isset($this->account) && isset($this->account['delayFactor'])) {
+        if ($this->offsetExists('account') && isset($this->account['delayFactor'])) {
             return intval($this->account['delayFactor']);
         } else {
             return 4;
@@ -279,7 +279,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
         // MUtil_Echo::track($codes);
 
         $rules = array();
-        if (isset($this->passwords) && is_array($this->passwords)) {
+        if ($this->offsetExists('passwords') && is_array($this->passwords)) {
             $this->_getPasswordRules($this->passwords, $codes, $rules);
         }
 
@@ -293,7 +293,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getSessionTimeOut()
     {
-        if (isset($this->session, $this->session['idleTimeout'])) {
+        if ($this->offsetExists('session') && isset($this->session['idleTimeout'])) {
             return $this->session['idleTimeout'];
         } else {
             return $this->defaultSessionTimeout;
@@ -307,7 +307,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getSuperAdminName()
     {
-        if (isset($this->admin) && isset($this->admin['user'])) {
+        if ($this->offsetExists('admin') && isset($this->admin['user'])) {
             return trim($this->admin['user']);
         }
     }
@@ -319,7 +319,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     protected function getSuperAdminPassword()
     {
-        if (isset($this->admin) && isset($this->admin['pwd'])) {
+        if ($this->offsetExists('admin') && isset($this->admin['pwd'])) {
             return trim($this->admin['pwd']);
         }
     }
@@ -331,7 +331,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getSuperAdminIPRanges()
     {
-        if (isset($this->admin['ipRanges'])) {
+        if ($this->offsetExists('admin') && isset($this->admin['ipRanges'])) {
             return $this->admin['ipRanges'];
         }
     }
