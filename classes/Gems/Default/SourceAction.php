@@ -112,7 +112,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $batch = $this->loader->getTracker()->refreshTokenAttributesBatch('sourceCheck' . $sourceId, $where);
 
-        $title = sprintf($this->_('Refreshing token attributes for for %s source.'),
+        $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
         $this->_helper->BatchRunner($batch, $title);

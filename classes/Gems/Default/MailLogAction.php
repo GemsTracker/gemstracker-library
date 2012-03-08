@@ -134,34 +134,23 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
-     * Returns the on empty texts for the autofilter snippets
+     * Helper function to get the title for the index action.
      *
-     * @return string
+     * @return $string
      */
-    public function getOnEmptyText()
+    public function getIndexTitle()
     {
-        return $this->_('No mail activity found...');
+        return $this->_('Mail Activity Log');
     }
 
     /**
-     * Action for showing a browse page
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
      */
-    public function indexAction()
+    public function getTopic($count = 1)
     {
-        $this->indexParameters['contentTitle'] = $this->_('Mail Activity Log');
-
-        parent::indexAction();
-    }
-
-
-    /**
-     * Action for showing an item page
-     */
-    public function showAction()
-    {
-        $this->showParameters['displayTitle'] = $this->_('Show Mail Activity Log item');
-
-        // MUtil_Echo::track($this->indexParameters);
-        parent::showAction();
+        return $this->plural('mail activity', 'mail activities', $count);
     }
 }

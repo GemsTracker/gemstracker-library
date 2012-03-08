@@ -53,16 +53,6 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     public $project;
 
     /**
-     * Action for showing a create new item page
-     */
-    public function createAction()
-    {
-        $this->createEditParameters['formTitle'] = $this->_('New automatic mail job...');
-
-        parent::createAction();
-    }
-
-    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -113,27 +103,6 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
-     * Action for showing a delete item page
-     */
-    public function deleteAction()
-    {
-        $this->deleteParameters['deleteQuestion'] = $this->_('Do you want to delete this mail job?');
-        $this->deleteParameters['displayTitle']   = $this->deleteParameters['deleteQuestion'];
-
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for showing a edit item page
-     */
-    public function editAction()
-    {
-        $this->createEditParameters['formTitle'] = $this->_('Edit automatic mail job');
-
-        parent::editAction();
-    }
-
-    /**
      * The types of mail filters
      *
      * @return array
@@ -166,13 +135,24 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
-     * Returns the on empty texts for the autofilter snippets
+     * Helper function to get the title for the index action.
      *
-     * @return string
+     * @return $string
      */
-    public function getOnEmptyText()
+    public function getIndexTitle()
     {
-        return $this->_('No automatic mail jobs found...');
+        return $this->_('Automatic mail jobs');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('automatic mail job', 'automatic mail jobs', $count);
     }
 
     /**
@@ -180,8 +160,6 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function indexAction()
     {
-        $this->indexParameters['contentTitle'] = $this->_('Automatic mail jobs');
-
         $lock = $this->util->getCronJobLock();
         if ($lock->isLocked()) {
             $this->addMessage(sprintf($this->_('Automatic mails have been turned off since %s.'), $lock->getLockTime()));
@@ -195,15 +173,5 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
         parent::indexAction();
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
-    }
-
-    /**
-     * Action for showing an item page
-     */
-    public function showAction()
-    {
-        $this->showParameters['displayTitle'] = $this->_('Automatic mail job details');
-
-        parent::showAction();
     }
 }

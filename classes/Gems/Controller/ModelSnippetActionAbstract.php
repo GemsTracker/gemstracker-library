@@ -78,7 +78,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = array('Generic_ContentTitleSnippet', 'Generic_ModelItemYesNoDeleteSnippet');
+    protected $deleteSnippets = 'Generic_ModelItemYesNoDeleteSnippet';
 
     /**
      *
@@ -135,6 +135,37 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Action for showing a create new item page with extra title
+     */
+    public function createAction()
+    {
+        $this->createEditParameters['formTitle'] = $this->getCreateTitle();
+
+        parent::createAction();
+    }
+
+    /**
+     * Action for showing a delete item page with extra titles
+     */
+    public function deleteAction()
+    {
+        $this->deleteParameters['displayTitle']   = $this->getDeleteTitle();
+        $this->deleteParameters['deleteQuestion'] = $this->getDeleteQuestion();
+
+        parent::deleteAction();
+    }
+
+    /**
+     * Action for showing a edit item page with extra title
+     */
+    public function editAction()
+    {
+        $this->createEditParameters['formTitle'] = $this->getEditTitle();
+
+        parent::editAction();
+    }
+
+    /**
      * Outputs the model to excel, applying all filters and searches needed
      *
      * When you want to change the output, there are two places to check:
@@ -186,6 +217,46 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Helper function to get the title for the create action.
+     *
+     * @return $string
+     */
+    public function getCreateTitle()
+    {
+        return sprintf($this->_('New %s...'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the question for the delete action.
+     *
+     * @return $string
+     */
+    public function getDeleteQuestion()
+    {
+        return sprintf($this->_('Do you want to delete this %s?'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the delete action.
+     *
+     * @return $string
+     */
+    public function getDeleteTitle()
+    {
+        return sprintf($this->_('Delete %s'), $this->getTopic(1));
+    }
+
+    /**
+     * Helper function to get the title for the edit action.
+     *
+     * @return $string
+     */
+    public function getEditTitle()
+    {
+        return sprintf($this->_('Edit %s...'), $this->getTopic(1));
+    }
+
+    /**
      * Returns an array with all columns from the model that have a label
      *
      * @param array                     $data
@@ -225,6 +296,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return ucfirst($this->getTopic(100));
+    }
+
+    /**
      * Return the current request ID, if any.
      *
      * Overrule this function if the last item in the page title
@@ -247,7 +328,17 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function getOnEmptyText()
     {
-        return $this->_('Nothing found...');
+        return sprintf($this->_('No %s found...'), $this->getTopic(0));
+    }
+
+    /**
+     * Helper function to get the title for the show action.
+     *
+     * @return $string
+     */
+    public function getShowTitle()
+    {
+        return sprintf($this->_('Showing %s'), $this->getTopic(1));
     }
 
     /**
@@ -276,11 +367,23 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('item', 'items', $count);
+    }
+
+    /**
      * Action for showing a browse page
      */
     public function indexAction()
     {
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+        $this->indexParameters['contentTitle'] = $this->getIndexTitle();
 
         return parent::indexAction();
     }
@@ -298,5 +401,15 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         }
 
         parent::initHtml($reset);
+    }
+
+    /**
+     * Action for showing an item page with title
+     */
+    public function showAction()
+    {
+        $this->showParameters['contentTitle'] = $this->getShowTitle();
+
+        parent::showAction();
     }
 }

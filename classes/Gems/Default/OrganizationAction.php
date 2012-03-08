@@ -92,16 +92,6 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     }
 
     /**
-     * Action for showing a create new item page
-     */
-    public function createAction()
-    {
-        $this->createEditParameters['formTitle'] = $this->_('New organization...');
-
-        parent::createAction();
-    }
-
-    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -187,52 +177,23 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     }
 
     /**
-     * Action for showing a delete item page
-     */
-    public function deleteAction()
-    {
-        $this->indexParameters['contentTitle'] = $this->_('Delete organization');
-
-        parent::deleteAction();
-    }
-
-    /**
-     * Action for showing a edit item page
-     */
-    public function editAction()
-    {
-        $this->createEditParameters['formTitle'] = $this->_("Edit organization");
-
-        parent::editAction();
-    }
-
-    /**
-     * Returns the on empty texts for the autofilter snippets
+     * Helper function to get the title for the index action.
      *
-     * @return string
+     * @return $string
      */
-    public function getOnEmptyText()
+    public function getIndexTitle()
     {
-        return $this->_('No organization found...');
+        return $this->_('Participating organizations');
     }
 
     /**
-     * Action for showing a browse page
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
      */
-    public function indexAction()
+    public function getTopic($count = 1)
     {
-        $this->indexParameters['contentTitle'] = $this->_('Participating organizations');
-
-        parent::indexAction();
-    }
-
-    /**
-     * Action for showing an item page
-     */
-    public function showAction()
-    {
-        $this->indexParameters['contentTitle'] = $this->_('Show organization');
-
-        parent::showAction();
+        return $this->plural('organization', 'organizations', $count);
     }
 }
