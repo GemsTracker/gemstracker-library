@@ -110,6 +110,7 @@ class Gems_Auth extends Zend_Auth
     public function authenticate(Zend_Auth_Adapter_Interface $adapter, array $formValues = null)
     {
         try {
+            $remaining    = 0;
             $login_name   = $formValues['userlogin'];
             $organization = $formValues['organization'];
             $sql = "SELECT gula_failed_logins, gula_last_failed FROM gems__user_login_attempts WHERE gula_login = ? AND gula_id_organization = ?";
@@ -159,10 +160,10 @@ class Gems_Auth extends Zend_Auth
             $values['gula_last_failed']     = null;
         } else {
             if ($values['gula_failed_logins']) {
-                // MUtil_Echo::track($result->getCode(), self::ERROR_PASSWORD_DELAY);
                 // Only increment when we have no password delay as the right password
-                // will not be accepted when we are in the delay.
-                if ($result->getCode() <> self::ERROR_PASSWORD_DELAY) {
+                // will not be accepted when we are in the delay. Can not check on the error
+                // code as it will be set to 'uncategorized' => -4
+                if ($remaining>0) {
                     $values['gula_failed_logins'] += 1;
                     $values['gula_last_failed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
                 }

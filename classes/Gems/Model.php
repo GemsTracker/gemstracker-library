@@ -204,7 +204,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         $model->setIfExists('gr2o_patient_nr',    'label', $this->translate->_('Respondent nr'));
         $model->setIfExists('gr2o_opened',        'label', $this->translate->_('Opened'), 'formatFunction', $translated->formatDateTime);
-        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents));
+        $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
 
         $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
 

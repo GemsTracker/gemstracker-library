@@ -391,7 +391,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
         }
 
-        if ($data['gr2o_consent'] == $model->get('gr2o_consent', 'default')) {
+        //Check if we have the 'Unknown' consent, and present a warning. The project default consent is
+        //normally 'Unknown' but this can be overruled in project.ini so checking for default is not right
+        if ($data['gr2o_consent'] == 'Unknown') {
             $url = $this->view->url(array('controller' => 'respondent', 'action' => 'edit', 'id' => $data['gr2o_patient_nr'])) . '#tabContainer-frag-3';
             $this->addMessage(MUtil_Html::create()->a($url, $this->_('Please settle the informed consent form for this respondent.')));
         }
