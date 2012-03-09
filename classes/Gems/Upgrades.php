@@ -99,7 +99,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     /**
      * To upgrade to 1.5.2 just execute patchlevel 45
      */
-    public function Upgrade15to151()
+    public function Upgrade151to152()
     {
         $this->_batch->addTask('Db_ExecutePatch', 45);
 
