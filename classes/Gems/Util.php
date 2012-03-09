@@ -122,11 +122,11 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      */
     public function getConsentRejected()
     {
-        if (isset($this->project->consentRejected)) {
+        if ($this->project->offsetExists('consentRejected')) {
             return $this->project->consentRejected;
         }
 
-        if (isset($this->project->concentRejected)) {
+        if ($this->project->offsetExists('concentRejected')) {
             throw new Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
             return $this->project->concentRejected;
         }
