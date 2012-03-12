@@ -191,9 +191,16 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     public function checkRegistryRequestsAnswers()
     {
         if ($this->db && (! $this->_gemsSurvey)) {
-            $this->_gemsSurvey = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $this->_surveyId);
+            $result = $this->db->fetchRow("SELECT * FROM gems__surveys WHERE gsu_id_survey = ?", $this->_surveyId);
+            if ($result) {
+                $this->_gemsSurvey = $result;
+                $this->exists = true;
+            } else {
+                //Row not present, try with empty array? or should we throw an error?
+                $this->_gemsSurvey = array();
+                $this->exists = false;
+            }
         }
-        $this->exists = $this->_surveyId > 0;
 
         return (boolean) $this->_gemsSurvey;
     }
