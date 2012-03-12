@@ -96,6 +96,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
             'required', false,
             'size', 15
         );
+        $bridge->addText('gso_ls_charset', array('size' => 15, 'description' => $in_gems));
 
         $bridge->addExhibitor('gso_active', array('label' => $this->_('Active'), 'multiOptions' => $this->util->getTranslated()->getYesNo()));
         $bridge->addExhibitor('gso_status');

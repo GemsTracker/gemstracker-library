@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `gems__sources` (
   `gso_ls_table_prefix` varchar(127) default NULL,
   `gso_ls_username` varchar(64) default NULL,
   `gso_ls_password` varchar(255) default NULL,
-  `gso_ls_charset` varchar(8) NOT NULL,
+  `gso_ls_charset` varchar(8) default NULL,
 
   `gso_active` tinyint(1) NOT NULL default '1',
 
