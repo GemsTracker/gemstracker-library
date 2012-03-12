@@ -55,14 +55,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     public function __construct(array $sourceData, Zend_Db_Adapter_Abstract $gemsDb);
 
     /**
-     * Add the commands to update this source to a source synchornization batch
-     *
-     * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
-     * @param int $userId    Id of the user who takes the action (for logging)
-     */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId);
-
-    /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
      * @param Gems_Tracker_Token $token
@@ -233,6 +225,13 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     public function getTokenUrl(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId);
 
     /**
+     * Returns true if a batch is set
+     *
+     * @return boolean
+     */
+    public function hasBatch();
+
+    /**
      * Checks whether the token is in the source.
      *
      * @param Gems_Tracker_Token $token Gems token object
@@ -253,6 +252,15 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      */
     // public function isCompleted($tokenId, $surveyId, array $answers = null, $sourceSurveyId = null);
     public function isCompleted(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
+
+    /**
+     * Set the batch to be used by this source
+     *
+     * Use $this->hasBatch to check for existence
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
+     */
+    public function setBatch(Gems_Task_TaskRunnerBatch $batch);
 
     /**
      * Sets the answers passed on.

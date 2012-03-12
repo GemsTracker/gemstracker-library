@@ -43,12 +43,12 @@ class Gems_Versions
 {
     public final function getBuild()
     {
-        return 45;
+        return 46;
     }
 
     public final function getGemsVersion()
     {
-        return '1.5.2';
+        return '1.5.3';
     }
 
     public function getProjectVersion()

@@ -469,7 +469,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $surveyId = $surveyData;
         }
 
-        if (! isset($this->_surveys[$surveyId])) {
+        if ($surveyId == null || ! isset($this->_surveys[$surveyId])) {
             $this->_surveys[$surveyId] = $this->_loadClass('survey', true, array($surveyData));
         }
 
@@ -877,7 +877,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     public function synchronizeSourcesBatch($sourceId = null, $userId = null)
     {
         $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
-        $batch = $this->_loadClass('Batch_SynchronizeSourcesBatch', true, array($batch_id));
+        $batch = $this->loader->getTaskRunnerBatch($batch_id);
 
         if (! $batch->isLoaded()) {
             if ($sourceId) {
@@ -890,7 +890,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             }
 
             foreach ($sources as $source) {
-                $batch->addSource($source, $userId);
+                $batch->addTask('Tracker_SourceSyncSurveys', $source, $userId);
             }
         }
 

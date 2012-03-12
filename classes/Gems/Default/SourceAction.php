@@ -169,6 +169,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
             $model->set('gso_ls_dbhost',       'label', $this->_('Database host'));
             $model->set('gso_ls_database',     'label', $this->_('Database'));
+            $model->set('gso_ls_charset',     'label', $this->_('Charset'));
         }
 
         $model->set('gso_ls_table_prefix', 'label', $this->_('Table prefix'), 'default', 'ls__');
@@ -238,26 +239,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $batch = $this->loader->getTracker()->synchronizeSourcesBatch($sourceId, $this->loader->getCurrentUser()->getUserId());
 
-        if ($batch->run($this->getRequest())) {
-            exit;
-        } else {
-            $this->html->h3(
-                sprintf($this->_('Synchronize the %s source.'),
-                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId)));
-
-            if ($batch->isFinished()) {
-                $this->addMessage($batch->getMessages(true));
-                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
-            } else {
-                if ($batch->count()) {
-                    // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->_('Check %s surveys'), $batch->getSurveyCounter())));
-                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
-                } else {
-                    $this->html->pInfo($this->_('No surveys to check.'));
-                }
-            }
-        }
+        $title = sprintf($this->_('Synchronize the %s source.'),
+                    $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
+        $this->_helper->BatchRunner($batch, $title);
     }
 
     /**
@@ -268,59 +252,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         //*
         $batch = $this->loader->getTracker()->synchronizeSourcesBatch(null, $this->loader->getCurrentUser()->getUserId());
 
-        if ($batch->run($this->getRequest())) {
-            exit;
-        } else {
-            $this->html->h3($this->_('Synchronize all sources.'));
-
-            if ($batch->isFinished()) {
-                $this->addMessage($batch->getMessages(true));
-                $this->html->pInfo($batch->getRestartButton($this->_('Prepare recheck'), array('class' => 'actionlink')));
-            } else {
-                if ($batch->count()) {
-                    // Batch is loaded by Tracker
-                    $this->html->pInfo($batch->getStartButton(sprintf($this->plural('Check %s source', 'Check %s sources', $batch->getSourceCounter()), $batch->getSourceCounter())));
-                    $this->html->append($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
-                } else {
-                    $this->html->pInfo($this->_('No sources to check.'));
-                }
-            }
-        } // */
-
-        /*
-        $batch = new MUtil_Batch_WaitBatch();
-        $batch->setMethodPush(5);
-        $batch->progressParameterName = 'waitprogress';
-        // $batch->autoStart = true;
-        // $batch->minimalStepDurationMs = 2000;
-        if ($batch->run($this->getRequest())) {
-            exit;
-        } else {
-            if ($batch->isFinished()) {
-                $this->addMessage($batch->getMessages(true));
-                $this->html->pInfo($batch->getRestartButton($this->_('Prepare restart'), array('class' => 'actionlink')));
-            } else {
-                // Populate the batch (from scratch).
-                $batch->reset();
-                if (true) {
-                    $batch->addWaitsMs(400, 20);
-                    $batch->addWaits(2, 1, 'Har har');
-                    $batch->addWaitsMs(20, 50);
-                } else {
-                    $batch->addWaits(1440, 10);
-                    //$batch->addWaits(4, 2);
-                    //$batch->addWaits(2, 1);
-                    //$batch->addWaitsLater(15, 1);
-                    //$batch->addWait(4, 'That took some time!');
-                    //$batch->addWait(4, 'So we see the message. :)');
-                    //$batch->addWaitsLater(1, 2);
-                    //$batch->addWaits(4);
-                }
-                $this->html->pInfo($batch->getStartButton($this->_('Start synchronization')));
-                $this->html->append($batch->getPanel($this->view, '0%'));
-            }
-        } // */
-
+        $title = $this->_('Synchronize all sources.');
+        $this->_helper->BatchRunner($batch, $title);
+        
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
     }
 }

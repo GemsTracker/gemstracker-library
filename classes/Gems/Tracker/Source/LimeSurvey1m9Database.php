@@ -399,7 +399,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     {
         $messages = array();
         $survey   = $this->tracker->getSurvey($surveyId);
-
+        
         if (null === $sourceSurveyId) {
             // Was removed
             $values['gsu_active'] = 0;
@@ -526,6 +526,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
                 $values['gsu_active']             = 0;
                 $values['gsu_status']             = $surveyor_status;
+                $values['gsu_surveyor_id']        = $sourceSurveyId;
+                $values['gsu_id_source']          = $this->getId();
 
                 $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
@@ -1109,6 +1111,51 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @return array Returns an array of messages
      */
     public function synchronizeSurveys($userId, $updateTokens = true)
+    {
+        // Surveys in LS
+        $lsDb = $this->getSourceDatabase();
+        $select = $lsDb->select();
+        $select->from($this->_getSurveysTableName(), 'sid')
+                ->order('sid');
+        $lsSurveys = $lsDb->fetchCol($select);
+        $lsSurveys = array_combine($lsSurveys, $lsSurveys);
+
+        // Surveys in Gems
+        $gemsSurveys = $this->_getGemsSurveysForSynchronisation();
+
+        foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
+            if (isset($lsSurveys[$sourceSurveyId])) {
+                if ($this->hasBatch()) {
+                    $this->_batch->addTask('Tracker_SourceCommand', $this->getId(), 'CheckSurvey', $sourceSurveyId, $surveyId, $userId);
+                } else {
+                    $this->checkSurvey($sourceSurveyId, $surveyId, $userId);
+                }
+            } else {
+                if ($this->hasBatch()) {
+                    $this->_batch->addTask('Tracker_SourceCommand', $this->getId(), 'CheckSurvey', null, $surveyId, $userId);
+                } else {
+                    $this->checkSurvey(null, $surveyId, $userId);
+                }
+            }
+        }
+
+        foreach (array_diff($lsSurveys, $gemsSurveys) as $sourceSurveyId) {
+            if ($this->hasBatch()) {
+                $this->_batch->addTask('Tracker_SourceCommand', $this->getId(), 'CheckSurvey', $sourceSurveyId, null, $userId);
+            } else {
+                $this->checkSurvey($sourceSurveyId, null, $userId);
+            }
+        }
+    }
+
+    /**
+     * Updates the gems database with the latest information about the surveys in this source adapter
+     *
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
+     * @return array Returns an array of messages
+     */
+    public function synchronizeSurveysOld($userId, $updateTokens = true)
     {
         $lsDb          = $this->getSourceDatabase();
         $messages      = array();

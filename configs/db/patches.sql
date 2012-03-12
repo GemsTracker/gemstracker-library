@@ -379,3 +379,7 @@ ALTER TABLE `gems__tracks` ADD gtr_completed_event varchar(64) CHARACTER SET 'ut
 -- GEMS VERSION: 45
 -- PATCH: Assign attribute sync to super role
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.source.check-attributes') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.source.check-attributes%';
+
+-- GEMS VERSION: 46
+-- PATCH: Add charset attribute for source database
+ALTER TABLE  `gems__sources` ADD  `gso_ls_charset` VARCHAR( 8 ) NOT NULL AFTER  `gso_ls_password`;

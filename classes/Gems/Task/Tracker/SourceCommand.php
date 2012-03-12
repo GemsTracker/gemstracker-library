@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,35 +29,29 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: SourceSyncSurveys.php 528 2012-03-01 14:06:23Z mennodekker $
  */
 
 /**
- * Executes the syncSurveys method for a given sourceId
+ * Executes any command in a source for a given $sourceId
  *
  * @package    Gems
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.2
+ * @since      Class available since version 1.5.3
  */
-class Gems_Task_Tracker_SourceSyncSurveys extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_SourceCommand extends Gems_Task_TaskAbstract
 {
-    public function execute($id = null, $userId = null)
+    public function execute($sourceId = null, $command = null)
     {
-        $source = $this->loader->getTracker()->getSource($id);
+        $params = array_slice(func_get_args(), 2);
+        $source = $this->loader->getTracker()->getSource($sourceId);
         $source->setBatch($this->_batch);
 
-        if (is_null($userId)) {
-            $userId = $this->loader->getCurrentUser()->getUserId();
-        }
-
-        $surveyCount = $this->_batch->addToCounter('sourceSyncSources');
-        $this->_batch->setMessage('sourceSyncSources', sprintf($this->translate->plural('Check %s source', 'Check %s sources', $surveyCount), $surveyCount));
-        
-        if ($messages = $source->synchronizeSurveys($userId)) {
+        if ($messages = call_user_func_array(array($source, $command), $params)) {
             foreach ($messages as $message) {
-                $this->_batch->addMessage($message);
+                $this->_batch->addMessage($command . ': ' . $message);
             }
         }
     }

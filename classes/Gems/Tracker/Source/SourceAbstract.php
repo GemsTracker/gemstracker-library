@@ -48,6 +48,13 @@
 abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAbstract implements Gems_Tracker_Source_SourceInterface
 {
     /**
+     * Holds the current batch if there is any
+     * 
+     * @var Gems_Task_TaskRunnerBatch
+     */
+    protected $_batch = null;
+    
+    /**
      * The database connection to Gems itself
      *
      * @var Zend_Db_Adapter_Abstract
@@ -272,6 +279,10 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
                 if (($dbConfig['dbname'] != $gemsName) &&
                     ($adapter = $this->_sourceData['gso_ls_adapter'])) {
 
+                    //If upgrade has run and we have a 'charset' use it
+                    if (array_key_exists('gso_ls_charset', $this->_sourceData)) {
+                        $dbConfig['charset']  = $this->_sourceData['gso_ls_charset'] ? $this->_sourceData['gso_ls_charset'] : $gemsConfig['charset'];
+                    }
                     $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost'] ? $this->_sourceData['gso_ls_dbhost'] : $gemsConfig['host'];
                     $dbConfig['username'] = $this->_sourceData['gso_ls_username'] ? $this->_sourceData['gso_ls_username'] : $gemsConfig['username'];
                     $dbConfig['password'] = $this->_sourceData['gso_ls_password'] ? $this->_sourceData['gso_ls_password'] : $gemsConfig['password'];
@@ -316,6 +327,16 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     }
 
     /**
+     * Returns true if a batch is set
+     *
+     * @return boolean
+     */
+    public function hasBatch()
+    {
+        return ($this->_batch instanceof Gems_Task_TaskRunnerBatch);
+    }
+
+    /**
      * Updates the gems__tokens table so all tokens stick to the (possibly) new token name rules.
      *
      * @param int $userId    Id of the user who takes the action (for logging)
@@ -333,5 +354,17 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
                         gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ' . $this->_gemsDb->quote($this->getId()) . ')';
 
         return $this->_gemsDb->query($sql)->rowCount();
+    }
+
+    /**
+     * Set the batch to be used by this source
+     *
+     * Use $this->hasBatch to check for existence
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
+     */
+    public function setBatch(Gems_Task_TaskRunnerBatch $batch)
+    {
+        $this->_batch = $batch;
     }
 }
