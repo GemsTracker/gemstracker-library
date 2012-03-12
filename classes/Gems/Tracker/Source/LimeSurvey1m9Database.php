@@ -329,40 +329,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     }
 
     /**
-     * Add the commands to update this source to a source synchornization batch
-     *
-     * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
-     * @param int $userId    Id of the user who takes the action (for logging)
-     */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId)
-    {
-        // Surveys in LS
-        $lsDb = $this->getSourceDatabase();
-        $select = $lsDb->select();
-        $select->from($this->_getSurveysTableName(), 'sid')
-                ->order('sid');
-        $lsSurveys = $lsDb->fetchCol($select);
-        $lsSurveys = array_combine($lsSurveys, $lsSurveys);
-
-        // Surveys in Gems
-        $gemsSurveys = $this->_getGemsSurveysForSynchronisation();
-
-        foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
-            if (isset($lsSurveys[$sourceSurveyId])) {
-                $batch->addSourceFunction('checkSurvey', $sourceSurveyId, $surveyId, $userId);
-            } else {
-                $batch->addSourceFunction('checkSurvey', null, $surveyId, $userId);
-            }
-            $batch->addToSurveyCounter();
-        }
-
-        foreach (array_diff($lsSurveys, $gemsSurveys) as $sourceSurveyId) {
-            $batch->addSourceFunction('checkSurvey', $sourceSurveyId, null, $userId);
-            $batch->addToSurveyCounter();
-        }
-    }
-
-    /**
      * Check if the tableprefix exists in the source database, and change the status of this
      * adapter in the gems_sources table accordingly
      *
