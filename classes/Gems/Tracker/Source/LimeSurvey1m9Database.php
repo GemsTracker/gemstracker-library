@@ -1073,10 +1073,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveys($userId, $updateTokens = true)
+    public function synchronizeSurveys($userId)
     {
         // Surveys in LS
         $lsDb = $this->getSourceDatabase();

@@ -276,10 +276,9 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
      * @param int $userId    Id of the user who takes the action (for logging)
-     * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      * @return array Returns an array of messages
      */
-    public function synchronizeSurveys($userId, $updateTokens = true);
+    public function synchronizeSurveys($userId);
 
     /**
      * Updates the consent code of the the token in the source (if needed)

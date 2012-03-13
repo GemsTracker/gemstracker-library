@@ -230,20 +230,6 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     }
 
     /**
-     * Add the commands to update this source to a source synchornization batch
-     *
-     * @param Gems_Tracker_Batch_SynchronizeSourcesBatch $batch
-     * @param int $userId    Id of the user who takes the action (for logging)
-     */
-    public function addSynchronizeSurveyCommands(Gems_Tracker_Batch_SynchronizeSourcesBatch $batch, $userId)
-    {
-        // Do nothing or add the old method is the default
-        if (method_exists($this, 'synchronizeSurveys')) {
-            $batch->addSourceFunction('synchronizeSurveys', $userId);
-        }
-    }
-
-    /**
      *
      * @return string Base url for source
      */
