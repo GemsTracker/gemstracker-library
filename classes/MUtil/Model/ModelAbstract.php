@@ -716,12 +716,24 @@ abstract class MUtil_Model_ModelAbstract
         return $this->getMeta('textFilter', MUtil_Model::TEXT_FILTER);
     }
 
+    /**
+     * Splits a wildcard search text into its constituent parts.
+     *
+     * @param string $searchText
+     * @return array
+     */
     public function getTextSearches($searchText)
     {
         // Replace -/ with space, trim & remove all double spaces
         return explode(' ', str_replace('  ', ' ', trim(strtr($searchText, '-+/\\',  '    '))));
     }
 
+    /**
+     * Creates a filter for this model for the given wildcard search text.
+     *
+     * @param string $searchText
+     * @return array An array of filter statements for wildcard text searching for this model type
+     */
     public function getTextSearchFilter($searchText)
     { }
 

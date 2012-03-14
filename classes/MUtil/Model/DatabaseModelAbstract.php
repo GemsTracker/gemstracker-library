@@ -55,9 +55,16 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      *
      * Zend_Element allows some other extended characters, but those may not work
      * with some browsers.
+     *
+     * If there exists a table containing two fields where one fields maps with this key
+     * to the other, shoot the table designer!!!
      */
     const KEY_COPIER = '__c_1_3_copy__%s__key_k_0_p_1__';
-    // If there exists a table containing two fields that map to these, shoot the table designer!!!
+
+    /**
+     * Name for query filter transformers
+     */
+    const TEXTFILTER_TRANSFORMER = 'filter_transformer';
 
     /**
      * @var array When specified delete() updates the selected rows with these values, instead of physically deleting the rows.
@@ -228,7 +235,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             if ($this->is($name, 'table', $table_name)) {
                 if (array_key_exists($name, $data)) {
 
-                    if ($data[$name] && ($len = $this->get($name, 'maxlength'))) {
+                    if ($data[$name] && (! is_array($data[$name])) && ($len = $this->get($name, 'maxlength'))) {
                         $tableData[$name] = substr($data[$name], 0, $len);
                     } else {
                         $tableData[$name] = $data[$name];
@@ -429,10 +436,12 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             }
 
             // Check for actual values for this table to save.
+            // MUtil_Echo::track($newValues);
             if ($returnValues = $this->_filterDataFor($table_name, $newValues, ! $update)) {
                 if (MUtil_Model::$verbose) {
                     MUtil_Echo::r($returnValues, 'Return');
                 }
+                // MUtil_Echo::track($returnValues);
 
                 if ($update) {
                     // MUtil_Echo::r($filter);
@@ -678,12 +687,59 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
+     * Creates an SQL filter for this value on this name.
+     *
+     * @param mixed $filter The value to filter for
+     * @param string $name The name of the current field
+     * @param string $sqlField The SQL name of the current field
+     * @return mixed Nothing, a single filter statement or an array of OR filters
+     */
+    public function getOnTextFilter($filter, $name, $sqlField)
+    {
+        if ($call = $this->get($name, self::TEXTFILTER_TRANSFORMER)) {
+
+            if (is_callable($call)) {
+                return call_user_func($call, $filter, $name, $sqlField, $this);
+            } else {
+                return $call;
+            }
+        }
+
+        if ($options = $this->get($name, 'multiOptions')) {
+            $adapter = $this->getAdapter();
+            $wheres = array();
+            foreach ($options as $key => $value) {
+                // MUtil_Echo::track($key, $value, $filter, stripos($value, $filter));
+                if (stripos($value, $filter) !== false) {
+                    if (null === $key) {
+                        $wheres[] = $sqlField . ' IS NULL';
+                    } else {
+                        $wheres[] = $sqlField . ' = ' . $adapter->quote($key);
+                    }
+                }
+            }
+            return $wheres;
+        }
+
+        if (is_numeric($filter) || $this->isString($name)) {
+            // Only for strings or all fields when numeric
+            return $sqlField . ' LIKE \'%' . trim($this->getAdapter()->quote($filter), '\'') . '%\'';
+        }
+    }
+
+    /**
      * The select object where we get the query from.
      *
      * @return Zend_Db_Table_Select
      */
     abstract public function getSelect();
 
+    /**
+     * Creates a filter for this model for the given wildcard search text.
+     *
+     * @param string $searchText
+     * @return array An array of filter statements for wildcard text searching for this model type
+     */
     public function getTextSearchFilter($searchText)
     {
         $filter = array();
@@ -705,21 +761,13 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             if ($fields) {
                 foreach ($this->getTextSearches($searchText) as $searchOn) {
                     $wheres = array();
-                    $search = trim($adapter->quote($searchOn), '\'');
                     foreach ($fields as $name => $sqlField) {
-                        if ($options = $this->get($name, 'multiOptions')) {
-                            foreach ($options as $key => $value) {
-                                if (stripos($value, $searchOn) !== false) {
-                                    if (null === $key) {
-                                        $wheres[] = $sqlField . ' IS NULL';
-                                    } else {
-                                        $wheres[] = $sqlField . ' = ' . $adapter->quote($key);
-                                    }
-                                }
+                        if ($where = $this->getOnTextFilter($searchOn, $name, $sqlField)) {
+                            if (is_array($where)) {
+                                $wheres = array_merge($wheres, $where);
+                            } else {
+                                $wheres[] = $where;
                             }
-                        } elseif (is_numeric($searchOn) || $this->isString($name)) {
-                            // Only for strings or all fields when numeric
-                            $wheres[] = $sqlField . ' LIKE \'%' . $search . '%\'';
                         }
                     }
 
@@ -834,6 +882,19 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
+     * Changes the key copy string that is used to create a new identifier
+     * for keys.
+     *
+     * @param string $value A sting of at least 3 characters containing %s.
+     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
+     */
+    public function setKeyCopier($value = self::KEY_COPIER)
+    {
+        $this->keyCopier = $value;
+        return $this;
+    }
+
+    /**
      * When passed an array this method set the keys of this database object
      * to those keys.
      * When passed a string it is assumed to be a table name and the keys of
@@ -855,15 +916,15 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
-     * Changes the key copy string that is used to create a new identifier
-     * for keys.
+     * Sets a name to a callable function for query filtering.
      *
-     * @param string $value A sting of at least 3 characters containing %s.
-     * @return MUtil_Model_DatabaseModelAbstract (continuation pattern)
+     * @param string $name The fieldname
+     * @param mixed $callableOrConstant A constant or a function of this type: callable($filter, $name, $sqlField, MUtil_Model_DatabaseModelAbstract $model)
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
-    public function setKeyCopier($value = self::KEY_COPIER)
+    public function setOnTextFilter($name, $callableOrConstant)
     {
-        $this->keyCopier = $value;
+        $this->set($name, self::TEXTFILTER_TRANSFORMER, $callableOrConstant);
         return $this;
     }
 }

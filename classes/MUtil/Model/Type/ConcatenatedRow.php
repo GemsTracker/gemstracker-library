@@ -46,17 +46,48 @@
  */
 class MUtil_Model_Type_ConcatenatedRow
 {
+    /**
+     * The character used to separate values when displaying.
+     *
+     * @var string
+     */
     protected $displaySeperator = ' ';
 
+    /**
+     * The character used to separate values when storing.
+     *
+     * @var string
+     */
     protected $seperatorChar = ' ';
 
+    /**
+     * When true the value is padded on both sides with the $seperatorChar.
+     *
+     * Makes it easier to filter.
+     *
+     * @see $seperatorChar
+     *
+     * @var boolean
+     */
     protected $valuePad = true;
 
+    /**
+     * MUtil_Ra::args() parameter passing is allowed.
+     *
+     * @param string $seperatorChar
+     * @param string $displaySeperator
+     * @param boolean $valuePad
+     */
     public function __construct($seperatorChar = ' ', $displaySeperator = ' ', $valuePad = true)
     {
-        $this->seperatorChar = substr($seperatorChar . ' ', 0, 1);
-        $this->displaySeperator = $displaySeperator;
-        $this->valuePad = $valuePad;
+        $args = MUtil_Ra::args(
+                func_get_args(),
+                array('seperatorChar' => 'is_string', 'displaySeperator' => 'is_string', 'valuePad' => 'is_boolean'),
+                array('seperatorChar' => ' ', 'displaySeperator' => ' ', 'valuePad' => true));
+
+        $this->seperatorChar    = substr($args['seperatorChar'] . ' ', 0, 1);
+        $this->displaySeperator = $args['displaySeperator'];
+        $this->valuePad         = $args['valuePad'];
     }
 
     /**
@@ -71,6 +102,10 @@ class MUtil_Model_Type_ConcatenatedRow
         $model->set($name, 'formatFunction', array($this, 'format'));
         $model->setOnLoad($name, array($this, 'loadValue'));
         $model->setOnSave($name, array($this, 'saveValue'));
+
+        if ($model instanceof MUtil_Model_DatabaseModelAbstract) {
+            $model->setOnTextFilter($name, array($this, 'textFilter'));
+        }
 
         return $this;
     }
@@ -99,7 +134,7 @@ class MUtil_Model_Type_ConcatenatedRow
      */
     public function loadValue($value, $isNew = false, $name = null, array $context = array())
     {
-        // MUtil_Echo::track($value);
+        // MUtil_Echo::track($value, $name, $context);
         if (! is_array($value)) {
             if ($this->valuePad) {
                 $value = trim($value, $this->seperatorChar);
@@ -125,6 +160,7 @@ class MUtil_Model_Type_ConcatenatedRow
      */
     public function saveValue($value, $isNew = false, $name = null, array $context = array())
     {
+        // MUtil_Echo::track($value);
         if (is_array($value)) {
             $value = implode($this->seperatorChar, $value);
 
@@ -133,5 +169,40 @@ class MUtil_Model_Type_ConcatenatedRow
             }
         }
         return $value;
+    }
+
+    /**
+     *
+     * @param string $filter The text to filter for
+     * @param string $name The model field name
+     * @param string $sqlField The SQL field name
+     * @param MUtil_Model_DatabaseModelAbstract $model
+     * @return array Array of OR-filter statements
+     */
+    public function textFilter($filter, $name, $sqlField, MUtil_Model_DatabaseModelAbstract $model)
+    {
+        if ($options = $model->get($name, 'multiOptions')) {
+            $adapter = $model->getAdapter();
+            $wheres = array();
+            foreach ($options as $key => $value) {
+                // MUtil_Echo::track($key, $value, $filter, stripos($value, $filter));
+                if (stripos($value, $filter) !== false) {
+                    if (null === $key) {
+                        $wheres[] = $sqlField . ' IS NULL';
+                    } else {
+                        $quoted   = $adapter->quote($key);
+                        $wheres[] = $sqlField . " LIKE '%" . $this->seperatorChar . $quoted . $this->seperatorChar . "%'";
+
+                        if (! $this->valuePad) {
+                            // Add other options
+                            $wheres[] = $sqlField . " LIKE '" . $quoted . $this->seperatorChar . "%'";
+                            $wheres[] = $sqlField . " LIKE '%" . $this->seperatorChar . $quoted . "'";
+                            $wheres[] = $sqlField . " = " . $quoted;
+                        }
+                    }
+                }
+            }
+            return $wheres;
+        }
     }
 }
