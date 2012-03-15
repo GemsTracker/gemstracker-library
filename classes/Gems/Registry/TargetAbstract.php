@@ -39,7 +39,7 @@
 /**
  * Extends MUtil_Registry_TargetAbstract with the ability to create PHP
  * callables by request an existing method using $this->methodName.
- * 
+ *
  * @package    Gems
  * @subpackage Registry
  * @copyright  Copyright (c) 2011 Erasmus MC

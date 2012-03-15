@@ -77,6 +77,10 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         $value = $this->getLazy($name);
 
         if ($multi = $this->model->get($name, 'multiOptions')) {
+            if (is_callable($multi)) {
+                $multi = call_user_func($multi);
+                $this->model->set($name, 'multiOptions', $multi);
+            }
             $value = MUtil_Lazy::offsetGet($multi, $value);
         }
 

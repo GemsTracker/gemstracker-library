@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-08 17:17+0100\n"
+"POT-Creation-Date: 2012-03-15 15:34+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -50,45 +50,45 @@ msgstr "versie"
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1517
+#: classes/GemsEscort.php:1518
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1519
-#: classes/GemsEscort.php:1523
+#: classes/GemsEscort.php:1520
 #: classes/GemsEscort.php:1524
+#: classes/GemsEscort.php:1525
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1534
+#: classes/GemsEscort.php:1535
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1536
-#: classes/GemsEscort.php:1578
+#: classes/GemsEscort.php:1537
+#: classes/GemsEscort.php:1579
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1552
+#: classes/GemsEscort.php:1553
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1554
+#: classes/GemsEscort.php:1555
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1564
-#: classes/GemsEscort.php:1576
+#: classes/GemsEscort.php:1565
+#: classes/GemsEscort.php:1577
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1565
+#: classes/GemsEscort.php:1566
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
-#: classes/GemsEscort.php:1709
-#: classes/GemsEscort.php:1711
+#: classes/GemsEscort.php:1710
+#: classes/GemsEscort.php:1712
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -99,7 +99,7 @@ msgstr[1] "%d vragenlijsten"
 msgid "Database needs to be updated!"
 msgstr "Database dient ververst te worden!"
 
-#: classes/Gems/Auth.php:241
+#: classes/Gems/Auth.php:242
 msgid "Combination of organization, username and password not found."
 msgstr "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 
@@ -431,7 +431,7 @@ msgstr "De foutmelding is: %s"
 msgid "Checks performed"
 msgstr "Controle uitgevoerd"
 
-#: classes/Gems/Upgrades.php:75
+#: classes/Gems/Upgrades.php:76
 msgid "Syncing surveys for all sources"
 msgstr "Vragenlijsten synchroniseren voor alle bronnen."
 
@@ -1967,7 +1967,7 @@ msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:396
+#: classes/Gems/Default/RespondentAction.php:398
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
@@ -2064,90 +2064,74 @@ msgstr "Database gebruikersnaam"
 msgid "Database Password"
 msgstr "Database wachtwoord"
 
-#: classes/Gems/Default/SourceAction.php:115
+#: classes/Gems/Default/SourceAction.php:116
 #, php-format
 msgid "Refreshing token attributes for %s source."
 msgstr "Kenmerk attributen verversing voor %s bron."
 
-#: classes/Gems/Default/SourceAction.php:131
+#: classes/Gems/Default/SourceAction.php:132
 #, php-format
 msgid "Checking survey results for %s source."
 msgstr "Controle vragenlijstresultaten voor %s bron."
 
-#: classes/Gems/Default/SourceAction.php:143
+#: classes/Gems/Default/SourceAction.php:144
 msgid "Checking survey results for all sources."
 msgstr "Controle vragenlijstresultaten voor alle bronnen."
 
-#: classes/Gems/Default/SourceAction.php:164
+#: classes/Gems/Default/SourceAction.php:165
 msgid "Source Url"
 msgstr "Bron Url"
 
-#: classes/Gems/Default/SourceAction.php:166
+#: classes/Gems/Default/SourceAction.php:167
 msgid "Adaptor class"
 msgstr "Adaptor klasse"
 
-#: classes/Gems/Default/SourceAction.php:168
+#: classes/Gems/Default/SourceAction.php:169
 msgid "Database Server"
 msgstr "Database Server"
 
-#: classes/Gems/Default/SourceAction.php:170
+#: classes/Gems/Default/SourceAction.php:171
 msgid "Database host"
 msgstr "Database machine"
 
-#: classes/Gems/Default/SourceAction.php:174
+#: classes/Gems/Default/SourceAction.php:173
+msgid "Charset"
+msgstr "Tekenset"
+
+#: classes/Gems/Default/SourceAction.php:176
 msgid "Table prefix"
 msgstr "Voorvoegsel tabel"
 
-#: classes/Gems/Default/SourceAction.php:178
+#: classes/Gems/Default/SourceAction.php:180
 msgid "Last check"
 msgstr "Laatste controle"
 
-#: classes/Gems/Default/SourceAction.php:211
+#: classes/Gems/Default/SourceAction.php:213
 msgid "source"
 msgid_plural "sources"
 msgstr[0] "bron"
 msgstr[1] "bronnen"
 
-#: classes/Gems/Default/SourceAction.php:216
+#: classes/Gems/Default/SourceAction.php:218
 msgid "Survey Sources"
 msgstr "Bronnen"
 
-#: classes/Gems/Default/SourceAction.php:224
+#: classes/Gems/Default/SourceAction.php:226
 msgid "This installation is active."
 msgstr "Deze installatie is actief"
 
-#: classes/Gems/Default/SourceAction.php:226
+#: classes/Gems/Default/SourceAction.php:228
 msgid "Inactive installation."
 msgstr "Deze installatie is inactief"
 
-#: classes/Gems/Default/SourceAction.php:245
+#: classes/Gems/Default/SourceAction.php:243
 #, php-format
 msgid "Synchronize the %s source."
 msgstr "Synchroniseer de %s bron"
 
-#: classes/Gems/Default/SourceAction.php:254
-#, php-format
-msgid "Check %s surveys"
-msgstr "Controleer %s vragenlijsten"
-
-#: classes/Gems/Default/SourceAction.php:257
-msgid "No surveys to check."
-msgstr "Geen vragenlijsten om te controleren."
-
-#: classes/Gems/Default/SourceAction.php:274
+#: classes/Gems/Default/SourceAction.php:256
 msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
-
-#: classes/Gems/Default/SourceAction.php:282
-#, php-format
-msgid "Check %s source"
-msgid_plural "Check %s sources"
-msgstr[0] "Controleer %s bron"
-msgstr[1] "Controleer %s bronnen"
-
-#: classes/Gems/Default/SourceAction.php:285
-msgid "No sources to check."
-msgstr "Geen bronnen om te controleren."
 
 #: classes/Gems/Default/StaffAction.php:137
 msgid "Unsupported UserDefinition"
@@ -3142,6 +3126,13 @@ msgid_plural "%d tokens out of %d tokens changed."
 msgstr[0] "%d van %d kenmerken verandert."
 msgstr[1] "%d van %d kenmerken verandert."
 
+#: classes/Gems/Task/Tracker/SourceSyncSurveys.php:56
+#, php-format
+msgid "Check %s source"
+msgid_plural "Check %s sources"
+msgstr[0] "Controleer %s bron"
+msgstr[1] "Controleer %s bronnen"
+
 #: classes/Gems/Tracker/ChangeTracker.php:84
 #, php-format
 msgid "Round changes propagated to %d tokens."
@@ -3419,82 +3410,82 @@ msgstr "&lt; Terug"
 msgid "Next &gt;"
 msgstr "Verder &gt;"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:410
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1142
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1154
 #, php-format
 msgid "The '%s' survey is no longer active. The survey was removed from LimeSurvey!"
 msgstr "De vragenlijst '%s' is niet meer actief. De vragenlijst is verwijderd uit LimeSurvey!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:441
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:407
 #, php-format
 msgid "Corrected anonymization for survey '%s'"
 msgstr "Anonimizatie gecorrigeerd van vragenlijst '%s'"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:465
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:431
 msgid ", "
 msgstr ", "
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:469
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:435
 #, php-format
 msgid "Added to token table '%s' the field(s): %s"
 msgstr "Toegevoegd aan kenmerk tabel '%s', de velden: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:474
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:440
 #, php-format
 msgid "Attribute fields not created for token table for '%s'"
 msgstr "Attribuut velden voor de kenmerk tabel '%s' zijn niet toegevoegd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:475
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:441
 #, php-format
 msgid "Required fields: %s"
 msgstr "Verplicht veld: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:500
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1295
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:466
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1307
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "De status van de vragenlijst '%s' is veranderd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:506
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1301
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:472
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1313
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "De vragenlijst '%s' IS NIET MEER ACTIEF!!!"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:512
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1307
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:478
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1319
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "De status van de vragenlijst '%s' is veranderd naar '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:515
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1310
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:481
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1322
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "De status waarschuwing voor de vragenlijst '%s' is verdwenen."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:521
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1316
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:487
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1328
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "De naam van de vragenlijst '%s' is veranderd in '%s'."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:530
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1326
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:498
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1338
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "De vragenlijst '%s' is geïmporteerd."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:754
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:722
 msgid "Submitdate"
 msgstr "Invoerdatum"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1122
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1134
 #, php-format
 msgid "Updated %d Gems tokens to new token definition."
 msgstr "%d Gems kenmerken zijn aangepast aan de nieuwe kenmerk definitie."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1277
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1289
 #, php-format
 msgid "Updated %d token to new token definition in survey '%s'."
 msgid_plural "Updated %d tokens to new token definition in survey '%s'."
@@ -3615,7 +3606,7 @@ msgstr[1] "Het wachtwoord moet minstens %d getallen bevatten."
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:832
+#: classes/Gems/User/User.php:833
 msgid "Cookies must be enabled for this site."
 msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
@@ -4118,6 +4109,15 @@ msgstr "Toegang"
 #: snippets/Organization/OrganizationEditSnippet.php:106
 msgid "Can access"
 msgstr "Toegang tot"
+
+#~ msgid "Check %s surveys"
+#~ msgstr "Controleer %s vragenlijsten"
+
+#~ msgid "No surveys to check."
+#~ msgstr "Geen vragenlijsten om te controleren."
+
+#~ msgid "No sources to check."
+#~ msgstr "Geen bronnen om te controleren."
 
 #~ msgid "Creating new tables"
 #~ msgstr "aanmaken nieuwe tabellen"
