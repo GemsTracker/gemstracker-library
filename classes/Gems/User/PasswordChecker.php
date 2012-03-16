@@ -92,7 +92,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
         $results = array();
         if ($len && (preg_match_all('/[A-Z]/', $password, $results) < $len)) {
             $this->_addError(sprintf(
-                    $this->translate->plural('A password should contain at least one uppercase character.', 'A password should contain at least %d uppercase characters.', $len),
+                    $this->translate->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
                     $len));
         }
     }
@@ -109,7 +109,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
         $results = array();
         if ($len && (preg_match_all('/[a-z]/', $password, $results) < $len)) {
             $this->_addError(sprintf(
-                    $this->translate->plural('A password should contain at least one lowercase character.', 'A password should contain at least %d lowercase characters.', $len),
+                    $this->translate->plural('should contain at least one lowercase character', 'should contain at least %d lowercase characters', $len),
                     $len));
         }
     }
@@ -124,7 +124,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         if ($len && (strlen($password) < $len)) {
-            $this->_addError(sprintf($this->translate->_('A password should be at least %d characters long.'), $len));
+            $this->_addError(sprintf($this->translate->_('should be at least %d characters long'), $len));
         }
     }
 
@@ -138,12 +138,14 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         if ($len) {
-            $results = array();
-            $count = preg_match_all('/[A-Za-z]/', $password, $results);
-            if (strlen($password) - $count < $len) {
+            $results = array(); // Not used but required
+            $count   = strlen($password) - preg_match_all('/[A-Za-z]/', $password, $results);
+            if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
-                        $this->translate->plural('A password should contain at least one not alphabetic character.', 'A password should contain at least %d not alphabetic characters.', $len),
+                        $this->translate->plural('should contain at least one non alphabetic character', 'should contain at least %d non alphabetic characters', $len),
                         $len));
+            } elseif (($len < 0) && (($count > 0) || (null === $password))) {
+                $this->_addError($this->translate->_('should not contain non alphabetic characters'));
             }
         }
     }
@@ -158,12 +160,14 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     {
         $len = intval($parameter);
         if ($len) {
-            $results = array();
-            $count = preg_match_all('/[A-Za-z]/', $password, $results);
-            if (strlen($password) - $count < $len) {
+            $results = array(); // Not used but required
+            $count   = strlen($password) - preg_match_all('/[0-9A-Za-z]/', $password, $results);
+            if (($len > 0) && ($count < $len)) {
                 $this->_addError(sprintf(
-                        $this->translate->plural('A password should contain at least one not alphanumeric character.', 'A password should contain at least %d not alphanumeric characters.', $len),
+                        $this->translate->plural('should contain at least one non alphanumeric character', 'should contain at least %d non alphanumeric characters', $len),
                         $len));
+            } elseif (($len < 0) && (($count > 0) || (null === $password))) {
+                $this->_addError($this->translate->_('should not contain non alphanumeric characters'));
             }
         }
     }
@@ -180,8 +184,8 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
         if ($on) {
             $lpwd = strtolower($password);
 
-            if (false !== strpos($lpwd, strtolower($this->user->getLoginName()))) {
-                $this->_addError($this->translate->_('A password should not contain the login name.'));
+            if ((false !== strpos($lpwd, strtolower($this->user->getLoginName()))) || (null === $password)) {
+                $this->_addError(sprintf($this->translate->_('should not contain your login name "%s"'), $this->user->getLoginName()));
             }
         }
     }
@@ -195,18 +199,24 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
     protected function numCount($parameter, $password)
     {
         $len = intval($parameter);
-        $results = array();
-        if ($len && (preg_match_all('/[0-9]/', $password, $results) < $len)) {
-            $this->_addError(sprintf(
-                    $this->translate->plural('A password should contain at least one number.', 'A password should contain at least %d numbers.', $len),
-                    $len));
+        if ($len) {
+            $results = array(); // Not used but required
+            $count   = preg_match_all('/[0-9]/', $password, $results);
+            if (($len > 0) && ($count < $len)) {
+                $this->_addError(sprintf(
+                        $this->translate->plural('should contain at least one number', 'should contain at least %d numbers', $len),
+                        $len));
+            } elseif (($len < 0) && (($count > 0) || (null === $password))) {
+                $this->_addError($this->translate->_('may not contain numbers'));
+            }
         }
     }
 
     /**
      * Check for password weakness.
      *
-     * @param string $password
+     * @param Gems_User_User $user
+     * @param string $password Or null when you want a report on all the rules for this password.
      * @param array  $codes An array of code names that identify rules that should be used only for those codes.
      * @return mixed String or array of strings containing warning messages
      */

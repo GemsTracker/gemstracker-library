@@ -730,10 +730,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Check for password weakness.
      *
-     * @param string $password
+     * @param string $password Or null when you want a report on all the rules for this password.
      * @return mixed String or array of strings containing warning messages or nothing
      */
-    public function reportPasswordWeakness($password)
+    public function reportPasswordWeakness($password = null)
     {
         if ($this->canSetPassword()) {
             $checker = $this->userLoader->getPasswordChecker();

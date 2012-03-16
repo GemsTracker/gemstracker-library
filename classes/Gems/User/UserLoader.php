@@ -431,13 +431,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Check for password weakness.
      *
      * @param Gems_User_User $user The user for e.g. name checks
-     * @param string $password
+     * @param string $password Or null when you want a report on all the rules for this password.
      * @return mixed String or array of strings containing warning messages
      */
-    public function reportPasswordWeakness(Gems_User_User $user, $password)
+    public function reportPasswordWeakness(Gems_User_User $user, $password = null)
     {
-        $checker = $this->_getClass('passwordChecker');
-
         return $user->reportPasswordWeakness($password);
     }
 

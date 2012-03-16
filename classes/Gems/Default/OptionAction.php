@@ -87,6 +87,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
 
         if ($user->isPasswordResetRequired()) {
             $this->menu->setVisible(false);
+
         } elseif ($user->hasPassword()) {
             // Field current password
             //
@@ -123,10 +124,23 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $element->addValidator(new MUtil_Validate_IsConfirmed('new_password', $this->_('New password')));
         $form->addElement($element);
 
-        $element = new Zend_Form_Element_Submit('submit');
-        $element->setAttrib('class', 'button');
-        $element->setLabel($this->_('Save'));
-        $form->addElement($element);
+        // Show password info
+        if ($info = $user->reportPasswordWeakness()) {
+            foreach ($info as &$line) {
+                $line .= ',';
+            }
+            $line[strlen($line) - 1] = '.';
+
+            $element = new MUtil_Form_Element_Html('rules');
+            $element->setLabel($this->_('Password rules'));
+            $element->div($this->_('A password:'))->ul($info);
+            $form->addElement($element);
+
+            $element = new Zend_Form_Element_Submit('submit');
+            $element->setAttrib('class', 'button');
+            $element->setLabel($this->_('Save'));
+            $form->addElement($element);
+        }
 
         /****************
          * Process form *

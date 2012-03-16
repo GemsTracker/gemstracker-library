@@ -84,6 +84,10 @@ class Gems_User_UserNewPasswordValidator implements Zend_Validate_Interface
     {
         $this->_report = $this->_user->reportPasswordWeakness($value);
 
+        foreach ($this->_report as &$report) {
+            $report = ucfirst($report) . '.';
+        }
+
         // MUtil_Echo::track($value, $this->_report);
 
         return ! (boolean) $this->_report;
