@@ -73,11 +73,6 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
      */
     public function changePasswordAction()
     {
-        /*************
-         * Make form *
-         *************/
-        $form = $this->createForm();
-
         $user = $this->loader->getCurrentUser();
 
         if (! $user->canSetPassword()) {
@@ -85,67 +80,33 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
             return;
         }
 
-        if ($user->isPasswordResetRequired()) {
-            $this->menu->setVisible(false);
-
-        } elseif ($user->hasPassword()) {
-            // Field current password
-            //
-            // This is only used when the password is already set, which may not always be the case
-            // e.g. when using embedded login in Pulse.
-            $element = new Zend_Form_Element_Password('old_password');
-            $element->setLabel($this->_('Current password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
-            $element->setRenderPassword(true);
-            $element->setRequired(true);
-            $element->addValidator(new Gems_User_UserPasswordValidator($user, $this->translate));
-            $form->addElement($element);
-        }
-
-        // Field new password
-        $element = new Zend_Form_Element_Password('new_password');
-        $element->setLabel($this->_('New password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRequired(true);
-        $element->setRenderPassword(true);
-        $element->addValidator(new Gems_User_UserNewPasswordValidator($user));
-        $element->addValidator(new MUtil_Validate_IsConfirmed('repeat_password', $this->_('Repeat password')));
-        $form->addElement($element);
-
-        // Field repeat password
-        $element = new Zend_Form_Element_Password('repeat_password');
-        $element->setLabel($this->_('Repeat password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRequired(true);
-        $element->setRenderPassword(true);
-        $element->addValidator(new MUtil_Validate_IsConfirmed('new_password', $this->_('New password')));
-        $form->addElement($element);
+        /*************
+         * Make form *
+         *************/
+        $form = $user->getPasswordChangeForm();
 
         // Show password info
         if ($info = $user->reportPasswordWeakness()) {
-            foreach ($info as &$line) {
-                $line .= ',';
-            }
-            $line[strlen($line) - 1] = '.';
-
             $element = new MUtil_Form_Element_Html('rules');
             $element->setLabel($this->_('Password rules'));
-            $element->div($this->_('A password:'))->ul($info);
-            $form->addElement($element);
 
-            $element = new Zend_Form_Element_Submit('submit');
-            $element->setAttrib('class', 'button');
-            $element->setLabel($this->_('Save'));
+            if (1 == count($info)) {
+                $element->div(sprintf($this->_('A password %s.'), reset($info)));
+            } else {
+                foreach ($info as &$line) {
+                    $line .= ',';
+                }
+                $line[strlen($line) - 1] = '.';
+
+                $element->div($this->_('A password:'))->ul($info);
+            }
             $form->addElement($element);
         }
 
         /****************
          * Process form *
          ****************/
-        if ($this->_request->isPost() && $form->isValid($_POST)) {
+        if ($this->_request->isPost() && $form->isValid($_POST, false)) {
             $user->setPassword($_POST['new_password']);
 
             $this->addMessage($this->_('New password is active.'));
@@ -167,7 +128,9 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-        if (! $user->isPasswordResetRequired() && ($links = $this->createMenuLinks())) {
+        if ($user->isPasswordResetRequired()) {
+            $this->menu->setVisible(false);
+        } elseif ($links = $this->createMenuLinks()) {
             $table->tf(); // Add empty cell, no label
             $linksCell = $table->tf($links);
         }

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-15 15:34+0100\n"
+"POT-Creation-Date: 2012-03-16 16:15+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1439,8 +1439,6 @@ msgid "User ID"
 msgstr "Gebruikers ID"
 
 #: classes/Gems/Default/MailServerAction.php:90
-#: classes/Gems/Default/OptionAction.php:113
-#: classes/Gems/Default/OptionAction.php:118
 #: classes/Gems/Default/SourceAction.php:95
 #: classes/Gems/Default/StaffAction.php:161
 msgid "Repeat password"
@@ -1478,52 +1476,56 @@ msgstr[1] "email sjablonen"
 msgid "Email templates"
 msgstr "Email sjabloon"
 
-#: classes/Gems/Default/OptionAction.php:84
+#: classes/Gems/Default/OptionAction.php:79
 msgid "You are not allowed to change your password."
 msgstr "U mag uw wachtwoord niet wijzigen."
 
-#: classes/Gems/Default/OptionAction.php:96
-msgid "Current password"
-msgstr "Huidig wachtwoord"
+#: classes/Gems/Default/OptionAction.php:91
+msgid "Password rules"
+msgstr "Wachtwoord regels"
 
-#: classes/Gems/Default/OptionAction.php:107
-#: classes/Gems/Default/OptionAction.php:123
-msgid "New password"
-msgstr "Nieuw wachtwoord"
+#: classes/Gems/Default/OptionAction.php:94
+#, php-format
+msgid "A password %s."
+msgstr "Een wachtwoord %s."
 
-#: classes/Gems/Default/OptionAction.php:137
+#: classes/Gems/Default/OptionAction.php:101
+msgid "A password:"
+msgstr "Een wachtwoord:"
+
+#: classes/Gems/Default/OptionAction.php:112
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/OptionAction.php:143
+#: classes/Gems/Default/OptionAction.php:118
 msgid "Caps Lock seems to be on!"
 msgstr "De Caps Lock toets lijkt aan te staan!"
 
-#: classes/Gems/Default/OptionAction.php:181
+#: classes/Gems/Default/OptionAction.php:158
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: classes/Gems/Default/OptionAction.php:188
+#: classes/Gems/Default/OptionAction.php:165
 #: classes/Gems/Default/OrganizationAction.php:129
 #: classes/Gems/Default/RespondentAction.php:175
 #: classes/Gems/Default/StaffAction.php:319
 msgid "Language"
 msgstr "Taal"
 
-#: classes/Gems/Default/OptionAction.php:198
+#: classes/Gems/Default/OptionAction.php:175
 #, php-format
 msgid "Options"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/OptionAction.php:207
+#: classes/Gems/Default/OptionAction.php:184
 msgid "This overview provides information about the last login activity on your account."
 msgstr "Dit overzicht geeft informatie over de recente inlog activiteit op uw account."
 
-#: classes/Gems/Default/OptionAction.php:227
+#: classes/Gems/Default/OptionAction.php:204
 msgid "Date / time"
 msgstr "Datum / tijd"
 
-#: classes/Gems/Default/OptionAction.php:238
+#: classes/Gems/Default/OptionAction.php:215
 msgid "Item"
 msgstr "Item"
 
@@ -3560,53 +3562,75 @@ msgstr "- %s"
 
 #: classes/Gems/User/PasswordChecker.php:95
 #, php-format
-msgid "A password should contain at least one uppercase character."
-msgid_plural "A password should contain at least %d uppercase characters."
-msgstr[0] "Het wachtwoord moet minstens een hoofdletter bevatten."
-msgstr[1] "Het wachtwoord moet minstens %d hoofdletters bevatten."
+msgid "should contain at least one uppercase character"
+msgid_plural "should contain at least %d uppercase characters"
+msgstr[0] "moet minstens één hoofdletter bevatten"
+msgstr[1] "moet minstens %d hoofdletters bevatten"
 
 #: classes/Gems/User/PasswordChecker.php:112
 #, php-format
-msgid "A password should contain at least one lowercase character."
-msgid_plural "A password should contain at least %d lowercase characters."
-msgstr[0] "Het wachtwoord moet minstens een kleine letter bevatten."
-msgstr[1] "Het wachtwoord moet minstens %d kleine letters bevatten."
+msgid "should contain at least one lowercase character"
+msgid_plural "should contain at least %d lowercase characters"
+msgstr[0] "moet minstens één kleine letter bevatten"
+msgstr[1] "moet minstens %d kleine letters bevatten"
 
 #: classes/Gems/User/PasswordChecker.php:127
 #, php-format
-msgid "A password should be at least %d characters long."
-msgstr "Het wachtwoordt moet minstens %d tekens lang zijn."
+msgid "should be at least %d characters long"
+msgstr "moet minstens %d tekens lang zijn"
 
 #: classes/Gems/User/PasswordChecker.php:145
 #, php-format
-msgid "A password should contain at least one not alphabetic character."
-msgid_plural "A password should contain at least %d not alphabetic characters."
-msgstr[0] "Het wachtwoord moet minstens een niet-alphabetisch teken bevatten."
-msgstr[1] "Het wachtwoord moet minstens %d niet-alphabetisch tekens bevatten."
+msgid "should contain at least one non alphabetic character"
+msgid_plural "should contain at least %d non alphabetic characters"
+msgstr[0] "moet minstens één niet-letter bevatten"
+msgstr[1] "moet minstens %d niet-letter bevatten"
 
-#: classes/Gems/User/PasswordChecker.php:165
+#: classes/Gems/User/PasswordChecker.php:148
+msgid "should not contain non alphabetic characters"
+msgstr "moet alleen uit letters bestaan"
+
+#: classes/Gems/User/PasswordChecker.php:167
 #, php-format
-msgid "A password should contain at least one not alphanumeric character."
-msgid_plural "A password should contain at least %d not alphanumeric characters."
-msgstr[0] "Het wachtwoord moet minstens een teken anders dan getallen of letters bevatten."
-msgstr[1] "Het wachtwoord moet minstens %d tekens anders dan getallen of letters bevatten."
+msgid "should contain at least one non alphanumeric character"
+msgid_plural "should contain at least %d non alphanumeric characters"
+msgstr[0] "moet minstens één teken anders dan getallen of letters bevatten"
+msgstr[1] "moet minstens %d tekens anders dan getallen of letters bevatten"
 
-#: classes/Gems/User/PasswordChecker.php:184
-msgid "A password should not contain the login name."
-msgstr "Het wachtwoord mag niet de gebruikersnaam bevatten."
+#: classes/Gems/User/PasswordChecker.php:170
+msgid "should not contain non alphanumeric characters"
+msgstr "mag alleen letters en cijfers bevatten"
 
-#: classes/Gems/User/PasswordChecker.php:201
+#: classes/Gems/User/PasswordChecker.php:188
 #, php-format
-msgid "A password should contain at least one number."
-msgid_plural "A password should contain at least %d numbers."
-msgstr[0] "Het wachtwoord moet minstens een getal bevatten."
-msgstr[1] "Het wachtwoord moet minstens %d getallen bevatten."
+msgid "should not contain your login name \"%s\""
+msgstr "mag niet je gebruikersnaam \"%s\" bevatten"
+
+#: classes/Gems/User/PasswordChecker.php:207
+#, php-format
+msgid "should contain at least one number"
+msgid_plural "should contain at least %d numbers"
+msgstr[0] "moet minstens één cijfer bevatten"
+msgstr[1] "moet minstens %d cijfers bevatten"
+
+#: classes/Gems/User/PasswordChecker.php:210
+msgid "may not contain numbers"
+msgstr "mag geen getallen bevatten"
 
 #: classes/Gems/User/RadiusUserDefinition.php:175
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:833
+#: classes/Gems/User/User.php:538
+msgid "Current password"
+msgstr "Huidig wachtwoord"
+
+#: classes/Gems/User/User.php:549
+#: classes/Gems/User/User.php:565
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+#: classes/Gems/User/User.php:893
 msgid "Cookies must be enabled for this site."
 msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
