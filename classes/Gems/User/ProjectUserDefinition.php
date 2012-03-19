@@ -52,9 +52,17 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     protected $project;
 
-    public function getAuthAdapter($formValues)
+    /**
+     * Returns an initialized Zend_Auth_Adapter_Interface
+     *
+     * @param string $username
+     * @param int $organizationId
+     * @param string $password
+     * @return Zend_Auth_Adapter_Interface
+     */
+    public function getAuthAdapter($username, $organizationId, $password)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $formValues['userlogin'], array($formValues['password']));
+        $adapter = new Gems_Auth_Adapter_Callback(array($this->project,'checkSuperAdminPassword'), $username, array($password));
         return $adapter;
     }
 

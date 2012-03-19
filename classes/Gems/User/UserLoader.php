@@ -208,6 +208,25 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a login form
+     *
+     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
+     * @return Gems_User_Form_LoginForm
+     */
+    public function getLoginForm($args_array)
+    {
+        $args = MUtil_Ra::args(func_get_args());
+
+        if (isset($args['description'])) {
+            $args['description'] = sprintf($args['description'], $this->project->getName());
+        }
+
+        $form = $this->_loadClass('Form_LoginForm', true, array($args));
+
+        return $form;
+    }
+
+    /**
      * Returns an organization object, initiated from the database or from
      * self::$_noOrganization when the database does not yet exist.
      *

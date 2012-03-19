@@ -139,22 +139,39 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     /**
      * Returns a login form
      *
-     * @param boolean $showTokenButton Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
-     * @param boolean $showPasswordLostButton Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
+     * @param boolean $showToken Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
+     * @param boolean $showPasswordLost Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
      * @return Gems_Form
      */
-    protected function _getLoginForm($showTokenButton = null, $showPasswordLostButton = null)
+    protected function _getLoginForm($showToken = null, $showPasswordLost = null)
     {
-        $form = $this->_getBasicForm($this->_('Login to %s application'));
+        $args = MUtil_Ra::args(func_get_args(),
+                array(
+                    'showToken' => 'is_boolean',
+                    'showPasswordLost' => 'is_boolean',
+                    'description' => 'is_string',
+                    ),
+                array(
+                    'showToken' => $this->showTokenButton,
+                    'showPasswordLost' => $this->showPasswordLostButton,
+                    'description' => $this->_('Login to %s application'),
+                    'labelWidthFactor' => $this->labelWidthFactor,
+                    ));
+
+        Gems_Html::init();
+
+        return $this->loader->getUserLoader()->getLoginForm($args);
+
+        $form = $this->_getBasicForm();
         $form->addElement($this->_getOrganizationElement());
         $form->addElement($this->_getUserLoginElement());
         $form->addElement($this->_getPasswordElement());
         $form->addElement($this->_getSubmitButton($this->_('Login')));
 
-        if (null === $showTokenButton ? $this->showTokenButton : $showTokenButton) {
+        if (null === $showToken ? $this->showTokenButton : $showToken) {
             $form->addElement($this->_getAskTokenLinkElement());
         }
-        if (null === $showPasswordLostButton ? $this->showPasswordLostButton : $showPasswordLostButton) {
+        if (null === $showPasswordLost ? $this->showPasswordLostButton : $showPasswordLost) {
             $form->addElement($this->_getResetLinkElement());
         }
 
@@ -309,30 +326,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     {
         $request = $this->getRequest();
 
-        /**
-         * @@TODO: Start block to move to Gems_User_User->getCurrentOrganizationId()
-         *
-         * At that place the cookie is read, but this could be changed to use url like here
-         * or maybe referrer, ip-range, get-param etc.
-         */
-        // Allow layout switching based on request base url
-        if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $hostUrl = $this->escort->loader->getUtil()->getCurrentURI();
-
-            // MUtil_Echo::track($hostUrl);
-
-            $organizationId = $this->util->getDbLookup()->getOrganizationForUrl($hostUrl);
-
-            if ($organizationId) {
-                $user = $this->escort->getLoader()->getUserLoader()->getCurrentUser();
-                $user->setCurrentOrganization($organizationId);
-                $this->escort->layoutSwitch($request);
-            }
-        }
-        /**
-         * End block to move to Gems_User_User->getCurrentOrganizationId()
-         */
-
         $form = $this->_getLoginForm();
 
         if ($request->isPost()) {
@@ -360,7 +353,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     } // */
 
                     /**
-                     * Fix current locale / organization in cookies
+                     * Fix current locale in cookies
                      */
                     Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
 

@@ -40,7 +40,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Form extends MUtil_Form
+class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
 {
     /**
      * This variable holds all the stylesheets attached to this form
@@ -116,12 +116,72 @@ class Gems_Form extends MUtil_Form
     	$this->_css[$file] = $media;
     }
 
-    public function getCss() {
+    /**
+     * Allows the loader to set resources.
+     *
+     * @param string $name Name of resource to set
+     * @param mixed $resource The resource.
+     * @return boolean True if $resource was OK
+     */
+    public function answerRegistryRequest($name, $resource)
+    {
+        if (MUtil_Registry_Source::$verbose) {
+            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
+                    '("' . $name . '", ' .
+                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
+        }
+        $this->$name = $resource;
+
+        return true;
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return true;
+    }
+
+    /**
+     * Filters the names that should not be requested.
+     *
+     * Can be overriden.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    protected function filterRequestNames($name)
+    {
+        return '_' !== $name[0];
+    }
+
+    public function getCss()
+    {
     	return $this->_css;
     }
 
-    public function getAutoSubmit() {
+    public function getAutoSubmit()
+    {
         return $this->_autosubmit;
+    }
+
+    /**
+     * Allows the loader to know the resources to set.
+     *
+     * Returns those object variables defined by the subclass but not at the level of this definition.
+     *
+     * Can be overruled.
+     *
+     * @return array of string names
+     */
+    public function getRegistryRequests()
+    {
+        // MUtil_Echo::track(array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames')));
+        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 
     /**

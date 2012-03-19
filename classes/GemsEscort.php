@@ -1398,7 +1398,7 @@ class GemsEscort extends MUtil_Application_Escort
 
     public function prepareController() {
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $this->layoutSwitch($this->request);
+            $this->layoutSwitch();
         }
     }
 

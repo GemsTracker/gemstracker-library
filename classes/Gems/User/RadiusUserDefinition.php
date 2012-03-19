@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @package    Gems
  * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -128,17 +128,20 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
+     * @param string $username
+     * @param int $organizationId
+     * @param string $password
      * @return Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter($formValues)
+    public function getAuthAdapter($username, $organizationId, $password)
     {
         //Ok hardcoded for now this needs to be read from the userdefinition
-        $configData = $this->loadConfig(array('gor_id_organization' => $formValues['organization']));
+        $configData = $this->loadConfig(array('gor_id_organization' => $organizationId));
 
         $config  = array('ip'                 => $configData['grcfg_ip'],
                          'authenticationport' => $configData['grcfg_port'],
                          'sharedsecret'       => $configData['grcfg_secret']);
-        
+
         //Unset empty
         foreach($config as $key=>$value) {
             if (empty($value)) {
@@ -147,8 +150,8 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         }
         $adapter = new Gems_User_Adapter_Radius($config);
 
-        $adapter->setIdentity($formValues['userlogin'])
-                ->setCredential($formValues['password']);
+        $adapter->setIdentity($username)
+                ->setCredential($password);
 
         return $adapter;
     }
@@ -243,7 +246,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      *
      * For now these will be added in the organization dialog as most of the time the config
      * will be organization specific. To be extended when needed
-     * 
+     *
      * @return boolean
      */
     public function hasConfig()
@@ -274,7 +277,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     public function loadConfig($data)
     {
         $model = $this->getConfigModel();
-        
+
         $newData  = $model->loadFirst(array('grcfg_id_organization'=>$data['gor_id_organization']));
         $newData['grcfg_id_organization'] = $data['gor_id_organization'];
 

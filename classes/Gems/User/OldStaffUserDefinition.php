@@ -119,17 +119,25 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         }
     }
 
-    public function getAuthAdapter($formValues)
+    /**
+     * Returns an initialized Zend_Auth_Adapter_Interface
+     *
+     * @param string $username
+     * @param int $organizationId
+     * @param string $password
+     * @return Zend_Auth_Adapter_Interface
+     */
+    public function getAuthAdapter($username, $organizationId, $password)
     {
         $adapter = new Zend_Auth_Adapter_DbTable(null, 'gems__staff', 'gsf_login', 'gsf_password');
 
-        $pwd_hash = $this->hashPassword($formValues['password']);
+        $pwd_hash = $this->hashPassword($password);
 
         $select = $adapter->getDbSelect();
         $select->where('gsf_active = 1')
-               ->where('gsf_id_organization = ?', $formValues['organization']);
+               ->where('gsf_id_organization = ?', $organizationId);
 
-        $adapter->setIdentity($formValues['userlogin'])
+        $adapter->setIdentity($username)
                 ->setCredential($pwd_hash);
 
         return $adapter;

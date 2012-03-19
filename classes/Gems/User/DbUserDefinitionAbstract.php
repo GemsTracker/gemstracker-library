@@ -120,18 +120,26 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         return false;
     }
 
-    public function getAuthAdapter($formValues)
+    /**
+     * Returns an initialized Zend_Auth_Adapter_Interface
+     *
+     * @param string $username
+     * @param int $organizationId
+     * @param string $password
+     * @return Zend_Auth_Adapter_Interface
+     */
+    public function getAuthAdapter($username, $organizationId, $password)
     {
         $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
 
-        $pwd_hash = $this->hashPassword($formValues['password']);
+        $pwd_hash = $this->hashPassword($password);
 
         $select = $adapter->getDbSelect();
         $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
                ->where('gul_can_login = 1')
-               ->where('gul_id_organization = ?', $formValues['organization']);
+               ->where('gul_id_organization = ?', $organizationId);
 
-        $adapter->setIdentity($formValues['userlogin'])
+        $adapter->setIdentity($username)
                 ->setCredential($pwd_hash);
 
         return $adapter;
@@ -185,7 +193,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
             $result = array(
                 'user_active'          => false,
                 'user_role'            => 'nologin',
-            );   
+            );
         }
 
         return $result;

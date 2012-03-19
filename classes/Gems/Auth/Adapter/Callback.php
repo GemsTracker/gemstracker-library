@@ -75,7 +75,7 @@ class Gems_Auth_Adapter_Callback implements Zend_Auth_Adapter_Interface
      * @param string $identity The identity to use
      * @param array $params   Array of parameters needed for the callback
      */
-    public function __construct($callback, $identity, $params)
+    public function __construct($callback, $identity, $params = array())
     {
         $this->_callback = $callback;
         $this->_identity = $identity;

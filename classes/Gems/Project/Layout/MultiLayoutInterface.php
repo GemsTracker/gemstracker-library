@@ -62,7 +62,7 @@ interface Gems_Project_Layout_MultiLayoutInterface
     /**
      * Performs the actual switch of the layout
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param string $style Style, when null derived from request
      */
-    public function layoutSwitch(Zend_Controller_Request_Abstract $request);
+    public function layoutSwitch($style = null);
 }

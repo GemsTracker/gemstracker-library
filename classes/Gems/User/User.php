@@ -87,6 +87,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $definition;
 
     /**
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
      * Required
      *
      * @var Zend_Session_Namespace
@@ -230,10 +236,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Helper method for the case a user tries to authenticate while he is inactive
      *
-     * @param array $params
      * @return boolean
      */
-    public function alwaysFalse($params)
+    public function alwaysFalse()
     {
         return false;
     }
@@ -252,9 +257,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $formValues['organization'] = $this->getBaseOrganizationId();
 
         if ($this->isActive()) {
-            $adapter = $this->definition->getAuthAdapter($formValues);
+            $adapter = $this->definition->getAuthAdapter($formValues['userlogin'], $formValues['organization'], $formValues['password']);
         } else {
-            $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin'], $formValues);
+            $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin']);
         }
 
         $authResult = $auth->authenticate($adapter, $formValues);
@@ -397,8 +402,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $orgId = $this->_getVar('user_organization_id');
 
         //If not set, read it from the cookie
-        if ($this->isCurrentUser() && is_null($orgId)) {
-            $orgId = Gems_Cookies::getOrganization(Zend_Controller_Front::getInstance()->getRequest());
+        if ($this->isCurrentUser() && (null === $orgId)) {
+            $orgId = Gems_Cookies::getOrganization($this->getRequest());
         }
         return $orgId;
     }
@@ -588,6 +593,19 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getPasswordResetKey()
     {
         return $this->definition->getPasswordResetKey($this);
+    }
+
+    /**
+     * Return the Request object
+     *
+     * @return Zend_Controller_Request_Abstract
+     */
+    public function getRequest()
+    {
+        if (! $this->request) {
+            $this->request = Zend_Controller_Front::getInstance()->getRequest();
+        }
+        return $this->request;
     }
 
     /**
@@ -871,6 +889,15 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 // End depreciation warning
 
                 if ($this->isCurrentUser()) {
+                    if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+                        throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
+                    }
+
+                    $escort = GemsEscort::getInstance();
+                    if ($escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
+                        $escort->layoutSwitch($organization->getStyle());
+                    }
+
                     // Now update the requestcache to change the oldOrgId to the new orgId
                     // Don't do it when the oldOrgId doesn't match
                     if ($requestCache = $this->session->requestCache) {
@@ -893,10 +920,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                         }
                         $this->session->requestCache = $requestCache;
                     }
-                }
-
-                if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
-                    throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
                 }
             }
         }

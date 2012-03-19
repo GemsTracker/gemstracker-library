@@ -250,6 +250,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
                 $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 ORDER BY gor_name');
             } catch (Exception $e) {
                 try {
+                    // 1.4 fallback
                     $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 ORDER BY gor_name');
                 } catch (Exception $e) {
                     $organizations = array();
@@ -278,7 +279,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $organizations;
     }
-    
+
     /**
      * Returns the organization
      * @param  string   $url
@@ -287,7 +288,8 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     public function getOrganizationForUrl($url)
     {
         try {
-            return $this->db->fetchOne("SELECT gor_id_organization FROM gems__organizations WHERE gor_active=1 AND gor_url_base = ?", $url);
+            $url = trim($this->db->quote($url), "'");
+            return $this->db->fetchOne("SELECT gor_id_organization FROM gems__organizations WHERE gor_active=1 AND CONCAT(' ', gor_url_base, ' ') LIKE '% $url %'");
         } catch (Exception $e) {
             return null;
         }

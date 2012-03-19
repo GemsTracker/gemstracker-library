@@ -46,14 +46,27 @@
  */
 class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
 {
-    public function alwaysFalse($params)
+    /**
+     * Helper method for the case a user tries to authenticate while he is inactive
+     *
+     * @return boolean
+     */
+    public function alwaysFalse()
     {
         return false;
     }
 
-    public function getAuthAdapter($formValues)
+    /**
+     * Returns an initialized Zend_Auth_Adapter_Interface
+     *
+     * @param string $username
+     * @param int $organizationId
+     * @param string $password
+     * @return Zend_Auth_Adapter_Interface
+     */
+    public function getAuthAdapter($username, $organizationId, $password)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin'], $formValues);
+        $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $username);
         return $adapter;
     }
 
