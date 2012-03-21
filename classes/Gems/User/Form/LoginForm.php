@@ -213,12 +213,22 @@ class Gems_User_Form_LoginForm extends Gems_Form
             // Reset password
             $element = new MUtil_Form_Element_Html($this->_lostPasswordFieldName);
             // $element->br();
-            $element->a(array('controller' => 'index', 'action' => 'resetpassword'), $this->translate->_('Lost password'), array('class' => 'actionlink'));
+            $element->setValue($this->getLostPasswordLink());
 
             $this->addElement($element);
         }
 
         return $element;
+    }
+
+    /**
+     * Returns/sets a link to the reset password page
+     *
+     * @return MUtil_Html_AElement
+     */
+    public function getLostPasswordLink()
+    {
+        return new MUtil_Html_AElement(array('controller' => 'index', 'action' => 'resetpassword'), $this->translate->_('Lost password'), array('class' => 'actionlink'));
     }
 
     /**

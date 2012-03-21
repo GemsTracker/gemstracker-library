@@ -141,7 +141,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      *
      * @param boolean $showToken Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
      * @param boolean $showPasswordLost Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
-     * @return Gems_Form
+     * @return Gems_User_Form_LoginForm
      */
     protected function _getLoginForm($showToken = null, $showPasswordLost = null)
     {
