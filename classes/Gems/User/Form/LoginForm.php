@@ -222,7 +222,7 @@ class Gems_User_Form_LoginForm extends Gems_Form
     }
 
     /**
-     * Returns/sets a link to the reset password page
+     * Returns an html link to the reset password page
      *
      * @return MUtil_Html_AElement
      */
@@ -343,7 +343,7 @@ class Gems_User_Form_LoginForm extends Gems_Form
             // Veld token
             $element = new MUtil_Form_Element_Html($this->_tokenFieldName);
             // $element->br();
-            $element->a(array('controller' => 'ask', 'action' => 'token'), $this->translate->_('Enter your token...'), array('class' => 'actionlink'));
+            $element->setValue($this->getTokenLink());
 
             $this->addElement($element);
         }
@@ -351,6 +351,15 @@ class Gems_User_Form_LoginForm extends Gems_Form
         return $element;
     }
 
+    /**
+     * Returns an html link for the token input page.
+     *
+     * @return MUtil_Html_AElement
+     */
+    public function getTokenLink()
+    {
+        return MUtil_Html::create('a', array('controller' => 'ask', 'action' => 'token'), $this->translate->_('Enter your token...'), array('class' => 'actionlink'));
+    }
     /**
      * Returns/sets a login name element.
      *

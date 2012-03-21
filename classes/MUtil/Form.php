@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,19 +25,22 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * @version    $Id$
+ *
  * @package    MUtil
- * @subpackage Acl
+ * @subpackage Form
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
+ * 
  * @package    MUtil
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Form extends Zend_Form
 {
@@ -96,9 +99,9 @@ class MUtil_Form extends Zend_Form
                 return;
             }
         }
-        
+
         ZendX_JQuery::enableView($view);
-        
+
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
             $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
         }
@@ -157,7 +160,11 @@ class MUtil_Form extends Zend_Form
         return $this->_displayOrder;
     }
 
-    public function getHtml() 
+    /**
+     *
+     * @return MUtil_Html_HtmlElement
+     */
+    public function getHtml()
     {
         return $this->_html_element;
     }
@@ -176,12 +183,12 @@ class MUtil_Form extends Zend_Form
     /**
      * Validate the form
      *
-     * As it is better for translation utilities to set the labels etc. translated, 
-     * the MUtil default is to disable translation. 
-     * 
+     * As it is better for translation utilities to set the labels etc. translated,
+     * the MUtil default is to disable translation.
+     *
      * However, this also disables the translation of validation messages, which we
      * cannot set translated. The MUtil form is extended so it can make this switch.
-     * 
+     *
      * @param  array   $data
      * @param  boolean $disableTranslateValidators Extra switch
      * @return boolean
@@ -253,6 +260,15 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
+    /**
+     * Sets the layout to the use of html elements
+     *
+     * @see MUtil_Html
+     *
+     * @param string $html HtmlTag for element or empty sequence when empty
+     * @param string $args MUtil_Ra::args additional arguments for element
+     * @return MUtil_Form (continuation pattern)
+     */
     public function setHtml($html = null, $args = null)
     {
         $options = MUtil_Ra::args(func_get_args(), 1);

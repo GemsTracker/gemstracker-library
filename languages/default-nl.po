@@ -1089,7 +1089,7 @@ msgstr "%s login"
 
 #: classes/Gems/Default/IndexAction.php:152
 msgid "Login"
-msgstr "Login"
+msgstr "Inloggen"
 
 #: classes/Gems/Default/IndexAction.php:174
 msgid "Back to login"
