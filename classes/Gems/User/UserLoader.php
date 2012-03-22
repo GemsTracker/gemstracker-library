@@ -56,6 +56,18 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     const USER_STAFF      = 'StaffUser';
 
     /**
+     * When true Respondent members can use their e-mail address as login name
+     * @var boolean
+     */
+    public $allowRespondentEmailLogin = true;
+
+    /**
+     * When true Staff members can use their e-mail address as login name
+     * @var boolean
+     */
+    public $allowStaffEmailLogin = true;
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -268,42 +280,17 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     public function getUser($login_name, $currentOrganization)
     {
         list($defName, $userOrganization, $userName) = $this->getUserClassInfo($login_name, $currentOrganization);
-        // MUtil_Echo::track($defName, $userOrganization);
+        $user = $this->loadUser($defName, $userOrganization, $userName);
 
-        $definition = $this->getUserDefinition($defName);
-
-        $values = $definition->getUserData($userName, $userOrganization);
-        // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
-
-        if (! isset($values['user_active'])) {
-            $values['user_active'] = true;
+        // Check: can the user log in as this organization, if not load non-existing user
+        $orgs = $user->getAllowedOrganizations();
+        if (! isset($orgs[$currentOrganization])) {
+            $user = $this->loadUser(self::USER_NOLOGIN . 'Definition', $currentOrganization, $login_name);
         }
-        if (! isset($values['user_staff'])) {
-            $values['user_staff'] = $definition->isStaff();
-        }
-
-        $values['__user_definition'] = $defName;
-
-        $user = $this->_loadClass('User', true, array($values, $definition));
-        // MUtil_Echo::track($user->getAllowedOrganizations());
 
         $user->setCurrentOrganization($currentOrganization);
 
         return $user;
-    }
-
-    /**
-     * Retrieve a userdefinition, so we can check it's capabilities without
-     * instantiating a user
-     *
-     * @param string $userClassName
-     * @return Gems_User_UserDefinitionInterface
-     */
-    public function getUserDefinition($userClassName)
-    {
-        $definition = $this->_getClass($userClassName);
-
-        return $definition;
     }
 
     /**
@@ -341,59 +328,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         }
 
         try {
-            /*
             $select = $this->getUserClassSelect($login_name, $organization);
-            $row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM);
-            // */
-            //*
-            $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization
-                FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization = gul_id_organization
-                WHERE gor_active = 1 AND
-                    gul_can_login = 1 AND
-                    gul_login = ? AND
-                    gul_id_organization = ?
-                LIMIT 1";
 
-            $params[] = $login_name;
-            $params[] = $organization;
-            // MUtil_Echo::track($sql, $params);
-
-            $row = $this->db->fetchRow($sql, $params, Zend_Db::FETCH_NUM);
-
-            if (! $row) {
-                // Try to get see if this is another allowed organization for this user
-                $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization, gul_login
-                    FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization != gul_id_organization
-                    WHERE gor_active = 1 AND
-                        gul_can_login = 1 AND
-                        gul_login = ? AND
-                        gor_id_organization = ? AND
-                        gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%')
-                    LIMIT 1";
-
-                // MUtil_Echo::track($sql, $params);
-
-                $row = $this->db->fetchRow($sql, $params, Zend_Db::FETCH_NUM);
-            }
-
-            if ((! $row) && ($organization == $this->project->getDefaultOrganization())) {
-                // Check for the current organization being the default one
-                //
-                // For optimization do set the allowed organizations
-                // Try to get see if this is another allowed organization for this user
-                $sql = "SELECT CONCAT(gul_user_class, 'Definition'), gul_id_organization, gul_login
-                    FROM gems__user_logins INNER JOIN gems__organizations ON gor_id_organization != gul_id_organization
-                    WHERE gor_active = 1 AND
-                        gul_can_login = 1 AND
-                        gul_login = ?
-                    LIMIT 1";
-
-                // MUtil_Echo::track($sql, $login_name);
-
-                $row = $this->db->fetchRow($sql, $login_name, Zend_Db::FETCH_NUM);
-            } // */
-
-            if ($row) {
+            if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
                 // MUtil_Echo::track($row);
                 return $row;
             }
@@ -404,26 +341,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         // Fail over for pre 1.5 projects
         //
-        // No login as other organization for first login
+        // No login as other organization or with e-mail possible for first login
         $sql = "SELECT gsf_id_user
             FROM gems__staff INNER JOIN
                     gems__organizations ON gsf_id_organization = gor_id_organization
                     WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
 
-        $user_id = $this->db->fetchOne($sql, $params);
-
-        if ((! $user_id) && ($organization == $this->project->getDefaultOrganization())) {
-            $sql = "SELECT gsf_id_user
-                FROM gems__staff INNER JOIN
-                        gems__organizations ON gsf_id_organization = gor_id_organization
-                        WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ?";
-
-            // MUtil_Echo::track($sql, $login_name);
-
-            $user_id = $this->db->fetchOne($sql, $login_name);
-        }
-
-        if ($user_id) {
+        if ($user_id = $this->db->fetchOne($sql, $params)) {
             // Move user to new staff.
             $values['gul_login']           = $login_name;
             $values['gul_id_organization'] = $organization;
@@ -448,6 +372,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a select statement to find a corresponding user. 
      *
      * @param string $login_name
      * @param int $organization
@@ -459,23 +384,81 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         $select->from('gems__user_logins', array("CONCAT(gul_user_class, 'Definition')", 'gul_id_organization', 'gul_login'))
                 ->from('gems__organizations', array())
-                ->joinLeft('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array())
-                ->joinLeft('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array())
-                ->joinLeft('gems__respondents', 'gr2o_id_user = grs_id_user', array())
                 ->where('gor_active = 1')
                 ->where('gul_can_login = 1')
                 ->where('gor_id_organization = ?', $organization)
-                ->where('(gul_login = ? OR gsf_email = ? OR grs_email = ?)', $login_name)
                 ->order("CASE WHEN gor_id_organization = gul_id_organization THEN 1 WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2 ELSE 3 END");
 
-        MUtil_Echo::track($select->__toString());
+        $ids[] = 'gul_login';
+
+        if ($this->allowStaffEmailLogin) {
+            $select->joinLeft('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array());
+            $ids[] = 'gsf_email';
+        }
+        if ($this->allowRespondentEmailLogin) {
+            $select->joinLeft('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array())
+                ->joinLeft('gems__respondents', 'gr2o_id_user = grs_id_user', array());
+            $ids[] = 'grs_email';
+        }
+        // Add search fields
+        $select->where('(' . implode(' = ? OR ', $ids) . ' = ?)', $login_name);
+
+        // MUtil_Echo::track($select->__toString());
 
         return $select;
     }
 
+    /**
+     * Retrieve a userdefinition, so we can check it's capabilities without
+     * instantiating a user.
+     *
+     * @param string $userClassName
+     * @return Gems_User_UserDefinitionInterface
+     */
+    public function getUserDefinition($userClassName)
+    {
+        $definition = $this->_getClass($userClassName);
+
+        return $definition;
+    }
+
+    /**
+     * Check: is this user the super user defined
+     * in project.ini?
+     *
+     * @param string $login_name
+     * @return boolean
+     */
     protected function isProjectUser($login_name)
     {
         return $this->project->getSuperAdminName() == $login_name;
+    }
+
+    /**
+     * Returns a loaded user object
+     *
+     * @param string $defName
+     * @param int $userOrganization
+     * @param string $userName
+     * @return Gems_User_User But ! ->isActive when the user does not exist
+     */
+    protected function loadUser($defName, $userOrganization, $userName)
+    {
+        $definition = $this->getUserDefinition($defName);
+
+        $values = $definition->getUserData($userName, $userOrganization);
+        // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
+
+        if (! isset($values['user_active'])) {
+            $values['user_active'] = true;
+        }
+        if (! isset($values['user_staff'])) {
+            $values['user_staff'] = $definition->isStaff();
+        }
+
+        $values['__user_definition'] = $defName;
+
+        return $this->_loadClass('User', true, array($values, $definition));
     }
 
     /**

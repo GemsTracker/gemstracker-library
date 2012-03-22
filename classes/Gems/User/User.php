@@ -255,6 +255,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
         $formValues['organization'] = $this->getBaseOrganizationId();
+        $formValues['userlogin'] = $this->getLoginName();
 
         if ($this->isActive()) {
             $adapter = $this->definition->getAuthAdapter($formValues['userlogin'], $formValues['organization'], $formValues['password']);
