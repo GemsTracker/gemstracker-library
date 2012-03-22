@@ -193,7 +193,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      * Get the default user consent
      *
      * This is de consent description from gems__consents, not the consentCODE
-     * 
+     *
      * @return string
      */
     public function getDefaultConsent()
@@ -306,7 +306,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
      * @param  string $ipRanges
      * @return bool
      */
-    public static function isAllowedIP($ip, $ipRanges = "")
+    public function isAllowedIP($ip, $ipRanges = "")
     {
         if (!strlen($ipRanges)) {
             return true;

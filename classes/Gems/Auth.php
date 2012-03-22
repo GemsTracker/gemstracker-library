@@ -54,7 +54,6 @@ class Gems_Auth extends Zend_Auth
      */
     const ERROR_DATABASE_NOT_INSTALLED     = -11;
     const ERROR_PASSWORD_DELAY             = -12;
-    const ERROR_INVALID_IP                 = -13;
 
     /**
      * @var array Message templates
@@ -62,7 +61,6 @@ class Gems_Auth extends Zend_Auth
     protected $_messageTemplates = array(
         self::ERROR_DATABASE_NOT_INSTALLED     => 'Installation not complete! Login is not yet possible!',
         self::ERROR_PASSWORD_DELAY             => 'Your account is temporarily blocked, please wait %s seconds',
-        self::ERROR_INVALID_IP                 => 'You are not allowed to login from this location.'
     );
 
     /**
@@ -147,12 +145,7 @@ class Gems_Auth extends Zend_Auth
 
         // We only forward to auth adapter when we have no timeout to prevent hammering the auth system
         if (! isset($result) ) {
-            // Check if the client IP address is within allowed IP ranges
-            if (isset($formValues['allowed_ip_ranges']) && !Gems_Util::isAllowedIP($_SERVER['REMOTE_ADDR'], $formValues['allowed_ip_ranges'])) {
-                $result = $this->_error(self::ERROR_INVALID_IP);
-            } else {
-                $result = parent::authenticate($adapter);
-            }
+            $result = parent::authenticate($adapter);
         }
 
         if ($result->isValid()) {

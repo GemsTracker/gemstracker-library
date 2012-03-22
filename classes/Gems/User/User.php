@@ -251,9 +251,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function authenticate($formValues)
     {
+        // Check if the client IP address is within allowed IP ranges
+        if (! $this->util->isAllowedIP($_SERVER['REMOTE_ADDR'], $this->getAllowedIPRanges())) {
+            return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_UNCATEGORIZED, $this->getLoginName(), array($this->translate->_('You are not allowed to login from this location.')));
+        }
+
         $auth = Gems_Auth::getInstance();
 
-        $formValues['allowed_ip_ranges'] = $this->getAllowedIPRanges();
         $formValues['organization'] = $this->getBaseOrganizationId();
         $formValues['userlogin'] = $this->getLoginName();
 
