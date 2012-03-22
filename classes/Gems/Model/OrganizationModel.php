@@ -128,8 +128,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil
 
         //Now check if we need to save config values
         if (isset($newValues['gor_user_class']) && !empty($newValues['gor_user_class'])) {
-            $class      = $newValues['gor_user_class'] . 'Definition';
-            $definition = $this->loader->getUserLoader()->getUserDefinition($class);
+            $definition = $this->loader->getUserLoader()->getUserDefinition($newValues['gor_user_class']);
 
             if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $savedValues['config'] = $definition->saveConfig($savedValues,$newValues['config']);
@@ -147,8 +146,7 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil
         $data = parent::loadFirst($filter, $sort);
 
         if (isset($data['gor_user_class']) && !empty($data['gor_user_class'])) {
-            $class      = $data['gor_user_class'] . 'Definition';
-            $definition = $this->loader->getUserLoader()->getUserDefinition($class);
+            $definition = $this->loader->getUserLoader()->getUserDefinition($data['gor_user_class']);
 
             if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $data['config'] = $definition->loadConfig($data);

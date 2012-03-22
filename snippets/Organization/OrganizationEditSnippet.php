@@ -95,7 +95,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
         }
         $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by');
-        
+
         //Show what organizations we can access
         if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
             $org = $this->loader->getOrganization($this->formData['gor_id_organization']);
@@ -109,8 +109,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         $this->addItems($bridge, 'gor_user_class');
 
         if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
-            $class      = $this->formData['gor_user_class'] . 'Definition';
-            $definition = $this->loader->getUserLoader()->getUserDefinition($class);
+            $definition = $this->loader->getUserLoader()->getUserDefinition($this->formData['gor_user_class']);
 
             if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
                 $definition->appendConfigFields($bridge);

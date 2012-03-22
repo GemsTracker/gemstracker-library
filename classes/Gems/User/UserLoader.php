@@ -225,7 +225,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         if (! self::$currentUser) {
             if ($this->session->__isset('__user_definition')) {
                 $defName = $this->session->__get('__user_definition');
-                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
+                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName . 'Definition')));
             } else {
                 self::$currentUser = $this->getUser(null, null);
                 self::$currentUser->setAsCurrentUser();
@@ -295,13 +295,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function getUser($login_name, $currentOrganization)
     {
-        list($defName, $userOrganization, $userName) = $this->getUserClassInfo($login_name, $currentOrganization);
-        $user = $this->loadUser($defName, $userOrganization, $userName);
+        $user = $this->getUserClass($login_name, $currentOrganization);
 
         // Check: can the user log in as this organization, if not load non-existing user
         $orgs = $user->getAllowedOrganizations();
         if (! isset($orgs[$currentOrganization])) {
-            $user = $this->loadUser(self::USER_NOLOGIN . 'Definition', $currentOrganization, $login_name);
+            $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);
         }
 
         $user->setCurrentOrganization($currentOrganization);
@@ -332,15 +331,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      *
      * @param string $login_name
      * @param int $organization
-     * @return array Containing definitionName, organizationId, (real) userName
+     * @return Gems_User_User But ! ->isActive when the user does not exist
      */
-    protected function getUserClassInfo($login_name, $organization)
+    protected function getUserClass($login_name, $organization)
     {
         if ((null == $login_name) || (null == $organization)) {
-            return array(self::USER_NOLOGIN . 'Definition', $organization, $login_name);
+            return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
         }
         if ($this->isProjectUser($login_name)) {
-            return array(self::USER_PROJECT . 'Definition', $organization, $login_name);
+            return $this->loadUser(self::USER_PROJECT, $organization, $login_name);
         }
 
         try {
@@ -348,7 +347,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
             if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
                 // MUtil_Echo::track($row);
-                return $row;
+                return $this->loadUser($row[0], $row[1], $row[2]);
             }
 
         } catch (Zend_Db_Exception $e) {
@@ -363,7 +362,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                     gems__organizations ON gsf_id_organization = gor_id_organization
                     WHERE gor_active = 1 AND gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ?";
 
-        if ($user_id = $this->db->fetchOne($sql, $params)) {
+        if ($user_id = $this->db->fetchOne($sql, array($login_name, $organization))) {
             // Move user to new staff.
             $values['gul_login']           = $login_name;
             $values['gul_id_organization'] = $organization;
@@ -381,10 +380,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 // MUtil_Echo::r($e);
             }
 
-            return array(self::USER_OLD_STAFF . 'Definition', $organization, $login_name);
+            return $this->loadUser(self::USER_OLD_STAFF, $organization, $login_name);
         }
 
-        return array(self::USER_NOLOGIN . 'Definition', $organization, $login_name);
+        return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
     }
 
     /**
@@ -398,7 +397,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $select = $this->db->select();
 
-        $select->from('gems__user_logins', array("CONCAT(gul_user_class, 'Definition')", 'gul_id_organization', 'gul_login'))
+        $select->from('gems__user_logins', array("gul_user_class", 'gul_id_organization', 'gul_login'))
                 ->from('gems__organizations', array())
                 ->where('gor_active = 1')
                 ->where('gul_can_login = 1')
@@ -433,7 +432,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function getUserDefinition($userClassName)
     {
-        $definition = $this->_getClass($userClassName);
+        $definition = $this->_getClass($userClassName . 'Definition');
 
         return $definition;
     }

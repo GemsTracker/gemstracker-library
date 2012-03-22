@@ -72,51 +72,22 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
             $login_name   = $formValues['userlogin'];
             $organization = $formValues['organization'];
             $password     = $formValues['password'];
-            $userData = $this->getUserData($formValues['userlogin'], $formValues['organization']);
-            $staff_id = $userData['user_id'];
-
-            $sql = 'SELECT gul_id_user FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?';
-
-            try {
-                $user_id = $this->db->fetchOne($sql, array($login_name, $organization));
-
-                $currentTimestamp = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-
-                // Move to USER_STAFF
-                $values['gup_id_user']         = $user_id;
-                $values['gup_password']        = $this->project->getValueHash($password);
-                $values['gup_reset_key']       = null;
-                $values['gup_reset_requested'] = null;
-                $values['gup_reset_required']  = 0;
-                $values['gup_changed']         = $currentTimestamp ;
-                $values['gup_changed_by']      = $staff_id;
-                $values['gup_created']         = $currentTimestamp ;
-                $values['gup_created_by']      = $staff_id;
-
-                $this->db->insert('gems__user_passwords', $values);
-
-                // Update user class
-                $values = array();
-                $values['gul_user_class']    = Gems_User_UserLoader::USER_STAFF;
-                $values['gul_changed']       = $currentTimestamp ;
-                $values['gul_changed_by']    = $staff_id;
-                $this->db->update('gems__user_logins', $values, $this->db->quoteInto('gul_id_user = ?', $user_id));
-
-                // Remove old password
-                $values = array();
-                $values['gsf_password']   = null;
-                $values['gsf_changed']    = $currentTimestamp ;
-                $values['gsf_changed_by'] = $user_id;
-
-                $this->db->update('gems__staff', $values, $this->db->quoteInto('gsf_id_user = ?', $staff_id));
-
-            } catch (Zend_Db_Exception $e) {
-                GemsEscort::getInstance()->logger->log($e->getMessage(), Zend_Log::ERR);
-                // Fall through as this does not work if the database upgrade did not run
-                // MUtil_Echo::r($e);
-
-            }
+            $this->makeNewStaffUser($login_name, $organization, $password);
         }
+    }
+
+    /**
+     * Return true if the password can be set.
+     *
+     * Returns the setting for the definition whan no user is passed, otherwise
+     * returns the answer for this specific user.
+     *
+     * @param Gems_User_User $user Optional, the user whose password might change
+     * @return boolean
+     */
+    public function canSetPassword(Gems_User_User $user = null)
+    {
+        return true;
     }
 
     /**
@@ -213,8 +184,81 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      * @param string $password
      * @return string
      */
+    protected function hashNewPassword($password)
+    {
+        return $this->project->getValueHash($password);
+    }
+
+    /**
+     * Allow overruling of password hashing.
+     *
+     * @param string $password
+     * @return string
+     */
     protected function hashPassword($password)
     {
         return md5($password);
+    }
+
+    protected function makeNewStaffUser($login_name, $organization, $password)
+    {
+        $userData = $this->getUserData($login_name, $organization);
+        $staff_id = $userData['user_id'];
+
+        $sql = 'SELECT gul_id_user FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?';
+
+        try {
+            $user_id = $this->db->fetchOne($sql, array($login_name, $organization));
+
+            $currentTimestamp = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+            // Move to USER_STAFF
+            $values['gup_id_user']         = $user_id;
+            $values['gup_password']        = $this->hashNewPassword($password);
+            $values['gup_reset_key']       = null;
+            $values['gup_reset_requested'] = null;
+            $values['gup_reset_required']  = 0;
+            $values['gup_changed']         = $currentTimestamp ;
+            $values['gup_changed_by']      = $staff_id;
+            $values['gup_created']         = $currentTimestamp ;
+            $values['gup_created_by']      = $staff_id;
+
+            $this->db->insert('gems__user_passwords', $values);
+
+            // Update user class
+            $values = array();
+            $values['gul_user_class']    = Gems_User_UserLoader::USER_STAFF;
+            $values['gul_changed']       = $currentTimestamp ;
+            $values['gul_changed_by']    = $staff_id;
+            $this->db->update('gems__user_logins', $values, $this->db->quoteInto('gul_id_user = ?', $user_id));
+
+            // Remove old password
+            $values = array();
+            $values['gsf_password']   = null;
+            $values['gsf_changed']    = $currentTimestamp ;
+            $values['gsf_changed_by'] = $user_id;
+
+            $this->db->update('gems__staff', $values, $this->db->quoteInto('gsf_id_user = ?', $staff_id));
+
+        } catch (Zend_Db_Exception $e) {
+            GemsEscort::getInstance()->logger->log($e->getMessage(), Zend_Log::ERR);
+            // Fall through as this does not work if the database upgrade did not run
+            // MUtil_Echo::r($e);
+
+        }
+    }
+
+    /**
+     * Set the password, if allowed for this user type.
+     *
+     * @param Gems_User_User $user The user whose password to change
+     * @param string $password
+     * @return Gems_User_UserDefinitionInterface (continuation pattern)
+     */
+    public function setPassword(Gems_User_User $user, $password)
+    {
+        $this->makeNewStaffUser($user->getLoginName(), $user->getBaseOrganizationId(), $password);
+
+        return $this;
     }
 }
