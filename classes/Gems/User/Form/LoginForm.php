@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_LoginForm extends Gems_Form
+class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
 {
     /**
      * The field name for the lost password element.
@@ -97,13 +97,6 @@ class Gems_User_Form_LoginForm extends Gems_Form
     protected $_usernameFieldName = 'userlogin';
 
     /**
-     * When true all elements are loaded after initiation.
-     *
-     * @var boolean
-     */
-    protected $loadDefault = true;
-
-    /**
      *
      * @var Gems_Loader
      */
@@ -149,21 +142,6 @@ class Gems_User_Form_LoginForm extends Gems_Form
      * @var Zend_Util
      */
     protected $util;
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->loadDefault) {
-            $this->loadDefaultElements();
-        }
-
-        return true;
-    }
 
     /**
      * Returns the organization id that should currently be used for this form.
@@ -401,21 +379,6 @@ class Gems_User_Form_LoginForm extends Gems_Form
         if ($this->showToken) {
             $this->getTokenElement();
         }
-
-        return $this;
-    }
-
-    /**
-     * When true all elements are loaded after initiation.
-     *
-     * Enables loading of parameter through Zend_Form::__construct()
-     *
-     * @param boolean $loadDefault
-     * @return Gems_User_Form_LoginForm (continuation pattern)
-     */
-    public function setLoadDefault($loadDefault = true)
-    {
-        $this->loadDefault = $loadDefault;
 
         return $this;
     }

@@ -75,6 +75,8 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
     {
         $user = $this->loader->getCurrentUser();
 
+        $this->html->h3($this->_('Change password'));
+
         if (! $user->canSetPassword()) {
             $this->addMessage($this->_('You are not allowed to change your password.'));
             return;
@@ -83,59 +85,27 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         /*************
          * Make form *
          *************/
-        $form = $user->getPasswordChangeForm();
-
-        // Show password info
-        if ($info = $user->reportPasswordWeakness()) {
-            $element = new MUtil_Form_Element_Html('rules');
-            $element->setLabel($this->_('Password rules'));
-
-            if (1 == count($info)) {
-                $element->div(sprintf($this->_('A password %s.'), reset($info)));
-            } else {
-                foreach ($info as &$line) {
-                    $line .= ',';
-                }
-                $line[strlen($line) - 1] = '.';
-
-                $element->div($this->_('A password:'))->ul($info);
-            }
-            $form->addElement($element);
-        }
+        $form = $user->getChangePasswordForm(array('showReport' => false));
 
         /****************
          * Process form *
          ****************/
         if ($this->_request->isPost() && $form->isValid($_POST, false)) {
-            $user->setPassword($_POST['new_password']);
-
             $this->addMessage($this->_('New password is active.'));
             $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
-
         } else {
-            if (isset($_POST['old_password'])) {
-                if ($_POST['old_password'] === strtoupper($_POST['old_password'])) {
-                    $this->addMessage($this->_('Caps Lock seems to be on!'));
-                }
-            }
-            $form->populate($_POST);
+            $this->addMessage($form->getErrorMessages());
         }
 
         /****************
          * Display form *
          ****************/
-        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
-        $table->setAsFormLayout($form, true, true);
-        $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-
         if ($user->isPasswordResetRequired()) {
             $this->menu->setVisible(false);
-        } elseif ($links = $this->createMenuLinks()) {
-            $table->tf(); // Add empty cell, no label
-            $linksCell = $table->tf($links);
+        } else {
+            $form->addButtons($this->createMenuLinks());
         }
 
-        $this->html->h3($this->_('Change password'));
         $this->html[] = $form;
     }
 

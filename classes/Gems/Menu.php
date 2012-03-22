@@ -203,7 +203,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
 
         // STAFF CONTROLLER
-        $setup->addStaffPage($this->_('Staff'));
+        $page = $setup->addStaffPage($this->_('Staff'));
 
         // LOG CONTROLLER
         $page = $setup->addPage($this->_('Logging'), 'pr.log', 'log', 'index');

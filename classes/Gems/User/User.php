@@ -384,6 +384,21 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns a form to change the possword for this user.
+     *
+     * @param boolean $askOld Ask for the old password, calculated when not set.
+     * @return Gems_Form
+     */
+    public function getChangePasswordForm($args_array = null)
+    {
+        if (! $this->canSetPassword()) {
+            return;
+        }
+
+        return $this->userLoader->getChangePasswordForm($this, func_get_args());
+    }
+
+    /**
      * Returns the organization that is currently used by this user.
      *
      * @return Gems_User_Organization
@@ -518,72 +533,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getLoginName()
     {
         return $this->_getVar('user_login');
-    }
-
-    /**
-     * Returns a form to change the possword for this user.
-     *
-     * @param boolean $askOld Ask for the old password, calculated when not set.
-     * @return Gems_Form
-     */
-    public function getPasswordChangeForm($askOld = null)
-    {
-        if (! $this->canSetPassword()) {
-            return;
-        }
-
-        if (null === $askOld) {
-            // By default only ask for the old password if the user just entered
-            // it but is required to change it.
-            $askOld = (! $this->isPasswordResetRequired());
-        }
-
-        $form = new Gems_Form();
-
-        // Never ask for the old password if it does not exist
-        //
-        // A password does not always exist, e.g. when using embedded login in Pulse
-        // or after creating a new user.
-        if ($askOld && $this->hasPassword()) {
-            // Field current password
-            $element = new Zend_Form_Element_Password('old_password');
-            $element->setLabel($this->translate->_('Current password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
-            $element->setRenderPassword(true);
-            $element->setRequired(true);
-            $element->addValidator(new Gems_User_UserPasswordValidator($this, $this->translate));
-            $form->addElement($element);
-        }
-
-        // Field new password
-        $element = new Zend_Form_Element_Password('new_password');
-        $element->setLabel($this->translate->_('New password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRequired(true);
-        $element->setRenderPassword(true);
-        $element->addValidator(new Gems_User_UserNewPasswordValidator($this));
-        $element->addValidator(new MUtil_Validate_IsConfirmed('repeat_password', $this->translate->_('Repeat password')));
-        $form->addElement($element);
-
-        // Field repeat password
-        $element = new Zend_Form_Element_Password('repeat_password');
-        $element->setLabel($this->translate->_('Repeat password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRequired(true);
-        $element->setRenderPassword(true);
-        $element->addValidator(new MUtil_Validate_IsConfirmed('new_password', $this->translate->_('New password')));
-        $form->addElement($element);
-
-        // Submit button
-        $element = new Zend_Form_Element_Submit('submit');
-        $element->setAttrib('class', 'button');
-        $element->setLabel($this->translate->_('Save'));
-        $form->addElement($element);
-
-        return $form;
     }
 
     /**

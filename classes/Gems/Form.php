@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -33,7 +34,7 @@
  */
 
 /**
- * Base form class
+ * Base form class with extensions for correct load paths, autosubmit forms and registry use.
  *
  * @package    Gems
  * @subpackage Form

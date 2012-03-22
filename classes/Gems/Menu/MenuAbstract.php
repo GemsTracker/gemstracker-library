@@ -386,13 +386,14 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         $createPage = $page->addCreateAction();
         $page->addShowAction();
-        $editPage = $page->addEditAction();
-        $delPage  = $page->addDeleteAction();
+        $pages[] = $page->addEditAction();
+        $pages[] = $page->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
+        $pages[] = $page->addDeleteAction();
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
-            $createPage->setParameterFilter('gsf_id_organization', $filter);
-            $editPage->setParameterFilter('gsf_id_organization', $filter);
-            $delPage->setParameterFilter('gsf_id_organization', $filter);
+            foreach ($pages as $sub_page) {
+                $sub_page->setParameterFilter('gsf_id_organization', $filter);
+            }
         }
 
         return $page;

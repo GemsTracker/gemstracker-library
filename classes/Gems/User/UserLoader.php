@@ -200,6 +200,22 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a change password form for this user
+     *
+     * @param Gems_user_User $user
+     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
+     * @return Gems_User_Form_ChangePasswordForm
+     */
+    public function getChangePasswordForm($user, $args_array = null)
+    {
+        $args = MUtil_Ra::args(func_get_args(), array('user' => 'Gems_User_User'));
+
+        $form = $this->_loadClass('Form_ChangePasswordForm', true, array($args));
+
+        return $form;
+    }
+
+    /**
      * Get the currently loggin in user
      *
      * @return Gems_User_User
@@ -225,7 +241,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
      * @return Gems_User_Form_LoginForm
      */
-    public function getLoginForm($args_array)
+    public function getLoginForm($args_array = null)
     {
         $args = MUtil_Ra::args(func_get_args());
 
@@ -372,7 +388,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Returns a select statement to find a corresponding user. 
+     * Returns a select statement to find a corresponding user.
      *
      * @param string $login_name
      * @param int $organization

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 16:16+0100\n"
+"POT-Creation-Date: 2012-03-22 16:35+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1042,7 +1042,7 @@ msgid "%s records found."
 msgstr "%s records found."
 
 #: classes/Gems/Default/ExportAction.php:172
-#: classes/Gems/Default/IndexAction.php:203
+#: classes/Gems/Default/IndexAction.php:220
 #: classes/Gems/Default/LogAction.php:197
 msgid "Organization"
 msgstr "Organization"
@@ -1082,84 +1082,84 @@ msgstr "Administrative groups"
 msgid "Enter your token..."
 msgstr "Enter your token..."
 
-#: classes/Gems/Default/IndexAction.php:148
+#: classes/Gems/Default/IndexAction.php:157
 #, php-format
 msgid "Login to %s application"
 msgstr "Login to %s application"
 
-#: classes/Gems/Default/IndexAction.php:152
+#: classes/Gems/Default/IndexAction.php:169
 msgid "Login"
 msgstr "Login"
 
-#: classes/Gems/Default/IndexAction.php:174
+#: classes/Gems/Default/IndexAction.php:191
 msgid "Back to login"
 msgstr "Back to login"
 
-#: classes/Gems/Default/IndexAction.php:227
+#: classes/Gems/Default/IndexAction.php:244
 msgid "Password"
 msgstr "Password"
 
-#: classes/Gems/Default/IndexAction.php:242
+#: classes/Gems/Default/IndexAction.php:259
 #, php-format
 msgid "Reset password for %s application"
 msgstr "Reset password for %s application"
 
-#: classes/Gems/Default/IndexAction.php:246
+#: classes/Gems/Default/IndexAction.php:263
 msgid "Reset password"
 msgstr "Reset password"
 
-#: classes/Gems/Default/IndexAction.php:292
+#: classes/Gems/Default/IndexAction.php:309
 msgid "Username"
 msgstr "Username"
 
-#: classes/Gems/Default/IndexAction.php:358
+#: classes/Gems/Default/IndexAction.php:351
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:370
+#: classes/Gems/Default/IndexAction.php:363
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:410
+#: classes/Gems/Default/IndexAction.php:403
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:435
+#: classes/Gems/Default/IndexAction.php:428
 msgid "Reset accepted, enter your new password."
 msgstr "Reset accepted, enter your new password."
 
-#: classes/Gems/Default/IndexAction.php:439
+#: classes/Gems/Default/IndexAction.php:432
 msgid "This key timed out or does not belong to this user."
 msgstr "This key timed out or does not belong to this user."
 
-#: classes/Gems/Default/IndexAction.php:462
+#: classes/Gems/Default/IndexAction.php:455
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:463
+#: classes/Gems/Default/IndexAction.php:456
 #, php-format
 msgid "To reset your password for %s, please click this link: %s"
 msgstr "To reset your password for %s, please click this link: %s"
 
-#: classes/Gems/Default/IndexAction.php:468
+#: classes/Gems/Default/IndexAction.php:461
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:470
+#: classes/Gems/Default/IndexAction.php:463
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/Default/IndexAction.php:475
+#: classes/Gems/Default/IndexAction.php:468
 msgid "No such user found or no e-mail address known or user cannot be reset."
 msgstr "No such user found or no e-mail address known or user cannot be reset."
 
-#: classes/Gems/Default/IndexAction.php:479
+#: classes/Gems/Default/IndexAction.php:472
 msgid "We received your password reset key."
 msgstr "We received your password reset key."
 
-#: classes/Gems/Default/IndexAction.php:480
+#: classes/Gems/Default/IndexAction.php:473
 msgid "Please enter the organization and username belonging to this key."
 msgstr "Please enter the organization and username belonging to this key."
 
@@ -1440,13 +1440,11 @@ msgstr "User ID"
 
 #: classes/Gems/Default/MailServerAction.php:90
 #: classes/Gems/Default/SourceAction.php:95
-#: classes/Gems/Default/StaffAction.php:161
 msgid "Repeat password"
 msgstr "Repeat password"
 
 #: classes/Gems/Default/MailServerAction.php:91
 #: classes/Gems/Default/SourceAction.php:74
-#: classes/Gems/Default/StaffAction.php:120
 msgid "Enter only when changing"
 msgstr "Enter only when changing the password"
 
@@ -1461,8 +1459,8 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/StaffAction.php:303
-#: classes/Gems/Default/StaffAction.php:336
+#: classes/Gems/Default/StaffAction.php:278
+#: classes/Gems/Default/StaffAction.php:311
 msgid "(all organizations)"
 msgstr "(all organizations)"
 
@@ -1476,56 +1474,40 @@ msgstr[1] "email templates"
 msgid "Email templates"
 msgstr "Email templates"
 
-#: classes/Gems/Default/OptionAction.php:79
+#: classes/Gems/Default/OptionAction.php:81
 msgid "You are not allowed to change your password."
 msgstr "You are not allowed to change your password."
 
-#: classes/Gems/Default/OptionAction.php:91
-msgid "Password rules"
-msgstr "Password rules"
-
 #: classes/Gems/Default/OptionAction.php:94
-#, php-format
-msgid "A password %s."
-msgstr "A password %s."
-
-#: classes/Gems/Default/OptionAction.php:101
-msgid "A password:"
-msgstr "A password:"
-
-#: classes/Gems/Default/OptionAction.php:112
+#: classes/Gems/Default/StaffAction.php:419
 msgid "New password is active."
 msgstr "New password is active."
 
-#: classes/Gems/Default/OptionAction.php:118
-msgid "Caps Lock seems to be on!"
-msgstr "Caps Lock seems to be on!"
-
-#: classes/Gems/Default/OptionAction.php:158
+#: classes/Gems/Default/OptionAction.php:128
 msgid "Login Name"
 msgstr "Login Name"
 
-#: classes/Gems/Default/OptionAction.php:165
+#: classes/Gems/Default/OptionAction.php:135
 #: classes/Gems/Default/OrganizationAction.php:129
 #: classes/Gems/Default/RespondentAction.php:175
-#: classes/Gems/Default/StaffAction.php:319
+#: classes/Gems/Default/StaffAction.php:294
 msgid "Language"
 msgstr "Language"
 
-#: classes/Gems/Default/OptionAction.php:175
+#: classes/Gems/Default/OptionAction.php:145
 #, php-format
 msgid "Options"
 msgstr "Options"
 
-#: classes/Gems/Default/OptionAction.php:184
+#: classes/Gems/Default/OptionAction.php:154
 msgid "This overview provides information about the last login activity on your account."
 msgstr "This overview provides information about the last login activity on your account."
 
-#: classes/Gems/Default/OptionAction.php:204
+#: classes/Gems/Default/OptionAction.php:174
 msgid "Date / time"
 msgstr "Date / time"
 
-#: classes/Gems/Default/OptionAction.php:215
+#: classes/Gems/Default/OptionAction.php:185
 msgid "Item"
 msgstr "Item"
 
@@ -1624,7 +1606,7 @@ msgid "This can not be changed yet"
 msgstr "This can not be changed yet"
 
 #: classes/Gems/Default/OrganizationAction.php:166
-#: classes/Gems/Default/StaffAction.php:131
+#: classes/Gems/Default/StaffAction.php:119
 msgid "User Definition"
 msgstr "User Definition"
 
@@ -2135,44 +2117,53 @@ msgstr "Synchronize the %s source."
 msgid "Synchronize all sources."
 msgstr "Synchronize all sources."
 
-#: classes/Gems/Default/StaffAction.php:137
-msgid "Unsupported UserDefinition"
-msgstr "Unsupported UserDefinition"
+#: classes/Gems/Default/StaffAction.php:125
+msgid "Unsupported User Definition"
+msgstr "Unsupported User Definition"
 
-#: classes/Gems/Default/StaffAction.php:179
+#: classes/Gems/Default/StaffAction.php:154
 msgid "Users can only login when this box is checked."
 msgstr "Users can only login when this box is checked."
 
-#: classes/Gems/Default/StaffAction.php:180
+#: classes/Gems/Default/StaffAction.php:155
 msgid "If checked the user will logoff when answering a survey."
 msgstr "If checked the user will logoff when answering a survey."
 
-#: classes/Gems/Default/StaffAction.php:197
+#: classes/Gems/Default/StaffAction.php:172
 msgid "You are not allowed to edit this staff member."
 msgstr "You are not allowed to edit this staff member."
 
-#: classes/Gems/Default/StaffAction.php:254
+#: classes/Gems/Default/StaffAction.php:229
 #, php-format
 msgid "User with id %s already exists but is deleted, do you want to reactivate the account?"
 msgstr "User with id %s already exists but is deleted, do you want to reactivate the account?"
 
-#: classes/Gems/Default/StaffAction.php:310
+#: classes/Gems/Default/StaffAction.php:285
 msgid "Primary function"
 msgstr "Primary function"
 
-#: classes/Gems/Default/StaffAction.php:320
+#: classes/Gems/Default/StaffAction.php:295
 msgid "Can login"
 msgstr "Can login"
 
-#: classes/Gems/Default/StaffAction.php:321
+#: classes/Gems/Default/StaffAction.php:296
 msgid "Logout on survey"
 msgstr "Logout on survey"
 
-#: classes/Gems/Default/StaffAction.php:396
+#: classes/Gems/Default/StaffAction.php:371
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "staff member"
 msgstr[1] "staff members"
+
+#: classes/Gems/Default/StaffAction.php:403
+#, php-format
+msgid "Reset password for: %s"
+msgstr "Reset password for: %s"
+
+#: classes/Gems/Default/StaffAction.php:406
+msgid "You are not allowed to change this password."
+msgstr "You are not allowed to change this password."
 
 #: classes/Gems/Default/SurveyAction.php:64
 msgid "Add survey"
@@ -2866,41 +2857,41 @@ msgstr "Maintenance mode"
 msgid "Clean cache"
 msgstr "Clean cache"
 
-#: classes/Gems/Menu/MenuAbstract.php:415
+#: classes/Gems/Menu/MenuAbstract.php:416
 msgid "Check status"
 msgstr "Check status"
 
-#: classes/Gems/Menu/MenuAbstract.php:416
+#: classes/Gems/Menu/MenuAbstract.php:417
 msgid "Synchronize surveys"
 msgstr "Synchronize surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:417
-#: classes/Gems/Menu/MenuAbstract.php:429
+#: classes/Gems/Menu/MenuAbstract.php:418
+#: classes/Gems/Menu/MenuAbstract.php:430
 msgid "Check answers"
 msgstr "Check answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:418
+#: classes/Gems/Menu/MenuAbstract.php:419
 msgid "Check attributes"
 msgstr "Check attributes"
 
-#: classes/Gems/Menu/MenuAbstract.php:419
+#: classes/Gems/Menu/MenuAbstract.php:420
 msgid "Synchronize all surveys"
 msgstr "Synchronize all surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:420
-#: classes/Gems/Menu/MenuAbstract.php:430
+#: classes/Gems/Menu/MenuAbstract.php:421
+#: classes/Gems/Menu/MenuAbstract.php:431
 msgid "Check all answers"
 msgstr "Check all answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:426
+#: classes/Gems/Menu/MenuAbstract.php:427
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:460
+#: classes/Gems/Menu/MenuAbstract.php:461
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:463
+#: classes/Gems/Menu/MenuAbstract.php:464
 msgid "Check all assignments"
 msgstr "Check all assignments"
 
@@ -3106,11 +3097,13 @@ msgid "Checked %d tokens."
 msgstr "Checked %d tokens."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:64
+#: classes/Gems/Tracker/ChangeTracker.php:81
 #, php-format
 msgid "%2$d token date changes in %1$d tracks."
 msgstr "%2$d token date changes in %1$d tracks."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:67
+#: classes/Gems/Tracker/ChangeTracker.php:64
 #, php-format
 msgid "Checked %d tracks."
 msgstr "Checked %d tracks."
@@ -3617,35 +3610,52 @@ msgstr[1] "should contain at least %d numbers"
 msgid "may not contain numbers"
 msgstr "may not contain numbers"
 
-#: classes/Gems/User/RadiusUserDefinition.php:175
+#: classes/Gems/User/RadiusUserDefinition.php:178
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:538
-msgid "Current password"
-msgstr "Current password"
-
-#: classes/Gems/User/User.php:549
-#: classes/Gems/User/User.php:565
-msgid "New password"
-msgstr "New password"
-
-#: classes/Gems/User/User.php:893
+#: classes/Gems/User/User.php:843
 msgid "Cookies must be enabled for this site."
 msgstr "Cookies must be enabled for this site."
 
-#: classes/Gems/User/UserLoader.php:169
-#: classes/Gems/User/UserLoader.php:183
+#: classes/Gems/User/UserLoader.php:181
+#: classes/Gems/User/UserLoader.php:195
 msgid "Db storage"
 msgstr "Db storage"
 
-#: classes/Gems/User/UserLoader.php:184
+#: classes/Gems/User/UserLoader.php:196
 msgid "Radius storage"
 msgstr "Radius storage"
 
 #: classes/Gems/User/UserPasswordValidator.php:115
 msgid "Wrong password."
 msgstr "Wrong password."
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:166
+#: classes/Gems/User/Form/ChangePasswordForm.php:222
+msgid "New password"
+msgstr "New password"
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:192
+msgid "Current password"
+msgstr "Current password"
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:243
+msgid "Password rules"
+msgstr "Password rules"
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:246
+#, php-format
+msgid "A password %s."
+msgstr "A password %s."
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:253
+msgid "A password:"
+msgstr "A password:"
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:307
+msgid "Caps Lock seems to be on!"
+msgstr "Caps Lock seems to be on!"
 
 #: classes/Gems/Util/ReceptionCodeLibrary.php:100
 msgid "Yes (forget answers)"

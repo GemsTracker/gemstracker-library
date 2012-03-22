@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -103,22 +104,9 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
         $dbLookup = $this->util->getDbLookup();
 
-        $passwordField = false;
-
-        //@@TODO Like this? should work when user is not saved, but storing the password should be done when
-        //we do have a user...
-        $definition = $this->loader->getUserLoader()->getUserDefinition($data['gul_user_class'].'Definition');
-
-        if ($definition->canSetPassword()) {
-            $passwordField = 'fld_password';
-        }
-
         $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
         if ($new) {
             $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
-        } elseif ($passwordField) {
-            $model->set($passwordField, 'description', $this->_('Enter only when changing'));
-            $model->setSaveWhenNotNull($passwordField);
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
@@ -129,12 +117,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         //@@TODO: Think of a better way to allow multiple methods per organization
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {
             $model->set('gul_user_class', 'label', $this->_('User Definition'));
-            
+
             //Make sure old or experimental userdefinitions don't have to be changed to something that is
             //allowed at the moment. For example the oldStaffUser can stay when editing a user.
             $options = $model->get('gul_user_class', 'multiOptions');
-            if (!array_key_exists($data['gul_user_class'], $options)) {
-                $options[$data['gul_user_class']] = $this->_('Unsupported UserDefinition');
+            if (! array_key_exists($data['gul_user_class'], $options)) {
+                $options[$data['gul_user_class']] = $this->_('Unsupported User Definition');
                 $model->set('gul_user_class', 'multiOptions', $options);
             }
             $bridge->add('gul_user_class');
@@ -154,19 +142,6 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $bridge->addExhibitor('gsf_id_organization');
         }
 
-        if ($passwordField) {
-            $pwdElem = $bridge->addPassword($passwordField,
-                'label', $this->_('Password'),
-                // 'renderPassword', true,
-                'repeatLabel', $this->_('Repeat password'),
-                'required', $new,
-                'size', 15
-                );
-
-            if ($user instanceof Gems_User_User) {
-                $pwdElem->addValidator(new Gems_User_UserNewPasswordValidator($user));
-            }
-        }
         $bridge->addRadio(   'gsf_gender',         'separator', '');
         $bridge->addText(    'gsf_first_name',     'label', $this->_('First name'));
         $bridge->addFilter(  'gsf_first_name',     $ucfirst);
@@ -212,7 +187,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     public function createAction()
     {
         $this->html->h3(sprintf($this->_('New %s...'), $this->getTopic()));
-        
+
         $confirmed = $this->getRequest()->getParam('confirmed');
         $id        = $this->getRequest()->getParam('id');
         if (!is_null($confirmed)) {
@@ -364,7 +339,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if (!isset($filter['gsf_id_organization']) || empty($filter['gsf_id_organization'])) {
             $filter['gsf_id_organization'] = $this->loader->getCurrentUser()->getCurrentOrganizationId();
         }
-        
+
         return $filter;
     }
 
@@ -407,7 +382,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         //Make sure the menu always has the gsd_id_organization parameter
         $orgId = $this->getRequest()->getParam('gsf_id_organization');
-        
+
         if (is_null($orgId)) {
             //Get the selected gsf_id_organization used in the index
             $dataIdx = $this->getCachedRequestData(true, 'index', true);
@@ -415,5 +390,47 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
 
         $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $orgId);
+    }
+
+    /**
+     * Action to allow password reset
+     */
+    public function resetAction()
+    {
+        $staff_id = $this->_getIdParam();
+        $user     = $this->loader->getUserLoader()->getUserByStaffId($staff_id);
+
+        $this->html->h3(sprintf($this->_('Reset password for: %s'), $user->getFullName()));
+
+        if (! $user->canSetPassword()) {
+            $this->addMessage($this->_('You are not allowed to change this password.'));
+            return;
+        }
+
+        /*************
+         * Make form *
+         *************/
+        $form = $user->getChangePasswordForm(array('askOld' => false));
+
+        /****************
+         * Process form *
+         ****************/
+        if ($this->_request->isPost() && $form->isValid($_POST, false)) {
+            $this->addMessage($this->_('New password is active.'));
+            $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
+        } else {
+            $this->addMessage($form->getErrorMessages());
+        }
+
+        /****************
+         * Display form *
+         ****************/
+        if ($user->isPasswordResetRequired()) {
+            $this->menu->setVisible(false);
+        } else {
+            $form->addButtons($this->createMenuLinks());
+        }
+
+        $this->html[] = $form;
     }
 }
