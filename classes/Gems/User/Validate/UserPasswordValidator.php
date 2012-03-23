@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: UserPasswordValidator.php 370 2011-12-19 09:27:19Z mennodekker $
  */
 
 /**
@@ -44,15 +44,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_UserNewPasswordValidator implements Zend_Validate_Interface
+class Gems_User_Validate_UserPasswordValidator extends Gems_User_Validate_PasswordValidatorAbstract
 {
-    /**
-     * The reported problems with the password.
-     *
-     * @var array or null
-     */
-    private $_report;
-
     /**
      *
      * @var Gems_User_User
@@ -62,10 +55,13 @@ class Gems_User_UserNewPasswordValidator implements Zend_Validate_Interface
     /**
      *
      * @param Gems_User_User $user The user to check
+     * @param string $message Default message for standard login fail.
      */
-    public function __construct(Gems_User_User $user)
+    public function __construct(Gems_User_User $user, $message)
     {
         $this->_user = $user;
+
+        parent::__construct($message);
     }
 
     /**
@@ -82,36 +78,8 @@ class Gems_User_UserNewPasswordValidator implements Zend_Validate_Interface
      */
     public function isValid($value, $context = array())
     {
-        $this->_report = $this->_user->reportPasswordWeakness($value);
+        $result = $this->_user->authenticate($value);
 
-        foreach ($this->_report as &$report) {
-            $report = ucfirst($report) . '.';
-        }
-
-        // MUtil_Echo::track($value, $this->_report);
-
-        return ! (boolean) $this->_report;
-    }
-
-    /**
-     * Returns an array of messages that explain why the most recent isValid()
-     * call returned false. The array keys are validation failure message identifiers,
-     * and the array values are the corresponding human-readable message strings.
-     *
-     * If isValid() was never called or if the most recent isValid() call
-     * returned true, then this method returns an empty array.
-     *
-     * @return array
-     */
-    public function getMessages()
-    {
-        if ($this->_report) {
-            return $this->_report;
-
-        } else {
-            return array();
-        }
-
-
+        return $this->setAuthResult($result);
     }
 }

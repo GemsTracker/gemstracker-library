@@ -25,14 +25,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Model
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSourceInterface
 {
@@ -77,10 +86,6 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         $value = $this->getLazy($name);
 
         if ($multi = $this->model->get($name, 'multiOptions')) {
-            if (is_callable($multi)) {
-                $multi = call_user_func($multi);
-                $this->model->set($name, 'multiOptions', $multi);
-            }
             $value = MUtil_Lazy::offsetGet($multi, $value);
         }
 

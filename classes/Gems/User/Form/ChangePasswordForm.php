@@ -168,7 +168,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             $element->setAttrib('maxlength', 20);
             $element->setRequired(true);
             $element->setRenderPassword(true);
-            $element->addValidator(new Gems_User_UserNewPasswordValidator($this->user));
+            $element->addValidator(new Gems_User_Validate_NewPasswordValidator($this->user));
             $element->addValidator(new MUtil_Validate_IsConfirmed($this->_repeatPasswordFieldName, $this->translate->_('Repeat password')));
 
             $this->addElement($element);
@@ -194,7 +194,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             $element->setAttrib('maxlength', 20);
             $element->setRenderPassword(true);
             $element->setRequired(true);
-            $element->addValidator(new Gems_User_UserPasswordValidator($this->user, $this->translate));
+            $element->addValidator(new Gems_User_Validate_UserPasswordValidator($this->user, $this->translate->_('Wrong password.')));
 
             $this->addElement($element);
         }

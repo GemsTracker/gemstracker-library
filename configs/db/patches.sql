@@ -383,3 +383,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.source.check-
 -- GEMS VERSION: 46
 -- PATCH: Add charset attribute for source database
 ALTER TABLE  `gems__sources` ADD  `gso_ls_charset` VARCHAR( 8 ) default NULL AFTER  `gso_ls_password`;
+
+-- PATCH: Add block until to
+ALTER TABLE gems__user_login_attempts ADD gula_block_until timestamp null AFTER gula_last_failed;

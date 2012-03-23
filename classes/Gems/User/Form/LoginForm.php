@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
+class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements Gems_User_Validate_GetUserInterface
 {
     /**
      * The field name for the lost password element.
@@ -54,26 +54,11 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
     protected $_lostPasswordFieldName = 'lost_password';
 
     /**
-     * The field name for the organization element.
-     *
-     * @var string
-     */
-    protected $_organizationFieldName = 'organization';
-
-
-    /**
      * When true the organization was derived from the the url
      *
      * @var boolean
      */
     protected $_organizationFromUrl = false;
-
-    /**
-     * The field name for the password element.
-     *
-     * @var string
-     */
-    protected $_passwordFieldName = 'password';
 
     /**
      * The field name for the submit element.
@@ -90,17 +75,23 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
     protected $_tokenFieldName = 'token_link';
 
     /**
-     * The field name for the username element.
      *
-     * @var string
+     * @var Gems_User_User
      */
-    protected $_usernameFieldName = 'userlogin';
+    protected $_user;
 
     /**
      *
      * @var Gems_Loader
      */
     protected $loader;
+
+    /**
+     * The field name for the organization element.
+     *
+     * @var string
+     */
+    public $organizationFieldName = 'organization';
 
     /**
      * For small numbers of organizations a multiline selectbox will be nice. This
@@ -110,6 +101,13 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
      * @var int
      */
     protected $organizationMaxLines = 6;
+
+    /**
+     * The field name for the password element.
+     *
+     * @var string
+     */
+    public $passwordFieldName = 'password';
 
     /**
      *
@@ -138,6 +136,13 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
     protected $translate;
 
     /**
+     * The field name for the username element.
+     *
+     * @var string
+     */
+    public $usernameFieldName = 'userlogin';
+
+    /**
      *
      * @var Zend_Util
      */
@@ -161,7 +166,7 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
         }
 
         $request = $this->getRequest();
-        if ($request->isPost() && ($orgId = $request->getParam($this->_organizationFieldName))) {
+        if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
             return $orgId;
         }
 
@@ -216,14 +221,14 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
      */
     public function getOrganizationElement()
     {
-        $element = $this->getElement($this->_organizationFieldName);
+        $element = $this->getElement($this->organizationFieldName);
         $orgId   = $this->getCurrentOrganizationId();
         $orgs    = $this->getLoginOrganizations();
         $hidden  = $this->_organizationFromUrl || (count($orgs) < 2);
 
         if ($hidden) {
             if (! $element instanceof Zend_Form_Element_Hidden) {
-                $element = new Zend_Form_Element_Hidden($this->_organizationFieldName);
+                $element = new Zend_Form_Element_Hidden($this->organizationFieldName);
 
                 $this->addElement($element);
             }
@@ -234,7 +239,7 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
             }
 
         } elseif (! $element instanceof Zend_Form_Element_Select) {
-            $element = new Zend_Form_Element_Select($this->_organizationFieldName);
+            $element = new Zend_Form_Element_Select($this->organizationFieldName);
             $element->setLabel($this->translate->_('Organization'));
             $element->setRequired(true);
             $element->setMultiOptions($orgs);
@@ -257,15 +262,22 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
      */
     public function getPasswordElement()
     {
-        $element = $this->getElement($this->_passwordFieldName);
+        $element = $this->getElement($this->passwordFieldName);
 
         if (! $element) {
             // Veld password
-            $element = new Zend_Form_Element_Password($this->_passwordFieldName);
+            $element = new Zend_Form_Element_Password($this->passwordFieldName);
             $element->setLabel($this->translate->_('Password'));
             $element->setAttrib('size', 10);
             $element->setAttrib('maxlength', 20);
             $element->setRequired(true);
+
+            if ($this->getOrganizationElement() instanceof Zend_Form_Element_Hidden) {
+                $explain = $this->translate->_('Combination of user and password not found.');
+            } else {
+                $explain = $this->translate->_('Combination of user and password not found for this organization.');
+            }
+            $element->addValidator(new Gems_User_Validate_GetUserPasswordValidator($this, $explain));
 
             $this->addElement($element);
         }
@@ -338,6 +350,17 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
     {
         return MUtil_Html::create('a', array('controller' => 'ask', 'action' => 'token'), $this->translate->_('Enter your token...'), array('class' => 'actionlink'));
     }
+
+    /**
+     * Returns a user
+     *
+     * @return Gems_User_User
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
     /**
      * Returns/sets a login name element.
      *
@@ -345,11 +368,11 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
      */
     public function getUserNameElement()
     {
-        $element = $this->getElement($this->_usernameFieldName);
+        $element = $this->getElement($this->usernameFieldName);
 
         if (! $element) {
             // Veld inlognaam
-            $element = new Zend_Form_Element_Text($this->_usernameFieldName);
+            $element = new Zend_Form_Element_Text($this->usernameFieldName);
             $element->setLabel($this->translate->_('Username'));
             $element->setAttrib('size', 10);
             $element->setAttrib('maxlength', 20);
@@ -359,6 +382,26 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract
         }
 
         return $element;
+    }
+
+    /**
+     * Validate the form
+     *
+     * As it is better for translation utilities to set the labels etc. translated,
+     * the MUtil default is to disable translation.
+     *
+     * However, this also disables the translation of validation messages, which we
+     * cannot set translated. The MUtil form is extended so it can make this switch.
+     *
+     * @param  array   $data
+     * @param  boolean $disableTranslateValidators Extra switch
+     * @return boolean
+     */
+    public function isValid($data, $disableTranslateValidators = null)
+    {
+        $this->_user = $this->loader->getUser($data[$this->usernameFieldName], $data[$this->organizationFieldName]);
+
+        return parent::isValid($data, $disableTranslateValidators);
     }
 
     /**

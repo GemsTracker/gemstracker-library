@@ -171,6 +171,30 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Makes sure default values are set for a user
+     *
+     * @param array $values
+     * @param Gems_User_UserDefinitionInterface $definition
+     * @param string $defName Optional
+     * @return array
+     */
+    public function ensureDefaultUserValues(array $values, Gems_User_UserDefinitionInterface $definition, $defName = null)
+    {
+        if (! isset($values['user_active'])) {
+            $values['user_active'] = true;
+        }
+        if (! isset($values['user_staff'])) {
+            $values['user_staff'] = $definition->isStaff();
+        }
+
+        if ($defName) {
+            $values['__user_definition'] = $defName;
+        }
+
+        return $values;
+    }
+
+    /**
      * Get userclass / description array of available UserDefinitions for respondents
      *
      * @return array
@@ -464,14 +488,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         $values = $definition->getUserData($userName, $userOrganization);
         // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
 
-        if (! isset($values['user_active'])) {
-            $values['user_active'] = true;
-        }
-        if (! isset($values['user_staff'])) {
-            $values['user_staff'] = $definition->isStaff();
-        }
-
-        $values['__user_definition'] = $defName;
+        $values = $this->ensureDefaultUserValues($values, $definition, $defName);
 
         return $this->_loadClass('User', true, array($values, $definition));
     }

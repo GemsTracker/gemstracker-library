@@ -7,6 +7,7 @@ CREATE TABLE if not exists gems__user_login_attempts (
 
     	gula_failed_logins    int(11) unsigned not null default 0,
         gula_last_failed      timestamp null,
+        gula_block_until      timestamp null,
 
         PRIMARY KEY (gula_login, gula_id_organization)
     )

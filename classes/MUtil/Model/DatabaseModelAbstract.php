@@ -706,10 +706,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         }
 
         if ($options = $this->get($name, 'multiOptions')) {
-            if (is_callable($options)) {
-                $options = call_user_func($options);
-                $this->set($name, 'multiOptions', $options);
-            }
             $adapter = $this->getAdapter();
             $wheres = array();
             foreach ($options as $key => $value) {

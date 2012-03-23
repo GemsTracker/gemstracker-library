@@ -123,12 +123,11 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
-     * @param string $username
-     * @param int $organizationId
+     * @param Gems_User_User $user
      * @param string $password
      * @return Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter($username, $organizationId, $password)
+    public function getAuthAdapter(Gems_User_User $user, $password)
     {
         $adapter = new Zend_Auth_Adapter_DbTable($this->db, 'gems__user_passwords', 'gul_login', 'gup_password');
 
@@ -137,9 +136,9 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         $select = $adapter->getDbSelect();
         $select->join('gems__user_logins', 'gup_id_user = gul_id_user', array())
                ->where('gul_can_login = 1')
-               ->where('gul_id_organization = ?', $organizationId);
+               ->where('gul_id_organization = ?', $user->getBaseOrganizationId());
 
-        $adapter->setIdentity($username)
+        $adapter->setIdentity($user->getLoginName())
                 ->setCredential($pwd_hash);
 
         return $adapter;

@@ -87,6 +87,20 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $definition;
 
     /**
+     * Sets number failed accounts that trigger a block
+     *
+     * @var int
+     */
+    protected $failureBlockCount = 6;
+
+    /**
+     * Sets number of seconds until a previous failed login can be ignored
+     *
+     * @var int
+     */
+    protected $failureIgnoreTime = 600;
+
+    /**
      *
      * @var Zend_Controller_Request_Abstract
      */
@@ -111,6 +125,15 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * @var Gems_User_UserLoader
      */
     protected $userLoader;
+
+    /**
+     * Use Zend_Auth for authentication
+     *
+     * Warning: Zend_Auth contains only a partial ID of the current user, the base organization is missing
+     *
+     * @var boolean
+     */
+    protected $useZendAuth = false;
 
     /**
      *
@@ -221,56 +244,205 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Perform project specific after login logic here, can also delegate to the user definition
+     * Process everything after authentication.
      *
-     * @return void
+     * @param Zend_Auth_Result $result
      */
-    public function afterLogin($formValues) {
-        if (is_callable(array($this->definition, 'afterLogin'))) {
-            // Use the USERS organization, not the one he or she is using currently
-			$formValues['organization'] = $this->getBaseOrganizationId();
-            $this->definition->afterLogin($this->_authResult, $formValues);
-        }
-    }
-
-    /**
-     * Helper method for the case a user tries to authenticate while he is inactive
-     *
-     * @return boolean
-     */
-    public function alwaysFalse()
+    protected function afterAuthorization(Zend_Auth_Result $result)
     {
-        return false;
+        try {
+            $select = $this->db->select();
+            $select->from('gems__user_login_attempts', array('gula_failed_logins', 'gula_last_failed', 'gula_block_until', 'UNIX_TIMESTAMP() - UNIX_TIMESTAMP(gula_last_failed) AS since_last'))
+                    ->where('gula_login = ?', $this->getLoginName())
+                    ->where('gula_id_organization = ?', $this->getCurrentOrganizationId())
+                    ->limit(1);
+
+            $values = $this->db->fetchRow($select);
+
+            // The first login attempt
+            if (! $values) {
+                $values['gula_login']           = $this->getLoginName();
+                $values['gula_id_organization'] = $this->getCurrentOrganizationId();
+                $values['gula_failed_logins']   = 0;
+                $values['gula_last_failed']     = null;
+                $values['gula_block_until']     = null;
+                $values['since_last']           = $this->failureBlockCount + 1;
+            }
+
+            if ($result->isValid()) {
+                // Reset login failures
+                $values['gula_failed_logins']   = 0;
+                $values['gula_last_failed']     = null;
+                $values['gula_block_until']     = null;
+
+            } else {
+
+                // Reset the counters when the last login was longer ago than the delay factor
+                if ($values['since_last'] > $this->failureIgnoreTime) {
+                    $values['gula_failed_logins'] = 1;
+                } else {
+                    $values['gula_failed_logins'] += 1;
+                }
+
+                // If block is already set
+                if ($values['gula_block_until']) {
+                    // Do not change it anymore
+                    unset($values['gula_block_until']);
+
+                } else {
+                    // Only set the block when needed
+                    if ($this->failureBlockCount <= $values['gula_failed_logins']) {
+                        $values['gula_block_until'] = new Zend_Db_Expr('DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ' . $this->failureIgnoreTime . ' SECOND)');
+                    }
+                }
+
+                // Always record the last fail
+                $values['gula_last_failed']     = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+                // Response gets slowly slower
+                $sleepTime = min($values['gula_failed_logins'] - 1, 10) * 2;
+                sleep($sleepTime);
+                // MUtil_Echo::track($sleepTime, $values, $result->getMessages());
+            }
+
+            // Value not saveable
+            unset($values['since_last']);
+
+            if (isset($values['gula_login'])) {
+                $this->db->insert('gems__user_login_attempts', $values);
+            } else {
+                $where = $this->db->quoteInto('gula_login = ? AND ', $this->getLoginName());
+                $where .= $this->db->quoteInto('gula_id_organization = ?', $this->getCurrentOrganizationId());
+                $this->db->update('gems__user_login_attempts', $values, $where);
+            }
+
+        } catch (Zend_Db_Exception $e) {
+            // Fall through as this does not work if the database upgrade did not yet run
+            // MUtil_Echo::r($e);
+        }
+
     }
 
     /**
      * Authenticate a users credentials using the submitted form
      *
-     * @param array $formValues the array containing all formvalues from the login form
+     * @param string $password The password to test
      * @return Zend_Auth_Result
      */
-    public function authenticate($formValues)
+    public function authenticate($password)
     {
-        // Check if the client IP address is within allowed IP ranges
-        if (! $this->util->isAllowedIP($_SERVER['REMOTE_ADDR'], $this->getAllowedIPRanges())) {
-            return new Zend_Auth_Result(Zend_Auth_Result::FAILURE_UNCATEGORIZED, $this->getLoginName(), array($this->translate->_('You are not allowed to login from this location.')));
+        if ($this->useZendAuth) {
+            $zendAuth = Zend_Auth::getInstance();
+        }
+        $auths = $this->loadAuthorizers($password);
+
+        foreach ($auths as $result) {
+            if (is_callable($result)) {
+                $result = call_user_func($result);
+            }
+
+            if ($result instanceof Zend_Auth_Adapter_Interface) {
+                if ($this->useZendAuth) {
+                    $result = $zendAuth->authenticate($result);
+                } else {
+                    $result = $result->authenticate();
+                }
+            }
+
+            if ($result instanceof Zend_Auth_Result) {
+                if (! $result->isValid()) {
+                    break;
+                }
+            } else {
+                if (true === $result) {
+                    $result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $this->getLoginName());
+
+                } else {
+                    // Always a fail when not true
+                    if ($result === false) {
+                        $code   = Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID;
+                        $result = array();
+                    } else {
+                        $code   = Zend_Auth_Result::FAILURE_UNCATEGORIZED;
+                        if (is_string($result)) {
+                            $result = array($result);
+                        }
+                    }
+                    $result = new Zend_Auth_Result($code, $this->getLoginName(), $result);
+                    break;
+                }
+            }
         }
 
-        $auth = Gems_Auth::getInstance();
+        $this->afterAuthorization($result);
 
-        $formValues['organization'] = $this->getBaseOrganizationId();
-        $formValues['userlogin'] = $this->getLoginName();
+        // MUtil_Echo::track($result);
+        $this->_authResult = $result;
 
-        if ($this->isActive()) {
-            $adapter = $this->definition->getAuthAdapter($formValues['userlogin'], $formValues['organization'], $formValues['password']);
+        return $result;
+    }
+
+    /**
+     * Checks if the user is allowed to login or is blocked
+     *
+     * An adapter authorizes and if the end resultis boolean, string or array
+     * it is converted into a Zend_Auth_Result.
+     *
+     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     */
+    protected function authorizeBlock()
+    {
+        try {
+            $select = $this->db->select();
+            $select->from('gems__user_login_attempts', array('UNIX_TIMESTAMP(gula_block_until) - UNIX_TIMESTAMP() AS wait'))
+                    ->where('gula_block_until is not null')
+                    ->where('gula_login = ?', $this->getLoginName())
+                    ->where('gula_id_organization = ?', $this->getCurrentOrganizationId())
+                    ->limit(1);
+
+            // Not the first login
+            if ($block = $this->db->fetchOne($select)) {
+                if ($block > 0) {
+                    $minutes = intval($block / 60) + 1;
+
+                    // Report all is not well
+                    return sprintf($this->translate->plural('Your account is temporarily blocked, please wait a minute.', 'Your account is temporarily blocked, please wait %d minutes.', $minutes), $minutes);
+
+                } else {
+                    // Clean the block once it's past
+                    $values['gula_failed_logins'] = 0;
+                    $values['gula_last_failed']   = null;
+                    $values['gula_block_until']   = null;
+                    $where = $this->db->quoteInto('gula_login = ? AND ', $this->getLoginName());
+                    $where .= $this->db->quoteInto('gula_id_organization = ?', $this->getCurrentOrganizationId());
+
+                    $this->db->update('gems__user_login_attempts', $values, $where);
+                }
+            }
+
+        } catch (Zend_Db_Exception $e) {
+            // Fall through as this does not work if the database upgrade did not run
+            // MUtil_Echo::r($e);
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the user is allowed to login using the current IP address
+     *
+     * An adapter authorizes and if the end resultis boolean, string or array
+     * it is converted into a Zend_Auth_Result.
+     *
+     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     */
+    protected function authorizeIp()
+    {
+        if ($this->util->isAllowedIP($_SERVER['REMOTE_ADDR'], $this->getAllowedIPRanges())) {
+            return true;
         } else {
-            $adapter = new Gems_Auth_Adapter_Callback(array($this,'alwaysFalse'), $formValues['userlogin']);
+            return $this->translate->_('You are not allowed to login from this location.');
         }
-
-        $authResult = $auth->authenticate($adapter, $formValues);
-        $this->_authResult = $authResult;
-
-        return $authResult;
     }
 
     /**
@@ -436,20 +608,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getEmailAddress()
     {
         return $this->_getVar('user_email');
-    }
-
-    /**
-     * Get the array to use for authenticate()
-     *
-     * @param string $password
-     * @return array
-     */
-    public function getFormValuesForPassword($password)
-    {
-        return array(
-            'userlogin'    => $this->getLoginName(),
-            'password'     => $password,
-            'organization' => $this->getCurrentOrganizationId());
     }
 
     /**
@@ -704,6 +862,20 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * True when this user must enter a new password.
+     *
+     * @return boolean
+     */
+    public function isBlockable()
+    {
+        if ($this->_hasVar('user_blockable')) {
+            return (boolean) $this->_getVar('user_blockable');
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Checks if this user is the current user
      *
      * @return boolean
@@ -741,6 +913,53 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function isStaff()
     {
         return (boolean) $this->_getVar('user_staff');
+    }
+
+    /**
+     * Load the callables | results needed to authenticate/authorize this user
+     *
+     * A callable will be called, then an adapter authorizes and if the end result
+     * is boolean, string or array it is converted into a Zend_Auth_Result.
+     *
+     * @param string $password
+     * @return array Of Callable|Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     */
+    protected function loadAuthorizers($password)
+    {
+        $auths['ip'] = array($this, 'authorizeIp');
+
+        if ($this->isBlockable()) {
+            $auths['block'] = array($this, 'authorizeBlock');
+        }
+
+        if ($this->isActive()) {
+            $auths['pwd'] = $this->definition->getAuthAdapter($this, $password);
+        } else {
+            $auths['pwd'] = false;
+        }
+
+        return $auths;
+    }
+
+    /**
+     *
+     * @param string $defName Optional
+     * @return Gems_User_User (continuation pattern)
+     */
+    public function refresh($defName = null)
+    {
+        if ($defName) {
+            $this->definition = $this->userLoader->getUserDefinition($defName);
+        }
+
+        $newData = $this->definition->getUserData($this->getLoginName(), $this->getBaseOrganizationId());
+        $newData = $this->userLoader->ensureDefaultUserValues($newData, $this->definition, $defName);
+
+        foreach ($newData as $key => $value) {
+            $this->_setVar($key, $value);
+        }
+
+        return $this;
     }
 
     /**

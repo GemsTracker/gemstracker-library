@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@
  * @package    Gems
  * @subpackage User
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $id: GetUserInterface.php 203 2012-01-01 12:51:32Z matijs $
  */
 
 /**
@@ -40,50 +40,16 @@
  *
  * @package    Gems
  * @subpackage User
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.5.3
  */
-class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
+interface Gems_User_Validate_GetUserInterface
 {
     /**
+     * Returns a user
      *
-     * @var Gems_Project_ProjectSettings
+     * @return Gems_User_User
      */
-    protected $project;
-
-    /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
-     *
-     * @param Gems_User_User $user
-     * @param string $password
-     * @return Zend_Auth_Adapter_Interface
-     */
-    public function getAuthAdapter(Gems_User_User $user, $password)
-    {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
-        return $adapter;
-    }
-
-    /**
-     * Returns a user object, that may be empty if the user is unknown.
-     *
-     * @param string $login_name
-     * @param int $organization
-     * @return array Of data to fill the user with.
-     */
-    public function getUserData($login_name, $organization)
-    {
-        return array(
-            'user_id'                => 1,
-            'user_login'             => $login_name,
-            'user_name'              => $login_name,
-            'user_group'             => 800,
-            'user_role'              => 'master',
-            'user_style'             => 'gems',
-            'user_base_org_id'       => $organization,
-            'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
-            'user_blockable'         => false,
-            );
-    }
+    public function getUser();
 }

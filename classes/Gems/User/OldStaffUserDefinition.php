@@ -60,23 +60,6 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     protected $project;
 
     /**
-     * Perform UserDefinition specific post-login logic
-     *
-     * @param Zend_Auth_Result $authResult
-     * @return void
-     */
-    public function afterLogin(Zend_Auth_Result $authResult, $formValues)
-    {
-        // MUtil_Echo::track($authResult->isValid(), $formValues);
-        if ($authResult->isValid()) {
-            $login_name   = $formValues['userlogin'];
-            $organization = $formValues['organization'];
-            $password     = $formValues['password'];
-            $this->makeNewStaffUser($login_name, $organization, $password);
-        }
-    }
-
-    /**
      * Return true if the password can be set.
      *
      * Returns the setting for the definition whan no user is passed, otherwise
@@ -93,13 +76,25 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
-     * @param string $username
-     * @param int $organizationId
+     * @param Gems_User_User $user
      * @param string $password
      * @return Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter($username, $organizationId, $password)
+    public function getAuthAdapter(Gems_User_User $user, $password)
     {
+        $pwd_hash = $this->hashPassword($password);
+
+        $sql = "SELECT gsf_id_user FROM gems__staff WHERE gsf_active = 1 AND gsf_login = ? AND gsf_id_organization = ? AND gsf_password = ?";
+
+        if ($this->db->fetchOne($sql, array($user->getLoginName(), $user->getBaseOrganizationId(), $pwd_hash))) {
+            $this->makeNewStaffUser($user, $password);
+
+            return true;
+        } else {
+            return false;
+        }
+
+        /*
         $adapter = new Zend_Auth_Adapter_DbTable(null, 'gems__staff', 'gsf_login', 'gsf_password');
 
         $pwd_hash = $this->hashPassword($password);
@@ -112,6 +107,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                 ->setCredential($pwd_hash);
 
         return $adapter;
+        // */
     }
 
     /**
@@ -200,15 +196,19 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         return md5($password);
     }
 
-    protected function makeNewStaffUser($login_name, $organization, $password)
+    /**
+     * Sets the user up as a new staff user
+     *
+     * @param Gems_User_User $user
+     * @param string $password
+     */
+    protected function makeNewStaffUser(Gems_User_User $user, $password)
     {
-        $userData = $this->getUserData($login_name, $organization);
-        $staff_id = $userData['user_id'];
-
-        $sql = 'SELECT gul_id_user FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?';
+        $staff_id = $user->getUserId();
+        $sql      = 'SELECT gul_id_user FROM gems__user_logins WHERE gul_can_login = 1 AND gul_login = ? AND gul_id_organization = ?';
 
         try {
-            $user_id = $this->db->fetchOne($sql, array($login_name, $organization));
+            $user_id = $this->db->fetchOne($sql, array($user->getLoginName(), $user->getBaseOrganizationId()));
 
             $currentTimestamp = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
@@ -240,6 +240,8 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
 
             $this->db->update('gems__staff', $values, $this->db->quoteInto('gsf_id_user = ?', $staff_id));
 
+            $user->refresh(Gems_User_UserLoader::USER_STAFF);
+
         } catch (Zend_Db_Exception $e) {
             GemsEscort::getInstance()->logger->log($e->getMessage(), Zend_Log::ERR);
             // Fall through as this does not work if the database upgrade did not run
@@ -257,7 +259,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function setPassword(Gems_User_User $user, $password)
     {
-        $this->makeNewStaffUser($user->getLoginName(), $user->getBaseOrganizationId(), $password);
+        $this->makeNewStaffUser($user, $password);
 
         return $this;
     }

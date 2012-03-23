@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: UserPasswordValidator.php 370 2011-12-19 09:27:19Z mennodekker $
  */
 
 /**
@@ -44,46 +44,47 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_User_Validate_GetUserPasswordValidator extends Gems_User_Validate_PasswordValidatorAbstract
 {
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var Gems_User_Validate_GetUserInterface
      */
-    protected $project;
+    private $_userSource;
 
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
      *
-     * @param Gems_User_User $user
-     * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * @param Gems_User_Validate_GetUserInterface $userSource The source for the user
+     * @param string $message Default message for standard login fail.
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    public function __construct(Gems_User_Validate_GetUserInterface $userSource, $message)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
-        return $adapter;
+        $this->_userSource = $userSource;
+
+        parent::__construct($message);
     }
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Returns true if and only if $value meets the validation requirements
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return array Of data to fill the user with.
+     * If $value fails validation, then this method returns false, and
+     * getMessages() will return an array of messages that explain why the
+     * validation failed.
+     *
+     * @param  mixed $value
+     * @param  mixed $content
+     * @return boolean
+     * @throws Zend_Validate_Exception If validation of $value is impossible
      */
-    public function getUserData($login_name, $organization)
+    public function isValid($value, $context = array())
     {
-        return array(
-            'user_id'                => 1,
-            'user_login'             => $login_name,
-            'user_name'              => $login_name,
-            'user_group'             => 800,
-            'user_role'              => 'master',
-            'user_style'             => 'gems',
-            'user_base_org_id'       => $organization,
-            'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
-            'user_blockable'         => false,
-            );
+        $user   = $this->_userSource->getUser();
+        if ($user instanceof Gems_User_User) {
+            $result = $user->authenticate($value);
+        } else {
+            $result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE_UNCATEGORIZED, null);
+        }
+
+        return $this->setAuthResult($result);
     }
 }

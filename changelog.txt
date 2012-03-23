@@ -1,3 +1,12 @@
+Important changes from 1.5.2 => 1.5.3
+============================================================
+People can login using their e-amil address as user name.
+Showing a list of organizations to choose during login happens except when 1) there is only one organization or 2) a url is used that is assigned to a specific organization.
+Login & other password forms are now easy to customize on a per project basis.
+Login and authorizaiton rules are easier to extend.
+Alll password rules are reported during reset.
+
+
 Important changes from 1.5.1 => 1.5.2
 ============================================================
 Renamed project.ini setting concentRejected to consentRejected

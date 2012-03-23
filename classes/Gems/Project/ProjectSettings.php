@@ -187,20 +187,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Returns the factor used to delay account reloading.
-     *
-     * @return int
-     */
-    public function getAccountDelayFactor()
-    {
-        if ($this->offsetExists('account') && isset($this->account['delayFactor'])) {
-            return intval($this->account['delayFactor']);
-        } else {
-            return 4;
-        }
-    }
-
-    /**
      * Returns an array with throttling settings for the ask
      * controller
      *

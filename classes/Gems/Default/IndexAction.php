@@ -161,7 +161,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         Gems_Html::init();
 
         return $this->loader->getUserLoader()->getLoginForm($args);
-
+        /*
         $form = $this->_getBasicForm();
         $form->addElement($this->_getOrganizationElement());
         $form->addElement($this->_getUserLoginElement());
@@ -175,7 +175,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $form->addElement($this->_getResetLinkElement());
         }
 
-        return $form;
+        return $form; // */
     }
 
     /**
@@ -330,64 +330,54 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost(), false)) {
+                $user = $form->getUser();
 
-                $user = $this->loader->getUser($request->getParam('userlogin'), $request->getParam('organization'));
+                $previousRequestParameters = $this->session->previousRequestParameters;
 
-                // NO!!! DO not test! Otherwise it is easy to test which users exist.
-                // if ($user->isActive()) {
-                $formValues = $form->getValues();
-                $authResult = $user->authenticate($formValues);
+                $user->setAsCurrentUser();
 
-                if ($authResult->isValid()) {
-                    $previousRequestParameters = $this->session->previousRequestParameters;
-
-                    $user->setAsCurrentUser();
-
-                    $user->afterLogin($form->getValues());
-
-                    //*
-                    if ($messages = $user->reportPasswordWeakness($request->getParam('password'))) {
-                        $user->setPasswordResetRequired(true);
-                        $this->addMessage($this->_('Your password must be changed.'));
-                        $this->addMessage($messages);
-                    } // */
-
-                    /**
-                     * Fix current locale in cookies
-                     */
-                    Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
-
-                    /**
-                     * Ready
-                     */
-                    $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
-
-                    /**
-                     * Log the login
-                     */
-                    Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
-
-                    if ($previousRequestParameters) {
-                        $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
-                    } else {
-                        // This reroutes to the first available menu page after login.
-                        //
-                        // Do not user $user->gotoStartPage() as the menu is still set
-                        // for no login.
-                        $this->_reroute(array('controller' => null, 'action' => null), true);
-                    }
-                    return;
-                } else {
-                    //Now present the user with an error message
-                    $errors = $authResult->getMessages();
-                    $this->addMessage($errors);
-
-                    //Also log the error to the log table
-                    //when the project has logging enabled
-                    $logErrors = join(' - ', $errors);
-                    $log = Gems_AccessLog::getLog();
-                    $log->log('loginFail', $this->getRequest(), sprintf('Failed login for : %s (%s) - %s', $formValues['userlogin'], $formValues['organization'], $logErrors), null, true);
+                if ($messages = $user->reportPasswordWeakness($request->getParam($form->passwordFieldName))) {
+                    $user->setPasswordResetRequired(true);
+                    $this->addMessage($this->_('Your password must be changed.'));
+                    $this->addMessage($messages);
                 }
+
+                /**
+                 * Fix current locale in cookies
+                 */
+                Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
+
+                /**
+                 * Ready
+                 */
+                $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
+
+                /**
+                 * Log the login
+                 */
+                Gems_AccessLog::getLog($this->db)->log("index.login", $this->getRequest(), null, $user->getUserId(), true);
+
+                if ($previousRequestParameters) {
+                    $this->_reroute(array('controller' => $previousRequestParameters['controller'], 'action' => $previousRequestParameters['action']), false);
+                } else {
+                    // This reroutes to the first available menu page after login.
+                    //
+                    // Do not user $user->gotoStartPage() as the menu is still set
+                    // for no login.
+                    $this->_reroute(array('controller' => null, 'action' => null), true);
+                }
+                return;
+            } else {
+                //Now present the user with an error message
+                $errors = $form->getErrorMessages();
+                $this->addMessage($errors);
+
+                //Also log the error to the log table
+                //when the project has logging enabled
+                $logErrors = join(' - ', $errors);
+                $msg = sprintf('Failed login for : %s (%s) - %s', $request->getParam($form->usernameFieldName), $request->getParam($form->organizationFieldName), $logErrors);
+                $log = Gems_AccessLog::getLog();
+                $log->log('loginFail', $this->getRequest(), $msg, null, true);
             }
         }
         $this->view->form = $form;

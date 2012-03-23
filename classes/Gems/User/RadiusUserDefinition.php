@@ -128,15 +128,14 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
-     * @param string $username
-     * @param int $organizationId
+     * @param Gems_User_User $user
      * @param string $password
      * @return Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter($username, $organizationId, $password)
+    public function getAuthAdapter(Gems_User_User $user, $password)
     {
         //Ok hardcoded for now this needs to be read from the userdefinition
-        $configData = $this->loadConfig(array('gor_id_organization' => $organizationId));
+        $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
 
         $config  = array('ip'                 => $configData['grcfg_ip'],
                          'authenticationport' => $configData['grcfg_port'],
@@ -150,7 +149,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         }
         $adapter = new Gems_User_Adapter_Radius($config);
 
-        $adapter->setIdentity($username)
+        $adapter->setIdentity($user->getLoginName())
                 ->setCredential($password);
 
         return $adapter;

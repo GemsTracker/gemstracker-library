@@ -80,12 +80,10 @@ interface Gems_User_UserDefinitionInterface
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
-     * @param string $username
-     * @param int $organizationId
-     * @param string $password
+     * @param Gems_User_User $user
      * @return Zend_Auth_Adapter_Interface
      */
-    public function getAuthAdapter($username, $organizationId, $password);
+    public function getAuthAdapter(Gems_User_User $user, $password);
 
     /**
      * Return a password reset key

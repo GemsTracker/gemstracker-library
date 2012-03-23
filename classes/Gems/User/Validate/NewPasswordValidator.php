@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: UserNewPasswordValidator.php 553 2012-03-16 12:32:50Z matijsdejong $
  */
 
 /**
@@ -44,8 +44,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_UserPasswordValidator implements Zend_Validate_Interface
+class Gems_User_Validate_NewPasswordValidator implements Zend_Validate_Interface
 {
+    /**
+     * The reported problems with the password.
+     *
+     * @var array or null
+     */
+    private $_report;
+
     /**
      *
      * @var Gems_User_User
@@ -54,25 +61,11 @@ class Gems_User_UserPasswordValidator implements Zend_Validate_Interface
 
     /**
      *
-     * @var Zend_Translate
-     */
-    private $_translate;
-
-    /**
-     *
-     * @var boolean
-     */
-    private $_valid = false;
-
-    /**
-     *
      * @param Gems_User_User $user The user to check
-     * @param Zend_Translate $translate Optional translator
      */
-    public function __construct(Gems_User_User $user, Zend_Translate $translate = null)
+    public function __construct(Gems_User_User $user)
     {
         $this->_user = $user;
-        $this->_translate = $translate ? $translate : new MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
@@ -89,11 +82,15 @@ class Gems_User_UserPasswordValidator implements Zend_Validate_Interface
      */
     public function isValid($value, $context = array())
     {
-        $authResult = $this->_user->authenticate($this->_user->getFormValuesForPassword($value));
+        $this->_report = $this->_user->reportPasswordWeakness($value);
 
-        $this->_valid = $authResult->isValid();
+        foreach ($this->_report as &$report) {
+            $report = ucfirst($report) . '.';
+        }
 
-        return $this->_valid;
+        // MUtil_Echo::track($value, $this->_report);
+
+        return ! (boolean) $this->_report;
     }
 
     /**
@@ -108,11 +105,11 @@ class Gems_User_UserPasswordValidator implements Zend_Validate_Interface
      */
     public function getMessages()
     {
-        if ($this->_valid) {
-            return array();
+        if ($this->_report) {
+            return $this->_report;
 
         } else {
-            return array($this->_translate->_('Wrong password.'));
+            return array();
         }
 
 
