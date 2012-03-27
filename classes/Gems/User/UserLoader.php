@@ -156,16 +156,30 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $now = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
-        $values['gul_login']           = $login_name;
-        $values['gul_id_organization'] = $organization;
-        $values['gul_user_class']      = $userClassName;
-        $values['gul_can_login']       = 1;
-        $values['gul_changed']         = $now;
-        $values['gul_changed_by']      = $userId;
-        $values['gul_created']         = $now;
-        $values['gul_created_by']      = $userId;
+        $values['gul_user_class'] = $userClassName;
+        $values['gul_can_login']  = 1;
+        $values['gul_changed']    = $now;
+        $values['gul_changed_by'] = $userId;
 
-        $this->db->insert('gems__user_logins', $values);
+        $select = $this->db->select();
+        $select->from('gems__user_logins', array('gul_id_user'))
+                ->where('gul_login = ?', $login_name)
+                ->where('gul_id_organization = ?', $organization)
+                ->limit(1);
+
+        // Update class definition if it already exists
+        if ($login_id = $this->db->fetchOne($select)) {
+            $where = implode(' ', $select->getPart(Zend_Db_Select::WHERE));
+            $this->db->update('gems__user_logins', $values);
+
+        } else {
+            $values['gul_login']           = $login_name;
+            $values['gul_id_organization'] = $organization;
+            $values['gul_created']         = $now;
+            $values['gul_created_by']      = $userId;
+
+            $this->db->insert('gems__user_logins', $values);
+        }
 
         return $this->getUser($login_name, $organization);
     }
