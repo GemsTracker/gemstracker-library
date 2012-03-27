@@ -145,7 +145,15 @@ class MUtil_Lazy
         }
     }
 
-    public static function method($object, $method, $arg_array = null)
+    /**
+     * Return a lazy callable to an object
+     *
+     * @param Object $object
+     * @param string $method Method of the object
+     * @param mixed $arg_array1 Optional, first of any arguments to the call
+     * @return MUtil_Lazy_Call
+     */
+    public static function method($object, $method, $arg_array1 = null)
     {
         $args = array_slice(func_get_args(), 2);
         return new MUtil_Lazy_Call(array($object, $method), $args);

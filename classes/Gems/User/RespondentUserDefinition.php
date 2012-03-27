@@ -59,6 +59,7 @@ class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstr
         $select = new Zend_Db_Select($this->db);
         $select->from('gems__user_logins', array(
                     'user_login_id' => 'gul_id_user',
+                    'user_active'   => 'gul_can_login',
                     ))
                 ->join('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array(
                     'user_login'       => 'gr2o_patient_nr',
