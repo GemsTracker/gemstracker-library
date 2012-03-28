@@ -170,7 +170,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         // Update class definition if it already exists
         if ($login_id = $this->db->fetchOne($select)) {
             $where = implode(' ', $select->getPart(Zend_Db_Select::WHERE));
-            $this->db->update('gems__user_logins', $values);
+            $this->db->update('gems__user_logins', $values, $where);
 
         } else {
             $values['gul_login']           = $login_name;
@@ -503,6 +503,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
 
         $values = $this->ensureDefaultUserValues($values, $definition, $defName);
+        MUtil_Echo::track($values, $userName, $userOrganization, $defName);
 
         return $this->_loadClass('User', true, array($values, $definition));
     }
