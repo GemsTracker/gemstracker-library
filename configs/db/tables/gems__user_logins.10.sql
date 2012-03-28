@@ -21,3 +21,21 @@ CREATE TABLE if not exists gems__user_logins (
     ENGINE=InnoDB
     AUTO_INCREMENT = 10001
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+/*
+-- Code to restore login codes after failed update. You just never know when we might need it again.
+
+UPDATE gems__user_logins
+    SET gul_user_class =
+    CASE
+        WHEN EXISTS(SELECT gsf_id_user FROM gems__staff WHERE gsf_login = gul_login AND gsf_id_organization = gul_id_organization) THEN
+            CASE
+                WHEN EXISTS(SELECT gup_id_user FROM gems__user_passwords WHERE gup_id_user = gul_id_user) THEN 'StaffUser'
+                ELSE 'OldStaffUser'
+            END
+        WHEN EXISTS(SELECT gr2o_id_user FROM gems__respondent2org WHERE gr2o_patient_nr = gul_login AND gr2o_id_organization = gul_id_organization) THEN 'RespondentUser'
+        ELSE 'NoLogin'
+    END
+    WHERE gul_user_class = 'StaffUser';
+
+*/

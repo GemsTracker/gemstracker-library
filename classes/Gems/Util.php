@@ -161,22 +161,19 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         return $this->_loadClass('lockFile', true, array(GEMS_ROOT_DIR . '/var/settings/cron_lock.txt'));
     }
 
+    /**
+     * Returns the current 'base site' url, optionally with a subpath.
+     *
+     * @staticvar string $uri
+     * @param string $subpath Optional string
+     * @return string The Url + basePath plus the optional subpath
+     */
     public function getCurrentURI($subpath = '')
     {
         static $uri;
 
         if (! $uri) {
-            if(isset($_SERVER['HTTPS'])) {
-                $secure = $_SERVER["HTTPS"];
-
-                if (strtolower($secure) == 'off') {
-                    $secure = false;
-                }
-            } else {
-                $secure = $_SERVER['SERVER_PORT'] == '443';
-            }
-
-            $uri = $secure ? 'https' : 'http';
+            $uri = MUtil_Https::on() ? 'https' : 'http';
 
             $uri .= '://';
             $uri .= $_SERVER['SERVER_NAME'];
