@@ -386,3 +386,6 @@ ALTER TABLE  `gems__sources` ADD  `gso_ls_charset` VARCHAR( 8 ) default NULL AFT
 
 -- PATCH: Add block until to
 ALTER TABLE gems__user_login_attempts ADD gula_block_until timestamp null AFTER gula_last_failed;
+
+-- PATCH: logins are sometimes added autmatically as part of outer join
+ALTER TABLE gems__user_logins CHANGE gul_can_login gul_can_login boolean not null default 0;

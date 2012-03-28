@@ -736,20 +736,23 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $user = $this->getLoader()->getCurrentUser();
 
-        $div = MUtil_Html::create('div', array('id' => 'login'), $args);
+        // During error reporting the user or menu are not always known.
+        if ($user && $this->menu) {
+            $div = MUtil_Html::create('div', array('id' => 'login'), $args);
 
-        $p = $div->p();
-        if ($user->isActive()) {
-            $p->append(sprintf($this->_('You are logged in as %s'), $user->getFullName()));
-            $item = $this->menu->findController('index', 'logoff');
-            $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
-        } else {
-            $item = $this->menu->findController('index', 'login');
-            $p->a($item->toHRefAttribute(), $this->_('You are not logged in'), array('class' => 'logout'));
+            $p = $div->p();
+            if ($user->isActive()) {
+                $p->append(sprintf($this->_('You are logged in as %s'), $user->getFullName()));
+                $item = $this->menu->findController('index', 'logoff');
+                $p->a($item->toHRefAttribute(), $this->_('Logoff'), array('class' => 'logout'));
+            } else {
+                $item = $this->menu->findController('index', 'login');
+                $p->a($item->toHRefAttribute(), $this->_('You are not logged in'), array('class' => 'logout'));
+            }
+            $item->set('visible', false);
+
+            return $div;
         }
-        $item->set('visible', false);
-
-        return $div;
     }
 
     /**
