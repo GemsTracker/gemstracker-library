@@ -139,12 +139,17 @@ class Gems_Tracker_Token_TokenSelect {
      * Add Respondent Track info to the select statement
      *
      * @param string|array $fields
+     * @param boolean $groupBy Optional, add these fields to group by statement
      * @return Gems_Tracker_Token_TokenSelect
      */
-    public function andRespondentTracks($fields = '*') {
+    public function andRespondentTracks($fields = '*', $groupBy = false) {
         $this->sql_select->join('gems__respondent2track',
                 'gto_id_respondent_track = gr2t_id_respondent_track',
                 $fields);
+
+        if ($groupBy && is_array($fields)) {
+            $this->sql_select->group($fields);
+        }
 
         return $this;
     }
@@ -173,6 +178,25 @@ class Gems_Tracker_Token_TokenSelect {
         $this->sql_select->join('gems__surveys',
                 'gto_id_survey = gsu_id_survey',
                 $fields);
+
+        return $this;
+    }
+
+    /**
+     * Add track info to the select statement
+     *
+     * @param string|array $fields
+     * @param boolean $groupBy Optional, add these fields to group by statement
+     * @return Gems_Tracker_Token_TokenSelect
+     */
+    public function andTracks($fields = '*', $groupBy = false) {
+        $this->sql_select->join('gems__tracks',
+                'gr2t_id_track = gtr_id_track',
+                $fields);
+
+        if ($groupBy && is_array($fields)) {
+            $this->sql_select->group($fields);
+        }
 
         return $this;
     }
