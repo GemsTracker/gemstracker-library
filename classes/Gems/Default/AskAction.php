@@ -303,7 +303,13 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                     return;
 
                 default:
-                    $parameters['controller'] = 'respondent';
+                    // Allow open specification of return
+                    if (strpos($return, '/') !== false) {
+                        $parameters = MUtil_Ra::pairs(explode('/', $return));
+                        // MUtil_Echo::track($parameters);
+                    } else {
+                        $parameters['controller'] = 'respondent';
+                    }
             }
                 $this->_reroute($parameters, true);
         } else {

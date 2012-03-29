@@ -136,6 +136,20 @@ class Gems_Tracker_Token_TokenSelect {
     }
 
     /**
+     * Add Respondent Track info to the select statement
+     *
+     * @param string|array $fields
+     * @return Gems_Tracker_Token_TokenSelect
+     */
+    public function andRespondentTracks($fields = '*') {
+        $this->sql_select->join('gems__respondent2track',
+                'gto_id_respondent_track = gr2t_id_respondent_track',
+                $fields);
+
+        return $this;
+    }
+
+    /**
      * Adds round info to the select statement
      *
      * @param string|array $fields
