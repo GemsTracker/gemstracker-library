@@ -124,7 +124,14 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         static $surveys;
 
         if (! $surveys) {
-            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, LEFT(CONCAT_WS(" - ", gsu_survey_name, gsu_survey_description),50) FROM gems__surveys ORDER BY gsu_survey_name');
+            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, 
+            	CONCAT(
+            		LEFT(CONCAT_WS(
+            			" - ", gsu_survey_name, CASE WHEN LENGTH(TRIM(gsu_survey_description)) = 0 THEN NULL ELSE gsu_survey_description END
+            		), 50),
+        			CASE WHEN gsu_active = 1 THEN " (' . $this->translate->_('Active') . ')" ELSE " (' . $this->translate->_('Inactive') . ')" END
+    			)            		
+            	FROM gems__surveys ORDER BY gsu_survey_name');
         }
 
         return $surveys;
