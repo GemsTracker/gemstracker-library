@@ -115,15 +115,18 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $model->set('gor_contact_name', 'label', $this->_('Contact name'), 'size', 25);
         $model->set('gor_contact_email', 'label', $this->_('Contact email'), 'size', 50, 'validator', 'SimpleEmail');
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $model->setIfExists(
-                'gor_style', 'label', $this->_('Style'),
+            $model->setIfExists('gor_style',
+                'label', $this->_('Style'),
                 'multiOptions', MUtil_Lazy::call(array($this->escort, 'getStyles'))
             );
-            $model->setIfExists(
-            	'gor_url_base', 'label', $this->_('Default url'),
+            $model->setIfExists('gor_url_base',
+            	'label', $this->_("Default url's"),
             	'size', 50,
-                'description', sprintf($this->_('Always switch to this organization when %s is accessed from this url'), $this->project->getName())
+                'description', sprintf($this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."), $this->project->getName())
             );
+            if ($detailed) {
+                $model->setIfExists('gor_url_base', 'filter', 'TrailingSlash');
+            }
         }
         $model->set(
             'gor_iso_lang', 'label', $this->_('Language'),

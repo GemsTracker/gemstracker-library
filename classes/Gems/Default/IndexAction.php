@@ -298,6 +298,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Fix current locale in cookies
                  */
+                MUtil_Echo::track($user->getLocale(), $this->basepath->getBasePath());
                 Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
 
                 /**
@@ -320,10 +321,12 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $this->_reroute(array('controller' => null, 'action' => null), true);
                 }
                 return;
-            } else {
+            } /*
+            else {
                 //Now present the user with an error message
-                $errors = $form->getErrorMessages();
-                $this->addMessage($errors);
+                // $errors = MUtil_Ra::flatten($form->getMessages());
+                // $this->addMessage($errors);
+                MUtil_Echo::track($errors);
 
                 //Also log the error to the log table
                 //when the project has logging enabled
@@ -331,7 +334,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $msg = sprintf('Failed login for : %s (%s) - %s', $request->getParam($form->usernameFieldName), $request->getParam($form->organizationFieldName), $logErrors);
                 $log = Gems_AccessLog::getLog();
                 $log->log('loginFail', $this->getRequest(), $msg, null, true);
-            }
+            } // */
         }
         $this->view->form = $form;
     }

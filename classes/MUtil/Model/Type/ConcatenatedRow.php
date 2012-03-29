@@ -110,6 +110,13 @@ class MUtil_Model_Type_ConcatenatedRow
         return $this;
     }
 
+
+    /**
+     * Displays the content
+     *
+     * @param string $value
+     * @return string
+     */
     public function format($value)
     {
         // MUtil_Echo::track($value);

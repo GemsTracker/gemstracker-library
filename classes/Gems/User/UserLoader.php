@@ -68,6 +68,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     public $allowStaffEmailLogin = true;
 
     /**
+     *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -102,6 +108,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @var Zend_Translate_Adapter
      */
     protected $translate;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
 
     /**
      * There can be only one, current user that is.
@@ -268,7 +280,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 if (substr($defName, -10, 10) != 'Definition') {
                     $defName .= 'Definition';
                 }
-                
+
                 self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
             } else {
                 self::$currentUser = $this->getUser(null, null);
@@ -302,7 +314,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Returns an organization object, initiated from the database or from
      * self::$_noOrganization when the database does not yet exist.
      *
-     * @param int $organizationId Optional, uses current user when empty
+     * @param int $organizationId Optional, uses current user or url when empty
      * @return Gems_User_Organization
      */
     public function getOrganization($organizationId = null)
@@ -310,7 +322,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         static $organizations = array();
 
         if (null === $organizationId) {
-            $organizationId = intval(self::getCurrentUser()->getCurrentOrganizationId());
+            $user = $this->getCurrentUser();
+
+            if (! $user->isActive()) {
+                $organizationId = $this->getOrganizationIdByUrl();
+            }
+
+            if (! $organizationId) {
+                $organizationId = intval($user->getCurrentOrganizationId());
+            }
         }
 
         if (! isset($organizations[$organizationId])) {
@@ -318,6 +338,49 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         }
 
         return $organizations[$organizationId];
+    }
+
+    /**
+     * Returns the current organization according to the current site url.
+     *
+     * @static array $url An array of url => orgId values
+     * @return int An organization id or null
+     */
+    public function getOrganizationIdByUrl()
+    {
+        static $urls;
+
+        if (! is_array($urls)) {
+            if ($this->cache) {
+                $cacheId = GEMS_PROJECT_NAME . '__' . get_class($this) . '__organizations_url';
+                $urls = $this->cache->load($cacheId);
+            } else {
+                $cacheId = false;
+            }
+
+            if (! $urls) {
+                $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
+                $urls = array();
+                foreach ($data as $orgId => $urlsBase) {
+                    foreach (explode(' ', $urlsBase) as $url) {
+                        if ($url) {
+                            $urls[$url] = $orgId;
+                        }
+                    }
+                }
+
+                if ($cacheId) {
+                    $this->cache->save($urls, $cacheId, array('organization', 'organizations'));
+                }
+            }
+            // MUtil_Echo::track($urls);
+        }
+
+        $current = $this->util->getCurrentURI();
+
+        if (isset($urls[$current])) {
+            return $urls[$current];
+        }
     }
 
     /**

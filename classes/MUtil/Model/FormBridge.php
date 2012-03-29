@@ -107,9 +107,17 @@ class MUtil_Model_FormBridge
         }
     }
 
+    /**
+     * Add the element to the for and apply any filters & validators
+     *
+     * @param string $name
+     * @param Zend_Form_Element $element
+     * @return Zend_Form_Element
+     */
     protected function _addToForm($name, Zend_Form_Element $element)
     {
         $this->form->addElement($element);
+        $this->_applyFilters($name, $element);
         $this->_applyValidators($name, $element);
 
         // MUtil_Echo::r($element->getOrder(), $element->getName());
@@ -117,6 +125,41 @@ class MUtil_Model_FormBridge
         return $element;
     }
 
+    /**
+     * Apply the filters for element $name to the element
+     *
+     * @param string $name
+     * @param Zend_Form_Element $element
+     */
+    protected function _applyFilters($name, Zend_Form_Element $element)
+    {
+        $filters = $this->model->get($name, 'filters');
+
+        if ($filter = $this->model->get($name, 'filter')) {
+            if ($filters) {
+                array_unshift($filters, $filter);
+            } else {
+                $filters = array($filter);
+            }
+        }
+
+        if ($filters) {
+            foreach ($filters as $filter) {
+                if (is_array($filter)) {
+                    call_user_func_array(array($element, 'addFilter'), $filter);
+                } else {
+                    $element->addFilter($filter);
+                }
+            }
+        }
+    }
+
+    /**
+     * Apply the validators for element $name to the element
+     *
+     * @param string $name
+     * @param Zend_Form_Element $element
+     */
     protected function _applyValidators($name, Zend_Form_Element $element)
     {
         $validators = $this->model->get($name, 'validators');
@@ -505,6 +548,7 @@ class MUtil_Model_FormBridge
         }
 
         $element = new Zend_Form_Element_Password($name, $options);
+        $this->_applyFilters($name, $element);
         $this->_applyValidators($name, $element);
         $this->form->addElement($element);
 
@@ -515,6 +559,7 @@ class MUtil_Model_FormBridge
         if (isset($repeatLabel)) {
             $repeatElement = new Zend_Form_Element_Password($repeatName, $repeatOptions);
             $this->form->addElement($repeatElement);
+            $this->_applyFilters($name, $repeatElement);
 
             if ($stringlength) {
                 $repeatElement->addValidator('StringLength', true, $stringlength);

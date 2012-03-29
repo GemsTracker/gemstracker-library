@@ -155,13 +155,12 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
      */
     public function getCurrentOrganizationId()
     {
-        // Url determines organization first.
-        $uri = $this->util->getCurrentURI();
-        // MUtil_Echo::track($uri);
+        $userLoader = $this->loader->getUserLoader();
 
-        if ($orgId = $this->util->getDbLookup()->getOrganizationForUrl($uri)) {
+        // Url determines organization first.
+        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
             $this->_organizationFromUrl = true;
-            $this->loader->getCurrentUser()->setCurrentOrganization($orgId);
+            $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
             return $orgId;
         }
 
@@ -170,7 +169,7 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
             return $orgId;
         }
 
-        return $this->loader->getCurrentUser()->getCurrentOrganizationId();
+        return $userLoader->getCurrentUser()->getCurrentOrganizationId();
     }
 
     /**

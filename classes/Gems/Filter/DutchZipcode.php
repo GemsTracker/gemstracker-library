@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * @version    $Id$
  * @package    Gems
  * @subpackage Filter
@@ -42,6 +42,13 @@
  */
 class Gems_Filter_DutchZipcode implements Zend_Filter_Interface
 {
+    /**
+     * Returns the result of filtering $value
+     *
+     * @param  mixed $value
+     * @throws Zend_Filter_Exception If filtering $value is impossible
+     * @return mixed
+     */
     public function filter($value)
     {
         // perform some transformation upon $value to arrive on $valueFiltered
@@ -51,7 +58,7 @@ class Gems_Filter_DutchZipcode implements Zend_Filter_Interface
                 $valueFiltered = substr_replace($valueFiltered, ' ', 4, 0);
             }
         }
- 
+
         return $valueFiltered;
     }
 }

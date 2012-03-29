@@ -48,6 +48,12 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
 {
     /**
      *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
      * @var Gems_Loader
      */
     protected $loader;
@@ -72,7 +78,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         }
         //Need the first two together for validation
         $bridge->addHtml('org')->b($this->_('Organization'));
-        $this->addItems($bridge, 'gor_name', 'gor_id_organization', 'gor_location', 'gor_url', 'gor_active');
+        $this->addItems($bridge, 'gor_name', 'gor_id_organization', 'gor_location', 'gor_url', 'gor_url_base', 'gor_active');
         $bridge->addHtml('contact')->b($this->_('Contact'));
         $bridge->addHtml('contact_desc')->i($this->_('The contact details for this organization, used for emailing.'));
         $this->addItems($bridge, 'gor_contact_name', 'gor_contact_email');
@@ -103,7 +109,9 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             //Strip self
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
             $display = join(', ', $allowedOrgs);
-            $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
+            if ($display) {
+                $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
+            }
         }
 
         $this->addItems($bridge, 'gor_user_class');
@@ -126,8 +134,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
 
     public function afterSave($changed)
     {
-        $org = $this->loader->getOrganization($changed['gor_id_organization']);
-        $org->invalidateCache();
+        $this->cache->clean('all', array('organization', 'organizations'));
 
         // Make sure any changes in the allowed list are reflected.
         $this->loader->getCurrentUser()->refreshAllowedOrganizations();
