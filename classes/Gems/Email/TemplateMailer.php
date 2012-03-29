@@ -117,7 +117,7 @@ class Gems_Email_TemplateMailer
      */
     public function bounceCheck()
     {
-        return isset($this->escort->project->email['bounce']) && $this->escort->project->email['bounce'];
+        return $this->escort->project->getEmailBounce();
     }
 
     /**
@@ -338,10 +338,8 @@ class Gems_Email_TemplateMailer
 
         $this->setTokenData($tokenData);
 
-        $style = isset($tokenData['gor_style']) ? $tokenData['gor_style'] : GEMS_PROJECT_NAME;
-
-        $mail = new MUtil_Mail();
-        $mail->setHtmlTemplateFile(APPLICATION_PATH . '/configs/email/' . $style . '.html');
+        $mail = new Gems_Mail();
+        $mail->setTemplateStyle($tokenData['gor_style']);
 
         $mail->setFrom($from, $from_name);
         $mail->addTo($to, $to_name);

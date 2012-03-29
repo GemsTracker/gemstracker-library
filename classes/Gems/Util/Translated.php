@@ -193,16 +193,38 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
         return self::$emptyDropdownArray;
     }
 
+    /**
+     * Returns the functional description of a gender for use in e.g. interface elements
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
     public function getGenders($locale = null)
     {
         return array('M' => $this->_('Male', $locale), 'F' => $this->_('Female', $locale), 'U' => $this->_('Unknown', $locale));
     }
 
+    /**
+     * Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs
+     *
+     * In practice: starts lowercase
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
     public function getGenderGreeting($locale = null)
     {
         return array('M' => $this->_('mr.', $locale), 'F' => $this->_('mrs.', $locale), 'U' => $this->_('mr./mrs.', $locale));
     }
 
+    /**
+     * Returns the gender for use in stand-alone name display
+     *
+     * In practice: starts uppercase
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
     public function getGenderHello($locale = null)
     {
         return array('M' => $this->_('Mr.', $locale), 'F' => $this->_('Mrs.', $locale), 'U' => $this->_('Mr./Mrs.', $locale));

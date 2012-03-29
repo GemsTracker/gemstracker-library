@@ -263,7 +263,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         if (! self::$currentUser) {
             if ($this->session->__isset('__user_definition')) {
                 $defName = $this->session->__get('__user_definition');
-                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName . 'Definition')));
+
+                // Check for during upgrade. Remove for version 1.6
+                if (substr($defName, -10, 10) != 'Definition') {
+                    $defName .= 'Definition';
+                }
+                
+                self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
             } else {
                 self::$currentUser = $this->getUser(null, null);
                 self::$currentUser->setAsCurrentUser();
@@ -503,7 +509,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         // MUtil_Echo::track($defName, $login_name, $userOrganization, $values);
 
         $values = $this->ensureDefaultUserValues($values, $definition, $defName);
-        MUtil_Echo::track($values, $userName, $userOrganization, $defName);
+        // MUtil_Echo::track($values, $userName, $userOrganization, $defName);
 
         return $this->_loadClass('User', true, array($values, $definition));
     }

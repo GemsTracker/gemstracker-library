@@ -230,6 +230,55 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
 
     /**
+     * Returns the public description of this project.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        if ($this->offsetExists('description')) {
+            return $this->offsetGet('description');
+        } else {
+            return $this->offsetGet('name');
+        }
+    }
+
+    /**
+     * The the email BCC address - if any
+     *
+     * @return string
+     */
+    public function getEmailBcc()
+    {
+        if ($this->offsetExists('email') && isset($this->email['bcc'])) {
+            return trim($this->email['bcc']);
+        }
+    }
+
+    /**
+     * Should all mail be bounced to the sender?
+     *
+     * @return boolean
+     */
+    public function getEmailBounce()
+    {
+        if ($this->offsetExists('email') && isset($this->email['bounce'])) {
+            return (boolean) $this->email['bounce'];
+        }
+        return false;
+    }
+
+    /**
+     * Returns the from address
+     *
+     * @return string E-Mail address
+     */
+    public function getFrom()
+    {
+        return $this->getSiteEmail();
+    }
+
+    /**
      * Returns the initial password specified for users - if any.
      *
      * @return String
@@ -244,7 +293,23 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Array of field name => values for sending E-Mail
+     *
+     * @return array
+     */
+    public function getMailFields()
+    {
+        $result['project']              = $this->getName();
+        $result['project_bcc']          = $this->getEmailBcc();
+        $result['project_description']  = $this->getDescription();
+        $result['project_from']         = $this->getFrom();
+
+        return $result;
+    }
+
+    /**
      * Returns the public name of this project.
+     *
      * @return string
      */
     public function getName()
@@ -283,6 +348,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return $this->session['idleTimeout'];
         } else {
             return $this->defaultSessionTimeout;
+        }
+    }
+
+    /**
+     * The site email address - if any
+     *
+     * @return string
+     */
+    public function getSiteEmail()
+    {
+        if ($this->offsetExists('email') && isset($this->email['site'])) {
+            return trim($this->email['site']);
         }
     }
 

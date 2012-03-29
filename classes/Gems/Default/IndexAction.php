@@ -93,21 +93,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected $showTokenButton = true;
 
     /**
-     * Returns a link for the token input page.
-     *
-     * @return MUtil_Form_Element_Html
-     */
-    protected function _getAskTokenLinkElement()
-    {
-        // Veld token
-        $element = new MUtil_Form_Element_Html('askToken');
-        $element->br();
-        $element->actionLink(array('controller' => 'ask', 'action' => 'token'), $this->_('Enter your token...'));
-
-        return $element;
-    }
-
-    /**
      * Returns a basic form for this action.
      *
      * @param $description Optional description, %s is filled with project name.
@@ -161,21 +146,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         Gems_Html::init();
 
         return $this->loader->getUserLoader()->getLoginForm($args);
-        /*
-        $form = $this->_getBasicForm();
-        $form->addElement($this->_getOrganizationElement());
-        $form->addElement($this->_getUserLoginElement());
-        $form->addElement($this->_getPasswordElement());
-        $form->addElement($this->_getSubmitButton($this->_('Login')));
-
-        if (null === $showToken ? $this->showTokenButton : $showToken) {
-            $form->addElement($this->_getAskTokenLinkElement());
-        }
-        if (null === $showPasswordLost ? $this->showPasswordLostButton : $showPasswordLost) {
-            $form->addElement($this->_getResetLinkElement());
-        }
-
-        return $form; // */
     }
 
     /**
@@ -228,23 +198,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $element->setValue($org);
             }
         }
-
-        return $element;
-    }
-
-    /**
-     * Returns a password element.
-     *
-     * @return Zend_Form_Element_Password
-     */
-    protected function _getPasswordElement()
-    {
-        // Veld password
-        $element = new Zend_Form_Element_Password('password');
-        $element->setLabel($this->_('Password'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
-        $element->setRequired(true);
 
         return $element;
     }
@@ -325,13 +278,13 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public function loginAction()
     {
         $request = $this->getRequest();
-
-        $form = $this->_getLoginForm();
+        $form    = $this->_getLoginForm();
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost(), false)) {
                 $user = $form->getUser();
 
+                // Retrieve these before the session is reset
                 $previousRequestParameters = $this->session->previousRequestParameters;
 
                 $user->setAsCurrentUser();
@@ -422,37 +375,15 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                         $this->addMessage($this->_('This key timed out or does not belong to this user.'));
                     }
                 } else {
-                    // Pass mail by key
-                    $mail = new MUtil_Mail();
-                    $mail->addTo($user->getEmailAddress(), $user->getFullName());
+                    $subjectTemplate = $this->_('Password reset requested');
+                    $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
 
-                    if (isset($this->escort->project->email['site'])) {
-                        $mail->setFrom($this->escort->project->email['site']);
-                    } elseif ($from = $user->getCurrentOrganization()->getEmail()) {
-                        $mail->setFrom($from);
-                    } elseif ($from = $user->getBaseOrganization()->getEmail()) {
-                        $mail->setFrom($from);
+                    $messages = $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
+                    if (! $messages) {
+                        // Everything went OK!
+                        $messages = $this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.');
                     }
-                    if (isset($this->escort->project->email) && isset($this->escort->project->email['bcc'])) {
-                        $mail->addBcc($this->escort->project->email['bcc']);
-                    }
-
-
-                    $key = $user->getPasswordResetKey();
-
-                    $url = $this->util->getCurrentURI('index/resetpassword/key/' . $key);
-
-                    $mail->setSubject($this->_('Password reset requested'));
-                    $mail->setBodyText(sprintf($this->_('To reset your password for %s, please click this link: %s'), GEMS_PROJECT_NAME_UC, $url));
-
-
-                    try {
-                        $mail->send();
-                        $this->addMessage($this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.'));
-                    } catch (Exception $e) {
-                        $this->addMessage($this->_('Unable to send e-mail.'));
-                        throw $e;
-                    }
+                    $this->addMessage($messages);
                 }
             } else {
                 $this->addMessage($this->_('No such user found or no e-mail address known or user cannot be reset.'));

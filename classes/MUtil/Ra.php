@@ -267,7 +267,8 @@ class MUtil_Ra
 
                     // 1: Not yet set && 2: lax types used
                     if ((! isset($args[$name])) &&
-                        ($laxTypes || (null === $ntype))) {
+                        ($laxTypes || (null === $ntype)) &&
+                        isset($args[$current])) {
 
                         $args[$name] = $args[$current];
                         unset($args[$current]);
@@ -342,6 +343,28 @@ class MUtil_Ra
         }
 
         return false;
+    }
+
+    /**
+     * Put braces around the array keys.
+     *
+     * @param array $input
+     * @param string $left Brace string, e.g. '%', '{', '[', '"'
+     * @param string $right Optional, when emptu same as left.
+     * @return array Array with the same values but braces around the keys
+     */
+    public static function braceKeys(array $input, $left, $right = null)
+    {
+        if (null === $right) {
+            $right = $left;
+        }
+        $results = array();
+
+        foreach ($input as $key => $value) {
+            $results[$left . $key . $right] = $value;
+        }
+
+        return $results;
     }
 
     /**
@@ -442,7 +465,7 @@ class MUtil_Ra
             return true;
 
         }
-        
+
         return is_scalar($value);
     }
 

@@ -102,6 +102,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
@@ -611,6 +617,30 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns the from address
+     *
+     * @return string E-Mail address
+     */
+    public function getFrom()
+    {
+        // Gather possible sources of a from address
+        $sources[] = $this->getBaseOrganization();
+        if ($this->getBaseOrganizationId() != $this->getCurrentOrganizationId()) {
+            $sources[] = $this->getCurrentOrganization();
+        }
+        $sources[] = $this->project;
+
+        foreach ($sources as $source) {
+            if ($from = $source->getFrom()) {
+                return $from;
+            }
+        }
+
+        // We really don't like it, but sometimes the only way to get a from address.
+        return $this->getEmailAddress();
+    }
+
+    /**
      * Returns the full user name (first, prefix, last).
      *
      * @return string
@@ -637,29 +667,59 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs
+     *
+     * In practice: starts lowercase
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
+    protected function getGenderGreeting($locale = null)
+    {
+        $greetings = $this->util->getTranslated()->getGenderGreeting($locale);
+
+        if (isset($greetings[$this->_getVar('user_gender')])) {
+            return $greetings[$this->_getVar('user_gender')];
+        }
+    }
+
+    /**
+     * Returns the gender for use in stand-alone name display
+     *
+     * In practice: starts uppercase
+     *
+     * @param string $locale
+     * @return array gender => string
+     */
+    protected function getGenderHello($locale = null)
+    {
+        $greetings = $this->util->getTranslated()->getGenderHello($locale);
+
+        if (isset($greetings[$this->_getVar('user_gender')])) {
+            return $greetings[$this->_getVar('user_gender')];
+        }
+    }
+
+    /**
      * Returns a standard greeting for the current user.
      *
+     * @param string $locale
      * @return int
      */
-    public function getGreeting()
+    public function getGreeting($locale = null)
     {
         if (! $this->_getVar('user_greeting')) {
-            $greeting  = array();
-            $greetings = $this->util->getTranslated()->getGenderGreeting();
+            $greeting[] = $this->getGenderGreeting($locale);
 
-            if (isset($greetings[$this->_getVar('user_gender')])) {
-                $greeting[] = $greetings[$this->_getVar('user_gender')];
-            }
             if ($this->_getVar('user_last_name')) {
-                if ($this->_getVar('user_surname_prefix')) {
-                    $greeting[] = $this->_getVar('user_surname_prefix');
-                }
+                $greeting[] = $this->_getVar('user_surname_prefix');
                 $greeting[] = $this->_getVar('user_last_name');
             } else {
                 $name = $this->getLoginName();
                 $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
                 $greeting[] = $name;
             }
+            array_filter($greeting);
 
             $this->_setVar('user_greeting', implode(' ', $greeting));
         }
@@ -698,6 +758,36 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Array of field name => values for sending E-Mail
+     *
+     * @param string $locale
+     * @return array
+     */
+    public function getMailFields($locale = null)
+    {
+        $orgResults  = $this->getBaseOrganization()->getMailFields();
+        $projResults = $this->project->getMailFields();
+
+        $result['bcc']        = $projResults['project_bcc'];
+        $result['email']      = $this->getEmailAddress();
+        $result['first_name'] = $this->_getVar('user_first_name');
+        $result['from']       = $this->getFrom();
+        $result['full_name']  = trim($this->getGenderHello($locale) . ' ' . $this->getFullName());
+        $result['greeting']   = $this->getGreeting($locale);
+        $result['last_name']  = ltrim($this->_getVar('user_surname_prefix') . ' ') . $this->_getVar('user_last_name');
+        $result['login_url']  = $this->util->getCurrentURI();
+        $result['name']       = $this->getFullName();
+
+        $result = $result + $orgResults + $projResults;
+
+        $result['reset_ask']  = $this->util->getCurrentURI('index/resetpassword');
+        $result['reply_to']   = $result['from'];
+        $result['to']         = $result['email'];
+
+        return $result;
+    }
+
+    /**
      * Return a password reset key
      *
      * @return string
@@ -718,6 +808,20 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $this->request = Zend_Controller_Front::getInstance()->getRequest();
         }
         return $this->request;
+    }
+
+    /**
+     * Array of field name => values for sending a reset password E-Mail
+     *
+     * @param string $locale
+     * @return array
+     */
+    public function getResetPasswordMailFields($locale = null)
+    {
+        $result['reset_key']     = $this->getPasswordResetKey();
+        $result['reset_url']     = $this->util->getCurrentURI('index/resetpassword/key/' . $result['reset_key']);
+
+        return $result + $this->getMailFields($locale);
     }
 
     /**
@@ -939,6 +1043,50 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         }
 
         return $auths;
+    }
+
+    /**
+     * Send an e-mail to this user
+     *
+     * @param string $subjectTemplate A subject template in which {fields} are replaced
+     * @param string $bbBodyTemplate A BB Code body template in which {fields} are replaced
+     * @param boolean $useResetFields When true get a reset key for this user
+     * @param string $locale Optional locale
+     * @return mixed String or array of warnings when something went wrong
+     */
+    public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
+    {
+        if ($useResetFields && (! $this->canResetPassword())) {
+            return $this->_('Trying to send a password reset to a user that cannot be reset.');
+        }
+
+        $mail = new Gems_Mail();
+        $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
+        $mail->setFrom($this->getFrom());
+        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
+        if ($bcc = $this->project->getEmailBcc()) {
+            $mail->addBcc($bcc);
+        }
+
+        if ($useResetFields) {
+            $fields = $this->getResetPasswordMailFields($locale);
+        } else {
+            $fields = $this->getMailFields($locale);
+        }
+        $fields = MUtil_Ra::braceKeys($fields, '{', '}');
+
+        $mail->setSubject(strtr($subjectTemplate, $fields));
+        $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
+
+        try {
+            $mail->send();
+            return null;
+
+        } catch (Exception $e) {
+            return array(
+                $this->_('Unable to send e-mail.'),
+                $e->getMessage());
+        }
     }
 
     /**

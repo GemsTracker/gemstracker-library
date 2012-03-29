@@ -164,6 +164,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Returns the from address
+     *
+     * @return string E-Mail address
+     */
+    public function getFrom()
+    {
+        return $this->getEmail();
+    }
+
+    /**
      * Get the organization id.
      *
      * @return int
@@ -171,6 +181,24 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function getId()
     {
         return $this->_get('gor_id_organization');
+    }
+
+    /**
+     * Array of field name => values for sending E-Mail
+     *
+     * @return array
+     */
+    public function getMailFields()
+    {
+        $result['organization']            = $this->getName();
+        $result['organization_location']   = $this->_get('gor_location');
+        $result['organization_reply_name'] = $this->_get('gor_contact_name');
+        $result['organization_reply_to']   = $this->_get('gor_contact_email');
+        $result['organization_signature']  = $this->getSignature();
+        $result['organization_url']        = $this->_get('gor_url');
+        $result['organization_welcome']    = $this->getWelcome();
+
+        return $result;
     }
 
     /**
@@ -201,6 +229,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function getStyle()
     {
         return $this->_get('gor_style');
+    }
+
+    /**
+     * Has org an email attribute?
+     *
+     * @return boolean
+     */
+    public function hasEmail()
+    {
+        return $this->_has('gor_contact_email');
     }
 
     /**

@@ -363,6 +363,6 @@ class Gems_Menu_MenuList extends MUtil_ArrayString implements MUtil_Html_HtmlInt
         }
 
         // Call the toActionLink(Lower) function with the sources given.
-        return  call_user_func_array(array($this->offsetGet($key), $this->linkFunction), $sources);
+        return call_user_func_array(array($this->offsetGet($key), $this->linkFunction), $sources);
     }
 }
