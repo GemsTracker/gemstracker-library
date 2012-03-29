@@ -267,8 +267,7 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
             // Veld password
             $element = new Zend_Form_Element_Password($this->passwordFieldName);
             $element->setLabel($this->translate->_('Password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
+            $element->setAttrib('size', 40);
             $element->setRequired(true);
 
             if ($this->getOrganizationElement() instanceof Zend_Form_Element_Hidden) {
@@ -373,8 +372,7 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
             // Veld inlognaam
             $element = new Zend_Form_Element_Text($this->usernameFieldName);
             $element->setLabel($this->translate->_('Username'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
+            $element->setAttrib('size', 40);
             $element->setRequired(true);
 
             $this->addElement($element);
