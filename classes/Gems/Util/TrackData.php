@@ -82,41 +82,19 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         return $dates;
     } // */
 
-    /**
-     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
-     * only the active surveys
-     *
-     * @staticvar array $activeSurveys
-     * @return array
-     */
+    /*
     public function getActiveSurveys()
     {
-        static $activeSurveys;
+        static $surveys;
 
-        if (! $activeSurveys) {
-            $activeSurveys = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 AND gsu_surveyor_active = 1 ORDER BY gsu_survey_name');
+        if (! $surveys) {
+            $surveys = $this->util->getTranslated()->getEmptyDropdownArray();
+            $surveys = $surveys + $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 AND gsu_surveyor_active = 1 ORDER BY gsu_survey_name');
         }
 
-        return $activeSurveys;
-    }
+        return $surveys;
+    } // */
 
-    /**
-     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
-     * only the active surveys
-     *
-     * @staticvar array $activeSurveys
-     * @return array
-     */
-    public function getActiveSurveysAndDescriptions()
-    {
-        static $activeSurveys;
-
-        if (! $activeSurveys) {
-            $activeSurveys = $this->db->fetchPairs('SELECT gsu_id_survey, LEFT(CONCAT_WS(" - ", gsu_survey_name, gsu_survey_description),50) FROM gems__surveys WHERE gsu_active = 1 AND gsu_surveyor_active = 1 ORDER BY gsu_survey_name');
-        }
-
-        return $activeSurveys;
-    }
 
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name

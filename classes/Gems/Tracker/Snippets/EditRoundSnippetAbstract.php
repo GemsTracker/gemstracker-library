@@ -182,7 +182,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         }
 
         // Check the survey name
-        $surveys = $this->util->getTrackData()->getActiveSurveys();
+        $surveys = $this->util->getTrackData()->getAllSurveys();
         if (isset($surveys[$this->formData['gro_id_survey']])) {
             $this->formData['gro_survey_name'] = $surveys[$this->formData['gro_id_survey']];
         } else {
