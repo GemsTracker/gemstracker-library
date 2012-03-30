@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 13:10+0100\n"
+"POT-Creation-Date: 2012-03-30 14:21+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -87,8 +87,8 @@ msgstr "You are no longer logged in."
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
-#: classes/GemsEscort.php:1713
-#: classes/GemsEscort.php:1715
+#: classes/GemsEscort.php:1709
+#: classes/GemsEscort.php:1711
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -3623,15 +3623,15 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1061
+#: classes/Gems/User/User.php:1062
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1088
+#: classes/Gems/User/User.php:1089
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/User.php:1215
+#: classes/Gems/User/User.php:1216
 msgid "Cookies must be enabled for this site."
 msgstr "Cookies must be enabled for this site."
 

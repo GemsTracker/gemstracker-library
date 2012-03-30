@@ -1658,6 +1658,8 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $locale = isset($tokenData['grs_iso_lang']) ? $tokenData['grs_iso_lang'] : $this->locale;
 
+        $orgResults = $this->getLoader()->getOrganization($tokenData['gor_id_organization'])->getMailFields();
+
         // Prepare values
         $genderHello = $this->getUtil()->getTranslated()->getGenderHello($locale);
         $hello[] = $genderHello[$tokenData['grs_gender']];
@@ -1693,19 +1695,13 @@ class GemsEscort extends MUtil_Application_Escort
         array_shift($hello);
         $result['{name}']       = implode(' ', $hello);
 
-        $result['{organization}']            = $tokenData['gor_name'];
-        $result['{organization_location}']   = $tokenData['gor_location'];
-        $result['{organization_reply_name}'] = $tokenData['gor_contact_name'];
-        $result['{organization_reply_to}']   = $tokenData['gor_contact_email'];
-        $result['{organization_signature}']  = $tokenData['gor_signature'];
-        $result['{organization_url}']        = $tokenData['gor_url'];
-        $result['{organization_welcome}']    = $tokenData['gor_welcome'];
+        $result = $result + MUtil_Ra::braceKeys($orgResults, '{', '}');
 
         $result['{round}']                   = $tokenData['gto_round_description'];
 
-        $result['{site_ask_url}']            = $this->util->getCurrentURI('ask/');
+        $result['{site_ask_url}']            = $orgResults['organization_login_url'] . '/ask/';
         // Url's
-        $url       = $this->util->getCurrentURI('ask/forward/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token']);
+        $url       = $orgResults['organization_login_url'] . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
         $url_input = $result['{site_ask_url}'] . 'index/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
 
         $result['{survey}']           = $tokenData['gsu_survey_name'];

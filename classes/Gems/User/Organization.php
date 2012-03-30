@@ -77,6 +77,12 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     protected $db;
 
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * When true respondents of this organization may login
      *
      * @return boolean
@@ -184,6 +190,20 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Return org dependent login url
+     *
+     * @return string
+     */
+    public function getLoginUrl()
+    {
+        if ($base = $this->_get('base_url')) {
+            return $base;
+        } else {
+            return $this->util->getCurrentURI();
+        }
+    }
+
+    /**
      * Array of field name => values for sending E-Mail
      *
      * @return array
@@ -192,6 +212,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     {
         $result['organization']            = $this->getName();
         $result['organization_location']   = $this->_get('gor_location');
+        $result['organization_login_url']  = $this->getLoginUrl();
         $result['organization_reply_name'] = $this->_get('gor_contact_name');
         $result['organization_reply_to']   = $this->_get('gor_contact_email');
         $result['organization_signature']  = $this->getSignature();
@@ -274,6 +295,10 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
             }
 
             // MUtil_Echo::track($sql, $data['can_access']);
+
+            if ($baseUrls = explode(' ', $data['gor_url_base'])) {
+                $data['base_url'] = reset($baseUrls);
+            }
         } else {
             $data = $this->_noOrganization;
         }

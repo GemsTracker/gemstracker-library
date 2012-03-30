@@ -766,7 +766,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function getMailFields($locale = null)
     {
-        $orgResults  = $this->getBaseOrganization()->getMailFields();
+        $org         = $this->getBaseOrganization();
+        $orgResults  = $org->getMailFields();
         $projResults = $this->project->getMailFields();
 
         $result['bcc']        = $projResults['project_bcc'];
@@ -776,12 +777,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $result['full_name']  = trim($this->getGenderHello($locale) . ' ' . $this->getFullName());
         $result['greeting']   = $this->getGreeting($locale);
         $result['last_name']  = ltrim($this->_getVar('user_surname_prefix') . ' ') . $this->_getVar('user_last_name');
-        $result['login_url']  = $this->util->getCurrentURI();
+        $result['login_url']  = $orgResults['organization_login_url'];
         $result['name']       = $this->getFullName();
 
         $result = $result + $orgResults + $projResults;
 
-        $result['reset_ask']  = $this->util->getCurrentURI('index/resetpassword');
+        $result['reset_ask']  = $orgResults['organization_login_url'] . '/index/resetpassword';
         $result['reply_to']   = $result['from'];
         $result['to']         = $result['email'];
 
@@ -820,7 +821,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getResetPasswordMailFields($locale = null)
     {
         $result['reset_key']     = $this->getPasswordResetKey();
-        $result['reset_url']     = $this->util->getCurrentURI('index/resetpassword/key/' . $result['reset_key']);
+        $result['reset_url']     = $this->getBaseOrganization()->getLoginUrl() . '/index/resetpassword/key/' . $result['reset_key'];
 
         return $result + $this->getMailFields($locale);
     }
@@ -1058,7 +1059,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
     {
         if ($useResetFields && (! $this->canResetPassword())) {
-            return $this->_('Trying to send a password reset to a user that cannot be reset.');
+            return $this->translate->_('Trying to send a password reset to a user that cannot be reset.');
         }
 
         $mail = new Gems_Mail();
