@@ -285,7 +285,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getInitialPassword()
     {
-        if (isset($this['password']['initialPassword'])) {
+        if (isset($this['password'], $this['password']['initialPassword'])) {
             return $this['password']['initialPassword'];
         } else {
             return null;
