@@ -541,6 +541,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if (! $this->_hasVar('__allowedOrgs')) {
             $this->refreshAllowedOrganizations();
         }
+        // MUtil_Echo::track($this->_getVar('__allowedOrgs'));
 
         return $this->_getVar('__allowedOrgs');
     }

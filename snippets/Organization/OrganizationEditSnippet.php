@@ -109,9 +109,10 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             //Strip self
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
             $display = join(', ', $allowedOrgs);
-            if ($display) {
-                $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
+            if (! $display) {
+                $display = MUtil_Html::create('em', $this->_('No access to other organizations.'));
             }
+            $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
         }
 
         $this->addItems($bridge, 'gor_user_class');
