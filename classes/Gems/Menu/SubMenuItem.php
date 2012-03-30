@@ -875,6 +875,9 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                 } else {
                     $element = MUtil_Html::create()->actionLink($href, $label);
                 }
+                if ($title = $this->get('title')) {
+                    $element->title = $title;
+                }
 
                 // and make sure nothing shows when empty
                 $element->setOnEmpty(null);

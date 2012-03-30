@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 14:21+0100\n"
+"POT-Creation-Date: 2012-03-30 22:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3975,21 +3975,21 @@ msgstr "Invalid type given. String, integer or float expected"
 msgid "One or more IPs are illegal."
 msgstr "One or more IPs are illegal."
 
-#: snippets/AddTracksSnippet.php:117
-msgid "by Respondents"
-msgstr "by Patients"
-
-#: snippets/AddTracksSnippet.php:121
-msgid "by Staff"
-msgstr "by Staff"
-
-#: snippets/AddTracksSnippet.php:195
+#: snippets/AddTracksSnippet.php:198
 msgid "info"
 msgstr "info"
 
-#: snippets/AddTracksSnippet.php:200
+#: snippets/AddTracksSnippet.php:203
 msgid "None available"
 msgstr "None available"
+
+#: snippets/AddTracksSnippet.php:218
+msgid "by Respondents"
+msgstr "by Patients"
+
+#: snippets/AddTracksSnippet.php:221
+msgid "by Staff"
+msgstr "by Staff"
 
 #: snippets/DeleteInSourceTrackSnippet.php:130
 msgid "Edit track"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 14:21+0100\n"
+"POT-Creation-Date: 2012-03-30 22:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3975,21 +3975,21 @@ msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
 
-#: snippets/AddTracksSnippet.php:117
-msgid "by Respondents"
-msgstr "voor Patiënten"
-
-#: snippets/AddTracksSnippet.php:121
-msgid "by Staff"
-msgstr "voor Medewerkers"
-
-#: snippets/AddTracksSnippet.php:195
+#: snippets/AddTracksSnippet.php:198
 msgid "info"
 msgstr "info"
 
-#: snippets/AddTracksSnippet.php:200
+#: snippets/AddTracksSnippet.php:203
 msgid "None available"
 msgstr "Niet beschikbaar"
+
+#: snippets/AddTracksSnippet.php:218
+msgid "by Respondents"
+msgstr "voor Patiënten"
+
+#: snippets/AddTracksSnippet.php:221
+msgid "by Staff"
+msgstr "voor Medewerkers"
 
 #: snippets/DeleteInSourceTrackSnippet.php:130
 msgid "Edit track"
