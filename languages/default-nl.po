@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 11:38+0100\n"
+"POT-Creation-Date: 2012-03-30 13:11+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3623,15 +3623,15 @@ msgstr[1] "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw i
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1060
+#: classes/Gems/User/User.php:1061
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1087
+#: classes/Gems/User/User.php:1088
 msgid "Unable to send e-mail."
 msgstr "Verzenden e-mail mislukt."
 
-#: classes/Gems/User/User.php:1214
+#: classes/Gems/User/User.php:1215
 msgid "Cookies must be enabled for this site."
 msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
@@ -4169,6 +4169,10 @@ msgid "Access"
 msgstr "Toegang"
 
 #: snippets/Organization/OrganizationEditSnippet.php:113
+msgid "No access to other organizations."
+msgstr "Geen toegang tot andere organisaties."
+
+#: snippets/Organization/OrganizationEditSnippet.php:115
 msgid "Can access"
 msgstr "Toegang tot"
 
