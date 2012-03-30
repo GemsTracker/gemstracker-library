@@ -298,7 +298,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Fix current locale in cookies
                  */
-                MUtil_Echo::track($user->getLocale(), $this->basepath->getBasePath());
                 Gems_Cookies::setLocale($user->getLocale(), $this->basepath->getBasePath());
 
                 /**

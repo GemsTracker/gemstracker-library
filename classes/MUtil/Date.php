@@ -61,15 +61,19 @@ class MUtil_Date extends Zend_Date
      * @param Zend_Locale $locale optional (not used)
      * @return type
      */
-    public function diffDays(Zend_Date $date, $locale = null)
+    public function diffDays(Zend_Date $date = null, $locale = null)
     {
         $day1 = clone $this;
-        $day2 = clone $date;
         $day1->setTime(0);
-        $day2->setTime(0);
-
         $val1 = intval($day1->getUnixTimestamp() / self::DAY_SECONDS);
-        $val2 = intval($day2->getUnixTimestamp() / self::DAY_SECONDS);
+
+        if (null === $date) {
+            $val2 = intval(time() / self::DAY_SECONDS);
+        } else {
+            $day2 = clone $date;
+            $day2->setTime(0);
+            $val2 = intval($day2->getUnixTimestamp() / self::DAY_SECONDS);
+        }
 
         return $val1 - $val2;
     }
@@ -215,11 +219,11 @@ class MUtil_Date extends Zend_Date
             $difference = -$difference;
             $ending = $translate->_("%s to go");
         }
-        
+
         for ($j = 0; $j < 7 && $difference >= $lengths[$j]; $j++) {
             $difference /= $lengths[$j];
         }
-        
+
         $difference = round($difference);
 
         switch ($j) {

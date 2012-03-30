@@ -132,7 +132,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
             // TODO: Timezone seems to screw this one up
             //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
             $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
-            $days = $dateTime->diffDays(new MUtil_Date());
+            $days = $dateTime->diffDays();
 
             switch ($days) {
                 case -2:
