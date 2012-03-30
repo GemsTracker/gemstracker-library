@@ -87,14 +87,14 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Switch to set display of respondent dropdown on or off
      *
-     * @var boolean
+     * @var mixed When string, string is used for display, when false, nothing is displayed
      */
     public $showForRespondents = true;
 
     /**
      * Switch to set display of staff dropdown on or off
      *
-     * @var boolean
+     * @var mixed When string, string is used for display, when false, nothing is displayed
      */
     public $showForStaff = true;
 
@@ -102,23 +102,26 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Switch to set display of track dropdown on or off
      *
-     * @var boolean
+     * @var mixed When string, string is used for display, when false, nothing is displayed
      */
     public $showForTracks = true;
 
-    protected function _getTracks($trackType, $pageRef)
+    /**
+     *
+     * @var mixed When string, string is used for display, when false, nothing is displayed
+     */
+    public $showTitle = true;
+
+    protected function _getTracks($trackType, $pageRef, $trackTypeDescription)
     {
         switch ($trackType) {
             case 'T':
-                $trackTypeDescription = $this->_('Tracks');
                 $trackController = 'track';
                 break;
             case 'S':
-                $trackTypeDescription = $this->_('by Respondents');
                 $trackController = 'survey';
                 break;
             case 'M':
-                $trackTypeDescription = $this->_('by Staff');
                 $trackController = 'survey';
                 break;
             default:
@@ -204,6 +207,30 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        if ($this->showForRespondents && is_bool($this->showForRespondents)) {
+            $this->showForRespondents = $this->_('by Respondents');
+        }
+        if ($this->showForStaff && is_bool($this->showForStaff)) {
+            $this->showForStaff = $this->_('by Staff');
+        }
+        if ($this->showForTracks && is_bool($this->showForTracks)) {
+            $this->showForTracks = $this->_('Tracks');
+        }
+        if ($this->showTitle && is_bool($this->showTitle)) {
+            $this->showTitle = $this->_('Add');
+        }
+
+        return parent::checkRegistryRequestsAnswers();
+    }
+
+    /**
      * Allow manual assignment of surveys/tracks to a patient
      *
      * If project uses the Gems_Project_Tracks_MultiTracksInterface, show a track drowpdown
@@ -225,16 +252,18 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             $pageRef = array(MUtil_Model::REQUEST_ID => $this->request->getParam(MUtil_Model::REQUEST_ID));
 
             $addToLists = MUtil_Html::create()->div(array('class' => 'tooldock'));
-            $addToLists->strong($this->_('Add'));
+            if ($this->showTitle) {
+                $addToLists->strong($this->showTitle);
+            }
             if ($this->showForTracks && ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface)) {
-                $addToLists[] = $this->_getTracks('T', $pageRef);
+                $addToLists[] = $this->_getTracks('T', $pageRef, $this->showForTracks);
             }
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
                 if ($this->showForRespondents) {
-                    $addToLists[] = $this->_getTracks('S', $pageRef);
+                    $addToLists[] = $this->_getTracks('S', $pageRef, $this->showForRespondents);
                 }
                 if ($this->showForStaff) {
-                    $addToLists[] = $this->_getTracks('M', $pageRef);
+                    $addToLists[] = $this->_getTracks('M', $pageRef, $this->showForStaff);
                 }
             }
 
