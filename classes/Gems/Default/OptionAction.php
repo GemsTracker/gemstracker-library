@@ -92,6 +92,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
          ****************/
         if ($this->_request->isPost() && $form->isValid($_POST, false)) {
             $this->addMessage($this->_('New password is active.'));
+			$user->gotoStartPage($this->menu, $this->getRequest());
             $this->_reroute(array($this->getRequest()->getActionKey() => 'edit'));
         } else {
             $this->addMessage($form->getErrorMessages());

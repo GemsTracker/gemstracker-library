@@ -260,8 +260,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         // Veld inlognaam
         $element = new Zend_Form_Element_Text('userlogin');
         $element->setLabel($this->_('Username'));
-        $element->setAttrib('size', 10);
-        $element->setAttrib('maxlength', 20);
+        $element->setAttrib('size', 40);
         $element->setRequired(true);
 
         return $element;
