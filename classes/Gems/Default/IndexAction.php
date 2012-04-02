@@ -139,7 +139,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected function displayResetForm(Gems_User_Form_ResetForm $form, $errors)
     {
         if ($form->hasResetKey()) {
-            $this->html->h3($this->_('Request password reset'));
+            $this->html->h3($this->_('Execute password reset'));
             $p = $this->html->pInfo($this->_('We received your password reset request. '));
 
             if ($form->getOrganizationIsVisible()) {
@@ -148,7 +148,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $p->append($this->_('Please enter the username or e-mail address belonging to this request.'));
             }
         } else {
-            $this->html->h3($this->_('Execute password reset'));
+            $this->html->h3($this->_('Request password reset'));
 
             $p = $this->html->pInfo();
             if ($form->getOrganizationIsVisible()) {
