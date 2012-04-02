@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 22:04+0100\n"
+"POT-Creation-Date: 2012-04-02 19:39+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1049,7 +1049,6 @@ msgid "%s records found."
 msgstr "%s records gevonden."
 
 #: classes/Gems/Default/ExportAction.php:172
-#: classes/Gems/Default/IndexAction.php:190
 #: classes/Gems/Default/LogAction.php:197
 msgid "Organization"
 msgstr "Organisatie"
@@ -1086,54 +1085,64 @@ msgid "Administrative groups"
 msgstr "Beheer groepen"
 
 #: classes/Gems/Default/IndexAction.php:142
-#, php-format
-msgid "Login to %s application"
-msgstr "%s login"
+msgid "Request password reset"
+msgstr "Wachtwoord vergeten?"
 
-#: classes/Gems/Default/IndexAction.php:161
-msgid "Back to login"
-msgstr "Terug naar de login"
+#: classes/Gems/Default/IndexAction.php:143
+msgid "We received your password reset request. "
+msgstr "We hebben uw verzoek om een nieuw wachtwoord ontvangen."
 
-#: classes/Gems/Default/IndexAction.php:212
-#, php-format
-msgid "Reset password for %s application"
-msgstr "Reset wachtwoord voor %s"
+#: classes/Gems/Default/IndexAction.php:146
+msgid "Please enter the organization and username/e-mail address belonging to this request."
+msgstr "Voer de organisatie en de gebruikersnaam of het e-mail adres in die bij dit verzoek horen."
 
-#: classes/Gems/Default/IndexAction.php:216
-msgid "Reset password"
-msgstr "Reset wachtwoord"
+#: classes/Gems/Default/IndexAction.php:148
+msgid "Please enter the username or e-mail address belonging to this request."
+msgstr "Voer de gebruikersnaam of het e-mail adres in die bij dit verzoek horen."
 
-#: classes/Gems/Default/IndexAction.php:262
-msgid "Username"
-msgstr "Gebruikersnaam"
+#: classes/Gems/Default/IndexAction.php:151
+msgid "Execute password reset"
+msgstr "Vervang vergeten passwood"
 
-#: classes/Gems/Default/IndexAction.php:294
+#: classes/Gems/Default/IndexAction.php:155
+msgid "Please enter your organization and your username or e-mail address. "
+msgstr "Geef uw organisatie en uw email adres of de gebruikersnaam op."
+
+#: classes/Gems/Default/IndexAction.php:157
+msgid "Please enter your username or e-mail address. "
+msgstr "Geef uw email adres of gebruikersnaam op."
+
+#: classes/Gems/Default/IndexAction.php:159
+msgid "We will then send you an e-mail with a link you can use to reset your password."
+msgstr "Daarna sturen wij een een email met een link waarmee u uw wachtwoord kan vervangen."
+
+#: classes/Gems/Default/IndexAction.php:193
 msgid "Your password must be changed."
 msgstr "Uw wachtwoord moet veranderd worden."
 
-#: classes/Gems/Default/IndexAction.php:306
+#: classes/Gems/Default/IndexAction.php:205
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login in orde, welkom %s."
 
-#: classes/Gems/Default/IndexAction.php:348
+#: classes/Gems/Default/IndexAction.php:248
 #, php-format
 msgid "Good bye: %s."
 msgstr "Tot ziens: %s."
 
-#: classes/Gems/Default/IndexAction.php:373
+#: classes/Gems/Default/IndexAction.php:274
 msgid "Reset accepted, enter your new password."
 msgstr "Reset geaccepteerd, voer uw nieuwe wachtwoord in."
 
-#: classes/Gems/Default/IndexAction.php:377
+#: classes/Gems/Default/IndexAction.php:278
 msgid "This key timed out or does not belong to this user."
 msgstr "Te oude sleutel of sleutel hoort niet bij gebruiker."
 
-#: classes/Gems/Default/IndexAction.php:380
+#: classes/Gems/Default/IndexAction.php:281
 msgid "Password reset requested"
 msgstr "Wachtwoord reset aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:381
+#: classes/Gems/Default/IndexAction.php:282
 msgid ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
@@ -1141,21 +1150,13 @@ msgstr ""
 "Om een nieuw wachtwoord in te stellen voor de [b]{organization}[/b] site [b]{project}[/b], klik op deze link:\n"
 "{reset_url}"
 
-#: classes/Gems/Default/IndexAction.php:386
+#: classes/Gems/Default/IndexAction.php:287
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We hebben u een email met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:391
+#: classes/Gems/Default/IndexAction.php:291
 msgid "No such user found or no e-mail address known or user cannot be reset."
 msgstr "Gebruiker niet gevonden of e-mail adres onbekend of gebruiker kan niet gereset worden."
-
-#: classes/Gems/Default/IndexAction.php:395
-msgid "We received your password reset key."
-msgstr "Wachtwoord resetsleutel ontvangen."
-
-#: classes/Gems/Default/IndexAction.php:396
-msgid "Please enter the organization and username belonging to this key."
-msgstr "Geef de organisatie en gebruikersnaam die bij deze sleutel horen op."
 
 #: classes/Gems/Default/InvitationAction.php:52
 msgid "Invite"
@@ -1476,30 +1477,30 @@ msgstr "U mag uw wachtwoord niet wijzigen."
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/OptionAction.php:128
+#: classes/Gems/Default/OptionAction.php:129
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: classes/Gems/Default/OptionAction.php:135
+#: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:132
 #: classes/Gems/Default/RespondentAction.php:175
 msgid "Language"
 msgstr "Taal"
 
-#: classes/Gems/Default/OptionAction.php:145
+#: classes/Gems/Default/OptionAction.php:146
 #, php-format
 msgid "Options"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/OptionAction.php:154
+#: classes/Gems/Default/OptionAction.php:155
 msgid "This overview provides information about the last login activity on your account."
 msgstr "Dit overzicht geeft informatie over de recente inlog activiteit op uw account."
 
-#: classes/Gems/Default/OptionAction.php:174
+#: classes/Gems/Default/OptionAction.php:175
 msgid "Date / time"
 msgstr "Datum / tijd"
 
-#: classes/Gems/Default/OptionAction.php:185
+#: classes/Gems/Default/OptionAction.php:186
 msgid "Item"
 msgstr "Item"
 
@@ -2852,6 +2853,10 @@ msgstr "Onderhoudsmodus"
 msgid "Clean cache"
 msgstr "Cache opruimen"
 
+#: classes/Gems/Menu/MenuAbstract.php:390
+msgid "Reset password"
+msgstr "Reset wachtwoord"
+
 #: classes/Gems/Menu/MenuAbstract.php:416
 msgid "Check status"
 msgstr "Status controle"
@@ -3674,17 +3679,29 @@ msgstr "Een wachtwoord:"
 msgid "Caps Lock seems to be on!"
 msgstr "De Caps Lock toets lijkt aan te staan!"
 
-#: classes/Gems/User/Form/LoginForm.php:274
+#: classes/Gems/User/Form/LoginForm.php:132
 msgid "Combination of user and password not found."
 msgstr "Combinatie van gebruikersnaam en wachtwoord niet gevonden."
 
-#: classes/Gems/User/Form/LoginForm.php:276
+#: classes/Gems/User/Form/LoginForm.php:134
 msgid "Combination of user and password not found for this organization."
 msgstr "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 
-#: classes/Gems/User/Form/LoginForm.php:349
+#: classes/Gems/User/Form/LoginForm.php:182
 msgid "Enter your token..."
 msgstr "Voer uw kenmerk in..."
+
+#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: classes/Gems/User/Form/ResetForm.php:77
+msgid "Back to login"
+msgstr "Terug naar de login"
+
+#: classes/Gems/User/Form/ResetForm.php:131
+msgid "Request password"
+msgstr "Verzoek nieuw"
 
 #: classes/Gems/Util/ReceptionCodeLibrary.php:100
 msgid "Yes (forget answers)"
@@ -4039,6 +4056,7 @@ msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
+#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Toon vragenlijst"
 
@@ -4175,6 +4193,12 @@ msgstr "Geen toegang tot andere organisaties."
 #: snippets/Organization/OrganizationEditSnippet.php:115
 msgid "Can access"
 msgstr "Toegang tot"
+
+#~ msgid "Login to %s application"
+#~ msgstr "%s login"
+
+#~ msgid "Reset password for %s application"
+#~ msgstr "Reset wachtwoord voor %s"
 
 #~ msgid "To reset your password for %s, please click this link: %s"
 #~ msgstr "Om uw wachtwoord voor %s te resetten, klik op deze link: %s"

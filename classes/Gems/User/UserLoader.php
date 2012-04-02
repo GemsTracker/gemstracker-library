@@ -301,10 +301,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $args = MUtil_Ra::args(func_get_args());
 
-        if (isset($args['description'])) {
-            $args['description'] = sprintf($args['description'], $this->project->getName());
-        }
-
         $form = $this->_loadClass('Form_LoginForm', true, array($args));
 
         return $form;
@@ -391,6 +387,25 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     public function getPasswordChecker()
     {
         return $this->_getClass('passwordChecker');
+    }
+
+    /**
+     * Returns a reset form for handling both the incoming request and the outgoing reset request
+     *
+     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
+     * @return Gems_User_Form_ResetForm
+     */
+    public function getResetForm($args_array = null)
+    {
+        $args = MUtil_Ra::args(func_get_args());
+
+        if (isset($args['description'])) {
+            $args['description'] = sprintf($args['description'], $this->project->getName());
+        }
+
+        $form = $this->_loadClass('Form_ResetForm', true, array($args));
+
+        return $form;
     }
 
     /**

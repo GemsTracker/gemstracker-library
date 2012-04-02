@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements Gems_User_Validate_GetUserInterface
+class Gems_User_Form_LoginForm extends Gems_User_Form_OrganizationFormAbstract
 {
     /**
      * The field name for the lost password element.
@@ -54,20 +54,6 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
     protected $_lostPasswordFieldName = 'lost_password';
 
     /**
-     * When true the organization was derived from the the url
-     *
-     * @var boolean
-     */
-    protected $_organizationFromUrl = false;
-
-    /**
-     * The field name for the submit element.
-     *
-     * @var string
-     */
-    protected $_submitFieldName = 'button';
-
-    /**
      * The field name for the token element.
      *
      * @var string
@@ -75,45 +61,11 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
     protected $_tokenFieldName = 'token_link';
 
     /**
-     *
-     * @var Gems_User_User
-     */
-    protected $_user;
-
-    /**
-     *
-     * @var Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     * The field name for the organization element.
-     *
-     * @var string
-     */
-    public $organizationFieldName = 'organization';
-
-    /**
-     * For small numbers of organizations a multiline selectbox will be nice. This
-     * setting handles how many lines will display at once. Use 1 for the normal
-     * dropdown selectbox
-     *
-     * @var int
-     */
-    protected $organizationMaxLines = 6;
-
-    /**
      * The field name for the password element.
      *
      * @var string
      */
     public $passwordFieldName = 'password';
-
-    /**
-     *
-     * @var Zend_Controller_Request_Abstract
-     */
-    protected $request;
 
     /**
      * The default behaviour for showing a lost password button
@@ -128,59 +80,6 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
      * @var boolean
      */
     protected $showToken = true;
-
-    /**
-     *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     * The field name for the username element.
-     *
-     * @var string
-     */
-    public $usernameFieldName = 'userlogin';
-
-    /**
-     *
-     * @var Zend_Util
-     */
-    protected $util;
-
-    /**
-     * Returns the organization id that should currently be used for this form.
-     *
-     * @return int Returns the current organization id, if any
-     */
-    public function getCurrentOrganizationId()
-    {
-        $userLoader = $this->loader->getUserLoader();
-
-        // Url determines organization first.
-        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
-            $this->_organizationFromUrl = true;
-            $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
-            return $orgId;
-        }
-
-        $request = $this->getRequest();
-        if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
-            return $orgId;
-        }
-
-        return $userLoader->getCurrentUser()->getCurrentOrganizationId();
-    }
-
-    /**
-     *  Returns a list with the organizations the user can select for login.
-     *
-     * @return array orgId => Name
-     */
-    public function getLoginOrganizations()
-    {
-        return $this->util->getDbLookup()->getOrganizationsForLogin();
-    }
 
     /**
      * Returns/sets a link to the reset password page
@@ -214,47 +113,6 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
     }
 
     /**
-     * Returns/sets an element for determining / selecting the organization.
-     *
-     * @return Zend_Form_Element_Xhtml
-     */
-    public function getOrganizationElement()
-    {
-        $element = $this->getElement($this->organizationFieldName);
-        $orgId   = $this->getCurrentOrganizationId();
-        $orgs    = $this->getLoginOrganizations();
-        $hidden  = $this->_organizationFromUrl || (count($orgs) < 2);
-
-        if ($hidden) {
-            if (! $element instanceof Zend_Form_Element_Hidden) {
-                $element = new Zend_Form_Element_Hidden($this->organizationFieldName);
-
-                $this->addElement($element);
-            }
-
-            if (! $this->_organizationFromUrl) {
-                $orgIds = array_keys($orgs);
-                $orgId  = reset($orgIds);
-            }
-
-        } elseif (! $element instanceof Zend_Form_Element_Select) {
-            $element = new Zend_Form_Element_Select($this->organizationFieldName);
-            $element->setLabel($this->translate->_('Organization'));
-            $element->setRequired(true);
-            $element->setMultiOptions($orgs);
-
-            if ($this->organizationMaxLines > 1) {
-                $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
-            }
-            $this->addElement($element);
-
-        }
-        $element->setValue($orgId);
-
-        return $element;
-    }
-
-    /**
      * Returns/sets a password element.
      *
      * @return Zend_Form_Element_Password
@@ -284,38 +142,13 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
     }
 
     /**
-     * Return the Request object
+     * Returns the label for the submitbutton
      *
-     * @return Zend_Controller_Request_Abstract
+     * @return string
      */
-    public function getRequest()
+    public function getSubmitButtonLabel()
     {
-        if (! $this->request) {
-            $this->request = Zend_Controller_Front::getInstance()->getRequest();
-        }
-        return $this->request;
-    }
-
-    /**
-     * Returns/sets a submit button.
-     *
-     * @param string $label
-     * @return Zend_Form_Element_Submit
-     */
-    public function getSubmitButton($label = null)
-    {
-        $element = $this->getElement($this->_submitFieldName);
-
-        if (! $element) {
-            // Submit knop
-            $element = new Zend_Form_Element_Submit($this->_submitFieldName);
-            $element->setLabel(null === $label ? $this->translate->_('Login') : $label);
-            $element->setAttrib('class', 'button');
-
-            $this->addElement($element);
-        }
-
-        return $element;
+        return $this->translate->_('Login');
     }
 
     /**
@@ -350,58 +183,6 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
     }
 
     /**
-     * Returns a user
-     *
-     * @return Gems_User_User
-     */
-    public function getUser()
-    {
-        return $this->_user;
-    }
-
-    /**
-     * Returns/sets a login name element.
-     *
-     * @return Zend_Form_Element_Text
-     */
-    public function getUserNameElement()
-    {
-        $element = $this->getElement($this->usernameFieldName);
-
-        if (! $element) {
-            // Veld inlognaam
-            $element = new Zend_Form_Element_Text($this->usernameFieldName);
-            $element->setLabel($this->translate->_('Username'));
-            $element->setAttrib('size', 40);
-            $element->setRequired(true);
-
-            $this->addElement($element);
-        }
-
-        return $element;
-    }
-
-    /**
-     * Validate the form
-     *
-     * As it is better for translation utilities to set the labels etc. translated,
-     * the MUtil default is to disable translation.
-     *
-     * However, this also disables the translation of validation messages, which we
-     * cannot set translated. The MUtil form is extended so it can make this switch.
-     *
-     * @param  array   $data
-     * @param  boolean $disableTranslateValidators Extra switch
-     * @return boolean
-     */
-    public function isValid($data, $disableTranslateValidators = null)
-    {
-        $this->_user = $this->loader->getUser($data[$this->usernameFieldName], $data[$this->organizationFieldName]);
-
-        return parent::isValid($data, $disableTranslateValidators);
-    }
-
-    /**
      * The function that determines the element load order
      *
      * @return Gems_User_Form_LoginForm (continuation pattern)
@@ -419,23 +200,6 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
         if ($this->showToken) {
             $this->getTokenElement();
         }
-
-        return $this;
-    }
-
-    /**
-     * For small numbers of organizations a multiline selectbox will be nice. This
-     * setting handles how many lines will display at once. Use 1 for the normal
-     * dropdown selectbox
-     *
-     * Enables loading of parameter through Zend_Form::__construct()
-     *
-     * @param int $organizationMaxLines
-     * @return Gems_User_Form_LoginForm (continuation pattern)
-     */
-    public function setOrganizationMaxLines($organizationMaxLines)
-    {
-        $this->organizationMaxLines = $organizationMaxLines;
 
         return $this;
     }
@@ -468,15 +232,5 @@ class Gems_User_Form_LoginForm extends Gems_Form_AutoLoadFormAbstract implements
         $this->showToken = $showToken;
 
         return $this;
-    }
-
-    /**
-     * True when this form was submitted.
-     *
-     * @return boolean
-     */
-    public function wasSubmitted()
-    {
-        return $this->getSubmitButton()->isChecked();
     }
 }

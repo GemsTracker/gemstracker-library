@@ -55,21 +55,6 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected $labelWidthFactor = null;
 
     /**
-     * @var GemsEscort
-     */
-    public $escort;
-
-    /**
-     * @var Gems_Menu
-     */
-    public $menu;
-
-    /**
-     * @var Gems_Project_ProjectSettings
-     */
-    public $project;
-
-    /**
      * For small numbers of organizations a multiline selectbox will be nice. This
      * setting handles how many lines will display at once. Use 1 for the normal
      * dropdown selectbox
@@ -93,53 +78,22 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected $showTokenButton = true;
 
     /**
-     * Returns a basic form for this action.
-     *
-     * @param $description Optional description, %s is filled with project name.
-     * @return Gems_Form
-     */
-    protected function _getBasicForm($description = null)
-    {
-        Gems_Html::init();
-
-        $form = new Gems_Form(array('labelWidthFactor' => $this->labelWidthFactor));
-        $form->setMethod('post');
-        if ($description) {
-            $form->setDescription(sprintf($description, $this->project->getName()));
-        }
-
-        return $form;
-    }
-
-    /**
-     * Returns an element for keeping a reset key.
-     *
-     * @return Zend_Form_Element_Hidden
-     */
-    protected function _getKeyElement()
-    {
-        return new Zend_Form_Element_Hidden('key');
-    }
-
-    /**
      * Returns a login form
      *
      * @param boolean $showToken Optional, show 'Ask token' button, $this->showTokenButton is used when not specified
      * @param boolean $showPasswordLost Optional, show 'Lost password' button, $this->showPasswordLostButton is used when not specified
      * @return Gems_User_Form_LoginForm
      */
-    protected function _getLoginForm($showToken = null, $showPasswordLost = null)
+    protected function createLoginForm($showToken = null, $showPasswordLost = null)
     {
         $args = MUtil_Ra::args(func_get_args(),
                 array(
                     'showToken' => 'is_boolean',
                     'showPasswordLost' => 'is_boolean',
-                    'description' => 'is_string',
                     ),
                 array(
                     'showToken' => $this->showTokenButton,
                     'showPasswordLost' => $this->showPasswordLostButton,
-                    'description' => $this->_('Login to %s application'),
                     'labelWidthFactor' => $this->labelWidthFactor,
                     ));
 
@@ -149,121 +103,67 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     }
 
     /**
-     * Returns a link to the login page
-     *
-     * @return MUtil_Form_Element_Html
-     */
-    protected function _getLoginLinkElement()
-    {
-        // Reset password
-        $element = new MUtil_Form_Element_Html('resetPassword');
-        $element->br();
-        $element->actionLink(array('controller' => 'index', 'action' => 'login'), $this->_('Back to login'));
-
-        return $element;
-    }
-
-    /**
-     * Returns an element for determining / selecting the organization.
-     *
-     * @return Zend_Form_Element_Xhtml
-     */
-    protected function _getOrganizationElement()
-    {
-        $hidden = $this->escort instanceof Gems_Project_Organization_SingleOrganizationInterface;
-        if ($hidden) {
-            $org = $this->escort->getRespondentOrganization();
-        } else {
-            $org = $this->loader->getCurrentUser()->getCurrentOrganizationId();
-            $orgs = $this->util->getDbLookup()->getOrganizationsForLogin();
-            $hidden = count($orgs) < 2;
-            if ($hidden) {
-                $org = array_shift(array_keys($orgs));
-            }
-        }
-
-        if ($hidden) {
-            $element = new Zend_Form_Element_Hidden('organization');
-            $element->setValue($org);
-        } else {
-            $element = new Zend_Form_Element_Select('organization');
-            $element->setLabel($this->_('Organization'));
-            $element->setMultiOptions($orgs);
-            $element->setRequired(true);
-            if ($this->organizationMaxLines > 1) {
-                $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
-            }
-
-            if (! $this->_request->isPost()) {
-                $element->setValue($org);
-            }
-        }
-
-        return $element;
-    }
-
-    /**
      * Gets a reset password form.
      *
-     * @return Gems_Form
+     * @return Gems_User_Form_ResetForm
      */
-    protected function _getResetForm()
+    protected function createResetForm()
     {
-        $form = $this->_getBasicForm($this->_('Reset password for %s application'));
-        $form->addElement($this->_getKeyElement());
-        $form->addElement($this->_getOrganizationElement());
-        $form->addElement($this->_getUserLoginElement());
-        $form->addElement($this->_getSubmitButton($this->_('Reset password')));
-        $form->addElement($this->_getLoginLinkElement());
+        $args = MUtil_Ra::args(func_get_args(),
+                array(),
+                array(
+                    'labelWidthFactor' => $this->labelWidthFactor,
+                    ));
 
-        return $form;
+        $this->initHtml();
+
+        return $this->loader->getUserLoader()->getResetForm($args);
     }
 
     /**
-     * Returns a link to the reset password page
+     * Function for overruling the display of the login form.
      *
-     * @return MUtil_Form_Element_Html
+     * @param Gems_User_Form_LoginForm $form
      */
-    protected function _getResetLinkElement()
+    protected function displayLoginForm(Gems_User_Form_LoginForm $form)
     {
-        // Reset password
-        $element = new MUtil_Form_Element_Html('resetPassword');
-        $element->br();
-        $element->actionLink(array('controller' => 'index', 'action' => 'resetpassword'), $this->_('Lost password'));
-
-        return $element;
+        $this->view->form = $form;
     }
 
     /**
-     * Returns a submit button.
+     * Function for overruling the display of the reset form.
      *
-     * @param string $label
-     * @return Zend_Form_Element_Submit
+     * @param Gems_User_Form_ResetForm $form
+     * @param mixed $errors
      */
-    protected function _getSubmitButton($label)
+    protected function displayResetForm(Gems_User_Form_ResetForm $form, $errors)
     {
-        // Submit knop
-        $element = new Zend_Form_Element_Submit('button');
-        $element->setLabel($label);
-        $element->setAttrib('class', 'button');
+        if ($form->hasResetKey()) {
+            $this->html->h3($this->_('Request password reset'));
+            $p = $this->html->pInfo($this->_('We received your password reset request. '));
 
-        return $element;
-    }
+            if ($form->getOrganizationIsVisible()) {
+                $p->append($this->_('Please enter the organization and username/e-mail address belonging to this request.'));
+            } else {
+                $p->append($this->_('Please enter the username or e-mail address belonging to this request.'));
+            }
+        } else {
+            $this->html->h3($this->_('Execute password reset'));
 
-    /**
-     * Returns a login name element.
-     *
-     * @return Zend_Form_Element_Text
-     */
-    protected function _getUserLoginElement()
-    {
-        // Veld inlognaam
-        $element = new Zend_Form_Element_Text('userlogin');
-        $element->setLabel($this->_('Username'));
-        $element->setAttrib('size', 40);
-        $element->setRequired(true);
+            $p = $this->html->pInfo();
+            if ($form->getOrganizationIsVisible()) {
+                $p->append($this->_('Please enter your organization and your username or e-mail address. '));
+            } else {
+                $p->append($this->_('Please enter your username or e-mail address. '));
+            }
+            $p->append($this->_('We will then send you an e-mail with a link you can use to reset your password.'));
+        }
 
-        return $element;
+        if ($errors) {
+            $this->addMessage($errors);
+        }
+
+        $this->html->append($form);
     }
 
     /**
@@ -277,7 +177,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public function loginAction()
     {
         $request = $this->getRequest();
-        $form    = $this->_getLoginForm();
+        $form    = $this->createLoginForm();
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost(), false)) {
@@ -334,7 +234,8 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $log->log('loginFail', $this->getRequest(), $msg, null, true);
             } // */
         }
-        $this->view->form = $form;
+
+        $this->displayLoginForm($form);
     }
 
     /**
@@ -358,10 +259,11 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
 
         $request = $this->getRequest();
-        $form = $this->_getResetForm();
-        if ($request->isPost() && $form->isValid($request->getPost())) {
+        $errors  = array();
+        $form    = $this->createResetForm();
+        if ($request->isPost() && $form->isValid($request->getParams())) {
 
-            $user = $this->loader->getUser($request->getParam('userlogin'), $request->getParam('organization'));
+            $user = $form->getUser();
 
             If ($user->canResetPassword()) {
                 if ($key = $request->getParam('key')) {
@@ -373,27 +275,23 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                         $user->gotoStartPage($this->menu, $request);
                         return;
                     } else {
-                        $this->addMessage($this->_('This key timed out or does not belong to this user.'));
+                        $errors[] = $this->_('This key timed out or does not belong to this user.');
                     }
                 } else {
                     $subjectTemplate = $this->_('Password reset requested');
                     $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
 
-                    $messages = $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
-                    if (! $messages) {
+                    $errors = $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
+                    if (! $errors) {
                         // Everything went OK!
-                        $messages = $this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.');
+                        $errors[] = $this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.');
                     }
-                    $this->addMessage($messages);
                 }
             } else {
-                $this->addMessage($this->_('No such user found or no e-mail address known or user cannot be reset.'));
+                $errors[] = $this->_('No such user found or no e-mail address known or user cannot be reset.');
             }
         }
-        if ($request->getParam('key')) {
-            $this->addMessage($this->_('We received your password reset key.'));
-            $this->addMessage($this->_('Please enter the organization and username belonging to this key.'));
-        }
-        $this->view->form = $form;
+
+        $this->displayResetForm($form, $errors);
     }
 }

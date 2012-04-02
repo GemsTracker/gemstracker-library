@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 22:04+0100\n"
+"POT-Creation-Date: 2012-04-02 19:39+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1049,7 +1049,6 @@ msgid "%s records found."
 msgstr "%s records found."
 
 #: classes/Gems/Default/ExportAction.php:172
-#: classes/Gems/Default/IndexAction.php:190
 #: classes/Gems/Default/LogAction.php:197
 msgid "Organization"
 msgstr "Organization"
@@ -1086,54 +1085,64 @@ msgid "Administrative groups"
 msgstr "Administrative groups"
 
 #: classes/Gems/Default/IndexAction.php:142
-#, php-format
-msgid "Login to %s application"
-msgstr "Login to %s application"
+msgid "Request password reset"
+msgstr "Request password reset"
 
-#: classes/Gems/Default/IndexAction.php:161
-msgid "Back to login"
-msgstr "Back to login"
+#: classes/Gems/Default/IndexAction.php:143
+msgid "We received your password reset request. "
+msgstr "We received your password reset request. "
 
-#: classes/Gems/Default/IndexAction.php:212
-#, php-format
-msgid "Reset password for %s application"
-msgstr "Reset password for %s application"
+#: classes/Gems/Default/IndexAction.php:146
+msgid "Please enter the organization and username/e-mail address belonging to this request."
+msgstr "Please enter the organization and username/e-mail address belonging to this request."
 
-#: classes/Gems/Default/IndexAction.php:216
-msgid "Reset password"
-msgstr "Reset password"
+#: classes/Gems/Default/IndexAction.php:148
+msgid "Please enter the username or e-mail address belonging to this request."
+msgstr "Please enter the username or e-mail address belonging to this request."
 
-#: classes/Gems/Default/IndexAction.php:262
-msgid "Username"
-msgstr "Username"
+#: classes/Gems/Default/IndexAction.php:151
+msgid "Execute password reset"
+msgstr "Execute password reset"
 
-#: classes/Gems/Default/IndexAction.php:294
+#: classes/Gems/Default/IndexAction.php:155
+msgid "Please enter your organization and your username or e-mail address. "
+msgstr "Please enter your organization and your username or e-mail address. "
+
+#: classes/Gems/Default/IndexAction.php:157
+msgid "Please enter your username or e-mail address. "
+msgstr "Please enter your username or e-mail address. "
+
+#: classes/Gems/Default/IndexAction.php:159
+msgid "We will then send you an e-mail with a link you can use to reset your password."
+msgstr "We will then send you an e-mail with a link you can use to reset your password."
+
+#: classes/Gems/Default/IndexAction.php:193
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:306
+#: classes/Gems/Default/IndexAction.php:205
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:348
+#: classes/Gems/Default/IndexAction.php:248
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:373
+#: classes/Gems/Default/IndexAction.php:274
 msgid "Reset accepted, enter your new password."
 msgstr "Reset accepted, enter your new password."
 
-#: classes/Gems/Default/IndexAction.php:377
+#: classes/Gems/Default/IndexAction.php:278
 msgid "This key timed out or does not belong to this user."
 msgstr "This key timed out or does not belong to this user."
 
-#: classes/Gems/Default/IndexAction.php:380
+#: classes/Gems/Default/IndexAction.php:281
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:381
+#: classes/Gems/Default/IndexAction.php:282
 msgid ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
@@ -1141,21 +1150,13 @@ msgstr ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
 
-#: classes/Gems/Default/IndexAction.php:386
+#: classes/Gems/Default/IndexAction.php:287
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:391
+#: classes/Gems/Default/IndexAction.php:291
 msgid "No such user found or no e-mail address known or user cannot be reset."
 msgstr "No such user found or no e-mail address known or user cannot be reset."
-
-#: classes/Gems/Default/IndexAction.php:395
-msgid "We received your password reset key."
-msgstr "We received your password reset key."
-
-#: classes/Gems/Default/IndexAction.php:396
-msgid "Please enter the organization and username belonging to this key."
-msgstr "Please enter the organization and username belonging to this key."
 
 #: classes/Gems/Default/InvitationAction.php:52
 msgid "Invite"
@@ -1476,30 +1477,30 @@ msgstr "You are not allowed to change your password."
 msgid "New password is active."
 msgstr "New password is active."
 
-#: classes/Gems/Default/OptionAction.php:128
+#: classes/Gems/Default/OptionAction.php:129
 msgid "Login Name"
 msgstr "Login Name"
 
-#: classes/Gems/Default/OptionAction.php:135
+#: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:132
 #: classes/Gems/Default/RespondentAction.php:175
 msgid "Language"
 msgstr "Language"
 
-#: classes/Gems/Default/OptionAction.php:145
+#: classes/Gems/Default/OptionAction.php:146
 #, php-format
 msgid "Options"
 msgstr "Options"
 
-#: classes/Gems/Default/OptionAction.php:154
+#: classes/Gems/Default/OptionAction.php:155
 msgid "This overview provides information about the last login activity on your account."
 msgstr "This overview provides information about the last login activity on your account."
 
-#: classes/Gems/Default/OptionAction.php:174
+#: classes/Gems/Default/OptionAction.php:175
 msgid "Date / time"
 msgstr "Date / time"
 
-#: classes/Gems/Default/OptionAction.php:185
+#: classes/Gems/Default/OptionAction.php:186
 msgid "Item"
 msgstr "Item"
 
@@ -2852,6 +2853,10 @@ msgstr "Maintenance mode"
 msgid "Clean cache"
 msgstr "Clean cache"
 
+#: classes/Gems/Menu/MenuAbstract.php:390
+msgid "Reset password"
+msgstr "Reset password"
+
 #: classes/Gems/Menu/MenuAbstract.php:416
 msgid "Check status"
 msgstr "Check status"
@@ -3674,17 +3679,29 @@ msgstr "A password:"
 msgid "Caps Lock seems to be on!"
 msgstr "Caps Lock seems to be on!"
 
-#: classes/Gems/User/Form/LoginForm.php:274
+#: classes/Gems/User/Form/LoginForm.php:132
 msgid "Combination of user and password not found."
 msgstr "Combination of user and password not found."
 
-#: classes/Gems/User/Form/LoginForm.php:276
+#: classes/Gems/User/Form/LoginForm.php:134
 msgid "Combination of user and password not found for this organization."
 msgstr "Combination of user and password not found for this organization."
 
-#: classes/Gems/User/Form/LoginForm.php:349
+#: classes/Gems/User/Form/LoginForm.php:182
 msgid "Enter your token..."
 msgstr "Enter your token..."
+
+#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
+msgid "Username"
+msgstr "Username"
+
+#: classes/Gems/User/Form/ResetForm.php:77
+msgid "Back to login"
+msgstr "Back to login"
+
+#: classes/Gems/User/Form/ResetForm.php:131
+msgid "Request password"
+msgstr "Request password"
 
 #: classes/Gems/Util/ReceptionCodeLibrary.php:100
 msgid "Yes (forget answers)"
@@ -4039,6 +4056,7 @@ msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
+#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Show survey"
 
@@ -4175,6 +4193,12 @@ msgstr "No access to other organizations."
 #: snippets/Organization/OrganizationEditSnippet.php:115
 msgid "Can access"
 msgstr "Can access"
+
+#~ msgid "Login to %s application"
+#~ msgstr "Login to %s application"
+
+#~ msgid "Reset password for %s application"
+#~ msgstr "Reset password for %s application"
 
 #~ msgid "To reset your password for %s, please click this link: %s"
 #~ msgstr "To reset your password for %s, please click this link: %s"
