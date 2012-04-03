@@ -1106,7 +1106,7 @@ msgstr "Vervang vergeten passwood"
 
 #: classes/Gems/Default/IndexAction.php:166
 msgid "We received your password reset request."
-msgstr "We hebben uw verzoek om een nieuw wachtwoord ontvangen."
+msgstr "We hebben uw verzoek voor een nieuw wachtwoord ontvangen."
 
 #: classes/Gems/Default/IndexAction.php:169
 #, php-format
@@ -1536,7 +1536,7 @@ msgstr "Standaard url's"
 #: classes/Gems/Default/OrganizationAction.php:125
 #, php-format
 msgid "Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."
-msgstr "Altijd naar deze organisatie overschakelen als %s vanaf één van deze door spatie gescheiden url's wordt aangeroepen. De eerste url wordt gebruikt voor e-mails."
+msgstr "Altijd naar deze organisatie overschakelen als %s vanaf één van deze door spatie gescheiden url's wordt aangeroepen. De eerste url wordt gebruikt voor emails."
 
 #: classes/Gems/Default/OrganizationAction.php:136
 msgid "Can the organization be used?"
@@ -1896,7 +1896,7 @@ msgstr "Contact informatie"
 
 #: classes/Gems/Default/RespondentAction.php:162
 msgid "Respondent has no e-mail"
-msgstr "Patiënt zonder e-mail"
+msgstr "Patiënt zonder email"
 
 #: classes/Gems/Default/RespondentAction.php:163
 msgid "With housenumber"
@@ -3639,7 +3639,7 @@ msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
 #: classes/Gems/User/User.php:1092
 msgid "Unable to send e-mail."
-msgstr "Verzenden e-mail mislukt."
+msgstr "Verzenden email mislukt."
 
 #: classes/Gems/User/UserLoader.php:234
 #: classes/Gems/User/UserLoader.php:248
