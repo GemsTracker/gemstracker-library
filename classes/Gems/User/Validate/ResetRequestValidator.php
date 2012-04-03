@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_User_Validate_ResetKeyValidator implements Zend_Validate_Interface
+class Gems_User_Validate_ResetRequestValidator implements Zend_Validate_Interface
 {
     /**
      * The error message
@@ -61,12 +61,6 @@ class Gems_User_Validate_ResetKeyValidator implements Zend_Validate_Interface
 
     /**
      *
-     * @var string
-     */
-    private $fieldName;
-
-    /**
-     *
      * @var Zend_Translate
      */
     private $translate;
@@ -75,13 +69,11 @@ class Gems_User_Validate_ResetKeyValidator implements Zend_Validate_Interface
      *
      * @param Gems_User_Validate_GetUserInterface $userSource The source for the user
      * @param Zend_Translate $translate
-     * @param string $fieldName Optional field name (hidden fields are not validated)
      */
-    public function __construct(Gems_User_Validate_GetUserInterface $userSource, Zend_Translate $translate, $fieldName)
+    public function __construct(Gems_User_Validate_GetUserInterface $userSource, Zend_Translate $translate)
     {
         $this->_userSource = $userSource;
         $this->translate   = $translate;
-        $this->fieldName   = $fieldName;
     }
 
     /**
@@ -111,17 +103,8 @@ class Gems_User_Validate_ResetKeyValidator implements Zend_Validate_Interface
 
         $user = $this->_userSource->getUser();
 
-        If ($user->isActive() && $user->canResetPassword()) {
-            $key = isset($context[$this->fieldName]) ? $context[$this->fieldName] : $valid;
-            if ($key) {
-                // Key has been passed by mail
-                if (! $user->checkPasswordResetKey($key)) {
-                    $this->_message = $this->translate->_('This key timed out or does not belong to this user.');
-                }
-            }
-            MUtil_Echo::track($key, $context, $this->_message);
-        } else {
-            $this->_message = $this->translate->_('No such user found or no e-mail address known or user cannot be reset.');
+        If (! ($user->isActive() && $user->canResetPassword() && $user->isAllowedOrganization($context['organization']))) {
+            $this->_message = $this->translate->_('User not found or no e-mail address known or user cannot be reset.');
         }
 
         return (boolean) ! $this->_message;

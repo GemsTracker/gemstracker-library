@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_User_Form_ResetForm extends Gems_User_Form_OrganizationFormAbstract
+class Gems_User_Form_ResetRequestForm extends Gems_User_Form_OrganizationFormAbstract
 {
     /**
      * The field name for the login link element
@@ -52,20 +52,6 @@ class Gems_User_Form_ResetForm extends Gems_User_Form_OrganizationFormAbstract
      * @var string
      */
     protected $_loginLinkFieldName = 'loginlink';
-
-    /**
-     * The field name for the reset key element.
-     *
-     * @var string
-     */
-    protected $_resetKeyFieldName = 'key';
-
-    /**
-     * First the password reset is requested (= false), then the reset key is passed (= true)
-     *
-     * @var boolean Calculated when null
-     */
-    protected $hasResetKey = null;
 
     /**
      * Returns an html link for the login page.
@@ -101,42 +87,20 @@ class Gems_User_Form_ResetForm extends Gems_User_Form_OrganizationFormAbstract
     }
 
     /**
-     * Returns an element for keeping a reset key.
-     *
-     * @return Zend_Form_Element_Hidden
-     */
-    public function getResetKeyElement()
-    {
-        $element = $this->getElement($this->_resetKeyFieldName);
-
-        if (! $element) {
-            $element = new Zend_Form_Element_Hidden($this->_resetKeyFieldName);
-
-            $this->addElement($element);
-        }
-
-        return $element;
-    }
-
-    /**
      * Returns the label for the submitbutton
      *
      * @return string
      */
     public function getSubmitButtonLabel()
     {
-        if ($this->hasResetKey()) {
-            return $this->translate->_('Reset password');
-        } else {
-            return $this->translate->_('Request password');
-        }
+        return $this->translate->_('Request reset');
     }
 
     /**
      * Returns/sets a login name element.
      *
      * @return Zend_Form_Element_Text
-     * /
+     */
     public function getUserNameElement()
     {
         $element = $this->getElement($this->usernameFieldName);
@@ -144,26 +108,10 @@ class Gems_User_Form_ResetForm extends Gems_User_Form_OrganizationFormAbstract
         if (! $element) {
             $element = parent::getUserNameElement();
 
-            $element->addValidator(new Gems_User_Validate_ResetKeyValidator($this, $this->translate, $this->_resetKeyFieldName));
+            $element->addValidator(new Gems_User_Validate_ResetRequestValidator($this, $this->translate));
         }
 
         return $element;
-    }
-
-    /**
-     * Is the form working in reset mode or not
-     *
-     * @return boolean
-     */
-    public function hasResetKey()
-    {
-        if (null === $this->hasResetKey) {
-            $request = $this->getRequest();
-
-            $this->hasResetKey = (boolean) $request->getParam($this->_resetKeyFieldName, false);
-        }
-
-        return $this->hasResetKey;
     }
 
     /**
@@ -173,28 +121,10 @@ class Gems_User_Form_ResetForm extends Gems_User_Form_OrganizationFormAbstract
      */
     public function loadDefaultElements()
     {
-        if ($this->hasResetKey()) {
-            $this->getResetKeyElement();
-        }
         $this->getOrganizationElement();
         $this->getUserNameElement();
         $this->getSubmitButton();
         $this->getLoginLinkElement();
-
-        return $this;
-    }
-
-    /**
-     * Is the form working in reset mode or not
-     *
-     * Enables loading of parameter through Zend_Form::__construct()
-     *
-     * @param boolean $hasKey
-     * @return Gems_User_Form_ResetForm (continuation pattern)
-     */
-    public function setHasResetKey($hasKey = true)
-    {
-        $this->hasResetKey = $hasKey;
 
         return $this;
     }

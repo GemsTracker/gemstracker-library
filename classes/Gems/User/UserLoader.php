@@ -212,6 +212,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         if (! isset($values['user_staff'])) {
             $values['user_staff'] = $definition->isStaff();
         }
+        if (! isset($values['user_resetkey_valid'])) {
+            $values['user_resetkey_valid'] = false;
+        }
 
         if ($defName) {
             $values['__user_definition'] = $defName;
@@ -301,9 +304,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $args = MUtil_Ra::args(func_get_args());
 
-        $form = $this->_loadClass('Form_LoginForm', true, array($args));
-
-        return $form;
+        return $this->_loadClass('Form_LoginForm', true, array($args));
     }
 
     /**
@@ -321,6 +322,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $user = $this->getCurrentUser();
 
             if (! $user->isActive()) {
+                // Check url only when not logged im
                 $organizationId = $this->getOrganizationIdByUrl();
             }
 
@@ -393,19 +395,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * Returns a reset form for handling both the incoming request and the outgoing reset request
      *
      * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
-     * @return Gems_User_Form_ResetForm
+     * @return Gems_User_Form_ResetRequestForm
      */
-    public function getResetForm($args_array = null)
+    public function getResetRequestForm($args_array = null)
     {
         $args = MUtil_Ra::args(func_get_args());
 
-        if (isset($args['description'])) {
-            $args['description'] = sprintf($args['description'], $this->project->getName());
-        }
-
-        $form = $this->_loadClass('Form_ResetForm', true, array($args));
-
-        return $form;
+        return $this->_loadClass('Form_ResetRequestForm', true, array($args));
     }
 
     /**
@@ -420,14 +416,38 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         $user = $this->getUserClass($login_name, $currentOrganization);
 
         // Check: can the user log in as this organization, if not load non-existing user
-        $orgs = $user->getAllowedOrganizations();
-        if (! isset($orgs[$currentOrganization])) {
+        if (! $user->isAllowedOrganization($currentOrganization)) {
             $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);
         }
 
         $user->setCurrentOrganization($currentOrganization);
 
         return $user;
+    }
+
+    /**
+     * Get the user having the reset key specified
+     *
+     * @param string $resetKey
+     * @return Gems_User_User But ! ->isActive when the user does not exist
+     */
+    public function getUserByResetKey($resetKey)
+    {
+        if ((null == $resetKey) || (0 == strlen(trim($resetKey)))) {
+            return $this->loadUser(self::USER_NOLOGIN, null, null);
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__user_passwords', array())
+            ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
+            ->where('gup_reset_key = ?', $resetKey);
+
+        if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
+            // MUtil_Echo::track($row);
+            return $this->loadUser($row[0], $row[1], $row[2]);
+        }
+
+        return $this->loadUser(self::USER_NOLOGIN, null, null);
     }
 
     /**

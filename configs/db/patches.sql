@@ -389,3 +389,6 @@ ALTER TABLE gems__user_login_attempts ADD gula_block_until timestamp null AFTER 
 
 -- PATCH: logins are sometimes added autmatically as part of outer join
 ALTER TABLE gems__user_logins CHANGE gul_can_login gul_can_login boolean not null default 0;
+
+-- PATCH: make reset keys unique so we now whose key it is
+ALTER TABLE `pulse`.`gems__user_passwords` ADD UNIQUE (`gup_reset_key`);

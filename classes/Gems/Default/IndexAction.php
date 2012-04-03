@@ -64,6 +64,13 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected $organizationMaxLines = 6;
 
     /**
+     * When true, the rese4t form returns to the login page after sending a change request
+     *
+     * @var boolean
+     */
+    protected $returnToLoginAfterReset = true;
+
+    /**
      * The default behaviour for showing a lost password button
      *
      * @var boolean
@@ -107,7 +114,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      *
      * @return Gems_User_Form_ResetForm
      */
-    protected function createResetForm()
+    protected function createResetRequestForm()
     {
         $args = MUtil_Ra::args(func_get_args(),
                 array(),
@@ -117,7 +124,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         $this->initHtml();
 
-        return $this->loader->getUserLoader()->getResetForm($args);
+        return $this->loader->getUserLoader()->getResetRequestForm($args);
     }
 
     /**
@@ -127,27 +134,22 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     protected function displayLoginForm(Gems_User_Form_LoginForm $form)
     {
+        $form->getUser()->setAsCurrentUser();
+
         $this->view->form = $form;
     }
 
     /**
      * Function for overruling the display of the reset form.
      *
-     * @param Gems_User_Form_ResetForm $form
+     * @param Gems_Form_AutoLoadFormAbstract $form Rset password or reset request form
      * @param mixed $errors
      */
-    protected function displayResetForm(Gems_User_Form_ResetForm $form, $errors)
+    protected function displayResetForm(Gems_Form_AutoLoadFormAbstract $form, $errors, Gems_User_User $user = null)
     {
-        if ($form->hasResetKey()) {
-            $this->html->h3($this->_('Execute password reset'));
-            $p = $this->html->pInfo($this->_('We received your password reset request. '));
+        if ($form instanceof Gems_User_Form_ResetRequestForm) {
+            $form->getUser()->setAsCurrentUser();
 
-            if ($form->getOrganizationIsVisible()) {
-                $p->append($this->_('Please enter the organization and username/e-mail address belonging to this request.'));
-            } else {
-                $p->append($this->_('Please enter the username or e-mail address belonging to this request.'));
-            }
-        } else {
             $this->html->h3($this->_('Request password reset'));
 
             $p = $this->html->pInfo();
@@ -157,6 +159,18 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $p->append($this->_('Please enter your username or e-mail address. '));
             }
             $p->append($this->_('We will then send you an e-mail with a link you can use to reset your password.'));
+
+        } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
+            if ($user->hasPassword()) {
+                $this->html->h3($this->_('Execute password reset'));
+                $p = $this->html->pInfo($this->_('We received your password reset request.'));
+            } else {
+                // New user
+                $this->html->h3(sprintf($this->_('Welcome to %s'), $this->project->getName()));
+                $p = $this->html->pInfo($this->_('Welcome to this website.'));
+            }
+            $p->append(' ');
+            $p->append($this->_('Please enter your password of choice twice.'));
         }
 
         if ($errors) {
@@ -256,42 +270,71 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     public function resetpasswordAction()
     {
-        $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
-
-        $request = $this->getRequest();
         $errors  = array();
-        $form    = $this->createResetForm();
-        if ($request->isPost() && $form->isValid($request->getParams())) {
+        $form    = $this->createResetRequestForm();
+        $request = $this->getRequest();
+        $user    = null;
 
-            $user = $form->getUser();
+        if ($key = $this->_getParam('key')) {
+            $user = $this->loader->getUserLoader()->getUserByResetKey($key);
 
-            If ($user->canResetPassword()) {
-                if ($key = $request->getParam('key')) {
-                    // Key has been passed by mail
-                    if ($user->checkPasswordResetKey($key)) {
-                        $user->setPasswordResetRequired(true);
-                        $user->setAsCurrentUser();
-                        $this->addMessage($this->_('Reset accepted, enter your new password.'));
-                        $user->gotoStartPage($this->menu, $request);
-                        return;
+            if ($user->hasValidResetKey()) {
+                $form = $user->getChangePasswordForm(array('askOld' => false));
+            } else {
+                if (! $request->isPost()) {
+                    if ($user->hasPassword() || (! $user->isActive())) {
+                        $errors[] = $this->_('Your password reset request is no longer valid, please request a new link.');
                     } else {
-                        $errors[] = $this->_('This key timed out or does not belong to this user.');
-                    }
-                } else {
-                    $subjectTemplate = $this->_('Password reset requested');
-                    $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
-
-                    $errors = $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
-                    if (! $errors) {
-                        // Everything went OK!
-                        $errors[] = $this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.');
+                        $errors[] = $this->_('Your password input request is no longer valid, please request a new link.');
                     }
                 }
-            } else {
-                $errors[] = $this->_('No such user found or no e-mail address known or user cannot be reset.');
+
+                if ($user->isActive()) {
+                    $form->getUserNameElement()->setValue($user->getLoginName());
+                    $form->getOrganizationElement()->setValue($user->getBaseOrganizationId());
+                }
             }
         }
 
-        $this->displayResetForm($form, $errors);
+        if ($request->isPost() && $form->isValid($request->getPost())) {
+
+            if ($form instanceof Gems_User_Form_ResetRequestForm) {
+                $user = $form->getUser();
+
+                $errors = $this->sendUserResetEMail($user);
+                if (! $errors) {
+                    // Everything went OK!
+                    $this->addMessage($this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.'));
+
+                    if ($this->returnToLoginAfterReset) {
+                        $this->loader->getCurrentUser()->gotoStartPage($this->menu, $request);
+                    }
+                }
+
+            } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
+                $this->addMessage($this->_('New password is active.'));
+
+                $user->setAsCurrentUser();
+        		$user->gotoStartPage($this->menu, $this->getRequest());
+            }
+
+        }
+        $form->populate($request->getParams());
+
+        $this->displayResetForm($form, $errors, $user);
+    }
+
+    /**
+     * Send the user an e-mail with a link for password reset
+     *
+     * @param Gems_User_User $user
+     * @return mixed string or array of Errors or null when successful.
+     */
+    public function sendUserResetEMail(Gems_User_User $user)
+    {
+        $subjectTemplate = $this->_('Password reset requested');
+        $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
+
+        return $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
     }
 }

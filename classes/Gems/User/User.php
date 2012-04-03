@@ -68,13 +68,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     /**
      * Required
      *
-     * @var Gems_Util_BasePath
-     */
-    protected $basepath;
-
-    /**
-     * Required
-     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -517,7 +510,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             }
         }
 
-        return (boolean) $this->acl && $this->basepath && $this->userLoader;
+        return (boolean) $this->acl && $this->userLoader;
     }
 
     /**
@@ -946,6 +939,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * True when the reset key is within it's timeframe
+     *
+     * @return boolean
+     */
+    public function hasValidResetKey()
+    {
+        return (boolean) $this->_getVar('user_resetkey_valid');
+    }
+
+    /**
      *
      * @return boolean True when a user can log in.
      */
@@ -1181,6 +1184,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             }
         }
 
+        $this->getCurrentOrganization()->setAsCurrentOrganization();
+
         return $this;
     }
 
@@ -1210,39 +1215,31 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $this->_setVar('user_organization_name', $organization->getName());
                 $this->_setVar('user_style', $organization->getStyle());
                 // End depreciation warning
+            }
+            if ($this->isCurrentUser()) {
+                $this->getCurrentOrganization()->setAsCurrentOrganization();
 
-                if ($this->isCurrentUser()) {
-                    if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
-                        throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
-                    }
+                // Now update the requestcache to change the oldOrgId to the new orgId
+                // Don't do it when the oldOrgId doesn't match
+                if ($requestCache = $this->session->requestCache) {
 
-                    $escort = GemsEscort::getInstance();
-                    if ($escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-                        $escort->layoutSwitch($organization->getStyle());
-                    }
+                    //Create the list of request cache keys that match an organization ID (to be extended)
+                    $possibleOrgIds = array(
+                        'gr2o_id_organization',
+                        'gto_id_organization');
 
-                    // Now update the requestcache to change the oldOrgId to the new orgId
-                    // Don't do it when the oldOrgId doesn't match
-                    if ($requestCache = $this->session->requestCache) {
-
-                        //Create the list of request cache keys that match an organization ID (to be extended)
-                        $possibleOrgIds = array(
-                            'gr2o_id_organization',
-                            'gto_id_organization');
-
-                        foreach ($requestCache as $key => $value) {
-                            if (is_array($value)) {
-                                foreach ($value as $paramKey => $paramValue) {
-                                    if (in_array($paramKey, $possibleOrgIds)) {
-                                        if ($paramValue == $oldOrganizationId) {
-                                            $requestCache[$key][$paramKey] = $organizationId;
-                                        }
+                    foreach ($requestCache as $key => $value) {
+                        if (is_array($value)) {
+                            foreach ($value as $paramKey => $paramValue) {
+                                if (in_array($paramKey, $possibleOrgIds)) {
+                                    if ($paramValue == $oldOrganizationId) {
+                                        $requestCache[$key][$paramKey] = $organizationId;
                                     }
                                 }
                             }
                         }
-                        $this->session->requestCache = $requestCache;
                     }
+                    $this->session->requestCache = $requestCache;
                 }
             }
         }

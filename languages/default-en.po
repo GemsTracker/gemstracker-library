@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pulse EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-02 19:39+0100\n"
+"POT-Creation-Date: 2012-04-03 17:20+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1084,79 +1084,84 @@ msgstr[1] "groups"
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
-#: classes/Gems/Default/IndexAction.php:142
+#: classes/Gems/Default/IndexAction.php:153
 msgid "Request password reset"
 msgstr "Request password reset"
 
-#: classes/Gems/Default/IndexAction.php:143
-msgid "We received your password reset request. "
-msgstr "We received your password reset request. "
-
-#: classes/Gems/Default/IndexAction.php:146
-msgid "Please enter the organization and username/e-mail address belonging to this request."
-msgstr "Please enter the organization and username/e-mail address belonging to this request."
-
-#: classes/Gems/Default/IndexAction.php:148
-msgid "Please enter the username or e-mail address belonging to this request."
-msgstr "Please enter the username or e-mail address belonging to this request."
-
-#: classes/Gems/Default/IndexAction.php:151
-msgid "Execute password reset"
-msgstr "Execute password reset"
-
-#: classes/Gems/Default/IndexAction.php:155
+#: classes/Gems/Default/IndexAction.php:157
 msgid "Please enter your organization and your username or e-mail address. "
 msgstr "Please enter your organization and your username or e-mail address. "
 
-#: classes/Gems/Default/IndexAction.php:157
+#: classes/Gems/Default/IndexAction.php:159
 msgid "Please enter your username or e-mail address. "
 msgstr "Please enter your username or e-mail address. "
 
-#: classes/Gems/Default/IndexAction.php:159
+#: classes/Gems/Default/IndexAction.php:161
 msgid "We will then send you an e-mail with a link you can use to reset your password."
 msgstr "We will then send you an e-mail with a link you can use to reset your password."
 
-#: classes/Gems/Default/IndexAction.php:193
+#: classes/Gems/Default/IndexAction.php:165
+msgid "Execute password reset"
+msgstr "Execute password reset"
+
+#: classes/Gems/Default/IndexAction.php:166
+msgid "We received your password reset request."
+msgstr "We received your password reset request."
+
+#: classes/Gems/Default/IndexAction.php:169
+#, php-format
+msgid "Welcome to %s"
+msgstr "Welcome to %s"
+
+#: classes/Gems/Default/IndexAction.php:170
+msgid "Welcome to this website."
+msgstr "Welcome to this website."
+
+#: classes/Gems/Default/IndexAction.php:173
+msgid "Please enter your password of choice twice."
+msgstr "Please enter your password of choice twice."
+
+#: classes/Gems/Default/IndexAction.php:207
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:205
+#: classes/Gems/Default/IndexAction.php:219
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:248
+#: classes/Gems/Default/IndexAction.php:262
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:274
-msgid "Reset accepted, enter your new password."
-msgstr "Reset accepted, enter your new password."
+#: classes/Gems/Default/IndexAction.php:286
+msgid "Your password reset request is no longer valid, please request a new link."
+msgstr "Your password reset request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:278
-msgid "This key timed out or does not belong to this user."
-msgstr "This key timed out or does not belong to this user."
+#: classes/Gems/Default/IndexAction.php:288
+msgid "Your password input request is no longer valid, please request a new link."
+msgstr "Your password input request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:281
+#: classes/Gems/Default/IndexAction.php:307
+msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
+msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
+
+#: classes/Gems/Default/IndexAction.php:315
+msgid "New password is active."
+msgstr "New password is active."
+
+#: classes/Gems/Default/IndexAction.php:335
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:282
+#: classes/Gems/Default/IndexAction.php:336
 msgid ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
 msgstr ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
-
-#: classes/Gems/Default/IndexAction.php:287
-msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
-msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
-
-#: classes/Gems/Default/IndexAction.php:291
-msgid "No such user found or no e-mail address known or user cannot be reset."
-msgstr "No such user found or no e-mail address known or user cannot be reset."
 
 #: classes/Gems/Default/InvitationAction.php:52
 msgid "Invite"
@@ -1472,10 +1477,6 @@ msgstr "Email templates"
 #: classes/Gems/Default/OptionAction.php:81
 msgid "You are not allowed to change your password."
 msgstr "You are not allowed to change your password."
-
-#: classes/Gems/Default/OptionAction.php:94
-msgid "New password is active."
-msgstr "New password is active."
 
 #: classes/Gems/Default/OptionAction.php:129
 msgid "Login Name"
@@ -3556,6 +3557,10 @@ msgstr "%s: %s"
 msgid "- %s"
 msgstr "- %s"
 
+#: classes/Gems/User/Organization.php:342
+msgid "Cookies must be enabled for this site."
+msgstr "Cookies must be enabled for this site."
+
 #: classes/Gems/User/PasswordChecker.php:95
 #, php-format
 msgid "should contain at least one uppercase character"
@@ -3617,35 +3622,31 @@ msgstr "may not contain numbers"
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:415
+#: classes/Gems/User/User.php:408
 #, php-format
 msgid "Your account is temporarily blocked, please wait a minute."
 msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Your account is temporarily blocked, please wait a minute."
 msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 
-#: classes/Gems/User/User.php:450
+#: classes/Gems/User/User.php:443
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1062
+#: classes/Gems/User/User.php:1065
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1089
+#: classes/Gems/User/User.php:1092
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/User.php:1216
-msgid "Cookies must be enabled for this site."
-msgstr "Cookies must be enabled for this site."
-
-#: classes/Gems/User/UserLoader.php:231
-#: classes/Gems/User/UserLoader.php:245
+#: classes/Gems/User/UserLoader.php:234
+#: classes/Gems/User/UserLoader.php:248
 msgid "Db storage"
 msgstr "Db storage"
 
-#: classes/Gems/User/UserLoader.php:246
+#: classes/Gems/User/UserLoader.php:249
 msgid "Radius storage"
 msgstr "Radius storage"
 
@@ -3695,13 +3696,17 @@ msgstr "Enter your token..."
 msgid "Username"
 msgstr "Username"
 
-#: classes/Gems/User/Form/ResetForm.php:77
+#: classes/Gems/User/Form/ResetRequestForm.php:63
 msgid "Back to login"
 msgstr "Back to login"
 
-#: classes/Gems/User/Form/ResetForm.php:131
-msgid "Request password"
-msgstr "Request password"
+#: classes/Gems/User/Form/ResetRequestForm.php:96
+msgid "Request reset"
+msgstr "Request reset"
+
+#: classes/Gems/User/Validate/ResetRequestValidator.php:107
+msgid "User not found or no e-mail address known or user cannot be reset."
+msgstr "User not found or no e-mail address known or user cannot be reset."
 
 #: classes/Gems/Util/ReceptionCodeLibrary.php:100
 msgid "Yes (forget answers)"
@@ -4193,6 +4198,27 @@ msgstr "No access to other organizations."
 #: snippets/Organization/OrganizationEditSnippet.php:115
 msgid "Can access"
 msgstr "Can access"
+
+#~ msgid ""
+#~ "Please enter the organization and username/e-mail address belonging to "
+#~ "this request."
+#~ msgstr ""
+#~ "Please enter the organization and username/e-mail address belonging to "
+#~ "this request."
+
+#~ msgid ""
+#~ "Please enter the username or e-mail address belonging to this request."
+#~ msgstr ""
+#~ "Please enter the username or e-mail address belonging to this request."
+
+#~ msgid "Reset accepted, enter your new password."
+#~ msgstr "Reset accepted, enter your new password."
+
+#~ msgid "This key timed out or does not belong to this user."
+#~ msgstr "This key timed out or does not belong to this user."
+
+#~ msgid "Request password"
+#~ msgstr "Request password"
 
 #~ msgid "Login to %s application"
 #~ msgstr "Login to %s application"

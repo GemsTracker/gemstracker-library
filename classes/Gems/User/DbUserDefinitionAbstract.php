@@ -53,6 +53,13 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     protected $db;
 
     /**
+     * The time period in hours a reset key is valid for this user.
+     *
+     * @var int
+     */
+    protected $hoursResetKeyIsValid = 24;
+
+    /**
      *
      * @var Gems_Project_ProjectSettings
      */
@@ -157,7 +164,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
 
         $data['gup_id_user'] = $user->getUserLoginId();
 
-        $row = $model->loadFirst($data + array('DATE_ADD(gup_reset_requested, INTERVAL 24 HOUR) >= CURRENT_TIMESTAMP'));
+        $row = $model->loadFirst($data + array('DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP'));
         if ($row && $row['gup_reset_key']) {
             // Keep using the key.
             $data['gup_reset_key'] = $row['gup_reset_key'];
@@ -166,9 +173,16 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         }
         $data['gup_reset_requested'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
-        $model->save($data);
+        while (true) {
+            try {
+                $model->save($data);
 
-        return $data['gup_reset_key'];
+                return $data['gup_reset_key'];
+
+            } catch (Zend_Db_Exception $zde) {
+                $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+            }
+        }
     }
 
     /**

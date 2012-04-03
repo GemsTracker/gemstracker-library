@@ -71,10 +71,23 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         );
 
     /**
+     * Required
+     *
+     * @var Gems_Util_BasePath
+     */
+    protected $basepath;
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      *
@@ -314,6 +327,27 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function getWelcome()
     {
         return $this->_get('gor_welcome');
+    }
+
+    /**
+     * Set this organization as teh one currently active
+     *
+     * @return Gems_User_Organization (continutation pattern)
+     */
+    public function setAsCurrentOrganization()
+    {
+        $organizationId = $this->getId();
+
+        if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+            throw new Exception($this->translate->_('Cookies must be enabled for this site.'));
+        }
+
+        $escort = GemsEscort::getInstance();
+        if ($escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
+            $escort->layoutSwitch($this->getStyle());
+        }
+
+        return $this;
     }
 
     /**

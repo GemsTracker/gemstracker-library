@@ -82,6 +82,7 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
                    ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
+                   'user_resetkey_valid' => 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
                    ))
                ->where('ggp_group_active = 1')
                ->where('gsf_active = 1')
@@ -89,6 +90,8 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
                ->where('gul_login = ?')
                ->where('gul_id_organization = ?')
                ->limit(1);
+
+        // MUtil_Echo::track($select->__toString());
 
         return $select;
     }

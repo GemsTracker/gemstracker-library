@@ -165,6 +165,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
             if (! $element instanceof Zend_Form_Element_Hidden) {
                 $element = new Zend_Form_Element_Hidden($this->organizationFieldName);
 
+                $element->setValue($orgId);
                 $this->addElement($element);
             }
 
@@ -183,16 +184,15 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
                 $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
             }
             $this->addElement($element);
-
+            $element->setValue($orgId);
         }
-        $element->setValue($orgId);
 
         return $element;
     }
 
     /**
      * Returns true when the organization element is visible to the user.
-     * 
+     *
      * @return boolean
      */
     public function getOrganizationIsVisible()

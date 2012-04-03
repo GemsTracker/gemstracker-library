@@ -225,6 +225,27 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
     }
 
     /**
+     * Remove a directory from the list of search directories.
+     *
+     * @param string $dir Directory name. Slashes added when needed.
+     */
+    public static function removeImageDir($dir)
+    {
+        if (! $dir) {
+            $dir = '/';
+        } elseif ('/' != $dir[0]) {
+            $dir = '/' . $dir;
+        }
+        if ('/' != $dir[strlen($dir) - 1]) {
+            $dir .= '/';
+        }
+
+        if ($key = array_search($dir, self::$_imageDirs)) {
+            unset(self::$_imageDirs[$key]);
+        }
+    }
+
+    /**
      * Function to allow overloading  of tag rendering only
      *
      * Renders the element tag with it's content into a html string
