@@ -68,12 +68,14 @@ class MUtil_Date extends Zend_Date
         $val1 = intval($day1->getUnixTimestamp() / self::DAY_SECONDS);
 
         if (null === $date) {
-            $val2 = intval(time() / self::DAY_SECONDS);
+            // We must use date objects as unix timestamps do not take
+            // account of leap seconds.
+            $day2 = new MUtil_Date();
         } else {
             $day2 = clone $date;
-            $day2->setTime(0);
-            $val2 = intval($day2->getUnixTimestamp() / self::DAY_SECONDS);
         }
+        $day2->setTime(0);
+        $val2 = intval($day2->getUnixTimestamp() / self::DAY_SECONDS);
 
         return $val1 - $val2;
     }

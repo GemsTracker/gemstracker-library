@@ -155,10 +155,18 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
      */
     public function saveData()
     {
+        $model = $this->getModel();
+        if ($this->formData['gto_valid_until']) {
+            // Make sure date based units are valid until the end of the day.
+            $date = new MUtil_Date($this->formData['gto_valid_until'], $model->get('gto_valid_until', 'dateFormat'));
+            $date->addDay(1);
+            $date->subSecond(1);
+            $this->formData['gto_valid_until'] = $date;
+        }
+
         parent::saveData();
 
         if ($this->formData[self::RECALCULATE_FIELD]) {
-            $model = $this->getModel();
             // Refresh token with current form data
             $updateData['gto_valid_from']  = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
             $updateData['gto_valid_until'] = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
