@@ -94,6 +94,13 @@ interface Gems_User_UserDefinitionInterface
     public function getPasswordResetKey(Gems_User_User $user);
 
     /**
+     * Returns the number of hours a reset key remains valud
+     *
+     * @return int
+     */
+    public function getResetKeyDurationInHours();
+
+    /**
      * Returns a user object, that may be empty if the user is unknown.
      *
      * @param string $login_name

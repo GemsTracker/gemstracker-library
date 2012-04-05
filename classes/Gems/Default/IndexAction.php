@@ -134,7 +134,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      */
     protected function displayLoginForm(Gems_User_Form_LoginForm $form)
     {
-        $form->getUser()->setAsCurrentUser();
+        $this->setCurrentOrganizationTo($form->getUser());
 
         $this->view->form = $form;
     }
@@ -148,7 +148,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected function displayResetForm(Gems_Form_AutoLoadFormAbstract $form, $errors, Gems_User_User $user = null)
     {
         if ($form instanceof Gems_User_Form_ResetRequestForm) {
-            $form->getUser()->setAsCurrentUser();
+            $user = $form->getUser();
 
             $this->html->h3($this->_('Request password reset'));
 
@@ -158,9 +158,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             } else {
                 $p->append($this->_('Please enter your username or e-mail address. '));
             }
-            $p->append($this->_('We will then send you an e-mail with a link you can use to reset your password.'));
+            $this->html->p($this->_('We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice.'));
 
         } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
+            $form->getUser()->getCurrentOrganization()->setAsCurrentOrganization();
             if ($user->hasPassword()) {
                 $this->html->h3($this->_('Execute password reset'));
                 $p = $this->html->pInfo($this->_('We received your password reset request.'));
@@ -175,6 +176,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         if ($errors) {
             $this->addMessage($errors);
+        }
+
+        if ($user) {
+            $this->setCurrentOrganizationTo($user);
         }
 
         $this->html->append($form);
@@ -333,8 +338,31 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public function sendUserResetEMail(Gems_User_User $user)
     {
         $subjectTemplate = $this->_('Password reset requested');
+        /* CANNOT BE TESTED TODAY
+        $bbBodyTemplate  = $this->_("Dear {greeting},
+
+A new password was requested for your [b]{organization}[/b] site [b]{project}[/b], please click within {reset_in_hours} hours on [url={reset_url}]this link[/url] to enter the password of your choice.
+
+{organization_signature}
+
+[url={reset_url}]{reset_url}[/url]
+"); // */
         $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
 
         return $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
+    }
+
+    /**
+     * Helper function to safely switch org during login
+     *
+     * @param Gems_User_User $user
+     */
+    protected function setCurrentOrganizationTo(Gems_User_User $user)
+    {
+        $current = $this->loader->getCurrentUser();
+
+        if ($current !== $user) {
+            $current->setCurrentOrganization($user->getCurrentOrganization());
+        }
     }
 }

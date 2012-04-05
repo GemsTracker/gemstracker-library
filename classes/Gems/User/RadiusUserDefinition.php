@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition implements Gems_User_UserDefinitionInterface, Gems_User_UserDefinitionConfigurableInterface
+class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition implements Gems_User_UserDefinitionConfigurableInterface
 {
     /**
      * @var Gems_Model_JoinModel

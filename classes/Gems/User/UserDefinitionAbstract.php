@@ -49,6 +49,13 @@
 abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbstract implements Gems_User_UserDefinitionInterface
 {
     /**
+     * The time period in hours a reset key is valid for this definition.
+     *
+     * @var int
+     */
+    protected $hoursResetKeyIsValid = 0;
+
+    /**
      * Return true if a password reset key can be created.
      *
      * Returns the setting for the definition whan no user is passed, otherwise
@@ -97,6 +104,16 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     public function getPasswordResetKey(Gems_User_User $user)
     {
         throw new Gems_Exception_Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
+    }
+
+    /**
+     * Returns the number of hours a reset key remains valud
+     *
+     * @return int
+     */
+    public function getResetKeyDurationInHours()
+    {
+        return $this->hoursResetKeyIsValid;
     }
 
     /**

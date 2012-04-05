@@ -53,7 +53,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     protected $db;
 
     /**
-     * The time period in hours a reset key is valid for this user.
+     * The time period in hours a reset key is valid for this definition.
      *
      * @var int
      */

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Pulse EN\n"
+"Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-03 18:47+0100\n"
+"POT-Creation-Date: 2012-04-05 14:09+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1097,65 +1097,65 @@ msgid "Please enter your username or e-mail address. "
 msgstr "Please enter your username or e-mail address. "
 
 #: classes/Gems/Default/IndexAction.php:161
-msgid "We will then send you an e-mail with a link you can use to reset your password."
-msgstr "We will then send you an e-mail with a link you can use to reset your password."
+msgid "We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice."
+msgstr "We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice."
 
-#: classes/Gems/Default/IndexAction.php:165
+#: classes/Gems/Default/IndexAction.php:166
 msgid "Execute password reset"
 msgstr "Execute password reset"
 
-#: classes/Gems/Default/IndexAction.php:166
+#: classes/Gems/Default/IndexAction.php:167
 msgid "We received your password reset request."
 msgstr "We received your password reset request."
 
-#: classes/Gems/Default/IndexAction.php:169
+#: classes/Gems/Default/IndexAction.php:170
 #, php-format
 msgid "Welcome to %s"
 msgstr "Welcome to %s"
 
-#: classes/Gems/Default/IndexAction.php:170
+#: classes/Gems/Default/IndexAction.php:171
 msgid "Welcome to this website."
 msgstr "Welcome to this website."
 
-#: classes/Gems/Default/IndexAction.php:173
+#: classes/Gems/Default/IndexAction.php:174
 msgid "Please enter your password of choice twice."
 msgstr "Please enter your password of choice twice."
 
-#: classes/Gems/Default/IndexAction.php:207
+#: classes/Gems/Default/IndexAction.php:212
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:219
+#: classes/Gems/Default/IndexAction.php:224
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:262
+#: classes/Gems/Default/IndexAction.php:267
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:286
+#: classes/Gems/Default/IndexAction.php:291
 msgid "Your password reset request is no longer valid, please request a new link."
 msgstr "Your password reset request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:288
+#: classes/Gems/Default/IndexAction.php:293
 msgid "Your password input request is no longer valid, please request a new link."
 msgstr "Your password input request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:307
+#: classes/Gems/Default/IndexAction.php:312
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:315
+#: classes/Gems/Default/IndexAction.php:320
 msgid "New password is active."
 msgstr "New password is active."
 
-#: classes/Gems/Default/IndexAction.php:335
+#: classes/Gems/Default/IndexAction.php:340
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:336
+#: classes/Gems/Default/IndexAction.php:350
 msgid ""
 "To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n"
 "{reset_url}"
@@ -3633,11 +3633,11 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1065
+#: classes/Gems/User/User.php:1066
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1092
+#: classes/Gems/User/User.php:1093
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
@@ -3810,59 +3810,59 @@ msgstr "Mrs."
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 
-#: classes/MUtil/Date.php:217
+#: classes/MUtil/Date.php:219
 #, php-format
 msgid "%s ago"
 msgstr "%s ago"
 
-#: classes/MUtil/Date.php:220
+#: classes/MUtil/Date.php:222
 #, php-format
 msgid "%s to go"
 msgstr "%s to go"
 
-#: classes/MUtil/Date.php:231
+#: classes/MUtil/Date.php:233
 msgid "second"
 msgid_plural "seconds"
 msgstr[0] "second"
 msgstr[1] "seconds"
 
-#: classes/MUtil/Date.php:234
+#: classes/MUtil/Date.php:236
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "minute"
 msgstr[1] "minutes"
 
-#: classes/MUtil/Date.php:237
+#: classes/MUtil/Date.php:239
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "hour"
 msgstr[1] "hours"
 
-#: classes/MUtil/Date.php:240
+#: classes/MUtil/Date.php:242
 msgid "day"
 msgid_plural "days"
 msgstr[0] "day"
 msgstr[1] "days"
 
-#: classes/MUtil/Date.php:243
+#: classes/MUtil/Date.php:245
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "week"
 msgstr[1] "weeks"
 
-#: classes/MUtil/Date.php:246
+#: classes/MUtil/Date.php:248
 msgid "month"
 msgid_plural "months"
 msgstr[0] "month"
 msgstr[1] "months"
 
-#: classes/MUtil/Date.php:249
+#: classes/MUtil/Date.php:251
 msgid "year"
 msgid_plural "years"
 msgstr[0] "year"
 msgstr[1] "years"
 
-#: classes/MUtil/Date.php:252
+#: classes/MUtil/Date.php:254
 msgid "decade"
 msgid_plural "decades"
 msgstr[0] "decade"
