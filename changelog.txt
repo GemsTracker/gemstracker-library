@@ -1,12 +1,11 @@
 Important changes from 1.5.2 => 1.5.3
 ============================================================
-People can login using their e-amil address as user name.
-Showing a list of organizations to choose during login happens except when 1) there is only one organization or 2) a url is used that is assigned to a specific organization.
+People can login using their e-mail address as user name. This can be activated by for respondents and staff seperately, by default this is off for both.
+Showing a list of organizations to choose during login happens always except when 1) there is only one organization or 2) a url is used that is assigned to a specific organization.
 Login & other password forms are now easy to customize on a per project basis.
-Login and authorizaiton rules are easier to extend.
-All password rules are reported during reset.
-The password reset cycle send a link that can be used to change the password straight away.
-
+Login and authorization rules are easier to extend.
+All password rules are reported on change password forms.
+The password reset cycle send a link that can be used to change the password straight away. By default the systems also asks the user to enter his/her birthday if available and username otherwise, but this can be removed / changed at the project level.
 
 Important changes from 1.5.1 => 1.5.2
 ============================================================

@@ -59,13 +59,13 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * When true Respondent members can use their e-mail address as login name
      * @var boolean
      */
-    public $allowRespondentEmailLogin = true;
+    public $allowRespondentEmailLogin = false;
 
     /**
      * When true Staff members can use their e-mail address as login name
      * @var boolean
      */
-    public $allowStaffEmailLogin = true;
+    public $allowStaffEmailLogin = false;
 
     /**
      *

@@ -284,7 +284,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $user = $this->loader->getUserLoader()->getUserByResetKey($key);
 
             if ($user->hasValidResetKey()) {
-                $form = $user->getChangePasswordForm(array('askOld' => false));
+                $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true));
             } else {
                 if (! $request->isPost()) {
                     if ($user->hasPassword() || (! $user->isActive())) {

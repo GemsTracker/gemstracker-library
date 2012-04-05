@@ -89,6 +89,13 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     protected $_table;
 
     /**
+     * Should a user specific check question be asked?
+     *
+     * @var boolean
+     */
+    protected $askCheck = false;
+
+    /**
      * Should the old password be requested.
      *
      * Calculated when null
@@ -96,6 +103,17 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
      * @var boolean
      */
     protected $askOld = null;
+
+    /**
+     * Returns an array of elements for check fields during password reset and/or
+     * 'label name' => 'required value' pairs. vor asking extra questions before allowing
+     * a password change.
+     *
+     * Default is asking for the username but you can e.g. ask for someones birthday.
+     *
+     * @return array Of 'label name' => 'required values' or Zend_Form_Element elements
+     */
+    protected $checkFields = array();
 
     /**
      * Should the password rules be reported.
@@ -132,6 +150,49 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     }
 
     /**
+     * Add user defined checkfields
+     *
+     * @return void
+     */
+    protected function addCheckFields()
+    {
+        $check = 1;
+        foreach ($this->checkFields as $label => &$value) {
+            if ($value instanceof Zend_Form_Element) {
+                $element = $value;
+            } else {
+                if ($value) {
+                    $element = new Zend_Form_Element_Text('check_' . $check);
+                    $element->setAllowEmpty(false);
+                    $element->setLabel($label);
+
+                    $validator = new Zend_Validate_Identical($value);
+                    $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), Zend_Validate_Identical::NOT_SAME);
+                    $element->addValidator($validator);
+
+                    $value = $element;
+                    $check++;
+                } else {
+                    // Nothing to check for
+                    unset($this->checkFields[$label]);
+                    continue;
+                }
+            }
+            $this->addElement($element);
+        }
+    }
+
+    /**
+     * Should a user specific check question be asked?
+     *
+     * @return boolean
+     */
+    public function getAskCheck()
+    {
+        return $this->askCheck;
+    }
+
+    /**
      * Should the for asking for an old password
      *
      * @return boolean
@@ -152,7 +213,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     }
 
     /**
-     * Returns/sets a mew password element.
+     * Returns/sets a new password element.
      *
      * @return Zend_Form_Element_Password
      */
@@ -169,7 +230,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             $element->setRequired(true);
             $element->setRenderPassword(true);
             $element->addValidator(new Gems_User_Validate_NewPasswordValidator($this->user));
-            $element->addValidator(new MUtil_Validate_IsConfirmed($this->_repeatPasswordFieldName, $this->translate->_('Repeat password')));
+
+            $validator = new MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->translate->_('Repeat password'));
+            $validator->setMessage($this->translate->_("Must be the same as %fieldDescription%."), MUtil_Validate_IsConfirmed::NOT_SAME);
+            $element->addValidator($validator);
 
             $this->addElement($element);
         }
@@ -219,7 +283,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             $element->setAttrib('maxlength', 20);
             $element->setRequired(true);
             $element->setRenderPassword(true);
-            $element->addValidator(new MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->translate->_('New password')));
+
+            $validator = new MUtil_Validate_IsConfirmed($this->_newPasswordFieldName, $this->translate->_('New password'));
+            $validator->setMessage($this->translate->_("Must be the same as %fieldDescription%."), MUtil_Validate_IsConfirmed::NOT_SAME);
+            $element->addValidator($validator);
 
             $this->addElement($element);
         }
@@ -323,6 +390,10 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
         if ($this->getAskOld()) {
             $this->getOldPasswordElement();
         }
+        if ($this->getAskCheck()) {
+            $this->addCheckFields();
+        }
+
         $this->getNewPasswordElement();
         $this->getRepeatPasswordElement();
         $this->getSubmitButton();
@@ -343,6 +414,21 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     }
 
     /**
+     * Should a user specific check question be asked?
+     *
+     * Enables loading of parameter through Zend_Form::__construct()
+     *
+     * @param boolean $askCheck
+     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     */
+    public function setAskCheck($askCheck = true)
+    {
+        $this->askCheck = $askCheck;
+
+        return $this;
+    }
+
+    /**
      * Should the form ask for an old password
      *
      * Enables loading of parameter through Zend_Form::__construct()
@@ -353,6 +439,21 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     public function setAskOld($askOld = true)
     {
         $this->askOld = $askOld;
+
+        return $this;
+    }
+
+    /**
+     * Set optional user specific check question to be asked when getAskCheck() is on.
+     *
+     * Enables loading of parameter through Zend_Form::__construct()
+     *
+     * @param array $checkFields Of 'label name' => 'required values' or Zend_Form_Element elements
+     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     */
+    public function setCheckFields(array $checkFields)
+    {
+        $this->checkFields = $checkFields;
 
         return $this;
     }

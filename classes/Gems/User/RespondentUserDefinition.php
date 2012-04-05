@@ -73,6 +73,7 @@ class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstr
                     'user_last_name'      => 'grs_last_name',
                     'user_gender'         => 'grs_gender',
                     'user_locale'         => 'grs_iso_lang',
+                    'user_birthday'       => 'grs_birthday',
                     ))
                ->join('gems__organizations', 'gr2o_id_organization = gor_id_organization', array(
                     'user_group' => 'gor_respondent_group',

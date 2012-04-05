@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-05 14:09+0100\n"
+"POT-Creation-Date: 2012-04-05 16:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3633,11 +3633,26 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1066
+#: classes/Gems/User/User.php:1074
+msgid "Your birthday"
+msgstr "Your birthday"
+
+#: classes/Gems/User/User.php:1090
+#: classes/Gems/User/Form/ChangePasswordForm.php:169
+#, php-format
+msgid "%s is not correct."
+msgstr "%s is not correct."
+
+#: classes/Gems/User/User.php:1095
+#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
+msgid "Username"
+msgstr "Username"
+
+#: classes/Gems/User/User.php:1110
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1093
+#: classes/Gems/User/User.php:1137
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
@@ -3650,33 +3665,38 @@ msgstr "Db storage"
 msgid "Radius storage"
 msgstr "Radius storage"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:166
-#: classes/Gems/User/Form/ChangePasswordForm.php:222
+#: classes/Gems/User/Form/ChangePasswordForm.php:221
+#: classes/Gems/User/Form/ChangePasswordForm.php:281
 msgid "New password"
 msgstr "New password"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:192
+#: classes/Gems/User/Form/ChangePasswordForm.php:229
+#: classes/Gems/User/Form/ChangePasswordForm.php:282
+msgid "Must be the same as %fieldDescription%."
+msgstr "Must be the same as %fieldDescription%."
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:250
 msgid "Current password"
 msgstr "Current password"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:197
+#: classes/Gems/User/Form/ChangePasswordForm.php:255
 msgid "Wrong password."
 msgstr "Wrong password."
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:243
+#: classes/Gems/User/Form/ChangePasswordForm.php:304
 msgid "Password rules"
 msgstr "Password rules"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:246
+#: classes/Gems/User/Form/ChangePasswordForm.php:307
 #, php-format
 msgid "A password %s."
 msgstr "A password %s."
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:253
+#: classes/Gems/User/Form/ChangePasswordForm.php:314
 msgid "A password:"
 msgstr "A password:"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:307
+#: classes/Gems/User/Form/ChangePasswordForm.php:368
 msgid "Caps Lock seems to be on!"
 msgstr "Caps Lock seems to be on!"
 
@@ -3691,10 +3711,6 @@ msgstr "Combination of user and password not found for this organization."
 #: classes/Gems/User/Form/LoginForm.php:182
 msgid "Enter your token..."
 msgstr "Enter your token..."
-
-#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
-msgid "Username"
-msgstr "Username"
 
 #: classes/Gems/User/Form/ResetRequestForm.php:63
 msgid "Back to login"
@@ -3961,10 +3977,6 @@ msgstr "%value% is too long for a %testDescription%. Should be %length% digits."
 msgid "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr "%value% is too short for a %testDescription%. Should be %length% digits."
 
-#: languages/FakeTranslations.php:76
-msgid "Must be the same as %fieldDescription%."
-msgstr "Must be the same as %fieldDescription%."
-
 #: languages/FakeTranslations.php:79
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
@@ -4198,6 +4210,9 @@ msgstr "No access to other organizations."
 #: snippets/Organization/OrganizationEditSnippet.php:115
 msgid "Can access"
 msgstr "Can access"
+
+#~ msgid "%s not correct."
+#~ msgstr "%s not correct."
 
 #~ msgid ""
 #~ "Please enter the organization and username/e-mail address belonging to "

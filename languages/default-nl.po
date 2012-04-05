@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-05 14:09+0100\n"
+"POT-Creation-Date: 2012-04-05 16:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3633,11 +3633,26 @@ msgstr[1] "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw i
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1066
+#: classes/Gems/User/User.php:1074
+msgid "Your birthday"
+msgstr "Uw geboortedatum"
+
+#: classes/Gems/User/User.php:1090
+#: classes/Gems/User/Form/ChangePasswordForm.php:169
+#, php-format
+msgid "%s is not correct."
+msgstr "%s is onjuist."
+
+#: classes/Gems/User/User.php:1095
+#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: classes/Gems/User/User.php:1110
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1093
+#: classes/Gems/User/User.php:1137
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -3650,33 +3665,38 @@ msgstr "Database opslag"
 msgid "Radius storage"
 msgstr "Radius authenticatie"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:166
-#: classes/Gems/User/Form/ChangePasswordForm.php:222
+#: classes/Gems/User/Form/ChangePasswordForm.php:221
+#: classes/Gems/User/Form/ChangePasswordForm.php:281
 msgid "New password"
 msgstr "Nieuw wachtwoord"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:192
+#: classes/Gems/User/Form/ChangePasswordForm.php:229
+#: classes/Gems/User/Form/ChangePasswordForm.php:282
+msgid "Must be the same as %fieldDescription%."
+msgstr "Moet identiek zijn aan %fieldDescription%."
+
+#: classes/Gems/User/Form/ChangePasswordForm.php:250
 msgid "Current password"
 msgstr "Huidig wachtwoord"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:197
+#: classes/Gems/User/Form/ChangePasswordForm.php:255
 msgid "Wrong password."
 msgstr "Verkeerd wachtwoord."
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:243
+#: classes/Gems/User/Form/ChangePasswordForm.php:304
 msgid "Password rules"
 msgstr "Wachtwoord regels"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:246
+#: classes/Gems/User/Form/ChangePasswordForm.php:307
 #, php-format
 msgid "A password %s."
 msgstr "Een wachtwoord %s."
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:253
+#: classes/Gems/User/Form/ChangePasswordForm.php:314
 msgid "A password:"
 msgstr "Een wachtwoord:"
 
-#: classes/Gems/User/Form/ChangePasswordForm.php:307
+#: classes/Gems/User/Form/ChangePasswordForm.php:368
 msgid "Caps Lock seems to be on!"
 msgstr "De Caps Lock toets lijkt aan te staan!"
 
@@ -3691,10 +3711,6 @@ msgstr "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 #: classes/Gems/User/Form/LoginForm.php:182
 msgid "Enter your token..."
 msgstr "Voer uw kenmerk in..."
-
-#: classes/Gems/User/Form/OrganizationFormAbstract.php:271
-msgid "Username"
-msgstr "Gebruikersnaam"
 
 #: classes/Gems/User/Form/ResetRequestForm.php:63
 msgid "Back to login"
@@ -3960,10 +3976,6 @@ msgstr "%value% is te lang voor een %testDescription%. Die moet %length% cijfers
 #: languages/FakeTranslations.php:73
 msgid "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr "%value% is te kort voor een %testDescription%. Die moet %length% cijfers lang zijn."
-
-#: languages/FakeTranslations.php:76
-msgid "Must be the same as %fieldDescription%."
-msgstr "Moet identiek zijn aan %fieldDescription%."
 
 #: languages/FakeTranslations.php:79
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."

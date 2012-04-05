@@ -571,7 +571,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             return;
         }
 
-        return $this->userLoader->getChangePasswordForm($this, func_get_args());
+        $args = MUtil_Ra::args(func_get_args());
+        if (isset($args['askCheck']) && $args['askCheck']) {
+            $args['checkFields'] = $this->loadResetPasswordCheckFields();
+        }
+
+        return $this->userLoader->getChangePasswordForm($this, $args);
     }
 
     /**
@@ -1049,6 +1054,45 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         }
 
         return $auths;
+    }
+
+    /**
+     * Returns an array of elements for check fields during password reset and/or
+     * 'label name' => 'required value' pairs. vor asking extra questions before allowing
+     * a password change.
+     *
+     * Default is asking for the username but you can e.g. ask for someones birthday.
+     *
+     * @return array Of 'label name' => 'required values' or Zend_Form_Element elements
+     */
+    protected function loadResetPasswordCheckFields()
+    {
+        // CHECK ON SOMEONES BIRTHDAY
+        // Birthdays are usually not defined for staff but the do exist for respondents
+        if ($value = $this->_getVar('user_birthday')) {
+            $formData = Zend_Registry::get(MUtil_Model_FormBridge::REGISTRY_KEY);
+            $label    = $this->translate->_('Your birthday');
+
+            $birthdayElem = new MUtil_JQuery_Form_Element_DatePicker('birthday');
+            $birthdayElem->setLabel($label);
+            if (isset($formData['date'])) {
+                $birthdayElem->setOptions($formData['date']);
+            }
+            $birthdayElem->setStorageFormat(Zend_Date::ISO_8601);
+
+            if ($format = $birthdayElem->getDateFormat()) {
+                $valueFormatted = MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());
+            } else {
+                $valueFormatted = $value;
+            }
+
+            $validator = new Zend_Validate_Identical($valueFormatted);
+            $validator->setMessage(sprintf($this->translate->_('%s is not correct.'), $label), Zend_Validate_Identical::NOT_SAME);
+            $birthdayElem->addValidator($validator);
+
+            return array($birthdayElem);
+        } // */
+        return array($this->translate->_('Username') => $this->getLoginName());
     }
 
     /**
