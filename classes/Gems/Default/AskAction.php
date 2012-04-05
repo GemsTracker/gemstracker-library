@@ -272,46 +272,25 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
     public function returnAction()
     {
-        if (isset($this->session->user_id) && $this->session->user_id) {
+        $user = $this->loader->getCurrentUser();
+
+        if ($user->isActive()) {
             $tracker = $this->loader->getTracker();
             $token   = $tracker->getToken($tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID)));
 
             // Check for completed tokens
-            $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $this->session->user_id);
+            $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $user->getUserId());
 
-            if (isset($this->session->return_controller) && $this->session->return_controller) {
-                $return = $this->session->return_controller;
-            } else {
-                $return = 'respondent';
+            $parameters = $user->getSurveyReturn();
+            if (! $parameters) {
+                // Default
+                $request = $this->getRequest();
+                $parameters[$request->getControllerKey()] = 'respondent';
+                $parameters[$request->getActionKey()]     = 'show';
+                $parameters[MUtil_Model::REQUEST_ID]      = $token->getPatientNumber();
             }
 
-            $parameters['controller'] = $return;
-            $parameters['action']     = 'show';
-            $parameters[MUtil_Model::REQUEST_ID] = $token->getPatientNumber();
-            switch ($return) {
-                case 'track':
-                    $parameters['action'] = 'show-track';
-                    $parameters[Gems_Model::RESPONDENT_TRACK] = $token->getRespondentTrackId();
-                    break;
-
-                case 'survey':
-                    $parameters[MUtil_Model::REQUEST_ID] = $token->getTokenId();
-                    break;
-
-                case 'ask':
-                    $this->_forward('forward');
-                    return;
-
-                default:
-                    // Allow open specification of return
-                    if (strpos($return, '/') !== false) {
-                        $parameters = MUtil_Ra::pairs(explode('/', $return));
-                        // MUtil_Echo::track($parameters);
-                    } else {
-                        $parameters['controller'] = 'respondent';
-                    }
-            }
-                $this->_reroute($parameters, true);
+            $this->_reroute($parameters, true);
         } else {
             $this->_forward('forward');
         }

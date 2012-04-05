@@ -846,6 +846,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * get the parameters where the survey should return to
+     *
+     * @return array
+     */
+    public function getSurveyReturn()
+    {
+        return $this->_getVar('surveyReturn', array());
+    }
+
+    /**
      * Returns the user id, that identifies this user within this installation.
      *
      * One user id might be connected to multiple logins for multiple organizations.
@@ -1313,6 +1323,25 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function setPasswordResetRequired($reset = true)
     {
         $this->_setVar('user_password_reset', (boolean) $reset);
+        return $this;
+    }
+
+    /**
+     * Set the parameters where the survey should return to
+     *
+     * @param mixed $return Zend_Controller_Request_Abstract, array of something that can be turned into one.
+     * @return Gems_User_User
+     */
+    public function setSurveyReturn($return)
+    {
+        if ($return instanceof Zend_Controller_Request_Abstract) {
+            $return = $return->getParams();
+        } elseif (! is_array($return)) {
+            $return = MUtil_Ra::to($return);
+        }
+
+        $this->_setVar('surveyReturn', $return);
+
         return $this;
     }
 

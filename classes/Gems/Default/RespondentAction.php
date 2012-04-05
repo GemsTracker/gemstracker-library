@@ -355,7 +355,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         parent::init();
 
-        $this->session->return_controller = $this->getRequest()->getControllerName();
+        // Tell the system where to return to after a survey has been taken
+        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
 
     protected function openedRespondent($patientId, $orgId = null, $userId = null)

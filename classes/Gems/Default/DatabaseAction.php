@@ -61,6 +61,22 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Make sure the cache is cleaned.
+     *
+     * As a lot of cache depends on the database, it is best to clean the cache
+     * now since import tables might have changed.
+     *
+     * @return void
+     */
+    private function _cleanCache()
+    {
+        if ($this->cache instanceof Zend_Cache_Core) {
+            $this->cache->clean();
+            $this->addMessage($this->_('Cache cleaned'));
+        }
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -181,6 +197,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             try {
                 $stmt = $this->db->query($sql);
                 $this->addMessage(sprintf($this->_('%1$s %2$s dropped'), $data['name'], $this->_(strtolower($data['type']))));
+                $this->_cleanCache();
 
                 $model->save(array('exists' => false), $model->getFilter());
 
@@ -266,13 +283,14 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $patcher  = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
         $changed  = $patcher->uploadPatches($this->loader->getVersions()->getBuild());
         $tableSql = sprintf(
-            'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
+            'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s`, MAX(gpa_changed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),
             $this->_('Subtype'),
             $this->_('Patches'),
             $this->_('To be executed'),
             $this->_('Executed'),
-            $this->_('Finished'));
+            $this->_('Finished'),
+            $this->_('Changed on'));
 
         if ($changed == -1) {
             $this->addMessage($this->_('Create the patch table!'));
@@ -306,18 +324,11 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $form->getElement('db_level')->setValue($data['db_level']);
 
                     $this->addMessage(sprintf($this->_('%d patch(es) executed.'), $changed));
-
-                    //As a lot of cache depends on the database, it is best to clean the cache now
-                    //since import tables might have changed
-                    $cache = $this->escort->cache;
-                    if ($cache instanceof Zend_Cache_Core) {
-                        $cache->clean();
-                        $this->addMessage($this->_('Cache cleaned'));
-                    }
+                    $this->_cleanCache();
                 }
 
                 $tableSql = sprintf(
-                    'SELECT gpa_id_patch AS `%s`, gpa_level AS `%s`, gpa_location AS `%s`, gpa_name AS `%s`, gpa_sql AS `%s`, gpa_executed AS `%s`, gpa_completed AS `%s`, gpa_result as `%s` FROM gems__patches WHERE gpa_level = ? ORDER BY gpa_level, gpa_location, gpa_name, gpa_order',
+                    'SELECT gpa_id_patch AS `%s`, gpa_level AS `%s`, gpa_location AS `%s`, gpa_name AS `%s`, gpa_sql AS `%s`, gpa_executed AS `%s`, gpa_completed AS `%s`, gpa_result AS `%s`, gpa_changed AS `%s` FROM gems__patches WHERE gpa_level = ? ORDER BY gpa_level, gpa_changed DESC, gpa_location, gpa_name, gpa_order',
                     $this->_('Patch'),
                     $this->_('Level'),
                     $this->_('Subtype'),
@@ -325,7 +336,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $this->_('Query'),
                     $this->_('Executed'),
                     $this->_('Finished'),
-                    $this->_('Result'));
+                    $this->_('Result'),
+                    $this->_('Changed on'));
 
                 $tableSql = $this->db->quoteInto($tableSql, $form->getValue('level'));
             }
@@ -439,6 +451,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $results = $model->runScript($data);
 
             $this->addMessage($results);
+            $this->_cleanCache();
             $this->_reroute(array('action' => 'show'));
         }
     }
@@ -461,10 +474,12 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount) . '<br/>';
                     $i++;
                 }
+
             } else {
                 $results[] = $this->_('All objects exist. Nothing was executed.');
             }
             $this->addMessage($results);
+            $this->_cleanCache();
             $this->_reroute(array('action' => 'index'), true);
         }
 
