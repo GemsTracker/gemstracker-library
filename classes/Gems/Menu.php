@@ -114,6 +114,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         // Routes for token controller
         $page->addAction(null, null, 'forward');
         $page->addAction(null, null, 'return');
+        $page->addAction(null, null, 'to-survey')->setModelParameters(1);
         $page->addAction(null, null, 'token');
 
         return $page;

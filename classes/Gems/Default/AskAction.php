@@ -50,7 +50,6 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     public function forwardAction()
     {
         $tracker  = $this->loader->getTracker();
-        $language = $this->locale->getLanguage();
 
         /**************
          * Find token *
@@ -82,15 +81,13 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                         /***************
                          * Get the url *
                          ***************/
-                        $user = $this->loader->getCurrentUser();
-                        $url = $token->getUrl($language, $user->getUserId() ? $user->getUserId() : $respId);
-
-                        /************************
-                         * Optional user logout *
-                         ************************/
-                        if ($user->isLogoutOnSurvey()) {
-                            $user->unsetAsCurrentUser();
-                        }
+                        $request = $this->getRequest();
+                        $params[$request->getActionKey()] = 'to-survey';
+                        $params[MUtil_Model::REQUEST_ID]  = $token->getTokenId();
+                        
+                        $href = new MUtil_Html_HrefArrayAttribute($params);
+                        $href->setRouteReset(false);
+                        $url  = $href->render($this->view);
 
                         /***********************************
                          * Should we stay or should we go? *
@@ -144,7 +141,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                         }
 
                         $buttonDiv = $this->html->buttonDiv(array('class' => 'centerAlign'));
-                        $buttonDiv->actionLink(MUtil_Html::raw($url), $token->getSurveyName());
+                        $buttonDiv->actionLink($href, $token->getSurveyName());
 
                         if (isset($delay)) {
                             $buttonDiv->actionLink(array('delay_cancelled' => 1), $this->_('Cancel'));
@@ -299,15 +296,47 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     public function takeAction()
     {
         // Dummy to enable separate rights
-        $this->_forward('forward');
+        $this->_forward('to-survey');
     }
 
+    /**
+     * Old action mentioned on some documentation
+     */
     public function tokenAction()
     {
-        // Staat om sommige documentatie
         $this->_forward('index');
     }
 
+    /**
+     * Go directly to url
+     */
+    public function toSurveyAction()
+    {
+        $tracker = $this->loader->getTracker();
+        if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+            $tokenId = $tracker->filterToken($tokenId);
+
+            if ($token = $tracker->getToken($tokenId)) {
+                $language = $this->locale->getLanguage();
+                $user     = $this->loader->getCurrentUser();
+                $url      = $token->getUrl($language, $user->getUserId() ? $user->getUserId() : $token->getRespondentId());
+
+                /************************
+                 * Optional user logout *
+                 ************************/
+                if ($user->isLogoutOnSurvey()) {
+                    $user->unsetAsCurrentUser();
+                }
+
+                // Redirect at once
+                header('Location: ' . $url);
+                exit();
+            }
+        }
+
+        // Default option
+        $this->_forward('index');
+    }
     public function routeError($message)
     {
         // TODO make nice

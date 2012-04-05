@@ -365,7 +365,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     {
         $messages = array();
         $survey   = $this->tracker->getSurvey($surveyId);
-        
+
         if (null === $sourceSurveyId) {
             // Was removed
             $values['gsu_active'] = 0;
@@ -995,7 +995,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         }
 
         // mgzdev.erasmusmc.nl/incant/index.php?sid=1&token=o7l9_b8z2
-        return $this->getBaseUrl() . '/index.php?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
+        $baseurl = $this->getBaseUrl();
+        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . 'index.php?sid=' . $sourceSurveyId . '&token=' . $tokenId . $langUrl;
     }
 
 
