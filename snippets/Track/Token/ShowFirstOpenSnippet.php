@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Track
+ * @subpackage Tracker\Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
@@ -36,10 +36,12 @@
  */
 
 /**
+ * Show a single button for an unanswered survey or nothing.
  *
+ * Works using $project->getAskDelay()
  *
  * @package    Gems
- * @subpackage Snippets\Track
+ * @subpackage Tracker\Snippets
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.3

@@ -379,6 +379,19 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     }
 
     /**
+     * Returns a form to ask for a token
+     *
+     * @param mixed $args_array MUtil_Ra::args array for Form initiation.
+     * @return Gems_Tracker_Form_AskTokenForm
+     */
+    public function getAskTokenForm($args_array = null)
+    {
+        $args = MUtil_Ra::args(func_get_args());
+
+        return $this->_loadClass('Form_AskTokenForm', true, array($args));
+    }
+
+    /**
      * Load project specific model or general Gems model otherwise
      *
      * @return Gems_Tracker_Model_RespondentTrackModel
@@ -592,10 +605,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function getTokenValidator()
     {
-        $library = $this->getTokenLibrary();
-        $reuse   = $library->hasReuse() ? $library->getReuse() : -1;
-
-        return $this->_loadClass('Token_TokenValidator', true, array($this, $library->getFormat(), $reuse));
+        return $this->_loadClass('Token_TokenValidator', true);
     }
 
     /**

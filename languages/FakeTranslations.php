@@ -46,13 +46,6 @@ _('Installation not complete! Login is not yet possible!');
 _('Your account is temporarily blocked, please wait %s minutes');
 _('You are not allowed to login from this location.');
 
-// Gems_Validate_TokenValidator
-_('Not a valid token. The format for valid tokens is: %tokenFormat%.');
-_('Unknown token.');
-_('This token is no longer valid.');
-_('This token cannot be used (any more).');
-_('This token cannot be used (yet).');
-
 // MUtil_Validate_Date_DateAfter
 _("Date should be '%dateAfter%' or later.");
 

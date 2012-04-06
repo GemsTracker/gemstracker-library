@@ -115,6 +115,14 @@ interface Gems_Tracker_TrackerInterface {
     public function filterToken($tokenId);
 
     /**
+     * Returns a form to ask for a token
+     *
+     * @param mixed $args_array MUtil_Ra::args array for Form initiation.
+     * @return Gems_Tracker_Form_AskTokenForm
+     */
+    public function getAskTokenForm($args_array = null);
+
+    /**
      *
      * @param mixed $respTrackData Track id or array containing trackdata
      * @return Gems_Tracker_RespondentTrack

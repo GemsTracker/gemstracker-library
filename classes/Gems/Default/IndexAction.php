@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -238,12 +239,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $this->_reroute(array('controller' => null, 'action' => null), true);
                 }
                 return;
-            } /*
-            else {
-                //Now present the user with an error message
-                // $errors = MUtil_Ra::flatten($form->getMessages());
-                // $this->addMessage($errors);
-                MUtil_Echo::track($errors);
+            } else {
+                $errors = MUtil_Ra::flatten($form->getMessages());
+                // MUtil_Echo::track($errors);
 
                 //Also log the error to the log table
                 //when the project has logging enabled

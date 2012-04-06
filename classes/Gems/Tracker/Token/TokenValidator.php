@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,76 +25,108 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Tracker
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * File description of TokenValidator
+ * Checks whether a token kan be used for the ask/forward loop
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.4
- * @version 1.4
- * @package Gems
- * @subpackage Tracker 
+ * @package    Gems
+ * @subpackage Tracker
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
  */
-
-/**
- * Class description of TokenValidator
- *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
- * @subpackage Tracker 
- */
-class Gems_Tracker_Token_TokenValidator extends Zend_Validate_Abstract
+class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract implements Zend_Validate_Interface
 {
     /**
-     * Error constants
+     *
+     * @var array Or single string
      */
-    const NOT_TOKEN_FORMAT      = 'notFormat';
-    const TOKEN_DOES_NOT_EXIST  = 'notThere';
-    const TOKEN_NO_LONGER_VALID = 'noLongerValid';
-    const TOKEN_NOT_YET_VALID   = 'notYetValid';
-    
-    /**
-     * @var array Message templates
-     */
-    protected $_messageTemplates = array(
-        self::NOT_TOKEN_FORMAT      => 'Not a valid token. The format for valid tokens is: %tokenFormat%.',
-        self::TOKEN_DOES_NOT_EXIST  => 'Unknown token.',
-        self::TOKEN_NO_LONGER_VALID => 'This token is no longer valid.',
-        self::TOKEN_NOT_YET_VALID   => 'This token cannot be used (yet).',
-    );
-
-    /**
-     * @var array
-     */
-    protected $_messageVariables = array(
-        'reuse'       => '_reuse',
-        'tokenFormat' => '_tokenFormat',
-    );
+    protected $_messages;
 
     /**
      *
-     * @var int
+     * @var Zend_Db_Adapter_Abstract
      */
-    protected $_reuse;
-    
-    /**
-     *
-     * @var string
-     */
-    protected $_tokenFormat;
+    protected $db;
 
     /**
      *
-     * @var Gems_Tracker
+     * @var Gems_Log
+     */
+    protected $logger;
+
+    /**
+     * Optional
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
+    /**
+     * Required
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
+     * @var Gems_Tracker_TrackerInterface
      */
     protected $tracker;
-    
-    public function __construct(Gems_Tracker $tracker, $tokenFormat, $reuse)
+
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
     {
-        $this->_reuse       = $reuse;
-        $this->_tokenFormat = $tokenFormat;
-        $this->tracker      = $tracker;
+        return $this->db instanceof Zend_Db_Adapter_Abstract &&
+                $this->logger instanceof Gems_Log &&
+                $this->project instanceof Gems_Project_ProjectSettings &&
+                $this->tracker instanceof Gems_Tracker_TrackerInterface &&
+                $this->translate instanceof Zend_Translate;
+    }
+
+    /**
+     * Returns an array of messages that explain why the most recent isValid()
+     * call returned false. The array keys are validation failure message identifiers,
+     * and the array values are the corresponding human-readable message strings.
+     *
+     * If isValid() was never called or if the most recent isValid() call
+     * returned true, then this method returns an empty array.
+     *
+     * @return array
+     */
+    public function getMessages()
+    {
+        return (array) $this->_messages;
+    }
+
+    protected function getRequest()
+    {
+        if (! $this->request) {
+            $this->request = Zend_Controller_Front::getInstance()->getRequest();
+        }
+
+        return $this->request;
     }
 
     /**
@@ -111,57 +142,100 @@ class Gems_Tracker_Token_TokenValidator extends Zend_Validate_Abstract
      */
     public function isValid($value)
     {
-        // Make sure the value has the right format
-        $value = $this->tracker->filterToken($value);
+        if ($throttleSettings = $this->project->getAskThrottleSettings()) {
 
-        if (strlen($value) !== strlen($this->_tokenFormat)) {
-            $this->_error(self::NOT_TOKEN_FORMAT, $value);
-            return false;
-        }
-        
-        if ($token = $this->tracker->getToken($value)) {
-            $currentDate = new MUtil_Date();
-            
-            if ($completionTime = $token->getCompletionTime()) {
-            
-                if ($this->_reuse >= 0) {
-                    if ($completionTime->diffDays($currentDate) > $this->_reuse) {
-                        // Oldest date AFTER completiondate. Oldest date is today minus reuse time
-                        $this->_error(self::TOKEN_NO_LONGER_VALID, $value);
-                        return false;
-                    } else {
-                        // It is completed and may be used to look up other
-                        // valid tokens.
-                        return true;
-                    }
-                } else {
-                    $this->_error(self::TOKEN_NO_LONGER_VALID, $value);
-                    return false;
-                }
-            }
-            
-            if ($fromDate = $token->getValidFrom()) {
-                if ($currentDate->isEarlier($fromDate)) {
-                    // Current date is BEFORE from date
-                    $this->_error(self::TOKEN_NOT_YET_VALID, $value);
-                    return false;
-                }
-            } else {
-                $this->_error(self::TOKEN_NOT_YET_VALID, $value);
+            // Prune the database for (very) old attempts
+            $where = $this->db->quoteInto('gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)', $throttleSettings['period'] * 20);
+            $this->db->delete('gems__token_attempts', $where);
+
+            // Retrieve the number of failed attempts that occurred within the specified window
+            $select = $this->db->select();
+            $select->from('gems__token_attempts', array('COUNT(*) AS attempts', 'UNIX_TIMESTAMP(MAX(gta_datetime)) - UNIX_TIMESTAMP() AS last'))
+                    ->where('gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)', $throttleSettings['period']);
+            $attemptData = $this->db->fetchRow($select);
+
+            $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']);
+
+
+            // MUtil_Echo::track($throttleSettings, $attemptData, $remainingDelay);
+            if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
+                $this->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", Zend_Log::ERR);
+
+                $this->_messages = $this->translate->_('The server is currently busy, please wait a while and try again.');
                 return false;
             }
-            
+        }
+
+        // The pure token check
+        if ($this->isValidToken($value)) {
+            return true;
+        }
+
+        $max_length = $this->tracker->getTokenLibrary()->getLength();
+        $this->db->insert('gems__token_attempts',
+            array(
+                'gta_id_token'   => substr($value, 0, $max_length),
+                'gta_ip_address' => $this->getRequest()->getClientIp()
+            )
+        );
+        return false;
+    }
+
+    /**
+     * Seperate the incorrect tokens from the right tokens
+     *
+     * @param mixed $value
+     * @return boolean
+     */
+    protected function isValidToken($value)
+    {
+        // Make sure the value has the right format
+        $value   = $this->tracker->filterToken($value);
+        $library = $this->tracker->getTokenLibrary();
+        $format  = $library->getFormat();
+        $reuse   = $library->hasReuse() ? $library->getReuse() : -1;
+
+        if (strlen($value) !== strlen($format)) {
+            $this->_messages = sprintf($this->translate->_('Not a valid token. The format for valid tokens is: %s.'), $format);
+            return false;
+        }
+
+        $token = $this->tracker->getToken($value);
+        if ($token && $token->exists) {
+            $currentDate = new MUtil_Date();
+
+            if ($completionTime = $token->getCompletionTime()) {
+                // Reuse means a user can use an old token to check for new surveys
+                if ($reuse >= 0) {
+                    // Oldest date AFTER completiondate. Oldest date is today minus reuse time
+                    if ($completionTime->diffDays($currentDate) <= $reuse) {
+                        // It is completed and may still be used to look
+                        // up other valid tokens.
+                        return true;
+                    }
+                }
+                $this->_messages = $this->translate->_('This token is no longer valid.');
+                return false;
+            }
+
+            $fromDate = $token->getValidFrom();
+            if ((null === $fromDate) || $currentDate->isEarlier($fromDate)) {
+                // Current date is BEFORE from date
+                $this->_messages = $this->translate->_('This token cannot (yet) be used.');
+                return false;
+            }
+
             if ($untilDate = $token->getValidUntil()) {
                 if ($currentDate->isLater($untilDate)) {
                     //Current date is AFTER until date
-                    $this->_error(self::TOKEN_NO_LONGER_VALID, $value);
+                    $this->_messages = $this->translate->_('This token is no longer valid.');
                     return false;
                 }
             }
 
             return true;
         } else {
-            $this->_error(self::TOKEN_DOES_NOT_EXIST, $value);
+            $this->_messages = $this->translate->_('Unknown token.');
             return false;
         }
     }

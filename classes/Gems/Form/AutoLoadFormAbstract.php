@@ -47,11 +47,24 @@
 abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
 {
     /**
+     * The field name for the submit element.
+     *
+     * @var string
+     */
+    protected $_submitFieldName = 'button';
+
+    /**
      * When true all elements are loaded after initiation.
      *
      * @var boolean
      */
     protected $loadDefault = true;
+
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
 
     /**
      * Should be called after answering the request to allow the Target
@@ -77,6 +90,34 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
     {
         return $this->loadDefault;
     }
+
+    /**
+     * Returns/sets a submit button.
+     *
+     * @return Zend_Form_Element_Submit
+     */
+    public function getSubmitButton()
+    {
+        $element = $this->getElement($this->_submitFieldName);
+
+        if (! $element) {
+            // Submit knop
+            $element = new Zend_Form_Element_Submit($this->_submitFieldName);
+            $element->setLabel($this->getSubmitButtonLabel());
+            $element->setAttrib('class', 'button');
+
+            $this->addElement($element);
+        }
+
+        return $element;
+    }
+
+    /**
+     * Returns the label for the submitbutton
+     *
+     * @return string
+     */
+    abstract public function getSubmitButtonLabel();
 
     /**
      * The function loads the elements for this form

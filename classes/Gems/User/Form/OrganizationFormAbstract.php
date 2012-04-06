@@ -54,13 +54,6 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
     protected $_organizationFromUrl = false;
 
     /**
-     * The field name for the submit element.
-     *
-     * @var string
-     */
-    protected $_submitFieldName = 'button';
-
-    /**
      *
      * @var Gems_User_User
      */
@@ -93,12 +86,6 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
-
-    /**
-     *
-     * @var Zend_Translate
-     */
-    protected $translate;
 
     /**
      * The field name for the username element.
@@ -212,34 +199,6 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
         }
         return $this->request;
     }
-
-    /**
-     * Returns/sets a submit button.
-     *
-     * @return Zend_Form_Element_Submit
-     */
-    public function getSubmitButton()
-    {
-        $element = $this->getElement($this->_submitFieldName);
-
-        if (! $element) {
-            // Submit knop
-            $element = new Zend_Form_Element_Submit($this->_submitFieldName);
-            $element->setLabel($this->getSubmitButtonLabel());
-            $element->setAttrib('class', 'button');
-
-            $this->addElement($element);
-        }
-
-        return $element;
-    }
-
-    /**
-     * Returns the label for the submitbutton
-     *
-     * @return string
-     */
-    abstract public function getSubmitButtonLabel();
 
     /**
      * Returns a user

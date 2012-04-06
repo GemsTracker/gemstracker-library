@@ -52,6 +52,15 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     protected $forwardSnippets = 'Track_Token_ShowFirstOpenSnippet';
 
     /**
+     * The width factor for the label elements.
+     *
+     * Width = (max(characters in labels) * labelWidthFactor) . 'em'
+     *
+     * @var float
+     */
+    protected $labelWidthFactor = 0.8;
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -62,6 +71,32 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      * @var boolean $useHtmlView
      */
     public $useHtmlView = true;
+
+    /**
+     * Function for overruling the display of the login form.
+     *
+     * @param Gems_Tracker_Form_AskTokenForm $form
+     */
+    protected function displayTokenForm(Gems_Tracker_Form_AskTokenForm $form)
+    {
+        $user = $this->loader->getCurrentUser();
+
+        $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->name));
+        $this->html->h3($form->getDescription());
+        $this->html[] = $form;
+        $this->html->pInfo($this->_('Tokens identify a survey that was assigned to you personally.') . ' ' . $this->_('Entering the token and pressing OK will open that survey.'));
+
+        if ($user->isActive()) {
+            if ($user->isLogoutOnSurvey()) {
+                $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'));
+            }
+        }
+
+        $this->html->pInfo(
+            $this->_('A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive.'), ' ',
+            $this->_('The number zero and the letter O are treated as the same; the same goes for the number one and the letter L.')
+            );
+    }
 
     /**
      * Show the user a screen with token information and a button to take at least one survey
@@ -120,85 +155,22 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         // Make sure to return to ask screen
         $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
 
-        $tracker    = $this->loader->getTracker();
-        $max_length = $tracker->getTokenLibrary()->getLength();
+        $request = $this->getRequest();
+        $tracker = $this->loader->getTracker();
+        $form    = $tracker->getAskTokenForm(array('displayOrder' => array('element', 'description', 'errors'), 'labelWidthFactor' => 0.8));
 
-        $form = new Gems_Form(array('displayOrder' => array('element', 'description', 'errors'), 'labelWidthFactor' => 0.8));
-        $form->setMethod('post');
-        $form->setDescription(sprintf($this->_('Enter your %s token'), $this->project->name));
-
-        // Veld token
-        $element = new Zend_Form_Element_Text(MUtil_Model::REQUEST_ID);
-        $element->setLabel($this->_('Token'));
-        $element->setDescription(sprintf($this->_('Enter tokens as %s.'), $tracker->getTokenLibrary()->getFormat()));
-        $element->setAttrib('size', $max_length);
-        $element->setAttrib('maxlength', $max_length);
-        $element->setRequired(true);
-        $element->addFilter($tracker->getTokenFilter());
-        $element->addValidator($tracker->getTokenValidator());
-        $form->addElement($element);
-
-        // Submit knop
-        $element = new Zend_Form_Element_Submit('button');
-        $element->setLabel($this->_('OK'));
-        $element->setAttrib('class', 'button');
-        $form->addElement($element);
-
-        if ($this->_request->isPost()) {
-            $throttleSettings = $this->project->getAskThrottleSettings();
-
-            // Prune the database for (very) old attempts
-            $this->db->query("DELETE FROM gems__token_attempts WHERE gta_datetime < DATE_SUB(NOW(), INTERVAL ? second)",
-                $throttleSettings['period'] * 20);
-
-            // Retrieve the number of failed attempts that occurred within the specified window
-            $attemptData = $this->db->fetchRow("SELECT COUNT(1) AS attempts, UNIX_TIMESTAMP(MAX(gta_datetime)) AS last " .
-                "FROM gems__token_attempts WHERE gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)", $throttleSettings['period']);
-
-            $remainingDelay = ($attemptData['last'] + $throttleSettings['delay']) - time();
-
-            if ($attemptData['attempts'] > $throttleSettings['threshold'] && $remainingDelay > 0) {
-                $this->escort->logger->log("Possible token brute force attack, throttling for $remainingDelay seconds", Zend_Log::ERR);
-
-                $this->addMessage($this->_('The server is currently busy, please wait a while and try again.'));
-            } else if ($form->isValid($_POST)) {
-                $this->_forward('forward');
-                return;
-            } else {
-                if (isset($_POST[MUtil_Model::REQUEST_ID])) {
-                    $this->db->insert(
-                    	'gems__token_attempts',
-                        array(
-                        	'gta_id_token' => substr($_POST[MUtil_Model::REQUEST_ID], 0, $max_length),
-                        	'gta_ip_address' => $this->getRequest()->getClientIp()
-                        )
-                    );
-                }
-            }
-        } elseif ($id = $this->_getParam(MUtil_Model::REQUEST_ID)) {
-            $form->populate(array(MUtil_Model::REQUEST_ID => $id));
+        if ($request->isPost() && $form->isValid($request->getParams())) {
+            $this->_forward('forward');
+            return;
         }
 
-        $this->html->h3($form->getDescription());
-        $this->html[] = $form;
-        $this->html->pInfo($this->_('Tokens identify a survey that was assigned to you personally.') . ' ' . $this->_('Entering the token and pressing OK will open that survey.'));
-
-        if (isset($this->session->user_id)) {
-            if ($this->session->user_logout) {
-                $this->html->pInfo($this->_('After answering the survey you will be logged off automatically.'));
-            } else {
-                $this->html->pInfo($this->_('After answering the survey you will return to the respondent overview screen.'));
-            }
-        // } else {
-        //    $this->html->pInfo($this->_('After answering the survey you will return here.'));
-        }
-
-        $this->html->pInfo(
-            $this->_('A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive.'), ' ',
-            $this->_('The number zero and the letter O are treated as the same; the same goes for the number one and the letter L.')
-            );
+        $form->populate($request->getParams());
+        $this->displayTokenForm($form);
     }
 
+    /**
+     * The action where survey sources should return to after survey completion
+     */
     public function returnAction()
     {
         $user = $this->loader->getCurrentUser();
@@ -225,9 +197,11 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         }
     }
 
+    /**
+     * Duplicate of to-survey to enable separate rights
+     */
     public function takeAction()
     {
-        // Dummy to enable separate rights
         $this->_forward('to-survey');
     }
 
@@ -274,10 +248,4 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         // Default option
         $this->_forward('index');
     }
-    public function routeError($message)
-    {
-        // TODO make nice
-        throw new exception($message);
-    }
 }
-
