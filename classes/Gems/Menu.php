@@ -367,8 +367,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
             $tkPage->addButtonOnly($this->_('Fill in'), 'pr.ask', 'ask', 'take')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('can_be_taken', 1, Gems_Model::ID_TYPE, 'token')
-                    ->addHiddenParameter('delay', 0);
+                    ->setParameterFilter('can_be_taken', 1, Gems_Model::ID_TYPE, 'token');
             $tkPage->addPdfButton($this->_('Print PDF'), 'pr.token.print')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gsu_has_pdf', 1, Gems_Model::ID_TYPE, 'token');

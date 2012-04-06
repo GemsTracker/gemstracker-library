@@ -596,6 +596,15 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return Gems_User_Organization
+     */
+    public function getOrganization()
+    {
+        return $this->loader->getOrganization($this->getOrganizationId());
+    }
+
+    /**
+     *
      * @return int
      */
     public function getOrganizationId()
@@ -811,7 +820,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns the number of unanswered tokens for the person answering this token
+     * Returns the number of unanswered tokens for the person answering this token,
+     * minus this token itself
      *
      * @return int
      */
@@ -866,6 +876,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      *
      * @param string $language The language currently used by the user
      * @param int $userId The id of the gems user
+     * @throws Gems_Tracker_Source_SurveyNotFoundException
      */
     public function getUrl($language, $userId)
     {

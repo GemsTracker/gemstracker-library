@@ -62,8 +62,8 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return int 1 of the token was inserted or changed, 0 otherwise
+     * @throws Gems_Tracker_Source_SurveyNotFoundException
      */
-    // public function addToSource(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null);
     public function copyTokenToSource(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null);
 
 
@@ -87,7 +87,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return MUtil_Date date time or null
      */
-    // public function getAnswerDateTime($fieldName, $tokenId, $surveyId, array $answers = null, $sourceSurveyId = null);
     public function getAnswerDateTime($fieldName, Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
@@ -102,7 +101,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return MUtil_Date date time or null
      */
-    // public function getCompletionTime($tokenId, $surveyId, array $answers = null, $sourceSurveyId = null);
     public function getCompletionTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
@@ -199,7 +197,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return MUtil_Date date time or null
      */
-    // public function getStartTime($tokenId, $surveyId, array $answers = null, $sourceSurveyId = null);
     public function getStartTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
@@ -221,7 +218,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return string The url to start the survey
      */
-    // public function getTokenUrl($tokenId, $language, $surveyId, $sourceSurveyId);
     public function getTokenUrl(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId);
 
     /**
@@ -239,7 +235,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean
      */
-    // public function inSource($tokenId, $surveyId, $sourceSurveyId = null);
     public function inSource(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**
@@ -250,7 +245,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @param string $sourceSurveyId Optional Survey Id used by source
      * @return boolean True if the token has completed
      */
-    // public function isCompleted($tokenId, $surveyId, array $answers = null, $sourceSurveyId = null);
     public function isCompleted(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null);
 
     /**

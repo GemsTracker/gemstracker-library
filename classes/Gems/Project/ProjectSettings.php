@@ -187,6 +187,38 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Calculate the delay between surveys being asked for this request. Zero means forward
+     * at once, a negative value means wait forever.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @param boolean $wasAnswered When true use the ask delay
+     * @return int -1 means waiting indefinitely
+     */
+    public function getAskDelay(Zend_Controller_Request_Abstract $request, $wasAnswered)
+    {
+        if ($request->getParam('delay_cancelled', false)) {
+            return -1;
+        }
+
+        $delay = $request->getParam('delay', null);
+        if (null != $delay) {
+            return $delay;
+        }
+
+        if ($wasAnswered) {
+            if ($this->offsetExists('askNextDelay')) {
+                return $this->offsetGet('askNextDelay');
+            }
+        } else {
+            if ($this->offsetExists('askDelay')) {
+                return $this->offsetGet('askDelay');
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Returns an array with throttling settings for the ask
      * controller
      *

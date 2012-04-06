@@ -211,6 +211,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
      * @param Gems_Tracker_Token $token
      * @param string $language
      * @return int 1 of the token was inserted or changed, 0 otherwise
+     * @throws Gems_Tracker_Source_SurveyNotFoundException
      */
     public function copyTokenToSource(Gems_Tracker_Token $token, $language)
     {
