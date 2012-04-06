@@ -111,6 +111,7 @@ class MUtil_Html_Creator
         'menu'              => 'MUtil_Html_ListElement::menu',
         'ol'                => 'MUtil_Html_ListElement::ol',
         'pagePanel'         => 'MUtil_Html_PagePanel::pagePanel',
+        'pForm'             => 'MUtil_Html_PFormElement::pForm',
         'progress'          => 'MUtil_Html_ProgressPanel::progress',
         'progressPanel'     => 'MUtil_Html_ProgressPanel::progress',
         'raw'               => 'MUtil_Html_Raw::raw',
