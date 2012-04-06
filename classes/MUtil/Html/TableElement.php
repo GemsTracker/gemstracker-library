@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -734,6 +733,14 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         return $this;
     }
 
+    /**
+     * Apply this element to the form as the output decorator.
+     *
+     * @param Zend_Form $form
+     * @param boolean $add_description When true the description is displayed
+     * @param boolean $include_description When false the description is added in a separate column instead of the element column.
+     * @return MUtil_Html_TableElement
+     */
     public function setAsFormLayout(Zend_Form $form, $add_description = false, $include_description = false)
     {
         // Make a Lazy repeater for the form elements and set it as the element repeater
@@ -746,12 +753,12 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         // $this->tdh()->label('[', $formrep->element, ']');
 
         $elements[] = $formrep->element;
-        $elements[] = ' ';
-        $elements[] = $formrep->errors;
         if ($add_description && $include_description) {
             $elements[] = ' ';
             $elements[] = $formrep->description;
         }
+        $elements[] = ' ';
+        $elements[] = $formrep->errors;
         $this->addColumn($elements); // Element, Error & optional description
         if ($add_description && (! $include_description)) {
             $this->addColumn($formrep->description); // Description in separate column

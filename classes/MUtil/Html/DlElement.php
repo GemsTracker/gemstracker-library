@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,28 +25,66 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Html DL element with functions for applying it to a form.
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
 class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_FormLayout
 {
-    public $renderWithoutContent = false;
-
+    /**
+     * Only dt and dd elements are allowed as content.
+     *
+     * @var string|array A string or array of string values of the allowed element tags.
+     */
     protected $_allowedChildTags = array('dt', 'dd');
 
+    /**
+     * Put a Dl element on it's own line
+     *
+     * @var string Content added after the element.
+     */
     protected $_appendString = "\n";
 
+    /**
+     * Can process form elements
+     *
+     * @var array
+     */
     protected $_specialTypes = array(
         'Zend_Form' => 'setAsFormLayout',
         );
 
+    /**
+     * Should have content
+     *
+     * @var boolean The element is rendered even without content when true.
+     */
+    public $renderWithoutContent = false;
+
+
+    /**
+     * Make a DL element
+     *
+     * Any parameters are added as either content, attributes or handled
+     * as special types, if defined as such for this element.
+     *
+     * @param mixed $arg_array MUtil_Ra::args arguments
+     */
     public function __construct($arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args());
@@ -94,6 +131,15 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
         return $ds;
     }
 
+    /**
+     * Helper function for creating automatically calculated widths.
+     *
+     * @staticvar Zend_Form $last_form Prevent recalculation. This function is called for every label
+     * @staticvar string $last_factor Last result
+     * @param Zend_Form $form The form to calculate the widest label for
+     * @param float $factor The factor to multiple the number of characters with for to get the number of em's
+     * @return string E.g.: '10em'
+     */
     public static function calculateAutoWidthFormLayout(Zend_Form $form, $factor = 1)
     {
         static $last_form;
@@ -130,6 +176,12 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
     }
 
 
+    /**
+     * Static helper function for creation, used by @see MUtil_Html_Creator.
+     *
+     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
+     * @return MUtil_Html_DlElement
+     */
     public static function dl($arg_array = null)
     {
         $args = func_get_args();
@@ -141,6 +193,14 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
         return $this->addItem($dt, $dd);
     }
 
+    /**
+     * Apply this element to the form as the output decorator.
+     *
+     * @param Zend_Form $form
+     * @param mixed $width The style.width content for the labels
+     * @param array $order The display order of the elements
+     * @return MUtil_Html_DlElement
+     */
     public function setAsFormLayout(Zend_Form $form, $width = null, array $order = array('element', 'errors', 'description'))
     {
         // Make a Lazy repeater for the form elements and set it as the element repeater
@@ -171,7 +231,14 @@ class MUtil_Html_DlElement extends MUtil_Html_HtmlElement implements MUtil_Html_
         return $this;
     }
 
-
+    /**
+     * Apply this element to the form as the output decorator with automatically calculated widths.
+     *
+     * @param Zend_Form $form
+     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in em at drawing time
+     * @param array $order The display order of the elements
+     * @return MUtil_Html_DlElement
+     */
     public function setAutoWidthFormLayout(Zend_Form $form, $factor = 1, array $order = array('element', 'errors', 'description'))
     {
         // Lazy call becase the form might not be completed at this stage.

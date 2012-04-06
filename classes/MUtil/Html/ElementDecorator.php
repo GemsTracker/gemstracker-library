@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,26 +25,78 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Zend style form decorator the uses MUtil_Html
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
 class MUtil_Html_ElementDecorator extends Zend_Form_Decorator_Abstract
 {
+    /**
+     *
+     * @var MUtil_Html_HtmlInterface
+     */
     protected $_html_element;
+
+    /**
+     * When existing prepends all error messages before the form elements.
+     *
+     * When a MUtil_Html_HtmlElement the errors are appended to the element,
+     * otherwise an UL is created
+     *
+     * @var mixed
+     */
+    protected $_prepend_errors;
+
+    /**
+     * Any content to be displayed before the visible elements
+     *
+     * @var mixed
+     */
     protected $_prologue;
 
+    /**
+     * The element used to display the (visible) form elements.
+     *
+     * @return MUtil_Html_HtmlInterface
+     */
     public function getHtmlElement()
     {
         return $this->_html_element;
     }
 
+    /**
+     * Must the form prepend all error messages before the visible form elements?
+     *
+     * When a MUtil_Html_HtmlElement the errors are appended to the element,
+     * otherwise an UL is created
+     *
+     * @return mixed false, true or MUtil_Html_HtmlElement
+     */
+    public function getPrependErrors()
+    {
+        return $this->_prepend_errors;
+    }
+
+    /**
+     * Any content to be displayed before the visible elements
+     *
+     * @return mixed
+     */
     public function getPrologue()
     {
         return $this->_prologue;
@@ -82,6 +133,22 @@ class MUtil_Html_ElementDecorator extends Zend_Form_Decorator_Abstract
         } else {
             $prologue = '';
         }
+        if ($prependErrors = $this->getPrependErrors()) {
+            $form = $this->getElement();
+            if ($errors = $form->getMessages()) {
+                $errors = MUtil_Ra::flatten($errors);
+                $errors = array_unique($errors);
+
+                if ($prependErrors instanceof MUtil_Html_ElementInterface) {
+                    $html = $prependErrors;
+                } else {
+                    $html = MUtil_Html::create('ul');
+                }
+                $html->append($errors);
+                
+                $prologue .= $html->render($view);
+            }
+        }
 
         $result = $this->renderElement($htmlelement, $view);
 
@@ -107,12 +174,42 @@ class MUtil_Html_ElementDecorator extends Zend_Form_Decorator_Abstract
         return $htmlElement->render($view);
     }
 
+    /**
+     * Set the default
+     *
+     * @param MUtil_Html_HtmlInterface $htmlElement
+     * @return MUtil_Html_ElementDecorator (continuation pattern)
+     */
     public function setHtmlElement(MUtil_Html_HtmlInterface $htmlElement)
     {
         $this->_html_element = $htmlElement;
         return $this;
     }
 
+    /**
+     * Set the form to prepends all error messages before the visible form elements.
+     *
+     * When a MUtil_Html_HtmlElement the errors are appended to the element,
+     * otherwise an UL is created
+     *
+     * @param mixed $prepend false, true or MUtil_Html_HtmlElement
+     * @return MUtil_Html_ElementDecorator (continuation pattern)
+     */
+    public function setPrependErrors($prepend = true)
+    {
+        $this->_prepend_errors = $prepend;
+        return $this;
+    }
+
+    /**
+     * Hidden elements should be displayed at the start of the form.
+     *
+     * If the prologue is a MUtil_Lazy_RepeatableFormElements repeater then all the hidden elements are
+     * displayed in a div at the start of the form.
+     *
+     * @param mixed $prologue E.g. a repeater or a html element
+     * @return MUtil_Html_ElementDecorator
+     */
     public function setPrologue($prologue)
     {
         $this->_prologue = $prologue;

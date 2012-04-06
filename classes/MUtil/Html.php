@@ -98,6 +98,7 @@ class MUtil_Html
     }
 
     /**
+     * Create an element or return an element creator
      *
      * @param string $tagName Optional tag to create
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
@@ -131,6 +132,13 @@ class MUtil_Html
         return self::getCreator()->create($tagName, $args);
     }
 
+    /**
+     * Create an element bypassing the standard element creation function stored for certain tags.
+     *
+     * @param string $tagName Optional tag to create
+     * @param mixed $arg_array Optional MUtil_Ra::args processed settings
+     * @return MUtil_Html_HtmlElement Always, never another type
+     */
     public static function createRaw($tagName, array $args = array())
     {
         return self::getCreator()->createRaw($tagName, $args);
@@ -196,11 +204,26 @@ class MUtil_Html
         return self::$_snippetLoader;
     }
 
+    /**
+     * Replaces the non html name characters in the name.
+     *
+     * Helper function for working with Zend_Form_Element's
+     *
+     * @param string $name
+     * @param string $belongsTo
+     * @return string
+     */
     public static function name2id($name, $belongsTo = null)
     {
         return preg_replace('/\[([^\]]+)\]/', '-$1', $name . '-' . $belongsTo);
     }
 
+    /**
+     * String content that should be rendered without output escaping
+     *
+     * @param string $content
+     * @return MUtil_Html_Raw
+     */
     public static function raw($content)
     {
         return self::getCreator()->create('raw', array($content));
@@ -285,6 +308,12 @@ class MUtil_Html
         }
     }
 
+    /**
+     * Returns a href attribute
+     *
+     * @param mixed $arg_array MUtil_Args::ra arguements
+     * @return MUtil_Html_HrefArrayAttribute
+     */
     public static function url($arg_array = null)
     {
         $args = func_get_args();

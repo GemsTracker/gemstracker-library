@@ -75,13 +75,6 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     protected $_reportRulesFieldName = 'report_rules';
 
     /**
-     * The field name for the submit element.
-     *
-     * @var string
-     */
-    protected $_submitFieldName = 'submit';
-
-    /**
      * Layout table
      *
      * @var MUtil_Html_TableElements
@@ -327,25 +320,13 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     }
 
     /**
-     * Returns/sets a submit button.
+     * Returns the label for the submitbutton
      *
-     * @param string $label
-     * @return Zend_Form_Element_Submit
+     * @return string
      */
-    public function getSubmitButton($label = null)
+    public function getSubmitButtonLabel()
     {
-        $element = $this->getElement($this->_submitFieldName);
-
-        if (! $element) {
-            // Submit knop
-            $element = new Zend_Form_Element_Submit($this->_submitFieldName);
-            $element->setLabel(null === $label ? $this->translate->_('Save') : $label);
-            $element->setAttrib('class', 'button');
-
-            $this->addElement($element);
-        }
-
-        return $element;
+        return $this->translate->_($this->translate->_('Save'));
     }
 
     /**

@@ -45,7 +45,12 @@
 class MUtil_Form extends Zend_Form
 {
     protected $_displayOrder = array('element', 'errors', 'description');
+
+    /**
+     * $var MUtil_HtmlElement
+     */
     protected $_html_element;
+
     protected $_labelWidth;
     protected $_labelWidthFactor;
     protected $_no_dojo = true;
@@ -161,11 +166,25 @@ class MUtil_Form extends Zend_Form
     }
 
     /**
+     * Returns an Html element that is used to render the form contents.
      *
-     * @return MUtil_Html_HtmlElement
+     * @return MUtil_Html_HtmlElement Or an equivalent class
      */
     public function getHtml()
     {
+        if (! $this->_html_element) {
+            foreach ($this->_decorators as $decorator) {
+                if ($decorator instanceof MUtil_Html_ElementDecorator) {
+                    break;
+                }
+            }
+            if ($decorator instanceof MUtil_Html_ElementDecorator) {
+                $this->_html_element = $decorator->getHtmlElement();
+            } else {
+                $this->setHtml();
+            }
+        }
+
         return $this->_html_element;
     }
 
@@ -253,7 +272,7 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
-   public function setDisplayOrder(array $order)
+    public function setDisplayOrder(array $order)
     {
         $this->_displayOrder = $order;
 
@@ -304,6 +323,12 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
+    /**
+     * Render the element labels with a fixed width
+     *
+     * @param mixed $width The style.width content for the labels
+     * @return MUtil_Form (continuation pattern)
+     */
     public function setLabelWidth($width)
     {
         $this->_labelWidth = $width;
@@ -316,6 +341,13 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
+    /**
+     * Render elements with an automatically calculated label width, by multiplying the maximum number of
+     * characters in a label with this factor.
+     *
+     * @param float $factor To multiply the widest nummers of letters in the labels with to calculate the width in em at drawing time
+     * @return MUtil_Form (continuation pattern)
+     */
     public function setLabelWidthFactor($factor)
     {
         $this->_labelWidthFactor = $factor;
