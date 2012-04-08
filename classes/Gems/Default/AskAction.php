@@ -105,13 +105,12 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      */
     public function forwardAction()
     {
-        $tracker  = $this->loader->getTracker();
-
         /**************
          * Find token *
          **************/
 
         if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+            $tracker = $this->loader->getTracker();
             $tokenId = $tracker->filterToken($tokenId);
 
             if ($token = $tracker->getToken($tokenId)) {
@@ -129,16 +128,16 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
                 // Snippet had nothing to display, because of an answer
                 if ($this->getRequest()->getActionName() == 'return') {
-                    $this->addMessage(sprintf($this->_('Thank you for answering. At the moment we have no further surveys for you to take.'), $tokenId));
+                    $this->addMessage(sprintf($this->_('Thank you for answering. At the moment we have no further surveys for you to take.'), strtoupper($tokenId)));
                 } else {
-                    $this->addMessage(sprintf($this->_('The survey for token %s has been answered and no further surveys are open.'), $tokenId));
+                    $this->addMessage(sprintf($this->_('The survey for token %s has been answered and no further surveys are open.'), strtoupper($tokenId)));
                 }
 
                 // Do not enter a loop!! Reroute!
                 $this->_reroute(array('controller' => 'ask', 'action' => 'index'), true);
 
             } else {
-                $this->addMessage(sprintf($this->_('The token %s does not exist (any more).'), $tokenId));
+                $this->addMessage(sprintf($this->_('The token %s does not exist (any more).'), strtoupper($tokenId)));
             }
         }
 
@@ -152,8 +151,8 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      */
     public function indexAction()
     {
-        // Make sure to return to ask screen
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        // Make sure to return to the forward screen
+        $this->loader->getCurrentUser()->setSurveyReturn();
 
         $request = $this->getRequest();
         $tracker = $this->loader->getTracker();
@@ -175,14 +174,13 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     {
         $user = $this->loader->getCurrentUser();
 
-        if ($user->isActive()) {
+        if ($user->isActive() && ($parameters = $user->getSurveyReturn())) {
             $tracker = $this->loader->getTracker();
             $token   = $tracker->getToken($tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID)));
 
             // Check for completed tokens
             $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $user->getUserId());
 
-            $parameters = $user->getSurveyReturn();
             if (! $parameters) {
                 // Default
                 $request = $this->getRequest();

@@ -1343,8 +1343,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * @param mixed $return Zend_Controller_Request_Abstract, array of something that can be turned into one.
      * @return Gems_User_User
      */
-    public function setSurveyReturn($return)
+    public function setSurveyReturn($return = null)
     {
+        if (null === $return) {
+            $this->_unsetVar('surveyReturn');
+            return $this;
+        }
+
         if ($return instanceof Zend_Controller_Request_Abstract) {
             $return = $return->getParams();
         } elseif (! is_array($return)) {
