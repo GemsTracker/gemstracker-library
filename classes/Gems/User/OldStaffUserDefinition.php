@@ -54,10 +54,43 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     protected $db;
 
     /**
+     * The time period in hours a reset key is valid for this definition.
+     *
+     * @var int
+     */
+    protected $hoursResetKeyIsValid = 24;
+
+    /**
      *
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
+
+    /**
+     * Return true if a password reset key can be created.
+     *
+     * Returns the setting for the definition whan no user is passed, otherwise
+     * returns the answer for this specific user.
+     *
+     * @param Gems_User_User $user Optional, the user whose password might change
+     * @return boolean
+     */
+    public function canResetPassword(Gems_User_User $user = null)
+    {
+        if ($user) {
+            // Depends on the user.
+            if ($user->hasEmailAddress() && $user->canSetPassword()) {
+                $email = $user->getEmailAddress();
+                if (empty($email)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Return true if the password can be set.
@@ -111,6 +144,42 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
     }
 
     /**
+     * Return a password reset key
+     *
+     * @param Gems_User_User $user The user to create a key for.
+     * @return string
+     */
+    public function getPasswordResetKey(Gems_User_User $user)
+    {
+        $model = new MUtil_Model_TableModel('gems__staff');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gsf', $user->getUserId());
+
+        $data['gsf_id_user'] = $user->getUserId();
+
+        $row = $model->loadFirst($data + array('DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP'));
+        if ($row && $row['gup_reset_key']) {
+            // Keep using the key.
+            $data['gsf_reset_key'] = $row['gsf_reset_key'];
+        } else {
+            $data['gsf_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+        }
+        $data['gsf_reset_req'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+
+        // Loop for case when hash is not unique
+        while (true) {
+            try {
+                $model->save($data);
+
+                // Old staff keys can by recognized because they start with 'os'
+                return 'os' . $data['gsf_reset_key'];
+
+            } catch (Zend_Db_Exception $zde) {
+                $data['gsf_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
+            }
+        }
+    }
+
+    /**
      * Returns a user object, that may be empty if the user is unknown.
      *
      * @param string $login_name
@@ -161,7 +230,8 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                     'user_group'          => 'gsf_id_primary_group',
                     'user_locale'         => 'gsf_iso_lang',
                     'user_logout'         => 'gsf_logout_on_survey',
-                    'user_base_org_id'    => 'gsf_id_organization'
+                    'user_base_org_id'    => 'gsf_id_organization',
+                    'user_resetkey_valid' => 'CASE WHEN DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
                     ))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
                    'user_role'            => 'ggp_role',

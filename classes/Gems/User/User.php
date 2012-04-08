@@ -486,17 +486,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Check whether a reset key is really linked to this user.
-     *
-     * @param string The key
-     * @return boolean
-     */
-    public function checkPasswordResetKey($key)
-    {
-        return $this->isActive() && $this->definition->checkPasswordResetKey($this, $key);
-    }
-
-    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -1127,50 +1116,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Send an e-mail to this user
-     *
-     * @param string $subjectTemplate A subject template in which {fields} are replaced
-     * @param string $bbBodyTemplate A BB Code body template in which {fields} are replaced
-     * @param boolean $useResetFields When true get a reset key for this user
-     * @param string $locale Optional locale
-     * @return mixed String or array of warnings when something went wrong
-     */
-    public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
-    {
-        if ($useResetFields && (! $this->canResetPassword())) {
-            return $this->translate->_('Trying to send a password reset to a user that cannot be reset.');
-        }
-
-        $mail = new Gems_Mail();
-        $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
-        $mail->setFrom($this->getFrom());
-        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
-        if ($bcc = $this->project->getEmailBcc()) {
-            $mail->addBcc($bcc);
-        }
-
-        if ($useResetFields) {
-            $fields = $this->getResetPasswordMailFields($locale);
-        } else {
-            $fields = $this->getMailFields($locale);
-        }
-        $fields = MUtil_Ra::braceKeys($fields, '{', '}');
-
-        $mail->setSubject(strtr($subjectTemplate, $fields));
-        $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
-
-        try {
-            $mail->send();
-            return null;
-
-        } catch (Exception $e) {
-            return array(
-                $this->translate->_('Unable to send e-mail.'),
-                $e->getMessage());
-        }
-    }
-
-    /**
      *
      * @param string $defName Optional
      * @return Gems_User_User (continuation pattern)
@@ -1229,6 +1174,51 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $codes[] = $this->_getVar('__user_definition');
 
             return $checker->reportPasswordWeakness($this, $password, MUtil_Ra::flatten($codes));
+        }
+    }
+
+    /**
+     * Send an e-mail to this user
+     *
+     * @param string $subjectTemplate A subject template in which {fields} are replaced
+     * @param string $bbBodyTemplate A BB Code body template in which {fields} are replaced
+     * @param boolean $useResetFields When true get a reset key for this user
+     * @param string $locale Optional locale
+     * @return mixed String or array of warnings when something went wrong
+     */
+    public function sendMail($subjectTemplate, $bbBodyTemplate, $useResetFields = false, $locale = null)
+    {
+        if ($useResetFields && (! $this->canResetPassword())) {
+            return $this->translate->_('Trying to send a password reset to a user that cannot be reset.');
+        }
+
+        $mail = new Gems_Mail();
+        $mail->setTemplateStyle($this->getBaseOrganization()->getStyle());
+        $mail->setFrom($this->getFrom());
+        $mail->addTo($this->getEmailAddress(), $this->getFullName(), $this->project->getEmailBounce());
+        if ($bcc = $this->project->getEmailBcc()) {
+            $mail->addBcc($bcc);
+        }
+
+        if ($useResetFields) {
+            $fields = $this->getResetPasswordMailFields($locale);
+        } else {
+            $fields = $this->getMailFields($locale);
+        }
+        MUtil_Echo::track($fields, $bbBodyTemplate);
+        $fields = MUtil_Ra::braceKeys($fields, '{', '}');
+
+        $mail->setSubject(strtr($subjectTemplate, $fields));
+        $mail->setBodyBBCode(strtr($bbBodyTemplate, $fields));
+
+        try {
+            $mail->send();
+            return null;
+
+        } catch (Exception $e) {
+            return array(
+                $this->translate->_('Unable to send e-mail.'),
+                $e->getMessage());
         }
     }
 

@@ -106,28 +106,6 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     }
 
     /**
-     * Check whether a reset key is really linked to a user.
-     *
-     * @param Gems_User_User $user The user the key was created for (hopefully).
-     * @param string The key
-     * @return boolean
-     */
-    public function checkPasswordResetKey(Gems_User_User $user, $key)
-    {
-        $model = new MUtil_Model_TableModel('gems__user_passwords');
-
-        $filter['gup_id_user'] = $user->getUserLoginId();
-        $filter[] = 'DATE_ADD(gup_reset_requested, INTERVAL 24 HOUR) >= CURRENT_TIMESTAMP';
-
-        $row = $model->loadFirst($filter);
-        if ($row && $row['gup_reset_key']) {
-            return $key == $row['gup_reset_key'];
-        }
-
-        return false;
-    }
-
-    /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
      * @param Gems_User_User $user
@@ -173,6 +151,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         }
         $data['gup_reset_requested'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
+        // Loop for case when hash is not unique
         while (true) {
             try {
                 $model->save($data);

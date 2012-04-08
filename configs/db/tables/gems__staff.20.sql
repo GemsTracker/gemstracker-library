@@ -46,7 +46,7 @@ CREATE TABLE if not exists gems__staff (
 
         -- depreciated
         gsf_reset_key        varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gsf_reset_requested  timestamp null,
+        gsf_reset_req        timestamp null,
         -- end depreciated
 
         gsf_changed          timestamp not null default current_timestamp on update current_timestamp,
@@ -55,7 +55,8 @@ CREATE TABLE if not exists gems__staff (
         gsf_created_by       bigint unsigned not null,
 
         PRIMARY KEY(gsf_id_user),
-        UNIQUE KEY(gsf_login, gsf_id_organization)
+        UNIQUE KEY(gsf_login, gsf_id_organization),
+        UNIQUE KEY(gsf_reset_key)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 2001

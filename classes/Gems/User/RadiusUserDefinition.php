@@ -114,18 +114,6 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     }
 
     /**
-     * always false as we can not reset the password
-     *
-     * @param Gems_User_User $user
-     * @param type $key
-     * @return boolean
-     */
-    public function checkPasswordResetKey(Gems_User_User $user, $key)
-    {
-        return false;
-    }
-
-    /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
      * @param Gems_User_User $user

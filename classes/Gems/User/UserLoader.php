@@ -438,10 +438,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         }
 
         $select = $this->db->select();
-        $select->from('gems__user_passwords', array())
-            ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
-            ->where('gup_reset_key = ?', $resetKey);
-
+        if ('os' == substr($resetKey, 0, 2)) {
+            // Oldstaff reset key!
+            $select->from('gems__staff', array(new Zend_Db_Expr("'" . self::USER_OLD_STAFF . "' AS user_class"), 'gsf_id_organization', 'gsf_login'))
+                    ->where('gsf_reset_key = ?', substr($resetKey, 2));
+        } else {
+            $select->from('gems__user_passwords', array())
+                    ->joinLeft('gems__user_logins', 'gup_id_user = gul_id_user', array("gul_user_class", 'gul_id_organization', 'gul_login'))
+                    ->where('gup_reset_key = ?', $resetKey);
+        }
         if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
             // MUtil_Echo::track($row);
             return $this->loadUser($row[0], $row[1], $row[2]);

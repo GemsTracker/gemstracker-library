@@ -84,18 +84,6 @@ abstract class Gems_User_UserDefinitionAbstract extends MUtil_Registry_TargetAbs
     }
 
     /**
-     * Check whether a reset key is really linked to a user.
-     *
-     * @param Gems_User_User $user The user the key was created for (hopefully).
-     * @param string The key
-     * @return string
-     */
-    public function checkPasswordResetKey(Gems_User_User $user, $key)
-    {
-        throw new Gems_Exception_Coding(sprintf('A password reset key cannot be issued for %s users.', get_class($this)));
-    }
-
-    /**
      * Return a password reset key
      *
      * @param Gems_User_User $user The user to create a key for.

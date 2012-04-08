@@ -312,6 +312,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     $this->addMessage($this->_('We sent you an e-mail with a reset link. Click on the link in the e-mail.'));
 
                     if ($this->returnToLoginAfterReset) {
+                        $this->setCurrentOrganizationTo($user);
                         $this->loader->getCurrentUser()->gotoStartPage($this->menu, $request);
                     }
                 }
@@ -339,16 +340,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     public function sendUserResetEMail(Gems_User_User $user)
     {
         $subjectTemplate = $this->_('Password reset requested');
-        /* CANNOT BE TESTED TODAY
-        $bbBodyTemplate  = $this->_("Dear {greeting},
 
-A new password was requested for your [b]{organization}[/b] site [b]{project}[/b], please click within {reset_in_hours} hours on [url={reset_url}]this link[/url] to enter the password of your choice.
-
-{organization_signature}
-
-[url={reset_url}]{reset_url}[/url]
-"); // */
-        $bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
+        // Multi line strings did not come through correctly in poEdit
+        $bbBodyTemplate = $this->_("Dear {greeting},\n\n\nA new password was requested for your [b]{organization}[/b] account on the [b]{project}[/b] site, please click within {reset_in_hours} hours on [url={reset_url}]this link[/url] to enter the password of your choice.\n\n\n{organization_signature}\n\n[url={reset_url}]{reset_url}[/url]\n"); // */
+        //$bbBodyTemplate  = $this->_("To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}");
 
         return $user->sendMail($subjectTemplate, $bbBodyTemplate, true);
     }

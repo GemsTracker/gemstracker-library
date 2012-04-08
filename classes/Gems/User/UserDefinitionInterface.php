@@ -69,15 +69,6 @@ interface Gems_User_UserDefinitionInterface
     public function canSetPassword(Gems_User_User $user = null);
 
     /**
-     * Check whether a reset key is really linked to a user.
-     *
-     * @param Gems_User_User $user The user the key was created for (hopefully).
-     * @param string The key
-     * @return string
-     */
-    public function checkPasswordResetKey(Gems_User_User $user, $key);
-
-    /**
      * Returns an initialized Zend_Auth_Adapter_Interface
      *
      * @param Gems_User_User $user
