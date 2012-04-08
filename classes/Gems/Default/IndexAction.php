@@ -146,11 +146,13 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
      * @param Gems_Form_AutoLoadFormAbstract $form Rset password or reset request form
      * @param mixed $errors
      */
-    protected function displayResetForm(Gems_Form_AutoLoadFormAbstract $form, $errors, Gems_User_User $user = null)
+    protected function displayResetForm(Gems_Form_AutoLoadFormAbstract $form, $errors)
     {
-        if ($form instanceof Gems_User_Form_ResetRequestForm) {
+        if ($form instanceof Gems_User_Validate_GetUserInterface) {
             $user = $form->getUser();
+        }
 
+        if ($form instanceof Gems_User_Form_ResetRequestForm) {
             $this->html->h3($this->_('Request password reset'));
 
             $p = $this->html->pInfo();
@@ -162,7 +164,8 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $this->html->p($this->_('We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice.'));
 
         } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
-            $form->getUser()->getCurrentOrganization()->setAsCurrentOrganization();
+
+            $this->setCurrentOrganizationTo($user);
             if ($user->hasPassword()) {
                 $this->html->h3($this->_('Execute password reset'));
                 $p = $this->html->pInfo($this->_('We received your password reset request.'));
@@ -179,7 +182,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $this->addMessage($errors);
         }
 
-        if ($user) {
+        if (isset($user)) {
             $this->setCurrentOrganizationTo($user);
         }
 
@@ -276,13 +279,12 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $errors  = array();
         $form    = $this->createResetRequestForm();
         $request = $this->getRequest();
-        $user    = null;
 
         if ($key = $this->_getParam('key')) {
             $user = $this->loader->getUserLoader()->getUserByResetKey($key);
 
             if ($user->hasValidResetKey()) {
-                $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true));
+                $form = $user->getChangePasswordForm(array('askOld' => false, 'askCheck' => true, 'labelWidthFactor' => $this->labelWidthFactor));
             } else {
                 if (! $request->isPost()) {
                     if ($user->hasPassword() || (! $user->isActive())) {
@@ -317,6 +319,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             } elseif ($form instanceof Gems_User_Form_ChangePasswordForm) {
                 $this->addMessage($this->_('New password is active.'));
 
+                // User set before this form was initiated
                 $user->setAsCurrentUser();
         		$user->gotoStartPage($this->menu, $this->getRequest());
             }
@@ -324,7 +327,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         }
         $form->populate($request->getParams());
 
-        $this->displayResetForm($form, $errors, $user);
+        $this->displayResetForm($form, $errors);
     }
 
     /**

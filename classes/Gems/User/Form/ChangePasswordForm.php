@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
+class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract implements Gems_User_Validate_GetUserInterface
 {
     /**
      * The field name for the new password element.
@@ -132,7 +132,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
      *
      * @var boolean
      */
-    protected $useTableLayout = true;
+    protected $useTableLayout = false;
 
     public function addButtons($links)
     {
@@ -172,6 +172,21 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
                 }
             }
             $this->addElement($element);
+        }
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        if ($this->translate && $this->user) {
+            return parent::checkRegistryRequestsAnswers();
+        } else {
+            return false;
         }
     }
 
@@ -218,8 +233,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             // Field new password
             $element = new Zend_Form_Element_Password($this->_newPasswordFieldName);
             $element->setLabel($this->translate->_('New password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
+            $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
             $element->addValidator(new Gems_User_Validate_NewPasswordValidator($this->user));
@@ -247,8 +261,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             // Field current password
             $element = new Zend_Form_Element_Password($this->_oldPasswordFieldName);
             $element->setLabel($this->translate->_('Current password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
+            $element->setAttrib('size', 40);
             $element->setRenderPassword(true);
             $element->setRequired(true);
             $element->addValidator(new Gems_User_Validate_UserPasswordValidator($this->user, $this->translate->_('Wrong password.')));
@@ -272,8 +285,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
             // Field repeat password
             $element = new Zend_Form_Element_Password($this->_repeatPasswordFieldName);
             $element->setLabel($this->translate->_('Repeat password'));
-            $element->setAttrib('size', 10);
-            $element->setAttrib('maxlength', 20);
+            $element->setAttrib('size', 40);
             $element->setRequired(true);
             $element->setRenderPassword(true);
 
@@ -327,6 +339,16 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract
     public function getSubmitButtonLabel()
     {
         return $this->translate->_($this->translate->_('Save'));
+    }
+
+    /**
+     * Returns a user
+     *
+     * @return Gems_User_User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**

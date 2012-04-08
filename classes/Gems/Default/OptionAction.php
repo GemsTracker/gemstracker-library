@@ -85,7 +85,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
         /*************
          * Make form *
          *************/
-        $form = $user->getChangePasswordForm(array('showReport' => false));
+        $form = $user->getChangePasswordForm(array('showReport' => false, 'useTableLayout' => true));
 
         /****************
          * Process form *

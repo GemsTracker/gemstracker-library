@@ -445,6 +445,27 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * True when the current url is one where this user is allowed to login.
+     *
+     * If the url is a fixed organization url and the user is not allowed to
+     * access this organization, then this function returns false.
+     *
+     * @return boolean
+     */
+    public function canLoginHere()
+    {
+        if (! $this->_hasVar('can_login_here')) {
+            $this->_setVar('can_login_here', true);
+            if ($orgId = $this->userLoader->getOrganizationIdByUrl()) {
+                if (! $this->isAllowedOrganization($orgId)) {
+                    $this->_setVar('can_login_here', false);;
+                }
+            }
+        }
+        return $this->_getVar('can_login_here');
+    }
+
+    /**
      * Return true if a password reset key can be created.
      *
      * @return boolean
@@ -461,7 +482,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function canSetPassword()
     {
-        return $this->definition->canSetPassword();
+        return $this->isActive() && $this->definition->canSetPassword();
     }
 
     /**
@@ -472,7 +493,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function checkPasswordResetKey($key)
     {
-        return $this->definition->checkPasswordResetKey($this, $key);
+        return $this->isActive() && $this->definition->checkPasswordResetKey($this, $key);
     }
 
     /**
@@ -955,13 +976,13 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * True when the reset key is within it's timeframe
+     * True when the reset key is within it's timeframe and OK for the current organization
      *
      * @return boolean
      */
     public function hasValidResetKey()
     {
-        return (boolean) $this->_getVar('user_resetkey_valid');
+        return (boolean) $this->isActive() && $this->_getVar('user_resetkey_valid');
     }
 
     /**
@@ -970,7 +991,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function isActive()
     {
-        return (boolean) $this->_getVar('user_active');
+        return (boolean) $this->canLoginHere() && $this->_getVar('user_active');
     }
 
     /**
