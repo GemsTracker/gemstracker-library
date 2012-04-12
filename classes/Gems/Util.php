@@ -199,7 +199,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
             return $this->project->consentDefault;
         }
 
-        return 'Unkown';
+        return 'Unknown';
     }
 
     /**
