@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 16:56+0100\n"
+"POT-Creation-Date: 2012-04-12 15:06+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -484,61 +484,61 @@ msgstr "Search"
 msgid "No %s found"
 msgstr "No %s found"
 
-#: classes/Gems/Controller/BrowseEditAction.php:662
+#: classes/Gems/Controller/BrowseEditAction.php:673
 #: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "No %s found."
 
-#: classes/Gems/Controller/BrowseEditAction.php:780
+#: classes/Gems/Controller/BrowseEditAction.php:791
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:796
+#: classes/Gems/Controller/BrowseEditAction.php:807
 #: classes/Gems/Default/DatabaseAction.php:187
 #: classes/Gems/Default/DatabaseAction.php:499
 msgid "Yes"
 msgstr "Yes"
 
-#: classes/Gems/Controller/BrowseEditAction.php:797
+#: classes/Gems/Controller/BrowseEditAction.php:808
 #: classes/Gems/Default/DatabaseAction.php:188
 #: classes/Gems/Default/DatabaseAction.php:500
 msgid "No"
 msgstr "No"
 
-#: classes/Gems/Controller/BrowseEditAction.php:850
+#: classes/Gems/Controller/BrowseEditAction.php:861
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Unknown %s requested"
 
-#: classes/Gems/Controller/BrowseEditAction.php:873
+#: classes/Gems/Controller/BrowseEditAction.php:884
 #, php-format
 msgid "New %1$s..."
 msgstr "New %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:881
+#: classes/Gems/Controller/BrowseEditAction.php:892
 msgid "Save"
 msgstr "Save"
 
-#: classes/Gems/Controller/BrowseEditAction.php:917
+#: classes/Gems/Controller/BrowseEditAction.php:928
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s saved"
 
-#: classes/Gems/Controller/BrowseEditAction.php:920
+#: classes/Gems/Controller/BrowseEditAction.php:931
 msgid "No changes to save."
 msgstr "No changes to save."
 
-#: classes/Gems/Controller/BrowseEditAction.php:929
+#: classes/Gems/Controller/BrowseEditAction.php:940
 msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:957
+#: classes/Gems/Controller/BrowseEditAction.php:968
 #, php-format
 msgid "Show %s"
 msgstr "Show %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:964
+#: classes/Gems/Controller/BrowseEditAction.php:975
 #, php-format
 msgid "Unknown %s."
 msgstr "Unknown %s."
@@ -616,22 +616,22 @@ msgstr "A token consists of two groups of four letters and numbers, separated by
 msgid "The number zero and the letter O are treated as the same; the same goes for the number one and the letter L."
 msgstr "The number zero and the letter O are treated as the same; the same goes for the number one and the letter L."
 
-#: classes/Gems/Default/AskAction.php:132
+#: classes/Gems/Default/AskAction.php:131
 #, php-format
 msgid "Thank you for answering. At the moment we have no further surveys for you to take."
 msgstr "Thank you for answering. At the moment we have no further surveys for you to take."
 
-#: classes/Gems/Default/AskAction.php:134
+#: classes/Gems/Default/AskAction.php:133
 #, php-format
 msgid "The survey for token %s has been answered and no further surveys are open."
 msgstr "The survey for token %s has been answered and no further surveys are open."
 
-#: classes/Gems/Default/AskAction.php:141
+#: classes/Gems/Default/AskAction.php:140
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
-#: classes/Gems/Default/AskAction.php:243
+#: classes/Gems/Default/AskAction.php:241
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
@@ -1489,11 +1489,11 @@ msgstr "Contact email"
 msgid "Style"
 msgstr "Style"
 
-#: classes/Gems/Default/OrganizationAction.php:123
+#: classes/Gems/Default/OrganizationAction.php:124
 msgid "Default url's"
 msgstr "Default url's"
 
-#: classes/Gems/Default/OrganizationAction.php:125
+#: classes/Gems/Default/OrganizationAction.php:126
 #, php-format
 msgid "Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."
 msgstr "Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."
@@ -3592,9 +3592,8 @@ msgid "should not contain non alphanumeric characters"
 msgstr "should not contain non alphanumeric characters"
 
 #: classes/Gems/User/PasswordChecker.php:188
-#, php-format
-msgid "should not contain your login name \"%s\""
-msgstr "should not contain your login name \"%s\""
+msgid "should not contain your login name"
+msgstr "should not contain your login name"
 
 #: classes/Gems/User/PasswordChecker.php:207
 #, php-format
