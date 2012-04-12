@@ -185,7 +185,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
             $lpwd = strtolower($password);
 
             if ((false !== strpos($lpwd, strtolower($this->user->getLoginName()))) || (null === $password)) {
-                $this->_addError(sprintf($this->translate->_('should not contain your login name "%s"'), $this->user->getLoginName()));
+                $this->_addError($this->translate->_('should not contain your login name'));
             }
         }
     }
