@@ -344,7 +344,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface)) {
             $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
             $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
-            
+
             $options = array_intersect($availableOrganizations, $allowedOrganizations);
 
             $elements[] = $this->_createSelectElement('gto_id_organization', $options);
@@ -488,6 +488,9 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         return $this->_('Token planning');
     }
 
+    /**
+     * Default overview action
+     */
     public function indexAction()
     {
         // MUtil_Model::$verbose = true;
@@ -496,5 +499,20 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id);
 
         parent::indexAction();
+    }
+
+    /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Tell the system where to return to after a survey has been taken
+        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
 }

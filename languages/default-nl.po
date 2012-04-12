@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-08 16:56+0100\n"
+"POT-Creation-Date: 2012-04-12 15:06+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -484,61 +484,61 @@ msgstr "Zoeken"
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:662
+#: classes/Gems/Controller/BrowseEditAction.php:673
 #: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:780
+#: classes/Gems/Controller/BrowseEditAction.php:791
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:796
+#: classes/Gems/Controller/BrowseEditAction.php:807
 #: classes/Gems/Default/DatabaseAction.php:187
 #: classes/Gems/Default/DatabaseAction.php:499
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:797
+#: classes/Gems/Controller/BrowseEditAction.php:808
 #: classes/Gems/Default/DatabaseAction.php:188
 #: classes/Gems/Default/DatabaseAction.php:500
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:850
+#: classes/Gems/Controller/BrowseEditAction.php:861
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:873
+#: classes/Gems/Controller/BrowseEditAction.php:884
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:881
+#: classes/Gems/Controller/BrowseEditAction.php:892
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:917
+#: classes/Gems/Controller/BrowseEditAction.php:928
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:920
+#: classes/Gems/Controller/BrowseEditAction.php:931
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:929
+#: classes/Gems/Controller/BrowseEditAction.php:940
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:957
+#: classes/Gems/Controller/BrowseEditAction.php:968
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:964
+#: classes/Gems/Controller/BrowseEditAction.php:975
 #, php-format
 msgid "Unknown %s."
 msgstr "%s is onbekend."
@@ -551,7 +551,7 @@ msgstr "Annuleren"
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:236
 #, php-format
 msgid "Do you want to delete this %s?"
-msgstr "Weet je zeker dat deze %s verwijderd moet worden?"
+msgstr "Weet u zeker dat deze %s verwijderd moet worden?"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:256
 #, php-format
@@ -616,22 +616,22 @@ msgstr "Een kenmerk bestaat uit twee groepen van vier cijfers en letters met een
 msgid "The number zero and the letter O are treated as the same; the same goes for the number one and the letter L."
 msgstr "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook niet tussen het getal één en de letter L."
 
-#: classes/Gems/Default/AskAction.php:132
+#: classes/Gems/Default/AskAction.php:131
 #, php-format
 msgid "Thank you for answering. At the moment we have no further surveys for you to take."
 msgstr "Dank u voor uw antwoorden. Op dit moment hebben we geen vragenlijsten meer voor u."
 
-#: classes/Gems/Default/AskAction.php:134
+#: classes/Gems/Default/AskAction.php:133
 #, php-format
 msgid "The survey for token %s has been answered and no further surveys are open."
 msgstr "De vragenlijst met het kenmerk %s is beantwoord en er staan verder geen vragenlijsten open."
 
-#: classes/Gems/Default/AskAction.php:141
+#: classes/Gems/Default/AskAction.php:140
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
-#: classes/Gems/Default/AskAction.php:243
+#: classes/Gems/Default/AskAction.php:241
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
@@ -931,8 +931,8 @@ msgstr[1] "%d objecten bestaan nog niet in de database."
 #: classes/Gems/Default/DatabaseAction.php:489
 msgid "Are you sure you want to create it?"
 msgid_plural "Are you sure you want to create them all?"
-msgstr[0] "Weet je zeker dat je dat object wil aanmaken?"
-msgstr[1] "Weet je zeker dat je ze allemaal wil aanmaken?"
+msgstr[0] "Weet u zeker dat u dit wil aanmaken?"
+msgstr[1] "Weet u zeker dat u deze allemaal wil aanmaken?"
 
 #: classes/Gems/Default/DatabaseAction.php:502
 msgid "All database objects exist. There is nothing to create."
@@ -1489,11 +1489,11 @@ msgstr "Contact email"
 msgid "Style"
 msgstr "Stijl"
 
-#: classes/Gems/Default/OrganizationAction.php:123
+#: classes/Gems/Default/OrganizationAction.php:124
 msgid "Default url's"
 msgstr "Standaard url's"
 
-#: classes/Gems/Default/OrganizationAction.php:125
+#: classes/Gems/Default/OrganizationAction.php:126
 #, php-format
 msgid "Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."
 msgstr "Altijd naar deze organisatie overschakelen als %s vanaf één van deze door spatie gescheiden url's wordt aangeroepen. De eerste url wordt gebruikt voor emails."
@@ -2414,7 +2414,7 @@ msgstr "Pas op! Het verwijderen van een %s kan niet ongedaan gemaakt worden!"
 
 #: classes/Gems/Default/TrackAction.php:410
 msgid "Do you want to delete this track?"
-msgstr "Weet je zeker dat dit traject verwijderd moet worden?"
+msgstr "Weet u zeker dat dit traject verwijderd moet worden?"
 
 #: classes/Gems/Default/TrackAction.php:412
 msgid "Delete track"
@@ -3592,9 +3592,8 @@ msgid "should not contain non alphanumeric characters"
 msgstr "mag alleen letters en cijfers bevatten"
 
 #: classes/Gems/User/PasswordChecker.php:188
-#, php-format
-msgid "should not contain your login name \"%s\""
-msgstr "mag niet je gebruikersnaam \"%s\" bevatten"
+msgid "should not contain your login name"
+msgstr "mag niet uw gebruikersnaam bevatten"
 
 #: classes/Gems/User/PasswordChecker.php:207
 #, php-format
@@ -3888,7 +3887,7 @@ msgstr "Invoer fout! Veranderingen aan %s niet opgeslagen!"
 
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:108
 msgid "Do you really want to delete this item?"
-msgstr "Weet je zeker dat dit item verwijderd moet worden?"
+msgstr "Weet u zeker dat dit item verwijderd moet worden?"
 
 #: languages/FakeTranslations.php:40
 msgid "Value is required and can't be empty"
