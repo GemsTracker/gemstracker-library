@@ -597,9 +597,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      * @param boolean $includeDefaults Include the default values (yes for filtering, no for urls
      * @param string  $sourceAction    The action to get the cache from if not the current one.
      * @param boolean $readonly        Optional, tell the cache not to store any new values
+     * @param boolean $filterEmpty     Optional, filter empty values from cache
      * @return array
      */
-    public function getCachedRequestData($includeDefaults = true, $sourceAction = null, $readonly = false)
+    public function getCachedRequestData($includeDefaults = true, $sourceAction = null, $readonly = false, $filterEmpty = true)
     {
         if (! $this->requestCache) {
             $this->requestCache = $this->util->getRequestCache($sourceAction, $readonly);
@@ -613,6 +614,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $data = $this->requestCache->getProgramParams();
         if ($includeDefaults) {
             $data = $data + $this->getDefaultSearchData();
+        }
+        if ($filterEmpty) {
+            // Clean up empty values
+            //
+            // We do this here because empty values can be valid filters that overrule the default
+            foreach ($data as $key => $value) {
+                if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
+                    unset($data[$key]);
+                }
+            }
         }
 
         return $data;
@@ -964,7 +975,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $table->setOnEmpty(sprintf($this->_('Unknown %s.'), $this->getTopic(1)));
         $table->setRepeater($repeater);
         $table->tfrow($this->createMenuLinks($this->menuShowIncludeLevel), array('class' => 'centerAlign'));
-        
+
         if ($menuItem = $this->findAllowedMenuItem('edit')) {
             $table->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->getRequest()), '\';');
         }

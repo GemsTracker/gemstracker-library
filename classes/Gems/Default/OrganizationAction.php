@@ -119,14 +119,14 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
                 'label', $this->_('Style'),
                 'multiOptions', MUtil_Lazy::call(array($this->escort, 'getStyles'))
             );
-            $model->setIfExists('gor_url_base',
-            	'label', $this->_("Default url's"),
-            	'size', 50,
-                'description', sprintf($this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."), $this->project->getName())
-            );
-            if ($detailed) {
-                $model->setIfExists('gor_url_base', 'filter', 'TrailingSlash');
-            }
+        }
+        $model->setIfExists('gor_url_base',
+            'label', $this->_("Default url's"),
+            'size', 50,
+            'description', sprintf($this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."), $this->project->getName())
+        );
+        if ($detailed) {
+            $model->setIfExists('gor_url_base', 'filter', 'TrailingSlash');
         }
         $model->set(
             'gor_iso_lang', 'label', $this->_('Language'),

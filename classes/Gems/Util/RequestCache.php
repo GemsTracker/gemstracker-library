@@ -270,7 +270,7 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
                 unset($params[$key]);
             }
         }
-        // MUtil_Echo::r($params);
+        // MUtil_Echo::track($params);
 
         $this->setProgramParams($params);
 
@@ -290,19 +290,13 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Ste the keys stored fot this cache
+     * Set the keys stored fot this cache
      *
      * @param array $programParams
      * @return Gems_Util_RequestCache (continuation pattern)
      */
     public function setProgramParams(array $programParams)
     {
-        foreach ($programParams as $key => $value) {
-            if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
-                unset($programParams[$key]);
-            }
-        }
-
         // Store result
         $this->_programParams = $programParams;
 
