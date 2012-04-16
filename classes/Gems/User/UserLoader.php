@@ -503,7 +503,10 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 
         // Fail over for pre 1.5 projects
         //
-        // No login as other organization or with e-mail possible for first login
+        // No login as other organization or with e-mail possible for first login, before running of upgrade / patches
+        //
+        // Test code voor old user, code for password 'guest' is: 084e0343a0486ff05530df6c705c8bb4,
+        // for 'test4': 86985e105f79b95d6bc918fb45ec7727
         $sql = "SELECT gsf_id_user
             FROM gems__staff INNER JOIN
                     gems__organizations ON gsf_id_organization = gor_id_organization
