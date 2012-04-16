@@ -292,7 +292,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $orgDef = $org->get('gor_user_class', $this->defaultStaffDefinition);
             $model->set('gul_user_class',       'default', $orgDef, 'multiOptions', $this->loader->getUserLoader()->getAvailableStaffDefinitions());
             $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
-            $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+            $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo(), 'default', 1);
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         }
 
