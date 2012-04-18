@@ -151,15 +151,15 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
         if ($hidden) {
             if (! $element instanceof Zend_Form_Element_Hidden) {
                 $element = new Zend_Form_Element_Hidden($this->organizationFieldName);
-
-                $element->setValue($orgId);
-                $this->addElement($element);
             }
 
             if (! $this->_organizationFromUrl) {
                 $orgIds = array_keys($orgs);
                 $orgId  = reset($orgIds);
             }
+
+            $element->setValue($orgId);
+            $this->addElement($element);
 
         } elseif (! $element instanceof Zend_Form_Element_Select) {
             $element = new Zend_Form_Element_Select($this->organizationFieldName);
