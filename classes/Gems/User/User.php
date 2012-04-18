@@ -126,15 +126,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $userLoader;
 
     /**
-     * Use Zend_Auth for authentication
-     *
-     * Warning: Zend_Auth contains only a partial ID of the current user, the base organization is missing
-     *
-     * @var boolean
-     */
-    protected $useZendAuth = false;
-
-    /**
      *
      * @var Gems_Util
      */
@@ -330,9 +321,6 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function authenticate($password)
     {
-        if ($this->useZendAuth) {
-            $zendAuth = Zend_Auth::getInstance();
-        }
         $auths = $this->loadAuthorizers($password);
 
         foreach ($auths as $result) {
@@ -341,11 +329,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             }
 
             if ($result instanceof Zend_Auth_Adapter_Interface) {
-                if ($this->useZendAuth) {
-                    $result = $zendAuth->authenticate($result);
-                } else {
-                    $result = $result->authenticate();
-                }
+                $result = $result->authenticate();
             }
 
             if ($result instanceof Zend_Auth_Result) {
