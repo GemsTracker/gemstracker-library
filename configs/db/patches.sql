@@ -393,3 +393,7 @@ ALTER TABLE gems__user_logins CHANGE gul_can_login gul_can_login boolean not nul
 -- PATCH: make reset keys unique so we now whose key it is
 ALTER TABLE `gems__user_passwords` ADD UNIQUE KEY (gup_reset_key);
 ALTER TABLE `gems__staff` ADD UNIQUE KEY (gsf_reset_key);
+
+-- GEMS VERSION: 47
+-- PATCH: Add return url to tokens
+-- ALTER TABLE gems__tokens ADD gto_return_url varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER gto_reception_code;

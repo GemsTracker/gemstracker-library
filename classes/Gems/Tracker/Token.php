@@ -888,7 +888,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $values['gto_start_time'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
             $values['gto_in_source']  = 1;
         }
-        $values['gto_by'] = $userId;
+        $values['gto_by']         = $userId;
+        // 1.5.4 $values['gto_return_url'] = $_SERVER["HTTP_REFERER"];
 
         $this->_updateToken($values, $userId);
 
