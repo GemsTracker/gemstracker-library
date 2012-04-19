@@ -139,7 +139,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function createAction()
     {
-        $this->createEditParameters['formTitle'] = $this->getCreateTitle();
+        $this->createEditParameters['formTitle']     = $this->getCreateTitle();
+        $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
 
         parent::createAction();
     }
@@ -160,7 +161,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function editAction()
     {
-        $this->createEditParameters['formTitle'] = $this->getEditTitle();
+        $this->createEditParameters['formTitle']     = $this->getEditTitle();
+        $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
 
         parent::editAction();
     }
