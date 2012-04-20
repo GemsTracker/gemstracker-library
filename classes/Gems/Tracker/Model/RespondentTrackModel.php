@@ -64,7 +64,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     {
         parent::__construct('surveys', 'gems__respondent2track', 'gr2t');
         $this->addTable('gems__respondents',     array('gr2t_id_user' => 'grs_id_user'));
-        $this->addTable('gems__respondent2org',  array('gr2t_id_user' => 'gr2o_id_user'));
+        $this->addTable('gems__respondent2org',  array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'));
         $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'));
         $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
         $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));

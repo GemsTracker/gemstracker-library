@@ -71,6 +71,13 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     protected $formTitle;
 
     /**
+     * When set getTopic uses this function instead of parent class.
+     *
+     * @var callable
+     */
+    protected $topicCallable;
+
+    /**
      * Required
      *
      * @var Gems_Menu
@@ -179,6 +186,21 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
             return sprintf($this->_('New %s...'), $this->getTopic());
         } else {
             return sprintf($this->_('Edit %s'), $this->getTopic());
+        }
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model to used specific item names.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        if (is_callable($this->topicCallable)) {
+            return call_user_func($this->topicCallable, $count);
+        } else {
+            return parent::getTopic($count);
         }
     }
 }
