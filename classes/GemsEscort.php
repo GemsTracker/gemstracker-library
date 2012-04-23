@@ -212,7 +212,7 @@ class GemsEscort extends MUtil_Application_Escort
             die(sprintf($this->translate->_('Path %s not writable'), $log_path));
         }
 
-        $filter = new Zend_Log_Filter_Priority($project->getLogLevel());
+        $filter = new Zend_Log_Filter_Priority($this->project->getLogLevel());
         $writer->addFilter($filter);
         $logger->addWriter($writer);
 
