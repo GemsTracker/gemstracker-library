@@ -200,6 +200,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initLogger()
     {
+        $this->bootstrap('project');    // Make sure the project object is available
         $logger = Gems_Log::getLogger();
 
         $log_path = GEMS_ROOT_DIR . '/var/logs';
@@ -211,11 +212,15 @@ class GemsEscort extends MUtil_Application_Escort
             die(sprintf($this->translate->_('Path %s not writable'), $log_path));
         }
 
+        $filter = new Zend_Log_Filter_Priority($project->getLogLevel());
+        $writer->addFilter($filter);
         $logger->addWriter($writer);
 
         // OPTIONAL STARTY OF FIREBUG LOGGING.
         if ($this->_startFirebird) {
             $logger->addWriter(new Zend_Log_Writer_Firebug());
+            //We do not add the logLevel here, as the firebug window is intended for use by
+            //developers only and it is only written to the active users' own screen.
         }
 
         Zend_Registry::set('logger', $logger);

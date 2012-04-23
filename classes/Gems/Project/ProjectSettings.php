@@ -325,6 +325,34 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Get the logLevel to use with the Gems_Log
+     * 
+     * Default settings is for development and testing environment to use Zend_Log::DEBUG and
+     * for all other environments to use the Zend_Log::ERR level. This can be overruled by
+     * specifying a logLevel in the project.ini
+     * 
+     * Using a level higher than Zend_Log::ERR will output full error messages, traces and request
+     * info to the logfile. Please be aware that this might introduce a security risk as passwords
+     * might be written to the logfile in plain text.
+     *
+     * @return int The loglevel to use
+     */
+    public function getLogLevel()
+    {
+        if (isset($this['logLevel'])) {
+            $logLevel = $this['logLevel'];
+        } else {
+            if ('development' == APPLICATION_ENV || 'testing' == APPLICATION_ENV) {
+                $logLevel = Zend_Log::DEBUG;
+            } else {
+                $logLevel = Zend_Log::ERR;
+            }
+        }
+
+        return $logLevel;
+    }
+
+    /**
      * Array of field name => values for sending E-Mail
      *
      * @return array

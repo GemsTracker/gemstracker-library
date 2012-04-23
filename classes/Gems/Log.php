@@ -99,6 +99,14 @@ class Gems_Log extends Zend_Log
             }
         } */
 
+        foreach ($info as $line) {
+            $this->log($line, Zend_Log::ERR);
+        }
+
+        // Now empty as we are going to log potentially sensitive debug data
+        // We log this with a Zend_Log::DEBUG level, so filter can strip it if needed
+        $info = array();
+
         if (!empty($request)) {
             $info[] = 'Request Parameters:';
             foreach ($request->getParams() as $key => $value) {
@@ -110,7 +118,7 @@ class Gems_Log extends Zend_Log
         $info[] = $exception->getTraceAsString();
 
         foreach ($info as $line) {
-            $this->log($line, Zend_Log::ERR);
+            $this->log($line, Zend_Log::DEBUG);
         }
     }
 
