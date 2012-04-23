@@ -146,6 +146,10 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                 } elseif (($storageFormat = $this->getStorageFormat()) && Zend_Date::isDate($value, $storageFormat)) {
                     $this->_dateValue = new Zend_Date($value, $storageFormat);
 
+                } elseif ($format || $storageFormat) {
+                    //Invalid dateformat, should be handled by validator, just ignore the datevalue
+                    //but set the real value so validation runs fine
+                    $this->_dateValue = null;
                 } else {
                     try {
                         $this->_dateValue = new Zend_Date($value);
