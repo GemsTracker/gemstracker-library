@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,23 +25,59 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * An array attribute that forms url's using Zend framework routing
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
 class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 {
-    protected $_request;
-    protected $_routeReset;
+    /**
+     *
+     * @var boolean
+     */
+    protected $_routeReset = false;
 
+    /**
+     * Seperator used to separate multiple items
+     *
+     * @var string
+     */
     protected $_separator = '&';
 
+    protected $_specialTypes = array('setRouter' => 'Zend_Controller_Router_Route');
+
+    /**
+     *
+     * @var Zend_Controller_Router_Route
+     */
+    public $router;
+
+    /**
+     * Helper function thats fills a parameter from the request if it was not
+     * already in the options array.
+     *
+     * This function ensures that e.g. the current controller is used instead
+     * of the default 'index' controller.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @param string $name
+     * @param array $options
+     */
     private static function _rerouteUrlOption(Zend_Controller_Request_Abstract $request, $name, &$options)
     {
         if (! array_key_exists($name, $options)) {
@@ -85,7 +120,8 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             // Make sure controllor, action, module are specified
             $url_parameters = self::rerouteUrl($this->getRequest(), $url_parameters);
 
-            return $this->getView()->url($url_parameters, null, $this->getRouteReset(), false);
+            $router = $this->getRouter();
+            return $router->assemble($url_parameters, null, $this->getRouteReset(), false);
         }
 
         return null;
@@ -96,25 +132,40 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         return $key . '=' . $value;
     }
 
-    public function getRequest()
+    /**
+     *
+     * @return Zend_Controller_Router_Route
+     */
+    public function getRouter()
     {
-        if (! $this->_request) {
+        if (! $this->router) {
             $front = Zend_Controller_Front::getInstance();
-            $this->_request = $front->getRequest();
+            $this->router = $front->getRouter();
         }
 
-        return $this->_request;
+        return $this->router;
     }
 
+    /**
+     * Whether or not to set route defaults with the paramter values
+     *
+     * @return type
+     */
     public function getRouteReset()
     {
         return $this->_routeReset;
     }
 
+    /**
+     * Is this Url an Zend Framework Mvc url or a string with parameters.
+     *
+     * @return boolean
+     */
     public function isMvcUrl()
     {
         foreach ($this->getArray() as $key => $value) {
             if (is_numeric($key)) {
+                // Contains standalone string => not Zend
                 return false;
             }
         }
@@ -122,31 +173,58 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         return true;
     }
 
+    /**
+     * Set the module, controller and action of an url parameter array to the current
+     * module, controller and action, except when one of these items has already been
+     * specified in the array.
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @param array $options An array of parameters (optionally including e.g. controller name) for the new url
+     * @param boolean $addRouteReset Deprecated: add the 'RouteReset' parameter that is used by objects of this type to set RouteReset
+     * @return array Url array with adapted utl's
+     */
     public static function rerouteUrl(Zend_Controller_Request_Abstract $request, $options, $addRouteReset = false)
     {
-        self::_rerouteUrlOption($request, 'module', $options);
-        self::_rerouteUrlOption($request, 'controller', $options);
-        self::_rerouteUrlOption($request, 'action', $options);
+        self::_rerouteUrlOption($request, $request->getModuleKey(),     $options);
+        self::_rerouteUrlOption($request, $request->getControllerKey(), $options);
+        self::_rerouteUrlOption($request, $request->getActionKey(),     $options);
 
         if ($addRouteReset) {
+            // Use of this paramter is deprecated
             $options['RouteReset'] = true;
         }
 
         return $options;
     }
 
-    public function setRequest(Zend_Controller_Request_Abstract $request)
+    /**
+     *
+     * @param Zend_Controller_Router_Route $router
+     * @return MUtil_Html_UrlArrayAttribute (continuation pattern)
+     */
+    public function setRouter(Zend_Controller_Router_Route $router)
     {
-        $this->_request = $request;
+        $this->router = $router;
         return $this;
     }
 
+    /**
+     * Whether or not to set route defaults with the paramter values
+     *
+     * @param boolean $routeReset
+     * @return MUtil_Html_UrlArrayAttribute (continuation pattern)
+     */
     public function setRouteReset($routeReset = true)
     {
         $this->_routeReset = $routeReset;
         return $this;
     }
 
+    /**
+     * @deprecated
+     * @param string $label
+     * @return Zend_Navigation_Page_Mvc
+     */
     public function toPage($label)
     {
         if ($this->isMvcUrl()) {
@@ -164,5 +242,63 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 
             return new Zend_Navigation_Page_Uri($options);
         }
+    }
+
+    /**
+     * Returns relative url string using the current module, controller and action when
+     * none where specified.
+     *
+     * This is url is encoded for url usage, but not for use as attribute values,
+     * i.e. this helper function is used for generating url's for internal use.
+     *
+     * @param array $options Array of parameter values
+     * @param Zend_Controller_Request_Abstract $request
+     * @param Zend_Controller_Router_Route $router
+     * @return string
+     */
+    public static function toUrlString(array $options, Zend_Controller_Request_Abstract $request = null, Zend_Controller_Router_Route $router = null)
+    {
+        $base    = '';
+        $encode  = true;
+        $nobase  = false;
+        $reset   = false;
+
+        if (array_key_exists('Encode', $options)) {
+            $encode = $options['Encode'];
+            unset($options['Encode']);
+        }
+        if (array_key_exists('NoBase', $options)) {
+            $nobase = $options['NoBase'];
+            unset($options['NoBase']);
+        }
+        if (array_key_exists('RouteReset', $options)) {
+            $reset = $options['RouteReset'];
+            unset($options['RouteReset']);
+        }
+
+        if ($nobase || (null === $request) || (null === $router)) {
+            $front = Zend_Controller_Front::getInstance();
+
+            if ($nobase) {
+                $base = rtrim($front->getBaseUrl(), '/');
+            }
+
+            if (null === $request) {
+                $request = $front->getRequest();
+            }
+            if (null === $router) {
+                $router = $front->getRouter();
+            }
+         }
+
+        $options = self::rerouteUrl($request, $options);
+        $url     = $router->assemble($options, null, $reset, $encode);
+
+        // Remove the base url that was specified
+        if ($nobase && (0 === strncmp($url, $base . '/', strlen($base) + 1))) {
+            return substr($url, strlen($base));
+        }
+
+        return $url;
     }
 }

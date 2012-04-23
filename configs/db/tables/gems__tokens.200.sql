@@ -41,7 +41,7 @@ CREATE TABLE if not exists gems__tokens (
         gto_reception_code  varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' default 'OK' not null
                 references gems__reception_codes (grc_id_reception_code),
 
-        -- gto_return_url      varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+        gto_return_url      varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gto_changed timestamp not null default current_timestamp on update current_timestamp,
         gto_changed_by bigint unsigned not null,

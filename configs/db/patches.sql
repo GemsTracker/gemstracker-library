@@ -396,4 +396,4 @@ ALTER TABLE `gems__staff` ADD UNIQUE KEY (gsf_reset_key);
 
 -- GEMS VERSION: 47
 -- PATCH: Add return url to tokens
--- ALTER TABLE gems__tokens ADD gto_return_url varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER gto_reception_code;
+ALTER TABLE gems__tokens ADD gto_return_url varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER gto_reception_code;

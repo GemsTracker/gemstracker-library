@@ -112,14 +112,15 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
             $tracker = $this->loader->getTracker();
             $tokenId = $tracker->filterToken($tokenId);
+            $token   = $tracker->getToken($tokenId);
 
-            if ($token = $tracker->getToken($tokenId)) {
+            if ($token->exists) {
 
                 /****************************
                  * Update open tokens first *
                  ****************************/
                 $respId = $token->getRespondentId();
-                $tracker->processCompletedTokens($respId, $respId);
+                $tracker->processCompletedTokens($respId, $token->getChangedBy());
 
                 // Display token when possible
                 if ($this->html->snippet($this->forwardSnippets, 'token', $token)) {
@@ -141,7 +142,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
             }
         }
 
-        $this->_forward('token');
+        $this->_forward('index');
     }
 
     /**
@@ -168,31 +169,58 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     }
 
     /**
+     * Common handler utility to initialize tokens from parameters
+     */
+    protected function initToken()
+    {
+        $this->tracker = $this->loader->getTracker();
+        $this->tokenId = $this->tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID));
+        $this->token   = $this->tracker->getToken($this->tokenId);
+    }
+
+    /**
      * The action where survey sources should return to after survey completion
      */
     public function returnAction()
     {
-        $user = $this->loader->getCurrentUser();
+        $tracker = $this->loader->getTracker();
 
-        if ($user->isActive() && ($parameters = $user->getSurveyReturn())) {
-            $tracker = $this->loader->getTracker();
-            $token   = $tracker->getToken($tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID)));
+        if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+            $tokenId = $tracker->filterToken($tokenId);
+            $token   = $tracker->getToken($tokenId);
 
-            // Check for completed tokens
-            $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $user->getUserId());
+            if ($url = $token->getReturnUrl()) {
+                // Check for completed tokens
+                $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $token->getChangedBy());
 
-            if (! $parameters) {
-                // Default
-                $request = $this->getRequest();
-                $parameters[$request->getControllerKey()] = 'respondent';
-                $parameters[$request->getActionKey()]     = 'show';
-                $parameters[MUtil_Model::REQUEST_ID]      = $token->getPatientNumber();
+                // Redirect at once, might be another site url
+                header('Location: ' . $url);
+                exit();
             }
 
-            $this->_reroute($parameters, true);
-        } else {
-            $this->_forward('forward');
+            // Nor return? Check for old style user based return
+            $user = $this->loader->getCurrentUser();
+
+            if ($user->isActive() && ($parameters = $user->getSurveyReturn())) {
+
+                // Check for completed tokens
+                $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $user->getUserId());
+
+                if (! $parameters) {
+                    // Default
+                    $request = $this->getRequest();
+                    $parameters[$request->getControllerKey()] = 'respondent';
+                    $parameters[$request->getActionKey()]     = 'show';
+                    $parameters[MUtil_Model::REQUEST_ID]      = $token->getPatientNumber();
+                }
+
+                $this->_reroute($parameters, true);
+                return;
+            }
         }
+
+        // In all other cases: the action that generates meaningfull warnings as is reachable for everyone
+        $this->_forward('forward');
     }
 
     /**

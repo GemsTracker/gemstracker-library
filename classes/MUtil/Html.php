@@ -79,6 +79,12 @@ class MUtil_Html
      */
     public static $verbose = false;
 
+    /**
+     * @deprecated
+     * @param Zend_Navigation_Container $menu
+     * @param string $label
+     * @param array $arg_array
+     */
     public static function addUrl2Page(Zend_Navigation_Container $menu, $label, $arg_array = null)
     {
         $args = array_slice(func_get_args(), 2);
@@ -311,6 +317,7 @@ class MUtil_Html
     /**
      * Returns a href attribute
      *
+     * @deprecated
      * @param mixed $arg_array MUtil_Args::ra arguements
      * @return MUtil_Html_HrefArrayAttribute
      */
@@ -318,5 +325,22 @@ class MUtil_Html
     {
         $args = func_get_args();
         return new MUtil_Html_HrefArrayAttribute($args);
+    }
+
+    /**
+     * Returns relative url string using the current module, controller and action when
+     * none where specified.
+     *
+     * This is url is encoded for url usage, but not for use as attribute values,
+     * i.e. this helper function is used for generating url's for internal use.
+     *
+     * @param array $options Array of parameter values
+     * @param Zend_Controller_Request_Abstract $request
+     * @param Zend_Controller_Router_Route $router
+     * @return string
+     */
+    public static function urlString(array $options, Zend_Controller_Request_Abstract $request = null, Zend_Controller_Router_Route $router = null)
+    {
+        return MUtil_Html_UrlArrayAttribute::toUrlString($options, $request, $router);
     }
 }

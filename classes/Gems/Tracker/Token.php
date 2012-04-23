@@ -272,6 +272,103 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         return $this;
     }
 
+
+    /**
+     * Retrieve a certain $key from the local cache
+     *
+     * For speeding up things the token can hold a local cache, living as long as the
+     * token object exists in memory. Sources can use this to store reusable information.
+     *
+     * To reset the cache on an update, the source can use the cacheReset method or the
+     * setCache method to update the changed value.
+     *
+     * @param string $key             The key used in the cache
+     * @param mixed  $defaultValue    The optional default value to use when it is not present
+     * @return mixed
+     */
+    public function cacheGet($key, $defaultValue = null) {
+        if ($this->cacheHas($key)) {
+            return $this->_cache[$key];
+        } else {
+            return $defaultValue;
+        }
+    }
+
+    /**
+     * find out if a certain key is present in the cache
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function cacheHas($key) {
+        return isset($this->_cache[$key]);
+
+    }
+
+    /**
+     * Reset the local cache for this token
+     *
+     * You can pass in an optional $key parameter to reset just that key, otherwise all
+     * the cache will be reset
+     *
+     * @param string|null $key The key to reset
+     */
+    public function cacheReset($key = null) {
+        if (is_null($key)) {
+            $this->_cache = array();
+        } else {
+            unset($this->_cache[$key]);
+        }
+    }
+
+    /**
+     * Set a $key in the local cache
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function cacheSet($key, $value) {
+        $this->_cache[$key] = $value;
+    }
+
+    /**
+     * Returns the full url Gems should forward to after survey completion.
+     *
+     * This fix allows multiple sites with multiple url's to share a single
+     * installation.
+     *
+     * @return string
+     */
+    protected function calculateReturnUrl()
+    {
+        $currentUri = $this->util->getCurrentURI();
+
+        /*
+        // Referrer would be powerful when someone is usng multiple windows, but
+        // the loop does not always provide a correct referrer.
+        $referrer   = $_SERVER["HTTP_REFERER"];
+
+        // If a referrer was specified and that referral is from the current site, then use it
+        // as it is more dependable when the user has multiple windows open on the application.
+        if ($referrer && (0 == strncasecmp($referrer, $currentUri, strlen($currentUri)))) {
+            return $referrer;
+            // MUtil_Echo::track($referrer);
+        } // */
+
+        // Use the survey return if available.
+        $surveyReturn = $this->loader->getCurrentUser()->getSurveyReturn();
+        if ($surveyReturn) {
+            // Do not show the base url as it is in $currentUri
+            $surveyReturn['NoBase'] = true;
+
+            return $currentUri . MUtil_Html::urlString($surveyReturn);
+            // MUtil_Echo::track($currentUri . MUtil_Html::urlString($surveyReturn));
+        }
+
+        // Ultimate backup solution for reutrn
+        return $currentUri . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
+    }
+
     /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
@@ -452,6 +549,17 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         } else {
             return 'TokenNotFoundSnippet';
         }
+    }
+
+    /**
+     * Returns the staff or respondent id of the person
+     * who last changed this token.
+     *
+     * @return int
+     */
+    public function getChangedBy()
+    {
+        return $this->_gemsData['gto_changed_by'];
     }
 
     /**
@@ -734,6 +842,15 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         return $this->_gemsData['gto_id_respondent_track'];
     }
 
+    /**
+     * The full return url for a redirect
+     *
+     * @return string
+     */
+    public function getReturnUrl()
+    {
+        return $this->_gemsData['gto_return_url'];
+    }
 
     /**
      *
@@ -889,7 +1006,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $values['gto_in_source']  = 1;
         }
         $values['gto_by']         = $userId;
-        // 1.5.4 $values['gto_return_url'] = $_SERVER["HTTP_REFERER"];
+        $values['gto_return_url'] = $this->calculateReturnUrl();
 
         $this->_updateToken($values, $userId);
 
@@ -1188,63 +1305,5 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $values['gto_valid_until'] = $validUntil;
 
         return $this->_updateToken($values, $userId);
-    }
-
-    /**
-     * Retrieve a certain $key from the local cache
-     *
-     * For speeding up things the token can hold a local cache, living as long as the
-     * token object exists in memory. Sources can use this to store reusable information.
-     *
-     * To reset the cache on an update, the source can use the cacheReset method or the
-     * setCache method to update the changed value.
-     *
-     * @param string $key             The key used in the cache
-     * @param mixed  $defaultValue    The optional default value to use when it is not present
-     * @return mixed
-     */
-    public function cacheGet($key, $defaultValue = null) {
-        if ($this->cacheHas($key)) {
-            return $this->_cache[$key];
-        } else {
-            return $defaultValue;
-        }
-    }
-
-    /**
-     * find out if a certain key is present in the cache
-     *
-     * @param string $key
-     * @return boolean
-     */
-    public function cacheHas($key) {
-        return isset($this->_cache[$key]);
-
-    }
-
-    /**
-     * Reset the local cache for this token
-     *
-     * You can pass in an optional $key parameter to reset just that key, otherwise all
-     * the cache will be reset
-     *
-     * @param string|null $key The key to reset
-     */
-    public function cacheReset($key = null) {
-        if (is_null($key)) {
-            $this->_cache = array();
-        } else {
-            unset($this->_cache[$key]);
-        }
-    }
-
-    /**
-     * Set a $key in the local cache
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function cacheSet($key, $value) {
-        $this->_cache[$key] = $value;
     }
 }

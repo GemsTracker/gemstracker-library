@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -48,35 +47,84 @@
  */
 abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInterface
 {
+    /**
+     *
+     * @var type
+     */
+    public $name;
+
+    /**
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    public $request;
+
+    /**
+     *
+     * @var Zend_View_Abstract
+     */
     public $view;
 
-    protected $_name;
-
+    /**
+     *
+     * @param string $name The name of the attribute
+     * @param mixed $value
+     */
     public function __construct($name, $value = null)
     {
-        $this->_name = $name;
+        $this->name = $name;
 
         if ($value) {
             $this->set($value);
         }
     }
 
+    /**
+     * Returns an unescape string version of the attribute
+     *
+     * Output escaping is done elsewhere, e.g. in Zend_View_Helper_HtmlElement->_htmlAttribs()
+     *
+     * If a subclass needs the view for the right output and the view might not be set
+     * it must overrule __toString().
+     *
+     * @return string
+     */
     public function __toString()
     {
-        // Output escaping is done in Zend_View_Helper_HtmlElement->_htmlAttribs()
-        //
-        // If the attribute needs the view to get the right data it must overrule __toString().
         return $this->get();
     }
 
     // public function add($value);
     // public function get();
 
+    /**
+     * Returns the attribute name
+     *
+     * @return string
+     */
     public function getAttributeName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
+    /**
+     *
+     * @return Zend_Controller_Request_Abstract
+     */
+    public function getRequest()
+    {
+        if (! $this->request) {
+            $front = Zend_Controller_Front::getInstance();
+            $this->request = $front->getRequest();
+        }
+
+        return $this->request;
+    }
+
+    /**
+     *
+     * @return Zend_View_Abstract
+     */
     public function getView()
     {
         if (! $this->view) {
@@ -88,6 +136,14 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
         return $this->view;
     }
 
+    /**
+     * Renders the element into a html string
+     *
+     * The $view is used to correctly encode and escape the output
+     *
+     * @param Zend_View_Abstract $view
+     * @return string Correctly encoded and escaped html output
+     */
     public function render(Zend_View_Abstract $view)
     {
         $this->setView($view);
@@ -101,6 +157,21 @@ abstract class MUtil_Html_AttributeAbstract implements MUtil_Html_AttributeInter
 
     // public function set($value);
 
+    /**
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @return MUtil_Html_AttributeAbstract  (continuation pattern)
+     */
+    public function setRequest(Zend_Controller_Request_Abstract $request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
+     *
+     * @param Zend_View_Abstract $view
+     */
     public function setView(Zend_View_Abstract $view)
     {
         $this->view = $view;
