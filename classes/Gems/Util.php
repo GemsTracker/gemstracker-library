@@ -318,13 +318,6 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
                 $min = ip2long(substr($range, 0, $sep));
                 $max = ip2long(substr($range, $sep + 1));
 
-                $validate = new Zend_Validate_Between(
-                    array(
-                        'min' => $min,
-                        'max' => $max
-                    )
-                );
-
                 if ($min <= $ipLong && $ipLong <= $max) {
                     return true;
                 }
