@@ -76,6 +76,7 @@ class Track_Token_ShowFirstOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLo
             return false;
         }
     }
+    
     /**
      * Create the snippets content
      *

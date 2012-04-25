@@ -49,14 +49,28 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-
 class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
     implements ArrayAccess, Countable, IteratorAggregate
 {
+    /**
+     * String used to glue items together
+     *
+     * @var string
+     */
     protected $_separator = ' ';
 
+    /**
+     * Specially treated types for a specific subclass
+     *
+     * @var array function name => class
+     */
     protected $_specialTypes;
 
+    /**
+     * Specially treated types as used for each subclass
+     *
+     * @var array function name => class
+     */
     private $_specialTypesDefault = array(
         'setRequest' => 'Zend_Controller_Request_Abstract',
         'setView'    => 'Zend_View',
@@ -174,6 +188,16 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return null;
     }
 
+    /**
+     * Function that allows subclasses to define their own
+     * mechanism for redering the key/value combination.
+     *
+     * E.g. key=value instead of just the value.
+     *
+     * @param scalar $key
+     * @param string $value Output escaped value
+     * @return string
+     */
     public function getKeyValue($key, $value)
     {
         return $value;

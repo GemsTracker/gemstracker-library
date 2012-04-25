@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-12 15:06+0100\n"
+"POT-Creation-Date: 2012-04-25 16:16+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -18,77 +18,77 @@ msgstr ""
 "X-Poedit-KeywordsList: plural:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/GemsEscort.php:211
+#: classes/GemsEscort.php:212
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s niet schrijfbaar"
 
-#: classes/GemsEscort.php:745
+#: classes/GemsEscort.php:750
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: classes/GemsEscort.php:747
+#: classes/GemsEscort.php:752
 #: classes/Gems/Menu.php:249
 msgid "Logoff"
 msgstr "Uitloggen"
 
-#: classes/GemsEscort.php:750
+#: classes/GemsEscort.php:755
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:934
+#: classes/GemsEscort.php:939
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:959
+#: classes/GemsEscort.php:964
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1390
+#: classes/GemsEscort.php:1395
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1521
+#: classes/GemsEscort.php:1526
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1523
-#: classes/GemsEscort.php:1527
 #: classes/GemsEscort.php:1528
+#: classes/GemsEscort.php:1532
+#: classes/GemsEscort.php:1533
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1538
+#: classes/GemsEscort.php:1543
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1540
-#: classes/GemsEscort.php:1582
+#: classes/GemsEscort.php:1545
+#: classes/GemsEscort.php:1587
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1556
+#: classes/GemsEscort.php:1561
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1558
+#: classes/GemsEscort.php:1563
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1568
-#: classes/GemsEscort.php:1580
+#: classes/GemsEscort.php:1573
+#: classes/GemsEscort.php:1585
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1569
+#: classes/GemsEscort.php:1574
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
-#: classes/GemsEscort.php:1709
-#: classes/GemsEscort.php:1711
+#: classes/GemsEscort.php:1714
+#: classes/GemsEscort.php:1716
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -98,10 +98,6 @@ msgstr[1] "%d vragenlijsten"
 #: classes/Gems/AccessLog.php:236
 msgid "Database needs to be updated!"
 msgstr "Database dient ververst te worden!"
-
-#: classes/Gems/Auth.php:235
-msgid "Combination of organization, username and password not found."
-msgstr "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 
 #: classes/Gems/Html.php:154
 msgid "<< First"
@@ -450,13 +446,11 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:354
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:226
 #, php-format
 msgid "New %s..."
 msgstr "Nieuwe %s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:387
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:246
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
@@ -485,7 +479,6 @@ msgid "No %s found"
 msgstr "Geen %s gevonden"
 
 #: classes/Gems/Controller/BrowseEditAction.php:673
-#: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
@@ -495,14 +488,10 @@ msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
 #: classes/Gems/Controller/BrowseEditAction.php:807
-#: classes/Gems/Default/DatabaseAction.php:187
-#: classes/Gems/Default/DatabaseAction.php:499
 msgid "Yes"
 msgstr "Ja"
 
 #: classes/Gems/Controller/BrowseEditAction.php:808
-#: classes/Gems/Default/DatabaseAction.php:188
-#: classes/Gems/Default/DatabaseAction.php:500
 msgid "No"
 msgstr "Nee"
 
@@ -548,31 +537,31 @@ msgstr "%s is onbekend."
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:236
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:238
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Weet u zeker dat deze %s verwijderd moet worden?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:256
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:258
 #, php-format
 msgid "Edit %s..."
 msgstr "Bewerk %s..."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:269
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:271
 msgid "No data found."
 msgstr "Geen gegevens gevonden."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:331
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:333
 #, php-format
 msgid "No %s found..."
 msgstr "Geen %s gevonden..."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:341
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:343
 #, php-format
 msgid "Showing %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:377
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:379
 msgid "item"
 msgid_plural "items"
 msgstr[0] "item"
@@ -616,22 +605,22 @@ msgstr "Een kenmerk bestaat uit twee groepen van vier cijfers en letters met een
 msgid "The number zero and the letter O are treated as the same; the same goes for the number one and the letter L."
 msgstr "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook niet tussen het getal één en de letter L."
 
-#: classes/Gems/Default/AskAction.php:131
+#: classes/Gems/Default/AskAction.php:132
 #, php-format
 msgid "Thank you for answering. At the moment we have no further surveys for you to take."
 msgstr "Dank u voor uw antwoorden. Op dit moment hebben we geen vragenlijsten meer voor u."
 
-#: classes/Gems/Default/AskAction.php:133
+#: classes/Gems/Default/AskAction.php:134
 #, php-format
 msgid "The survey for token %s has been answered and no further surveys are open."
 msgstr "De vragenlijst met het kenmerk %s is beantwoord en er staan verder geen vragenlijsten open."
 
-#: classes/Gems/Default/AskAction.php:140
+#: classes/Gems/Default/AskAction.php:141
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
-#: classes/Gems/Default/AskAction.php:241
+#: classes/Gems/Default/AskAction.php:270
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
@@ -1196,6 +1185,7 @@ msgid "Date"
 msgstr "Datum"
 
 #: classes/Gems/Default/LogAction.php:191
+#: classes/Gems/Default/LogMaintenanceAction.php:52
 msgid "Action"
 msgstr "Actie"
 
@@ -1212,6 +1202,7 @@ msgid "IP address"
 msgstr "IP adres"
 
 #: classes/Gems/Default/LogAction.php:209
+#: classes/Gems/Default/LogMaintenanceAction.php:53
 msgid "Log"
 msgstr "Logboek"
 
@@ -1421,6 +1412,8 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
+#: classes/Gems/Default/StaffAction.php:278
+#: classes/Gems/Default/StaffAction.php:311
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
@@ -1445,6 +1438,7 @@ msgstr "Login Naam"
 #: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:132
 #: classes/Gems/Default/RespondentAction.php:175
+#: classes/Gems/Default/StaffAction.php:294
 msgid "Language"
 msgstr "Taal"
 
@@ -1564,6 +1558,7 @@ msgid "This can not be changed yet"
 msgstr "Dit kan nog niet gewijzigd worden"
 
 #: classes/Gems/Default/OrganizationAction.php:169
+#: classes/Gems/Default/StaffAction.php:119
 msgid "User Definition"
 msgstr "User Definition"
 
@@ -2094,6 +2089,10 @@ msgstr "U mag deze medewerker niet wijzigen."
 #, php-format
 msgid "User with id %s already exists but is deleted, do you want to reactivate the account?"
 msgstr "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account opnieuw activeren?"
+
+#: classes/Gems/Default/StaffAction.php:270
+msgid "Username"
+msgstr "Gebruikersnaam"
 
 #: classes/Gems/Default/StaffAction.php:285
 msgid "Primary function"
@@ -3610,37 +3609,32 @@ msgstr "mag geen getallen bevatten"
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:408
+#: classes/Gems/User/User.php:392
 #, php-format
 msgid "Your account is temporarily blocked, please wait a minute."
 msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Uw account is tijdelijk geblokkeerd. U kunt over een minuut opnieuw inloggen."
 msgstr[1] "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw inloggen."
 
-#: classes/Gems/User/User.php:443
+#: classes/Gems/User/User.php:427
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1094
+#: classes/Gems/User/User.php:1078
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1110
+#: classes/Gems/User/User.php:1094
 #: classes/Gems/User/Form/ChangePasswordForm.php:163
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
 
-#: classes/Gems/User/User.php:1115
-#: classes/Gems/User/Form/OrganizationFormAbstract.php:230
-msgid "Username"
-msgstr "Gebruikersnaam"
-
-#: classes/Gems/User/User.php:1192
+#: classes/Gems/User/User.php:1176
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1220
+#: classes/Gems/User/User.php:1204
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -3998,24 +3992,19 @@ msgid "Edit track"
 msgstr "Bewerk traject"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
-#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Kenmerk bewerken"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
-#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Herkansing voor kenmerk %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
-#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Oude opmerkingen"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
-#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Kenmerk %s is vervangen door het nieuwe kenmerk %s."
@@ -4042,6 +4031,7 @@ msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
+#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Toon vragenlijst"
 
@@ -4092,7 +4082,6 @@ msgid "Selected surveys"
 msgstr "Geselecteerde vragenlijsten"
 
 #: snippets/ShowSingleSurveyTokenSnippet.php:76
-#: snippets/ShowTrackTokenSnippet.php:77
 msgid "Actions"
 msgstr "Acties"
 
@@ -4179,38 +4168,42 @@ msgstr "Geen toegang tot andere organisaties."
 msgid "Can access"
 msgstr "Toegang tot"
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:110
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:111
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welkom %s,"
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:113
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:114
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:114
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:115
 msgid "Please click the button below to answer the next survey."
 msgstr "Klik op de onderstaande knop om de volgende vragenlijst in te vullen."
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:119
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:120
 #, php-format
 msgid "Please click the button below to answer the survey for token %s."
 msgstr "Klik op de onderstaande knop om de vragenlijst behorende bij kenmerk %s in te vullen."
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:123
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:124
 #, php-format
 msgid "Wait one second to open the survey automatically or click on Cancel to stop."
 msgid_plural "Wait %d seconds to open the survey automatically or click on Cancel to stop."
 msgstr[0] "Over één seconde start de vragenlijst automatisch. Klik op annuleren om dit te onderbreken."
 msgstr[1] "Over %d seconden start de vragenlijst automatisch. Klik op annuleren om dit te onderbreken."
 
-#: snippets/Track/Token/ShowFirstOpenSnippet.php:138
+#: snippets/Track/Token/ShowFirstOpenSnippet.php:139
 #, php-format
 msgid "After this survey there is one other survey we would like you to answer."
 msgid_plural "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "Combination of organization, username and password not found."
+#~ msgstr ""
+#~ "Combinatie van organisatie, gebruikersnaam en wachtwoord niet gevonden."
 
 #~ msgid "Dear {greeting},"
 #~ msgstr "Geachte {greeting},"
