@@ -1085,7 +1085,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $select->from($this->_getSurveysTableName(), 'sid')
                 ->order('sid');
         $lsSurveys = $lsDb->fetchCol($select);
-        $lsSurveys = array_combine($lsSurveys, $lsSurveys);
+
+        if (!$lsSurveys) {
+            //If no surveys present, just use an empty array as array_combine fails
+            $lsSurveys = array();
+        } else {
+            $lsSurveys = array_combine((array) $lsSurveys, (array) $lsSurveys);
+        }
 
         // Surveys in Gems
         $gemsSurveys = $this->_getGemsSurveysForSynchronisation();
