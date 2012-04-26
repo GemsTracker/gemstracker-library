@@ -314,6 +314,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
             }
         } else {
             $data = $this->_noOrganization;
+            $data['gor_id_organization'] = $id;
         }
 
         return $data;
