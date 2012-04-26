@@ -164,6 +164,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
         } elseif (! $element instanceof Zend_Form_Element_Select) {
             $element = new Zend_Form_Element_Select($this->organizationFieldName);
             $element->setLabel($this->translate->_('Organization'));
+            $element->setRegisterInArrayValidator(true);
             $element->setRequired(true);
             $element->setMultiOptions($orgs);
 
@@ -171,6 +172,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
                 $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
             }
             $this->addElement($element);
+
             $element->setValue($orgId);
         }
 
