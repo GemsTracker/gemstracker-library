@@ -285,7 +285,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     {
         try {
             $sql = "SELECT * FROM gems__organizations WHERE gor_id_organization = ? LIMIT 1";
-            $data = $this->db->fetchRow($sql, $id);
+            $data = $this->db->fetchRow($sql, intval($id));
         } catch (Exception $e) {
             $data = false;
         }
