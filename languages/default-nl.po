@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-25 16:16+0100\n"
+"POT-Creation-Date: 2012-04-26 13:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3375,6 +3375,66 @@ msgstr "&lt; Terug"
 msgid "Next &gt;"
 msgstr "Verder &gt;"
 
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:115
+msgid "We have received your answers today. Thank you!"
+msgstr "We hebben uw vragenlijst vandaag ingevuld ontvangen. Dank u wel!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:118
+msgid "We have received your answers yesterday. Thank you!"
+msgstr "We hebben uw vragenlijst gisteren ingevuld ontvangen. Dank u wel!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:121
+msgid "We have received your answers 2 days ago. Thank you."
+msgstr "We hebben uw vragenlijst eergisteren ingevuld ontvangen. Dank u wel."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:125
+#, php-format
+msgid "We have received your answers %d days ago. Thank you."
+msgstr "We hebben uw vragenlijst %d dagen geleden ingevuld ontvangen. Dank u wel."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:127
+#, php-format
+msgid "We have received your answers on %s. "
+msgstr "We hebben uw vragenlijst op %s ingevuld ontvangen."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:140
+msgid "This survey has no set time limit."
+msgstr "Deze vragenlijst heeft geen eindtijd."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
+msgid "Warning!!!"
+msgstr "Let op!!!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
+msgid "This survey must be answered today!"
+msgstr "Deze vragenlijst moet vandaag ingevuld zijn!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+msgid "Warning!!"
+msgstr "Let op!!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+msgid "This survey must be answered tomorrow!"
+msgstr "Deze vragenlijst moet morgen ingevuld zijn!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:153
+msgid "Warning! This survey must be answered over 2 days!"
+msgstr "Let op! Deze vragenlijst moet overmorgen ingevuld zijn!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:158
+#, php-format
+msgid "This survey must be answered in %d days."
+msgstr "Deze vragenlijst moet binnen %d dagen  ingevuld zijn!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:160
+msgid "This survey can no longer be answered."
+msgstr "Deze vragenlijst kan niet langer worden ingevuld!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:163
+#, php-format
+msgid "This survey can be answered until %s."
+msgstr "Deze vragenlijst moet ingevuld worden voor %s."
+
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1156
 #, php-format
@@ -3544,10 +3604,6 @@ msgstr "Dit kenmerk kan (nog) niet gebruikt worden."
 #: classes/Gems/Tracker/Token/TokenValidator.php:238
 msgid "Unknown token."
 msgstr "Onbekend kenmerk."
-
-#: classes/Gems/User/Organization.php:342
-msgid "Cookies must be enabled for this site."
-msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
 #: classes/Gems/User/PasswordChecker.php:95
 #, php-format
@@ -3992,19 +4048,24 @@ msgid "Edit track"
 msgstr "Bewerk traject"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
+#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Kenmerk bewerken"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
+#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Herkansing voor kenmerk %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
+#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Oude opmerkingen"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
+#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Kenmerk %s is vervangen door het nieuwe kenmerk %s."
@@ -4031,7 +4092,6 @@ msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
-#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Toon vragenlijst"
 
@@ -4082,6 +4142,7 @@ msgid "Selected surveys"
 msgstr "Geselecteerde vragenlijsten"
 
 #: snippets/ShowSingleSurveyTokenSnippet.php:76
+#: snippets/ShowTrackTokenSnippet.php:77
 msgid "Actions"
 msgstr "Acties"
 
@@ -4168,15 +4229,41 @@ msgstr "Geen toegang tot andere organisaties."
 msgid "Can access"
 msgstr "Toegang tot"
 
+#: snippets/Track/Token/ShowAllOpenSnippet.php:89
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:111
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welkom %s,"
 
+#: snippets/Track/Token/ShowAllOpenSnippet.php:94
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:114
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Dank u voor het invullen van de \"%s\" vragenlijst."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:152
+#, php-format
+msgid " (%s)"
+msgstr " (%s)"
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:160
+#, php-format
+msgid "Round: %s"
+msgstr "Ronde: %s"
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:188
+msgid "Please answer the open survey."
+msgid_plural "Please answer the open surveys."
+msgstr[0] "Wij verzoeken u de openstaande vragenlijst nu in te vullen."
+msgstr[1] "Wij verzoeken u de openstaande vragenlijsten nu in te vullen."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:190
+msgid "Thank you for answering all open surveys."
+msgstr "Dank u voor het beantwoorden van alle openstaande vragenlijsten."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:193
+msgid "There are no surveys to show for this token."
+msgstr "U heeft geen open vragenlijsten voor dit kenmerk."
 
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:115
 msgid "Please click the button below to answer the next survey."
@@ -4200,6 +4287,9 @@ msgid "After this survey there is one other survey we would like you to answer."
 msgid_plural "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "Cookies must be enabled for this site."
+#~ msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
 #~ msgid "Combination of organization, username and password not found."
 #~ msgstr ""

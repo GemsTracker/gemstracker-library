@@ -95,9 +95,14 @@ class MUtil_Html_OnClickArrayAttribute extends MUtil_Html_ArrayAttribute
      */
     public function addUrl($href)
     {
-        $this->add("location.href='");
-        $this->add($href);
-        $this->add("';");
+        $last = is_array($this->_values) ? end($this->_values) : null;
+        if (false === strpos($last, 'location.href')) {
+            $this->_values[] = "location.href='";
+            $this->_values[] = $href;
+            $this->_values[] = "';";
+        } else {
+            $this->_values[] = $href;
+        }
 
         return $this;
     }

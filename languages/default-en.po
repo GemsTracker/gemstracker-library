@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-25 16:16+0100\n"
+"POT-Creation-Date: 2012-04-26 13:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3375,6 +3375,66 @@ msgstr "&lt; Previous"
 msgid "Next &gt;"
 msgstr "Next &gt;"
 
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:115
+msgid "We have received your answers today. Thank you!"
+msgstr "We have received your answers today. Thank you!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:118
+msgid "We have received your answers yesterday. Thank you!"
+msgstr "We have received your answers yesterday. Thank you!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:121
+msgid "We have received your answers 2 days ago. Thank you."
+msgstr "We have received your answers 2 days ago. Thank you."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:125
+#, php-format
+msgid "We have received your answers %d days ago. Thank you."
+msgstr "We have received your answers %d days ago. Thank you."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:127
+#, php-format
+msgid "We have received your answers on %s. "
+msgstr "We have received your answers on %s. "
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:140
+msgid "This survey has no set time limit."
+msgstr "This survey has no set time limit."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
+msgid "Warning!!!"
+msgstr "Warning!!!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
+msgid "This survey must be answered today!"
+msgstr "This survey must be answered today!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+msgid "Warning!!"
+msgstr "Warning!!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+msgid "This survey must be answered tomorrow!"
+msgstr "This survey must be answered tomorrow!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:153
+msgid "Warning! This survey must be answered over 2 days!"
+msgstr "Warning! This survey must be answered over 2 days!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:158
+#, php-format
+msgid "This survey must be answered in %d days."
+msgstr "This survey must be answered in %d days."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:160
+msgid "This survey can no longer be answered."
+msgstr "This survey can no longer be answered."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:163
+#, php-format
+msgid "This survey can be answered until %s."
+msgstr "This survey can be answered until %s."
+
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1156
 #, php-format
@@ -3544,10 +3604,6 @@ msgstr "This token cannot (yet) be used."
 #: classes/Gems/Tracker/Token/TokenValidator.php:238
 msgid "Unknown token."
 msgstr "Unknown token."
-
-#: classes/Gems/User/Organization.php:342
-msgid "Cookies must be enabled for this site."
-msgstr "Cookies must be enabled for this site."
 
 #: classes/Gems/User/PasswordChecker.php:95
 #, php-format
@@ -3992,19 +4048,24 @@ msgid "Edit track"
 msgstr "Edit track"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
+#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Edit token"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
+#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Redo of token %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
+#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Old comment:"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
+#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Created replacement token %2$s for token %1$s."
@@ -4031,7 +4092,6 @@ msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
-#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Show survey"
 
@@ -4082,6 +4142,7 @@ msgid "Selected surveys"
 msgstr "Selected surveys"
 
 #: snippets/ShowSingleSurveyTokenSnippet.php:76
+#: snippets/ShowTrackTokenSnippet.php:77
 msgid "Actions"
 msgstr "Actions"
 
@@ -4168,15 +4229,41 @@ msgstr "No access to other organizations."
 msgid "Can access"
 msgstr "Can access"
 
+#: snippets/Track/Token/ShowAllOpenSnippet.php:89
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:111
 #, php-format
 msgid "Welcome %s,"
 msgstr "Welcome %s,"
 
+#: snippets/Track/Token/ShowAllOpenSnippet.php:94
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:114
 #, php-format
 msgid "Thank you for answering the \"%s\" survey."
 msgstr "Thank you for answering the \"%s\" survey."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:152
+#, php-format
+msgid " (%s)"
+msgstr " (%s)"
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:160
+#, php-format
+msgid "Round: %s"
+msgstr "Round: %s"
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:188
+msgid "Please answer the open survey."
+msgid_plural "Please answer the open surveys."
+msgstr[0] "Please answer the open survey."
+msgstr[1] "Please answer the open surveys."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:190
+msgid "Thank you for answering all open surveys."
+msgstr "Thank you for answering all open surveys."
+
+#: snippets/Track/Token/ShowAllOpenSnippet.php:193
+msgid "There are no surveys to show for this token."
+msgstr "There are no surveys to show for this token."
 
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:115
 msgid "Please click the button below to answer the next survey."
@@ -4200,6 +4287,9 @@ msgid "After this survey there is one other survey we would like you to answer."
 msgid_plural "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "After this survey there is one other survey we would like you to answer."
 msgstr[1] "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "Cookies must be enabled for this site."
+#~ msgstr "Cookies must be enabled for this site."
 
 #~ msgid "Combination of organization, username and password not found."
 #~ msgstr "Combination of organization, username and password not found."

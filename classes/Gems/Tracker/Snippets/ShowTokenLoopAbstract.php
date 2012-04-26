@@ -47,6 +47,12 @@
 class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_SnippetAbstract
 {
     /**
+     * General date format
+     * @var string
+     */
+    protected $dateFormat = 'd MMMM yyyy';
+
+    /**
      * Required
      *
      * @var Zend_Controller_Request_Abstract
@@ -91,6 +97,70 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
                     parent::checkRegistryRequestsAnswers();
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Formats an completion date for this display
+     *
+     * @param MUtil_Date $dateTime
+     * @return string
+     */
+    public function formatCompletion(MUtil_Date $dateTime)
+    {
+        $days = abs($dateTime->diffDays());
+
+        switch ($days) {
+            case 0:
+                return $this->_('We have received your answers today. Thank you!');
+
+            case 1:
+                return $this->_('We have received your answers yesterday. Thank you!');
+
+            case 2:
+                return $this->_('We have received your answers 2 days ago. Thank you.');
+
+            default:
+                if ($days <= 14) {
+                    return sprintf($this->_('We have received your answers %d days ago. Thank you.'), $days);
+                }
+                return sprintf($this->_('We have received your answers on %s. '), $dateTime->toString($this->dateFormat));
+        }
+    }
+
+    /**
+     * Formats an until date for this display
+     *
+     * @param MUtil_Date $dateTime
+     * @return string
+     */
+    public function formatUntil(MUtil_Date $dateTime = null)
+    {
+        if (null === $dateTime) {
+            return $this->_('This survey has no set time limit.');
+        }
+
+        $days = $dateTime->diffDays();
+
+        switch ($days) {
+            case 0:
+                return array(MUtil_Html::create('strong', $this->_('Warning!!!')), ' ', $this->_('This survey must be answered today!'));
+
+            case 1:
+                return array(MUtil_Html::create('strong', $this->_('Warning!!')), ' ', $this->_('This survey must be answered tomorrow!'));
+
+            case 2:
+                return $this->_('Warning! This survey must be answered over 2 days!');
+
+            default:
+                if (abs($days) <= 14) {
+                    if ($days >= 0) {
+                        return sprintf($this->_('This survey must be answered in %d days.'), $days);
+                    } else {
+                        return $this->_('This survey can no longer be answered.');
+                    }
+                }
+                return sprintf($this->_('This survey can be answered until %s.'), $dateTime->toString($this->dateFormat));
         }
     }
 
