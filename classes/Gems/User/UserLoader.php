@@ -357,7 +357,12 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             }
 
             if (! $urls) {
-                $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
+                try {
+                    $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
+                } catch (Zend_Db_Exception $zde) {
+                    // Table might not be filled
+                    $data = array();
+                }
                 $urls = array();
                 foreach ($data as $orgId => $urlsBase) {
                     foreach (explode(' ', $urlsBase) as $url) {
