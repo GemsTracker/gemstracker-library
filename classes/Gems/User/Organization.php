@@ -309,7 +309,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
 
             // MUtil_Echo::track($sql, $data['can_access']);
 
-            if ($baseUrls = explode(' ', $data['gor_url_base'])) {
+            if (array_key_exists('gor_url_base', $data) && $baseUrls = explode(' ', $data['gor_url_base'])) {
                 $data['base_url'] = reset($baseUrls);
             }
         } else {
