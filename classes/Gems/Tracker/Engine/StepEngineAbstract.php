@@ -442,17 +442,17 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
             // Calculate valid from
             $model->set('valid_after', 'elementClass', 'html', 'label', ' ', 'value', MUTil_Html::create()->h4($this->_('Valid from calculation')));
-            $model->set('grp_valid_after_source', 'label', $this->_('Date source'), 'default', self::TOKEN_TABLE, 'elementClass', 'Radio', 'escape', false, 'required', true);
-            $model->set('grp_valid_after_id', 'label', $this->_('Round used'));
-            $model->set('grp_valid_after_field', 'label', $this->_('Date used'), 'default', 'gto_valid_from');
+            $model->set('grp_valid_after_source', 'label', $this->_('Date source'), 'default', self::TOKEN_TABLE, 'elementClass', 'Radio', 'escape', false, 'required', true, 'onchange', 'this.form.submit();');
+            $model->set('grp_valid_after_id', 'label', $this->_('Round used'), 'onchange', 'this.form.submit();');
+            $model->set('grp_valid_after_field', 'label', $this->_('Date used'), 'default', 'gto_valid_from', 'onchange', 'this.form.submit();');
             $model->set('grp_valid_after_length', 'label', $this->_('Add to date'), 'required', false);
             $model->set('grp_valid_after_unit', 'label', $this->_('Add to date unit'), 'multiOptions', $this->getDateUnitsList(true));
 
             // Calculate valid until
             $model->set('valid_for', 'elementClass', 'html', 'label', ' ', 'value', MUTil_Html::create()->h4($this->_('Valid for calculation')));
-            $model->set('grp_valid_for_source', 'label', $this->_('Date source'), 'default', self::TOKEN_TABLE, 'elementClass', 'Radio', 'escape', false, 'required', true);
-            $model->set('grp_valid_for_id', 'label', $this->_('Round used'), 'default', '');
-            $model->set('grp_valid_for_field', 'label', $this->_('Date used'), 'default', 'gto_valid_from');
+            $model->set('grp_valid_for_source', 'label', $this->_('Date source'), 'default', self::TOKEN_TABLE, 'elementClass', 'Radio', 'escape', false, 'required', true, 'onchange', 'this.form.submit();');
+            $model->set('grp_valid_for_id', 'label', $this->_('Round used'), 'default', '', 'onchange', 'this.form.submit();');
+            $model->set('grp_valid_for_field', 'label', $this->_('Date used'), 'default', 'gto_valid_from', 'onchange', 'this.form.submit();');
             $model->set('grp_valid_for_length', 'label', $this->_('Add to date'), 'required', false, 'default', 2);
             $model->set('grp_valid_for_unit', 'label', $this->_('Add to date unit'), 'multiOptions', $this->getDateUnitsList(false));
 

@@ -97,6 +97,21 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
 
     /**
+     * Returns array (id => name) of all ronds in all tracks, sorted by order
+     *
+     * @return array
+     */
+    public function getAllRounds()
+    {
+        static $rounds;
+        if (! $rounds) {
+            $rounds = $this->db->fetchPairs("SELECT gro_id_round, CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey ORDER BY gro_id_order");
+        }
+
+        return $rounds;
+    }
+
+    /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      *
      * @staticvar array $surveys
@@ -124,13 +139,13 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         static $surveys;
 
         if (! $surveys) {
-            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, 
+            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey,
             	CONCAT(
             		LEFT(CONCAT_WS(
             			" - ", gsu_survey_name, CASE WHEN LENGTH(TRIM(gsu_survey_description)) = 0 THEN NULL ELSE gsu_survey_description END
             		), 50),
         			CASE WHEN gsu_active = 1 THEN " (' . $this->translate->_('Active') . ')" ELSE " (' . $this->translate->_('Inactive') . ')" END
-    			)            		
+    			)
             	FROM gems__surveys ORDER BY gsu_survey_name');
         }
 
@@ -147,6 +162,32 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
         if (! $tracks) {
             $tracks = $this->db->fetchPairs('SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name');
+        }
+
+        return $tracks;
+    }
+
+    /**
+     * Returns array (id => name) of all ronds in a track, sorted by order
+     *
+     * @param int $trackId
+     * @return array
+     */
+    public function getRoundsFor($trackId)
+    {
+        return $this->db->fetchPairs("SELECT gro_id_round, CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey WHERE gro_id_track = ? ORDER BY gro_id_order", $trackId);
+    }
+
+    /**
+     * Returns array (id => name) of all 'T' tracks, sorted alphabetically
+     * @return array
+     */
+    public function getSteppedTracks()
+    {
+        static $tracks;
+
+        if (! $tracks) {
+            $tracks = $this->db->fetchPairs("SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name");
         }
 
         return $tracks;
