@@ -339,7 +339,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     {
         $organizationId = $this->getId();
 
-        if (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath())) {
+        if ($organizationId && (! Gems_Cookies::setOrganization($organizationId, $this->basepath->getBasePath()))) {
             throw new Exception('Cookies must be enabled for this site.');
         }
 
