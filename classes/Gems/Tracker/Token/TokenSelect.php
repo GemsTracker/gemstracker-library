@@ -398,6 +398,21 @@ class Gems_Tracker_Token_TokenSelect {
     }
 
     /**
+     * Select only completed tokens
+     *
+     * Comleted is token has a completiondate
+     *
+     * @return Gems_Tracker_Token_TokenSelect
+     */
+    public function onlyCompleted() {
+
+        $this->sql_select
+                ->where('gto_completion_time IS NOT NULL');
+
+        return $this;
+    }
+
+    /**
      * Select tokens with receptioncodes with the success status 1
      *
      * @return Gems_Tracker_Token_TokenSelect
