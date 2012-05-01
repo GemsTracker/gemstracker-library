@@ -4,7 +4,7 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_name             varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         gor_code             varchar(20)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-        gor_user_class       varchar(30)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'StaffUser'
+        gor_user_class       varchar(30)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'StaffUser',
         gor_location         varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_url              varchar(127)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_url_base         varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
@@ -25,7 +25,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_has_login        boolean not null default 1,
         gor_has_respondents  boolean not null default 0,
         gor_add_respondents  boolean not null default 1,
-        gor_respondent_group bigint unsigned references gems__groups (ggp_id_group) null,
+        gor_respondent_group bigint unsigned null references gems__groups (ggp_id_group),
         gor_active           boolean not null default 1,
 
         gor_changed          timestamp not null default current_timestamp on update current_timestamp,

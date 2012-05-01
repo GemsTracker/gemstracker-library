@@ -74,6 +74,14 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function getUserData($login_name, $organization)
     {
+        try {
+            $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
+            natsort($orgs);
+        } catch (Zend_Db_Exception $zde) {
+            // Table might not exist, so do something failsafe
+            $orgs = array($organization => 'create db first');
+        }
+
         return array(
             'user_id'                => 1,
             'user_login'             => $login_name,
@@ -84,6 +92,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
             'user_base_org_id'       => $organization,
             'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
             'user_blockable'         => false,
+            '__allowedOrgs'          => $orgs
             );
     }
 }
