@@ -51,6 +51,11 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
+    
+    /**
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
 
     /**
      * Returns an initialized Zend_Auth_Adapter_Interface
