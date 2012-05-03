@@ -78,7 +78,7 @@ class MUtil_Validate_Date_IsDate extends MUtil_Validate_Date_DateAbstract
          * Prevent dates with a year > 9999 as this will cause errors
          * when saving to the db
          */
-        if ($date->get(Zend_Date::YEAR) < 10000 && Zend_Date::isDate($date, $this->getDateFormat())) {
+        if ($date->get(Zend_Date::YEAR) < 10000 && Zend_Date::isDate($value, $this->getDateFormat())) {
             return true;
         }
 
