@@ -73,12 +73,12 @@ class MUtil_Validate_Date_IsDate extends MUtil_Validate_Date_DateAbstract
     public function isValid($value, $context = null)
     {
         $date = new Zend_Date($value, $this->getDateFormat());
+        $year = $date->get(Zend_Date::YEAR);
 
         /**
-         * Prevent dates with a year > 9999 as this will cause errors
-         * when saving to the db
+         * Prevent extreme dates (also fixes errors when saving to the db)
          */
-        if ($date->get(Zend_Date::YEAR) < 10000 && Zend_Date::isDate($value, $this->getDateFormat())) {
+        if ($year > 1850 && $year < 2200 && Zend_Date::isDate($value, $this->getDateFormat())) {
             return true;
         }
 
