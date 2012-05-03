@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-26 13:30+0100\n"
+"POT-Creation-Date: 2012-05-03 10:48+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -620,7 +620,7 @@ msgstr "The survey for token %s has been answered and no further surveys are ope
 msgid "The token %s does not exist (any more)."
 msgstr "The token %s does not exist (any more)."
 
-#: classes/Gems/Default/AskAction.php:270
+#: classes/Gems/Default/AskAction.php:269
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
@@ -3436,7 +3436,7 @@ msgid "This survey can be answered until %s."
 msgstr "This survey can be answered until %s."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1156
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1162
 #, php-format
 msgid "The '%s' survey is no longer active. The survey was removed from LimeSurvey!"
 msgstr "The '%s' survey is no longer active. The survey was removed from LimeSurvey!"
@@ -3466,37 +3466,37 @@ msgid "Required fields: %s"
 msgstr "Required fields: %s"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:466
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1309
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1315
 #, php-format
 msgid "The status of the '%s' survey has changed."
 msgstr "The status of the '%s' survey has changed."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:472
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1315
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1321
 #, php-format
 msgid "Survey '%s' IS NO LONGER ACTIVE!!!"
 msgstr "Survey '%s' IS NO LONGER ACTIVE!!!"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:478
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1321
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1327
 #, php-format
 msgid "The status of the '%s' survey has changed to '%s'."
 msgstr "The status of the '%s' survey has changed to '%s'."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:481
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1324
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1330
 #, php-format
 msgid "The status warning for the '%s' survey was removed."
 msgstr "The status warning for the '%s' survey was removed."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:487
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1330
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1336
 #, php-format
 msgid "The name of the '%s' survey has changed to '%s'."
 msgstr "The name of the '%s' survey has changed to '%s'."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:498
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1340
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1346
 #, php-format
 msgid "Imported the '%s' survey."
 msgstr "Imported the '%s' survey."
@@ -3505,12 +3505,12 @@ msgstr "Imported the '%s' survey."
 msgid "Submitdate"
 msgstr "Submitdate"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1136
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1142
 #, php-format
 msgid "Updated %d Gems tokens to new token definition."
 msgstr "Updated %d Gems tokens to new token definition."
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1291
+#: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1297
 #, php-format
 msgid "Updated %d token to new token definition in survey '%s'."
 msgid_plural "Updated %d tokens to new token definition in survey '%s'."
@@ -3605,59 +3605,67 @@ msgstr "This token cannot (yet) be used."
 msgid "Unknown token."
 msgstr "Unknown token."
 
-#: classes/Gems/User/PasswordChecker.php:95
+#: classes/Gems/User/PasswordChecker.php:100
 #, php-format
 msgid "should contain at least one uppercase character"
 msgid_plural "should contain at least %d uppercase characters"
 msgstr[0] "should contain at least one uppercase character"
 msgstr[1] "should contain at least %d uppercase characters"
 
-#: classes/Gems/User/PasswordChecker.php:112
+#: classes/Gems/User/PasswordChecker.php:137
+msgid "should not appear in the list of common passwords"
+msgstr "should not appear in the list of common passwords"
+
+#: classes/Gems/User/PasswordChecker.php:139
+msgid "appears in the list of common passwords"
+msgstr "appears in the list of common passwords"
+
+#: classes/Gems/User/PasswordChecker.php:155
 #, php-format
 msgid "should contain at least one lowercase character"
 msgid_plural "should contain at least %d lowercase characters"
 msgstr[0] "should contain at least one lowercase character"
 msgstr[1] "should contain at least %d lowercase characters"
 
-#: classes/Gems/User/PasswordChecker.php:127
+#: classes/Gems/User/PasswordChecker.php:170
 #, php-format
 msgid "should be at least %d characters long"
 msgstr "should be at least %d characters long"
 
-#: classes/Gems/User/PasswordChecker.php:145
+#: classes/Gems/User/PasswordChecker.php:188
 #, php-format
 msgid "should contain at least one non alphabetic character"
 msgid_plural "should contain at least %d non alphabetic characters"
 msgstr[0] "should contain at least one non alphabetic character"
 msgstr[1] "should contain at least %d non alphabetic characters"
 
-#: classes/Gems/User/PasswordChecker.php:148
+#: classes/Gems/User/PasswordChecker.php:191
 msgid "should not contain non alphabetic characters"
 msgstr "should not contain non alphabetic characters"
 
-#: classes/Gems/User/PasswordChecker.php:167
+#: classes/Gems/User/PasswordChecker.php:210
 #, php-format
 msgid "should contain at least one non alphanumeric character"
 msgid_plural "should contain at least %d non alphanumeric characters"
 msgstr[0] "should contain at least one non alphanumeric character"
 msgstr[1] "should contain at least %d non alphanumeric characters"
 
-#: classes/Gems/User/PasswordChecker.php:170
+#: classes/Gems/User/PasswordChecker.php:213
 msgid "should not contain non alphanumeric characters"
 msgstr "should not contain non alphanumeric characters"
 
-#: classes/Gems/User/PasswordChecker.php:188
+#: classes/Gems/User/PasswordChecker.php:231
 msgid "should not contain your login name"
 msgstr "should not contain your login name"
 
-#: classes/Gems/User/PasswordChecker.php:207
+#: classes/Gems/User/PasswordChecker.php:250
 #, php-format
 msgid "should contain at least one number"
 msgid_plural "should contain at least %d numbers"
 msgstr[0] "should contain at least one number"
 msgstr[1] "should contain at least %d numbers"
 
-#: classes/Gems/User/PasswordChecker.php:210
+#: classes/Gems/User/PasswordChecker.php:253
 msgid "may not contain numbers"
 msgstr "may not contain numbers"
 
@@ -3778,7 +3786,7 @@ msgstr "Yes (individual surveys only)"
 msgid "Stop (per respondent or track only)"
 msgstr "Stop (per patient or track only)"
 
-#: classes/Gems/Util/TrackData.php:132
+#: classes/Gems/Util/TrackData.php:147
 msgid "Inactive"
 msgstr "Inactive"
 
@@ -4048,24 +4056,19 @@ msgid "Edit track"
 msgstr "Edit track"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
-#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Edit token"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
-#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Redo of token %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
-#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Old comment:"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
-#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Created replacement token %2$s for token %1$s."
@@ -4092,6 +4095,7 @@ msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
+#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Show survey"
 
@@ -4142,7 +4146,6 @@ msgid "Selected surveys"
 msgstr "Selected surveys"
 
 #: snippets/ShowSingleSurveyTokenSnippet.php:76
-#: snippets/ShowTrackTokenSnippet.php:77
 msgid "Actions"
 msgstr "Actions"
 

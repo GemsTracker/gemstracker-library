@@ -41,21 +41,54 @@
  */
 class Gems_Versions
 {
+    /**
+     * Build number
+     *
+     * Primarily used for database patches
+     *
+     * @return int
+     */
     public final function getBuild()
     {
+        /**
+         * DO NOT FORGET !!! to update gems__patch_levels:
+         *
+         * For new installations the initial patch level should
+         * be THIS LEVEL.
+         *
+         * This means that future patches for the current level
+         * will be loaded, but that previous patches are ignored.
+         */
         return 47;
     }
 
+    /**
+     * The official Gems version number
+     *
+     * @return string
+     */
     public final function getGemsVersion()
     {
         return '1.5.4';
     }
 
+    /**
+     * An optionally project specific version number
+     *
+     * Can be overruled at project level
+     *
+     * @return string
+     */
     public function getProjectVersion()
     {
         return $this->getGemsVersion();
     }
 
+    /**
+     * The long string versions
+     *
+     * @return string
+     */
     public function getVersion()
     {
         $version = $this->getProjectVersion();

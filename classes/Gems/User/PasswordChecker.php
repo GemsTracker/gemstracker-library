@@ -57,7 +57,7 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
-    
+
     /**
      * @var Zend_Cache
      */
@@ -99,6 +99,44 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
             $this->_addError(sprintf(
                     $this->translate->plural('should contain at least one uppercase character', 'should contain at least %d uppercase characters', $len),
                     $len));
+        }
+    }
+
+    /**
+     * Tests if the password appears on a (weak) password list. The list should
+     * be a simpe newline separated list of (lowercase) passwords.
+     *
+     * @param string $parameter Filename of the password list, relative to APPLICATION_PATH
+     * @param string $password  The password
+     */
+    protected function inPasswordList($parameter, $password)
+    {
+        if (empty($parameter)) {
+            return;
+        }
+
+        if ($this->cache) {
+            $passwordList = $this->cache->load('weakpasswordlist');
+        }
+
+        if (empty($passwordList)) {
+            $filename = APPLICATION_PATH . '/' . ltrim($parameter, '/');;
+
+            if (! file_exists($filename)) {
+                throw new Gems_Exception("Unable to load password list '{$filename}'");
+            }
+
+            $passwordList = explode("\n", file_get_contents($filename));
+
+            if ($this->cache) {
+                $this->cache->save($passwordList, 'weakpasswordlist');
+            }
+        }
+
+        if (null === $password) {
+            $this->_addError($this->translate->_('should not appear in the list of common passwords'));
+        } elseif (in_array(strtolower($password), $passwordList)) {
+            $this->_addError($this->translate->_('appears in the list of common passwords'));
         }
     }
 
@@ -214,42 +252,6 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
             } elseif (($len < 0) && (($count > 0) || (null === $password))) {
                 $this->_addError($this->translate->_('may not contain numbers'));
             }
-        }
-    }
-    
-    /**
-     * Tests if the password appears on a (weak) password list. The list should
-     * be a simpe newline separated list of (lowercase) passwords.
-     * 
-     * @param string $parameter Filename of the password list, relative to APPLICATION_PATH
-     * @param string $password  The password
-     */
-    protected function inPasswordList($parameter, $password)
-    {
-        if (empty($parameter)) {
-            return;
-        }
-        
-        if ($this->cache) {
-            $passwordList = $this->cache->load('weakpasswordlist');
-        }
-        
-        if (empty($passwordList)) {
-            $filename = APPLICATION_PATH . $parameter;
-            
-            if (!file_exists($filename)) {
-                throw new Gems_Exception("Unable to load password list '{$filename}'");
-            }
-            
-            $passwordList = explode("\n", file_get_contents($filename));
-        }
-        
-        if (in_array(strtolower($password), $passwordList)) {
-            $this->_addError($this->translate->_('should not appear in a list of common passwords'));
-        }
-        
-        if ($this->cache) {
-            $this->cache->save($passwordList, 'weakpasswordlist');
         }
     }
 

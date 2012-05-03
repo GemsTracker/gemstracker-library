@@ -214,6 +214,9 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 if ($messages = $user->reportPasswordWeakness($request->getParam($form->passwordFieldName))) {
                     $user->setPasswordResetRequired(true);
                     $this->addMessage($this->_('Your password must be changed.'));
+                    foreach ($messages as &$message) {
+                        $message = ucfirst($message) . '.';
+                    }
                     $this->addMessage($messages);
                 }
 
