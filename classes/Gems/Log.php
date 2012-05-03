@@ -26,6 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * 
  * @version    $Id$
  * @package    Gems
  * @subpackage Log
@@ -110,7 +111,12 @@ class Gems_Log extends Zend_Log
         if (!empty($request)) {
             $info[] = 'Request Parameters:';
             foreach ($request->getParams() as $key => $value) {
-                $info[] = $key . ' => ' . $value;
+                // Make sure a password does not end in the logfile
+                if (false === strpos(strtolower($key), 'password')) {
+                    $info[] = $key . ' => ' . $value;
+                } else {
+                    $info[] = $key . ' => ' . str_repeat('*', strlen($value));
+                }
             }
         }
 
