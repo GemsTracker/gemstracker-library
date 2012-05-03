@@ -10,6 +10,7 @@ CREATE TABLE if not exists gems__groups (
       ggp_group_active boolean not null default 1,
       ggp_staff_members boolean not null default 0,
       ggp_respondent_members boolean not null default 1,
+      ggp_allowed_ip_ranges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
       
       ggp_changed timestamp not null default current_timestamp on update current_timestamp,
       ggp_changed_by bigint unsigned not null,
