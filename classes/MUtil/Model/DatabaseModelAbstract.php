@@ -152,7 +152,9 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         if ($sort = $this->_checkSortUsed($sort)) {
             foreach ($sort as $key => $order) {
                 if (is_numeric($key) || is_string($order)) {
-                    $sqlsort[] = $order;
+                    if ($this->has($order)) {
+                        $sqlsort[] = $order;
+                    }
                 } else {
                     // Code not needed at least for MySQL, a named calculated column can be used in
                     // an ORDER BY. However, it does work.
@@ -163,13 +165,19 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     } // */
                     switch ($order) {
                         case SORT_ASC:
-                            $sqlsort[] = $key . ' ASC';
+                            if ($this->has($key)) {
+                                $sqlsort[] = $key . ' ASC';
+                            }
                             break;
                         case SORT_DESC:
-                            $sqlsort[] = $key . ' DESC';
+                            if ($this->has($key)) {
+                                $sqlsort[] = $key . ' DESC';
+                            }
                             break;
                         default:
-                            $sqlsort[] = $order;
+                            if ($this->has($order)) {
+                                $sqlsort[] = $order;
+                            }
                             break;
                     }
                 }
