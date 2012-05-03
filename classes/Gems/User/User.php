@@ -421,7 +421,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     protected function authorizeIp()
     {
-        if ($this->util->isAllowedIP($_SERVER['REMOTE_ADDR'], $this->getAllowedIPRanges())) {
+        //In unit test REMOTE_ADDR is not available and will return null
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $remoteIp = $request->getServer('REMOTE_ADDR');
+        if ($this->util->isAllowedIP($remoteIp, $this->getAllowedIPRanges())) {
             return true;
         } else {
             return $this->translate->_('You are not allowed to login from this location.');
