@@ -102,7 +102,7 @@ class Gems_Cookies
         }
 
         // Set the cookie for 30 days
-        return setcookie($name, $value, time() + ($days * 86400), $basepath);
+        return setcookie($name, $value, time() + ($days * 86400), $basepath, '', (APPLICATION_ENV == 'production'), true);
     }
 
     /**
