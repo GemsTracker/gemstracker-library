@@ -153,6 +153,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     }
 
     /**
+     * Get the allowed_ip_ranges attribute.
+     *
+     * @return string
+     */
+    public function getAllowedIpRanges()
+    {
+        return $this->_get('gor_allowed_ip_ranges');
+    }
+
+    /**
      * Get the organizations this organizations can access.
      *
      * @return array Of type orgId => orgName

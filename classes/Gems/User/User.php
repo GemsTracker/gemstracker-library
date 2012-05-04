@@ -413,6 +413,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
     /**
      * Checks if the user is allowed to login using the current IP address
+     * according to the group he is in
      *
      * An adapter authorizes and if the end resultis boolean, string or array
      * it is converted into a Zend_Auth_Result.
@@ -425,6 +426,33 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $remoteIp = $request->getServer('REMOTE_ADDR');
         if ($this->util->isAllowedIP($remoteIp, $this->getAllowedIPRanges())) {
+            return true;
+        } else {
+            return $this->translate->_('You are not allowed to login from this location.');
+        }
+    }
+
+    /**
+     * Checks if the user is allowed to login using the current IP address
+     * according to his BASE organization
+     *
+     * An adapter authorizes and if the end resultis boolean, string or array
+     * it is converted into a Zend_Auth_Result.
+     *
+     * @return mixed Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
+     */
+    protected function authorizeOrgIp()
+    {
+        //In unit test REMOTE_ADDR is not available and will return null
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $remoteIp = $request->getServer('REMOTE_ADDR');
+        
+        //special case: project user should have no restriction
+        if ($this->project->getSuperAdminName() == $this->getLoginName()) {
+            return true;
+        }
+
+        if ($this->util->isAllowedIP($remoteIp, $this->getBaseOrganization()->getAllowedIpRanges())) {
             return true;
         } else {
             return $this->translate->_('You are not allowed to login from this location.');
@@ -1048,6 +1076,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     protected function loadAuthorizers($password)
     {
+        // organization ip restriction
+        $auths['orgip'] = array($this, 'authorizeOrgIp');
+
+        // group ip restriction
         $auths['ip'] = array($this, 'authorizeIp');
 
         if ($this->isBlockable()) {
