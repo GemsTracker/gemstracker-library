@@ -799,12 +799,54 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns the gender as a letter code
+     *
+     * @return string
+     */
+    public function getRespondentGender()
+    {
+        if (! isset($this->_gemsData['grs_id_user'])) {
+            $this->_ensureRespondentData();
+        }
+
+        return $this->_gemsData['grs_gender'];
+    }
+
+    /**
+     * Returns the gender for use as part of a sentence, e.g. Dear Mr/Mrs
+     *
+     * @return string
+     */
+    public function getRespondentGenderHello()
+    {
+        $greetings = $this->util->getTranslated()->getGenderGreeting();
+        $gender    = $this->getRespondentGender();
+
+        if (isset($greetings[$gender])) {
+            return $greetings[$gender];
+        }
+    }
+
+    /**
      *
      * @return int
      */
     public function getRespondentId()
     {
         return $this->_gemsData['gto_id_respondent'];
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getRespondentLastName()
+    {
+        if (! isset($this->_gemsData['grs_id_user'])) {
+            $this->_ensureRespondentData();
+        }
+
+        return trim($this->_gemsData['grs_surname_prefix'] . ' ' . $this->_gemsData['grs_last_name']);
     }
 
     /**
