@@ -365,8 +365,11 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     {
         parent::init();
 
-        // Tell the system where to return to after a survey has been taken
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        $request = $this->getRequest();
+        if ('answer' !== $request->getActionName()) {
+            // Tell the system where to return to after a survey has been taken
+            $this->loader->getCurrentUser()->setSurveyReturn($request);
+        }
     }
 
     public function initFilter()

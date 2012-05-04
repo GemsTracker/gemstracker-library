@@ -53,7 +53,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      *
      * @var array
      */
-    protected $_fixedSort = array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC);
+    protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC);
 
     /**
      * Shortfix to add class attribute
