@@ -26,6 +26,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_has_respondents  boolean not null default 0,
         gor_add_respondents  boolean not null default 1,
         gor_respondent_group bigint unsigned null references gems__groups (ggp_id_group),
+        gor_allowed_ip_ranges text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_active           boolean not null default 1,
 
         gor_changed          timestamp not null default current_timestamp on update current_timestamp,

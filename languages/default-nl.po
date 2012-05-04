@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-03 10:49+0100\n"
+"POT-Creation-Date: 2012-05-04 10:26+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -446,11 +446,13 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:354
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:228
 #, php-format
 msgid "New %s..."
 msgstr "Nieuwe %s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:387
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:248
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
@@ -479,6 +481,7 @@ msgid "No %s found"
 msgstr "Geen %s gevonden"
 
 #: classes/Gems/Controller/BrowseEditAction.php:673
+#: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
@@ -488,10 +491,14 @@ msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
 #: classes/Gems/Controller/BrowseEditAction.php:807
+#: classes/Gems/Default/DatabaseAction.php:187
+#: classes/Gems/Default/DatabaseAction.php:499
 msgid "Yes"
 msgstr "Ja"
 
 #: classes/Gems/Controller/BrowseEditAction.php:808
+#: classes/Gems/Default/DatabaseAction.php:188
+#: classes/Gems/Default/DatabaseAction.php:500
 msgid "No"
 msgstr "Nee"
 
@@ -580,47 +587,47 @@ msgstr "Start %s opdrachten"
 msgid "Nothing to do."
 msgstr "Niets te doen."
 
-#: classes/Gems/Default/AskAction.php:84
+#: classes/Gems/Default/AskAction.php:88
 #, php-format
 msgid "Enter your %s token"
 msgstr "Voer uw %s kenmerk in"
 
-#: classes/Gems/Default/AskAction.php:87
+#: classes/Gems/Default/AskAction.php:91
 msgid "Tokens identify a survey that was assigned to you personally."
 msgstr "Elk kenmerk verwijst naar een specifiek aan u toegekende vragenlijst."
 
-#: classes/Gems/Default/AskAction.php:87
+#: classes/Gems/Default/AskAction.php:91
 msgid "Entering the token and pressing OK will open that survey."
 msgstr "Vul uw kenmerk in en druk op OK om die vragenlijst te openen."
 
-#: classes/Gems/Default/AskAction.php:91
+#: classes/Gems/Default/AskAction.php:95
 msgid "After answering the survey you will be logged off automatically."
 msgstr "Na het invullen wordt u automatisch uitgelogd."
 
-#: classes/Gems/Default/AskAction.php:96
+#: classes/Gems/Default/AskAction.php:100
 msgid "A token consists of two groups of four letters and numbers, separated by an optional hyphen. Tokens are case insensitive."
 msgstr "Een kenmerk bestaat uit twee groepen van vier cijfers en letters met een (niet verplicht) streepje ertussen. Hoofdletters of gewone letters maakt niets uit."
 
-#: classes/Gems/Default/AskAction.php:97
+#: classes/Gems/Default/AskAction.php:101
 msgid "The number zero and the letter O are treated as the same; the same goes for the number one and the letter L."
 msgstr "Er wordt geen verschil gemaakt tussen het getal nul en de letter O en ook niet tussen het getal één en de letter L."
 
-#: classes/Gems/Default/AskAction.php:132
+#: classes/Gems/Default/AskAction.php:136
 #, php-format
 msgid "Thank you for answering. At the moment we have no further surveys for you to take."
 msgstr "Dank u voor uw antwoorden. Op dit moment hebben we geen vragenlijsten meer voor u."
 
-#: classes/Gems/Default/AskAction.php:134
+#: classes/Gems/Default/AskAction.php:138
 #, php-format
 msgid "The survey for token %s has been answered and no further surveys are open."
 msgstr "De vragenlijst met het kenmerk %s is beantwoord en er staan verder geen vragenlijsten open."
 
-#: classes/Gems/Default/AskAction.php:141
+#: classes/Gems/Default/AskAction.php:145
 #, php-format
 msgid "The token %s does not exist (any more)."
 msgstr "Het kenmerk %s bestaat niet (meer)."
 
-#: classes/Gems/Default/AskAction.php:269
+#: classes/Gems/Default/AskAction.php:273
 #, php-format
 msgid "The survey for token %s is no longer active."
 msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
@@ -1060,37 +1067,37 @@ msgstr "Geef twee keer een zelfgekozen wachtwoord op."
 msgid "Your password must be changed."
 msgstr "Uw wachtwoord moet veranderd worden."
 
-#: classes/Gems/Default/IndexAction.php:228
+#: classes/Gems/Default/IndexAction.php:231
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login in orde, welkom %s."
 
-#: classes/Gems/Default/IndexAction.php:268
+#: classes/Gems/Default/IndexAction.php:271
 #, php-format
 msgid "Good bye: %s."
 msgstr "Tot ziens: %s."
 
-#: classes/Gems/Default/IndexAction.php:291
+#: classes/Gems/Default/IndexAction.php:294
 msgid "Your password reset request is no longer valid, please request a new link."
 msgstr "Uw verzoek om een nieuw wachtwoord is niet meer geldig, maar u kan hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:293
+#: classes/Gems/Default/IndexAction.php:296
 msgid "Your password input request is no longer valid, please request a new link."
 msgstr "Uw link om een wachtwoord in te voeren is niet meer geldig, maar u kan hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:312
+#: classes/Gems/Default/IndexAction.php:315
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We hebben u een email met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:321
+#: classes/Gems/Default/IndexAction.php:324
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/IndexAction.php:342
+#: classes/Gems/Default/IndexAction.php:345
 msgid "Password reset requested"
 msgstr "Wachtwoord reset aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:345
+#: classes/Gems/Default/IndexAction.php:348
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -1185,7 +1192,6 @@ msgid "Date"
 msgstr "Datum"
 
 #: classes/Gems/Default/LogAction.php:191
-#: classes/Gems/Default/LogMaintenanceAction.php:52
 msgid "Action"
 msgstr "Actie"
 
@@ -1202,7 +1208,6 @@ msgid "IP address"
 msgstr "IP adres"
 
 #: classes/Gems/Default/LogAction.php:209
-#: classes/Gems/Default/LogMaintenanceAction.php:53
 msgid "Log"
 msgstr "Logboek"
 
@@ -1412,8 +1417,6 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/StaffAction.php:278
-#: classes/Gems/Default/StaffAction.php:311
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
@@ -1438,7 +1441,6 @@ msgstr "Login Naam"
 #: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:132
 #: classes/Gems/Default/RespondentAction.php:175
-#: classes/Gems/Default/StaffAction.php:294
 msgid "Language"
 msgstr "Taal"
 
@@ -1553,20 +1555,24 @@ msgstr "Code naam"
 msgid "Only for programmers."
 msgstr "Uitsluitend voor programmeurs."
 
-#: classes/Gems/Default/OrganizationAction.php:167
+#: classes/Gems/Default/OrganizationAction.php:175
 msgid "This can not be changed yet"
 msgstr "Dit kan nog niet gewijzigd worden"
 
-#: classes/Gems/Default/OrganizationAction.php:169
-#: classes/Gems/Default/StaffAction.php:119
+#: classes/Gems/Default/OrganizationAction.php:177
 msgid "User Definition"
 msgstr "User Definition"
 
-#: classes/Gems/Default/OrganizationAction.php:189
+#: classes/Gems/Default/OrganizationAction.php:194
+#, php-format
+msgid "Edit %s %s - %s"
+msgstr "Bewerk %s %s - %s"
+
+#: classes/Gems/Default/OrganizationAction.php:204
 msgid "Participating organizations"
 msgstr "Deelnemende organisaties"
 
-#: classes/Gems/Default/OrganizationAction.php:200
+#: classes/Gems/Default/OrganizationAction.php:215
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organisatie"
@@ -2069,55 +2075,55 @@ msgstr "Synchroniseer de %s bron"
 msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
 
-#: classes/Gems/Default/StaffAction.php:125
+#: classes/Gems/Default/StaffAction.php:161
 msgid "Unsupported User Definition"
 msgstr "Onbekende User Definition"
 
-#: classes/Gems/Default/StaffAction.php:154
+#: classes/Gems/Default/StaffAction.php:190
 msgid "Users can only login when this box is checked."
 msgstr "Gebruikers kunnen alleen inloggen als dit is aangevinkt."
 
-#: classes/Gems/Default/StaffAction.php:155
+#: classes/Gems/Default/StaffAction.php:191
 msgid "If checked the user will logoff when answering a survey."
 msgstr "Indien actief, dan logt de gebruiker uit voor het beantwoorden van een vragenlijst."
 
-#: classes/Gems/Default/StaffAction.php:172
+#: classes/Gems/Default/StaffAction.php:208
 msgid "You are not allowed to edit this staff member."
 msgstr "U mag deze medewerker niet wijzigen."
 
-#: classes/Gems/Default/StaffAction.php:229
+#: classes/Gems/Default/StaffAction.php:265
 #, php-format
 msgid "User with id %s already exists but is deleted, do you want to reactivate the account?"
 msgstr "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account opnieuw activeren?"
 
-#: classes/Gems/Default/StaffAction.php:270
+#: classes/Gems/Default/StaffAction.php:306
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: classes/Gems/Default/StaffAction.php:285
+#: classes/Gems/Default/StaffAction.php:321
 msgid "Primary function"
 msgstr "Primaire functie"
 
-#: classes/Gems/Default/StaffAction.php:295
+#: classes/Gems/Default/StaffAction.php:331
 msgid "Can login"
 msgstr "Kan inloggen"
 
-#: classes/Gems/Default/StaffAction.php:296
+#: classes/Gems/Default/StaffAction.php:332
 msgid "Logout on survey"
 msgstr "Logout bij beantwoorden vragenlijst"
 
-#: classes/Gems/Default/StaffAction.php:371
+#: classes/Gems/Default/StaffAction.php:407
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "medewerker"
 msgstr[1] "medewerkers"
 
-#: classes/Gems/Default/StaffAction.php:403
+#: classes/Gems/Default/StaffAction.php:439
 #, php-format
 msgid "Reset password for: %s"
 msgstr "Verander het wachtwoord voor: %s"
 
-#: classes/Gems/Default/StaffAction.php:406
+#: classes/Gems/Default/StaffAction.php:442
 msgid "You are not allowed to change this password."
 msgstr "U mag dit wachtwoord niet wijzigen."
 
@@ -3680,25 +3686,25 @@ msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Uw account is tijdelijk geblokkeerd. U kunt over een minuut opnieuw inloggen."
 msgstr[1] "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw inloggen."
 
-#: classes/Gems/User/User.php:427
+#: classes/Gems/User/User.php:430
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1078
+#: classes/Gems/User/User.php:1081
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1094
+#: classes/Gems/User/User.php:1097
 #: classes/Gems/User/Form/ChangePasswordForm.php:163
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
 
-#: classes/Gems/User/User.php:1176
+#: classes/Gems/User/User.php:1179
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1204
+#: classes/Gems/User/User.php:1207
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -4056,19 +4062,24 @@ msgid "Edit track"
 msgstr "Bewerk traject"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
+#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Kenmerk bewerken"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
+#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Herkansing voor kenmerk %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
+#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Oude opmerkingen"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
+#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Kenmerk %s is vervangen door het nieuwe kenmerk %s."
@@ -4095,7 +4106,6 @@ msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
 #: snippets/EditSingleSurveyTokenSnippet.php:132
-#: snippets/ShowSingleSurveyTokenSnippet.php:150
 msgid "Show survey"
 msgstr "Toon vragenlijst"
 
@@ -4146,6 +4156,7 @@ msgid "Selected surveys"
 msgstr "Geselecteerde vragenlijsten"
 
 #: snippets/ShowSingleSurveyTokenSnippet.php:76
+#: snippets/ShowTrackTokenSnippet.php:77
 msgid "Actions"
 msgstr "Acties"
 
@@ -4291,6 +4302,10 @@ msgid_plural "After this survey there are another %d surveys we would like you t
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 
+#: views/scripts/index/login.phtml:12
+msgid "The Pulse software was made possible thanks to support from "
+msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
+
 #~ msgid "Cookies must be enabled for this site."
 #~ msgstr "Zonder cookies heeft u geen toegang tot deze site."
 
@@ -4429,9 +4444,6 @@ msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 
 #~ msgid "Back"
 #~ msgstr "Terug"
-
-#~ msgid "The Pulse software was made possible thanks to support from "
-#~ msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
 
 #, fuzzy
 #~ msgid "Executing patchlevel 43"

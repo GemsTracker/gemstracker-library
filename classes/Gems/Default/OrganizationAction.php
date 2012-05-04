@@ -156,6 +156,14 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         }
         $model->setIfExists('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
 
+        $model->setIfExists('gor_allowed_ip_ranges',
+            'label', $this->_('Allowed IP Ranges'),
+            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+            'size', 50,
+            'validator', new Gems_Validate_IPRanges(),
+            'maxlength', 500
+            );
+
         if($model->has('gor_user_class')) {
             $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
             //Use first element as default
@@ -177,6 +185,13 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         Gems_Model::setChangeFieldsByPrefix($model, 'gor');
 
         return $model;
+    }
+
+    public function getEditTitle()
+    {
+        $data = $this->getModel()->loadFirst();
+
+        return sprintf($this->_('Edit %s %s - %s'), $this->getTopic(1), $data['gor_name'], $data['gor_location']);
     }
 
     /**

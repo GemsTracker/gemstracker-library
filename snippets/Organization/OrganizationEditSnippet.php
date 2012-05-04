@@ -115,7 +115,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
         }
 
-        $this->addItems($bridge, 'gor_user_class');
+        $this->addItems($bridge, 'gor_allowed_ip_ranges', 'gor_user_class');
 
         if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
             $definition = $this->loader->getUserLoader()->getUserDefinition($this->formData['gor_user_class']);
