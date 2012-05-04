@@ -757,7 +757,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function processCompletedTokens($respondentId, $userId = null)
     {
-        $userId = $this->_checkUserId($userId);
+        return $this->processCompletedTokensBatch($respondentId, $userId, null);
+
+        /*$userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(true)
                 ->onlyActive()
                 ->forRespondent($respondentId)
@@ -773,6 +775,43 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         }
 
         return $changes->hasChanged();
+         */
+    }
+
+    public function processCompletedTokensBatch($respondentId, $userId = null, $orgId = null)
+    {
+        $userId = $this->_checkUserId($userId);
+        $tokenSelect = $this->getTokenSelect();
+        $tokenSelect->onlyActive()
+                    ->forRespondent($respondentId)
+                    ->andSurveys(array())
+                    ->forWhere('gsu_surveyor_active = 1');
+
+        if (!is_null($orgId)) {
+            $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
+        }
+
+        $batch = $this->loader->getTaskRunnerBatch('completed');
+
+        if (! $batch->isLoaded()) {
+            $statement = $tokenSelect->getSelect()->query();
+            //Process one row at a time to prevent out of memory errors for really big resultsets
+            while ($tokenData  = $statement->fetch()) {
+                $tokenId = $tokenData['gto_id_token'];
+                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenData, $userId);
+                $batch->addToCounter('tokens');
+            }
+        }
+
+        $batch->runAll();
+        if ($batch->getCounter('resultDataChanges') > 0 || $batch->getCounter('surveyCompletionChanges')>0) {
+            $changed = true;
+        } else {
+            $changed = false;
+        }
+
+        $batch->reset();
+        return $changed;
     }
 
     /**

@@ -219,7 +219,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             }
 
             // Update values in this object
-            $this->_gemsData = $values + $this->_gemsData;
+            $this->_gemsData = $values + (array) $this->_gemsData;
 
             // return 1;
             return $this->db->update('gems__tokens', $values, array('gto_id_token = ?' => $this->_tokenId));

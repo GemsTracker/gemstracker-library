@@ -496,7 +496,10 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         // MUtil_Model::$verbose = true;
 
         // Check for unprocessed tokens
-        $this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id);
+        //$this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id);
+        $filter = $this->getCachedRequestData(true);
+        $orgId = array_key_exists('gto_id_organization', $filter) ? $filter['gto_id_organization'] : null;
+        $this->loader->getTracker()->processCompletedTokensBatch(null, $this->session->user_id, $orgId);
 
         parent::indexAction();
     }
