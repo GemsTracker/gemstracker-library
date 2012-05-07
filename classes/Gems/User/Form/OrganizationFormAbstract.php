@@ -169,7 +169,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
             $element->setMultiOptions($orgs);
 
             if ($this->organizationMaxLines > 1) {
-                $element->setAttrib('size', max(count($orgs) + 1, $this->organizationMaxLines));
+                $element->setAttrib('size', min(count($orgs) + 1, $this->organizationMaxLines));
             }
             $this->addElement($element);
 

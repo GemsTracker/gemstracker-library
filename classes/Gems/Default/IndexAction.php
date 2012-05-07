@@ -103,6 +103,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                     'showToken' => $this->showTokenButton,
                     'showPasswordLost' => $this->showPasswordLostButton,
                     'labelWidthFactor' => $this->labelWidthFactor,
+                    'organizationMaxLines' => $this->organizationMaxLines,
                     ));
 
         Gems_Html::init();
