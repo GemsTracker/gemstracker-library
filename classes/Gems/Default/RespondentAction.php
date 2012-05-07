@@ -200,7 +200,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     public function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getRespondentModel($detailed, $action);
+        $model = $this->loader->getModels()->getRespondentModel($detailed);
 
         if ($detailed) {
         	$model->set('gr2o_comments',     'label', $this->_('Comments'));

@@ -159,14 +159,13 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         /**
          * First check if the class was already loaded with one of the prefixes
          * If so, we don't have to try loading from the other paths
-         */
+         * /
         foreach ($this->_dirs as $prefix => $path) {
             if (class_exists($prefix.$cname, false) && $obj = $this->_loadClassPath('', $prefix . $cname, $create, $arguments)) {
                 $found = true;
                 break;
             }
-        }
-
+        } // */
 
         if (!$found) {
             foreach ($this->_dirs as $prefix => $path) {
