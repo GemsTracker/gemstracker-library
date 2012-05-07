@@ -321,6 +321,11 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
     }
 
+    public function getSubject($data)
+    {
+        return sprintf('%s - %s', $data['name'], $data['gr2o_patient_nr']);
+    }
+
     public function getTopic($count = 1)
     {
         return $this->plural('respondent', 'respondents', $count);

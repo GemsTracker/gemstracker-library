@@ -402,7 +402,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public function editAction()
     {
         if ($form = $this->processForm()) {
-            $this->html->h3(sprintf($this->_('Edit %s'), $this->getTopic()));
+            if ($this->useTabbedForms && method_exists($this, 'getSubject')) {
+                $data = $this->getModel()->loadFirst();
+                $subject = $this->getSubject($data);
+                $this->html->h3(sprintf($this->_('Edit %s %s'), $this->getTopic(1), $subject));
+            } else {
+                $this->html->h3(sprintf($this->_('Edit %s'), $this->getTopic(1)));
+            }
             $this->html[] = $form;
         }
     }

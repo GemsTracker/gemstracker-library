@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-04 10:26+0100\n"
+"POT-Creation-Date: 2012-05-07 11:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -18,77 +18,77 @@ msgstr ""
 "X-Poedit-KeywordsList: plural:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/GemsEscort.php:212
+#: classes/GemsEscort.php:214
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s niet schrijfbaar"
 
-#: classes/GemsEscort.php:750
+#: classes/GemsEscort.php:752
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: classes/GemsEscort.php:752
+#: classes/GemsEscort.php:754
 #: classes/Gems/Menu.php:249
 msgid "Logoff"
 msgstr "Uitloggen"
 
-#: classes/GemsEscort.php:755
+#: classes/GemsEscort.php:757
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:939
+#: classes/GemsEscort.php:941
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:964
+#: classes/GemsEscort.php:966
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1395
+#: classes/GemsEscort.php:1397
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1526
+#: classes/GemsEscort.php:1528
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1528
-#: classes/GemsEscort.php:1532
-#: classes/GemsEscort.php:1533
+#: classes/GemsEscort.php:1530
+#: classes/GemsEscort.php:1534
+#: classes/GemsEscort.php:1535
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1543
+#: classes/GemsEscort.php:1545
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1545
-#: classes/GemsEscort.php:1587
+#: classes/GemsEscort.php:1547
+#: classes/GemsEscort.php:1589
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1561
+#: classes/GemsEscort.php:1563
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1563
+#: classes/GemsEscort.php:1565
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1573
-#: classes/GemsEscort.php:1585
+#: classes/GemsEscort.php:1575
+#: classes/GemsEscort.php:1587
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1574
+#: classes/GemsEscort.php:1576
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
-#: classes/GemsEscort.php:1714
 #: classes/GemsEscort.php:1716
+#: classes/GemsEscort.php:1718
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -423,10 +423,6 @@ msgstr "Kon de directory '%s' niet aanmaken."
 msgid " The error message is: %s"
 msgstr "De foutmelding is: %s"
 
-#: classes/Gems/Tracker.php:771
-msgid "Checks performed"
-msgstr "Controle uitgevoerd"
-
 #: classes/Gems/Upgrades.php:77
 msgid "Syncing surveys for all sources"
 msgstr "Vragenlijsten synchroniseren voor alle bronnen."
@@ -462,79 +458,85 @@ msgstr "Verwijder %s"
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s verwijderd"
 
-#: classes/Gems/Controller/BrowseEditAction.php:405
+#: classes/Gems/Controller/BrowseEditAction.php:408
+#, php-format
+msgid "Edit %s %s"
+msgstr "Bewerk %s %s"
+
+#: classes/Gems/Controller/BrowseEditAction.php:410
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:258
 #, php-format
 msgid "Edit %s"
 msgstr "Bewerk %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:502
+#: classes/Gems/Controller/BrowseEditAction.php:508
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
-#: classes/Gems/Controller/BrowseEditAction.php:573
+#: classes/Gems/Controller/BrowseEditAction.php:579
 msgid "Search"
 msgstr "Zoeken"
 
-#: classes/Gems/Controller/BrowseEditAction.php:589
+#: classes/Gems/Controller/BrowseEditAction.php:595
 #, php-format
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:673
+#: classes/Gems/Controller/BrowseEditAction.php:679
 #: classes/Gems/Default/ExportAction.php:234
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:791
+#: classes/Gems/Controller/BrowseEditAction.php:797
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:807
+#: classes/Gems/Controller/BrowseEditAction.php:813
 #: classes/Gems/Default/DatabaseAction.php:187
 #: classes/Gems/Default/DatabaseAction.php:499
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:808
+#: classes/Gems/Controller/BrowseEditAction.php:814
 #: classes/Gems/Default/DatabaseAction.php:188
 #: classes/Gems/Default/DatabaseAction.php:500
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:861
+#: classes/Gems/Controller/BrowseEditAction.php:867
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:884
+#: classes/Gems/Controller/BrowseEditAction.php:890
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:892
+#: classes/Gems/Controller/BrowseEditAction.php:898
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:928
+#: classes/Gems/Controller/BrowseEditAction.php:934
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:931
+#: classes/Gems/Controller/BrowseEditAction.php:937
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:940
+#: classes/Gems/Controller/BrowseEditAction.php:946
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:968
+#: classes/Gems/Controller/BrowseEditAction.php:974
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:975
+#: classes/Gems/Controller/BrowseEditAction.php:981
 #, php-format
 msgid "Unknown %s."
 msgstr "%s is onbekend."
@@ -548,11 +550,6 @@ msgstr "Annuleren"
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Weet u zeker dat deze %s verwijderd moet worden?"
-
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:258
-#, php-format
-msgid "Edit %s..."
-msgstr "Bewerk %s..."
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:271
 msgid "No data found."
@@ -1026,78 +1023,78 @@ msgstr[1] "groepen"
 msgid "Administrative groups"
 msgstr "Beheer groepen"
 
-#: classes/Gems/Default/IndexAction.php:156
+#: classes/Gems/Default/IndexAction.php:157
 msgid "Request password reset"
 msgstr "Wachtwoord vergeten?"
 
-#: classes/Gems/Default/IndexAction.php:160
+#: classes/Gems/Default/IndexAction.php:161
 msgid "Please enter your organization and your username or e-mail address. "
 msgstr "Geef uw organisatie en uw email adres of de gebruikersnaam op. "
 
-#: classes/Gems/Default/IndexAction.php:162
+#: classes/Gems/Default/IndexAction.php:163
 msgid "Please enter your username or e-mail address. "
 msgstr "Geef uw email adres of gebruikersnaam op. "
 
-#: classes/Gems/Default/IndexAction.php:164
+#: classes/Gems/Default/IndexAction.php:165
 msgid "We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice."
 msgstr "Vervolgens sturen wij u een email met een link. De link verwijst naar een pagina waar u een zelfgekozen wachtwoord in kan voeren."
 
-#: classes/Gems/Default/IndexAction.php:170
+#: classes/Gems/Default/IndexAction.php:171
 msgid "Execute password reset"
 msgstr "Vervang vergeten passwood"
 
-#: classes/Gems/Default/IndexAction.php:171
+#: classes/Gems/Default/IndexAction.php:172
 msgid "We received your password reset request."
 msgstr "We hebben uw verzoek voor een nieuw wachtwoord ontvangen."
 
-#: classes/Gems/Default/IndexAction.php:174
+#: classes/Gems/Default/IndexAction.php:175
 #, php-format
 msgid "Welcome to %s"
 msgstr "Welkom bij %s"
 
-#: classes/Gems/Default/IndexAction.php:175
+#: classes/Gems/Default/IndexAction.php:176
 msgid "Welcome to this website."
 msgstr "Welkom op deze website."
 
-#: classes/Gems/Default/IndexAction.php:178
+#: classes/Gems/Default/IndexAction.php:179
 msgid "Please enter your password of choice twice."
 msgstr "Geef twee keer een zelfgekozen wachtwoord op."
 
-#: classes/Gems/Default/IndexAction.php:216
+#: classes/Gems/Default/IndexAction.php:217
 msgid "Your password must be changed."
 msgstr "Uw wachtwoord moet veranderd worden."
 
-#: classes/Gems/Default/IndexAction.php:231
+#: classes/Gems/Default/IndexAction.php:232
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login in orde, welkom %s."
 
-#: classes/Gems/Default/IndexAction.php:271
+#: classes/Gems/Default/IndexAction.php:272
 #, php-format
 msgid "Good bye: %s."
 msgstr "Tot ziens: %s."
 
-#: classes/Gems/Default/IndexAction.php:294
+#: classes/Gems/Default/IndexAction.php:295
 msgid "Your password reset request is no longer valid, please request a new link."
 msgstr "Uw verzoek om een nieuw wachtwoord is niet meer geldig, maar u kan hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:296
+#: classes/Gems/Default/IndexAction.php:297
 msgid "Your password input request is no longer valid, please request a new link."
 msgstr "Uw link om een wachtwoord in te voeren is niet meer geldig, maar u kan hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:315
+#: classes/Gems/Default/IndexAction.php:316
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We hebben u een email met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:324
+#: classes/Gems/Default/IndexAction.php:325
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/IndexAction.php:345
+#: classes/Gems/Default/IndexAction.php:346
 msgid "Password reset requested"
 msgstr "Wachtwoord reset aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:348
+#: classes/Gems/Default/IndexAction.php:349
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -1563,16 +1560,11 @@ msgstr "Dit kan nog niet gewijzigd worden"
 msgid "User Definition"
 msgstr "User Definition"
 
-#: classes/Gems/Default/OrganizationAction.php:194
-#, php-format
-msgid "Edit %s %s - %s"
-msgstr "Bewerk %s %s - %s"
-
-#: classes/Gems/Default/OrganizationAction.php:204
+#: classes/Gems/Default/OrganizationAction.php:207
 msgid "Participating organizations"
 msgstr "Deelnemende organisaties"
 
-#: classes/Gems/Default/OrganizationAction.php:215
+#: classes/Gems/Default/OrganizationAction.php:218
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organisatie"
@@ -1903,13 +1895,13 @@ msgstr "Trajecten van patiënt zijn gestopt."
 msgid "Choose a reception code to delete."
 msgstr "Kies een ontvangst code om te verwijderen."
 
-#: classes/Gems/Default/RespondentAction.php:326
+#: classes/Gems/Default/RespondentAction.php:331
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:399
+#: classes/Gems/Default/RespondentAction.php:404
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
@@ -2075,55 +2067,55 @@ msgstr "Synchroniseer de %s bron"
 msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
 
-#: classes/Gems/Default/StaffAction.php:161
+#: classes/Gems/Default/StaffAction.php:158
 msgid "Unsupported User Definition"
 msgstr "Onbekende User Definition"
 
-#: classes/Gems/Default/StaffAction.php:190
+#: classes/Gems/Default/StaffAction.php:187
 msgid "Users can only login when this box is checked."
 msgstr "Gebruikers kunnen alleen inloggen als dit is aangevinkt."
 
-#: classes/Gems/Default/StaffAction.php:191
+#: classes/Gems/Default/StaffAction.php:188
 msgid "If checked the user will logoff when answering a survey."
 msgstr "Indien actief, dan logt de gebruiker uit voor het beantwoorden van een vragenlijst."
 
-#: classes/Gems/Default/StaffAction.php:208
+#: classes/Gems/Default/StaffAction.php:205
 msgid "You are not allowed to edit this staff member."
 msgstr "U mag deze medewerker niet wijzigen."
 
-#: classes/Gems/Default/StaffAction.php:265
+#: classes/Gems/Default/StaffAction.php:262
 #, php-format
 msgid "User with id %s already exists but is deleted, do you want to reactivate the account?"
 msgstr "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account opnieuw activeren?"
 
-#: classes/Gems/Default/StaffAction.php:306
+#: classes/Gems/Default/StaffAction.php:303
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: classes/Gems/Default/StaffAction.php:321
+#: classes/Gems/Default/StaffAction.php:318
 msgid "Primary function"
 msgstr "Primaire functie"
 
-#: classes/Gems/Default/StaffAction.php:331
+#: classes/Gems/Default/StaffAction.php:328
 msgid "Can login"
 msgstr "Kan inloggen"
 
-#: classes/Gems/Default/StaffAction.php:332
+#: classes/Gems/Default/StaffAction.php:329
 msgid "Logout on survey"
 msgstr "Logout bij beantwoorden vragenlijst"
 
-#: classes/Gems/Default/StaffAction.php:407
+#: classes/Gems/Default/StaffAction.php:404
 msgid "staff member"
 msgid_plural "staff members"
 msgstr[0] "medewerker"
 msgstr[1] "medewerkers"
 
-#: classes/Gems/Default/StaffAction.php:439
+#: classes/Gems/Default/StaffAction.php:436
 #, php-format
 msgid "Reset password for: %s"
 msgstr "Verander het wachtwoord voor: %s"
 
-#: classes/Gems/Default/StaffAction.php:442
+#: classes/Gems/Default/StaffAction.php:439
 msgid "You are not allowed to change this password."
 msgstr "U mag dit wachtwoord niet wijzigen."
 
@@ -2486,12 +2478,12 @@ msgstr "Email %s %s"
 msgid "%s %s not found."
 msgstr "%s %s niet gevonden."
 
-#: classes/Gems/Default/TrackActionAbstract.php:489
+#: classes/Gems/Default/TrackActionAbstract.php:492
 #, php-format
 msgid "Overview of %s track for respondent %s"
 msgstr "Overzicht van het %s traject voor patiënt %s "
 
-#: classes/Gems/Default/TrackActionAbstract.php:493
+#: classes/Gems/Default/TrackActionAbstract.php:496
 msgid "This track is currently not assigned to this respondent."
 msgstr "Dit traject is nog niet aan deze patiënt toegewezen."
 
@@ -3686,25 +3678,26 @@ msgid_plural "Your account is temporarily blocked, please wait %d minutes."
 msgstr[0] "Uw account is tijdelijk geblokkeerd. U kunt over een minuut opnieuw inloggen."
 msgstr[1] "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw inloggen."
 
-#: classes/Gems/User/User.php:430
+#: classes/Gems/User/User.php:431
+#: classes/Gems/User/User.php:458
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1081
+#: classes/Gems/User/User.php:1113
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1097
+#: classes/Gems/User/User.php:1129
 #: classes/Gems/User/Form/ChangePasswordForm.php:163
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
 
-#: classes/Gems/User/User.php:1179
+#: classes/Gems/User/User.php:1211
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1207
+#: classes/Gems/User/User.php:1239
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -4305,6 +4298,15 @@ msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 #: views/scripts/index/login.phtml:12
 msgid "The Pulse software was made possible thanks to support from "
 msgstr "De PULSE software is mede mogelijk gemaakt met steun van "
+
+#~ msgid "Edit %s..."
+#~ msgstr "Bewerk %s..."
+
+#~ msgid "Checks performed"
+#~ msgstr "Controle uitgevoerd"
+
+#~ msgid "Edit %s %s - %s"
+#~ msgstr "Bewerk %s %s - %s"
 
 #~ msgid "Cookies must be enabled for this site."
 #~ msgstr "Zonder cookies heeft u geen toegang tot deze site."

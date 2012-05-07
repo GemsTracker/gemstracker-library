@@ -191,7 +191,10 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     {
         $data = $this->getModel()->loadFirst();
 
-        return sprintf($this->_('Edit %s %s - %s'), $this->getTopic(1), $data['gor_name'], $data['gor_location']);
+        //Add location to the subject
+        $subject = sprintf('%s - %s', $data['gor_name'], $data['gor_location']);
+
+        return sprintf($this->_('Edit %s %s'), $this->getTopic(1), $subject);
     }
 
     /**

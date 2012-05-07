@@ -255,7 +255,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function getEditTitle()
     {
-        return sprintf($this->_('Edit %s...'), $this->getTopic(1));
+        return sprintf($this->_('Edit %s'), $this->getTopic(1));
     }
 
     /**
