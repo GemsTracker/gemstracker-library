@@ -446,7 +446,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         //In unit test REMOTE_ADDR is not available and will return null
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $remoteIp = $request->getServer('REMOTE_ADDR');
-        
+
         //special case: project user should have no restriction
         if ($this->project->getSuperAdminName() == $this->getLoginName()) {
             return true;
@@ -1224,7 +1224,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         } else {
             $fields = $this->getMailFields($locale);
         }
-        MUtil_Echo::track($fields, $bbBodyTemplate);
+        // MUtil_Echo::track($fields, $bbBodyTemplate);
         $fields = MUtil_Ra::braceKeys($fields, '{', '}');
 
         $mail->setSubject(strtr($subjectTemplate, $fields));
