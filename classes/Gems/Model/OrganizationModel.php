@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil_Registry_TargetInterface
+class Gems_Model_OrganizationModel extends Gems_Model_ModelAbstract
 {
     /**
      * @var Gems_Loader
@@ -55,58 +55,6 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel implements MUtil
     public function __construct()
     {
         parent::__construct('organization', 'gems__organizations', 'gor');
-    }
-
-    /**
-     * Allows the loader to set resources.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        $this->$name = $resource;
-
-        return true;
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return true;
-    }
-
-    /**
-     * Filters the names that should not be requested.
-     *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
-     */
-    protected function filterRequestNames($name)
-    {
-        return '_' !== $name[0];
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * Returns those object variables defined by the subclass but not at the level of this definition.
-     *
-     * Can be overruled.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 
     /**

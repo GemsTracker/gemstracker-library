@@ -96,6 +96,30 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     protected $util;
 
     /**
+     * Create or loads the class. When only loading, this function returns a StaticCall object that
+     * can be invoked lazely.
+     *
+     * @see MUtil_Lazy_StaticCall
+     * @see MUtil_Registry_TargetInterface
+     *
+     * @param type $name
+     * @param type $create
+     * @param array $arguments
+     * @return Gems_Model_ModelAbstract
+     */
+    protected function _loadClass($name, $create = false, array $arguments = array())
+    {
+        $obj = parent::_loadClass($name, $create, $arguments);
+
+        // If it as a Gems_Model_ModelAbstract, run the init method now
+        if ($obj instanceof Gems_Model_ModelAbstract) {
+            $obj->init();
+        }
+
+        return $obj;
+    }
+
+    /**
      * Link the model to the user_logins table.
      *
      * @param Gems_Model_JoinModel $model
@@ -111,6 +135,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      * Link the model to the user_passwords table.
      *
      * @param Gems_Model_JoinModel $model
+     * @deprecated since version 1.5.4
      */
     public static function addUserPassword(Gems_Model_JoinModel $model)
     {
