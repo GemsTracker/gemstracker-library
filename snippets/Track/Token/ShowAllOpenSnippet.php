@@ -176,12 +176,13 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
                     $div->append(' ');
                     $div->append($this->formatUntil($token->getValidUntil()));
 
+                    /*
                     if (false === $currentToken) {
                         $currentToken = $token->getTokenId();
                     }
                     if ($token->getTokenId() == $currentToken) {
                         $a->appendAttrib('class', 'currentRow');
-                    }
+                    } // */
                 }
             }
             if ($open) {
