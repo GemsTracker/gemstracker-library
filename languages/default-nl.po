@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-07 11:23+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Michiel Rook <info@touchdownconsulting.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3857,7 +3857,7 @@ msgstr "mevrouw"
 
 #: classes/Gems/Util/Translated.php:217
 msgid "mr./mrs."
-msgstr "de heer/mevrouw"
+msgstr "heer/mevrouw"
 
 #: classes/Gems/Util/Translated.php:230
 msgid "Mr."
