@@ -335,6 +335,14 @@ class Gems_Email_TemplateMailer
             MUtil_Echo::r($to, $to_name);
             MUtil_Echo::r($from, $from_name);
         }
+        
+        if (!$this->bounceCheck()) {
+            $validate = new Zend_Validate_EmailAddress();
+            
+            if (!$validate->isValid($to)) {
+                return "Invalid e-mail address {$to}";
+            }
+        }
 
         $this->setTokenData($tokenData);
 
