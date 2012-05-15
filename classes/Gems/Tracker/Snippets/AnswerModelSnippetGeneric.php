@@ -90,6 +90,14 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $showButtons = true;
 
     /**
+     * Switch to enable/disable the 'take' button underneath each
+     * open token. 
+     *
+     * @var boolean
+     */
+    protected $showTakeButton = true;
+    
+    /**
      * Switch to put the display of the headers on or off
      *
      * @var boolean
@@ -165,7 +173,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
         $bridge->th($this->_('Token'));
 
         $tokenUpper = $bridge->gto_id_token->strtoupper();
-        if ($menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
+        if ($this->showTakeButton && $menuItem = $this->menu->find(array('controller' => 'ask', 'action' => 'take', 'allowed' => true))) {
             $source = new Gems_Menu_ParameterSource();
             $source->setTokenId($bridge->gto_id_token);
             $source->offsetSet('can_be_taken', $bridge->can_be_taken);
