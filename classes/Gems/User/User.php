@@ -937,11 +937,21 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($menuItem) {
             // Prevent redirecting to the current page.
             if (! ($menuItem->is('controller', $request->getControllerName()) && $menuItem->is('action', $request->getActionName()))) {
-                //Probably a debug statement so commented out MD20120308
-                //echo $menuItem->get('label') . '<br/>';
+                if (!$menuItem->has('controller')) {
+                    //This is a container, try to find first active child
+                    $item = $menuItem;
+                    foreach ($item->sortByOrder()->getChildren() as $menuItem) {
+                        if ($menuItem->isAllowed() && $menuItem->has('controller')) {
+                            break;
+                        }
+                        $menuItem = null;
+                    }
+                }
 
-                $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
-                $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
+                if ($menuItem) {
+                    $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+                    $redirector->gotoRoute($menuItem->toRouteUrl($request), null, true);
+                }
             }
         }
 
