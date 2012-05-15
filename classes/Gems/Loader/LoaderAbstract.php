@@ -76,6 +76,14 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     private $_dirs;
 
     /**
+     * This array holds a cache of requested class -> resulting classname pairs so we don't have
+     * to check all prefixes and paths over and over again
+     *
+     * @var array classname->resulting class
+     */
+    private $_loaded = array();
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -157,21 +165,19 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         $found = false;
 
         /**
-         * First check if the class was already loaded with one of the prefixes
+         * First check if the class was already loaded
          * If so, we don't have to try loading from the other paths
-         * /
-        foreach ($this->_dirs as $prefix => $path) {
-            if (class_exists($prefix.$cname, false) && $obj = $this->_loadClassPath('', $prefix . $cname, $create, $arguments)) {
-                $found = true;
-                break;
-            }
-        } // */
+         **/
+        if (array_key_exists($cname, $this->_loaded) && $obj = $this->_loadClassPath('', $this->_loaded[$cname], $create, $arguments)) {
+            $found = true;
+        }
 
         if (!$found) {
             foreach ($this->_dirs as $prefix => $path) {
                 $fprefix = str_replace('_', '/', $prefix);
                 if ($obj = $this->_loadClassPath($path . '/' . $fprefix . $cfile, $prefix . $cname, $create, $arguments)) {
                     $found = true;
+                    $this->_loaded[$cname] = get_class($obj);
                     break;
                 }
             }
