@@ -203,13 +203,14 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $request = $this->getRequest();
         $form    = $this->createLoginForm();
 
+        // Retrieve these before the session is reset
+        $staticSession = GemsEscort::getInstance()->getStaticSession();
+        $previousRequestParameters = $staticSession->previousRequestParameters;
+        $previousRequestMode = $staticSession->previousRequestMode;
+
         if ($request->isPost()) {
             if ($form->isValid($request->getPost(), false)) {
                 $user = $form->getUser();
-
-                // Retrieve these before the session is reset
-                $previousRequestParameters = $this->session->previousRequestParameters;
-
                 $user->setAsCurrentUser();
 
                 if ($messages = $user->reportPasswordWeakness($request->getParam($form->passwordFieldName))) {

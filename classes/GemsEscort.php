@@ -410,6 +410,10 @@ class GemsEscort extends MUtil_Application_Escort
             $session->user_role = 'nologin';
         }
 
+        // Since userloading can clear the session, we put stuff that should remain (like redirect info)
+        // in a different namespace that we call a 'static session', use getStaticSession to access.
+        $this->staticSession = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.sessionStatic');
+
         return $session;
     }
 
@@ -1309,6 +1313,16 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
+     * Returns a static session, that will not be affected by loading or unloading a user
+     *
+     * @return Zend_Session_Namespace
+     */
+    public function getStaticSession()
+    {
+        return $this->staticSession;
+    }
+
+    /**
      * Hook 12: Called after an action is dispatched by Zend_Controller_Dispatcher.
      *
      * This callback allows for proxy or filter behavior. By altering the
@@ -1387,20 +1401,21 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
-        if ($this->session->user_id && $previousRequestParameters = $this->session->previousRequestParameters) {
+        $staticSession = $this->getStaticSession();
+        if ($this->session->user_id && $previousRequestParameters = $staticSession->previousRequestParameters) {
             unset($previousRequestParameters['save_button']);
             unset($previousRequestParameters['userlogin']);
             unset($previousRequestParameters['password']);
 
             // fake POST
-            if ($this->session->previousRequestMode == 'POST') {
+            if ($staticSession->previousRequestMode == 'POST') {
                 $this->addMessage($this->_('Take note: your session has expired, your inputs were not saved. Please check the input data and try again'));
                 $_POST = $previousRequestParameters;
-                $_SERVER['REQUEST_METHOD'] = $this->session->previousRequestMode;
-                $this->session->previousRequestMode = null;
+                $_SERVER['REQUEST_METHOD'] = $staticSession->previousRequestMode;
+                $staticSession->previousRequestMode = null;
             }
 
-            $this->session->previousRequestParameters = null;
+            $staticSession->previousRequestParameters = null;
         }
 
         $this->setControllerDirectory($request);
@@ -1576,8 +1591,9 @@ class GemsEscort extends MUtil_Application_Escort
                             $this->addMessage($this->_('You must login to access this page.'));
 
                             // save original request, we will redirect back once the user succesfully logs in
-                            $this->session->previousRequestParameters = $request->getParams();
-                            $this->session->previousRequestMode = ($request->isPost() ? "POST" : "GET");
+                            $staticSession = $this->getStaticSession();
+                            $staticSession->previousRequestParameters = $request->getParams();
+                            $staticSession->previousRequestMode = ($request->isPost() ? "POST" : "GET");
                         }
 
                         $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
