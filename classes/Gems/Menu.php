@@ -556,6 +556,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         // EXPORT DATA
         $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
 
+        // EXPORT TO HTML
+        $this->addContainer('Export respondent to html', 'pr.export-html', array('controller' => 'respondent-export', 'action'=>'index'));
+        
         // OTHER ITEMS
         $this->addLogonOffToken();
 
