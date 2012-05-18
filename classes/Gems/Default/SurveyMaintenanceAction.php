@@ -242,12 +242,23 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         }
 
         // Set the value of the field in the database.
+        $data['gsu_survey_pdf'] = null;
         $new_name = $data['gsu_id_survey'] . '.pdf';
-        if (file_exists($form->new_pdf->getDestination() . DIRECTORY_SEPARATOR . $new_name)) {
+        $pdfSource = $form->new_pdf->getDestination() . DIRECTORY_SEPARATOR . $new_name;
+        
+        if (file_exists($pdfSource)) {
+            $objFactory = Zend_Pdf_ElementFactory::createFactory(1);
+            $parser = new Zend_Pdf_Parser($pdfSource, $objFactory, true);
+            $version = $parser->getPDFVersion();
+            
+            if (version_compare($version, '1.4', '>')) {
+                $this->addMessage(sprintf($this->_('Unsupported PDF version %s - only versions 1.0 - 1.4 are supported.'), $version));
+                return false;
+            }
+            
             $data['gsu_survey_pdf'] = $new_name;
-        } else {
-            $data['gsu_survey_pdf'] = null;
         }
+        
         $data['gtr_track_class'] = 'SingleSurveyEngine';
 
         // feature request #200

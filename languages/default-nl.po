@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-18 13:45+0100\n"
+"POT-Creation-Date: 2012-05-18 15:55+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michiel Rook <info@touchdownconsulting.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2305,59 +2305,64 @@ msgstr "Maak losse vragenlijst"
 msgid "At the moment this survey can only be assigned to respondents as part of an existing track."
 msgstr "Op dit moment kan deze vragenlijst alleen aan patiënten toegewezen als onderdeel van een traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:259
+#: classes/Gems/Default/SurveyMaintenanceAction.php:255
+#, php-format
+msgid "Unsupported PDF version %s - only versions 1.0 - 1.4 are supported."
+msgstr "Deze PDF heeft een versie (%s) die niet ondersteund wordt, slechts versies 1.0-1.4 worden ondersteund."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:270
 msgid "Survey should be assigned to a group before making it active."
 msgstr "Vragenlijst moet aan een groep toegewezen worden voordat deze actief kan worden gemaakt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:276
+#: classes/Gems/Default/SurveyMaintenanceAction.php:287
 #, php-format
 msgid "Checking survey results for the %s survey."
 msgstr "Controle op vragenlijstresultaten voor de vragenlijst '%s'."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:288
+#: classes/Gems/Default/SurveyMaintenanceAction.php:299
 msgid "Checking survey results for all surveys."
 msgstr "Controle op vragenlijstresultaten voor alle vragenlijsten."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:352
+#: classes/Gems/Default/SurveyMaintenanceAction.php:363
 msgid "Source"
 msgstr "Bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:353
+#: classes/Gems/Default/SurveyMaintenanceAction.php:364
 msgid "Status in source"
 msgstr "Status in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:356
+#: classes/Gems/Default/SurveyMaintenanceAction.php:367
 msgid "Active in source"
 msgstr "Actief in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:357
+#: classes/Gems/Default/SurveyMaintenanceAction.php:368
 #, php-format
 msgid "Active in %s"
 msgstr "Actief in %s"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:364
+#: classes/Gems/Default/SurveyMaintenanceAction.php:375
 msgid "Single"
 msgstr "Los"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:368
+#: classes/Gems/Default/SurveyMaintenanceAction.php:379
 msgid "Group"
 msgstr "Groep"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:397
+#: classes/Gems/Default/SurveyMaintenanceAction.php:408
 #, php-format
 msgid "%d times in track."
 msgstr "%d keer in traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:399
+#: classes/Gems/Default/SurveyMaintenanceAction.php:410
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d keer in %d traject(en)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:403
+#: classes/Gems/Default/SurveyMaintenanceAction.php:414
 msgid "Not used in track."
 msgstr "Niet in traject gebruikt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:405
+#: classes/Gems/Default/SurveyMaintenanceAction.php:416
 msgid "Not used in tracks."
 msgstr "Niet in trajecten gebruikt."
 
