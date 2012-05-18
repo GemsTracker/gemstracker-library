@@ -426,13 +426,13 @@ class MUtil_Model_FormBridge
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
 
-        $options = $this->_mergeOptions($name, $options,
-            self::DISPLAY_OPTIONS, self::FILE_OPTIONS, self::TEXT_OPTIONS);
-
         $filename  = $this->_moveOption('filename',  $options);
         $count     = $this->_moveOption('count',     $options);
         $size      = $this->_moveOption('size',      $options);
         $extension = $this->_moveOption('extension', $options);
+
+        $options = $this->_mergeOptions($name, $options,
+            self::DISPLAY_OPTIONS, self::FILE_OPTIONS, self::TEXT_OPTIONS);
 
         $element = new Zend_Form_Element_File($name, $options);
 
