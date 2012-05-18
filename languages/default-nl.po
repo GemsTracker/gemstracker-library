@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-18 15:55+0100\n"
+"POT-Creation-Date: 2012-05-18 16:44+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michiel Rook <info@touchdownconsulting.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2281,88 +2281,83 @@ msgstr "Voor beantwoording"
 msgid "Upload new PDF"
 msgstr "Upload nieuwe PDF"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:135
+#: classes/Gems/Default/SurveyMaintenanceAction.php:136
 msgid "Usage"
 msgstr "Gebruik"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:150
+#: classes/Gems/Default/SurveyMaintenanceAction.php:151
 msgid "Single Survey Assignment"
 msgstr "Losse vragenlijst toewijzing"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:195
+#: classes/Gems/Default/SurveyMaintenanceAction.php:196
 msgid "Assignable since"
 msgstr "Toewijsbaar sinds"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:196
+#: classes/Gems/Default/SurveyMaintenanceAction.php:197
 msgid "Assignable until"
 msgstr "Toewijsbaar tot"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:202
+#: classes/Gems/Default/SurveyMaintenanceAction.php:203
 msgid "Create Single Survey"
 msgstr "Maak losse vragenlijst"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:206
+#: classes/Gems/Default/SurveyMaintenanceAction.php:207
 msgid "At the moment this survey can only be assigned to respondents as part of an existing track."
 msgstr "Op dit moment kan deze vragenlijst alleen aan patiënten toegewezen als onderdeel van een traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:255
-#, php-format
-msgid "Unsupported PDF version %s - only versions 1.0 - 1.4 are supported."
-msgstr "Deze PDF heeft een versie (%s) die niet ondersteund wordt, slechts versies 1.0-1.4 worden ondersteund."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:270
+#: classes/Gems/Default/SurveyMaintenanceAction.php:262
 msgid "Survey should be assigned to a group before making it active."
 msgstr "Vragenlijst moet aan een groep toegewezen worden voordat deze actief kan worden gemaakt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:287
+#: classes/Gems/Default/SurveyMaintenanceAction.php:279
 #, php-format
 msgid "Checking survey results for the %s survey."
 msgstr "Controle op vragenlijstresultaten voor de vragenlijst '%s'."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:299
+#: classes/Gems/Default/SurveyMaintenanceAction.php:291
 msgid "Checking survey results for all surveys."
 msgstr "Controle op vragenlijstresultaten voor alle vragenlijsten."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:363
+#: classes/Gems/Default/SurveyMaintenanceAction.php:355
 msgid "Source"
 msgstr "Bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:364
+#: classes/Gems/Default/SurveyMaintenanceAction.php:356
 msgid "Status in source"
 msgstr "Status in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:367
+#: classes/Gems/Default/SurveyMaintenanceAction.php:359
 msgid "Active in source"
 msgstr "Actief in bron"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:368
+#: classes/Gems/Default/SurveyMaintenanceAction.php:360
 #, php-format
 msgid "Active in %s"
 msgstr "Actief in %s"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:375
+#: classes/Gems/Default/SurveyMaintenanceAction.php:367
 msgid "Single"
 msgstr "Los"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:379
+#: classes/Gems/Default/SurveyMaintenanceAction.php:371
 msgid "Group"
 msgstr "Groep"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:408
+#: classes/Gems/Default/SurveyMaintenanceAction.php:400
 #, php-format
 msgid "%d times in track."
 msgstr "%d keer in traject."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:410
+#: classes/Gems/Default/SurveyMaintenanceAction.php:402
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d keer in %d traject(en)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:414
+#: classes/Gems/Default/SurveyMaintenanceAction.php:406
 msgid "Not used in track."
 msgstr "Niet in traject gebruikt."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:416
+#: classes/Gems/Default/SurveyMaintenanceAction.php:408
 msgid "Not used in tracks."
 msgstr "Niet in trajecten gebruikt."
 
@@ -4018,30 +4013,34 @@ msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
 
 #: languages/FakeTranslations.php:75
+msgid "Unsupported PDF version %value% - only versions 1.0 - 1.4 are supported."
+msgstr "Deze PDF heeft een versie (%value%) die niet ondersteund wordt, slechts versies 1.0-1.4 worden ondersteund."
+
+#: languages/FakeTranslations.php:78
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr " '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen kiezen."
 
-#: languages/FakeTranslations.php:79
+#: languages/FakeTranslations.php:82
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
 
-#: languages/FakeTranslations.php:82
+#: languages/FakeTranslations.php:85
 msgid "'%value%' is not a series of email addresses (e.g. name@somewhere.com, nobody@nowhere.org)."
 msgstr "'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, niemand@nergens.net)."
 
-#: languages/FakeTranslations.php:85
+#: languages/FakeTranslations.php:88
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' mag alleen cijfers bevatten"
 
-#: languages/FakeTranslations.php:86
+#: languages/FakeTranslations.php:89
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is leeg"
 
-#: languages/FakeTranslations.php:87
+#: languages/FakeTranslations.php:90
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
-#: languages/FakeTranslations.php:90
+#: languages/FakeTranslations.php:93
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
 
