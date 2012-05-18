@@ -75,6 +75,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _exportTrackTokens(Gems_Tracker_RespondentTrack $track)
     {
+        $engine = $track->getTrackEngine();
+        
         $table = $this->html->table(array('class' => 'browser'));
         $table->th($this->_('Survey'))
               ->th($this->_('Round'))
@@ -87,7 +89,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         while ($token) {
             $table->tr()->td($token->getSurveyName())
-                        ->td($token->getRoundDescription())
+                        ->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')))
                         ->td(strtoupper($token->getTokenId()))
                         ->td(($token->isCompleted() ? $this->_('Yes') : $this->_('No')));
             
@@ -110,6 +112,10 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _exportTrack(Gems_Tracker_RespondentTrack $track)
     {
+        if ($track->getReceptionCode() != GemsEscort::RECEPTION_OK) {
+            return;
+        }
+        
         $trackModel = $this->loader->getTracker()->getRespondentTrackModel();
         $trackModel->resetOrder();
         $trackModel->set('gtr_track_name',    'label', $this->_('Track'));

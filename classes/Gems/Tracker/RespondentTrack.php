@@ -504,6 +504,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     {
         return $this->_respTrackData['gr2t_id_organization'];
     }
+    
+    public function getReceptionCode()
+    {
+        return $this->_respTrackData['gr2t_reception_code'];
+    }
 
     /**
      *
