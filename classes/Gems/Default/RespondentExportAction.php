@@ -75,16 +75,29 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _exportTrackTokens(Gems_Tracker_RespondentTrack $track)
     {
-        $token = $track->getFirstToken();
+        $table = $this->html->table(array('class' => 'browser'));
+        $table->th($this->_('Survey'))
+              ->th($this->_('Round'))
+              ->th($this->_('Token'))
+              ->th($this->_('Completed'));
+        
+        $this->html->br();
 
+        $token = $track->getFirstToken();
+        
         while ($token) {
-            $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
-            //$this->addSnippets($token->getAnswerSnippetNames(), 'token', $token, 'tokenId', $token->getTokenId(),
-            //	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
-            $this->addSnippet('AnswerModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
-            	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+            $table->tr()->td($token->getSurveyName())
+                        ->td($token->getRoundDescription())
+                        ->td(strtoupper($token->getTokenId()))
+                        ->td(($token->isCompleted() ? $this->_('Yes') : $this->_('No')));
             
-            $this->html->br();
+            if ($token->isCompleted()) {
+                $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
+                $this->addSnippet('AnswerModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
+                	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+                
+                $this->html->br();
+            }
             
             $token = $token->getNextToken();
         }
@@ -123,7 +136,17 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
             }
         }
         
-        $this->html[] = $bridge->getTable();
+        $table = $bridge->getTable();
+        
+        foreach ($track->getFieldData() as $field => $value) {
+            if (is_int($field)) {
+                continue;
+            }
+            
+            $table->tr()->th($field)->td($value);
+        }
+        
+        $this->html[] = $table;
         $this->html->br();
 
         $this->_exportTrackTokens($track);
