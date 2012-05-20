@@ -217,7 +217,9 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $this->_exportRespondent($respondentId);
         
         $this->escort->menu->setVisible(false);
-        $this->escort->layoutSwitch();
+        if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
+            $this->escort->layoutSwitch();
+        }
         $this->escort->postDispatch($this->getRequest());
         
         $this->_helper->layout()->disableLayout();
