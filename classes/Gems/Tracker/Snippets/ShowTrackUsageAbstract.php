@@ -149,7 +149,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $model->set('assigned_by',       'label', $this->_('Assigned by'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', 'dd-MM-yyyy',
+            'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
             'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
         $model->set('gr2t_reception_code');
