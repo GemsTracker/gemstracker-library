@@ -162,7 +162,11 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
 
             $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'));
             $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'));
-            $model->setIfExists('grcfg_secret', 'label', $this->translate->_('Shared secret'), 'elementClass', 'password', 'required', false);
+            $model->setIfExists('grcfg_secret', 
+                'label', $this->translate->_('Shared secret'),
+                'elementClass', 'password',
+                'required', false,
+                'description', $this->translate->_('Enter only when changing'));
             $model->setSaveWhenNotNull('grcfg_secret');
             $this->_configModel = $model;
         }
