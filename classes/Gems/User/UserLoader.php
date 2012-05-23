@@ -349,7 +349,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
         static $urls;
 
         if (! is_array($urls)) {
-            $urls = array();
             if ($this->cache) {
                 $cacheId = GEMS_PROJECT_NAME . '__' . get_class($this) . '__organizations_url';
                 $urls = $this->cache->load($cacheId);
@@ -360,6 +359,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             // When we don't use cache or cache reports 'false' for a miss or expiration
             // then try to reload the data
             if ($cacheId === false || $urls === false) {
+                $urls = array();
                 try {
                     $data = $this->db->fetchPairs("SELECT gor_id_organization, gor_url_base FROM gems__organizations WHERE gor_active=1 AND gor_url_base IS NOT NULL");
                 } catch (Zend_Db_Exception $zde) {
