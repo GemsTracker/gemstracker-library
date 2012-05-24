@@ -398,3 +398,6 @@ ALTER TABLE `gems__staff` ADD UNIQUE KEY (gsf_reset_key);
 -- PATCH: Add return url to tokens
 ALTER TABLE gems__tokens ADD gto_return_url varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null AFTER gto_reception_code;
 ALTER TABLE `gems__organizations` ADD `gor_allowed_ip_ranges` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER `gor_respondent_group`;
+
+--PATCH: organization code no longer needs to be unique
+ALTER TABLE  `gems__organizations` DROP INDEX  `gor_code` , ADD INDEX  `gor_code` (  `gor_code` );
