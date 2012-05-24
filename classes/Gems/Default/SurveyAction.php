@@ -190,10 +190,14 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
         //$model->resetOrder();
         $model->set('gsu_survey_name', 'label', $this->_('Survey'));
         $model->set('ggp_name',        'label', $this->_('By'),    'elementClass', 'Exhibitor');
-        $model->set('gtr_date_start',  'label', $this->_('From'),  'dateFormat', Gems_Tracker::DB_DATE_FORMAT, 'tdClass', 'date',
-            'formatFunction', $this->util->getTranslated()->formatDate);
-        $model->set('gtr_date_until',  'label', $this->_('Until'), 'dateFormat', Gems_Tracker::DB_DATE_FORMAT, 'tdClass', 'date',
-            'formatFunction', $this->util->getTranslated()->formatDateNa);
+        $model->set('gtr_date_start',  'label', $this->_('From'),
+                'dateFormat', 'dd-MM-yyyy',
+                'tdClass', 'date',
+                'formatFunction', $this->util->getTranslated()->formatDate);
+        $model->set('gtr_date_until',  'label', $this->_('Until'),
+                'dateFormat', 'dd-MM-yyyy',
+                'tdClass', 'date',
+                'formatFunction', $this->util->getTranslated()->formatDateNa);
 
         return $model;
     }

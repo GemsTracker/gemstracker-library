@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -38,9 +37,9 @@
 
 /**
  * Displays the assignments of a track to a respondent.
- * 
- * This code contains some display options for excluding or marking a single track 
- * and for processing the passed parameters identifying the respondent and the 
+ *
+ * This code contains some display options for excluding or marking a single track
+ * and for processing the passed parameters identifying the respondent and the
  * optional single track.
  *
  * @package    Gems
@@ -62,68 +61,68 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
 
     /**
      * Optional, when true current item is not shown, when false the current row is marked as the currentRow.
-     * 
+     *
      * @var boolean
      */
     protected $excludeCurrent = false;
-    
+
     /**
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
-    
+
     /**
      * Required
-     * 
+     *
      * @var Gems_Loader
      */
     protected $loader;
-    
+
     /**
      * Optional, required when using $trackEngine or $trackId only
      *
      * @var int Organization Id
      */
     protected $organizationId;
-    
+
     /**
      * Optional, required when using $trackEngine or $trackId only
      *
      * @var int Patient Id
      */
     protected $patientId;
-    
+
     /**
      * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
      *
      * @var Gems_Tracker_RespondentTrack
      */
     protected $respondentTrack;
-    
+
     /**
      *
      * @var int Respondent Track Id
      */
     protected $respondentTrackId;
-    
-    /**
-     * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
-     * 
-     * $trackEngine and TrackId need $patientId and $organizationId to be set as well
-     * 
-     * @var Gems_Tracker_Engine_TrackEngineInterface
-     */
-    protected $trackEngine;
-    
+
     /**
      * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
      *
      * $trackEngine and TrackId need $patientId and $organizationId to be set as well
-     * 
+     *
+     * @var Gems_Tracker_Engine_TrackEngineInterface
+     */
+    protected $trackEngine;
+
+    /**
+     * Optional, one of $respondentTrack, $respondentTrackId, $trackEngine, $trackId should be set
+     *
+     * $trackEngine and TrackId need $patientId and $organizationId to be set as well
+     *
      * @var int Track Id
      */
     protected $trackId;
-    
+
     /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
@@ -134,7 +133,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
     {
         return $this->db && $this->loader && parent::checkRegistryRequestsAnswers();
     }
-    
+
     /**
      * Creates the model
      *
@@ -143,20 +142,20 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
     protected function createModel()
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
-        
+
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gr2t_track_info',   'label', $this->_('Description'),
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $model->set('assigned_by',       'label', $this->_('Assigned by'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
+            'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
-            'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
+            'default', new Zend_date());
         $model->set('gr2t_reception_code');
-        
+
         return $model;
     }
-    
+
     /**
      * Create the snippets content
      *
@@ -168,19 +167,19 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
         $seq = $this->getHtmlSequence();
-        
+
         $seq->h3($this->getTitle());
-        
+
         $table = parent::getHtmlOutput($view);
         $this->applyHtmlAttributes($table);
-        
+
         $seq->append($table);
-        
+
         return $seq;
     }
 
     abstract protected function getTitle();
-    
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -206,7 +205,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
         if ((! $this->trackId) && $this->trackEngine) {
             $this->trackId = $this->trackEngine->getTrackId();
         }
-        
+
         // Check if a sufficient set of data is there
         if (! ($this->trackId || $this->patientId || $this->organizationId)) {
             // Now we really need $this->respondentTrack
@@ -219,7 +218,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
                 }
             }
         }
-        
+
         if (! $this->trackId) {
             $this->trackId = $this->respondentTrack->getTrackId();
         }
@@ -229,9 +228,9 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
         if (! $this->organizationId) {
             $this->organizationId = $this->respondentTrack->getOrganizationId();
         }
-        
+
         // MUtil_Echo::track($this->trackId, $this->patientId, $this->organizationId, $this->respondentTrackId);
-        
+
         return parent::hasHtmlOutput();
     }
 
@@ -241,15 +240,15 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
      * @param MUtil_Model_ModelAbstract $model
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    { 
+    {
         if ($this->request) {
             $this->processSortOnly($model);
         }
-        
+
         $filter['gtr_id_track']         = $this->trackId;
         $filter['gr2o_patient_nr']      = $this->patientId;
         $filter['gr2o_id_organization'] = $this->organizationId;
-        
+
         if ($this->excludeCurrent) {
             $filter[] = $this->db->quoteInto('gr2t_id_respondent_track != ?', $this->respondentTrackId);
         }

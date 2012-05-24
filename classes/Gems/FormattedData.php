@@ -109,13 +109,12 @@ class Gems_FormattedData extends IteratorIterator
             }
         }
 
-        if ($dateFormat    = $model->get($name, 'dateFormat')) {
-            $storageFormat = $model->get($name, 'storageFormat');
-            $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
-        }
 
         if ($callback = $model->get($name, 'formatFunction')) {
             $result = call_user_func($callback, $result);
+        } elseif ($dateFormat    = $model->get($name, 'dateFormat')) {
+            $storageFormat = $model->get($name, 'storageFormat');
+            $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
         }
 
         if ($function = $model->get($name, 'itemDisplay')) {

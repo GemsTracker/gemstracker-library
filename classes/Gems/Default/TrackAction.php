@@ -327,9 +327,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         //$model->resetOrder();
         $model->set('gtr_track_name',    'label', $this->_('Track'));
         $model->set('gtr_survey_rounds', 'label', $this->_('Survey #'), 'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('gtr_date_start',    'label', $this->_('From'),  'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
+        $model->set('gtr_date_start',    'label', $this->_('From'),  'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->util->getTranslated()->formatDate);
-        $model->set('gtr_date_until',    'label', $this->_('Until'), 'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
+        $model->set('gtr_date_until',    'label', $this->_('Until'), 'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->util->getTranslated()->formatDateNa);
 
         return $model;

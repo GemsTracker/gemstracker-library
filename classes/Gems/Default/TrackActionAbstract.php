@@ -209,9 +209,9 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
         $model->set('assigned_by',       'label', $this->_('Assigned by'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
-        	'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
+        	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->util->getTranslated()->formatDate,
-            'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
+            'default', new Zend_date());
         $model->set('gr2t_reception_code');
         $model->set('gr2t_comment',       'label', $this->_('Comment'));
 

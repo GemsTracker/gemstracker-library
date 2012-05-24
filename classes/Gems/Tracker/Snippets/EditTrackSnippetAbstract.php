@@ -150,9 +150,9 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
         $model->set('gr2t_track_info',   'label', $this->_('Description'));
         $model->set('assigned_by',       'label', $this->_('Assigned by'));
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', Gems_Tracker::DB_DATE_FORMAT,
+            'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
-            'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
+            'default', new Zend_date());
         $model->set('gr2t_reception_code');
         $model->set('gr2t_comment',      'label', $this->_('Comment'));
 
@@ -267,11 +267,11 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
             $filter['gr2o_id_organization'] = $this->organizationId;
 
             $this->formData = $this->getModel()->loadNew(null, $filter);
-
         } else {
             parent::loadFormData();
         }
 
+            MUtil_Echo::track($this->formData);
         if (! array_key_exists(self::TRACKFIELDS_ID, $this->formData)) {
             if ($this->trackEngine) {
                 $this->formData[self::TRACKFIELDS_ID] = $this->trackEngine->getFieldsData($this->respondentTrackId);

@@ -89,16 +89,14 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
             $value = MUtil_Lazy::offsetGet($multi, $value);
         }
 
-        if ($format = $this->model->get($name, 'dateFormat')) {
+        if ($function = $this->model->get($name, 'formatFunction')) {
+            $value = MUtil_Lazy::call($function, $value);
+        } elseif ($format = $this->model->get($name, 'dateFormat')) {
             if (is_callable($format)) {
                 $value = MUtil_Lazy::call($format, $value);
             } else {
                 $value = MUtil_Lazy::call('MUtil_Date::format', $value, $format, $this->model->get($name, 'storageFormat'));
             }
-        }
-
-        if ($function = $this->model->get($name, 'formatFunction')) {
-            $value = MUtil_Lazy::call($function, $value);
         }
 
         if ($marker = $this->model->get($name, 'markCallback')) {
