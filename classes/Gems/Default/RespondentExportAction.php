@@ -60,6 +60,10 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Respondent number'));
         $form->addElement($element);
         
+        $element = new Zend_Form_Element_Checkbox('group');
+        $element->setLabel($this->_('Group surveys'));
+        $form->addElement($element);
+        
         $element = new Zend_Form_Element_Submit('export');
         $element->setLabel($this->_('Export'))
                 ->setAttrib('class', 'button');
@@ -75,30 +79,40 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _exportTrackTokens(Gems_Tracker_RespondentTrack $track)
     {
+        $groupSurveys = $this->getRequest()->getParam('group');
+        $token = $track->getFirstToken();
         $engine = $track->getTrackEngine();
+        $surveys = array();
         
         $table = $this->html->table(array('class' => 'browser'));
         $table->th($this->_('Survey'))
               ->th($this->_('Round'))
               ->th($this->_('Token'))
               ->th($this->_('Completed'));
-        
         $this->html->br();
 
-        $token = $track->getFirstToken();
-        
         while ($token) {
             $table->tr()->td($token->getSurveyName())
                         ->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')))
                         ->td(strtoupper($token->getTokenId()))
                         ->td(($token->isCompleted() ? $this->_('Yes') : $this->_('No')));
             
-            if ($token->isCompleted()) {
+            if (($engine->getTrackType() == 'S' || !$groupSurveys) && $token->isCompleted()) {
                 $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
                 $this->addSnippet('AnswerModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
                 	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
                 
                 $this->html->br();
+            } else {
+                if (!isset($surveys[$token->getSurveyId()])) {
+                    $surveys[$token->getSurveyId()] = true;
+                            
+                    $this->html->span()->b($token->getSurveyName());
+                    $this->addSnippet('TrackAnswersModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
+                    	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+                    
+                    $this->html->br();
+                }
             }
             
             $token = $token->getNextToken();
