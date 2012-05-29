@@ -271,7 +271,6 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
             parent::loadFormData();
         }
 
-            MUtil_Echo::track($this->formData);
         if (! array_key_exists(self::TRACKFIELDS_ID, $this->formData)) {
             if ($this->trackEngine) {
                 $this->formData[self::TRACKFIELDS_ID] = $this->trackEngine->getFieldsData($this->respondentTrackId);
