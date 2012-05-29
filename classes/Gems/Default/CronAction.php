@@ -182,6 +182,7 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
                     $filter = $this->defaultFilter;
                     if ($job['gmj_filter_mode'] == 'R') {
                         $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
+                        $filter[] = 'gto_mail_sent_num < ' . $job['gmj_filter_max_reminders'];
                     } else {
                         $filter['gto_mail_sent_date'] = NULL;
                     }

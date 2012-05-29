@@ -92,6 +92,7 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gmj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gmj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
         $model->set('gmj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
+        $model->set('gmj_filter_max_reminders','label', $this->_('Maximum number of reminders'), 'validators[]', 'Digits');
 
         if ($detailed) {
             $model->set('gmj_id_organization', 'label', $this->_('Organization'), 'multiOptions', $empty + $dbLookup->getOrganizations());

@@ -401,3 +401,9 @@ ALTER TABLE `gems__organizations` ADD `gor_allowed_ip_ranges` TEXT CHARACTER SET
 
 --PATCH: organization code no longer needs to be unique
 ALTER TABLE  `gems__organizations` DROP INDEX  `gor_code` , ADD INDEX  `gor_code` (  `gor_code` );
+
+-- PATCH: Add number of reminders sent to tokens
+ALTER TABLE `gems__tokens` ADD `gto_mail_sent_num` INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER `gto_mail_sent_date`;
+
+-- PATCH: Add column to store maximum number of reminders (default is 3) to mail jobs
+ALTER TABLE `gems__mail_jobs` ADD `gmj_filter_max_reminders` INT(11) UNSIGNED NOT NULL DEFAULT 3 AFTER `gmj_filter_days_between`;

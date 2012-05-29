@@ -507,6 +507,7 @@ class Gems_Email_TemplateMailer
         $db  = $this->escort->db;
         $uid = $this->escort->getCurrentUserId();
 
+        $tdata['gto_mail_sent_num'] = new Zend_Db_Expr('gto_mail_sent_num + 1');
         $tdata['gto_mail_sent_date'] = $this->_mailDate;
 
         $db->update('gems__tokens', $tdata, $db->quoteInto('gto_id_token = ?', $tokenData['gto_id_token']));
