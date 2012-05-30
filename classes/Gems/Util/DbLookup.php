@@ -236,6 +236,30 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get all organizations that share a given code
+     *
+     * On empty this will return all organizations
+     *
+     * @staticvar array $organizations
+     * @param string $code
+     * @return array key = gor_id_organization, value = gor_name
+     */
+    public function getOrganizationsByCode($code = null)
+    {
+        static $organizations = array();
+
+        if (is_null($code)) {
+            return $this->getOrganizations();
+        }
+
+        if (!isset($organizations[$code])) {
+            $organizations[$code] = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 and gor_code=? ORDER BY gor_name', array($code));
+        }
+
+        return $organizations[$code];
+    }
+
+    /**
      * Returns a list of the organizations where users can login.
      *
      * @staticvar array $organizations
