@@ -75,16 +75,19 @@ abstract class Gems_Menu_MenuAbstract
     {
         if ($this->_subItems) {
             foreach ($this->_subItems as $item) {
-                $_itemlabel = $label . ($item->get('label') ?: $item->get('privilege'));
-                if ($_privilege = $item->get('privilege')) {
+                // Skip autofilter action, but include all others
+                if ($item->get('action') !== 'autofilter') {
+                    $_itemlabel = $label. ($item->get('label') ?: $item->get('privilege'));
+                    if ($_privilege = $item->get('privilege')) {
 
-                    if (isset($privileges[$_privilege])) {
-                        $privileges[$_privilege] .= "<br/>&nbsp; + " . $_itemlabel;
-                    } else {
-                        $privileges[$_privilege] = $_itemlabel;
+                        if (isset($privileges[$_privilege])) {
+                            $privileges[$_privilege] .= "<br/>&nbsp; + " . $_itemlabel;
+                        } else {
+                            $privileges[$_privilege] = $_itemlabel;
+                        }
                     }
+                    $item->_addUsedPrivileges($privileges, $_itemlabel . '-&gt;');
                 }
-                $item->_addUsedPrivileges($privileges, $_itemlabel . '-&gt;');
             }
         }
     }
