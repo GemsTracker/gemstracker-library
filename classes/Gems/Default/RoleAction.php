@@ -77,22 +77,23 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         $roles = $this->acl->getRoles();
         $parents = array_combine($roles, $roles);
+        // Don't allow master or nologin as parents
+        unset($parents['master']);
+        unset($parents['nologin']);
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $parents, 'required', false);
 
-        $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $this->getUsedPrivileges(), 'required', false);
+        $allPrivileges       = $this->getUsedPrivileges();
+        $rolePrivileges      = $this->escort->acl->getRolePrivileges();
+        $inheritedPrivileges = $rolePrivileges[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW];
+        $privileges          = array_diff_key($allPrivileges, array_flip($inheritedPrivileges));
+        $inheritedPrivileges = array_intersect_key($allPrivileges, array_flip($inheritedPrivileges));
 
-        //Get inherited privileges and disable tem
-        $result = $this->escort->acl->getRolePrivileges();
-        $disable = array();
-        if (isset($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW])) {
-            foreach($result[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] as $key => $value) {
-                $disable[] = $value;
-            }
-        }
-        $checkbox->setAttrib('disable', $disable);
+        $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $privileges, 'required', false);
+        $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
 
-        //Don't use escaping, so the line breaks work
-        $checkbox->setAttrib('escape', false);
+        $checkbox = $bridge->addMultiCheckbox('inherited', 'label', $this->_('Inherited'), 'multiOptions', $inheritedPrivileges, 'required', false, 'disabled', 'disabled');
+        $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
+        $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
     }
 
     /**
@@ -124,26 +125,6 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $roles->build();
 
         return true;
-    }
-
-    /**
-     * Check the disabled (=inherited) privileges
-     *
-     * @param Gems_Form $form
-     * @param boolean $isNew
-     * @return Gems_Form
-     */
-    public function beforeFormDisplay($form, $isNew) {
-        $form = parent::beforeFormDisplay($form, $isNew);
-        $checkbox = $form->getElement('grl_privileges');
-        $values = $checkbox->getValue();
-        $disabled = $checkbox->getAttrib('disable');
-
-        if ($disabled) {
-            $values = array_merge((array) $values, $disabled);
-        }
-        $checkbox->setValue($values);
-        return $form;
     }
 
     /**
@@ -257,7 +238,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
             $roles[$role][$this->_('Role')]    = $role;
             $roles[$role][$this->_('Parents')] = $privileges[MUtil_Acl::PARENTS]   ? implode(', ', $privileges[MUtil_Acl::PARENTS])   : null;
             $roles[$role][$this->_('Allowed')] = $privileges[Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[Zend_Acl::TYPE_ALLOW]) : null;
-            $roles[$role][$this->_('Denied')]  = $privileges[Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[Zend_Acl::TYPE_DENY])  : null;
+            //$roles[$role][$this->_('Denied')]  = $privileges[Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[Zend_Acl::TYPE_DENY])  : null;
+            $roles[$role][$this->_('Inherited')] = $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW]) : null;
+            //$roles[$role][$this->_('Parent denied')]  = $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_DENY])  : null;
         }
         ksort($roles);
 
