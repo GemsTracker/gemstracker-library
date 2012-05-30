@@ -45,6 +45,17 @@
 class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 {
     public $useHtmlView = true;
+    
+    protected $_wkhtmltopdfLocation = "";
+    
+    public function init()
+    {
+        parent::init();
+        
+        if (isset($this->project->export['wkhtmltopdf'])) {
+            $this->_wkhtmltopdfLocation = $this->project->export['wkhtmltopdf'];
+        }
+    }
 
     /**
      * Constructs the form 
@@ -64,12 +75,54 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Group surveys'));
         $form->addElement($element);
         
+        $outputFormats = array('html' => 'HTML');
+        if (!empty($this->_wkhtmltopdfLocation)) {
+            $outputFormats['pdf'] = 'PDF';
+        }
+        
+        $element = new Zend_Form_Element_Select('format');
+        $element->setLabel($this->_('Output format'));
+        $element->setMultiOptions($outputFormats);
+        $form->addElement($element);
+        
         $element = new Zend_Form_Element_Submit('export');
         $element->setLabel($this->_('Export'))
                 ->setAttrib('class', 'button');
         $form->addElement($element);
         
         return $form;
+    }
+    
+    /**
+     * Calls 'wkhtmltopdf' to convert HTML to PDF
+     * 
+     * @param  string $content The HTML source
+     * @return string The converted PDF file
+     * @throws Exception
+     */
+    protected function _convertToPdf($content)
+    {
+        $tempInputFilename  = tempnam(sys_get_temp_dir(), 'gemshtml') . '.html';
+        $tempOutputFilename = tempnam(sys_get_temp_dir(), 'gemspdf')  . '.pdf';
+
+        if (empty($tempInputFilename) || empty($tempOutputFilename)) {
+            throw new Exception("Unable to create temporary file(s)");
+        }
+
+        file_put_contents($tempInputFilename, $content);
+
+        $lastLine = exec($this->_wkhtmltopdfLocation . ' ' . $tempInputFilename . ' ' . $tempOutputFilename, $outputLines, $return);
+
+        if ($return > 0) {
+            throw new Exception("Unable to run PDF conversion: {$lastLine}");
+        }
+        
+        $pdfContents = file_get_contents($tempOutputFilename);
+         
+        @unlink($tempInputFilename);
+        @unlink($tempOutputFilename);
+
+        return $pdfContents;
     }
 
     /**
@@ -239,10 +292,23 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
         
-        $htmlData = $this->html->render($this->view);
-        $this->view->layout()->content = $htmlData;
+        $this->view->layout()->content = $this->html->render($this->view);
 
-        echo $this->view->layout->render();
+        $content = $this->view->layout->render();
+        
+        if ($this->getRequest()->getParam('format') == 'pdf') {
+            $content = $this->_convertToPdf($content);
+            $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
+            
+			header('Content-Type: application/x-download');
+            header('Content-Length: '.strlen($content));
+            header('Content-Disposition: inline; filename="'.$filename.'"');
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
+        }
+        
+        echo $content;
+        
         $this->escort->menu->setVisible(true);
     }
      
