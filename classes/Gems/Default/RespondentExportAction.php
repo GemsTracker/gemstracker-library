@@ -111,10 +111,11 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 
         file_put_contents($tempInputFilename, $content);
 
-        $lastLine = exec($this->_wkhtmltopdfLocation . ' ' . $tempInputFilename . ' ' . $tempOutputFilename, $outputLines, $return);
+        $lastLine = exec(escapeshellcmd($this->_wkhtmltopdfLocation) . ' ' . escapeshellarg($tempInputFilename)
+            . ' ' . escapeshellarg($tempOutputFilename), $outputLines, $return);
 
         if ($return > 0) {
-            throw new Exception("Unable to run PDF conversion: {$lastLine}");
+            throw new Exception(sprintf($this->_('Unable to run PDF conversion: "%s"'), $lastLine));
         }
         
         $pdfContents = file_get_contents($tempOutputFilename);
