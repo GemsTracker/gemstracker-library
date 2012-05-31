@@ -144,8 +144,10 @@ class MUtil_Html_ElementDecorator extends Zend_Form_Decorator_Abstract
                 } else {
                     $html = MUtil_Html::create('ul');
                 }
-                $html->append($errors);
-                
+                foreach ($errors as $error) {
+                    $html->append($error);
+                }
+
                 $prologue .= $html->render($view);
             }
         }
