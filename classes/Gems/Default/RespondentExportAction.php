@@ -55,7 +55,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     {
         parent::init();
         
-        if (isset($this->project->export['wkhtmltopdf'])) {
+        if (isset($this->project->export) && isset($this->project->export['wkhtmltopdf'])) {
             $this->_wkhtmltopdfLocation = $this->project->export['wkhtmltopdf'];
         }
     }
