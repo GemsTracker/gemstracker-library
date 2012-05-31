@@ -277,7 +277,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         */
 
         $page->addEditAction('pr.respondent.edit')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
-        $page->addAction('Export', 'pr.export-html', 'export')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
+        $page->addAction($this->_('Export'), 'pr.export-html', 'export')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
@@ -558,7 +558,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
 
         // EXPORT TO HTML
-        $this->addContainer('Export respondent to html', 'pr.export-html', array('controller' => 'respondent-export', 'action'=>'index'));
+        $this->addContainer($this->_('Export respondent'), 'pr.export-html', array('controller' => 'respondent-export', 'action'=>'index'));
         
         // OTHER ITEMS
         $this->addLogonOffToken();
