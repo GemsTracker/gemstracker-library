@@ -149,14 +149,21 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $table->th($this->_('Survey'))
               ->th($this->_('Round'))
               ->th($this->_('Token'))
-              ->th($this->_('Completed'));
+              ->th($this->_('Status'));
         $this->html->br();
 
         while ($token) {
+            $missed = false;
+            $validUntil = $token->getValidUntil();
+            
+            if (!empty($validUntil)) {
+                $missed = $validUntil->isEarlier(new Zend_Date());
+            }
+            
             $table->tr()->td($token->getSurveyName())
                         ->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')))
                         ->td(strtoupper($token->getTokenId()))
-                        ->td(($token->isCompleted() ? $this->_('Yes') : $this->_('No')));
+                        ->td(($token->isCompleted() ? $this->_('Completed') : ($missed ? $this->_('Missed') : $this->_('Open'))));
             
             if ($engine->getTrackType() == 'S' || !$groupSurveys) { 
                 if ($token->isCompleted()) {
