@@ -157,12 +157,14 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                         ->td(strtoupper($token->getTokenId()))
                         ->td(($token->isCompleted() ? $this->_('Yes') : $this->_('No')));
             
-            if (($engine->getTrackType() == 'S' || !$groupSurveys) && $token->isCompleted()) {
-                $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
-                $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
-                	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
-                
-                $this->html->br();
+            if ($engine->getTrackType() == 'S' || !$groupSurveys) { 
+                if ($token->isCompleted()) {
+                    $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
+                    $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
+                    	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+                    
+                    $this->html->br();
+                }
             } else {
                 if (!isset($surveys[$token->getSurveyId()])) {
                     $surveys[$token->getSurveyId()] = true;
