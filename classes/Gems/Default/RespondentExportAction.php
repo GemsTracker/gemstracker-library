@@ -48,6 +48,9 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     
     protected $_wkhtmltopdfLocation = "";
     
+    protected $_groupedSurveySnippet = 'AnswerModelSnippet';
+    protected $_singleSurveySnippet  = 'TrackAnswersModelSnippet';
+    
     public function init()
     {
         parent::init();
@@ -156,7 +159,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
             
             if (($engine->getTrackType() == 'S' || !$groupSurveys) && $token->isCompleted()) {
                 $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
-                $this->addSnippet('AnswerModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
+                $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
                 	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
                 
                 $this->html->br();
@@ -165,7 +168,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                     $surveys[$token->getSurveyId()] = true;
                             
                     $this->html->span()->b($token->getSurveyName());
-                    $this->addSnippet('TrackAnswersModelSnippet', 'token', $token, 'tokenId', $token->getTokenId(),
+                    $this->addSnippet($this->_groupedSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
                     	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
                     
                     $this->html->br();
