@@ -307,7 +307,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         foreach ($respondents as $respondentId) {
             $this->_exportRespondent($respondentId);
             
-            $this->html->div(array('style' => 'height: 100px'));
+            $this->html->div('', array('style' => 'height: 100px'));
         }
         
         $this->escort->menu->setVisible(false);
