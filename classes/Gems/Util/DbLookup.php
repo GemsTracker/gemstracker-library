@@ -70,12 +70,6 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     protected $util;
 
     /**
-     *
-     * @var Zend_Session
-     */
-    protected $session;
-
-    /**
      * Retrieve a list of orgid/name pairs
      *
      * @staticvar array $organizations
@@ -148,11 +142,12 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     public function getAllowedStaffGroups()
     {
         $groups = $this->getActiveStaffGroups();
-        if ($this->session->user_role === 'master') {
+        $user = GemsEscort::getInstance()->getLoader()->getCurrentUser();
+        if ($user->getRole() === 'master') {
             return $groups;
 
         } else {
-            $rolesAllowed = $this->acl->getRoleAndParents($this->session->user_role);
+            $rolesAllowed = $user->getRoles();
             $roles        = $this->db->fetchPairs('SELECT ggp_id_group, ggp_role FROM gems__groups WHERE ggp_group_active=1 AND ggp_staff_members=1 ORDER BY ggp_name');
             $result       = array();
 

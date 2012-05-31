@@ -69,9 +69,41 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
+
+        $br = MUtil_Html::create('br');
+        $orgCount = count($model->get('gsf_id_organization', 'multiOptions'));
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
-                $bridge->addSortable($name, $label);
+                switch ($name) {
+                    case 'name':
+                        if ($orgCount > 1) {
+                            $bridge->addMultiSort('name', $br, 'gsf_email');
+                        } else {
+                            $bridge->addSortable($name, $label);
+                        }
+
+                        break;
+
+                    case 'gsf_email':
+                        if ($orgCount > 1) {
+                            //Do nothing as it is already linked in the 'name' field
+                        } else {
+                            $bridge->addSortable($name, $label);
+                        }
+                        break;
+
+                    case 'gsf_id_organization':
+                        if ($orgCount > 1) {
+                            $bridge->addSortable($name, $label);
+                        } else {
+                            //Don't show as it is always the same
+                        }
+                        break;
+
+                    default:
+                        $bridge->addSortable($name, $label);
+                        break;
+                }
             }
         }
         // Add edit button if allowed, otherwise show, again if allowed
@@ -102,9 +134,16 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $user = $this->loader->getUserLoader()->getUserByStaffId($data['gsf_id_user']);
             // MUtil_Echo::track($data['gsf_id_user'], $user->getLoginName());
         }
-        $dbLookup = $this->util->getDbLookup();
 
-        $model->set('gsf_id_primary_group', 'multiOptions', MUtil_Lazy::call($dbLookup->getAllowedStaffGroups));
+        // Find out if this group is in the inheritance path of the current user
+        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();        
+        if (!array_key_exists($data['gsf_id_primary_group'], $allowedGroups)) {
+            //Not allowed to update
+            $model->set('gsf_id_primary_group', 'elementClass', 'Exhibitor');
+        } else {
+            //Allow only certain groups
+            $model->set('gsf_id_primary_group', 'multiOptions', $allowedGroups);
+        }
         if ($new) {
             $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
         }
@@ -150,7 +189,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $bridge->addFilter(  'gsf_last_name',      $ucfirst);
         $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail');
 
-        $bridge->addSelect('gsf_id_primary_group');
+        $bridge->add('gsf_id_primary_group');
         $bridge->addCheckbox('gul_can_login', 'description', $this->_('Users can only login when this box is checked.'));
         $bridge->addCheckbox('gsf_logout_on_survey', 'description', $this->_('If checked the user will logoff when answering a survey.'));
 
