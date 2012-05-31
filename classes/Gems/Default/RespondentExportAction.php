@@ -72,6 +72,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         $element = new Zend_Form_Element_Text('id');
         $element->setLabel($this->_('Respondent number'));
+        $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
         $form->addElement($element);
         
         $element = new Zend_Form_Element_Checkbox('group');
@@ -262,6 +263,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
             }
         }
         
+        $this->html->h2($respondentId);
         $this->html[] = $bridge->getTable();
         $this->html->hr();
         
@@ -276,9 +278,9 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     /**
      * Renders the entire report (including layout)
      * 
-     * @param string $respondentId
+     * @param string[] $respondentId
      */
-    protected function _render($respondentId)
+    protected function _render($respondents)
     {
         $this->html = new MUtil_Html_Sequence();
         $this->html->h1($this->_('Respondent report'));
@@ -295,7 +297,11 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         $this->html->br();
         
-        $this->_exportRespondent($respondentId);
+        foreach ($respondents as $respondentId) {
+            $this->_exportRespondent($respondentId);
+            
+            $this->html->div(array('style' => 'height: 100px'));
+        }
         
         $this->escort->menu->setVisible(false);
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
@@ -338,11 +344,9 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $form->populate($request->getParams());
         
         if ($request->isPost()) {
-            $respondentId = $request->getParam('id');
+            $respondents = explode(',', $request->getParam('id'));
 
-            if (!empty($respondentId)) {
-                $this->_render($respondentId);
-            }
+            $this->_render($respondents);
         }
     }
 }
