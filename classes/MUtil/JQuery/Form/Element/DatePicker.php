@@ -159,7 +159,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                 }
             }
         }
-        if ($this->_dateValue instanceof Zend_date) {
+        if ($this->_dateValue instanceof Zend_Date) {
             $this->_applyDateFormat();
         } else {
             parent::setValue($value);

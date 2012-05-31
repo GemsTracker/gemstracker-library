@@ -150,7 +150,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
         $model->set('gr2t_start_date',   'label', $this->_('Start'),
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
-            'default', new Zend_date());
+            'default', new Zend_Date());
         $model->set('gr2t_reception_code');
 
         return $model;

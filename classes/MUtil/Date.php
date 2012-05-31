@@ -180,22 +180,22 @@ class MUtil_Date extends Zend_Date
 
     public function intDayOfYear($locale = null)
     {
-        return intval($this->get(Zend_date::DAY_OF_YEAR, $locale));
+        return intval($this->get(Zend_Date::DAY_OF_YEAR, $locale));
     }
 
     public function intMonth($locale = null)
     {
-        return intval($this->get(Zend_date::MONTH, $locale));
+        return intval($this->get(Zend_Date::MONTH, $locale));
     }
 
     public function intWeek($locale = null)
     {
-        return intval($this->get(Zend_date::WEEK, $locale));
+        return intval($this->get(Zend_Date::WEEK, $locale));
     }
 
     public function intYear($locale = null)
     {
-        return intval($this->get(Zend_date::YEAR, $locale));
+        return intval($this->get(Zend_Date::YEAR, $locale));
     }
 
     /**

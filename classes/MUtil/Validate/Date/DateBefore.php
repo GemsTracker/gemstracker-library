@@ -90,7 +90,7 @@ class MUtil_Validate_Date_DateBefore extends MUtil_Validate_Date_DateAbstract
             $this->_beforeDate = new Zend_Date();
         }
 
-        if ($this->_beforeDate instanceof Zend_date) {
+        if ($this->_beforeDate instanceof Zend_Date) {
             $before = $this->_beforeDate;
         } elseif (isset($context[$this->_beforeDate])) {
             $before = new Zend_Date($context[$this->_beforeDate], $this->getDateFormat());

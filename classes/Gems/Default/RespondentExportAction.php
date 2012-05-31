@@ -201,7 +201,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
         $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
             'formatFunction', $this->util->getTranslated()->formatDate,
-            'default', MUtil_Date::format(new Zend_date(), 'dd-MM-yyyy'));
+            'default', MUtil_Date::format(new Zend_Date(), 'dd-MM-yyyy'));
         $trackModel->set('gr2t_reception_code');
         $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));
         $trackModel->setFilter(array('gr2t_id_respondent_track' => $track->getRespondentTrackId()));
