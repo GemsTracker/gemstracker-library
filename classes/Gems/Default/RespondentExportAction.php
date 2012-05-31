@@ -105,8 +105,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _convertToPdf($content)
     {
-        $tempInputFilename  = tempnam(sys_get_temp_dir(), 'gemshtml') . '.html';
-        $tempOutputFilename = tempnam(sys_get_temp_dir(), 'gemspdf')  . '.pdf';
+        $tempInputFilename  = tempnam(GEMS_ROOT_DIR . '/var/tmp/', 'gemshtml') . '.html';
+        $tempOutputFilename = tempnam(GEMS_ROOT_DIR . '/var/tmp/', 'gemspdf')  . '.pdf';
 
         if (empty($tempInputFilename) || empty($tempOutputFilename)) {
             throw new Exception("Unable to create temporary file(s)");
@@ -244,6 +244,11 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $respondentModel = $this->loader->getModels()->getRespondentModel(false);
         $respondentModel->setFilter(array('gr2o_patient_nr' => $respondentId));
         $respondentData = $respondentModel->loadFirst();
+        
+        if (empty($respondentData)) {
+            $this->html->p()->b(sprintf('Unknown respondent %s', $respondentId));
+            return;
+        }
         
         $bridge = new MUtil_Model_VerticalTableBridge($respondentModel, array('class' => 'browser'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($respondentData)));
