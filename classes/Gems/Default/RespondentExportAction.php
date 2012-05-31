@@ -48,8 +48,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     
     protected $_wkhtmltopdfLocation = "";
     
-    protected $_groupedSurveySnippet = 'AnswerModelSnippet';
-    protected $_singleSurveySnippet  = 'TrackAnswersModelSnippet';
+    protected $_groupedSurveySnippet = 'TrackAnswersModelSnippet';
+    protected $_singleSurveySnippet  = 'AnswerModelSnippet';
     
     public function init()
     {
