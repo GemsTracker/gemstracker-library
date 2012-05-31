@@ -414,4 +414,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $params['respondentData'] = $data;
         $this->addSnippets($this->showSnippets, $params);
     }
+    
+    public function exportAction()
+    {
+        $this->_reroute(array('controller' => 'respondent-export', 'action' => 'index'));
+    }
 }

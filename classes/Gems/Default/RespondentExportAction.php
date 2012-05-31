@@ -70,7 +70,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $form = new Gems_Form_TableForm();
         $form->setAttrib('target', '_blank');
         
-        $element = new Zend_Form_Element_Text('respondentId');
+        $element = new Zend_Form_Element_Text('id');
         $element->setLabel($this->_('Respondent number'));
         $form->addElement($element);
         
@@ -333,10 +333,10 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         $request = $this->getRequest();
         
+        $form->populate($request->getParams());
+        
         if ($request->isPost()) {
-            $form->populate($request->getPost());
-            
-            $respondentId = $request->getParam('respondentId');
+            $respondentId = $request->getParam('id');
 
             if (!empty($respondentId)) {
                 $this->_render($respondentId);
