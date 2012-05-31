@@ -37,7 +37,7 @@
 
 /**
  * An abstract class for building snippets. Sub classes should override at least
- * getHtmlOutput(0 or render() to generate output.
+ * getHtmlOutput() or render() to generate output.
  *
  * This class add's to the interface helper variables and functions for:
  * - attribute use: $this->attributes, $this->class & applyHtmlAttributes()
