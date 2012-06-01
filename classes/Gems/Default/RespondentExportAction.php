@@ -72,7 +72,12 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         $element = new Zend_Form_Element_Text('id');
         $element->setLabel($this->_('Respondent number'));
-        $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
+        
+        // only show description if we got here directly (id is empty)
+        if ($this->getRequest()->getParam('id') == '') {
+            $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
+        }
+        
         $form->addElement($element);
         
         $element = new Zend_Form_Element_Checkbox('group');
@@ -141,9 +146,10 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     protected function _exportTrackTokens(Gems_Tracker_RespondentTrack $track)
     {
         $groupSurveys = $this->getRequest()->getParam('group');
-        $token = $track->getFirstToken();
-        $engine = $track->getTrackEngine();
-        $surveys = array();
+        $token        = $track->getFirstToken();
+        $engine       = $track->getTrackEngine();
+        $today        = new Zend_Date();
+        $surveys      = array();
         
         $table = $this->html->table(array('class' => 'browser'));
         $table->th($this->_('Survey'))
@@ -153,19 +159,27 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $this->html->br();
 
         while ($token) {
-            $missed = false;
-            $validUntil = $token->getValidUntil();
+            $status = $this->_('Open');
             
-            if (!empty($validUntil)) {
-                $missed = $validUntil->isEarlier(new Zend_Date());
+            if ($token->isCompleted()) {
+                $status = $this->_('Completed');    
+            } else {
+                $validFrom = $token->getValidFrom();
+                $validUntil = $token->getValidUntil();
+                
+                if (!empty($validUntil) && $validUntil->isEarlier($today)) {
+                    $status = $this->_('Missed');
+                } else if (!empty($validFrom) && $validFrom->isLater($today)) {
+                    $status = $this->_('Future');
+                }
             }
             
             $table->tr()->td($token->getSurveyName())
                         ->td(($engine->getTrackType() == 'T' ? $token->getRoundDescription() : $this->_('Single Survey')))
                         ->td(strtoupper($token->getTokenId()))
-                        ->td(($token->isCompleted() ? $this->_('Completed') : ($missed ? $this->_('Missed') : $this->_('Open'))));
+                        ->td($status);
             
-            if ($engine->getTrackType() == 'S' || !$groupSurveys) { 
+            if ($engine->getTrackType() == 'S' || !$groupSurveys) {
                 if ($token->isCompleted()) {
                     $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
                     $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
@@ -270,7 +284,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
             }
         }
         
-        $this->html->h2($respondentId);
+        $this->html->h2($this->_('Respondent information') . ': ' . $respondentId);
         $this->html[] = $bridge->getTable();
         $this->html->hr();
         
@@ -352,6 +366,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         if ($request->isPost()) {
             $respondents = explode(',', $request->getParam('id'));
+            $respondents = array_map('trim', $respondents);
 
             $this->_render($respondents);
         }
