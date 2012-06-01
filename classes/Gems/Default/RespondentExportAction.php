@@ -179,14 +179,17 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                         ->td(strtoupper($token->getTokenId()))
                         ->td($status);
             
+            if (!$token->isCompleted()) {
+                $token = $token->getNextToken();
+                continue;
+            }
+            
             if ($engine->getTrackType() == 'S' || !$groupSurveys) {
-                if ($token->isCompleted()) {
-                    $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
-                    $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
-                    	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
-                    
-                    $this->html->br();
-                }
+                $this->html->span()->b($token->getSurveyName() . ($token->getRoundDescription() ? ' (' . $token->getRoundDescription() . ')' : ''));
+                $this->addSnippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
+                	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+                
+                $this->html->br();
             } else {
                 if (!isset($surveys[$token->getSurveyId()])) {
                     $surveys[$token->getSurveyId()] = true;
@@ -270,7 +273,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $respondentData = $respondentModel->loadFirst();
         
         if (empty($respondentData)) {
-            $this->html->p()->b(sprintf('Unknown respondent %s', $respondentId));
+            $this->html->p()->b(sprintf($this->_('Unknown respondent %s'), $respondentId));
             return;
         }
         
