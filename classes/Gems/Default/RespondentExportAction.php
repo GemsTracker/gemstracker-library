@@ -106,14 +106,14 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
      */
     protected function _convertToPdf($content)
     {
-        $tempInputFilename  = tempnam(GEMS_ROOT_DIR . '/var/tmp/', 'gemshtml') . '.html';
-        $tempOutputFilename = tempnam(GEMS_ROOT_DIR . '/var/tmp/', 'gemspdf')  . '.pdf';
-
-        if (empty($tempInputFilename) || empty($tempOutputFilename)) {
-            throw new Exception("Unable to create temporary file(s)");
-        }
-
+        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
+        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+        
         file_put_contents($tempInputFilename, $content);
+
+        if (!file_exists($tempInputFilename)) {
+            throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
+        }
 
         $lastLine = exec(escapeshellarg($this->_wkhtmltopdfLocation) . ' ' . escapeshellarg($tempInputFilename)
             . ' ' . escapeshellarg($tempOutputFilename), $outputLines, $return);
