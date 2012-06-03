@@ -277,7 +277,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
         */
 
         $page->addEditAction('pr.respondent.edit')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
-        $page->addAction($this->_('Export'), 'pr.export-html', 'export')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
+        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
