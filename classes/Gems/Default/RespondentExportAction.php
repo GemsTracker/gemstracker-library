@@ -82,15 +82,16 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         
         $element = new Zend_Form_Element_Checkbox('group');
         $element->setLabel($this->_('Group surveys'));
+        $element->setValue(1);
         $form->addElement($element);
-        
-        $outputFormats = array('html' => 'HTML');
-        if (!empty($this->_wkhtmltopdfLocation)) {
-            $outputFormats['pdf'] = 'PDF';
-        }
         
         $element = new Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
+        $outputFormats = array('html' => 'HTML');
+        if (!empty($this->_wkhtmltopdfLocation)) {
+            $outputFormats['pdf'] = 'PDF';
+            $element->setValue('pdf');
+        }
         $element->setMultiOptions($outputFormats);
         $form->addElement($element);
         
