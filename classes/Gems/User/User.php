@@ -238,7 +238,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      *
      * @param Zend_Auth_Result $result
      */
-    protected function afterAuthorization(Zend_Auth_Result $result)
+    protected function afterAuthorization(Zend_Auth_Result $result, $lastAuthorizer = null)
     {
         try {
             $select = $this->db->select();
@@ -256,7 +256,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $values['gula_failed_logins']   = 0;
                 $values['gula_last_failed']     = null;
                 $values['gula_block_until']     = null;
-                $values['since_last']           = $this->failureBlockCount + 1;
+                $values['since_last']           = $this->failureIgnoreTime + 1;
             }
 
             if ($result->isValid()) {
@@ -270,7 +270,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 // Reset the counters when the last login was longer ago than the delay factor
                 if ($values['since_last'] > $this->failureIgnoreTime) {
                     $values['gula_failed_logins'] = 1;
-                } else {
+                } elseif ($lastAuthorizer === 'pwd') {
+                    // Only increment failed login when password failed
                     $values['gula_failed_logins'] += 1;
                 }
 
@@ -288,6 +289,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
                 // Always record the last fail
                 $values['gula_last_failed']     = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gula_failed_logins']   = max(1, $values['gula_failed_logins']);
 
                 // Response gets slowly slower
                 $sleepTime = min($values['gula_failed_logins'] - 1, 10) * 2;
@@ -323,7 +325,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $auths = $this->loadAuthorizers($password);
 
-        foreach ($auths as $result) {
+        $lastAuthorizer = null;
+        foreach ($auths as $lastAuthorizer => $result) {
             if (is_callable($result)) {
                 $result = call_user_func($result);
             }
@@ -357,7 +360,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             }
         }
 
-        $this->afterAuthorization($result);
+        $this->afterAuthorization($result, $lastAuthorizer);
 
         // MUtil_Echo::track($result);
         $this->_authResult = $result;
@@ -1086,15 +1089,15 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     protected function loadAuthorizers($password)
     {
+        if ($this->isBlockable()) {
+            $auths['block'] = array($this, 'authorizeBlock');
+        }
+        
         // organization ip restriction
         $auths['orgip'] = array($this, 'authorizeOrgIp');
 
         // group ip restriction
         $auths['ip'] = array($this, 'authorizeIp');
-
-        if ($this->isBlockable()) {
-            $auths['block'] = array($this, 'authorizeBlock');
-        }
 
         if ($this->isActive()) {
             $auths['pwd'] = $this->definition->getAuthAdapter($this, $password);
