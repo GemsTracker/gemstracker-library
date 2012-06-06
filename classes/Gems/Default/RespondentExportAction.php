@@ -138,6 +138,18 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 
         return $pdfContents;
     }
+    
+    /**
+     * Determines if this particular token should be included
+     * in the report
+     * 
+     * @param  Gems_Tracker_Token $token
+     * @return boolean This dummy implementation always returns true
+     */
+    protected function _isTokenInFilter(Gems_Tracker_Token $token)
+    {
+        return true;
+    }
 
     /**
      * Exports all the tokens of a single track, grouped by round
@@ -160,6 +172,11 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $this->html->br();
 
         while ($token) {
+            if (!$this->_isTokenInFilter($token)) {
+                $token = $token->getNextToken();
+                continue;
+            }
+            
             $status = $this->_('Open');
             
             if ($token->isCompleted()) {
