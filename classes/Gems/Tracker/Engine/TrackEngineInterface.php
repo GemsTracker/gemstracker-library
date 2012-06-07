@@ -79,10 +79,9 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param Gems_Tracker_ChangeTracker $changes Optional change tracker
-     * @return Gems_Tracker_ChangeTracker detailed info on changes
+     * @param Gems_Task_TaskRunnerBatch $changes batch for counters
      */
-    public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Tracker_ChangeTracker $changes = null);
+    public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch);
 
     /**
      * Check the valid from and until dates in the track starting at a specified token

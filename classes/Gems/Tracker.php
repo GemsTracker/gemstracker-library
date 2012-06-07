@@ -47,8 +47,8 @@
  * how tokens are created and checked), TokenSelect (Gems_Tracker_Token_TokenSelect
  * extension) and TokenValidator.
  *
- * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * processCompletedTokens() and recalculateTokensBatch().
+ * Other functions are general utility functions, e.g. checkTrackRoundsBatch(), createToken(),
+ * processCompletedTokensBatch() and recalculateTokensBatch().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -194,17 +194,18 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * Does recalculate changed tracks
      *
-     * @param int $userId
-     * @param string $cond
-     * @return array of translated messages
+     * @param string $batchId A unique identifier for the current batch
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param string $cond Optional where statement for selecting tracks
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds($userId = null, $cond = null)
+    public function checkTrackRoundsBatch($batchId, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
         $respTrackSelect = $this->db->select();
-        $respTrackSelect->from('gems__respondent2track');
-        $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code');
-        $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track');
+        $respTrackSelect->from('gems__respondent2track', array('gr2t_id_respondent_track'));
+        $respTrackSelect->join('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code', array());
+        $respTrackSelect->join('gems__tracks', 'gr2t_id_track = gtr_id_track', array());
 
         if ($cond) {
             $respTrackSelect->where($cond);
@@ -214,21 +215,21 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $respTrackSelect->where('gtr_active = 1');
         $respTrackSelect->where('gr2t_count != gr2t_completed');
 
-        self::$verbose = true;
+        $batch = $this->loader->getTaskRunnerBatch($batchId);
+        //Now set the step duration
+        $batch->minimalStepDurationMs = 3000;
 
-        $changes    = new Gems_Tracker_ChangeTracker();
-        $respTracks = $respTrackSelect->query()->fetchAll();
-
-        foreach ($respTracks as $respTrackData) {
-            $respTrack = $this->getRespondentTrack($respTrackData);
-
-            $respTrack->checkRounds($userId, $changes);
-            $changes->checkedRespondentTracks++;
-
-            unset($respTrack);
+        if (! $batch->isLoaded()) {
+            $statement = $respTrackSelect->query();
+            //Process one item at a time to prevent out of memory errors for really big resultsets
+            while ($respTrackData  = $statement->fetch()) {
+                $respTrackId = $respTrackData['gr2t_id_respondent_track'];
+                $batch->setTask('Tracker_CheckTrackRounds', 'trkchk-' . $respTrackId, $respTrackId, $userId);
+                $batch->addToCounter('resptracks');
+            }
         }
 
-        return $changes->getMessages($this->translate);
+        return $batch;
     }
 
     /**

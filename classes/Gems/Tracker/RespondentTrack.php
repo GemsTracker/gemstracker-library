@@ -318,20 +318,6 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Check for the existence of all tokens and create them otherwise
-     *
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @param Gems_Tracker_ChangeTracker $changes Optional change tracker
-     * @return Gems_Tracker_ChangeTracker detailed info on changes
-     */
-    public function checkRounds($userId, Gems_Tracker_ChangeTracker $changes = null)
-    {
-        $engine = $this->getTrackEngine();
-
-        return $engine->checkRoundsFor($this, $userId, $changes);
-    }
-
-    /**
      * Check this respondent track for changes to the tokens
      *
      * @param int $userId Id of the user who takes the action (for logging)
@@ -504,7 +490,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     {
         return $this->_respTrackData['gr2t_id_organization'];
     }
-    
+
     public function getReceptionCode()
     {
         return $this->_respTrackData['gr2t_reception_code'];

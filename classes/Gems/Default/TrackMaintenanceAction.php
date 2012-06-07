@@ -149,45 +149,27 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         return true;
     }
 
+    /**
+     * Action for checking all assigned rounds using a batch
+     */
     public function checkAllAction()
     {
-        $model = $this->getModel();
-        $data = $model->load(null, $this->sortKey);
-
-        if ($this->_getParam('confirmed')) {
-            $this->checkTrack();
-            $this->afterSaveRoute($this->getRequest());
-        }
-
-        $this->addMessage($this->_('This may take a while!'));
-        $this->html->h3($this->_('Check all tracks'));
-        $this->html->pInfo($this->_('Checking all tracks will update all existing rounds to the current surveys in the tracks instead of those in use when the track was created.'));
-        $this->html->pInfo($this->_('Completed tracks will not be changed. No new tokens will be created when later tokens were completed.'));
-        if ($data) {
-            $rdata = MUtil_Lazy::repeat($data);
-            $table = $this->html->table($rdata, array('class' => 'browser'));
-            $table->th($this->getTopicTitle());
-            $table->td()->a(array('action' => 'show', MUtil_Model::REQUEST_ID => $rdata->gtr_id_track), $rdata->gtr_track_name);
-
-            $this->html->h4('Are you sure you want to check all tracks?');
-            $this->html->actionLink(array('confirmed' => 1), $this->_('Yes'));
-            $this->html->actionLink(array('action' => 'index'), $this->_('No'));
-        } else {
-            $this->html->pInfo(sprintf($this->_('No %s found'), $this->getTopic(0)));
-        }
-        $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
+        $batch = $this->loader->getTracker()->checkTrackRoundsBatch('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
+        $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'));
     }
 
-    public function checkTrack($cond = null)
-    {
-        $tracker = $this->loader->getTracker();
-        $this->addMessage($tracker->checkTrackRounds($this->session->user_id, $cond));
-    }
-
+    /**
+     * Action for checking all assigned rounds for a single track using a batch
+     */
     public function checkTrackAction()
     {
-        $this->checkTrack($this->db->quoteInto('gr2t_id_track = ?', $this->_getIdParam()));
-        $this->afterSaveRoute($this->getRequest());
+        $id    = $this->_getIdParam();
+        $track = $this->loader->getTracker()->getTrackEngine($id);
+        $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
+        $batch = $this->loader->getTracker()->checkTrackRoundsBatch('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
+
+        $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
+        $this->_helper->BatchRunner($batch, $title);
     }
 
     public function createAction()

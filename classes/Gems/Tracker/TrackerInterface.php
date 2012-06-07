@@ -53,8 +53,8 @@
  * how tokens are created and checked), TokenSelect (Gems_Tracker_Token_TokenSelect
  * extension) and TokenValidator.
  *
- * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
- * processCompletedTokens() and recalculateTokensBatch().
+ * Other functions are general utility functions, e.g. checkTrackRoundsBatch(), createToken(),
+ * processCompletedTokensBatch() and recalculateTokensBatch().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -62,18 +62,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface Gems_Tracker_TrackerInterface {
+interface Gems_Tracker_TrackerInterface
+{
     /**
      * Checks tracks for changes to the the track and round definitions
      * and corrects them.
      *
      * Does recalculate changed tracks
      *
-     * @param int $userId
-     * @param string $cond
-     * @return array of translated messages
+     * @param string $batchId A unique identifier for the current batch
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param string $cond Optional where statement for selecting tracks
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRounds($userId = null, $cond = null);
+    public function checkTrackRoundsBatch($batchId, $userId = null, $cond = null);
 
     /**
      * Create a new track for a patient
