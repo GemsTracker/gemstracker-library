@@ -112,7 +112,9 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
             $href = $args['href'];
             unset($args['href']);
         } else {
-            $args['title'] = $email;
+            if (! isset($args['title'])) {
+                $args['title'] = $email;
+            }
             $href = array('mailto:', $email);
         }
         if (! isset($args['onclick'])) {
