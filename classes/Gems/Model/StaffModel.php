@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The staff model
  *
  * @package    Gems
@@ -47,14 +48,18 @@
  */
 class Gems_Model_StaffModel extends Gems_Model_ModelAbstract
 {
-    /**
-     * @var Gems_Loader
-     */
-    public $loader;
-
-    public function __construct()
+    public function __construct(Gems_Loader $loader)
     {
         parent::__construct('staff', 'gems__staff', 'gsf');
+
+        $allowedGroups = $loader->getUtil()->getDbLookup()->getAllowedStaffGroups();
+        if ($allowedGroups) {
+            $expr = new Zend_Db_Expr('CASE WHEN gsf_id_primary_group IN (' . implode(', ', array_keys($allowedGroups)) . ') THEN 1 ELSE 0 END');
+        } else {
+            $expr = new Zend_Db_Expr('0');
+        }
+        $this->addColumn($expr, 'accessible_role');
+        $this->set('accessible_role', 'default', 1);
     }
 
     /**

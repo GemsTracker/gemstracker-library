@@ -682,7 +682,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             if (! $name) {
                 // Use obfuscated login name
                 $name = $this->getLoginName();
-                $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
+                $name = substr($name, 0, 3) . str_repeat('*', max(5, strlen($name) - 2));
             }
 
             $this->_setVar('user_name', $name);
@@ -962,6 +962,20 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Return true if this user has a role that is accessible by the current user
+     *
+     * @return boolean
+     */
+    public function hasAllowedRole()
+    {
+        if ($allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups()) {
+            return isset($allowedGroups[$this->getGroup()]) ? 1 : 0;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Return true if this user has a password.
      *
      * @return boolean
@@ -1092,7 +1106,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($this->isBlockable()) {
             $auths['block'] = array($this, 'authorizeBlock');
         }
-        
+
         // organization ip restriction
         $auths['orgip'] = array($this, 'authorizeOrgIp');
 

@@ -175,10 +175,11 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     {
         if ($this->requestCache) {
             // Items that should not be stored.
-            $this->requestCache->removeParams('page', 'items', 'action');
+            $this->requestCache->removeParams('action');
 
             if ((! $this->baseUrl)) {
                 $this->baseUrl = $this->requestCache->getProgramParams();
+                // MUtil_Echo::track($this->baseUrl);
 
                 if (MUtil_Registry_Source::$verbose) {
                     MUtil_Echo::track($this->baseUrl);

@@ -1577,7 +1577,7 @@ class GemsEscort extends MUtil_Application_Escort
                     $this->setError(
                         $this->_('No access to page'),
                         403,
-                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->session->user_role)
+                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $user->getRole())
                         );
 
                 } else { // No longer logged in

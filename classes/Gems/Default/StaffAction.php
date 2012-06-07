@@ -44,15 +44,22 @@
  */
 class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 {
+    protected $_instanceId;
+    protected $_organizations;
+
+    /**
+     * The current user for detailed actions, set by createModel()
+     *
+     * @var Gems_User_User
+     */
+    protected $_user = false;
+
     //@@TODO What if we want a different one per organization?
     //Maybe check if org has a default and otherwise use this one?
     public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
 
     public $filterStandard = array('gsf_active' => 1);
     public $sortKey = array('name' => SORT_ASC);
-
-    protected $_instanceId;
-    protected $_organizations;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -106,9 +113,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
                 }
             }
         }
-        // Add edit button if allowed, otherwise show, again if allowed
+        // Add edit button if allowed
         if ($menuItem = $this->findAllowedMenuItem('edit')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+        // Add reset button if allowed
+        if ($menuItem = $this->findAllowedMenuItem('reset')) {
+            $bridge->addItemLink($menuItem->toActionLink($this->getRequest(), $bridge, $this->_('reset')));
         }
     }
 
@@ -128,24 +139,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     {
         // Sorry, for the time being no password complexity checking on new
         // users. Can be done, but is to complex for the moment.
-        if ($new) {
-            $user = false;
-        } else {
-            $user = $this->loader->getUserLoader()->getUserByStaffId($data['gsf_id_user']);
-            // MUtil_Echo::track($data['gsf_id_user'], $user->getLoginName());
-        }
 
         // Find out if this group is in the inheritance path of the current user
-        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();        
-        if (!array_key_exists($data['gsf_id_primary_group'], $allowedGroups)) {
-            //Not allowed to update
-            $model->set('gsf_id_primary_group', 'elementClass', 'Exhibitor');
-        } else {
-            //Allow only certain groups
-            $model->set('gsf_id_primary_group', 'multiOptions', $allowedGroups);
-        }
+        // and allow those certain groups
+        $model->set('gsf_id_primary_group', 'multiOptions', $this->util->getDbLookup()->getAllowedStaffGroups());
+
         if ($new) {
-            $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
+            $model->set('gsf_id_primary_group', 'default', $this->util->getDbLookup()->getDefaultGroup());
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
@@ -302,8 +302,26 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
-        // MUtil_Model::$verbose = true;
+        if ($detailed) {
+            // Make sure the user is loaded
+            $this->loadUser();
 
+            if ($this->_user) {
+                switch ($action) {
+                    case 'create':
+                    case 'show':
+                        break;
+
+                    default:
+                        if (! $this->_user->hasAllowedRole()) {
+                            throw new Gems_Exception($this->_('No access to page'), 403, null,
+                                sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->loader->getCurrentUser()->getRole()));
+                        }
+                }
+            }
+        }
+
+        // MUtil_Model::$verbose = true;
         $model = $this->loader->getModels()->getStaffModel();
 
         $model->set('gsf_login',            'label', $this->_('Username'));
@@ -338,6 +356,43 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $model->setDeleteValues('gsf_active', 0, 'gul_can_login', 0);
 
         return $model;
+    }
+
+    /**
+     * Return an array with route options depending on de $data given.
+     *
+     * @param mixed $data array or Zend_Controller_Request_Abstract
+     * @return mixed array with route options or false when no redirect is found
+     */
+    public function getAfterSaveRoute($data)
+    {
+        if (! $this->_user) {
+            $this->_user = $this->loader->getUser($data['gul_login'], $data['gul_id_organization']);
+        }
+        MUtil_Echo::track($this->_user->canSetPassword());
+
+        if ($this->_user->canSetPassword()) {
+            if ($currentItem = $this->menu->getCurrent()) {
+                $controller = $this->_getParam('controller');
+
+                if ($data instanceof Zend_Controller_Request_Abstract) {
+                    $refData = $data;
+                    $refData->setParam('accessible_role', $this->_user->hasAllowedRole());
+                } elseif (is_array($data)) {
+                    $refData = $this->getModel()->getKeyRef($data) + $data;
+                    $refData['accessible_role'] = $this->_user->hasAllowedRole();
+                } else {
+                    throw new Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
+                }
+
+                // Look for reset
+                if ($menuItem = $this->menu->findController($controller, 'reset')) {
+                    return $menuItem->toRouteUrl($refData);
+                }
+            }
+        }
+
+        return parent::getAfterSaveRoute($data, $isNew);
     }
 
     protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
@@ -415,20 +470,17 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         return $this->_('Staff');
     }
 
-    public function init()
+    /**
+     * Load the user selected by the request - if any
+     */
+    protected function loadUser()
     {
-        parent::init();
-
-        //Make sure the menu always has the gsd_id_organization parameter
-        $orgId = $this->getRequest()->getParam('gsf_id_organization');
-
-        if (is_null($orgId)) {
-            //Get the selected gsf_id_organization used in the index
-            $dataIdx = $this->getCachedRequestData(true, 'index', true);
-            $orgId = isset($dataIdx['gsf_id_organization']) ? $dataIdx['gsf_id_organization'] : $this->loader->getCurrentUser()->getCurrentOrganizationId();
+        if ($staff_id = $this->_getIdParam()) {
+            $this->_user = $this->loader->getUserLoader()->getUserByStaffId($staff_id);
+            $source      = $this->menu->getParameterSource();
+            $source->offsetSet('gsf_id_organization', $this->_user->getBaseOrganizationId());
+            $source->offsetSet('accessible_role',     $this->_user->hasAllowedRole());
         }
-
-        $this->menu->getParameterSource()->offsetSet('gsf_id_organization', $orgId);
     }
 
     /**
@@ -436,12 +488,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      */
     public function resetAction()
     {
-        $staff_id = $this->_getIdParam();
-        $user     = $this->loader->getUserLoader()->getUserByStaffId($staff_id);
+        // Make sure the user is loaded
+        $this->loadUser();
 
-        $this->html->h3(sprintf($this->_('Reset password for: %s'), $user->getFullName()));
+        $this->html->h3(sprintf($this->_('Reset password for: %s'), $this->_user->getFullName()));
 
-        if (! $user->canSetPassword()) {
+        if (! ($this->_user->hasAllowedRole() && $this->_user->canSetPassword())) {
             $this->addMessage($this->_('You are not allowed to change this password.'));
             return;
         }
@@ -449,7 +501,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         /*************
          * Make form *
          *************/
-        $form = $user->getChangePasswordForm(array('askOld' => false));
+        $form = $this->_user->getChangePasswordForm(array('askOld' => false));
 
         /****************
          * Process form *
@@ -464,11 +516,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         /****************
          * Display form *
          ****************/
-        if ($user->isPasswordResetRequired()) {
+        if ($this->_user->isPasswordResetRequired()) {
             $this->menu->setVisible(false);
         } else {
             $form->addButtons($this->createMenuLinks());
         }
+
+        $this->beforeFormDisplay($form, false);
 
         $this->html[] = $form;
     }

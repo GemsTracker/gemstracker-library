@@ -264,7 +264,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      */
     public function getStaffModel()
     {
-        $model = $this->_loadClass('StaffModel', true);
+        $model = $this->_loadClass('StaffModel', true, array($this->loader));
 
         $this->addUserLogin($model, 'gsf_login', 'gsf_id_organization');
         $this->setAsGemsUserId($model, 'gsf_id_user');

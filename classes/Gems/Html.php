@@ -147,7 +147,8 @@ class Gems_Html
             $args['class'] = new MUtil_Html_ClassArrayAttribute('browselink');
         }
 
-        // MUtil_Echo::r($args);
+        // MUtil_Echo::track($args);
+        // MUtil_Echo::track($panel_args['baseUrl']);
         $pager = new MUtil_Html_PagePanel($panel_args);
 
         $pager[] = $pager->pageLinks(

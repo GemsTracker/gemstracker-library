@@ -49,6 +49,10 @@
  */
 class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Procrastinator
 {
+    /**
+     *
+     * @var array
+     */
     protected $_baseUrl = array();
 
     protected $_currentPage;
@@ -201,7 +205,10 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
             if ($param_name = $this->getCurrentPageParam()) {
                 $request = $this->getRequest();
 
-                if ($currentPage = $request->getParam($param_name)) {
+                if (isset($this->_baseUrl[$param_name])) {
+                    $this->_currentPage = $this->_baseUrl[$param_name];
+                    // Set cookie
+                } elseif ($currentPage = $request->getParam($param_name)) {
                     $this->_currentPage = $currentPage;
                     // Set cookie
                 } elseif ($request instanceof Zend_Controller_Request_Http) {
@@ -231,9 +238,16 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
             if ($param_name = $this->getItemCountParam()) {
                 $request = $this->getRequest();
 
-                if ($itemCount = $request->getParam($param_name)) {
+                if (isset($this->_baseUrl[$param_name])) {
+                    $this->_itemCount = $this->_baseUrl[$param_name];
+                } elseif ($itemCount = $request->getParam($param_name)) {
                     $this->_itemCount = $itemCount;
-                    setcookie($param_name, $itemCount, time() + (30 * 86400), $this->getCookieLocation());
+                }
+
+                if ($this->_itemCount) {
+                    // Store
+                    setcookie($param_name, $this->_itemCount, time() + (30 * 86400), $this->getCookieLocation());
+
                 } elseif ($request instanceof Zend_Controller_Request_Http) {
                     $this->_itemCount = $request->getCookie($param_name, $this->_itemCount);
                 }
