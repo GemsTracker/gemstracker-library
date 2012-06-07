@@ -59,6 +59,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->register(array($this, 'Upgrade150to151'), 'Upgrade from 1.5.0 to 1.5.1');
         $this->register(array($this, 'Upgrade151to152'), 'Upgrade from 1.5.1 to 1.5.2');
         $this->register(array($this, 'Upgrade152to153'), 'Upgrade from 1.5.2 to 1.5.3');
+        $this->register(array($this, 'Upgrade153to154'), 'Upgrade from 1.5.3 to 1.5.4');
     }
 
 
@@ -113,6 +114,17 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     public function Upgrade152to153()
     {
         $this->_batch->addTask('Db_ExecutePatch', 46);
+
+        return true;
+    }
+
+    /**
+     * To upgrade to 1.5.4 just execute patchlevel 47
+     */
+    public function Upgrade152to153()
+    {
+        $this->_batch->addTask('Db_ExecutePatch', 47);
+        $this->_batch->addMessage($text);
 
         return true;
     }
