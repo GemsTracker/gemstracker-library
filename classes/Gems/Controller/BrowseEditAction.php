@@ -939,7 +939,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                         }
 
                         //MUtil_Echo::r($data, 'after process');
-                        if ($this->afterSaveRoute($data, $isNew)) {
+                        if ($this->afterSaveRoute($data)) {
                             return null;
                         }
                     }

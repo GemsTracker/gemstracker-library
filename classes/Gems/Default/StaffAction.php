@@ -369,7 +369,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         if (! $this->_user) {
             $this->_user = $this->loader->getUser($data['gul_login'], $data['gul_id_organization']);
         }
-        MUtil_Echo::track($this->_user->canSetPassword());
+        //MUtil_Echo::track($this->_user->canSetPassword());
 
         if ($this->_user->canSetPassword()) {
             if ($currentItem = $this->menu->getCurrent()) {
