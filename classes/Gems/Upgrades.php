@@ -121,10 +121,9 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     /**
      * To upgrade to 1.5.4 just execute patchlevel 47
      */
-    public function Upgrade152to153()
+    public function Upgrade153to154()
     {
         $this->_batch->addTask('Db_ExecutePatch', 47);
-        $this->_batch->addMessage($text);
 
         return true;
     }

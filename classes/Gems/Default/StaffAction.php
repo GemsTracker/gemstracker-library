@@ -136,8 +136,8 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
 
         // Find out if this group is in the inheritance path of the current user
-        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();        
-        if (!array_key_exists($data['gsf_id_primary_group'], $allowedGroups)) {
+        $allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups();
+        if (! ($new || array_key_exists($data['gsf_id_primary_group'], $allowedGroups))) {
             //Not allowed to update
             $model->set('gsf_id_primary_group', 'elementClass', 'Exhibitor');
         } else {
@@ -145,7 +145,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $model->set('gsf_id_primary_group', 'multiOptions', $allowedGroups);
         }
         if ($new) {
-            $model->set('gsf_id_primary_group', 'default', $dbLookup->getDefaultGroup());
+            $model->set('gsf_id_primary_group', 'default', $this->util->getDbLookup()->getDefaultGroup());
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
