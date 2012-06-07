@@ -1,3 +1,12 @@
+Important changes from 1.5.3 => 1.5.4
+============================================================
+New logLevel project.ini setting
+Added export of all patient data on a single page or PDF (if binary specified in project.ini)
+Fixed a lot of issues with staff not being able to login or not being created
+Fixed handling of token return on multi-url sites
+Added maximum number of reminders sent to tokens
+Fixed several date display and editing issues
+
 Important changes from 1.5.2 => 1.5.3
 ============================================================
 People can login using their e-mail address as user name. This can be activated by for respondents and staff seperately, by default this is off for both.
