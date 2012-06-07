@@ -164,6 +164,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $table     = $this->getBrowseTable($search);
         $paginator = $model->loadPaginator();
         $table->setRepeater($paginator);
+
+        // Apply request cache to request, so pagination is preserved too
+        $request->setParams(array_intersect_key($search, array('page'=>1,'items'=>1)));
         $table->tfrow()->pagePanel($paginator, $request, $this->translate, $params);
 
         if (isset($sequence)) {
@@ -614,7 +617,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $this->requestCache->setRequest($this->request);
 
             // Button text should not be stored.
-            $this->requestCache->removeParams(self::SEARCH_BUTTON, 'page', 'items', 'action');
+            $this->requestCache->removeParams(self::SEARCH_BUTTON, /*'page', 'items',*/ 'action');
         }
 
         $data = $this->requestCache->getProgramParams();
