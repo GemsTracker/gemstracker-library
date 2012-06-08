@@ -189,6 +189,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                     $status = $this->_('Missed');
                 } else if (!empty($validFrom) && $validFrom->isLater($today)) {
                     $status = $this->_('Future');
+                } else if (empty($validFrom) && empty($validUntil)) {
+                    $status = $this->_('Future');
                 }
             }
             
