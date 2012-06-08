@@ -93,7 +93,11 @@ class MUtil_Validate_Date_DateAfter extends MUtil_Validate_Date_DateAbstract
         if ($this->_afterDate instanceof Zend_Date) {
             $after = $this->_afterDate;
         } elseif (isset($context[$this->_afterDate])) {
-            $after = new Zend_Date($context[$this->_afterDate], $this->getDateFormat());
+            if (!empty($context[$this->_afterDate])) {
+                $after = new Zend_Date($context[$this->_afterDate], $this->getDateFormat());
+            } else {
+                $after = new Zend_Date();
+            }
         } else {
             $after = new Zend_Date($this->_afterDate);
         }
