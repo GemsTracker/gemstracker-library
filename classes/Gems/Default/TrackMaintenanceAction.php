@@ -154,7 +154,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->checkTrackRoundsBatch('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
         $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'));
     }
 
@@ -166,7 +166,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $id    = $this->_getIdParam();
         $track = $this->loader->getTracker()->getTrackEngine($id);
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
-        $batch = $this->loader->getTracker()->checkTrackRoundsBatch('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
 
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title);

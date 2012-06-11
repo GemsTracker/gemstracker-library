@@ -47,8 +47,8 @@
  * how tokens are created and checked), TokenSelect (Gems_Tracker_Token_TokenSelect
  * extension) and TokenValidator.
  *
- * Other functions are general utility functions, e.g. checkTrackRoundsBatch(), createToken(),
- * processCompletedTokensBatch() and recalculateTokensBatch().
+ * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
+ * processCompletedTokens() and recalculateTokens().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -199,7 +199,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param string $cond Optional where statement for selecting tracks
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRoundsBatch($batchId, $userId = null, $cond = null)
+    public function checkTrackRounds($batchId, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
         $respTrackSelect = $this->db->select();
@@ -754,32 +754,10 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * @param int $respondentId  Id of the respondent to check for or NULL
      * @param int $userId        Id of the user who takes the action (for logging)
+     * @param int $orgId         Optional Id of the organization to check for
      * @return bool              Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null)
-    {
-        return $this->processCompletedTokensBatch($respondentId, $userId, null);
-
-        /*$userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect(true)
-                ->onlyActive()
-                ->forRespondent($respondentId)
-                ->andReceptionCodes()
-                ->order('gto_round_order DESC');
-
-        $changes = $this->processTokens($tokenSelect, $userId);
-
-        if (self::$verbose) {
-            if ($t = Zend_Registry::get('Zend_Translate')) {
-                MUtil_Echo::r($changes->getMessages($t), $t->_('Checks performed'));
-            }
-        }
-
-        return $changes->hasChanged();
-         */
-    }
-
-    public function processCompletedTokensBatch($respondentId, $userId = null, $orgId = null)
+    public function processCompletedTokens($respondentId, $userId = null, $orgId = null)
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect();
@@ -788,7 +766,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
                     ->andSurveys(array())
                     ->forWhere('gsu_surveyor_active = 1');
 
-        if (!is_null($orgId)) {
+        if (null !== $orgId) {
             $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
         }
 
@@ -813,70 +791,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
         $batch->reset();
         return $changed;
-    }
-
-    /**
-     * Checks the token table to see if there are any answered surveys to be processed
-     *
-     * If the survey was started (and the token was forwarded to limesurvey) we need to check
-     * if is was completed. If so, we might want to check the track the survey is in to enable
-     * or disable future rounds
-     *
-     * Does not reflect changes to tracks or rounds.
-     *
-     * @param Gems_Tracker_Token_TokenSelect Select statements selecting tokens
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @return Gems_Tracker_ChangeTracker What changes have taken places
-     */
-    protected function processTokens(Gems_Tracker_Token_TokenSelect $tokenSelect, $userId)
-    {
-        $tokenRows = $tokenSelect->fetchAll();
-        $changes   = new Gems_Tracker_ChangeTracker();
-        $tokens    = array();
-
-        // FIRST: process each individual token
-        foreach ($tokenRows as $tokenData) {
-
-            $changes->checkedTokens++;
-            $token = $this->getToken($tokenData);
-            $tokens[] = $token;
-
-            if ($result = $token->checkTokenCompletion($userId)) {
-                if ($result & Gems_Tracker_Token::COMPLETION_DATACHANGE) {
-                    $changes->resultDataChanges++;
-                }
-                if ($result & Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
-                    $changes->surveyCompletionChanges++;
-                }
-            }
-        }
-
-        $respTracks = array();
-
-        // SECOND: Process the completed rounds (all tokens now have any new values from answered surveys)
-        foreach ($tokens as $token) {
-            if ($token->isCompleted()) {
-                $respTrack = $token->getRespondentTrack();
-                $respTracks[$respTrack->getRespondentTrackId()] = $respTrack;
-
-                if ($result = $respTrack->handleRoundCompletion($token, $userId)) {
-                    $changes->roundCompletionCauses++;
-                    $changes->roundCompletionChanges += $result;
-                }
-            }
-        }
-
-        if ($respTracks) {
-            // THIRD: Process date changes
-            foreach ($respTracks as $respTrackId => $respTrack) {
-                if ($result = $respTrack->checkTrackTokens($userId)) {
-                    $changes->tokenDateCauses++;
-                    $changes->tokenDateChanges += $result;
-                }
-            }
-        }
-
-        return $changes;
     }
 
     /**
@@ -924,7 +838,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param int $userId Id of the user who takes the action (for logging)
      * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
      */
-    public function synchronizeSourcesBatch($sourceId = null, $userId = null)
+    public function synchronizeSources($sourceId = null, $userId = null)
     {
         $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
         $batch = $this->loader->getTaskRunnerBatch($batch_id);
@@ -959,7 +873,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param string $cond
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokensBatch($batch_id, $userId = null, $cond = null)
+    public function recalculateTokens($batch_id, $userId = null, $cond = null)
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
@@ -985,7 +899,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param string $cond An optional where statement
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributesBatch($batch_id, $cond = null)
+    public function refreshTokenAttributes($batch_id, $cond = null)
     {
         $batch = $this->loader->getTaskRunnerBatch($batch_id);
 

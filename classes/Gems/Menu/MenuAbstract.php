@@ -418,10 +418,10 @@ abstract class Gems_Menu_MenuAbstract
         $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
         $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check answers'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
-        $page->addAction($this->_('Check all answers'), 'pr.source.check-answers-all', 'check-all');
+        $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
@@ -430,8 +430,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
-        $page->addAction($this->_('Check answers'), 'pr.survey-maintenance.check', 'check')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check all answers'), 'pr.survey-maintenance.check-all', 'check-all');
+        $page->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
 
         $page->addAutofilterAction();
 

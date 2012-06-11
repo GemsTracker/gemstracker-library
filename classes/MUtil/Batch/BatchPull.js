@@ -33,8 +33,8 @@ jQuery.widget("ui.pullProgressPanel", {
     },
 
     error: function (request, status, error) {
-        alert('Communication error: ' + status);
-        this.progressTarget.after('<p>' + request.responseText + '</p>');
+        // alert('Communication error: ' + status);
+        this.progressTarget.after('<h3>Communication error</h3><p><strong>' + status + '</strong><br/>' + request.responseText + '</p>');
         // console.log(request);
     },
 

@@ -53,8 +53,8 @@
  * how tokens are created and checked), TokenSelect (Gems_Tracker_Token_TokenSelect
  * extension) and TokenValidator.
  *
- * Other functions are general utility functions, e.g. checkTrackRoundsBatch(), createToken(),
- * processCompletedTokensBatch() and recalculateTokensBatch().
+ * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
+ * processCompletedTokens() and recalculateTokens().
  *
  * @package    Gems
  * @subpackage Tracker
@@ -75,7 +75,7 @@ interface Gems_Tracker_TrackerInterface
      * @param string $cond Optional where statement for selecting tracks
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function checkTrackRoundsBatch($batchId, $userId = null, $cond = null);
+    public function checkTrackRounds($batchId, $userId = null, $cond = null);
 
     /**
      * Create a new track for a patient
@@ -283,9 +283,10 @@ interface Gems_Tracker_TrackerInterface
      *
      * @param int $respondentId  Id of the respondent to check for or NULL
      * @param int $userId        Id of the user who takes the action (for logging)
+     * @param int $orgId         Optional Id of the organization to check for
      * @return bool              Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null);
+    public function processCompletedTokens($respondentId, $userId = null, $orgId = null);
 
     /**
      * Recalculates all token dates, timing and results
@@ -297,7 +298,7 @@ interface Gems_Tracker_TrackerInterface
      * @param int $userId Id of the user who takes the action (for logging)
      * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
      */
-    public function synchronizeSourcesBatch($sourceId = null, $userId = null);
+    public function synchronizeSources($sourceId = null, $userId = null);
 
     /**
      * Recalculates all token dates, timing and results
@@ -310,7 +311,7 @@ interface Gems_Tracker_TrackerInterface
      * @param string $cond
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function recalculateTokensBatch($batch_id, $userId = null, $cond = null);
+    public function recalculateTokens($batch_id, $userId = null, $cond = null);
 
     /**
      * Refreshes the tokens in the source
@@ -319,5 +320,5 @@ interface Gems_Tracker_TrackerInterface
      * @param string $cond An optional where statement
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
-    public function refreshTokenAttributesBatch($batch_id, $cond = null);
+    public function refreshTokenAttributes($batch_id, $cond = null);
 }

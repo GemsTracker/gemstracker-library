@@ -244,13 +244,13 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         // Set the value of the field in the database.
         $new_name = $data['gsu_id_survey'] . '.pdf';
-        
+
         if (file_exists($form->new_pdf->getDestination() . DIRECTORY_SEPARATOR . $new_name)) {
             $data['gsu_survey_pdf'] = $new_name;
         } else {
             $data['gsu_survey_pdf'] = null;
         }
-        
+
         $data['gtr_track_class'] = 'SingleSurveyEngine';
 
         // feature request #200
@@ -274,7 +274,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $surveyId = $this->_getParam(MUtil_Model::REQUEST_ID);
         $where    = $this->db->quoteInto('gto_id_survey = ?', $surveyId);
 
-        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheck' . $surveyId, $this->loader->getCurrentUser()->getUserId(), $where);
 
         $title = sprintf($this->_('Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
@@ -286,7 +286,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Checking survey results for all surveys.');
         $this->_helper->BatchRunner($batch, $title);

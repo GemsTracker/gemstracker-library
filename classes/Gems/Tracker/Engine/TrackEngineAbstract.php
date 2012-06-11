@@ -410,20 +410,25 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch)
     {
         //Step one: update existing tokens
-        $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
+        $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
+        $batch->setMessage('roundChangeUpdates', sprintf($this->_('Round changes propagated to %d tokens.'), $i));
 
         //Step two: deactivate inactive rounds
-        $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack, $userId));
+        $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack, $userId));
+        $batch->setMessage('deletedTokens', sprintf($this->_('%d tokens deleted by round changes.'), $i));
 
         // Step three: create lacking tokens
-        $batch->addToCounter('createdTokens', $this->addNewTokens($respTrack, $userId));
+        $i = $batch->addToCounter('createdTokens', $this->addNewTokens($respTrack, $userId));
+        $batch->setMessage('createdTokens', sprintf($this->_('%d tokens created to by round changes.'), $i));
 
         // Step four: set the dates and times
         $changed = $this->checkTokensFromStart($respTrack, $userId);
-        if ($changed) {
-            $batch->addToCounter('tokenDateCauses');
-            $batch->addToCounter('tokenDateChanges', $changed);
-        }
+        $ica = $batch->addToCounter('tokenDateCauses', $changed ? 1 : 0);
+        $ich = $batch->addToCounter('tokenDateChanges', $changed);
+        $batch->setMessage('tokenDateChanges', sprintf($this->_('%2$d token date changes in %1$d tracks.'), $ica, $ich));
+
+        $i = $batch->addToCounter('checkedRespondentTracks');
+        $batch->setMessage('checkedRespondentTracks', sprintf($this->_('Checked %d tracks.'), $i));
     }
 
     /**

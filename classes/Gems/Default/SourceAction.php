@@ -111,7 +111,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gsu_id_source = ?', $sourceId);
 
-        $batch = $this->loader->getTracker()->refreshTokenAttributesBatch('sourceCheck' . $sourceId, $where);
+        $batch = $this->loader->getTracker()->refreshTokenAttributes('sourceCheck' . $sourceId, $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -127,7 +127,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gto_id_survey IN (SELECT gsu_id_survey FROM gems__surveys WHERE gsu_id_source = ?)', $sourceId);
 
-        $batch = $this->loader->getTracker()->recalculateTokensBatch('sourceCheck' . $sourceId, $this->loader->getCurrentUser()->getUserId(), $where);
+        $batch = $this->loader->getTracker()->recalculateTokens('sourceCheck' . $sourceId, $this->loader->getCurrentUser()->getUserId(), $where);
 
         $title = sprintf($this->_('Checking survey results for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -139,7 +139,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
      */
     public function checkAllAction()
     {
-        $batch = $this->loader->getTracker()->recalculateTokensBatch('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Checking survey results for all sources.');
         $this->_helper->BatchRunner($batch, $title);
@@ -238,7 +238,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     {
         $sourceId = $this->getSourceId();
 
-        $batch = $this->loader->getTracker()->synchronizeSourcesBatch($sourceId, $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->synchronizeSources($sourceId, $this->loader->getCurrentUser()->getUserId());
 
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -251,11 +251,11 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     public function synchronizeAllAction()
     {
         //*
-        $batch = $this->loader->getTracker()->synchronizeSourcesBatch(null, $this->loader->getCurrentUser()->getUserId());
+        $batch = $this->loader->getTracker()->synchronizeSources(null, $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Synchronize all sources.');
         $this->_helper->BatchRunner($batch, $title);
-        
+
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
     }
 }

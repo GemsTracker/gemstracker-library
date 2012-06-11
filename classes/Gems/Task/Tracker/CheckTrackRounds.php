@@ -60,6 +60,5 @@ class Gems_Task_Tracker_CheckTrackRounds extends Gems_Task_TaskAbstract
         $engine        = $respTrack->getTrackEngine();
 
         $engine->checkRoundsFor($respTrack, $userId, $this->_batch);
-        $this->_batch->addToCounter('checkedRespondentTracks');
     }
 }
