@@ -49,12 +49,14 @@ class MUtil_Validate_Date_DateAfter extends MUtil_Validate_Date_DateAbstract
      * Error constants
      */
     const NOT_AFTER = 'notAfter';
+    const NO_VALIDFROM = 'noValidFrom';
 
     /**
      * @var array Message templates
      */
     protected $_messageTemplates = array(
         self::NOT_AFTER => "Date should be '%dateAfter%' or later.",
+        self::NO_VALIDFROM => "Should be empty if valid from date is not set."
     );
 
     /**
@@ -93,11 +95,12 @@ class MUtil_Validate_Date_DateAfter extends MUtil_Validate_Date_DateAbstract
         if ($this->_afterDate instanceof Zend_Date) {
             $after = $this->_afterDate;
         } elseif (isset($context[$this->_afterDate])) {
-            if (!empty($context[$this->_afterDate])) {
-                $after = new Zend_Date($context[$this->_afterDate], $this->getDateFormat());
-            } else {
-                $after = new Zend_Date();
+            if (empty($context[$this->_afterDate])) {
+                $this->_error(self::NO_VALIDFROM);
+                return false;
             }
+            
+            $after = new Zend_Date($context[$this->_afterDate], $this->getDateFormat());
         } else {
             $after = new Zend_Date($this->_afterDate);
         }

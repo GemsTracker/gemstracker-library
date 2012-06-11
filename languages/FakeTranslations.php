@@ -48,6 +48,7 @@ _('You are not allowed to login from this location.');
 
 // MUtil_Validate_Date_DateAfter
 _("Date should be '%dateAfter%' or later.");
+_("Should be empty if valid from date is not set.");
 
 // MUtil_Validate_Date_DateBefore
 _("Date should be '%dateBefore%' or earlier.");

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-11 11:32+0100\n"
+"POT-Creation-Date: 2012-06-11 11:34+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Michiel Rook <info@touchdownconsulting.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4014,72 +4014,76 @@ msgstr "Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s min
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Datum moet later vallen dan '%dateAfter%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:53
+#: languages/FakeTranslations.php:51
+msgid "Should be empty if valid from date is not set."
+msgstr "Moet leeg zijn als 'afname op' niet is ingevuld."
+
+#: languages/FakeTranslations.php:54
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Datum moet vallen voor '%dateBefore%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:56
+#: languages/FakeTranslations.php:57
 msgid "%value% is not a valid date."
 msgstr "%value% is geen geldige datum."
 
-#: languages/FakeTranslations.php:59
+#: languages/FakeTranslations.php:60
 msgid "No record matching %value% was found."
 msgstr "Geen gegevens gevonden die overeenkomen met %value%."
 
-#: languages/FakeTranslations.php:60
+#: languages/FakeTranslations.php:61
 msgid "A duplicate record matching '%value%' was found."
 msgstr "De waarde '%value%' is al in gebruik."
 
-#: languages/FakeTranslations.php:63
+#: languages/FakeTranslations.php:64
 msgid "This is not a valid %testDescription%."
 msgstr "%testDescription% is niet geldig."
 
-#: languages/FakeTranslations.php:64
+#: languages/FakeTranslations.php:65
 msgid "A %testDescription% cannot contain letters."
 msgstr "Een %testDescription% mag geen letters bevatten."
 
-#: languages/FakeTranslations.php:65
+#: languages/FakeTranslations.php:66
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr "%value% is te lang voor een %testDescription%. Die moet %length% cijfers lang zijn."
 
-#: languages/FakeTranslations.php:66
+#: languages/FakeTranslations.php:67
 msgid "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr "%value% is te kort voor een %testDescription%. Die moet %length% cijfers lang zijn."
 
-#: languages/FakeTranslations.php:72
+#: languages/FakeTranslations.php:73
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
 
-#: languages/FakeTranslations.php:75
+#: languages/FakeTranslations.php:76
 msgid "Unsupported PDF version %value% - only versions 1.0 - 1.4 are supported."
 msgstr "Deze PDF heeft een versie (%value%) die niet ondersteund wordt, slechts versies 1.0-1.4 worden ondersteund."
 
-#: languages/FakeTranslations.php:78
+#: languages/FakeTranslations.php:79
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr " '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen kiezen."
 
-#: languages/FakeTranslations.php:82
+#: languages/FakeTranslations.php:83
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
 
-#: languages/FakeTranslations.php:85
+#: languages/FakeTranslations.php:86
 msgid "'%value%' is not a series of email addresses (e.g. name@somewhere.com, nobody@nowhere.org)."
 msgstr "'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, niemand@nergens.net)."
 
-#: languages/FakeTranslations.php:88
+#: languages/FakeTranslations.php:89
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' mag alleen cijfers bevatten"
 
-#: languages/FakeTranslations.php:89
+#: languages/FakeTranslations.php:90
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is leeg"
 
-#: languages/FakeTranslations.php:90
+#: languages/FakeTranslations.php:91
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
-#: languages/FakeTranslations.php:93
+#: languages/FakeTranslations.php:94
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
 
