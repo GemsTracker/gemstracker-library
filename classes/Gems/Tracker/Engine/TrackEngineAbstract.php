@@ -407,8 +407,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
      * @param int $userId Id of the user who takes the action (for logging)
      * @param Gems_Task_TaskRunnerBatch $changes batch for counters
      */
-    public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch)
+    public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch = null)
     {
+        if (null === $batch) {
+            $batch = new Gems_Task_TaskRunnerBatch();
+        }
         //Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
         $batch->setMessage('roundChangeUpdates', sprintf($this->_('Round changes propagated to %d tokens.'), $i));
