@@ -51,7 +51,7 @@
  */
 class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 {
-    protected $_joinFields;
+    protected $_joinFields = array();
     protected $_saveTables;
 
     private $_select;
