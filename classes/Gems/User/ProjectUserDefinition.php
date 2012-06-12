@@ -51,7 +51,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
-    
+
     /**
      * @var Zend_Db_Adapter_Abstract
      */
@@ -83,7 +83,9 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
             $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
             natsort($orgs);
         } catch (Zend_Db_Exception $zde) {
-            // Table might not exist, so do something failsafe
+        }
+        if (! $orgs) {
+            // Table might not exist or be empty, so do something failsafe
             $orgs = array($organization => 'create db first');
         }
 
