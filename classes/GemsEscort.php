@@ -734,6 +734,26 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as Zend_View variable name.
+     */
+    protected function _layoutMenuHtml()
+    {
+        // ACL && Menu
+        if ($this->menu && $this->menu->isVisible()) {
+
+            // Make sure the actual $request and $controller in use at the end
+            // of the dispatchloop is used and make Zend_Navigation object
+            return $this->menu->render($this->view);
+        }
+
+        return null;
+    }
+
+    /**
      * Display either a link to the login screen or displays the name of the current user
      * and a logoff link.
      *
@@ -792,7 +812,7 @@ class GemsEscort extends MUtil_Application_Escort
         if ($messages) {
             foreach ($messages as &$message) {
                 // Make sure html is preserved
-                if (strlen($message) && ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
+                if (is_string($message) && strlen($message) && ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
                     $message = MUtil_Html::raw($message);
                 }
             }

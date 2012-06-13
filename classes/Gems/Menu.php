@@ -52,7 +52,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Menu extends Gems_Menu_MenuAbstract
+class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterface
 {
     /**
      *
@@ -559,7 +559,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         // EXPORT TO HTML
         $this->addContainer($this->_('Export respondent'), 'pr.export-html', array('controller' => 'respondent-export', 'action'=>'index'));
-        
+
         // OTHER ITEMS
         $this->addLogonOffToken();
 
@@ -589,6 +589,91 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
      */
     public function loadProjectMenu()
     {
+    }
+
+    /**
+     * Renders the element into a html string
+     *
+     * The $view is used to correctly encode and escape the output
+     *
+     * @param Zend_View_Abstract $view
+     * @return string Correctly encoded and escaped html output
+     */
+    public function render(Zend_View_Abstract $view)
+    {
+        $activePath = $this->_findPath($this->escort->request);
+
+        if ($this->_onlyActiveBranchVisible) {
+            // MUtil_Echo::r($activePath);
+            $this->setBranchVisible($activePath);
+        }
+
+        $parameterSources[] = $this->escort->request;
+
+        if ($this->_menuParameters) {
+            $parameterSources[] = $this->_menuParameters;
+        }
+
+        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        // self::$verbose = true;
+
+        $nav = $this->_toNavigationArray($source);
+
+        // MUtil_Echo::track($nav);
+
+        $ul = $this->renderFirst();
+
+        $this->renderItems($ul, $nav);
+
+        return $ul->render($view);
+    }
+
+    /**
+     * Helper function to create main menu html element.
+     *
+     * Allows overloading by sub classes.
+     *
+     * @return MUtil_Html_ListElement
+     */
+    protected function renderFirst()
+    {
+        return MUtil_Html::create()->ul(array('class' => 'navigation'));
+    }
+
+    /**
+     * Helper function to load the menu items to the html element.
+     *
+     * Allows overloading by sub classes.
+     *
+     * @param MUtil_Html_ListElement $ul
+     * @param array $items
+     */
+    protected function renderItems(MUtil_Html_ListElement $ul, array $items)
+    {
+        foreach ($items as $item) {
+            if ($item['visible'] && $item['label']) {
+                $url = $item['params'];
+                $url['controller'] = $item['controller'];
+                $url['action']     = $item['action'];
+                $url['RouteReset'] = true;
+                $li = $ul->li();
+                if (isset($item['active']) && $item['active']) {
+                    $li->class = 'active';
+                }
+
+                $a = $li->a($url, $item['label']);
+                if (isset($item['class'])) {
+                    $a->class = $item['class'];
+                }
+                if (isset($item['target'])) {
+                    $a->target = $item['target'];
+                }
+
+                if (isset($item['pages'])) {
+                    $this->renderItems($li->ul(), $item['pages']);
+                }
+            }
+        }
     }
 
     protected function request2find($request)
@@ -654,7 +739,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract
 
         $nav = new Zend_Navigation($this->_toNavigationArray($source));
 
-        // MUtil_Echo::r($this->_toNavigationArray($parameterSources));
+        // MUtil_Echo::track($this->_toNavigationArray($source), $nav);
 
         return $nav;
     }

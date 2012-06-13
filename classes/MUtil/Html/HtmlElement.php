@@ -799,7 +799,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return in_array($tagName, $guards);
     }
 
-    public function append($value)
+    /**
+     * Add stuff to this element
+     *
+     * @param mixed $value The value to append
+     * @return MUtil_Html_HtmlElement
+     */
+    public function append($value = null)
     {
         $this->offsetSet(null, $value);
 

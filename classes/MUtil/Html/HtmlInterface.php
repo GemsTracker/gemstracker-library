@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,44 +26,45 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * Classes implementing the HtmlInterface are translateable into correctly 
- * encoded and escaped html or even xml depending on the view passed as a 
+ * Classes implementing the HtmlInterface are translateable into correctly
+ * encoded and escaped html or even xml depending on the view passed as a
  * parameter to the one function in this interface.
- * 
- * Most library classes implementing this interface either implement the 
- * AttributeInterface or the ElementInterface but good examples of straight 
+ *
+ * Most library classes implementing this interface either implement the
+ * AttributeInterface or the ElementInterface but good examples of straight
  * implementation are Raw and (Html) MultiWrapper classes.
- * 
+ *
  * As this is the simplest method to ourput html with some control over
  * it's rendering it is often used for quick implementations in
  * non-library code.
- * 
- * @see MUtil_Html_AttributeInterface 
+ *
+ * @see MUtil_Html_AttributeInterface
  * @see MUtil_Html_ElementInterface
  * @see MUtil_Html_MultiWrapper
  * @see MUtil_Html_Raw
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 interface MUtil_Html_HtmlInterface
 {
     /**
      * Renders the element into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view

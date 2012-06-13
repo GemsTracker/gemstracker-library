@@ -572,7 +572,12 @@ abstract class Gems_Menu_MenuAbstract
 
     abstract public function isVisible();
 
-
+    /**
+     * Make sure only the active branch is visible
+     *
+     * @param array $activeBranch Of Gems_Menu_Menu Abstract items
+     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     */
     protected function setBranchVisible(array $activeBranch)
     {
         $current = array_pop($activeBranch);
@@ -581,6 +586,7 @@ abstract class Gems_Menu_MenuAbstract
             foreach ($this->_subItems as $item) {
                 if ($item->isVisible()) {
                     if ($item === $current) {
+                        $item->set('active', true);
                         $item->setBranchVisible($activeBranch);
                     } else {
                         $item->setForChildren('visible', false);
