@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_StaffModel extends Gems_Model_ModelAbstract
+class Gems_Model_StaffModel extends Gems_Model_JoinModel
 {
     public function __construct(Gems_Loader $loader)
     {

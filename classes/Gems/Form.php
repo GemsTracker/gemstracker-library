@@ -101,6 +101,15 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
     	$this->_scripts[] = $script;
     }
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    { }
+    
 	public function getScripts() {
     	return $this->_scripts;
     }

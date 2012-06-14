@@ -644,7 +644,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see Gems_Model_ModelAbstract
+     * @see MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

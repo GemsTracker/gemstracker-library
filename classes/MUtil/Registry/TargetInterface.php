@@ -53,6 +53,14 @@
 interface MUtil_Registry_TargetInterface
 {
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry();
+
+    /**
      * Allows the source to set request.
      *
      * @param string $name Name of resource to set

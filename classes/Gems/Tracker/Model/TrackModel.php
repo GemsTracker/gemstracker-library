@@ -45,11 +45,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MUtil_Registry_TargetInterface
+class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
 {
     /**
      * Holds the trackData in array with key trackId, for internal caching use only
-     * 
+     *
      * @var array
      */
     protected $_trackData = array();
@@ -81,25 +81,6 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
         Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
 
         $this->set('gtr_date_start', 'default', date('d-m-Y'));
-    }
-
-    /**
-     * Allows the source to set request.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        if (MUtil_Registry_Source::$verbose) {
-            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
-                    '("' . $name . '", ' .
-                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
-        }
-        $this->$name = $resource;
-
-        return true;
     }
 
     /**
@@ -140,29 +121,6 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel implements MU
     public function checkRegistryRequestsAnswers()
     {
         return $this->tracker && $this->translate && $this->util;
-    }
-
-    /**
-     * Filters the names that should not be requested.
-     *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
-     */
-    protected function filterRequestNames($name)
-    {
-        return '_' !== $name[0];
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 
     /**

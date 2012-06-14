@@ -45,22 +45,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel implements MUtil_Registry_TargetInterface
+class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 {
-    /**
-     * Allows the loader to set resources.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        $this->$name = $resource;
-
-        return true;
-    }
-
     /**
      * Stores the fields that can be used for sorting or filtering in the
      * sort / filter objects attached to this model.
@@ -94,35 +80,10 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel implements
         return array();
     }
 
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return true;
-    }
-
-    /**
-     * Filters the names that should not be requested.
-     *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
-     */
-    protected function filterRequestNames($name)
-    {
-        return '_' !== $name[0];
-    }
-
     public function getCurrentOrganization()
     {
         return GemsEscort::getInstance()->getCurrentOrganization();
     }
-
 
     public function getKeyRef($forData, $href = array(), $organizationInKey = null)
     {
@@ -147,19 +108,5 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel implements
         }
 
         return $href;
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * Returns those object variables defined by the subclass but not at the level of this definition.
-     *
-     * Can be overruled.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 }

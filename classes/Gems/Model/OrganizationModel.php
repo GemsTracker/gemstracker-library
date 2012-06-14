@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Model_OrganizationModel extends Gems_Model_ModelAbstract
+class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
 {
     /**
      * @var Gems_Loader

@@ -57,7 +57,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Model_ModelAbstract
+abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 {
     const ALIAS_OF  = 'alias_of';
     const AUTO_SAVE = 'auto_save';
@@ -786,6 +786,14 @@ abstract class MUtil_Model_ModelAbstract
     public function hasTextSearchFilter()
     {
         return false;
+    }
+
+    /**
+     * This is the place to put code to run after object initialization has finished and when all
+     * registry requests have been answered
+     */
+    public function init()
+    {
     }
 
     public function is($name, $key, $value)

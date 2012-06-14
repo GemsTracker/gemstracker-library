@@ -53,6 +53,15 @@
 abstract class MUtil_Registry_TargetAbstract implements MUtil_Registry_TargetInterface
 {
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    { }
+
+    /**
      * Allows the loader to set resources.
      *
      * @param string $name Name of resource to set

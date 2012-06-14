@@ -131,7 +131,7 @@ class MUtil_Model_Type_ConcatenatedRow
      * A ModelAbstract->setOnLoad() function that concatenates the
      * value if it is an array.
      *
-     * @see Gems_Model_ModelAbstract
+     * @see MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -157,7 +157,7 @@ class MUtil_Model_Type_ConcatenatedRow
      * A ModelAbstract->setOnSave() function that concatenates the
      * value if it is an array.
      *
-     * @see Gems_Model_ModelAbstract
+     * @see MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

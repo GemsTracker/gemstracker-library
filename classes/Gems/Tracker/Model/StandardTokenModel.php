@@ -65,7 +65,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizationModel implements MUtil_Registry_TargetInterface
+class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizationModel
 {
     /**
      *
@@ -183,25 +183,6 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     }
 
     /**
-     * Allows the source to set request.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        if (MUtil_Registry_Source::$verbose) {
-            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
-                    '("' . $name . '", ' .
-                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
-        }
-        $this->$name = $resource;
-
-        return true;
-    }
-
-    /**
      * Sets the labels, format functions, etc...
      *
      * @return Gems_Tracker_Model_StandardTokenModel
@@ -246,29 +227,6 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     public function checkRegistryRequestsAnswers()
     {
         return $this->translate && $this->util;
-    }
-
-    /**
-     * Filters the names that should not be requested.
-     *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
-     */
-    protected function filterRequestNames($name)
-    {
-        return '_' !== $name[0];
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 
     public function useRespondentTrackAsKey()
