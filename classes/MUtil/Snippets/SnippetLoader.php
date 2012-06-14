@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class MUtil_Snippets_SnippetLoader
+class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterface
 {
     /**
      * The file locations where to look for snippets.
@@ -83,7 +83,7 @@ class MUtil_Snippets_SnippetLoader
      * @param string $dir
      * @return MUtil_Snippets_SnippetLoader
      */
-    public function addDirectory($dir, $loadDefaults = true)
+    public function addDirectory($dir)
     {
         if (! in_array($dir, $this->snippetsDirectories)) {
             if (file_exists($dir)) {

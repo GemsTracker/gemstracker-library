@@ -282,10 +282,10 @@ class MUtil_Html
     /**
      * Set the snippet loader for use by self::snippet().
      *
-     * @param MUtil_Snippets_SnippetLoader $snippetLoader
+     * @param MUtil_Snippets_SnippetLoaderInterface $snippetLoader
      * @return MUtil_Snippets_SnippetLoader
      */
-    public static function setSnippetLoader(MUtil_Snippets_SnippetLoader $snippetLoader)
+    public static function setSnippetLoader(MUtil_Snippets_SnippetLoaderInterface $snippetLoader)
     {
         self::$_snippetLoader = $snippetLoader;
         return self::$_snippetLoader;
