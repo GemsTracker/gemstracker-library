@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-11 14:50+0100\n"
+"POT-Creation-Date: 2012-06-14 15:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -23,72 +23,72 @@ msgstr ""
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:756
+#: classes/GemsEscort.php:776
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:758
+#: classes/GemsEscort.php:778
 #: classes/Gems/Menu.php:249
 msgid "Logoff"
 msgstr "Logoff"
 
-#: classes/GemsEscort.php:761
+#: classes/GemsEscort.php:781
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:945
+#: classes/GemsEscort.php:965
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:970
+#: classes/GemsEscort.php:990
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1412
+#: classes/GemsEscort.php:1432
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1543
+#: classes/GemsEscort.php:1563
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1545
-#: classes/GemsEscort.php:1549
-#: classes/GemsEscort.php:1550
+#: classes/GemsEscort.php:1565
+#: classes/GemsEscort.php:1569
+#: classes/GemsEscort.php:1570
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1560
+#: classes/GemsEscort.php:1580
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1562
-#: classes/GemsEscort.php:1605
+#: classes/GemsEscort.php:1582
+#: classes/GemsEscort.php:1625
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1578
+#: classes/GemsEscort.php:1598
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1580
+#: classes/GemsEscort.php:1600
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1590
-#: classes/GemsEscort.php:1603
+#: classes/GemsEscort.php:1610
+#: classes/GemsEscort.php:1623
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1591
+#: classes/GemsEscort.php:1611
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
-#: classes/GemsEscort.php:1732
-#: classes/GemsEscort.php:1734
+#: classes/GemsEscort.php:1752
+#: classes/GemsEscort.php:1754
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -2273,99 +2273,107 @@ msgstr "Assigned surveys"
 msgid "If empty, survey will never show up!"
 msgstr "If empty, survey will never show up!"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:124
-msgid "Result field"
-msgstr "Result field"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:125
-msgid "Before answering"
-msgstr "Before answering"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:126
-msgid "After completion"
-msgstr "After completion"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:128
+#: classes/Gems/Default/SurveyMaintenanceAction.php:129
 msgid "Upload new PDF"
 msgstr "Upload new PDF"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:136
+#: classes/Gems/Default/SurveyMaintenanceAction.php:137
 msgid "Usage"
 msgstr "Usage"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:151
+#: classes/Gems/Default/SurveyMaintenanceAction.php:152
 msgid "Single Survey Assignment"
 msgstr "Single Survey Assignment"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:196
+#: classes/Gems/Default/SurveyMaintenanceAction.php:197
 msgid "Assignable since"
 msgstr "Assignable since"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:197
+#: classes/Gems/Default/SurveyMaintenanceAction.php:198
 msgid "Assignable until"
 msgstr "Assignable until"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:203
+#: classes/Gems/Default/SurveyMaintenanceAction.php:204
 msgid "Create Single Survey"
 msgstr "Create Single Survey"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:207
+#: classes/Gems/Default/SurveyMaintenanceAction.php:208
 msgid "At the moment this survey can only be assigned to respondents as part of an existing track."
 msgstr "At the moment this survey can only be assigned to paitents as part of an existing track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:262
+#: classes/Gems/Default/SurveyMaintenanceAction.php:263
 msgid "Survey should be assigned to a group before making it active."
 msgstr "Survey should be assigned to a group before making it active."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:279
+#: classes/Gems/Default/SurveyMaintenanceAction.php:280
 #, php-format
 msgid "Checking survey results for the %s survey."
 msgstr "Checking survey results for the %s survey."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:291
+#: classes/Gems/Default/SurveyMaintenanceAction.php:292
 msgid "Checking survey results for all surveys."
 msgstr "Checking survey results for all surveys."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:348
+#: classes/Gems/Default/SurveyMaintenanceAction.php:349
 msgid "OK"
 msgstr "OK"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:355
+#: classes/Gems/Default/SurveyMaintenanceAction.php:356
 msgid "Source"
 msgstr "Source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:356
+#: classes/Gems/Default/SurveyMaintenanceAction.php:357
 msgid "Status in source"
 msgstr "Status in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:359
+#: classes/Gems/Default/SurveyMaintenanceAction.php:360
 msgid "Active in source"
 msgstr "Active in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:360
+#: classes/Gems/Default/SurveyMaintenanceAction.php:361
 #, php-format
 msgid "Active in %s"
 msgstr "Active in %s"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:367
+#: classes/Gems/Default/SurveyMaintenanceAction.php:368
 msgid "Single"
 msgstr "Single"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:400
+#: classes/Gems/Default/SurveyMaintenanceAction.php:377
+msgid "Result field"
+msgstr "Result field"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:378
+msgid "Duration description"
+msgstr "Duration description"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:378
+msgid "Text to inform the respondent."
+msgstr "Text to inform the respondent."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:379
+msgid "Before answering"
+msgstr "Before answering"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:380
+msgid "After completion"
+msgstr "After completion"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:410
 #, php-format
 msgid "%d times in track."
 msgstr "%d times in track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:402
+#: classes/Gems/Default/SurveyMaintenanceAction.php:412
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d times in %d track(s)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:406
+#: classes/Gems/Default/SurveyMaintenanceAction.php:416
 msgid "Not used in track."
 msgstr "Not used in track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:408
+#: classes/Gems/Default/SurveyMaintenanceAction.php:418
 msgid "Not used in tracks."
 msgstr "Not used in tracks."
 
@@ -3319,32 +3327,32 @@ msgstr "Use a standard token date."
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:443
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:446
 #, php-format
 msgid "%s track engines cannot be converted to %s track engines."
 msgstr "%s track engines cannot be converted to %s track engines."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:686
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:689
 #, php-format
 msgid "%d: %s - %s"
 msgstr "%d: %s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:689
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:692
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:695
 #, php-format
 msgid "%d: %s"
 msgstr "%d: %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:695
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:698
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:735
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:738
 msgid "Icon"
 msgstr "Icon"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:738
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:741
 msgid "After change"
 msgstr "After change"
 

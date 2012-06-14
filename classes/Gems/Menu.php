@@ -660,6 +660,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 if (isset($item['active']) && $item['active']) {
                     $li->class = 'active';
                 }
+                if (isset($item['liClass']) && $item['liClass']) {
+                    $li->appendAttrib('class', $item['liClass']);
+                }
 
                 $a = $li->a($url, $item['label']);
                 if (isset($item['class'])) {

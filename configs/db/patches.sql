@@ -407,3 +407,7 @@ ALTER TABLE `gems__tokens` ADD `gto_mail_sent_num` INT(11) UNSIGNED NOT NULL DEF
 
 -- PATCH: Add column to store maximum number of reminders (default is 3) to mail jobs
 ALTER TABLE `gems__mail_jobs` ADD `gmj_filter_max_reminders` INT(11) UNSIGNED NOT NULL DEFAULT 3 AFTER `gmj_filter_days_between`;
+
+-- GEMS VERSION: 48
+-- PATCH: Add duration to surveys
+ALTER TABLE gems__surveys ADD gsu_duration varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_result_field;

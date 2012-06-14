@@ -121,9 +121,10 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                 ->addValidator( new MUtil_Validate_Require($model->get('gsu_active', 'label'), 'gsu_id_primary_group', $model->get('gsu_id_primary_group', 'label')));
 
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
-        $bridge->addSelect(     'gsu_result_field',          'label', $this->_('Result field'),     'multiOptions', $surveyFields);
-        $bridge->addSelect(     'gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $this->loader->getEvents()->listSurveyBeforeAnsweringEvents());
-        $bridge->addSelect(     'gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $this->loader->getEvents()->listSurveyCompletionEvents());
+        $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
+        $bridge->addText(       'gsu_duration');
+        $bridge->addSelect(     'gsu_beforeanswering_event');
+        $bridge->addSelect(     'gsu_completed_event');
 
         $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
                 'accept', 'application/pdf',
@@ -369,6 +370,15 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $model->set('gsu_surveyor_active',    'multiOptions', $yesNo);
         $model->set('gsu_id_primary_group',   'label', $this->_('Group'), 'multiOptions', $this->util->getDbLookup()->getGroups());
+
+        if ($detailed) {
+            $events = $this->loader->getEvents();
+
+            $model->set('gsu_result_field',          'label', $this->_('Result field'));
+            $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent.'));
+            $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
+            $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
+        }
 
         $model->setCreate(false);
 
