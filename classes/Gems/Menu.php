@@ -262,11 +262,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     public function addRespondentPage($label)
     {
+        $params = array(MUtil_Model::REQUEST_ID => 'gr2o_patient_nr');
+        // $params = array(MUtil_Model::REQUEST_ID . '1'  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID . '2' => 'gr2o_id_organization');
+
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);;
-        $page->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
+        $page->addShowAction()->setNamedParameters($params);
 
         /*
         iff(
@@ -276,14 +279,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             );
         */
 
-        $page->addEditAction('pr.respondent.edit')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
-        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
+        $page->addEditAction('pr.respondent.edit')->setNamedParameters($params);
+        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')->setNamedParameters($params);
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
             $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr')
+                ->setNamedParameters($params)
                 ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
 
             $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
@@ -384,7 +387,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->set('target', MUtil_Model::REQUEST_ID);
         }
 
-        $page->addDeleteAction('pr.respondent.delete')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
+        $page->addDeleteAction('pr.respondent.delete')->setNamedParameters($params);
 
         return $page;
     }

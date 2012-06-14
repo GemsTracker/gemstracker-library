@@ -154,12 +154,10 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             foreach ($this->_parameters as $param => $name) {
                 $parameters[$param] = $source->getMenuParameter($name, $param);
                 if (Gems_Menu::$verbose) {
-                        MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
+                    MUtil_Echo::r($param . '/' . $name . ' => ' . $parameters[$param], $this->get('label'));
                 }
             }
         }
-
-        return false;
     }
 
     private function _applyParameterSources(Gems_Menu_ParameterCollector $source, array &$parameters, $raiseConditions)
