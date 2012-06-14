@@ -48,6 +48,31 @@
 class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 {
     /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var Gems_User_User
+     */
+    protected $user;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        if (! $this->user) {
+            $this->user = $this->loader->getCurrentUser();
+        }
+    }
+
+    /**
      * Stores the fields that can be used for sorting or filtering in the
      * sort / filter objects attached to this model.
      *
@@ -73,18 +98,42 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
                 unset($parameters[MUtil_Model::REQUEST_ID]);
             }
 
-
             return parent::applyParameters($parameters);
         }
 
         return array();
     }
 
-    public function getCurrentOrganization()
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required are missing.
+     */
+    public function checkRegistryRequestsAnswers()
     {
-        return GemsEscort::getInstance()->getCurrentOrganization();
+        return ($this->loader instanceof Gems_Loader);
     }
 
+    /**
+     * The current organization id of the current user
+     *
+     * @return int
+     */
+    public function getCurrentOrganization()
+    {
+        return $this->user->getCurrentOrganizationId();
+    }
+
+    /**
+     * Return an identifier the item specified by $forData
+     *
+     * basically transforms the fieldnames ointo oan IDn => value array
+     *
+     * @param mixed $forData Array value to vilter on
+     * @param array $href Or ArrayObject
+     * @return array That can by used as href
+     */
     public function getKeyRef($forData, $href = array(), $organizationInKey = null)
     {
         $keys = $this->getKeys();

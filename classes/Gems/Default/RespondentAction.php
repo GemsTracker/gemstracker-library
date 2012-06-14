@@ -342,7 +342,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     public function indexAction()
     {
-        if ($this->loader->getOrganization()->canHaveRespondents()) {
+        $user = $this->loader->getCurrentUser();
+
+        if ($user->hasPrivilege('pr.respondent.multiorg') || $this->loader->getOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization_ChooseOrganizationSnippet');
@@ -414,7 +416,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $params['respondentData'] = $data;
         $this->addSnippets($this->showSnippets, $params);
     }
-    
+
     public function exportAction()
     {
         $this->_reroute(array('controller' => 'respondent-export', 'action' => 'index'));

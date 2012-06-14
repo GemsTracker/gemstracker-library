@@ -565,6 +565,15 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Return an identifier the item specified by $forData
+     *
+     * basically transforms the fieldnames ointo oan IDn => value array
+     *
+     * @param mixed $forData Array value to vilter on
+     * @param array $href Or ArrayObject
+     * @return array That can by used as href
+     */
     public function getKeyRef($forData, $href = array())
     {
         $keys = $this->getKeys();

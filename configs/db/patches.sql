@@ -411,3 +411,6 @@ ALTER TABLE `gems__mail_jobs` ADD `gmj_filter_max_reminders` INT(11) UNSIGNED NO
 -- GEMS VERSION: 48
 -- PATCH: Add duration to surveys
 ALTER TABLE gems__surveys ADD gsu_duration varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_result_field;
+
+-- PATCH: Allow multi org view for supers
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.multiorg') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.respondent.multiorg%';

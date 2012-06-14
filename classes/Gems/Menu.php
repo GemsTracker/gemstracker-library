@@ -548,11 +548,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // SETUP CONTAINER
         $this->addGemsSetupContainer($this->_('Setup'));
 
-        // MAIL CONTAINER
-        $this->addMailSetupMenu($this->_('Mail'));
-
         // TRACK BUILDER
         $this->addTrackBuilderMenu($this->_('Track Builder'));
+
+        // MAIL CONTAINER
+        $this->addMailSetupMenu($this->_('Mail'));
 
         // EXPORT DATA
         $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
@@ -569,6 +569,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // Privileges not associated with menu item
         //$this->addHiddenPrivilige('pr.plan.choose-org');
         $this->addHiddenPrivilige('pr.plan.mail-as-application');
+        $this->addHiddenPrivilige('pr.respondent.multiorg');
         $this->addHiddenPrivilige('pr.respondent.result');
         $this->addHiddenPrivilige('pr.respondent.who');
         $this->addHiddenPrivilige('pr.staff.edit.all');

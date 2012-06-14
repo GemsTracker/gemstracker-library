@@ -104,7 +104,11 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $filter = parent::_checkFilterUsed($filter);
 
         if (! isset($filter['gr2o_id_organization'])) {
-            $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
+            if ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents())) {
+                $filter[] = 'gr2o_id_organization IN (' . implode(', ', array_keys($this->user->getAllowedOrganizations())) . ')';
+            } else {
+                $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
+            }
         }
 
         if (self::SSN_HASH === $this->hashSsn) {
