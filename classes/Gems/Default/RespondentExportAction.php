@@ -48,8 +48,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
     
     protected $_wkhtmltopdfLocation = "";
     
-    protected $_reportFooter         = 'Export_ReportFooter';
-    protected $_reportHeader         = 'Export_ReportHeader';
+    protected $_reportFooter         = 'Export_ReportFooterSnippet';
+    protected $_reportHeader         = 'Export_ReportHeaderSnippet';
     protected $_respondentSnippet    = 'Export_RespondentSnippet';
 
     protected $_groupedSurveySnippet = 'TrackAnswersModelSnippet';
