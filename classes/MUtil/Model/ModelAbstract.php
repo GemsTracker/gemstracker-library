@@ -797,14 +797,6 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return false;
     }
 
-    /**
-     * This is the place to put code to run after object initialization has finished and when all
-     * registry requests have been answered
-     */
-    public function init()
-    {
-    }
-
     public function is($name, $key, $value)
     {
         return $value == $this->_getKeyValue($name, $key);
