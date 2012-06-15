@@ -406,6 +406,15 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Stub for overruling default snippet loader initiation.
+     */
+    protected function loadSnippetLoader()
+    {
+        // Create the snippet with this controller as the parameter source
+        $this->snippetLoader = $this->loader->getSnippetLoader($this);
+    }
+
+    /**
      * Action for showing an item page with title
      */
     public function showAction()

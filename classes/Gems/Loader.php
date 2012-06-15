@@ -83,6 +83,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @var Gems_Snippets_SnippetLoader
+     */
+    protected $snippetLoader;
+
+    /**
+     *
      * @var Gems_Tracker
      */
     protected $tracker;
@@ -199,6 +205,19 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getSelector()
     {
         return $this->_getClass('selector');
+    }
+
+    /**
+     * 
+     * @return Gems_Snippets_SnippetLoader
+     */
+    public function getSnippetLoader($container)
+    {
+        $class = $this->_getClass('snippetLoader', 'Snippets_SnippetLoader');
+
+        //now add the calling class as a container
+        $class->addRegistryContainer($container);
+        return $class;
     }
 
     /**

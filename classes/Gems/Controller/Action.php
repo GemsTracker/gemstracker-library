@@ -79,4 +79,13 @@ class Gems_Controller_Action extends MUtil_Controller_Action
 
         parent::initHtml();
     }
+
+    /**
+     * Stub for overruling default snippet loader initiation.
+     */
+    protected function loadSnippetLoader()
+    {
+        // Create the snippet with this controller as the parameter source
+        $this->snippetLoader = $this->loader->getSnippetLoader($this);
+    }
 }

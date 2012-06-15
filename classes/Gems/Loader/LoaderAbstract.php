@@ -73,7 +73,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
      *
      * @var array Of prefix => path strings for class lookup
      */
-    private $_dirs;
+    protected $_dirs;
 
     /**
      * This array holds a cache of requested class -> resulting classname pairs so we don't have
@@ -159,7 +159,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     {
         // echo $name . ($create ? ' create' : ' not created') . "<br/>\n";
 
-        $cname = '_' . trim(str_replace('/', '_', ucfirst($name)), '_');
+        $cname = trim(str_replace('/', '_', ucfirst($name)), '_');
         $cfile = str_replace('_', '/', $cname) . '.php';
 
         $found = false;
@@ -173,12 +173,23 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         }
 
         if (!$found) {
-            foreach ($this->_dirs as $prefix => $path) {
-                $fprefix = str_replace('_', '/', $prefix);
-                if ($obj = $this->_loadClassPath($path . '/' . $fprefix . $cfile, $prefix . $cname, $create, $arguments)) {
-                    $found = true;
-                    $this->_loaded[$cname] = get_class($obj);
-                    break;
+            foreach ($this->_dirs as $prefix => $paths) {
+                if (!empty($prefix)) {
+                    $fprefix = '/' . str_replace('_', '/', $prefix);
+                    $prefix .= '_';
+                } else {
+                    $fprefix = '';
+                }
+
+                if (!is_array($paths)) {
+                    $paths = array($paths);
+                }
+                foreach ($paths as $path) {
+                    if ($obj = $this->_loadClassPath($path . $fprefix . '/' . $cfile, $prefix . $cname, $create, $arguments)) {
+                        $found = true;
+                        $this->_loaded[$cname] = get_class($obj);
+                        break 2;
+                    }                    
                 }
             }
         }
@@ -192,7 +203,9 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
             return $obj;
         }
-        //print_r($this->_dirs);
+
+        // Throw exception when not found
+        throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . ' cannot find class with name ' .$name . ' in ' . print_r($this->_dirs, true));
     }
 
     /**
