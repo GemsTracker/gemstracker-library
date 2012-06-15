@@ -125,6 +125,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Zend_Translate_Adapter
+     */
+    public $translate;
+
+    /**
+     *
      * @var Gems_Util
      */
     protected $util;
@@ -933,6 +939,34 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         } else {
             return 'TokenNotFoundSnippet';
         }
+    }
+
+    /**
+     * Returns a string that tells if the token is open, completed or any other
+     * status you might like. This will not be interpreted by the tracker it is
+     * for display purposes only
+     */
+    public function getStatus()
+    {
+        $today  = new Zend_Date();
+        $status = $this->translate->_('Open');
+
+        if ($this->isCompleted()) {
+            $status = $this->translate->_('Completed');
+        } else {
+            $validFrom  = $this->getValidFrom();
+            $validUntil = $this->getValidUntil();
+
+            if (!empty($validUntil) && $validUntil->isEarlier($today)) {
+                $status = $this->translate->_('Missed');
+            } else if (!empty($validFrom) && $validFrom->isLater($today)) {
+                $status = $this->translate->_('Future');
+            } else if (empty($validFrom) && empty($validUntil)) {
+                $status = $this->translate->_('Future');
+            }
+        }
+
+        return $status;
     }
 
     /**
