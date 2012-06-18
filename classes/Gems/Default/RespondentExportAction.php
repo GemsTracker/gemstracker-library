@@ -142,6 +142,21 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 
         return $pdfContents;
     }
+
+    /**
+     * Returns true when this token should be displayed
+     *
+     * @param Gems_Tracker_Token $token
+     * @return boolean
+     */
+    public function _displayToken($token)
+    {
+        if ($token->isCompleted()) {
+            return true;
+        }
+
+        return false;
+    }
     
     /**
      * Determines if this particular token should be included
@@ -187,7 +202,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                         ->td($token->getStatus());
 
             //Should we display the answers?
-            if (!$token->isCompleted()) {
+            if (!$this->_displayToken($token)) {
                 $token = $token->getNextToken();
                 continue;
             }
