@@ -54,6 +54,11 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
     protected $data;
 
     /**
+     * @var mixed $content Content that can be rendered when the table body is empty
+     */
+    protected $onEmpty;
+
+    /**
      * REQUIRED, but can be derived from $this->data
      *
      * @var MUtil_Lazy_RepeatableInterface
@@ -93,6 +98,8 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
     {
         $table = new MUtil_Html_TableElement($this->repeater);
 
+        if ($this->onEmpty) $table->setOnEmpty($this->onEmpty);
+
         $this->addColumns($table);
         
         return $table;
@@ -111,16 +118,20 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
      */
     public function hasHtmlOutput()
     {
-        if ($this->data) {
-            if (! $this->repeater) {
-                $this->repeater = MUtil_Lazy::repeat($this->data);
-            } else {
-                // We do not know whether there is any link between
-                // the data and the repeater, so do not use the data
-                $this->data = null;
-            }
+        if (! $this->repeater) {
+            $this->repeater = MUtil_Lazy::repeat($this->data);
+        } else {
+            // We do not know whether there is any link between
+            // the data and the repeater, so do not use the data
+            $this->data = null;
         }
 
-        return (boolean) $this->repeater;
+        // If onEmpty is set, we alwars have output
+        if ($this->onEmpty) {
+            return true;
+        }
+
+        // Is there any data in the repeater?
+        return $this->repeater->__start();
     }
 }
