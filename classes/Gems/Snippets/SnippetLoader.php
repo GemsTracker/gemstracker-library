@@ -61,6 +61,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     public function __construct($container = null, $dirs = array()) {
         parent::__construct($container, $dirs);
         $this->backup = new MUtil_Snippets_SnippetLoader($this);
+        $this->addDirectory(GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
     }
 
 
@@ -92,7 +93,7 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
             $this->removeRegistryContainer('tmpContainer');
         } catch (Exception $exc) {
             MUtil_Echo::track($exc->getMessage());
-            throwException($exc);
+            throw $exc;
             //Class loading failed, now defer
             //$snippet = $this->backup->getSnippet($filename, $extraSourceParameters);
         }
