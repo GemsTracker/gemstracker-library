@@ -96,6 +96,7 @@ class RespondentTokenSnippet extends Gems_Snippets_TokenModelSnippetAbstract
         //
         // Initiate data retrieval for stuff needed by links
         $bridge->gr2o_patient_nr;
+        $bridge->gr2o_id_organization;
         $bridge->gr2t_id_respondent_track;
         $bridge->gtr_track_type;
 

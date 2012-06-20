@@ -262,14 +262,19 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     public function addRespondentPage($label)
     {
+        $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
+
         $params = array(MUtil_Model::REQUEST_ID => 'gr2o_patient_nr');
-        // $params = array(MUtil_Model::REQUEST_ID . '1'  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID . '2' => 'gr2o_id_organization');
+        $params = array(MUtil_Model::REQUEST_ID . '1'  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID . '2' => 'gr2o_id_organization');
 
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);;
-        $page->addShowAction()->setNamedParameters($params);
+        $page->addShowAction()
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+
 
         /*
         iff(
@@ -279,76 +284,101 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             );
         */
 
-        $page->addEditAction('pr.respondent.edit')->setNamedParameters($params);
-        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')->setNamedParameters($params);
+        $page->addEditAction('pr.respondent.edit')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
             $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
-                ->setNamedParameters($params)
-                ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
+                    ->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId)
+                    ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
 
             $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
             $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
-                ->addHiddenParameter('track_can_be_created', 1);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                    ->addHiddenParameter('track_can_be_created', 1);
             $subPage->addAction($this->_('Preview'), 'pr.track', 'view')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
-                ->addHiddenParameter('track_can_be_created', 1);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                    ->addHiddenParameter('track_can_be_created', 1);
 
         } else {
 
             $trPage = $page->addPage($this->_('Tracks'), 'pr.track', 'track');
             $trType = 'T';
 
-            $trPage->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
-            $trPage->addAutofilterAction();
+            $trPage->setNamedParameters($params)
+                    ->setHiddenOrgId($orgId)
+                    ->addAutofilterAction();
 
             /*
              iff(is('gtr_track_type', $trType), aget(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track'))
              */
             $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setParameterFilter('gtr_track_type', $trType);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType);
 
             $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
-                ->setParameterFilter('gtr_track_type', $trType);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType);
 
             $tkPages[$trType] = $trPage->addAction($this->_('Show'), 'pr.track', 'show-track')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                ->setParameterFilter('gtr_track_type', $trType);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType);
 
             $tkPages[$trType]->addAction($this->_('Token'), 'pr.token', 'show')
-                ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                    ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
 
             $trPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
 
             $trPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
 
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
                 $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
                 $trType = 'S';
 
-                $trPage->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr');
-                $trPage->addAutofilterAction();
+                $trPage->setNamedParameters($params)
+                        ->setHiddenOrgId($orgId)
+                        ->addAutofilterAction();
 
                 $trPage->addAction($this->_('Add'), 'pr.survey.create', 'create')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
                 $trPage->addAction($this->_('Assigned'), 'pr.survey', 'view')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
                 $tkPages[$trType] = $trPage;
@@ -362,8 +392,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         foreach ($tkPages as $trType => $tkPage) {
 
             $tkPage->addEditAction('pr.token.edit')
-                ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
+                    ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
 
             $tkPage->addDeleteAction('pr.token.delete')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
@@ -387,7 +417,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->set('target', MUtil_Model::REQUEST_ID);
         }
 
-        $page->addDeleteAction('pr.respondent.delete')->setNamedParameters($params);
+        $page->addDeleteAction('pr.respondent.delete')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         return $page;
     }

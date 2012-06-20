@@ -69,6 +69,7 @@
  */
 class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 {
+    private $_hiddenOrgId;
     private $_hiddenParameters;  // Added to $request by applyHiddenParameters
     private $_itemOptions;
     private $_parameters = true;
@@ -183,6 +184,17 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
                 }
             }
         }
+
+        if ($this->_hiddenOrgId) {
+            // Remove org paramter that should remain hidden.
+            if (isset($parameters[MUtil_Model::REQUEST_ID . '1'], $parameters[MUtil_Model::REQUEST_ID . '2']) &&
+                    (! $parameters[MUtil_Model::REQUEST_ID . '2'] instanceof MUtil_Lazy_LazyInterface) &&
+                    ($parameters[MUtil_Model::REQUEST_ID . '2'] == $this->_hiddenOrgId)) {
+                $parameters[MUtil_Model::REQUEST_ID] = $parameters[MUtil_Model::REQUEST_ID . '1'];
+                unset($parameters[MUtil_Model::REQUEST_ID . '1'], $parameters[MUtil_Model::REQUEST_ID . '2']);
+            }
+        }
+
         return $condition;
     }
 
@@ -770,6 +782,18 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
     public function set($key, $value)
     {
         $this->_itemOptions[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Set the organization id of the org parameter that can remain hidden.
+     *
+     * @param type $orgId
+     * @return Gems_Menu_SubMenuItem (continuation pattern)
+     */
+    public function setHiddenOrgId($orgId)
+    {
+        $this->_hiddenOrgId = $orgId;
         return $this;
     }
 
