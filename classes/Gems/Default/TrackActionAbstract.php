@@ -141,14 +141,6 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
         $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
 
-        // When no resp id, check the current menu item paramter filter that MUtil_Model::REQUEST_ID does not contain a token
-        if ((! $patientId) && $this->menu->getCurrent()->checkParameterFilter(Gems_Model::ID_TYPE)) {
-            $patientId = $this->_getIdParam();
-        }
-        if (! $orgId) {
-            $orgId = $this->escort->getCurrentOrganization();
-        }
-
         return array ($patientId, $orgId);
     }
 

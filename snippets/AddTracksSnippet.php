@@ -72,6 +72,12 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     public $loader;
 
     /**
+     *
+     * @var Gems_Menu
+     */
+    protected $menu;
+
+    /**
      * Optional: $request or $tokenData must be set
      *
      * @var Zend_Controller_Request_Abstract
@@ -117,65 +123,49 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
         switch ($trackType) {
             case 'T':
                 $trackController = 'track';
+                $trackTypeLetter = 'T';
                 break;
             case 'S':
                 $trackController = 'survey';
+                $trackTypeLetter = 'S';
                 break;
             case 'M':
                 $trackController = 'survey';
+                $trackTypeLetter = 'S';
                 break;
             default:
                 throw new exception('Invalid track type requested.');
         }
 
-        $trackTypeCache = $trackType . '_' . $this->session->user_style;
-        $trackTypeTime  = $trackType . '_time';
+        $organization_id = intval($this->request->getParam(MUtil_Model::REQUEST_ID2));
+        $trackTypeCache  = $trackType . '_' . $organization_id;
+        $trackTypeTime   = $trackType . '_time';
 
         if (isset($this->session->$trackTypeCache, $this->session->$trackTypeTime) && (time() < $this->session->$trackTypeTime)) {
             $tracks = $this->session->$trackTypeCache;
         } else {
-            $organization_id = $this->escort->getCurrentOrganization();
-            switch ($trackType) {
-                case 'T':
-                    $sql = "SELECT gtr_id_track, gtr_track_name
-                        FROM gems__tracks
-                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                            gtr_active = 1 AND
-                            gtr_track_type = 'T' AND
-                            gtr_organizations LIKE '%|$organization_id|%'
-                         ORDER BY gtr_track_name";
-                    break;
-                case 'S':
-                    $sql = "SELECT gtr_id_track, gtr_track_name
-                        FROM gems__tracks INNER JOIN
-                            gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
-                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
-                            gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                            gtr_active = 1 AND
-                            gtr_track_type = 'S' AND
-                            ggp_respondent_members = 1 AND
-                            gtr_organizations LIKE '%|$organization_id|%'
-                         ORDER BY gtr_track_name";
-                    break;
-                case 'M':
-                    $sql = "SELECT gtr_id_track, gtr_track_name
-                        FROM gems__tracks INNER JOIN
-                            gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
-                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
-                            gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                            gtr_active = 1 AND
-                            gtr_track_type = 'S' AND
-                            ggp_respondent_members = 0 AND
-                            gtr_organizations LIKE '%|$organization_id|%'
-                         ORDER BY gtr_track_name";
-                    break;
-                // default:
-                //    throw new exception('Invalid track type requested.');
+            if ($trackType == 'T') {
+                $sql = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks
+                    WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                        (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                        gtr_active = 1 AND
+                        gtr_track_type = 'T' AND
+                        gtr_organizations LIKE '%|$organization_id|%'
+                     ORDER BY gtr_track_name";
+            } else {
+                $sql = "SELECT gtr_id_track, gtr_track_name
+                    FROM gems__tracks INNER JOIN
+                        gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
+                        gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
+                        gems__groups ON gsu_id_primary_group = ggp_id_group
+                    WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                        (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                        gtr_active = 1 AND
+                        gtr_track_type = '$trackTypeLetter' AND
+                        ggp_respondent_members = 1 AND
+                        gtr_organizations LIKE '%|$organization_id|%'
+                     ORDER BY gtr_track_name";
             }
             $tracks = $this->db->fetchPairs($sql);
 
@@ -186,17 +176,23 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
         $div = MUtil_Html::create()->div(array('class' => 'toolbox'));
 
         if ($tracks) {
-            $pageRef['RouteReset'] = true;
+            $menuIndex  = $this->menu->findController($trackController, 'index');
+            $menuView   = $this->menu->findController($trackController, 'view');
+            $menuCreate = $this->menu->findController($trackController, 'create');
 
-            $div->a(array('controller' => $trackController, 'action' => 'index') +  $pageRef,
+            $div->a($menuIndex->toHRefAttribute($this->request),
                 $trackTypeDescription,
                 array('class' => 'toolanchor'));
 
-            $data = new MUtil_Lazy_RepeatableByKeyValue($tracks);
+            $data   = new MUtil_Lazy_RepeatableByKeyValue($tracks);
+            $params = array('gtr_id_track' => $data->key, 'gtr_track_type' => $trackTypeLetter);
+
             $li = $div->ul($data)->li();
-            $li->a(array(Gems_Model::TRACK_ID => $data->key, 'controller' => $trackController, 'action' => 'view') + $pageRef, array('class' => 'rightFloat'))
+            $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
                ->img(array('src' => 'info.png', 'width' => 12, 'height' => 12, 'alt' => $this->_('info')));
-            $li->a(array(Gems_Model::TRACK_ID => $data->key, 'controller' => $trackController, 'action' => 'create') + $pageRef, $data->value, array('class' => 'add'));
+            $li->a($menuCreate->toHRefAttribute($this->request, $params),
+                    $data->value,
+                    array('class' => 'add'));
         } else {
             $div->span($trackTypeDescription, array('class' => 'toolanchor disabled'));
 

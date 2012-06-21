@@ -1337,6 +1337,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
                     //Create the list of request cache keys that match an organization ID (to be extended)
                     $possibleOrgIds = array(
+                        MUtil_Model::REQUEST_ID2,
                         'gr2o_id_organization',
                         'gto_id_organization');
 
