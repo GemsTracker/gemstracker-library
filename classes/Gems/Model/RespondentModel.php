@@ -104,7 +104,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $filter = parent::_checkFilterUsed($filter);
 
         if (! isset($filter['gr2o_id_organization'])) {
-            if ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents())) {
+            if ($this->isMultiOrganization()) {
                 $filter[] = 'gr2o_id_organization IN (' . implode(', ', array_keys($this->user->getAllowedOrganizations())) . ')';
             } else {
                 $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
@@ -126,7 +126,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      */
     public function addLoginCheck()
     {
-        $this->addLeftTable('gems__user_logins', array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'), 'gul');
+        $this->addLeftTable('gems__user_logins', array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'), 'gul', false);
         $this->addColumn("CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END", 'has_login');
 
         return $this;
@@ -166,9 +166,10 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     public function copyKeys($reset = false)
     {
         $keys = $this->_getKeysFor('gems__respondent2org');
-        $key = reset($keys);
 
-        $this->addColumn('gems__respondent2org.' . $key, $this->getKeyCopyName($key));
+        foreach ($keys as $key) {
+            $this->addColumn('gems__respondent2org.' . $key, $this->getKeyCopyName($key));
+        }
 
         return $this;
     }
@@ -182,17 +183,15 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         return $model;
     }
 
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    /**
+     * True when the default filter can contain multiple organizations
+     *
+     * @return boolean
+     */
+    public function isMultiOrganization()
     {
-        if ((null === $filter) || (! array_key_exists('gr2o_id_organization', $filter))) {
-            $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
-        }
-
-        if (! (isset($newValues['gr2o_id_organization']) && $newValues['gr2o_id_organization'])) {
-            $newValues['gr2o_id_organization'] = $filter['gr2o_id_organization'];
-        }
-
-        return parent::save($newValues, $filter, $saveTables);
+        // return ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents()));
+        return $this->user->hasPrivilege('pr.respondent.multiorg');
     }
 }
 

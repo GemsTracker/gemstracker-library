@@ -875,12 +875,14 @@ class GemsEscort extends MUtil_Application_Escort
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
-                $currentUri = base64_encode($this->view->url());
+                $params     = $this->request->getParams();
+                unset($params[Gems_Util_RequestCache::RESET_PARAM]);
+                $currentUri = $this->view->url($params, null, true);
 
-                $url = $this->view->getHelper('url')->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
+                $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
 
                 $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
-                $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => $currentUri));
+                $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => base64_encode($currentUri)));
 
                 $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
                 foreach ($orgs as $id => $org) {

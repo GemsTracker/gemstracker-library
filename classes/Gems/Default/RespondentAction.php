@@ -120,7 +120,11 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $phonesep = $bridge->itemIf($bridge->grs_phone_1, MUtil_Html::raw('&#9743; '));
         $citysep  = $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
 
-        $bridge->addMultiSort('gr2o_patient_nr', $br, 'gr2o_opened');
+        if ($this->loader->getCurrentUser()->hasPrivilege('pr.respondent.multiorg')) {
+            $bridge->addMultiSort('gr2o_patient_nr', $br, 'gor_name'); //, MUtil_Html::raw(' '), 'gr2o_opened');
+        } else {
+            $bridge->addMultiSort('gr2o_patient_nr', $br, 'gr2o_opened');
+        }
         $bridge->addMultiSort('name',            $br, 'grs_email');
         $bridge->addMultiSort('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
         $bridge->addMultiSort('grs_birthday',    $br, $phonesep, 'grs_phone_1');
@@ -153,12 +157,13 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             }
 
             $model->set('grs_ssn', 'description', sprintf($this->_('Random Example BSN: %s'), $num));
-
         } else {
             $model->set('grs_ssn', 'description', $this->_('Enter a 9-digit SSN number.'));
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
+
+        // MUtil_Echo::track($data);
 
         $bridge->addTab(    'caption1')->h4($this->_('Identification'));
         //Add the hidden fields after the tab, so validation will work. They need to be in the
@@ -166,6 +171,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addHidden(  'grs_id_user');
         $bridge->addHidden(  'gr2o_id_organization');
         $bridge->addHidden(   $model->getKeyCopyName('gr2o_patient_nr'));
+        $bridge->addHidden(   $model->getKeyCopyName('gr2o_id_organization'));
 
         $bridge->addText(    'grs_ssn',            'label', $this->_('SSN'), 'size', 10, 'maxlength', 12)
             ->addValidator(  new MUtil_Validate_Dutch_Burgerservicenummer())
@@ -344,14 +350,45 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     }
 
     /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    {
+        $elements = parent::getAutoSearchElements($model, $data);
+
+        if ($model->isMultiOrganization()) {
+            $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
+
+            $options = array_intersect($availableOrganizations, $allowedOrganizations);
+
+            $elements[] = $this->_createSelectElement(MUtil_Model::REQUEST_ID2, $options, $this->_('(all organizations)'));
+        }
+
+        return $elements;
+    }
+
+    /**
      * Returns the currently used organization
      *
+     * @param int $default Optional default value
      * @return int An organization id
      */
-    protected function getOrganizationId()
+    protected function getOrganizationId($default = null)
     {
-        if ($orgId = $this->_getParam(MUtil_Model::REQUEST_ID2)) {
+        if ($orgId = $this->_getParam(MUtil_Model::REQUEST_ID2, $default)) {
             return $orgId;
+        }
+        $data = $this->getCachedRequestData(false);
+        if (isset($data[MUtil_Model::REQUEST_ID2])) {
+            return $data[MUtil_Model::REQUEST_ID2];
         }
 
         return $this->loader->getCurrentUser()->getCurrentOrganizationId();
@@ -361,10 +398,10 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         switch ($name) {
             case 'gr2o_patient_nr':
-                return $this->_getParam(MUtil_Model::REQUEST_ID, $this->_getParam(MUtil_Model::REQUEST_ID1, $default));
+                return $this->_getParam(MUtil_Model::REQUEST_ID1, $default);
 
             case 'gr2o_id_organization':
-                return $this->_getParam(MUtil_Model::REQUEST_ID2, $default ? $default : $this->loader->getCurrentUser()->getCurrentOrganizationId());
+                return $this->getOrganizationId($default);
 
             case 'gto_id_token':
                 return null;
@@ -397,7 +434,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         $user = $this->loader->getCurrentUser();
 
-        if ($user->hasPrivilege('pr.respondent.multiorg') || $this->loader->getOrganization()->canHaveRespondents()) {
+        if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
             parent::indexAction();
         } else {
             $this->addSnippet('Organization_ChooseOrganizationSnippet');
@@ -482,7 +519,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         $params['model']   = $model;
-        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID => $this->_getParam(MUtil_Model::REQUEST_ID));
+        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
         $params['buttons'] = $this->createMenuLinks();
         $params['onclick'] = $this->findAllowedMenuItem('edit');
         if ($params['onclick']) {

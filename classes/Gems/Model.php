@@ -204,6 +204,10 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $translated = $this->util->getTranslated();
 
         $model->setIfExists('gr2o_patient_nr',    'label', $this->translate->_('Respondent nr'));
+        if ((! $detailed) && $model->isMultiOrganization()) {
+            $model->addTable('gems__organizations', array('gr2o_id_organization' => 'gor_id_organization'));
+            $model->setIfExists('gor_name', 'label', $this->translate->_('Organization'));
+        }
         $model->setIfExists('gr2o_opened',        'label', $this->translate->_('Opened'), 'formatFunction', $translated->formatDateTime);
         $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
 
