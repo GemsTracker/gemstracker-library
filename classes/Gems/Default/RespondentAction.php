@@ -52,12 +52,48 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
+    
+    public $exportSnippets = array('RespondentDetailsSnippet');
 
     public $filterStandard = array('grc_success' => 1);
 
     public $sortKey = array('gr2o_opened' => SORT_DESC);
 
     public $useTabbedForms = true;
+    
+    /**
+     * Constructs the form 
+     * 
+     * @param Gems_Export_RespondentExport $export
+     * @return Gems_Form_TableForm
+     */
+    protected function _getExportForm($export)
+    {
+        $form = new Gems_Form_TableForm();
+        $form->setAttrib('target', '_blank');
+               
+        $element = new Zend_Form_Element_Checkbox('group');
+        $element->setLabel($this->_('Group surveys'));
+        $element->setValue(1);
+        $form->addElement($element);
+        
+        $element = new Zend_Form_Element_Select('format');
+        $element->setLabel($this->_('Output format'));
+        $outputFormats = array('html' => 'HTML');
+        if (!empty($export->_wkhtmltopdfLocation)) {
+            $outputFormats['pdf'] = 'PDF';
+            $element->setValue('pdf');
+        }
+        $element->setMultiOptions($outputFormats);
+        $form->addElement($element);
+        
+        $element = new Zend_Form_Element_Submit('export');
+        $element->setLabel($this->_('Export'))
+                ->setAttrib('class', 'button');
+        $form->addElement($element);
+        
+        return $form;
+    }
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -422,6 +458,38 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public function exportAction()
     {
-        $this->_reroute(array('controller' => 'respondent-export', 'action' => 'index'));
+        //First show the respondent snippet
+        $model = $this->getModel();
+        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+
+        if (! isset($data['grs_id_user'])) {
+            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
+            $this->_reroute(array('action' => 'index'));
+        }
+
+        $params['model']   = $model;
+        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID => $this->_getParam(MUtil_Model::REQUEST_ID));
+        $params['buttons'] = $this->createMenuLinks();
+        $params['onclick'] = $this->findAllowedMenuItem('edit');
+        if ($params['onclick']) {
+            $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
+        }
+        $params['respondentData'] = $data;
+        $this->addSnippets($this->exportSnippets, $params);
+        
+        //Now show the export form
+        $export = $this->loader->getRespondentExport($this);
+        $form = $this->_getExportForm($export);
+        $this->html->h2($this->_('Export respondent'));
+        $div = $this->html->div(array('id' => 'mainform'));
+        $div[] = $form;
+        
+        $request = $this->getRequest();
+        
+        $form->populate($request->getParams());
+        
+        if ($request->isPost()) {
+            $export->render((array) $this->getRequest()->getParam('id'), $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+        }
     }
 }

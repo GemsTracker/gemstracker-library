@@ -71,6 +71,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @var Gems_Export_RespondentExport
+     */
+    protected $respondentexport;
+
+    /**
+     *
      * @var Gems_Roles
      */
     protected $roles;
@@ -186,6 +192,19 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getPdf()
     {
         return $this->_getClass('pdf');
+    }
+
+    /**
+     *
+     * @return Gems_Export_RespondentExport
+     */
+    public function getRespondentExport($container)
+    {
+        $this->addRegistryContainer($container, 'tmp_export');
+        $class = $this->_getClass('respondentexport', 'Export_RespondentExport');
+        $this->removeRegistryContainer('tmp_export');
+
+        return $class;
     }
 
     /**
