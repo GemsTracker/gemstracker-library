@@ -62,6 +62,9 @@ class ShowSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippe
 
         // Extra parameter needed for menu items
         $bridge->gtr_track_type;
+        $bridge->gr2t_id_respondent_track;
+        $bridge->gr2o_patient_nr;
+        $bridge->gr2o_id_organization;
         $bridge->grc_success;
 
         $controller = $this->request->getControllerName();

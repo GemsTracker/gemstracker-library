@@ -161,6 +161,15 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
+    /**
+     * A function that determines the parameters that this menu item should have using these paramter
+     * sources.
+     *
+     * @param Gems_Menu_ParameterCollector $source A source of parameter values
+     * @param array $parameters A usually empty array of parameters that is filled from the sources
+     * @param boolean $raiseConditions When true, no lazyness is returned
+     * @return boolean Or lazy condition. When true menu item is enabled otherwise false
+     */
     private function _applyParameterSources(Gems_Menu_ParameterCollector $source, array &$parameters, $raiseConditions)
     {
         // Gems_Menu::$verbose = true;
@@ -185,10 +194,9 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             }
         }
 
-        if ($this->_hiddenOrgId) {
-            // Remove org paramter that should remain hidden.
+        if ($this->_hiddenOrgId  && $raiseConditions) {
+            // Remove org paramter that should remain hidden when conditions have been raised.
             if (isset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]) &&
-                    (! $parameters[MUtil_Model::REQUEST_ID2] instanceof MUtil_Lazy_LazyInterface) &&
                     ($parameters[MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
                 $parameters[MUtil_Model::REQUEST_ID] = $parameters[MUtil_Model::REQUEST_ID1];
                 unset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]);
@@ -198,6 +206,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $condition;
     }
 
+    /**
+     * Generate a hrf attribute using these sources
+     *
+     * @param Gems_Menu_ParameterCollector $source A parameter source collection
+     * @param boolean $condition When true the system may create a Lazy condition for the url
+     * @return MUtil_Html_HrefArrayAttribute
+     */
     private function _toHRef(Gems_Menu_ParameterCollector $source, &$condition)
     {
         if ($this->get('allowed')) {
@@ -205,7 +220,12 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
             if ($condition = $this->_applyParameterSources($source, $parameters, ! $condition)) {
 
-                $url = new MUtil_Html_HrefArrayAttribute($parameters);
+                if ($this->_hiddenOrgId) {
+                    $url = new Gems_Menu_HiddenOrganizationHrefAttribute($parameters);
+                    $url->setHiddenOrgId($this->_hiddenOrgId);
+                } else {
+                    $url = new MUtil_Html_HrefArrayAttribute($parameters);
+                }
                 $url->setRouteReset($this->get('reset_param', true));
 
                 foreach (array('module', 'controller', 'action', 'route') as $name) {
@@ -577,6 +597,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             if ($patientId = $request->getParam(MUtil_Model::REQUEST_ID)) {
                 $request->setParam(MUtil_Model::REQUEST_ID1, $patientId);
                 $request->setParam(MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
+                $request->setParam(MUtil_Model::REQUEST_ID,  null);
             }
         }
 
@@ -781,6 +802,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
     public function removeParameters()
     {
+        $this->_parameters         = true;
         $this->_requiredParameters = null;
         return $this;
     }

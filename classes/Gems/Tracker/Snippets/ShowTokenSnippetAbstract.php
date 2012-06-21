@@ -36,7 +36,7 @@
  */
 
 /**
- * Generic extension for displaying tokens 
+ * Generic extension for displaying tokens
  *
  * @package    Gems
  * @subpackage Tracker

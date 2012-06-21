@@ -121,7 +121,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Create a Gems project wide unique user id
      *
-     * @see Gems_Model_ModelAbstract
+     * @see Gems_Model_RespondentModel
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved

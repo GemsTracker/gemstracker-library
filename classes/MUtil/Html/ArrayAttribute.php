@@ -91,6 +91,11 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         parent::__construct($name, $value);
     }
 
+    /**
+     * Returns the rendered values of th earray elements
+     *
+     * @return array
+     */
     protected function _getArrayRendered()
     {
         $results = array();

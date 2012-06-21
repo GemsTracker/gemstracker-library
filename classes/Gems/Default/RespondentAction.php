@@ -52,7 +52,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
-    
+
     public $exportSnippets = array('RespondentDetailsSnippet');
 
     public $filterStandard = array('grc_success' => 1);
@@ -60,10 +60,10 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     public $sortKey = array('gr2o_opened' => SORT_DESC);
 
     public $useTabbedForms = true;
-    
+
     /**
-     * Constructs the form 
-     * 
+     * Constructs the form
+     *
      * @param Gems_Export_RespondentExport $export
      * @return Gems_Form_TableForm
      */
@@ -71,12 +71,12 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         $form = new Gems_Form_TableForm();
         $form->setAttrib('target', '_blank');
-               
+
         $element = new Zend_Form_Element_Checkbox('group');
         $element->setLabel($this->_('Group surveys'));
         $element->setValue(1);
         $form->addElement($element);
-        
+
         $element = new Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
         $outputFormats = array('html' => 'HTML');
@@ -86,12 +86,12 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
         $element->setMultiOptions($outputFormats);
         $form->addElement($element);
-        
+
         $element = new Zend_Form_Element_Submit('export');
         $element->setLabel($this->_('Export'))
                 ->setAttrib('class', 'button');
         $form->addElement($element);
-        
+
         return $form;
     }
 
@@ -245,7 +245,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $model->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
         }
 
-        $model->set('gr2o_id_organization', 'default', $model->getCurrentOrganization());
+        $model->set('gr2o_id_organization', 'default', $this->getOrganizationId());
 
         return $model;
     }
@@ -341,6 +341,20 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->addSnippet(reset($this->showSnippets), $params);
 
         $this->html[] = $form;
+    }
+
+    /**
+     * Returns the currently used organization
+     *
+     * @return int An organization id
+     */
+    protected function getOrganizationId()
+    {
+        if ($orgId = $this->_getParam(MUtil_Model::REQUEST_ID2)) {
+            return $orgId;
+        }
+
+        return $this->loader->getCurrentUser()->getCurrentOrganizationId();
     }
 
     public function getMenuParameter($name, $default)
@@ -476,18 +490,18 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
         $params['respondentData'] = $data;
         $this->addSnippets($this->exportSnippets, $params);
-        
+
         //Now show the export form
         $export = $this->loader->getRespondentExport($this);
         $form = $this->_getExportForm($export);
         $this->html->h2($this->_('Export respondent'));
         $div = $this->html->div(array('id' => 'mainform'));
         $div[] = $form;
-        
+
         $request = $this->getRequest();
-        
+
         $form->populate($request->getParams());
-        
+
         if ($request->isPost()) {
             $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
         }
