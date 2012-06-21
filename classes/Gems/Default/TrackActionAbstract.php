@@ -138,8 +138,8 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
      */
     protected function _getPatientAndOrganisationParam()
     {
-        $patientId = $this->_getParam(MUtil_Model::REQUEST_ID . '1');
-        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID . '2');
+        $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
 
         // When no resp id, check the current menu item paramter filter that MUtil_Model::REQUEST_ID does not contain a token
         if ((! $patientId) && $this->menu->getCurrent()->checkParameterFilter(Gems_Model::ID_TYPE)) {
@@ -333,10 +333,11 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         if (isset($data[MUtil_Model::REQUEST_ID])) {
             $keys[] = MUtil_Model::REQUEST_ID;
 
-        } elseif (isset($data[MUtil_Model::REQUEST_ID . '1'])) {
+        } elseif (isset($data[MUtil_Model::REQUEST_ID1])) {
             $i = 1;
             while (isset($data[MUtil_Model::REQUEST_ID . $i])) {
                 $keys[] = MUtil_Model::REQUEST_ID . $i;
+                $i++;
             }
         } else {
             $keys = $model->getKeys();
@@ -376,16 +377,11 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     public function initFilter()
     {
         // FROM REQUEST
-        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID . '1')) {
-            $this->filterStandard['gr2o_patient_nr'] = $param;
-
-        } elseif ($param = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID1)) {
             $this->filterStandard['gr2o_patient_nr'] = $param;
         }
-        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID . '2')) {
+        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID2)) {
             $this->filterStandard['gr2o_id_organization'] = $param;
-        } else {
-            $this->filterStandard['gr2o_id_organization'] = $this->escort->getCurrentOrganization();
         }
 
         if ($param = $this->_getParam(Gems_Model::RESPONDENT_TRACK)) {

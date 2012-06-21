@@ -187,11 +187,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
         if ($this->_hiddenOrgId) {
             // Remove org paramter that should remain hidden.
-            if (isset($parameters[MUtil_Model::REQUEST_ID . '1'], $parameters[MUtil_Model::REQUEST_ID . '2']) &&
-                    (! $parameters[MUtil_Model::REQUEST_ID . '2'] instanceof MUtil_Lazy_LazyInterface) &&
-                    ($parameters[MUtil_Model::REQUEST_ID . '2'] == $this->_hiddenOrgId)) {
-                $parameters[MUtil_Model::REQUEST_ID] = $parameters[MUtil_Model::REQUEST_ID . '1'];
-                unset($parameters[MUtil_Model::REQUEST_ID . '1'], $parameters[MUtil_Model::REQUEST_ID . '2']);
+            if (isset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]) &&
+                    (! $parameters[MUtil_Model::REQUEST_ID2] instanceof MUtil_Lazy_LazyInterface) &&
+                    ($parameters[MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
+                $parameters[MUtil_Model::REQUEST_ID] = $parameters[MUtil_Model::REQUEST_ID1];
+                unset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]);
             }
         }
 
@@ -571,6 +571,12 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             foreach ($this->_hiddenParameters as $key => $value) {
                 $request->setParam($key, $value);
                 $source[$key] = $value;
+            }
+        }
+        if ($this->_hiddenOrgId) {
+            if ($patientId = $request->getParam(MUtil_Model::REQUEST_ID)) {
+                $request->setParam(MUtil_Model::REQUEST_ID1, $patientId);
+                $request->setParam(MUtil_Model::REQUEST_ID2, $this->_hiddenOrgId);
             }
         }
 

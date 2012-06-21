@@ -264,8 +264,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     {
         $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
 
-        $params = array(MUtil_Model::REQUEST_ID => 'gr2o_patient_nr');
-        $params = array(MUtil_Model::REQUEST_ID . '1'  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID . '2' => 'gr2o_id_organization');
+        // $params = array(MUtil_Model::REQUEST_ID => 'gr2o_patient_nr');
+        $params = array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
 
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
@@ -275,12 +275,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-
         /*
         iff(
             is('gr2o_id_organization', $this->escort->getCurrentOrganization()),
-            aget(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr'),
-            aget(MUtil_Model::REQUEST_ID . '1', 'gr2o_patient_nr', MUtil_Model::REQUEST_ID . '2', 'gr2o_id_organization')
+            aget(MUtil_Model::REQUEST_ID,  'gr2o_patient_nr'),
+            aget(MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2, 'gr2o_id_organization')
             );
         */
 

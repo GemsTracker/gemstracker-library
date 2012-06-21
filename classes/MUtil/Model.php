@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -36,11 +36,46 @@
  */
 class MUtil_Model
 {
+    /**
+     * In order to keep the url's short and to hide any field names from
+     * the user, model identifies key values by using 'id' for a single
+     * key value and id1, id2, etc... for multiple keys.
+     */
     const REQUEST_ID = 'id';
 
+    /**
+     * Helper constant for first key value in multi value key.
+     */
+    const REQUEST_ID1 = 'id1';
+
+    /**
+     * Helper constant for second key value in multi value key.
+     */
+    const REQUEST_ID2 = 'id2';
+
+    /**
+     * Helper constant for third key value in multi value key.
+     */
+    const REQUEST_ID3 = 'id3';
+
+    /**
+     * Helper constant for forth key value in multi value key.
+     */
+    const REQUEST_ID4 = 'id4';
+
+    /**
+     * Default parameter name for sorting ascending.
+     */
     const SORT_ASC_PARAM  = 'asort';
+
+    /**
+     * Default parameter name for sorting descending.
+     */
     const SORT_DESC_PARAM = 'dsort';
 
+    /**
+     * Default parameter name for wildcard text search.
+     */
     const TEXT_FILTER = 'search';
 
     const TYPE_STRING = 1;
@@ -65,4 +100,3 @@ class MUtil_Model
      */
     public static $verbose = false;
 }
-

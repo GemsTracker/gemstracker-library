@@ -85,12 +85,8 @@ class Gems_Menu_ParameterSource extends ArrayObject implements Gems_Menu_Paramet
 
     public function setPatient($patientNumber, $organizationId)
     {
-        if (! $this->offsetExists(MUtil_Model::REQUEST_ID)) {
-            $this->offsetSet(MUtil_Model::REQUEST_ID, $patientNumber);
-        }
-
-        $this->_setMulti($patientNumber, MUtil_Model::REQUEST_ID . '1', 'gr2o_patient_nr');
-        $this->_setMulti($organizationId, MUtil_Model::REQUEST_ID . '2', 'gr2o_id_organization');
+        $this->_setMulti($patientNumber,  MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr');
+        $this->_setMulti($organizationId, MUtil_Model::REQUEST_ID2, 'gr2o_id_organization');
 
         return $this;
     }

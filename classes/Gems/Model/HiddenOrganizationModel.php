@@ -93,6 +93,8 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 
                 if ($field2 = array_shift($keys)) {
                     $parameters[$field2] = $this->getCurrentOrganization();
+                    MUtil_Echo::r('Still using old HiddenModel parameters.', 'DEPRECIATION WARNING');
+                    MUtil_Echo::r($parameters);
                 }
 
                 unset($parameters[MUtil_Model::REQUEST_ID]);
@@ -149,11 +151,11 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
         }
 
         if ($organizationInKey) {
-            $href[MUtil_Model::REQUEST_ID]       = self::_getValueFrom(reset($keys), $forData);
+            $href[MUtil_Model::REQUEST_ID]  = self::_getValueFrom(reset($keys), $forData);
         } else {
-            $href[MUtil_Model::REQUEST_ID . '1'] = self::_getValueFrom(reset($keys), $forData);
+            $href[MUtil_Model::REQUEST_ID1] = self::_getValueFrom(reset($keys), $forData);
             next($keys);
-            $href[MUtil_Model::REQUEST_ID . '2'] = self::_getValueFrom(key($keys), $forData);
+            $href[MUtil_Model::REQUEST_ID2] = self::_getValueFrom(key($keys), $forData);
         }
 
         return $href;
