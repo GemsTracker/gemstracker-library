@@ -52,15 +52,35 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected $_groupedSurveySnippet = 'TrackAnswersModelSnippet';
     protected $_singleSurveySnippet  = 'AnswerModelSnippet';
 
+    /**
+     *
+     * @var GemsEscort
+     */
     public $escort;
-    public $project;
+    
     private $html;
+    
+    /**
+     *
+     * @var Gems_Loader
+     */
     public $loader;
+    
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
+    
     /**
      * @var Zend_Translate_Adapter
      */
     public $translate;
 
+    /**
+     *
+     * @var Gems_Util
+     */
     public $util;
 
     public $view;

@@ -364,7 +364,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
                 return $this->_getParam(MUtil_Model::REQUEST_ID, $this->_getParam(MUtil_Model::REQUEST_ID1, $default));
 
             case 'gr2o_id_organization':
-                return $this->_getParam(MUtil_Model::REQUEST_ID1, $default ? $default : $this->loader->getCurrentUser()->getCurrentOrganizationId());
+                return $this->_getParam(MUtil_Model::REQUEST_ID2, $default ? $default : $this->loader->getCurrentUser()->getCurrentOrganizationId());
 
             case 'gto_id_token':
                 return null;
