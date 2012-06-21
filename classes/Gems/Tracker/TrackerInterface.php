@@ -130,6 +130,18 @@ interface Gems_Tracker_TrackerInterface
      * @return Gems_Tracker_RespondentTrack
      */
     public function getRespondentTrack($respTrackData);
+    
+    /**
+     * Get all tracks for a respondent
+     * 
+     * Specify the optional $order to sort other than on start date
+     * 
+     * @param int $userId
+     * @param int $organizationId
+     * @param mixed $order The column(s) and direction to order by
+     * @return array of Gems_Tracker_RespondentTrack
+     */
+    public function getRespondentTracks($userId, $organizationId, $order = array('gr2t_start_date'));
 
     /**
      * Load project specific model or general Gems model otherwise

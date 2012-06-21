@@ -337,28 +337,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         return $this->getTokenLibrary()->filter($tokenId);
     }
-
-    /**
-     *
-     * @param int $userId
-     * @param int $organizationId
-     * @return array of Gems_Tracker_RespondentTrack
-     */
-    public function getRespondentTracks($userId, $organizationId)
-    {
-        $sql    = "SELECT *
-                    FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
-                    WHERE gr2t_id_user = ? AND gr2t_id_organization = ?";
-        $rows   = $this->db->fetchAll($sql, array($userId, $organizationId));
-        $tracks = array();
-
-        foreach ($rows as $row) {
-            $tracks[$row['gr2t_id_respondent_track']] = $this->getRespondentTrack($row);
-        }
-
-        return $tracks;
-    }
-
+    
     /**
      *
      * @param mixed $respTrackData Track id or array containing trackdata
@@ -377,6 +356,39 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         }
 
         return $this->_respTracks[$respTracksId];
+    }
+
+    /**
+     * Get all tracks for a respondent
+     * 
+     * Specify the optional $order to sort other than on start date
+     * 
+     * @param int $userId
+     * @param int $organizationId
+     * @param mixed $order The column(s) and direction to order by
+     * @return array of Gems_Tracker_RespondentTrack
+     */
+    public function getRespondentTracks($userId, $organizationId, $order = array('gr2t_start_date'))
+    {
+        /*$sql    = "SELECT *
+                    FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
+                    WHERE gr2t_id_user = ? AND gr2t_id_organization = ?";
+         */
+        $select = $this->db->select()
+                ->from('gems__respondent2track')
+                ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
+                ->where('gr2t_id_user = ? AND gr2t_id_organization = ?');
+        if (!is_null($order)) {
+            $select->order($order);
+        }
+        $rows   = $this->db->fetchAll($select, array($userId, $organizationId));
+        $tracks = array();
+
+        foreach ($rows as $row) {
+            $tracks[$row['gr2t_id_respondent_track']] = $this->getRespondentTrack($row);
+        }
+
+        return $tracks;
     }
 
     /**

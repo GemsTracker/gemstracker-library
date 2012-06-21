@@ -489,7 +489,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $form->populate($request->getParams());
         
         if ($request->isPost()) {
-            $export->render((array) $this->getRequest()->getParam('id'), $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+            $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
         }
     }
 }
