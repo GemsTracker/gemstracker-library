@@ -83,7 +83,7 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
     {
         if ($parameters) {
             // Allow use when passed only an ID value
-            if (isset($parameters[MUtil_Model::REQUEST_ID])) {
+            if (isset($parameters[MUtil_Model::REQUEST_ID]) && (! isset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]))) {
 
                 $id    = $parameters[MUtil_Model::REQUEST_ID];
                 $keys  = $this->getKeys();

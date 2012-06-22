@@ -367,6 +367,10 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             // Do not show the base url as it is in $currentUri
             $surveyReturn['NoBase'] = true;
 
+            // Add route reset to prevet the current parameters to be
+            // added to the url.
+            $surveyReturn['RouteReset'] = true;
+
             return $currentUri . MUtil_Html::urlString($surveyReturn);
             // MUtil_Echo::track($currentUri . MUtil_Html::urlString($surveyReturn));
         }
@@ -1084,6 +1088,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $values['gto_by']         = $userId;
         $values['gto_return_url'] = $this->calculateReturnUrl();
 
+        // MUtil_Echo::track($values);
+        
         $this->_updateToken($values, $userId);
 
         $this->handleBeforeAnswering();
