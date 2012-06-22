@@ -144,28 +144,47 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
         if (isset($this->session->$trackTypeCache, $this->session->$trackTypeTime) && (time() < $this->session->$trackTypeTime)) {
             $tracks = $this->session->$trackTypeCache;
         } else {
-            if ($trackType == 'T') {
-                $sql = "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks
-                    WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                        (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                        gtr_active = 1 AND
-                        gtr_track_type = 'T' AND
-                        gtr_organizations LIKE '%|$organization_id|%'
-                     ORDER BY gtr_track_name";
-            } else {
-                $sql = "SELECT gtr_id_track, gtr_track_name
-                    FROM gems__tracks INNER JOIN
-                        gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
-                        gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
-                        gems__groups ON gsu_id_primary_group = ggp_id_group
-                    WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                        (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                        gtr_active = 1 AND
-                        gtr_track_type = '$trackTypeLetter' AND
-                        ggp_respondent_members = 1 AND
-                        gtr_organizations LIKE '%|$organization_id|%'
-                     ORDER BY gtr_track_name";
+            switch ($trackType) {
+                case 'T':
+                    $sql = "SELECT gtr_id_track, gtr_track_name
+                        FROM gems__tracks
+                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                            gtr_active = 1 AND
+                            gtr_track_type = 'T' AND
+                            gtr_organizations LIKE '%|$organization_id|%'
+                         ORDER BY gtr_track_name";
+                    break;
+                case 'S':
+                    $sql = "SELECT gtr_id_track, gtr_track_name
+                        FROM gems__tracks INNER JOIN
+                            gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
+                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
+                            gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                            gtr_active = 1 AND
+                            gtr_track_type = 'S' AND
+                            ggp_respondent_members = 1 AND
+                            gtr_organizations LIKE '%|$organization_id|%'
+                         ORDER BY gtr_track_name";
+                    break;
+                case 'M':
+                    $sql = "SELECT gtr_id_track, gtr_track_name
+                        FROM gems__tracks INNER JOIN
+                            gems__rounds ON gtr_id_track = gro_id_track INNER JOIN
+                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
+                            gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                            gtr_active = 1 AND
+                            gtr_track_type = 'S' AND
+                            ggp_respondent_members = 0 AND
+                            gtr_organizations LIKE '%|$organization_id|%'
+                         ORDER BY gtr_track_name";
+                    break;
+                // default:
+                //    throw new exception('Invalid track type requested.');
             }
             $tracks = $this->db->fetchPairs($sql);
 
