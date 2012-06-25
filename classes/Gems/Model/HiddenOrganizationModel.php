@@ -55,6 +55,12 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 
     /**
      *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
+     *
      * @var Gems_User_User
      */
     protected $user;
@@ -98,6 +104,13 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
                 }
 
                 unset($parameters[MUtil_Model::REQUEST_ID]);
+            }
+
+            if (isset($parameters[MUtil_Model::REQUEST_ID2]) &&
+                !array_key_exists($parameters[MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations())
+                ) {
+
+                throw new Exception($this->translate->_('Invalid organization.'));
             }
 
             return parent::applyParameters($parameters);
