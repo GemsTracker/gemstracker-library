@@ -225,8 +225,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
 
         // Create date range elements
-        $min  = -91;
-        $max  = 91;
+        $min  = $this->minPeriod;
+        $max  = $this->maxPeriod;
         $size = max(strlen($min), strlen($max));
 
         $options = array(
