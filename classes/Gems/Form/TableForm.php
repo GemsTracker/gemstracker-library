@@ -225,11 +225,16 @@ class Gems_Form_TableForm extends Gems_Form {
         if ($this->loadDefaultDecoratorsIsDisabled()) {
             return $this;
         }
+        
+        $class = $this->getAttrib('class');
+        if (empty($class)) {
+            $class = 'formTable';
+        }
 
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('FormElements')
-                 ->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>'formTable'))
+                 ->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>$class))
                  ->addDecorator(array('tab' => 'HtmlTag'), array('tag' => 'div', 'class' => 'displayGroup'))
                  ->addDecorator('Form');
         }
