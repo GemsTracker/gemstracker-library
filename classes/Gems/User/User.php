@@ -854,6 +854,26 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Get an array of OrgId => Org Name for all allowed organizations that can have
+     * respondents for the current logged in user
+     *
+     * @return array
+     */
+    public function getRespondentOrganizations()
+    {
+
+        if (! $this->_hasVar('__allowedRespOrgs')) {
+            $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
+            $allowedOrganizations   = $this->getAllowedOrganizations();
+
+            $this->_setVar('__allowedRespOrgs', array_intersect($availableOrganizations, $allowedOrganizations));
+        }
+        // MUtil_Echo::track($this->_getVar('__allowedOrgs'));
+
+        return $this->_getVar('__allowedRespOrgs');
+    }
+
+    /**
      * Returns the current user role.
      *
      * @return string

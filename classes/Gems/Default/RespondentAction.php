@@ -47,6 +47,7 @@
 abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
 {
     public $showSnippets = array(
+        'Respondent_MultiOrganizationTab',
         'RespondentDetailsSnippet',
     	'AddTracksSnippet',
         'RespondentTokenTabsSnippet',
@@ -172,6 +173,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addHidden(  'gr2o_id_organization');
         $bridge->addHidden(   $model->getKeyCopyName('gr2o_patient_nr'));
         $bridge->addHidden(   $model->getKeyCopyName('gr2o_id_organization'));
+        if (isset($data['gul_id_user'])) {
+            $bridge->addHidden('gul_id_user');
+        }
 
         $bridge->addText(    'grs_ssn',            'label', $this->_('SSN'), 'size', 10, 'maxlength', 12)
             ->addValidator(  new MUtil_Validate_Dutch_Burgerservicenummer())
@@ -364,10 +368,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $elements = parent::getAutoSearchElements($model, $data);
 
         if ($model->isMultiOrganization()) {
-            $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
-            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
-
-            $options = array_intersect($availableOrganizations, $allowedOrganizations);
+            $options = $this->loader->getCurrentUser()->getRespondentOrganizations();
 
             $elements[] = $this->_createSelectElement(MUtil_Model::REQUEST_ID2, $options, $this->_('(all organizations)'));
         }

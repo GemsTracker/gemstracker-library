@@ -46,7 +46,7 @@
  */
 class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
 {
-    protected $href = array('page' => null);
+    protected $href = array();
 
     /**
      * Required
@@ -54,6 +54,12 @@ class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var array id specific hrefs
+     */
+    protected $hrefs;
 
     /**
      * Required
@@ -69,26 +75,38 @@ class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
      */
     protected $respondentData;
 
-    protected function getParameterKey()
+    /**
+     * Return the parameters that should be used for this tabId
+     *
+     * @param string $tabId
+     * @return array
+     */
+    protected function getParameterKeysFor($tabId)
     {
-        return 'id2';
+        return $this->hrefs[$tabId];
     }
 
+    /**
+     * Function used to fill the tab bar
+     *
+     * @return array tabId => label
+     */
     protected function getTabs()
     {
         $user = $this->loader->getCurrentUser();
-        $orgs = $user->getAllowedOrganizations();
-        $sql  = "SELECT gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ? AND gr2o_id_organization = ?";
-        $resp = $this->respondentData['grs_id_user'];
 
-        // TODO:
-        // Shows tabs only for existing respondents
-        // Tabslinks should contain two parameters
-        // No option for difference active / inactive
-        
-        foreach ($orgs as $orgId => $name) {
-            if ($patientNr = $this->db->fetchOne($sql, array($resp, $orgId))) {
+        $sql  = "SELECT gr2o_id_organization, gr2o_patient_nr FROM gems__respondent2org WHERE gr2o_id_user = ?";
+
+        $this->defaultTab = $user->getCurrentOrganizationId();
+        $this->currentTab = $this->request->getParam(MUtil_Model::REQUEST_ID2);
+
+        $allowedOrgs  = $user->getRespondentOrganizations();
+        $existingOrgs = $this->db->fetchPairs($sql, $this->respondentData['grs_id_user']);
+
+        foreach ($allowedOrgs as $orgId => $name) {
+            if (isset($existingOrgs[$orgId])) {
                 $tabs[$orgId] = $name;
+                $this->hrefs[$orgId] = array(MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId], MUtil_Model::REQUEST_ID2 => $orgId);
             }
         }
 

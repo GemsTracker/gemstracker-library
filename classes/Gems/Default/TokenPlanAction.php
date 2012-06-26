@@ -342,10 +342,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         // Select organisation
         if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface)) {
-            $availableOrganizations = $this->util->getDbLookup()->getOrganizationsWithRespondents();
-            $allowedOrganizations   = $this->loader->getCurrentUser()->getAllowedOrganizations();
-
-            $options = array_intersect($availableOrganizations, $allowedOrganizations);
+            $options = $this->loader->getCurrentUser()->getRespondentOrganizations();
 
             $elements[] = $this->_createSelectElement('gto_id_organization', $options);
         }

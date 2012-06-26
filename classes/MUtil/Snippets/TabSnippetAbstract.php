@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @author     Menoo Dekker <menno.dekker@erasmusmc.nl>
@@ -36,9 +36,9 @@
  */
 
 /**
- * Abstract class for quickly creating a tabbed bar, or rather a div that contains a number 
+ * Abstract class for quickly creating a tabbed bar, or rather a div that contains a number
  * of links, adding specific classes for display.
- * 
+ *
  * @package    MUtil
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -49,11 +49,11 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
 {
     /**
      * Optional standard url parts
-     * 
+     *
      * @var array
      */
     protected $baseurl = array();
-    
+
     /**
      * Shortfix to add class attribute
      *
@@ -63,9 +63,22 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
 
     /**
      *
-     * @var string
+     * @var string Id of the current tab
+     */
+    protected $currentTab;
+
+    /**
+     *
+     * @var string Id of default tab
      */
     protected $defaultTab;
+
+    /**
+     * Show bar when there is only a single tab
+     *
+     * @var boolean
+     */
+    protected $displaySingleTab = false;
 
     /**
      *
@@ -80,10 +93,51 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      */
     protected $request;
 
+    /**
+     *
+     * @var string Class attribute for active tab
+     */
     protected $tabActiveClass = 'active';
+
+    /**
+     *
+     * @var string Class attribute for all tabs
+     */
     protected $tabClass       = 'tab';
 
-    abstract protected function getParameterKey();
+    /**
+     * Return optionally the single parameter key which should left out for the default value,
+     * but is added for all other tabs.
+     *
+     * @return mixed
+     */
+    protected function getParameterKey()
+    {
+        return null;
+    }
+
+    /**
+     * Return the parameters that should be used for this tabId
+     *
+     * @param string $tabId
+     * @return array
+     */
+    protected function getParameterKeysFor($tabId)
+    {
+        $paramKey = $this->getParameterKey();
+
+        if ($paramKey && ($tabId != $this->defaultTab)) {
+            return array($paramKey => $tabId);
+        }
+
+        return array();
+    }
+
+    /**
+     * Function used to fill the tab bar
+     *
+     * @return array tabId => label
+     */
     abstract protected function getTabs();
 
     /**
@@ -96,37 +150,39 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        if (isset($parameters['baseurl']) && is_array($this->baseurl)) {
-            $this->href = $this->href + $this->baseurl;
-        }
+        $tabs = $this->getTabs();
 
-        $param = $this->getParameterKey();
-        $tabs  = $this->getTabs();
-
-        // When empty, first is default
-        if (null === $this->defaultTab) {
-            reset($tabs);
-            $this->defaultTab = key($tabs);
-        }
-
-        $argFilter = $this->request->getParam($param);
-        $argFilter = $argFilter ? $argFilter : $this->defaultTab;
-
-        $tabRow = MUtil_Html::create()->div();
-
-        foreach ($tabs as $tabName => $content) {
-            $this->href[$param] = ($tabName == $this->defaultTab) ? null : $tabName;
-
-            $div = $tabRow->div(array('class' => $this->tabClass));
-            $div->a($this->href, $content);
-
-            if ($argFilter == $tabName) {
-                $div->appendAttrib('class', $this->tabActiveClass);
+        if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
+            // Let loose
+            if (isset($parameters['baseurl']) && is_array($this->baseurl)) {
+                $this->href = $this->href + $this->baseurl;
             }
+
+            // When empty, first is default
+            if (null === $this->defaultTab) {
+                reset($tabs);
+                $this->defaultTab = key($tabs);
+            }
+            if (null === $this->currentTab) {
+                $this->currentTab = $this->request->getParam($this->getParameterKey(), $this->defaultTab);
+            }
+
+            $tabRow = MUtil_Html::create()->div();
+
+            foreach ($tabs as $tabId => $content) {
+
+                $div = $tabRow->div(array('class' => $this->tabClass));
+
+                $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+
+                if ($this->currentTab == $tabId) {
+                    $div->appendAttrib('class', $this->tabActiveClass);
+                }
+            }
+
+            return $tabRow;
+        } else {
+            return null;
         }
-
-        return $tabRow;
     }
-
-
 }
