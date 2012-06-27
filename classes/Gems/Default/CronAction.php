@@ -162,7 +162,8 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
 
         $model  = $this->loader->getTracker()->getTokenModel();
         $mailer = new Gems_Email_TemplateMailer($this->escort);
-
+        $mailer->continueOnError = true;
+        
         // $mailer->setDefaultTransport(new MUtil_Mail_Transport_EchoLog());
 
         $jobs = $this->db->fetchAll("SELECT * FROM gems__mail_jobs WHERE gmj_active = 1");

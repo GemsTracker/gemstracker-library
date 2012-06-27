@@ -49,6 +49,13 @@ class Gems_Email_TemplateMailer
     const MAIL_TLS = 2;
 
     /**
+     * Should the mailer continue sending mails, even when it encounters errors?
+     *
+     * @var boolean
+     */
+    public $continueOnError = false;
+
+    /**
      *
      * @var Zend_Mail_Transport
      */
@@ -59,6 +66,11 @@ class Gems_Email_TemplateMailer
      */
     protected $escort;
 
+    /**
+     * Feedback messages for this action.
+     *
+     * @var array of string
+     */
     protected $messages = array();
 
     private $_changeDate;
@@ -238,6 +250,7 @@ class Gems_Email_TemplateMailer
         $send = array();
         $scount = 0;
         $ucount = 0;
+        $result = true;
 
         foreach ($tokensData as $tokenData) {
             // Should this token be mailed?
@@ -249,11 +262,15 @@ class Gems_Email_TemplateMailer
                     if ($message = $this->processMail($tokenData)) {
                         $this->addMessage($this->escort->_('Mail failed to send.'));
                         $this->addMessage($message);
-                        return false;
+                        $result = true;
+                        if (! $this->continueOnError) {
+                            break;
+                        }
+                    } else {
+                        $send[$tokenData['grs_email']] = true;
+                        $scount++;
+                        $ucount++;
                     }
-                    $send[$tokenData['grs_email']] = true;
-                    $scount++;
-                    $ucount++;
 
                 } elseif ($updateAll) {
                     $this->updateToken($tokenData);
@@ -266,7 +283,7 @@ class Gems_Email_TemplateMailer
             $this->addMessage(sprintf($this->escort->_('Sent %d e-mails, updated %d tokens.'), $scount, $ucount));
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -335,12 +352,12 @@ class Gems_Email_TemplateMailer
             MUtil_Echo::r($to, $to_name);
             MUtil_Echo::r($from, $from_name);
         }
-        
+
         if (!$this->bounceCheck()) {
             $validate = new Zend_Validate_EmailAddress();
-            
+
             if (!$validate->isValid($to)) {
-                return "Invalid e-mail address {$to}";
+                return sprintf($this->escort->_("Invalid e-mail address '%s'."), $to);
             }
         }
 
