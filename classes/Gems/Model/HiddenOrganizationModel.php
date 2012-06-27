@@ -107,10 +107,12 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
             }
 
             if (isset($parameters[MUtil_Model::REQUEST_ID2]) &&
-                !array_key_exists($parameters[MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations())
-                ) {
+                (! array_key_exists($parameters[MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations()))) {
 
-                throw new Exception($this->translate->_('Invalid organization.'));
+                throw new Gems_Exception(
+                        $this->translate->_('Inaccessible or unknown organization'),
+                        403, null,
+                        sprintf($this->translate->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
             }
 
             return parent::applyParameters($parameters);

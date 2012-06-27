@@ -88,7 +88,10 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             return;
         }
 
-        throw new Exception($this->_('Invalid organization.'));
+        throw new Gems_Exception(
+                $this->_('Inaccessible or unknown organization'),
+                403, null,
+                sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->loader->getCurrentUser()->getRole()));
     }
 
     /**

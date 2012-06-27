@@ -1539,8 +1539,6 @@ class GemsEscort extends MUtil_Application_Escort
         $loader = $this->getLoader();
         $user   = $loader->getCurrentUser();
 
-        // MUtil_Echo::r($request->getParams(), 'params');
-        // MUtil_Echo::r($request->getUserParams(), 'userparams');
         // Load the menu. As building the menu can depend on all resources and the request, we do it here.
         //
         // PS: The REQUEST is needed because otherwise the locale for translate is not certain.
@@ -1607,9 +1605,9 @@ class GemsEscort extends MUtil_Application_Escort
                     // Throw an exception + HTTP 401 when an autofilter is called
                     if ($request->getActionName() == 'autofilter') {
                         throw new Gems_Exception("Session expired", 401);
-                    } else if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
+                    } elseif ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
                         // Do not store previous request & show message when the intended action is logoff
-                        if (!($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
+                        if (! ($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
                             $this->addMessage($this->_('You are no longer logged in.'));
                             $this->addMessage($this->_('You must login to access this page.'));
 
