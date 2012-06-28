@@ -71,7 +71,7 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
 
         $HTML = MUtil_Html::create();
 
-        $bridge->tdh($this->_('Respondent information'), array('colspan' => 2));
+        $bridge->tdh($this->getCaption(), array('colspan' => 2));
 
         // Caption for surveys
         $trackLabel = $this->_('Assigned surveys');
@@ -96,6 +96,8 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
         // ROW 1
         $bridge->addItem($bridge->gr2o_patient_nr, $this->_('Respondent nr: '));
 
+        $rowspan = 10;
+
         // Column for surveys
         $tracksModel = $this->model->getRespondentTracksModel();
         // Add token as action needs token ID + only one per single survey
@@ -117,7 +119,7 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
         $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
         $tracksTarget[] = ' ';
         $tracksTarget[] = MUtil_Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
-        $bridge->td($tracksList, array('rowspan' => 10, 'class' => 'linked tracksList'));
+        $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
 
         // Column for tracks
         $tracksModel = $this->model->getRespondentTracksModel();
@@ -138,7 +140,7 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
         $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
         $tracksTarget[] = ' ';
         $tracksTarget[] = MUtil_Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
-        $bridge->td($tracksList, array('rowspan' => 10, 'class' => 'linked tracksList'));
+        $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
 
         // OTHER ROWS
         $bridge->addItem(

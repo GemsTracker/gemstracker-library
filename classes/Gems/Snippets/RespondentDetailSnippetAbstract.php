@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -48,41 +48,54 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
 {
     /**
      * Optional: array of buttons
-     * 
+     *
      * @var array
      */
     protected $buttons;
-    
+
+    /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
     /**
      *
      * @var Gems_Model_RespondentModel
      */
     protected $model;
-    
+
     /**
-     * Optional: href for onclick 
-     * 
+     * Optional: href for onclick
+     *
      * @var MUtil_Html_HrefArrayAttribute
      */
     protected $onclick;
-    
+
     /**
      * Optional: repaeter respondentData
-     * 
+     *
      * @var MUtil_Lazy_RepeatableInterface
      */
     protected $repeater;
-    
+
+    /**
+     * Required
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
+    protected $request;
+
     /**
      * Optional: not always filled, use repeater
-     * 
+     *
      * @var array
      */
     protected $respondentData;
 
     /**
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge 
+     * @param MUtil_Model_VerticalTableBridge $bridge
      * @return void
      */
     protected function addButtons(MUtil_Model_VerticalTableBridge $bridge)
@@ -94,7 +107,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
 
     /**
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge 
+     * @param MUtil_Model_VerticalTableBridge $bridge
      * @return void
      */
     protected function addOnClick(MUtil_Model_VerticalTableBridge $bridge)
@@ -103,15 +116,35 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
             $bridge->tbody()->onclick = array('location.href=\'', $this->onclick, '\';');
         }
     }
-    
+
     /**
      * Place to set the data to display
-     * 
+     *
      * @param MUtil_Model_VerticalTableBridge $bridge
      * @return void
      */
     abstract protected function addTableCells(MUtil_Model_VerticalTableBridge $bridge);
-    
+
+    /**
+     * Returns the caption for this table
+     *
+     * @param boolean $onlyNotCurrent Only return a string when the organization is different
+     * @return string
+     */
+    protected function getCaption($onlyNotCurrent = false)
+    {
+        $orgId = $this->request->getParam(MUtil_Model::REQUEST_ID2);
+        if ($orgId == $this->loader->getCurrentUser()->getCurrentOrganizationId()) {
+            if ($onlyNotCurrent) {
+                return;
+            } else {
+                return $this->_('Respondent information');
+            }
+        } else {
+            return sprintf($this->_('%s respondent information'), $this->loader->getOrganization($orgId)->getName());
+        }
+    }
+
     /**
      * Create the snippets content
      *
@@ -125,14 +158,14 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
         $bridge = new MUtil_Model_VerticalTableBridge($this->model, array('class' => 'displayer'));
         $bridge->setRepeater($this->repeater);
         $bridge->setColumnCount(2); // May be overruled
-        
+
         $this->addTableCells($bridge);
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
-        
+
         return $bridge->getTable();
     }
-    
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -158,14 +191,14 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
                     if (! is_array(reset($this->respondentData))) {
                         $this->respondentData = array($this->respondentData);
                     }
-                    
+
                     $this->repeater = MUtil_Lazy::repeat($this->respondentData);
                 }
             }
-            
+
             return true;
         }
-        
+
         return false;
     }
 }

@@ -47,7 +47,6 @@
 abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
 {
     public $showSnippets = array(
-        'Respondent_MultiOrganizationTab',
         'RespondentDetailsSnippet',
     	'AddTracksSnippet',
         'RespondentTokenTabsSnippet',
