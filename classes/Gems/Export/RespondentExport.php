@@ -285,7 +285,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected function _exportRespondent($respondentId)
     {
         $respondentModel = $this->loader->getModels()->getRespondentModel(false);
-        $respondentModel->setFilter(array('gr2o_patient_nr' => $respondentId));
+        //Insert orgId when set
+        $respondentModel->applyRequest(Zend_Controller_Front::getInstance()->getRequest());
+        $respondentModel->addFilter(array('gr2o_patient_nr' => $respondentId));
         $respondentData = $respondentModel->loadFirst();
 
         $this->html->snippet($this->_respondentSnippet,

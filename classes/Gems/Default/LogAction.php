@@ -71,8 +71,8 @@ class Gems_Default_LogAction extends Gems_Controller_BrowseEditAction {
         }
 
         // Create date range elements
-        $min  = -91;
-        $max  = 91;
+        $min  = $this->minPeriod;
+        $max  = $this->maxPeriod;
         $size = max(strlen($min), strlen($max));
 
         $element = new Zend_Form_Element_Text('period_start', array('label' => $this->_('from'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));

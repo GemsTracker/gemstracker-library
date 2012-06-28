@@ -104,9 +104,11 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $filter = parent::_checkFilterUsed($filter);
 
         if (! isset($filter['gr2o_id_organization'])) {
-            if ($this->isMultiOrganization()) {
+            if ($this->isMultiOrganization() && !isset($filter['gr2o_patient_nr'])) {
+                // If we are not looking for a specific patient, we can look at all patients
                 $filter[] = 'gr2o_id_organization IN (' . implode(', ', array_keys($this->user->getAllowedOrganizations())) . ')';
             } else {
+                // Otherwise, we can only see in our current organization
                 $filter['gr2o_id_organization'] = $this->getCurrentOrganization();
             }
         }

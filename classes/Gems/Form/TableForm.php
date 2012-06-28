@@ -65,24 +65,16 @@ class Gems_Form_TableForm extends Gems_Form {
      * @return null|Zend_Form_Decorator_Abstract
      */
     private function _getImportantDecorator($element) {
-        $dec1 = null;
+        $class = get_class($element);
 
-        if ($dec1 = $element->getDecorator('ViewHelper')) {
-            return $dec1;
-        } elseif ($dec1 = $element->getDecorator('UiWidgetElement')) {
-            return $dec1;
-        } elseif ($dec1 = $element->getDecorator('File')) {
-            return $dec1;
-        } else {
-            $decorators = $element->getDecorators();
-            foreach($decorators as $name=>$decorator) {
-                if (substr($name, 0, 5) == 'ZendX') {
-                    $dec1 = $decorator;
-                    break;
-                }
-            }
-            return $dec1;
+        if (strpos($class, 'JQuery')) {
+            return $element->getDecorator('UiWidgetElement');
         }
+        if (strpos($class, 'File')) {
+            return $element->getDecorator('File');
+        }
+
+        return $element->getDecorator('ViewHelper');
     }
 
     /**
@@ -225,7 +217,7 @@ class Gems_Form_TableForm extends Gems_Form {
         if ($this->loadDefaultDecoratorsIsDisabled()) {
             return $this;
         }
-        
+
         $class = $this->getAttrib('class');
         if (empty($class)) {
             $class = 'formTable';
@@ -256,7 +248,7 @@ class Gems_Form_TableForm extends Gems_Form {
                 }
             }
         }
-        
+
         return parent::setView($view);
     }
 }
