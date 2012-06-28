@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-27 13:32+0100\n"
+"POT-Creation-Date: 2012-06-28 12:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -697,11 +697,11 @@ msgstr "Links met informatie over deze website:"
 msgid "Cron jobs turned off."
 msgstr "Cron opdrachten uitgezet."
 
-#: classes/Gems/Default/CronAction.php:222
+#: classes/Gems/Default/CronAction.php:223
 msgid "No mails sent."
 msgstr "Geen mail verzonden."
 
-#: classes/Gems/Default/CronAction.php:225
+#: classes/Gems/Default/CronAction.php:226
 msgid "On this test system all mail will be delivered to the from address."
 msgstr "Op dit test systeem worden alle emails gestuurd naar het \"van\" adres."
 
@@ -1419,7 +1419,7 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/RespondentAction.php:373
+#: classes/Gems/Default/RespondentAction.php:372
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
@@ -1443,7 +1443,7 @@ msgstr "Login Naam"
 
 #: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:135
-#: classes/Gems/Default/RespondentAction.php:221
+#: classes/Gems/Default/RespondentAction.php:220
 msgid "Language"
 msgstr "Taal"
 
@@ -1820,104 +1820,104 @@ msgid_plural "reception codes"
 msgstr[0] "Ontvangst code"
 msgstr[1] "Ontvangst code"
 
-#: classes/Gems/Default/RespondentAction.php:77
+#: classes/Gems/Default/RespondentAction.php:76
 #: classes/Gems/Default/RespondentExportAction.php:71
 msgid "Group surveys"
 msgstr "Groepeer vragenlijsten"
 
-#: classes/Gems/Default/RespondentAction.php:82
+#: classes/Gems/Default/RespondentAction.php:81
 #: classes/Gems/Default/RespondentExportAction.php:76
 msgid "Output format"
 msgstr "Uitvoerformaat"
 
-#: classes/Gems/Default/RespondentAction.php:160
+#: classes/Gems/Default/RespondentAction.php:159
 #, php-format
 msgid "Random Example BSN: %s"
 msgstr "Willekeurig voorbeeld BSN: %s"
 
-#: classes/Gems/Default/RespondentAction.php:162
+#: classes/Gems/Default/RespondentAction.php:161
 msgid "Enter a 9-digit SSN number."
 msgstr "Voer een BSN nummer van 9 cijfers in."
 
-#: classes/Gems/Default/RespondentAction.php:169
+#: classes/Gems/Default/RespondentAction.php:168
 msgid "Identification"
 msgstr "Identificatie"
 
-#: classes/Gems/Default/RespondentAction.php:180
+#: classes/Gems/Default/RespondentAction.php:179
 msgid "SSN"
 msgstr "SSN"
 
-#: classes/Gems/Default/RespondentAction.php:184
+#: classes/Gems/Default/RespondentAction.php:183
 msgid "Patient number"
 msgstr "Patiënt nummer"
 
-#: classes/Gems/Default/RespondentAction.php:193
+#: classes/Gems/Default/RespondentAction.php:192
 msgid "Medical data"
 msgstr "Medische gegevens"
 
-#: classes/Gems/Default/RespondentAction.php:200
+#: classes/Gems/Default/RespondentAction.php:199
 msgid "DBC's, etc..."
 msgstr "DBC's, etc..."
 
-#: classes/Gems/Default/RespondentAction.php:203
+#: classes/Gems/Default/RespondentAction.php:202
 msgid "Contact information"
 msgstr "Contact informatie"
 
-#: classes/Gems/Default/RespondentAction.php:208
+#: classes/Gems/Default/RespondentAction.php:207
 msgid "Respondent has no e-mail"
 msgstr "Patiënt zonder email"
 
-#: classes/Gems/Default/RespondentAction.php:209
+#: classes/Gems/Default/RespondentAction.php:208
 msgid "With housenumber"
 msgstr "Met huisnummer"
 
-#: classes/Gems/Default/RespondentAction.php:216
+#: classes/Gems/Default/RespondentAction.php:215
 msgid "Country"
 msgstr "Land"
 
-#: classes/Gems/Default/RespondentAction.php:220
+#: classes/Gems/Default/RespondentAction.php:219
 msgid "Settings"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/RespondentAction.php:222
+#: classes/Gems/Default/RespondentAction.php:221
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Heeft de patiënt het \"informed consent\" formulier ondertekend?"
 
-#: classes/Gems/Default/RespondentAction.php:252
+#: classes/Gems/Default/RespondentAction.php:251
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: classes/Gems/Default/RespondentAction.php:253
+#: classes/Gems/Default/RespondentAction.php:252
 msgid "Treatment"
 msgstr "Behandeling"
 
-#: classes/Gems/Default/RespondentAction.php:281
+#: classes/Gems/Default/RespondentAction.php:280
 msgid "Rejection code"
 msgstr "Afkeuringscode"
 
-#: classes/Gems/Default/RespondentAction.php:288
+#: classes/Gems/Default/RespondentAction.php:287
 msgid "Delete respondent"
 msgstr "Verwijder patiënt"
 
-#: classes/Gems/Default/RespondentAction.php:320
+#: classes/Gems/Default/RespondentAction.php:319
 msgid "Respondent deleted."
 msgstr "Patiënt verwijderd"
 
-#: classes/Gems/Default/RespondentAction.php:324
+#: classes/Gems/Default/RespondentAction.php:323
 msgid "Respondent tracks stopped."
 msgstr "Trajecten van patiënt zijn gestopt."
 
-#: classes/Gems/Default/RespondentAction.php:328
+#: classes/Gems/Default/RespondentAction.php:327
 msgid "Choose a reception code to delete."
 msgstr "Kies een ontvangst code om te verwijderen."
 
-#: classes/Gems/Default/RespondentAction.php:422
+#: classes/Gems/Default/RespondentAction.php:421
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:497
+#: classes/Gems/Default/RespondentAction.php:496
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
@@ -2745,12 +2745,12 @@ msgid "Last contact"
 msgstr "Contactdatum"
 
 #: classes/Gems/Email/OneMailForm.php:131
-#: classes/Gems/Email/TemplateMailer.php:217
+#: classes/Gems/Email/TemplateMailer.php:229
 msgid "The sending of emails was blocked for this installation."
 msgstr "Het versturen van emails is geblokkeerd in deze installatie."
 
 #: classes/Gems/Email/OneMailForm.php:141
-#: classes/Gems/Email/TemplateMailer.php:250
+#: classes/Gems/Email/TemplateMailer.php:263
 msgid "Mail failed to send."
 msgstr "Mail sturen mislukt."
 
@@ -2759,10 +2759,15 @@ msgstr "Mail sturen mislukt."
 msgid "Sent email to %s."
 msgstr "Email naar %s verzonden."
 
-#: classes/Gems/Email/TemplateMailer.php:266
+#: classes/Gems/Email/TemplateMailer.php:283
 #, php-format
 msgid "Sent %d e-mails, updated %d tokens."
 msgstr "%d emails verzonden en %d kenmerken bijgewerkt."
+
+#: classes/Gems/Email/TemplateMailer.php:360
+#, php-format
+msgid "Invalid e-mail address '%s'."
+msgstr "Ongeldig email adres '%s'."
 
 #: classes/Gems/Export/Excel.php:60
 msgid "Excel options"
@@ -3080,6 +3085,17 @@ msgstr "Verlopen vragenlijsten"
 msgid "Answered surveys"
 msgstr "Beantwoorde vragenlijsten"
 
+#: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:141
+#: classes/Gems/Snippets/Export/RespondentSnippet.php:81
+#: classes/Gems/Snippets/Export/RespondentSnippet.php:89
+msgid "Respondent information"
+msgstr "Patiënt informatie"
+
+#: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:144
+#, php-format
+msgid "%s respondent information"
+msgstr "%s patiënt informatie"
+
 #: classes/Gems/Snippets/Export/ReportFooterSnippet.php:55
 msgid "Report generation finished."
 msgstr "Rapport is aangemaakt."
@@ -3104,11 +3120,6 @@ msgstr "Aangemaakt op"
 #, php-format
 msgid "Unknown respondent %s"
 msgstr "Onbekende patiënt %s"
-
-#: classes/Gems/Snippets/Export/RespondentSnippet.php:81
-#: classes/Gems/Snippets/Export/RespondentSnippet.php:89
-msgid "Respondent information"
-msgstr "Patiënt informatie"
 
 #: classes/Gems/Task/Db/ExecutePatch.php:66
 #, php-format
@@ -4201,11 +4212,11 @@ msgstr "Patiënt nr:"
 msgid "Address"
 msgstr "Adres"
 
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:108
+#: snippets/RespondentDetailsWithAssignmentsSnippet.php:110
 msgid "No surveys"
 msgstr "Geen vragenlijsten"
 
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:129
+#: snippets/RespondentDetailsWithAssignmentsSnippet.php:131
 msgid "No tracks"
 msgstr "Geen trajecten"
 
