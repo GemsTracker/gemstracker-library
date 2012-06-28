@@ -68,13 +68,15 @@ class Gems_Form_TableForm extends Gems_Form {
         $class = get_class($element);
 
         if (strpos($class, 'JQuery')) {
-            return $element->getDecorator('UiWidgetElement');
+            $dec = $element->getDecorator('UiWidgetElement');
         }
         if (strpos($class, 'File')) {
-            return $element->getDecorator('File');
+            $dec = $element->getDecorator('File');
         }
 
-        return $element->getDecorator('ViewHelper');
+        if (!isset($dec) || $dec == null) {
+            return 'ViewHelper';
+        }
     }
 
     /**
