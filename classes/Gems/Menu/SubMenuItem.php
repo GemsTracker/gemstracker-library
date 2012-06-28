@@ -253,6 +253,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
     }
 
+    /**
+     * Returns a Zend_Navigation creation array for this menu item, with
+     * sub menu items in 'pages'
+     *
+     * @param Gems_Menu_ParameterCollector $source
+     * @return array
+     */
     protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
         $result = $this->_itemOptions;
@@ -268,41 +275,6 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
         if ($this->hasChildren()) {
             $result['pages'] = parent::_toNavigationArray($source);
-        }
-
-        // Get any missing MVC keys from children, even when invisible
-        if ($requiredIndices = $this->notSet('controller', 'action')) {
-
-            if (isset($result['pages'])) {
-                $firstChild = null;
-                $order = 0;
-                foreach ($result['pages'] as $page) {
-                    if ($page['allowed']) {
-                        if ($page['order'] < $order || $order == 0) {
-                            $firstChild = $page;
-                            $order = $page['order'];
-                        }
-                    }
-                }
-
-                if (null === $firstChild) {
-                    // No children are visible and required mvc properties
-                    // are missing: ergo this page is not visible.
-                    $result['visible'] = false;
-
-                    // Use first (invisible) child as firstChild
-                    $firstChild = reset($result['pages']);
-                }
-            } else {
-                // Use '/' slash as default to ensure any not visible
-                // menu items points to another existing item that is
-                // active.
-                $firstChild = array_fill_keys($requiredIndices, '/');
-            }
-
-            foreach ($requiredIndices as $key) {
-                $result[$key] = $firstChild[$key];
-            }
         }
 
         return $result;

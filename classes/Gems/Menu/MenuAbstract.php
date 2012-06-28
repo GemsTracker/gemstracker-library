@@ -92,6 +92,13 @@ abstract class Gems_Menu_MenuAbstract
         }
     }
 
+    /**
+     * Returns a Zend_Navigation creation array for this menu item, with
+     * sub menu items in 'pages'
+     *
+     * @param Gems_Menu_ParameterCollector $source
+     * @return array
+     */
     protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
         if ($this->_subItems) {
@@ -105,9 +112,9 @@ abstract class Gems_Menu_MenuAbstract
                     if (($this instanceof Gems_Menu_SubMenuItem) &&
                         (! $this->notSet('controller', 'action')) &&
                         isset($page['params'])) {
+
                         $params = $page['params'];
-                        // TODO: ugly! Make beautiful!
-                        unset($params['reset']);
+                        unset($params['reset']); // Ignore this setting
 
                         if (count($params)) {
                             $class = '';
@@ -116,13 +123,6 @@ abstract class Gems_Menu_MenuAbstract
                         }
 
                         if ((null !== $lastParams) && ($lastParams !== $params)) {
-                            // $pages[$i++] = array('type' => 'uri');
-                            /* $l = $i - 1;
-                            if (isset($pages[$l]['class'])) {
-                                $pages[$l]['class'] .= ' breakAfter';
-                            } else {
-                                $pages[$l]['class'] =  'breakAfter';
-                            } // */
                             $class .= 'breakBefore';
                         } else {
                             $class = trim($class);
@@ -231,7 +231,24 @@ abstract class Gems_Menu_MenuAbstract
             $other['privilege'] = $privilege;
         }
 
-        return $this->add($other);
+        // Process parameters.
+        $defaults = array(
+            'visible' => (boolean) $label,  // All menu containers are initally visible unless stated otherwise or specified without label
+            'allowed' => true,              // Same as with visible, need this for t_oNavigationArray()
+            'order'   => 10 * (count($this->_subItems) + 1),
+            );
+
+        foreach ($defaults as $key => $value) {
+            if (! isset($other[$key])) {
+                $other[$key] = $value;
+            }
+        }
+
+        $page = new Gems_Menu_ContainerItem($this->escort, $this, $other);
+
+        $this->_subItems[] = $page;
+
+        return $page;
     }
 
     /**
@@ -355,7 +372,7 @@ abstract class Gems_Menu_MenuAbstract
             // MUtil_Echo::track($infoPage->_toNavigationArray(array($this->escort->request)));
         } else {
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
-                $infoPage = $this->addContainer($label, 'pr.project');
+                $infoPage = $this->addContainer($label);
                 $tracksPage = $infoPage->addPage($this->_('Tracks'), 'pr.project', 'project-tracks');
                 $tracksPage->addAutofilterAction();
 
@@ -469,7 +486,15 @@ abstract class Gems_Menu_MenuAbstract
         return $setup;
     }
 
-    public function applyAcl(Zend_Acl $acl, $userRole)
+    /**
+     * Set the visibility of the menu item and any sub items in accordance
+     * with the specified user role.
+     *
+     * @param Zend_Acl $acl
+     * @param string $userRole
+     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     */
+    protected function applyAcl(Zend_Acl $acl, $userRole)
     {
         if ($this->_subItems) {
             $anyVisible = false;
@@ -498,12 +523,12 @@ abstract class Gems_Menu_MenuAbstract
                 }
             }
 
-            // Do not show a 'container' menu item (that depends for controller
+            /*/ Do not show a 'container' menu item (that depends for controller
             // on it's children) when no sub item is allowed.
             if ((! $anyVisible) && $this->notSet('controller', 'action')) {
                 $this->set('allowed', false);
                 $this->set('visible', false);
-            }
+            } // */
         }
 
         return $this;

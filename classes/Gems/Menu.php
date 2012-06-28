@@ -89,7 +89,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->loadProjectMenu();
 
         $this->setOnlyActiveBranchVisible();
-        $this->applyAcl($escort->acl, $escort->session->user_role);
+        $this->applyAcl($escort->acl, $escort->getLoader()->getCurrentUser()->getRole());
     }
 
     private function _findPath($request)
@@ -589,10 +589,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->addMailSetupMenu($this->_('Mail'));
 
         // EXPORT DATA
-        $this->addContainer('Export data', 'pr.export', array('controller'=>'export', 'action'=>'index'));
+        $this->addPage('Export data', 'pr.export', 'export', 'index');
 
         // EXPORT TO HTML
-        $this->addContainer($this->_('Export respondent'), 'pr.export-html', array('controller' => 'respondent-export', 'action'=>'index'));
+        $this->addPage($this->_('Export respondent'), 'pr.export-html', 'respondent-export', 'index');
 
         // OTHER ITEMS
         $this->addLogonOffToken();
