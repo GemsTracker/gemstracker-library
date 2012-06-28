@@ -183,7 +183,9 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 }
             }
 
-            $select->order($sqlsort);
+            if (isset($sqlsort)) {
+                $select->order($sqlsort);
+            }
         }
 
         if (MUtil_Model::$verbose) {
