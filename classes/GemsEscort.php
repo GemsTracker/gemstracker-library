@@ -191,6 +191,7 @@ class GemsEscort extends MUtil_Application_Escort
 
         Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
         Zend_Translate::setCache($cache);
+        Zend_Locale::setCache($cache);
 
         return $cache;
     }
