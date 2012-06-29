@@ -137,7 +137,8 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
             if (Gems_Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
-                    $echo .= $key . ': ' . $this->_gemsSurvey[$key] . ' => ' . $val . "\n";
+                    $old = isset($this->_gemsSurvey[$key]) ? $this->_gemsSurvey[$key] : null;
+                    $echo .= $key . ': ' . $old . ' => ' . $val . "\n";
                 }
                 MUtil_Echo::r($echo, 'Updated values for ' . $this->_surveyId);
             }

@@ -342,6 +342,55 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $groups;
     }
 
+    /**
+     * Get all surveys that can be exported
+     *
+     * For export not only active surveys should be returned, but all surveys that can be exported.
+     * As this depends on the kind of source used it is in this method so projects can change to
+     * adapt to their own sources.
+     *
+     * @return array
+     */
+    public function getSurveysForExport()
+    {
+        // Read some data from tables, initialize defaults...
+        $select = $this->db->select();
+
+        // Fetch al surveys
+        $select->from('gems__surveys')
+            ->join('gems__sources', 'gsu_id_source = gso_id_source')
+            ->where('gso_active = 1')
+            ->order(array('gsu_active DESC', 'gsu_survey_name'));
+        $result = $this->db->fetchAll($select);
+
+        if ($result) {
+            // And transform to have inactive surveys in gems and source in a
+            // different group at the bottom
+            $surveys = array();
+            $Inactive = $this->translate->_('inactive');
+            $sourceInactive = $this->translate->_('source inactive');
+            foreach ($result as $survey) {
+                $id   = $survey['gsu_id_survey'];
+                $name = $survey['gsu_survey_name'];
+                if ($survey['gsu_surveyor_active'] == 0) {
+                    // Inactive in the source, for LimeSurvey this is a problem!
+                    if (!strpos($survey['gso_ls_class'], 'LimeSurvey')) {
+                        $surveys[$sourceInactive][$id] = $name;
+                    }
+                } elseif ($survey['gsu_active'] == 0) {
+                    // Inactive in GemsTracker
+                    $surveys[$Inactive][$id] = $name;
+                } else {
+                    $surveys[$id] = $name;
+                }
+            }
+        } else {
+            $surveys = array();
+        }
+
+        return $surveys;
+    }
+
     public function getUserConsents()
     {
         static $consents;

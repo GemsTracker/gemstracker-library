@@ -140,8 +140,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      */
     public function getForm(&$data)
     {
-        //Read some data from tables, initialize defaults...
-        $surveys       = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 ORDER BY gsu_survey_name');
+        $surveys       = $this->loader->getUtil()->getDbLookup()->getSurveysForExport();
         $organizations = $this->loader->getCurrentUser()->getAllowedOrganizations();
         $types         = $this->export->getExportClasses();
 
@@ -151,7 +150,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         //Start adding elements
         $element = new Zend_Form_Element_Select('sid');
         $element->setLabel($this->_('Survey'))
-                ->setMultiOptions($surveys);
+            ->setMultiOptions($surveys);
         $elements[] = $element;
 
         //Add a field to the form showing the record count. If this is too slow for large recordsets
