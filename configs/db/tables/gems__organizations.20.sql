@@ -1,4 +1,3 @@
-
 CREATE TABLE if not exists gems__organizations (
         gor_id_organization  bigint unsigned not null auto_increment,
 
@@ -40,3 +39,6 @@ CREATE TABLE if not exists gems__organizations (
     ENGINE=InnoDB
     AUTO_INCREMENT = 70
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+INSERT INTO `gems__organizations` (`gor_id_organization`, `gor_name`) VALUES
+(70, 'New organization');
