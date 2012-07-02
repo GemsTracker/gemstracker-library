@@ -126,8 +126,12 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
     {
         $paramKey = $this->getParameterKey();
 
-        if ($paramKey && ($tabId != $this->defaultTab)) {
-            return array($paramKey => $tabId);
+        if ($paramKey) {
+            if ($tabId == $this->defaultTab) {
+                return array($paramKey => null);
+            } else {
+                return array($paramKey => $tabId);
+            }
         }
 
         return array();
@@ -164,7 +168,12 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
                 $this->defaultTab = key($tabs);
             }
             if (null === $this->currentTab) {
-                $this->currentTab = $this->request->getParam($this->getParameterKey(), $this->defaultTab);
+                $this->currentTab = $this->request->getParam($this->getParameterKey());
+
+                // Param can exist and be empty
+                if (! $this->currentTab) {
+                    $this->currentTab = $this->defaultTab;
+                }
             }
 
             $tabRow = MUtil_Html::create()->div();
