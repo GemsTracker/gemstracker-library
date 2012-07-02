@@ -74,9 +74,11 @@ class Gems_Form_TableForm extends Gems_Form {
             $dec = $element->getDecorator('File');
         }
 
-        if (!isset($dec) || $dec == null) {
+        if (!isset($dec) || $dec == false) {
             return 'ViewHelper';
         }
+
+        return $dec;
     }
 
     /**
