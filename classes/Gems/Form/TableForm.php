@@ -178,7 +178,7 @@ class Gems_Form_TableForm extends Gems_Form {
             'Tooltip',
             array('Label', array('escape'=>false)),
             array(array('labelCell' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'colspan'=>2)),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
+            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getAttrib('class') . ' ' . $element->getName()))
             );
         } elseif ($element instanceof Zend_Form_Element_Hidden ||
             $element instanceof Zend_Form_Element_Submit) {
@@ -247,7 +247,7 @@ class Gems_Form_TableForm extends Gems_Form {
                     if ($element instanceof Zend_Form_Element_Hidden) {
                         $decorator->setOption('style', 'display:none;');
                     } else {
-                        $decorator->setOption('class', $this->_alternate . ' ' . $name);
+                        $decorator->setOption('class', $this->_alternate . ' ' . $decorator->getOption('class'));
                     }
                 }
             }
