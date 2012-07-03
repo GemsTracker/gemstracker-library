@@ -160,7 +160,12 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      */
     protected function _isTokenInFilter(Gems_Tracker_Token $token)
     {
-        return true;
+        // Only if token has a success code
+        if ($token->getReceptionCode()->isSuccess()) {
+            return true;
+        }
+        
+        return false;
     }
 
     /**
