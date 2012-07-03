@@ -92,7 +92,7 @@ class MUtil_Form extends Zend_Form
         Zend_Dojo::enableView($view);
     }
 
-    private function _activateJQueryView(Zend_View_Interface $view = null)
+    protected function _activateJQueryView(Zend_View_Interface $view = null)
     {
         if ($this->_no_jquery) {
             return;

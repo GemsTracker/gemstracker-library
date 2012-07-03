@@ -90,6 +90,41 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         $this->setDisableTranslator(true);
     }
 
+    protected function _activateJQueryView(Zend_View_Interface $view = null)
+    {
+        if ($this->_no_jquery) {
+            return;
+        }
+
+        if (null === $view) {
+            $view = $this->getView();
+            if (null === $view) {
+                return;
+            }
+        }
+
+        parent::_activateJQueryView($view);
+
+        if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
+            $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
+        }
+    }
+
+    public function activateJQuery()
+    {
+        if ($this->_no_jquery) {
+            parent::activateJQuery();
+            ZendX_JQuery::enableForm($this);
+
+            $this->addPrefixPath('Gems_JQuery_Form_Decorator', 'Gems/JQuery/Form/Decorator/', Zend_Form::DECORATOR);
+            $this->addPrefixPath('Gems_JQuery_Form_Element', 'Gems/JQuery/Form/Element/', Zend_Form::ELEMENT);
+
+            $this->_activateJQueryView();
+
+            $this->_no_jquery = false;
+        }
+    }
+
     /**
      * Add a script to the head
      *

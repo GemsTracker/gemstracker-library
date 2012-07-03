@@ -103,8 +103,8 @@ class Gems_Form_TableForm extends Gems_Form {
      */
     public function addDisplayGroup(array $elements, $name, $options = null)
     {
-        //Add the group as usual
-        parent::addDisplayGroup($elements, $name, $options);
+        //Add the group as usual, but skip decorator loading as we don't need that
+        parent::addDisplayGroup($elements, $name, (array) $options + array('disableLoadDefaultDecorators'=>true));
 
         //Retrieve it and set decorators
         $group = $this->getDisplayGroup($name);
