@@ -77,23 +77,26 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         $roles = $this->acl->getRoles();
         $parents = array_combine($roles, $roles);
-        // Don't allow master or nologin as parents
+        // Don't allow master, nologin or itself as parents
         unset($parents['master']);
         unset($parents['nologin']);
+        unset($parents[$data['grl_name']]);
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $parents, 'required', false);
 
         $allPrivileges       = $this->getUsedPrivileges();
         $rolePrivileges      = $this->escort->acl->getRolePrivileges();
         $inheritedPrivileges = (array) $rolePrivileges[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW];
-        $privileges          = array_diff_key($allPrivileges, array_flip($inheritedPrivileges));
+        $privileges          = (array) array_diff_key($allPrivileges, array_flip($inheritedPrivileges));
         $inheritedPrivileges = array_intersect_key($allPrivileges, array_flip($inheritedPrivileges));
 
         $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $privileges, 'required', false);
         $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
 
-        $checkbox = $bridge->addMultiCheckbox('inherited', 'label', $this->_('Inherited'), 'multiOptions', $inheritedPrivileges, 'required', false, 'disabled', 'disabled');
-        $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
-        $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
+        if ($inheritedPrivileges) {
+            $checkbox = $bridge->addMultiCheckbox('inherited', 'label', $this->_('Inherited'), 'multiOptions', $inheritedPrivileges, 'required', false, 'disabled', 'disabled');
+            $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
+            $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
+        }
     }
 
     /**
