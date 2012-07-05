@@ -31,7 +31,7 @@
     <div id="header"><?php if ($this->header) { echo $this->header->render($this); }?></div>
     <div id="header_bar"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
 <?php
-    if ($this->navigation):
+    if ($this->navigation || $this->menuHtml):
 ?>
     <div id="wrapper" class="menu">
         <div id="colleft" class="main">
@@ -44,7 +44,9 @@
                 </div>
             </div>
             <div id="menu"><?php
-                echo $this->navigation()->menu(); ?>
+                echo $this->navigation()->menu();
+                echo $this->menuHtml;
+                ?>
             </div>
         </div>
     </div><?php
