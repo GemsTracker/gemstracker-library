@@ -1,0 +1,74 @@
+<?php echo $this->doctype(); ?>
+<html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
+<head>
+    <base href="<?php echo $this->serverUrl() .  $this->baseUrl() ?>"/>
+    <?php
+    echo $this->headMeta();
+    echo $this->headTitle();
+    echo $this->headLink();
+    echo $this->headStyle();
+
+    // Check if jQuery library is needed
+    if ($this->jQuery) {
+        echo $this->jQuery();
+        //Error message for when jQuery can not be loaded
+        /*echo "<script>
+        if (typeof jQuery == 'undefined') {
+            document.writeln('<div class=\"errors\">The site requires external JavaScript from another domain, which is blocked or failed to load.</div>');
+        }
+        </script>";*/
+    }
+
+    // Check if dojo library is needed
+    if ($this->dojoTheme) {
+        // Echo out the dojo <script> tags
+        echo $this->dojo();
+    }
+    ?>
+    </head>
+<body<?php if (isset($this->dojoTheme)) { echo " class='" . $this->dojoTheme . "' "; } ?>>
+    <div id="all">
+        <div id="header"><?php if ($this->header) { echo $this->header->render($this); }?></div>
+        <div id="header_bar"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
+<?php
+    if ($this->navigation || $this->menuHtml):
+?>
+        <div id="wrapper">
+            <div class="main">
+                <div id="main" ><?php
+                    if ($this->main) {
+                        echo $this->main->render($this);
+                    }
+                    echo $this->layout()->content; ?>
+                </div>
+                <div id="menu"><?php
+                    echo $this->navigation()->menu();
+                    echo $this->menuHtml;
+                    ?>
+                </div>
+            </div>
+        </div><?php
+    else:
+    ?>
+        <div id="wrapper" class="main fullwidth">
+            <div><?php
+            if ($this->main) {
+                echo $this->main->render($this);
+            }
+            echo $this->layout()->content;
+    ?>      </div>
+        </div><?php
+    endif;
+    ?>
+        <div id="footer"><?php
+        if ($this->footer) {
+            echo $this->footer->render($this);
+        }
+        ?>
+        </div>
+    </div><?php
+echo MUtil_Echo::out();
+echo $this->headScript();
+echo $this->inlineScript();
+?></body>
+</html>

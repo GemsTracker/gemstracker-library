@@ -125,10 +125,10 @@ class MUtil_Acl extends Zend_Acl
      *
      * Sample output:
      * <code>
-     *   [MUtil-Acl::PARENTS]=>array(parent_name=>parent_object),
+     *   [MUtil_Acl::PARENTS]=>array(parent_name=>parent_object),
      *   [Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
      *   [Zend_Acl::TYPE_DENY]=>array([index]=>privilege),
-     *   [MUtil-Acl::INHERITED]=>array([Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
+     *   [MUtil_Acl::INHERITED]=>array([Zend_Acl::TYPE_ALLOW]=>array([index]=>privilege),
      *                                 [Zend_Acl::TYPE_DENY]=>array([index]=>privilege))
      * </code>
      *

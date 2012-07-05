@@ -47,6 +47,12 @@
 class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 {
     /**
+     *
+     * @var MUtil_Acl
+     */
+    public $acl;
+
+    /**
      * @var GemsEscort
      */
     public $escort;
@@ -67,7 +73,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
      * @param MUtil_Model_FormBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param optional boolean $new
-     * @return void
+     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
@@ -76,24 +82,65 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $bridge->addText('grl_description', 'size', 40);
 
         $roles = $this->acl->getRoles();
-        $parents = array_combine($roles, $roles);
-        // Don't allow master or nologin as parents
-        unset($parents['master']);
-        unset($parents['nologin']);
-        $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $parents, 'required', false);
+        $possibleParents = array_combine($roles, $roles);
+        $currentParents  = array_combine($data['grl_parents'], $data['grl_parents']);
+
+        // Don't allow master, nologin or itself as parents
+        unset($possibleParents['master']);
+        unset($possibleParents['nologin']);
+        $disabled   = array();
+
+        if (isset($data['grl_name'])) {
+            foreach ($possibleParents as $parent) {
+                if ($this->acl->hasRole($data['grl_name']) && $this->acl->inheritsRole($parent, $data['grl_name'])) {
+                    $disabled[] = $parent;
+                    unset($currentParents[$parent]);
+                } else {
+                    foreach ($currentParents as $p2) {
+                        if ($this->acl->hasRole($p2) && $this->acl->inheritsRole($p2, $parent)) {
+                            $disabled[] = $parent;
+                            $currentParents[$parent] = $parent;
+                        }
+                    }
+                }
+            }
+            $disabled[] = $data['grl_name'];
+        }
+        $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
+                'disable', $disabled,
+                'escape', false,
+                'required', false,
+                'onchange', 'this.form.submit();');
 
         $allPrivileges       = $this->getUsedPrivileges();
         $rolePrivileges      = $this->escort->acl->getRolePrivileges();
-        $inheritedPrivileges = (array) $rolePrivileges[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW];
-        $privileges          = array_diff_key($allPrivileges, array_flip($inheritedPrivileges));
-        $inheritedPrivileges = array_intersect_key($allPrivileges, array_flip($inheritedPrivileges));
 
+        if (isset($data['grl_parents']) && $data['grl_parents']) {
+            $inherited = array();
+            foreach ((array) $data['grl_parents'] as $parent) {
+                if (isset($rolePrivileges[$parent])) {
+                    $inherited = $inherited + array_flip($rolePrivileges[$parent][Zend_Acl::TYPE_ALLOW]);
+                    $inherited = $inherited + array_flip($rolePrivileges[$parent][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW]);
+                }
+            }
+            // Sneaks in:
+            unset($inherited[""]);
+            $privileges          = array_diff_key($allPrivileges, $inherited);
+            $inheritedPrivileges = array_intersect_key($allPrivileges, $inherited);
+        } else {
+            $privileges          = $allPrivileges;
+            $inheritedPrivileges = false;
+        }
         $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $privileges, 'required', false);
         $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
 
-        $checkbox = $bridge->addMultiCheckbox('inherited', 'label', $this->_('Inherited'), 'multiOptions', $inheritedPrivileges, 'required', false, 'disabled', 'disabled');
-        $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
-        $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
+        if ($inheritedPrivileges) {
+            $checkbox = $bridge->addMultiCheckbox('inherited', 'label', $this->_('Inherited'), 'multiOptions', $inheritedPrivileges, 'required', false, 'disabled', 'disabled');
+            $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
+            $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
+        }
+
+        return array('grl_parents' => $currentParents);
     }
 
     /**
@@ -178,6 +225,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $model->set('grl_name', 'label', $this->_('Name'));
         $model->set('grl_description', 'label', $this->_('Description'));
         $model->set('grl_parents', 'label', $this->_('Parents'));
+
+        $tp = new MUtil_Model_Type_ConcatenatedRow(',', ', ');
+        $tp->apply($model, 'grl_parents');
+
         $model->set('grl_privileges', 'label', $this->_('Privileges'), 'formatFunction', array($this, 'formatLongLine'));
 
         Gems_Model::setChangeFieldsByPrefix($model, 'grl');
