@@ -588,11 +588,23 @@ class GemsEscort extends MUtil_Application_Escort
         // Must be called after _layoutNavigation()
 
         if ($this->menu && $this->menu->isVisible()) {
-            $div = MUtil_Html::create()->div($args + array('id' => 'crumbs'));
-            //$div->raw($this->view->navigation()->breadcrumbs());
-            $div->raw($this->view->navigation()->breadcrumbs()->setLinkLast(false)->setMinDepth(0)->render());
+            $path = $this->menu->getActivePath($this->request);
+            $last = array_pop($path);
 
-            return $div;
+            // Only display when there is a path of more than one step
+            if ($path) {
+                $div = MUtil_Html::create()->div($args + array('id' => 'crumbs'));
+                $content = $div->seq();
+                $content->setGlue(MUtil_Html::raw($this->_(' > ')));
+
+                foreach ($path as $menuItem) {
+                    $content->a($menuItem->toHRefAttribute($this->request), $menuItem->get('label'));
+                }
+
+                $content->append($last->get('label'));
+
+                return $div;
+            }
         }
     }
 

@@ -84,7 +84,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         $allPrivileges       = $this->getUsedPrivileges();
         $rolePrivileges      = $this->escort->acl->getRolePrivileges();
-        $inheritedPrivileges = $rolePrivileges[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW];
+        $inheritedPrivileges = (array) $rolePrivileges[$data['grl_name']][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW];
         $privileges          = array_diff_key($allPrivileges, array_flip($inheritedPrivileges));
         $inheritedPrivileges = array_intersect_key($allPrivileges, array_flip($inheritedPrivileges));
 
