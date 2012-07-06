@@ -40,5 +40,6 @@ CREATE TABLE if not exists gems__organizations (
     AUTO_INCREMENT = 70
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
-INSERT INTO `gems__organizations` (`gor_id_organization`, `gor_name`) VALUES
-(70, 'New organization');
+INSERT ignore INTO `gems__organizations` (`gor_id_organization`, `gor_name`, gor_changed, gor_changed_by, gor_created, gor_created_by)
+    VALUES
+    (70, 'New organization', CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0);
