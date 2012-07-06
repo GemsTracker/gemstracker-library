@@ -94,17 +94,23 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
             foreach ($possibleParents as $parent) {
                 if ($this->acl->hasRole($data['grl_name']) && $this->acl->inheritsRole($parent, $data['grl_name'])) {
                     $disabled[] = $parent;
+                    $possibleParents[$parent] .= ' ' . MUtil_Html::create('small', $this->_('child of current role'), $this->view);
                     unset($currentParents[$parent]);
                 } else {
                     foreach ($currentParents as $p2) {
                         if ($this->acl->hasRole($p2) && $this->acl->inheritsRole($p2, $parent)) {
                             $disabled[] = $parent;
+                            $possibleParents[$parent] .= ' ' . MUtil_Html::create(
+                                    'small',
+                                    MUtil_Html::raw(sprintf($this->_('inherited from %s'), MUtil_Html::create('em', $p2, $this->view))),
+                                    $this->view);
                             $currentParents[$parent] = $parent;
                         }
                     }
                 }
             }
             $disabled[] = $data['grl_name'];
+            $possibleParents[$data['grl_name']] .= ' ' . MUtil_Html::create('small', $this->_('this role'), $this->view);
         }
         $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
                 'disable', $disabled,

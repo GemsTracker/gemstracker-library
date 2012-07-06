@@ -1,8 +1,10 @@
 Important changes from 1.5.4 => 1.5.5
 ============================================================
+Role editing has become more interactive and safer to use
 Internally code no longer uses the 'Hidden Organization' but expects both an id1/patientNr plus an id2/organizationId to be specified
 Externally the organization id is still left out of the url when not needed
-UPGRADE WARNING: Check all your (snippet) extensions to RespondentAction and project specific versions of ShowTrackTokenSnippet and ShowSingleSurveySnippet: you may need to specify extra parameters as the menu items need to know the organization id
+UPGRADE WARNING: Check all your (snippet) extensions to RespondentAction, TrackAction, SurveyAction and project specific versions of ShowTrackTokenSnippet and ShowSingleSurveySnippet: you may need to specify extra parameters as the menu items need to know the organization id
+New projects start with a basic css template
 
 Important changes from 1.5.3 => 1.5.4
 ============================================================
