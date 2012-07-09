@@ -46,55 +46,17 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 {
     public $useHtmlView = true; 
 
-    /**
-     * Constructs the form 
-     * 
-     * @param Gems_Export_RespondentExport $export
-     * @return Gems_Form_TableForm
-     */    
-    protected function _getForm($export)
-    {
-        $form = new Gems_Form_TableForm();
-        $form->setAttrib('target', '_blank');
-        
-        $element = new Zend_Form_Element_Text('id');
-        $element->setLabel($this->_('Respondent number'));
-        
-        // only show description if we got here directly (id is empty)
-        if ($this->getRequest()->getParam('id') == '') {
-            $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
-        }
-        
-        $form->addElement($element);
-        
-        $element = new Zend_Form_Element_Checkbox('group');
-        $element->setLabel($this->_('Group surveys'));
-        $element->setValue(1);
-        $form->addElement($element);
-        
-        $element = new Zend_Form_Element_Select('format');
-        $element->setLabel($this->_('Output format'));
-        $outputFormats = array('html' => 'HTML');
-        if (!empty($export->_wkhtmltopdfLocation)) {
-            $outputFormats['pdf'] = 'PDF';
-            $element->setValue('pdf');
-        }
-        $element->setMultiOptions($outputFormats);
-        $form->addElement($element);
-        
-        $element = new Zend_Form_Element_Submit('export');
-        $element->setLabel($this->_('Export'))
-                ->setAttrib('class', 'button');
-        $form->addElement($element);
-        
-        return $form;
-    }
-    
     public function indexAction()
     {
         $export = $this->loader->getRespondentExport($this);
         
-        $form = $this->_getForm($export);
+        $element = new Zend_Form_Element_Text('id');
+        $element->setLabel($this->_('Respondent number'));
+        $element->setOrder(-1);
+        $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
+        $form = $export->getForm();
+        $form->addElement($element);
+        
         $this->html->h2($this->_('Export respondent'));
         $div = $this->html->div(array('id' => 'mainform'));
         $div[] = $form;

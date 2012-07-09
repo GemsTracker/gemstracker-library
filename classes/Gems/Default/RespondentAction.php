@@ -62,40 +62,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     public $useTabbedForms = true;
 
     /**
-     * Constructs the form
-     *
-     * @param Gems_Export_RespondentExport $export
-     * @return Gems_Form_TableForm
-     */
-    protected function _getExportForm($export)
-    {
-        $form = new Gems_Form_TableForm();
-        $form->setAttrib('target', '_blank');
-
-        $element = new Zend_Form_Element_Checkbox('group');
-        $element->setLabel($this->_('Group surveys'));
-        $element->setValue(1);
-        $form->addElement($element);
-
-        $element = new Zend_Form_Element_Select('format');
-        $element->setLabel($this->_('Output format'));
-        $outputFormats = array('html' => 'HTML');
-        if (!empty($export->_wkhtmltopdfLocation)) {
-            $outputFormats['pdf'] = 'PDF';
-            $element->setValue('pdf');
-        }
-        $element->setMultiOptions($outputFormats);
-        $form->addElement($element);
-
-        $element = new Zend_Form_Element_Submit('export');
-        $element->setLabel($this->_('Export'))
-                ->setAttrib('class', 'button');
-        $form->addElement($element);
-
-        return $form;
-    }
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Adds a button column to the model, if such a button exists in the model.
@@ -530,7 +496,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         //Now show the export form
         $export = $this->loader->getRespondentExport($this);
-        $form = $this->_getExportForm($export);
+        $form = $export->getForm();
         $this->html->h2($this->_('Export respondent'));
         $div = $this->html->div(array('id' => 'mainform'));
         $div[] = $form;

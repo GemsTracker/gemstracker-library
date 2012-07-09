@@ -307,6 +307,39 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             $this->_exportTrack($track);
         }
     }
+    
+    /**
+     * Constructs the form
+     *
+     * @return Gems_Form_TableForm
+     */
+    public function getForm()
+    {
+        $form = new Gems_Form_TableForm();
+        $form->setAttrib('target', '_blank');
+
+        $element = new Zend_Form_Element_Checkbox('group');
+        $element->setLabel($this->_('Group surveys'));
+        $element->setValue(1);
+        $form->addElement($element);
+
+        $element = new Zend_Form_Element_Select('format');
+        $element->setLabel($this->_('Output format'));
+        $outputFormats = array('html' => 'HTML');
+        if (!empty($this->_wkhtmltopdfLocation)) {
+            $outputFormats['pdf'] = 'PDF';
+            $element->setValue('pdf');
+        }
+        $element->setMultiOptions($outputFormats);
+        $form->addElement($element);
+
+        $element = new Zend_Form_Element_Submit('export');
+        $element->setLabel($this->_('Export'))
+                ->setAttrib('class', 'button');
+        $form->addElement($element);
+
+        return $form;
+    }
 
     /**
      * Renders the entire report (including layout)
