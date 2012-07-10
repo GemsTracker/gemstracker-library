@@ -8,14 +8,4 @@
     <?php
         echo $this->form;
     ?>
-	<p class="sponsoring">
-    <?php echo $this->translate->_('The Pulse software was made possible thanks to support from '); ?>
-    <a href="http://www.stichtingcoolsingel.nl/">Stichting Coolsingel</a>.<br/>
-    <a href="http://www.stichtingcoolsingel.nl/">
-    <?php 
-        echo MUtil_Html::create()
-            ->img(array('src' => 'stichtingcoolsingel.png', 'Financed by Stichting Coolsingel'))
-            ->render($this);
-    ?></a>
-    </p>
 </div>
