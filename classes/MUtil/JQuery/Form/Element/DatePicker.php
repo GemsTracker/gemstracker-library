@@ -202,6 +202,15 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
 
          */
 
+        $element = parent::setView($view);
+
+        if (null !== $view) {
+            if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
+                $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
+            }
+        }
+
+
         if ($locale = Zend_Registry::get('Zend_Locale')) {
             $language = $locale->getLanguage();
             if ($language && $language != 'en') {
@@ -215,14 +224,6 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                 $version = ZendX_JQuery::DEFAULT_UI_VERSION;
                 $version = '1.8.9'; //Overrule want vertaling nederlands wordt anders niet gevonden
                 $view->JQuery()->addJavascriptFile($http . ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI . $version . '/i18n/jquery.ui.datepicker-' . $language . '.js');
-            }
-        }
-
-        $element = parent::setView($view);
-
-        if (null !== $view) {
-            if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
-                $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
             }
         }
 
