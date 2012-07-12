@@ -61,10 +61,10 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
         $response   = $controller->getResponse();
         $response->clearAllHeaders();
 
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
-            ->setHeader('Content-type', 'text/plain; charset=UTF-8')
-            ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setHeader('Pragma', 'public');
+        $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"', true)
+            ->setHeader('Content-type', 'text/plain; charset=UTF-8', true)
+            ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
+            ->setHeader('Pragma', 'public', true);
 
         return $response;
     }
