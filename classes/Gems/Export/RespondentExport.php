@@ -43,7 +43,7 @@
  */
 class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 {
-    public $_wkhtmltopdfLocation = "";
+    public $_pdfExportCommand = "";
 
     protected $_reportFooter         = 'Export_ReportFooterSnippet';
     protected $_reportHeader         = 'Export_ReportHeaderSnippet';
@@ -95,8 +95,8 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         parent::afterRegistry();
 
         // Load the pdf class from the project settings if available
-        if (isset($this->project->export) && isset($this->project->export['wkhtmltopdf'])) {
-            $this->_wkhtmltopdfLocation = $this->project->export['wkhtmltopdf'];
+        if (isset($this->project->export) && isset($this->project->export['pdfExportCommand'])) {
+            $this->_pdfExportCommand = $this->project->export['pdfExportCommand'];
         }
     }
 
@@ -117,15 +117,17 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         if (!file_exists($tempInputFilename)) {
             throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
         }
+        
+        $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
+            escapeshellarg($tempOutputFilename));
 
-        $lastLine = exec(escapeshellarg($this->_wkhtmltopdfLocation) . ' ' . escapeshellarg($tempInputFilename)
-            . ' ' . escapeshellarg($tempOutputFilename), $outputLines, $return);
+        $lastLine = exec($command, $outputLines, $return);
 
         if ($return > 0) {
             @unlink($tempInputFilename);
             @unlink($tempOutputFilename);
 
-            throw new Exception(sprintf($this->_('Unable to run PDF conversion: "%s"'), $lastLine));
+            throw new Exception(sprintf($this->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
         }
 
         $pdfContents = file_get_contents($tempOutputFilename);
@@ -326,7 +328,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $element = new Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
         $outputFormats = array('html' => 'HTML');
-        if (!empty($this->_wkhtmltopdfLocation)) {
+        if (!empty($this->_pdfExportCommand)) {
             $outputFormats['pdf'] = 'PDF';
             $element->setValue('pdf');
         }
