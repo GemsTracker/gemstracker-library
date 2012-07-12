@@ -47,10 +47,31 @@
  */
 class Gems_Export_Spss extends Gems_Export_ExportAbstract
 {
+    /**
+     * Set response headers and clean output
+     *
+     * @param string $filename
+     * @return Zend_Controller_Response_Abstract
+     */
+    private function _doHeaders($filename)
+    {
+        $controller = $this->export->controller;
+        $controller->getHelper('layout')->disableLayout();
+        $controller->getHelper('viewRenderer')->setNoRender(true);
+        $response   = $controller->getResponse();
+        $response->clearAllHeaders();
+
+        $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->setHeader('Content-type', 'text/plain; charset=UTF-8')
+            ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->setHeader('Pragma', 'public');
+
+        return $response;
+    }
 
     public function getDefaults()
     {
-        return array('file'=>'data');
+        return array('file' => 'data');
     }
 
     public function getFormElements(&$form, &$data)
@@ -58,8 +79,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
         $element = new Zend_Form_Element_Radio('file');
         $element->setLabel($this->_('Which file'));
         $element->setMultiOptions(array('syntax' => $this->_('syntax'),
-            'data' => $this->_('data')));
-
+                                        'data'   => $this->_('data')));
         $elements[] = $element;
 
         $element = new MUtil_Form_Element_Exhibitor('help');
@@ -96,17 +116,9 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
 
         if (isset($options['file'])) {
             if ($options['file'] == 'syntax') {
-                $controller = $this->export->controller;
-                $controller->getHelper('layout')->disableLayout();
-                $controller->getHelper('viewRenderer')->setNoRender(true);
-                $response    = $controller->getResponse();
                 $filename    = $survey->getName() . '.sps';
                 $filenameDat = $survey->getName() . '.dat';
-                $response->clearHeaders();
-                $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
-                    ->setHeader('Content-type', 'text/comma-separated-values; charset=UTF-8')
-                    ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                    ->setHeader('Pragma', 'public');
+                $response    = $this->_doHeaders($filename);
 
                 //first output our script
                 $response->appendBody(
@@ -121,15 +133,15 @@ GET DATA
  /FIRSTCASE=1
  /IMPORTCASE=ALL
  /VARIABLES=");
-                $answerRow = reset($answers);
-                $labels = array();
-                $types = array();
+                $answerRow  = reset($answers);
+                $labels     = array();
+                $types      = array();
                 $fixedNames = array();
-                $questions = $survey->getQuestionList($language);
-                foreach($answerRow as $key => $value) {
+                $questions  = $survey->getQuestionList($language);
+                foreach ($answerRow as $key => $value) {
                     $fixedNames[$key] = $this->fixName($key);
-                    $options = array();
-                    $type = $answerModel->get($key,'type');
+                    $options          = array();
+                    $type             = $answerModel->get($key, 'type');
                     switch ($type) {
                         case MUtil_Model::TYPE_DATE:
                             $type = 'SDATE10';
@@ -142,74 +154,66 @@ GET DATA
 
                         case MUtil_Model::TYPE_NUMERIC:
                             $defaultSize = 5;
-                            $type = 'F';
+                            $type        = 'F';
                             break;
 
                         //When no type set... assume string
                         case MUtil_Model::TYPE_STRING:
                         default:
                             $defaultSize = 64;
-                            $type = 'A';
+                            $type        = 'A';
                             break;
                     }
                     $types[$key] = $type;
                     if ($type == 'A' || $type == 'F') {
-                        $size = $answerModel->get($key,'size');
+                        $size = $answerModel->get($key, 'size');
                         if (is_null($size)) {
                             $size = $defaultSize;
                         }
                         if ($type == 'A') {
                             $type = $type . $size;
                         } else {
-                            $type = $type . $size . '.' . ($size-1);    //decimal
+                            $type = $type . $size . '.' . ($size - 1);    //decimal
                         }
                     }
                     if (isset($questions[$key])) {
                         $labels[$key] = $questions[$key];
                     }
-                    $response->appendBody("\n " . $fixedNames[$key] . ' '. $type);
+                    $response->appendBody("\n " . $fixedNames[$key] . ' ' . $type);
                 }
                 $response->appendBody(".\nCACHE.\nEXECUTE.\n");
                 $response->appendBody("\n*Define variable labels.\n");
-                foreach($labels as $key => $label) {
+                foreach ($labels as $key => $label) {
                     $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . ' "' . $label . '".' . "\n");
                 }
 
                 $response->appendBody("\n*Define value labels.\n");
-                foreach($answerRow as $key => $value) {
-                    if($options = $answerModel->get($key, 'multiOptions')) {
+                foreach ($answerRow as $key => $value) {
+                    if ($options = $answerModel->get($key, 'multiOptions')) {
                         $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
-                        foreach($options as $option=>$label) {
-                            if($types[$key]=='F') {
+                        foreach ($options as $option => $label) {
+                            if ($types[$key] == 'F') {
                                 //Numeric
                                 $response->appendBody("\n" . $option . ' ' . '"' . $label . '"');
                             } else {
                                 //String
-                                $response->appendBody("\n" . '"' .$option . '" ' . '"' . $label . '"');
+                                $response->appendBody("\n" . '"' . $option . '" ' . '"' . $label . '"');
                             }
                         }
                         $response->appendBody(".\n\n");
                     }
                 }
             } else {
-                $controller = $this->export->controller;
-                $controller->getHelper('layout')->disableLayout();
-                $controller->getHelper('viewRenderer')->setNoRender(true);
-                $response   = $controller->getResponse();
-                $filename   = $survey->getName() . '.dat';
-                $response->clearHeaders();
-                $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
-                    ->setHeader('Content-type', 'text/comma-separated-values; charset=UTF-8')
-                    ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-                    ->setHeader('Pragma', 'public');
+                $filename = $survey->getName() . '.dat';
+                $response = $this->_doHeaders($filename);
 
                 //We should create a model with the transformations we need
                 //think of date translations, numers and strings
                 $answerRow = reset($answers);
                 $spssModel = new Gems_Export_ExportModel();
-                foreach($answerRow as $key => $value) {
+                foreach ($answerRow as $key => $value) {
                     $options = array();
-                    $type = $answerModel->get($key,'type');
+                    $type    = $answerModel->get($key, 'type');
                     switch ($type) {
                         case MUtil_Model::TYPE_DATE:
                             $options['storageFormat'] = 'yyyy-MM-dd';
@@ -232,20 +236,20 @@ GET DATA
                         //When no type set... assume string
                         case MUtil_Model::TYPE_STRING:
                         default:
-                            $type = MUtil_Model::TYPE_STRING;
+                            $type                      = MUtil_Model::TYPE_STRING;
                             $options['formatFunction'] = $this->formatString;
                             break;
                     }
-                    $options['type'] = $type;
+                    $options['type']           = $type;
                     $spssModel->set($key, $options);
                 }
                 //Now apply the model to the answers
                 $answers = new Gems_FormattedData($answers, $spssModel);
 
                 //And output the data
-                foreach($answers as $answerRow) {
+                foreach ($answers as $answerRow) {
                     $resultRow = implode(',', $answerRow);
-                    $response->appendBody($resultRow ."\n");
+                    $response->appendBody($resultRow . "\n");
                 }
             }
         }
@@ -263,7 +267,8 @@ GET DATA
      * @param type $input
      * @return string
      */
-    public function formatString($input) {
+    public function formatString($input)
+    {
         $output = strip_tags($input);
         $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
         $output = "'" . $output . "'";
@@ -278,11 +283,12 @@ GET DATA
      * @param string $input
      * @return string
      */
-    public function fixName($input) {
-        if (!preg_match ("/^([a-z]|[A-Z])+.*$/", $input)) {
-                $input = "q_" . $input;
+    public function fixName($input)
+    {
+        if (!preg_match("/^([a-z]|[A-Z])+.*$/", $input)) {
+            $input = "q_" . $input;
         }
-        $input = str_replace(array(" ","-",":",";","!","/","\\","'"), array("_","_hyph_","_dd_","_dc_","_excl_","_fs_","_bs_",'_qu_'), $input);
+        $input = str_replace(array(" ", "-", ":", ";", "!", "/", "\\", "'"), array("_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'), $input);
         return $input;
     }
 }
