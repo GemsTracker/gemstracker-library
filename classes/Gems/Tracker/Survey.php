@@ -246,6 +246,15 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @return string Internal code of the survey
+     */
+    public function getCode()
+    {
+        return $this->_gemsSurvey['gsu_code'];
+    }
+    
+    /**
      * The time the survey was completed according to the source
      *
      * @param Gems_Tracker_Token $token Gems token object
