@@ -74,8 +74,20 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
             $multiOptions = $attribs['multiOptions'];
 
             if (is_array($multiOptions)) {
-                if (array_key_exists($value, $multiOptions)) {
-                    $result = $multiOptions[$value];
+                /*
+                 *  Sometimes a field is an array and will be formatted later on using the
+                 *  formatFunction -> handle each element in the array.
+                 */
+                if (is_array($result)) {
+                    foreach($result as $key => $arrayValue) {
+                        if (array_key_exists($arrayValue, $multiOptions)) {
+                            $result[$key] = $multiOptions[$arrayValue];
+                        }
+                    }
+                } else {
+                    if (array_key_exists($result, $multiOptions)) {
+                        $result = $multiOptions[$result];
+                    }
                 }
             }
         }
@@ -123,7 +135,7 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
             $result = $callback($result);
         } */
 
-        if (isset($attribs['nohidden']) && $attribs['nohidden']) {
+        if (isset($attribs['nohidden']) && $attribs['nohidden'] || is_array($value)) {
             return $result;
         } else {
             return $this->_hidden($name, $value) . $result;

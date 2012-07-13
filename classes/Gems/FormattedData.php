@@ -103,8 +103,20 @@ class Gems_FormattedData extends IteratorIterator
 
         if ($multiOptions = $model->get($name, 'multiOptions')) {
             if (is_array($multiOptions)) {
-                if (array_key_exists($result, $multiOptions)) {
-                    $result = $multiOptions[$result];
+                /*
+                 *  Sometimes a field is an array and will be formatted later on using the
+                 *  formatFunction -> handle each element in the array.
+                 */
+                if (is_array($result)) {
+                    foreach($result as $key => $value) {
+                        if (array_key_exists($value, $multiOptions)) {
+                            $result[$key] = $multiOptions[$value];
+                        }
+                    }
+                } else {
+                    if (array_key_exists($result, $multiOptions)) {
+                        $result = $multiOptions[$result];
+                    }
                 }
             }
         }
