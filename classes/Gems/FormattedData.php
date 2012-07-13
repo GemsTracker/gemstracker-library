@@ -144,7 +144,16 @@ class Gems_FormattedData extends IteratorIterator
             }
         }
 
-        if ($result instanceof MUtil_Html_HtmlInterface) {
+        // If it is Lazy, execute it
+        if ($result instanceof MUtil_Lazy_LazyInterface) {
+            if ($result instanceof MUtil_Lazy_LazyInterface) {
+                $result = MUtil_Lazy::rise($result);
+            }
+        }
+
+        // If it is Html, render it
+        if ($result instanceof MUtil_Html_HtmlInterface || $result instanceof MUtil_Lazy_LazyInterface) {
+
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {
                 $viewRenderer->initView();
