@@ -887,7 +887,7 @@ class GemsEscort extends MUtil_Application_Escort
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
-                $params     = $this->request->getParams();
+                $params     = $this->request->getQuery();   //Use only get params, not post
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
                 unset($params[Gems_Util_RequestCache::RESET_PARAM]);
                 $currentUri = $this->view->url($params, null, true);
@@ -1382,31 +1382,35 @@ class GemsEscort extends MUtil_Application_Escort
     {
         if ($request->isDispatched()) {
 
-            // Per project layout preparation
-            if (isset($this->project->layoutPrepare)) {
-                foreach ($this->project->layoutPrepare as $prepare => $type) {
-                    if ($type) {
-                        $function = '_layout' . ucfirst($prepare);
+            // Only when we need to render the layout, we run the layout prepare
+            if (Zend_Controller_Action_HelperBroker::hasHelper('layout') && Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->isEnabled()) {
 
-                        if (isset($this->project->layoutPrepareArgs, $this->project->layoutPrepareArgs[$prepare])) {
-                            $args = $this->project->layoutPrepareArgs[$prepare];
-                        } else {
-                            $args = array();
-                        }
+                // Per project layout preparation
+                if (isset($this->project->layoutPrepare)) {
+                    foreach ($this->project->layoutPrepare as $prepare => $type) {
+                        if ($type) {
+                            $function = '_layout' . ucfirst($prepare);
 
-                        $result = $this->$function($args);
-
-                        // When a result is returned, add it to the view,
-                        // according to the type method
-                        if (null !== $result) {
-                            if (is_numeric($type)) {
-                                $this->view->$prepare = $result;
+                            if (isset($this->project->layoutPrepareArgs, $this->project->layoutPrepareArgs[$prepare])) {
+                                $args = $this->project->layoutPrepareArgs[$prepare];
                             } else {
-                                if (! isset($this->view->$type)) {
-                                    $this->view->$type = new MUtil_Html_Sequence();
+                                $args = array();
+                            }
+
+                            $result = $this->$function($args);
+
+                            // When a result is returned, add it to the view,
+                            // according to the type method
+                            if (null !== $result) {
+                                if (is_numeric($type)) {
+                                    $this->view->$prepare = $result;
+                                } else {
+                                    if (!isset($this->view->$type)) {
+                                        $this->view->$type  = new MUtil_Html_Sequence();
+                                    }
+                                    $sequence           = $this->view->$type;
+                                    $sequence[$prepare] = $result;
                                 }
-                                $sequence = $this->view->$type;
-                                $sequence[$prepare] = $result;
                             }
                         }
                     }
