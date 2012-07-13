@@ -556,12 +556,20 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $select = $this->db->select();
 
+        /**
+         * tolerance field:
+         * 1 - login and organization match
+         * 2 - login found in an organization with access to the requested organization
+         * 3 - login found in another organization without rights to the requested organiation
+         *     (could be allowed due to privilege with rights to ALL organizations)
+         */
         $select->from('gems__user_logins', array("gul_user_class", 'gul_id_organization', 'gul_login'))
                 ->from('gems__organizations', array())
+                ->columns(new Zend_Db_Expr("CASE WHEN gor_id_organization = gul_id_organization THEN 1 WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2 ELSE 3 END AS tolerance"))
                 ->where('gor_active = 1')
                 ->where('gul_can_login = 1')
                 ->where('gor_id_organization = ?', $organization)
-                ->order("CASE WHEN gor_id_organization = gul_id_organization THEN 1 WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2 ELSE 3 END");
+                ->order('tolerance');
 
         $ids[] = 'gul_login';
 
