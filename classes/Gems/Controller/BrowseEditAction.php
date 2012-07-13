@@ -64,6 +64,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public $filterStandard;
 
     /**
+     * Should Excel output contain formatted data (date fields, select lists)
+     *
+     * @var boolean
+     */
+    public $formatExcelData = true;
+
+    /**
      *
      * @var Gems_Util_RequestCache
      */
@@ -430,7 +437,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         $this->addExcelColumns($model);     // Hook to modify the model
 
-        $this->view->result   = $this->getExcelData($model->load(), $model);
+        // Use $this->formatExcelData to switch between formatted and unformatted data
+        $excelData = new Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
+
+        $this->view->result   = $excelData;
         $this->view->filename = $this->getRequest()->getControllerName() . '.xls';
         $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts' );
 
