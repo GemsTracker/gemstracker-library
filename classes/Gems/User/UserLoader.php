@@ -56,6 +56,16 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     const USER_STAFF      = 'StaffUser';
 
     /**
+     * When true a user is allowed to login to a different organization then the
+     * one that provides an account. See GetUserClassSelect for the possible options
+     * but be aware that duplicate accounts could lead to problems. To avoid
+     * problems you can always use the organization switch AFTER login.
+     *
+     * @var boolean
+     */
+    public $allowLoginOnOtherOrganization = false;
+
+    /**
      * When true Respondent members can use their e-mail address as login name
      * @var boolean
      */
@@ -502,8 +512,11 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $select = $this->getUserClassSelect($login_name, $organization);
 
             if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
-                // MUtil_Echo::track($row);
-                return $this->loadUser($row[0], $row[1], $row[2]);
+                MUtil_Echo::track($row);
+                if ($row[3] == 1 || $this->allowLoginOnOtherOrganization === true) {
+                    // MUtil_Echo::track($row);
+                    return $this->loadUser($row[0], $row[1], $row[2]);
+                }
             }
 
         } catch (Zend_Db_Exception $e) {
