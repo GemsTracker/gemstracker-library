@@ -123,6 +123,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
         $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
         $bridge->addText(       'gsu_duration');
+        $bridge->addText(       'gsu_code');
         $bridge->addSelect(     'gsu_beforeanswering_event');
         $bridge->addSelect(     'gsu_completed_event');
 
