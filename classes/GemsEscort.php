@@ -430,7 +430,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initTranslate()
     {
-        $this->bootstrap('locale');
+        $this->bootstrap('locale');      
 
         $language = $this->locale->getLanguage();
 
@@ -516,9 +516,8 @@ class GemsEscort extends MUtil_Application_Escort
         return $view;
     }
 
-    protected function _initZFDebug()
-    {
-        /*
+    /*protected function _initZFDebug()
+    {        
         // if ((APPLICATION_ENV === 'development') &&
         if ((APPLICATION_ENV !== 'production') &&
             (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') === FALSE)) {
@@ -546,8 +545,8 @@ class GemsEscort extends MUtil_Application_Escort
             $this->bootstrap('frontController');
             $frontController = $this->getResource('frontController');
             $frontController->registerPlugin($debug);
-        } // */
-    }
+        } 
+    }// */
 
     /**
      * Function called if specified in the Project.ini layoutPrepare section before

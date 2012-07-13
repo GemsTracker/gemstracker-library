@@ -235,7 +235,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $tp = new MUtil_Model_Type_ConcatenatedRow(',', ', ');
         $tp->apply($model, 'grl_parents');
 
-        $model->set('grl_privileges', 'label', $this->_('Privileges'), 'formatFunction', array($this, 'formatLongLine'));
+        $model->set('grl_privileges', 'label', $this->_('Privileges'));
+        if (!$detailed) {
+            $model->set('grl_privileges', 'formatFunction', array($this, 'formatLongLine'));
+        }
 
         Gems_Model::setChangeFieldsByPrefix($model, 'grl');
 

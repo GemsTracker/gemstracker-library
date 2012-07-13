@@ -409,6 +409,7 @@ abstract class Gems_Menu_MenuAbstract
         $pages[] = $page->addEditAction();
         $pages[] = $page->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
         $pages[] = $page->addDeleteAction();
+        $pages[] = $page->addExcelAction();
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
             foreach ($pages as $sub_page) {
