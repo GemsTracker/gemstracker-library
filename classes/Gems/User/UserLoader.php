@@ -512,7 +512,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $select = $this->getUserClassSelect($login_name, $organization);
 
             if ($row = $this->db->fetchRow($select, null, Zend_Db::FETCH_NUM)) {
-                MUtil_Echo::track($row);
                 if ($row[3] == 1 || $this->allowLoginOnOtherOrganization === true) {
                     // MUtil_Echo::track($row);
                     return $this->loadUser($row[0], $row[1], $row[2]);
