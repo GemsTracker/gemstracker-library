@@ -414,3 +414,6 @@ ALTER TABLE gems__surveys ADD gsu_duration varchar(50) CHARACTER SET 'utf8' COLL
 
 -- PATCH: Allow multi org view for supers
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.multiorg') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.respondent.multiorg%';
+
+-- PATCH: Add code field to surveys
+ALTER TABLE `gems__surveys` ADD gsu_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gsu_duration;

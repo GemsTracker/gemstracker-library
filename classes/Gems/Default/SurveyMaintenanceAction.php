@@ -376,6 +376,9 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
             $model->set('gsu_result_field',          'label', $this->_('Result field'));
             $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent.'));
+            
+            $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
+            
             $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
             $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
         }
