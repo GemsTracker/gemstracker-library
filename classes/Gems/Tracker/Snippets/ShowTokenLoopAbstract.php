@@ -60,6 +60,13 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     protected $request;
 
     /**
+     * Switch for showing the duration.
+     *
+     * @var boolean
+     */
+    protected $showDuration = true;
+
+    /**
      * Required, the current token, possibly already answered
      *
      * @var Gems_Tracker_Token
@@ -129,6 +136,19 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     }
 
     /**
+     * Returns the duration if it should be displayed.
+     *
+     * @param string $duration
+     * @return string
+     */
+    public function formatDuration($duration)
+    {
+        if ($duration && $this->showDuration) {
+            return sprintf($this->_('Takes about %s to answer.'),  $duration) . ' ';
+        }
+    }
+
+    /**
      * Formats an until date for this display
      *
      * @param MUtil_Date $dateTime
@@ -137,30 +157,30 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
     public function formatUntil(MUtil_Date $dateTime = null)
     {
         if (null === $dateTime) {
-            return $this->_('This survey has no set time limit.');
+            return $this->_('Survey has no time limit.');
         }
 
         $days = $dateTime->diffDays();
 
         switch ($days) {
             case 0:
-                return array(MUtil_Html::create('strong', $this->_('Warning!!!')), ' ', $this->_('This survey must be answered today!'));
+                return array(MUtil_Html::create('strong', $this->_('Warning!!!')), ' ', $this->_('Survey must be answered today!'));
 
             case 1:
-                return array(MUtil_Html::create('strong', $this->_('Warning!!')), ' ', $this->_('This survey must be answered tomorrow!'));
+                return array(MUtil_Html::create('strong', $this->_('Warning!!')), ' ', $this->_('Survey must be answered tomorrow!'));
 
             case 2:
-                return $this->_('Warning! This survey must be answered over 2 days!');
+                return $this->_('Warning! Survey must be answered over 2 days!');
 
             default:
                 if (abs($days) <= 14) {
                     if ($days >= 0) {
-                        return sprintf($this->_('This survey must be answered in %d days.'), $days);
+                        return sprintf($this->_('Survey must be answered in %d days.'), $days);
                     } else {
-                        return $this->_('This survey can no longer be answered.');
+                        return $this->_('Survey can no longer be answered.');
                     }
                 }
-                return sprintf($this->_('This survey can be answered until %s.'), $dateTime->toString($this->dateFormat));
+                return sprintf($this->_('Survey can be answered until %s.'), $dateTime->toString($this->dateFormat));
         }
     }
 

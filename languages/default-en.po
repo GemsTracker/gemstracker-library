@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-13 14:46+0100\n"
+"POT-Creation-Date: 2012-07-16 19:30+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,49 +50,49 @@ msgstr "User: %s"
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1447
+#: classes/GemsEscort.php:1451
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1576
+#: classes/GemsEscort.php:1580
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1578
 #: classes/GemsEscort.php:1582
-#: classes/GemsEscort.php:1583
+#: classes/GemsEscort.php:1586
+#: classes/GemsEscort.php:1587
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1593
+#: classes/GemsEscort.php:1597
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1595
-#: classes/GemsEscort.php:1638
+#: classes/GemsEscort.php:1599
+#: classes/GemsEscort.php:1642
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1611
+#: classes/GemsEscort.php:1615
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1613
+#: classes/GemsEscort.php:1617
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1623
-#: classes/GemsEscort.php:1636
+#: classes/GemsEscort.php:1627
+#: classes/GemsEscort.php:1640
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1624
+#: classes/GemsEscort.php:1628
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
-#: classes/GemsEscort.php:1765
-#: classes/GemsEscort.php:1767
+#: classes/GemsEscort.php:1769
+#: classes/GemsEscort.php:1771
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -2206,107 +2206,137 @@ msgstr "Assigned surveys"
 msgid "If empty, survey will never show up!"
 msgstr "If empty, survey will never show up!"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:130
+#: classes/Gems/Default/SurveyMaintenanceAction.php:126
+msgid "Duration calculated"
+msgstr "Duration calculated"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:131
 msgid "Upload new PDF"
 msgstr "Upload new PDF"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:138
+#: classes/Gems/Default/SurveyMaintenanceAction.php:139
 msgid "Usage"
 msgstr "Usage"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:153
+#: classes/Gems/Default/SurveyMaintenanceAction.php:154
 msgid "Single Survey Assignment"
 msgstr "Single Survey Assignment"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:198
+#: classes/Gems/Default/SurveyMaintenanceAction.php:199
 msgid "Assignable since"
 msgstr "Assignable since"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:199
+#: classes/Gems/Default/SurveyMaintenanceAction.php:200
 msgid "Assignable until"
 msgstr "Assignable until"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:205
+#: classes/Gems/Default/SurveyMaintenanceAction.php:206
 msgid "Create Single Survey"
 msgstr "Create Single Survey"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:209
+#: classes/Gems/Default/SurveyMaintenanceAction.php:210
 msgid "At the moment this survey can only be assigned to respondents as part of an existing track."
 msgstr "At the moment this survey can only be assigned to paitents as part of an existing track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:264
+#: classes/Gems/Default/SurveyMaintenanceAction.php:265
 msgid "Survey should be assigned to a group before making it active."
 msgstr "Survey should be assigned to a group before making it active."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:281
+#: classes/Gems/Default/SurveyMaintenanceAction.php:295
+#, php-format
+msgid "Answered surveys: %d."
+msgstr "Answered surveys: %d."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:296
+#, php-format
+msgid "Average answer time: %s."
+msgstr "Average answer time: %s."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:297
+#, php-format
+msgid "Standard deviation: %s."
+msgstr "Standard deviation: %s."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:313
+#, php-format
+msgid "Median value: %s."
+msgstr "Median value: %s."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:320
+msgid "incalculable"
+msgstr "incalculable"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:333
 #, php-format
 msgid "Checking survey results for the %s survey."
 msgstr "Checking survey results for the %s survey."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:293
+#: classes/Gems/Default/SurveyMaintenanceAction.php:345
 msgid "Checking survey results for all surveys."
 msgstr "Checking survey results for all surveys."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:350
+#: classes/Gems/Default/SurveyMaintenanceAction.php:402
 msgid "OK"
 msgstr "OK"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:357
+#: classes/Gems/Default/SurveyMaintenanceAction.php:410
 msgid "Source"
 msgstr "Source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:358
+#: classes/Gems/Default/SurveyMaintenanceAction.php:412
+#: classes/Gems/Default/SurveyMaintenanceAction.php:435
+msgid "Duration description"
+msgstr "Duration description"
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:412
+#: classes/Gems/Default/SurveyMaintenanceAction.php:435
+msgid "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
+msgstr "Text to inform the respondent, e.g. \"20 seconds\" or \"1 minute\"."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:414
 msgid "Status in source"
 msgstr "Status in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:361
+#: classes/Gems/Default/SurveyMaintenanceAction.php:417
 msgid "Active in source"
 msgstr "Active in source"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:362
+#: classes/Gems/Default/SurveyMaintenanceAction.php:418
 #, php-format
 msgid "Active in %s"
 msgstr "Active in %s"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:369
+#: classes/Gems/Default/SurveyMaintenanceAction.php:425
 msgid "Single"
 msgstr "Single"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:378
+#: classes/Gems/Default/SurveyMaintenanceAction.php:434
 msgid "Result field"
 msgstr "Result field"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:379
-msgid "Duration description"
-msgstr "Duration description"
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:379
-msgid "Text to inform the respondent."
-msgstr "Text to inform the respondent."
-
-#: classes/Gems/Default/SurveyMaintenanceAction.php:383
+#: classes/Gems/Default/SurveyMaintenanceAction.php:439
 msgid "Before answering"
 msgstr "Before answering"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:384
+#: classes/Gems/Default/SurveyMaintenanceAction.php:440
 msgid "After completion"
 msgstr "After completion"
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:414
+#: classes/Gems/Default/SurveyMaintenanceAction.php:470
 #, php-format
 msgid "%d times in track."
 msgstr "%d times in track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:416
+#: classes/Gems/Default/SurveyMaintenanceAction.php:472
 #, php-format
 msgid "%d times in %d track(s)."
 msgstr "%d times in %d track(s)."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:420
+#: classes/Gems/Default/SurveyMaintenanceAction.php:476
 msgid "Not used in track."
 msgstr "Not used in track."
 
-#: classes/Gems/Default/SurveyMaintenanceAction.php:422
+#: classes/Gems/Default/SurveyMaintenanceAction.php:478
 msgid "Not used in tracks."
 msgstr "Not used in tracks."
 
@@ -3479,65 +3509,70 @@ msgstr "&lt; Previous"
 msgid "Next &gt;"
 msgstr "Next &gt;"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:115
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:122
 msgid "We have received your answers today. Thank you!"
 msgstr "We have received your answers today. Thank you!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:118
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:125
 msgid "We have received your answers yesterday. Thank you!"
 msgstr "We have received your answers yesterday. Thank you!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:121
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:128
 msgid "We have received your answers 2 days ago. Thank you."
 msgstr "We have received your answers 2 days ago. Thank you."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:125
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:132
 #, php-format
 msgid "We have received your answers %d days ago. Thank you."
 msgstr "We have received your answers %d days ago. Thank you."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:127
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:134
 #, php-format
 msgid "We have received your answers on %s. "
 msgstr "We have received your answers on %s. "
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:140
-msgid "This survey has no set time limit."
-msgstr "This survey has no set time limit."
-
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
+#, php-format
+msgid "Takes about %s to answer."
+msgstr "Takes about %s to answer."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:160
+msgid "Survey has no time limit."
+msgstr "Survey has no time limit."
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:167
 msgid "Warning!!!"
 msgstr "Warning!!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:147
-msgid "This survey must be answered today!"
-msgstr "This survey must be answered today!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:167
+msgid "Survey must be answered today!"
+msgstr "Survey must be answered today!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:170
 msgid "Warning!!"
 msgstr "Warning!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:150
-msgid "This survey must be answered tomorrow!"
-msgstr "This survey must be answered tomorrow!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:170
+msgid "Survey must be answered tomorrow!"
+msgstr "Survey must be answered tomorrow!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:153
-msgid "Warning! This survey must be answered over 2 days!"
-msgstr "Warning! This survey must be answered over 2 days!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:173
+msgid "Warning! Survey must be answered over 2 days!"
+msgstr "Warning! Survey must be answered over 2 days!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:158
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:178
 #, php-format
-msgid "This survey must be answered in %d days."
-msgstr "This survey must be answered in %d days."
+msgid "Survey must be answered in %d days."
+msgstr "Survey must be answered in %d days."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:160
-msgid "This survey can no longer be answered."
-msgstr "This survey can no longer be answered."
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:180
+msgid "Survey can no longer be answered."
+msgstr "Survey can no longer be answered."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:163
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:183
 #, php-format
-msgid "This survey can be answered until %s."
-msgstr "This survey can be answered until %s."
+msgid "Survey can be answered until %s."
+msgstr "Survey can be answered until %s."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1162
@@ -3806,12 +3841,12 @@ msgstr "Trying to send a password reset to a user that cannot be reset."
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
-#: classes/Gems/User/UserLoader.php:234
-#: classes/Gems/User/UserLoader.php:248
+#: classes/Gems/User/UserLoader.php:244
+#: classes/Gems/User/UserLoader.php:258
 msgid "Db storage"
 msgstr "Db storage"
 
-#: classes/Gems/User/UserLoader.php:249
+#: classes/Gems/User/UserLoader.php:259
 msgid "Radius storage"
 msgstr "Radius storage"
 
@@ -3944,43 +3979,58 @@ msgstr "Over %d days"
 msgid "%d days ago"
 msgstr "%d days ago"
 
-#: classes/Gems/Util/Translated.php:177
+#: classes/Gems/Util/Translated.php:186
+#, php-format
+msgid "%d days %d:%s:%s"
+msgstr "%d days %d:%s:%s"
+
+#: classes/Gems/Util/Translated.php:188
+#, php-format
+msgid "%d:%s:%s"
+msgstr "%d:%s:%s"
+
+#: classes/Gems/Util/Translated.php:190
+#, php-format
+msgid "%d:%s"
+msgstr "%d:%s"
+
+#: classes/Gems/Util/Translated.php:202
 msgid "Send multiple mails per respondent, one for each checked token."
 msgstr "Send multiple mails per patient, one for each checked token."
 
-#: classes/Gems/Util/Translated.php:178
+#: classes/Gems/Util/Translated.php:203
 msgid "Send one mail per respondent, mark all checked tokens as send."
 msgstr "Send one mail per patient, mark all checked tokens as send."
 
-#: classes/Gems/Util/Translated.php:179
+#: classes/Gems/Util/Translated.php:204
 msgid "Send one mail per respondent, mark only mailed tokens as send."
 msgstr "Send one mail per patient, mark only mailed tokens as send."
 
-#: classes/Gems/Util/Translated.php:204
+#: classes/Gems/Util/Translated.php:229
 msgid "Unknown"
 msgstr "Unknown"
 
-#: classes/Gems/Util/Translated.php:217
+#: classes/Gems/Util/Translated.php:242
 msgid "mr."
 msgstr "Mr."
 
-#: classes/Gems/Util/Translated.php:217
+#: classes/Gems/Util/Translated.php:242
 msgid "mrs."
 msgstr "Mrs."
 
-#: classes/Gems/Util/Translated.php:217
+#: classes/Gems/Util/Translated.php:242
 msgid "mr./mrs."
 msgstr "Mr./Mrs."
 
-#: classes/Gems/Util/Translated.php:230
+#: classes/Gems/Util/Translated.php:255
 msgid "Mr."
 msgstr "Mr."
 
-#: classes/Gems/Util/Translated.php:230
+#: classes/Gems/Util/Translated.php:255
 msgid "Mrs."
 msgstr "Mrs."
 
-#: classes/Gems/Util/Translated.php:230
+#: classes/Gems/Util/Translated.php:255
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 
@@ -4374,17 +4424,17 @@ msgstr " (%s)"
 msgid "Round: %s"
 msgstr "Round: %s"
 
-#: snippets/Track/Token/ShowAllOpenSnippet.php:189
+#: snippets/Track/Token/ShowAllOpenSnippet.php:190
 msgid "Please answer the open survey."
 msgid_plural "Please answer the open surveys."
 msgstr[0] "Please answer the open survey."
 msgstr[1] "Please answer the open surveys."
 
-#: snippets/Track/Token/ShowAllOpenSnippet.php:191
+#: snippets/Track/Token/ShowAllOpenSnippet.php:192
 msgid "Thank you for answering all open surveys."
 msgstr "Thank you for answering all open surveys."
 
-#: snippets/Track/Token/ShowAllOpenSnippet.php:194
+#: snippets/Track/Token/ShowAllOpenSnippet.php:195
 msgid "There are no surveys to show for this token."
 msgstr "There are no surveys to show for this token."
 
@@ -4659,9 +4709,6 @@ msgstr[1] "After this survey there are another %d surveys we would like you to a
 
 #~ msgid "Completion event"
 #~ msgstr "Completion event"
-
-#~ msgid "Do not calculate this date."
-#~ msgstr "Do not calculate this date."
 
 #~ msgid ""
 #~ "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer "

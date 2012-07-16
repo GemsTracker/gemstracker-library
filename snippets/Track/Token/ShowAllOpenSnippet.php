@@ -174,6 +174,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
 
                     $a = $div->actionLink($this->getTokenHref($token), $token->getSurveyName());
                     $div->append(' ');
+                    $div->append($this->formatDuration($token->getSurvey()->getDuration()));
                     $div->append($this->formatUntil($token->getValidUntil()));
 
                     /*

@@ -253,7 +253,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     {
         return $this->_gemsSurvey['gsu_code'];
     }
-    
+
     /**
      * The time the survey was completed according to the source
      *
@@ -289,6 +289,14 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
         return $this->_gemsSurvey['gsu_survey_description'];
     }
 
+    /**
+     *
+     * @return string The (manually entered) normal duration for taking this survey
+     */
+    public function getDuration()
+    {
+        return $this->_gemsSurvey['gsu_duration'];
+    }
 
     /**
      *

@@ -123,6 +123,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
         $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
         $bridge->addText(       'gsu_duration');
+        $bridge->addExhibitor(  'calc_duration', 'label', $this->_('Duration calculated'), 'value', $this->calculateDuration(isset($data['gsu_id_survey']) ? $data['gsu_id_survey'] : null));
         $bridge->addText(       'gsu_code');
         $bridge->addSelect(     'gsu_beforeanswering_event');
         $bridge->addSelect(     'gsu_completed_event');
@@ -269,6 +270,57 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     }
 
     /**
+     * Calculates the average duration for answering a survey
+     *
+     * @param $surveyId Id of survey to calculate it for
+     * @return MUtil_Html_HtmlElement
+     */
+    public function calculateDuration($surveyId = null)
+    {
+        if ($surveyId) {
+            $fields['cnt'] = 'COUNT(*)';
+            $fields['avg'] = 'AVG(gto_duration_in_sec)';
+            $fields['std'] = 'STDDEV_POP(gto_duration_in_sec)';
+
+            $select = $this->loader->getTracker()->getTokenSelect($fields);
+            $select->forSurveyId($surveyId)
+                    ->onlyCompleted();
+
+            $row = $select->fetchRow();
+            if ($row) {
+                $trs = $this->util->getTranslated();
+                $seq = new MUtil_Html_Sequence();
+                $seq->setGlue(MUtil_Html::create('br', $this->view));
+
+                $seq->append(sprintf($this->_('Answered surveys: %d.'), $row['cnt']));
+                $seq->append(sprintf($this->_('Average answer time: %s.'), $trs->formatTime($row['avg'])));
+                $seq->append(sprintf($this->_('Standard deviation: %s.'), $trs->formatTime($row['std'])));
+
+                // Picked solution from http://stackoverflow.com/questions/1291152/simple-way-to-calculate-median-with-mysql
+                $sql = "
+SELECT t1.gto_duration_in_sec as median_val
+FROM (SELECT @rownum:=@rownum+1 as `row_number`, gto_duration_in_sec
+        FROM gems__tokens, (SELECT @rownum:=0) r
+        WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
+        ORDER BY gto_duration_in_sec
+    ) AS t1,
+    (SELECT count(*) as total_rows
+        FROM gems__tokens
+        WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
+    ) as t2
+WHERE t1.row_number=floor(total_rows/2)+1";
+                if ($med = $this->db->fetchOne($sql, array($surveyId, $surveyId))) {
+                    $seq->append(sprintf($this->_('Median value: %s.'), $trs->formatTime($med)));
+                }
+
+                return $seq;
+            }
+        }
+
+        return $this->_('incalculable');
+    }
+
+    /**
      * Check the tokens for a single survey
      */
     public function checkAction()
@@ -354,7 +406,11 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $model->set('gsu_survey_name',        'label', $this->_('Name'));
         $model->set('gsu_survey_description', 'label', $this->_('Description'), 'formatFunction', array(__CLASS__, 'formatDescription'));
-        $model->set('gso_source_name',        'label', $this->_('Source'));
+        if ($detailed) {
+            $model->set('gso_source_name',        'label', $this->_('Source'));
+        } else {
+            $model->set('gsu_duration',           'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
+        }
         $model->set('gsu_status_show',        'label', $this->_('Status in source'));
 
         if ($detailed) {
@@ -376,10 +432,10 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
             $events = $this->loader->getEvents();
 
             $model->set('gsu_result_field',          'label', $this->_('Result field'));
-            $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent.'));
-            
+            $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
+
             $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
-            
+
             $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
             $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
         }
