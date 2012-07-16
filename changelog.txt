@@ -1,5 +1,6 @@
 Important changes from 1.5.4 => 1.5.5
 ============================================================
+New default: user can only login to his own organization and needs to switch after login if desired, to enable old behaviour that could lead to problems with duplicate logins see $allowLoginOnOtherOrganization in Gems_User_UserLoader
 Role editing has become more interactive and safer to use
 Internally code no longer uses the 'Hidden Organization' but expects both an id1/patientNr plus an id2/organizationId to be specified
 Externally the organization id is still left out of the url when not needed
