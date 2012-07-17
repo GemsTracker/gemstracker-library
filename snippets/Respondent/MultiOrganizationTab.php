@@ -106,7 +106,7 @@ class Respondent_MultiOrganizationTab extends MUtil_Snippets_TabSnippetAbstract
         foreach ($allowedOrgs as $orgId => $name) {
             if (isset($existingOrgs[$orgId])) {
                 $tabs[$orgId] = $name;
-                $this->hrefs[$orgId] = array(MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId], MUtil_Model::REQUEST_ID2 => $orgId);
+                $this->hrefs[$orgId] = array(MUtil_Model::REQUEST_ID1 => $existingOrgs[$orgId], MUtil_Model::REQUEST_ID2 => $orgId, 'RouteReset' => true);
             }
         }
 
