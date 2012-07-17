@@ -137,7 +137,7 @@ class Gems_Event_EventCalculations
     }
 
     /**
-     * Checks all $values for a change against $tokenAnswers as intger
+     * Checks all $values for a change against $tokenAnswers as integer
      *
      * @param array $values
      * @param array $tokenAnswers
