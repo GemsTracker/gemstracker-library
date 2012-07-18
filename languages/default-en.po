@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-16 19:30+0100\n"
+"POT-Creation-Date: 2012-07-18 11:33+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1026,78 +1026,82 @@ msgstr[1] "groups"
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
-#: classes/Gems/Default/IndexAction.php:157
+#: classes/Gems/Default/IndexAction.php:174
 msgid "Request password reset"
 msgstr "Request password reset"
 
-#: classes/Gems/Default/IndexAction.php:161
+#: classes/Gems/Default/IndexAction.php:178
 msgid "Please enter your organization and your username or e-mail address. "
 msgstr "Please enter your organization and your username or e-mail address. "
 
-#: classes/Gems/Default/IndexAction.php:163
+#: classes/Gems/Default/IndexAction.php:180
 msgid "Please enter your username or e-mail address. "
 msgstr "Please enter your username or e-mail address. "
 
-#: classes/Gems/Default/IndexAction.php:165
+#: classes/Gems/Default/IndexAction.php:182
 msgid "We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice."
 msgstr "We will then send you an e-mail with a link. The link will bring you to a page where you can set a new password of your choice."
 
-#: classes/Gems/Default/IndexAction.php:171
+#: classes/Gems/Default/IndexAction.php:188
 msgid "Execute password reset"
 msgstr "Execute password reset"
 
-#: classes/Gems/Default/IndexAction.php:172
+#: classes/Gems/Default/IndexAction.php:189
 msgid "We received your password reset request."
 msgstr "We received your password reset request."
 
-#: classes/Gems/Default/IndexAction.php:175
+#: classes/Gems/Default/IndexAction.php:192
 #, php-format
 msgid "Welcome to %s"
 msgstr "Welcome to %s"
 
-#: classes/Gems/Default/IndexAction.php:176
+#: classes/Gems/Default/IndexAction.php:193
 msgid "Welcome to this website."
 msgstr "Welcome to this website."
 
-#: classes/Gems/Default/IndexAction.php:179
+#: classes/Gems/Default/IndexAction.php:196
 msgid "Please enter your password of choice twice."
 msgstr "Please enter your password of choice twice."
 
 #: classes/Gems/Default/IndexAction.php:218
+msgid "Department"
+msgstr "Department"
+
+#: classes/Gems/Default/IndexAction.php:257
 msgid "Your password must be changed."
 msgstr "Your password must be changed."
 
-#: classes/Gems/Default/IndexAction.php:233
+#: classes/Gems/Default/IndexAction.php:272
 #, php-format
 msgid "Login successful, welcome %s."
 msgstr "Login successful, welcome %s."
 
-#: classes/Gems/Default/IndexAction.php:273
+#: classes/Gems/Default/IndexAction.php:316
 #, php-format
 msgid "Good bye: %s."
 msgstr "Good bye: %s."
 
-#: classes/Gems/Default/IndexAction.php:296
+#: classes/Gems/Default/IndexAction.php:339
 msgid "Your password reset request is no longer valid, please request a new link."
 msgstr "Your password reset request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:298
+#: classes/Gems/Default/IndexAction.php:341
 msgid "Your password input request is no longer valid, please request a new link."
 msgstr "Your password input request is no longer valid, please request a new link."
 
-#: classes/Gems/Default/IndexAction.php:317
+#: classes/Gems/Default/IndexAction.php:360
 msgid "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
-#: classes/Gems/Default/IndexAction.php:326
+#: classes/Gems/Default/IndexAction.php:369
 msgid "New password is active."
 msgstr "New password is active."
 
-#: classes/Gems/Default/IndexAction.php:347
+#: classes/Gems/Default/IndexAction.php:390
 msgid "Password reset requested"
 msgstr "Password reset requested"
 
-#: classes/Gems/Default/IndexAction.php:350
+#: classes/Gems/Default/IndexAction.php:393
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -4227,23 +4231,19 @@ msgstr "Edit track"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:143
-#: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Edit token"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:225
-#: snippets/DeleteTrackTokenSnippet.php:245
 #, php-format
 msgid "Redo of token %s."
 msgstr "Redo of token %s."
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:228
-#: snippets/DeleteTrackTokenSnippet.php:248
 msgid "Old comment:"
 msgstr "Old comment:"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:249
-#: snippets/DeleteTrackTokenSnippet.php:269
 #, php-format
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Created replacement token %2$s for token %1$s."
@@ -4258,6 +4258,7 @@ msgid "Deleted token %s for survey %s."
 msgstr "Deleted token %s for survey %s."
 
 #: snippets/DeleteTrackTokenSnippet.php:286
+#: snippets/EditTrackTokenSnippet.php:182
 #, php-format
 msgid "%d token changed by recalculation."
 msgid_plural "%d tokens changed by recalculation."

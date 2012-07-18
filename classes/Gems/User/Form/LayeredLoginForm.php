@@ -62,6 +62,20 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
     public $topOrganizationFieldName = 'toporganization';
 
     /**
+     * The label for the top-organization element
+     *
+     * @var string
+     */
+    public $topOrganizationDescription = null;
+
+    /**
+     * The label for the child-organization element
+     *
+     * @var string
+     */
+    public $childOrganizationDescription = null;
+
+    /**
      * Return array of organizations that are a child of the given parentId
      * 
      * @param int $parentId
@@ -142,7 +156,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
             } else {
                 $element = new Zend_Form_Element_Select($this->organizationFieldName);
-                $element->setLabel($this->translate->_('Organization'));
+                $element->setLabel($this->childOrganizationDescription);
                 $element->setRegisterInArrayValidator(true);
                 $element->setRequired(true);
                 $element->setMultiOptions($childOrgs);
@@ -214,7 +228,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
         } elseif (! $element instanceof Zend_Form_Element_Select) {
             $element = new Zend_Form_Element_Select($this->topOrganizationFieldName);
-            $element->setLabel($this->translate->_('Organization'));
+            $element->setLabel($this->topOrganizationDescription);
             $element->setRegisterInArrayValidator(true);
             $element->setRequired(true);
             $element->setMultiOptions($orgs);
@@ -239,9 +253,48 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
      */
     public function loadDefaultElements()
     {
+        // If not already set, set some defaults for organization elements
+        if (is_null($this->topOrganizationDescription)) {
+            $this->topOrganizationDescription = $this->translate->_('Organization');
+        }
+
+        if (is_null($this->childOrganizationDescription)) {
+            $this->childOrganizationDescription = $this->translate->_('Department');
+        }
+
         $this->getTopOrganizationElement();
 
         parent::loadDefaultElements();
+
+        return $this;
+    }
+    
+    /**
+     * Set the label for the child organization element
+     *
+     * Enables loading of parameter through Zend_Form::__construct()
+     *
+     * @param string $description
+     * @return Gems_User_Form_LayeredLoginForm (continuation pattern)
+     */
+    public function setChildOrganizationDescription($description = null)
+    {
+        $this->childOrganizationDescription = $description;
+
+        return $this;
+    }
+
+    /**
+     * Set the label for the top organization element
+     *
+     * Enables loading of parameter through Zend_Form::__construct()
+     *
+     * @param string $description
+     * @return Gems_User_Form_LayeredLoginForm (continuation pattern)
+     */
+    public function setTopOrganizationDescription($description = null)
+    {
+        $this->topOrganizationDescription = $description;
 
         return $this;
     }

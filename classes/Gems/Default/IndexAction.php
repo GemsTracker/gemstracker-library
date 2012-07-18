@@ -117,7 +117,12 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         Gems_Html::init();
 
         if ($this->layeredLogin === true) {
+            // Allow to set labels without modifying the form by overriding the below methods
+            $args['topOrganizationDescription']   = $this->getTopOrganizationDescription();
+            $args['childOrganizationDescription'] = $this->getChildOrganizationDescription();
+
             return $this->loader->getUserLoader()->getLayeredLoginForm($args);
+
         } else {
             return $this->loader->getUserLoader()->getLoginForm($args);
         }
@@ -200,6 +205,28 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         }
 
         $this->html->append($form);
+    }
+
+    /**
+     * Modify this to set a new title for the child organization element
+     * if you use layered login
+     *
+     * @return string
+     */
+    public function getChildOrganizationDescription()
+    {
+        return $this->translate->_('Department');
+    }
+
+    /**
+     * Modify this to set a new title for the top organization element
+     * if you use layered login
+     *
+     * @return string
+     */
+    public function getTopOrganizationDescription()
+    {
+        return $this->translate->_('Organization');
     }
 
     /**
