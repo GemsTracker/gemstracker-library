@@ -667,6 +667,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $tmpres['class'] = 'question';
             $tmpres['group'] = $field['gid'];
             $tmpres['type']  = $field['type'];
+            $tmpres['title'] = $field['title'];
 
             if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
                 $tmpres['question'] = $this->removeMarkup($field['question']);
