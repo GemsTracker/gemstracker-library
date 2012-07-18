@@ -138,7 +138,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
     {
         $element  = $this->getElement($this->organizationFieldName);
         $orgId    = $this->getCurrentOrganizationId();
-        $parentId = $this->getCurrentTopOrganizationId();
+        $parentId = $this->getElement($this->topOrganizationFieldName)->getValue();
         $childOrgs = $this->getChildOrganisations($parentId);
 
         if (!empty($childOrgs)) {
