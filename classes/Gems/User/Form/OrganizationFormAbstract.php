@@ -284,6 +284,12 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
      */
     public function wasSubmitted()
     {
-        return $this->getSubmitButton()->isChecked();
+        // If form was not (yet) populated, we can not use isChecked() so do this manually
+        $request = $this->getRequest();
+        if ($request->isPost() && $request->getPost($this->_submitFieldName) == $this->getSubmitButtonLabel()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

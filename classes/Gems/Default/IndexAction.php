@@ -56,6 +56,14 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
     protected $labelWidthFactor = null;
 
     /**
+     * Use a flat login (false = default) or a layered login where you first
+     * select a parent organization and then see a list of child organizations.
+     *
+     * @var boolean
+     */
+    protected $layeredLogin = false;
+
+    /**
      * For small numbers of organizations a multiline selectbox will be nice. This
      * setting handles how many lines will display at once. Use 1 for the normal
      * dropdown selectbox
@@ -108,7 +116,11 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
 
         Gems_Html::init();
 
-        return $this->loader->getUserLoader()->getLoginForm($args);
+        if ($this->layeredLogin === true) {
+            return $this->loader->getUserLoader()->getLayeredLoginForm($args);
+        } else {
+            return $this->loader->getUserLoader()->getLoginForm($args);
+        }
     }
 
     /**
@@ -208,7 +220,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
         $previousRequestParameters = $staticSession->previousRequestParameters;
         $previousRequestMode = $staticSession->previousRequestMode;
 
-        if ($request->isPost()) {
+        if ($form->wasSubmitted()) {
             if ($form->isValid($request->getPost(), false)) {
                 $user = $form->getUser();
                 $user->setAsCurrentUser();
@@ -258,6 +270,10 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 $log = Gems_AccessLog::getLog();
                 $log->log('loginFail', $this->getRequest(), $msg, null, true);
             } // */
+        } else {
+            if ($request->isPost()) {
+                $form->populate($this->getRequest()->getPost());
+            }
         }
 
         $this->displayLoginForm($form);

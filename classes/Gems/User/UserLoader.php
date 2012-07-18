@@ -305,6 +305,20 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns a layered login form where user first selects a top organization and then a
+     * child organization
+     *
+     * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
+     * @return Gems_User_Form_LayeredLoginForm
+     */
+    public function getLayeredLoginForm($args_array = null)
+    {
+        $args = MUtil_Ra::args(func_get_args());
+
+        return $this->_loadClass('Form_LayeredLoginForm', true, array($args));
+    }
+
+    /**
      * Returns a login form
      *
      * @param mixed $args_array MUtil_Ra::args array for LoginForm initiation.
