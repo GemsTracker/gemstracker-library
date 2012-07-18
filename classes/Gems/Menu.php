@@ -60,7 +60,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      */
     private $_currentMenuItem;
 
-    private $_hiddenPriviliges = array();
+    private $_hiddenPrivileges = array();
     private $_onlyActiveBranchVisible = false;
 
     /**
@@ -128,7 +128,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param string $label Label for the whole menu
      * @param string $project The project object
-     * @param string $privilege The privilige for reporting bugs
+     * @param string $privilege The privilege for reporting bugs
      */
     public function addContactPage($label)
     {
@@ -157,8 +157,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
-     * @param string $privilegeShow The limited privilige (look and edit some items)
-     * @param string $privilegeEdits The privilige for being allowed to do anything
+     * @param string $privilegeShow The limited privilege (look and edit some items)
+     * @param string $privilegeEdits The privilege for being allowed to do anything
      */
     public function addGemsSetupContainer($label)
     {
@@ -226,14 +226,26 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     }
 
     /**
-     * Use this to add a privilege that is not associated with a menu item.
+     * Method retained to maintain BC - {@see Gems_Menu::addHiddenPrivilege}
      *
+     * @deprecated
      * @param string $privilege
      * @return Gems_Menu
      */
     public function addHiddenPrivilige($privilege)
     {
-        $this->_hiddenPriviliges[$privilege] = sprintf($this->_('Stand-alone privilige: %s'), $privilege);
+        return $this->addHiddenPrivilege($privilege);
+    }
+
+    /**
+     * Use this to add a privilege that is not associated with a menu item.
+     *
+     * @param string $privilege
+     * @return Gems_Menu
+     */
+    public function addHiddenPrivilege($privilege)
+    {
+        $this->_hiddenPrivileges[$privilege] = sprintf($this->_('Stand-alone privilege: %s'), $privilege);
 
         return $this;
     }
@@ -538,7 +550,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      */
     public function getUsedPrivileges()
     {
-        $privileges = $this->_hiddenPriviliges;
+        $privileges = $this->_hiddenPrivileges;
 
         $this->_addUsedPrivileges($privileges, '');
 
@@ -601,14 +613,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->addContactPage($this->_('Contact'));
 
         // Privileges not associated with menu item
-        //$this->addHiddenPrivilige('pr.plan.choose-org');
-        $this->addHiddenPrivilige('pr.plan.mail-as-application');
-        $this->addHiddenPrivilige('pr.respondent.multiorg');
-        $this->addHiddenPrivilige('pr.respondent.result');
-        $this->addHiddenPrivilige('pr.respondent.who');
-        $this->addHiddenPrivilige('pr.staff.edit.all');
-        $this->addHiddenPrivilige('pr.staff.see.all');
-        $this->addHiddenPrivilige('pr.token.mail.freetext');
+        //$this->addHiddenPrivilege('pr.plan.choose-org');
+        $this->addHiddenPrivilege('pr.plan.mail-as-application');
+        $this->addHiddenPrivilege('pr.respondent.multiorg');
+        $this->addHiddenPrivilege('pr.respondent.result');
+        $this->addHiddenPrivilege('pr.respondent.who');
+        $this->addHiddenPrivilege('pr.staff.edit.all');
+        $this->addHiddenPrivilege('pr.staff.see.all');
+        $this->addHiddenPrivilege('pr.token.mail.freetext');
 
 
         //Changelog added as button only
