@@ -349,9 +349,10 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      * As this depends on the kind of source used it is in this method so projects can change to
      * adapt to their own sources.
      *
+     * @param int $trackId Optional track id
      * @return array
      */
-    public function getSurveysForExport()
+    public function getSurveysForExport($trackId = null)
     {
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
@@ -360,7 +361,13 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
+            ->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_completion_time IS NOT NULL)')
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
+
+        if ($trackId) {
+            $select->where('gsu_id_survey IN (SELECT gro_id_survey FROM gems__rounds WHERE gro_id_track = ?)', $trackId);
+        }
+
         $result = $this->db->fetchAll($select);
 
         if ($result) {

@@ -46,6 +46,13 @@
  */
 class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
 {
+    /**
+     * When true the code attempts to select the text
+     *
+     * @var boolean
+     */
+    protected $selectAll = true;
+
     private function _getFocus($element)
     {
         // MUtil_Echo::r(get_class($element));
@@ -92,10 +99,44 @@ class MUtil_Form_Decorator_AutoFocus extends Zend_Form_Decorator_Abstract
 
         if (($view !== null) && ($focus !== null)) {
             // Use try {} around e.select as nog all elements have a select() function
-            $script = "e = document.getElementById('$focus'); if (e) {e.focus(); try { if (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement) {e.select();} } catch (ex) {}}";
+            $script = "e = document.getElementById('$focus');";
+            if ($this->selectAll) {
+                $script .= "
+                if (e) {
+                    e.focus();
+                    try {
+                        if (e.select) {
+                            e.select();
+                        }
+                    } catch (ex) {}
+                }";
+            } else {
+                $script .= "
+                if (e) {
+                    e.focus();
+                    if (e.setSelectionRange && e.value) {
+                        var len = e.value.length * 2;
+                        e.setSelectionRange(len, len);
+                    } else {
+                        e.value = e.value
+                    }
+                }";
+            }
             $view->inlineScript()->appendScript($script);
         }
 
         return $content;
+    }
+
+    /**
+     * Set the selectAll value
+     *
+     * @param type $value
+     * @return MUtil_Form_Decorator_AutoFocus (continuation pattern)
+     */
+    public function setSelectAll($value = true)
+    {
+        $this->selectAll = $value;
+        return $this;
     }
 }

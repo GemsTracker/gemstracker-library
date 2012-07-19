@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -40,10 +41,16 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.4
  */
 class Gems_Default_ExportAction extends Gems_Controller_Action
 {
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    //public $db;
+
     /**
      * @var Gems_Export
      */
@@ -64,72 +71,42 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $this->export->controller = $this;
     }
 
-    public function getTopic($count = 1)
-    {
-        return $this->_('Data');
-    }
-
-    public function getTopicTitle()
-    {
-        return $this->_('Export data');
-    }
-
-    public function indexAction()
-    {
-        $this->initHtml();
-        //Hacked around to get a self-refreshing form, quite hardcoded but fine for now
-        if ($form = $this->processForm()) {
-            if (!$this->getRequest()->isPost() || $form->getElement('export')->isChecked()) {
-                if ($form->getElement('export')->isChecked()) {
-                    $data = $form->getValues();
-                    $this->handleExport($data);
-                }
-                $this->html->h3($this->getTopicTitle());
-                $div = $this->html->div(array('id' => 'mainform'));
-                $div[] = $form;
-            } else {
-                Zend_Layout::resetMvcInstance();
-                $this->html->raw($form->render($this->view));
-
-                //Now add all onload actions to make the form still work
-                $actions = $this->view->jQuery()->getOnLoadActions();
-                $this->html->raw('<script type="text/javascript">');
-                foreach ($actions as $action) {
-                    $this->html->raw($action);
-                }
-                $this->html->raw('</script>');
-            }
-        }
-    }
 
     /**
-     * Handle the form
+     * Convert the submitted form-data to a filter to be used for retrieving the data to export
      *
-     * @param type $saveLabel
-     * @param type $data
-     * @return type
+     * Now only handles the organization ID and consent codes, but can be extended to
+     * include track info or perform some checks
+     *
+     * @param array $data
+     * @return array
      */
-    public function processForm($saveLabel = null, $data = null)
+    protected function _getFilter($data)
     {
-        $request = $this->getRequest();
+        $filter = array();
+        if (isset($data['ids'])) {
+            $idStrings = $data['ids'];
 
-        if ($request->isPost()) {
-            $data = $request->getPost() + (array) $data;
+            $idArray = preg_split('/[\s,;]+/', $idStrings, -1, PREG_SPLIT_NO_EMPTY);
+
+            if ($idArray) {
+                // Make sure output is OK
+                // $idArray = array_map(array($this->db, 'quote'), $idArray);
+
+                $filter['respondentid'] = $idArray;
+            }
+        }
+
+        if (isset($data['oid'])) {
+            $filter['organizationid'] = $data['oid'];
         } else {
-            //Set the defaults for the form here
-            $data = $this->export->getDefaults();
+            //Invalid id so when nothing selected... we get nothing
+            //$filter['organizationid'] = '-1';
         }
+        $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
 
-        $form = $this->getForm($data);
-
-        //Make the form 'autosubmit' so it can refresh
-        $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true)), 'mainform');
-
-        if ($data) {
-            $form->populate($data);
-        }
-        return $form;
+        // Gems_Tracker::$verbose = true;
+        return $filter;
     }
 
     /**
@@ -140,14 +117,28 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      */
     public function getForm(&$data)
     {
-        $surveys       = $this->loader->getUtil()->getDbLookup()->getSurveysForExport();
-        $organizations = $this->loader->getCurrentUser()->getAllowedOrganizations();
+        $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
+        $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
+        $surveys       = $this->util->getDbLookup()->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
+        $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
         $types         = $this->export->getExportClasses();
 
         //Create the basic form
         $form = new Gems_Form_TableForm();
+        $form->getDecorator('AutoFocus')->setSelectall(false);
 
         //Start adding elements
+        $element = new Zend_Form_Element_Textarea('ids');
+        $element->setLabel($this->_('Respondent id\'s'))
+                ->setAttrib('cols', 60)
+                ->setAttrib('rows', 4);
+        $elements[] = $element;
+
+        $element = new Zend_Form_Element_Select('tid');
+        $element->setLabel($this->_('Tracks'))
+            ->setMultiOptions($tracks);
+        $elements[] = $element;
+
         $element = new Zend_Form_Element_Select('sid');
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
@@ -160,12 +151,11 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $survey   = $this->loader->getTracker()->getSurvey(intval($data['sid']));
             $filter   = $this->_getFilter($data);
             $answers  = $survey->getRawTokenAnswerRows($filter);
-        } else {
-            $answers = array();
+
+            $element = new MUtil_Form_Element_Exhibitor('records');
+            $element->setValue(sprintf($this->_('%s records found.'), count($answers)));
+            $elements[] = $element;
         }
-        $element = new MUtil_Form_Element_Exhibitor('records');
-        $element->setValue(sprintf($this->_('%s records found.'), count($answers)));
-        $elements[] = $element;
 
         $element = new Zend_Form_Element_MultiCheckbox('oid');
         $element->setLabel($this->_('Organization'))
@@ -213,6 +203,17 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         return $form;
     }
 
+    public function getTopic($count = 1)
+    {
+        return $this->_('Data');
+    }
+
+    public function getTopicTitle()
+    {
+        return $this->_('Export data');
+    }
+
+
     /**
      * Take care of exporting the data
      *
@@ -244,25 +245,69 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         }
     }
 
-    /**
-     * Convert the submitted form-data to a filter to be used for retrieving the data to export
-     *
-     * Now only handles the organization ID and consent codes, but can be extended to
-     * include track info or perform some checks
-     *
-     * @param array $data
-     * @return array
-     */
-    public function _getFilter($data) {
-        $filter = array();
-        if (isset($data['oid'])) {
-            $filter['organizationid'] = $data['oid'];
-        } else {
-            //Invalid id so when nothing selected... we get nothing
-            //$filter['organizationid'] = '-1';
-        }
-        $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
+    public function indexAction()
+    {
+        $this->initHtml();
 
-        return $filter;
+        //Hacked around to get a self-refreshing form, quite hardcoded but fine for now
+        if ($form = $this->processForm()) {
+            if (!$this->getRequest()->isPost() || $form->getElement('export')->isChecked()) {
+                if ($form->getElement('export')->isChecked()) {
+                    $data = $form->getValues();
+                    $this->handleExport($data);
+                }
+                $this->html->h3($this->getTopicTitle());
+                $div = $this->html->div(array('id' => 'mainform'));
+                $div[] = $form;
+            } else {
+                // We do not need to return the layout, just the form
+                $this->disableLayout();
+
+                // $this->html->append($form);
+
+                $this->html->raw($form->render($this->view));
+
+                //Now add all onload actions to make the form still work
+                $actions = $this->view->jQuery()->getOnLoadActions();
+                $script  = $this->html->script(array('type' => "text/javascript"));
+                foreach ($actions as $action) {
+                    $script->raw($action);
+                }
+                $this->html->raw($this->view->inlineScript());
+                // MUtil_Echo::track(htmlentities($script->render($this->view)));
+                // MUtil_Echo::track(htmlentities($this->view->inlineScript()));
+                $this->html->raw(MUtil_Echo::out());
+            }
+        }
+    }
+
+    /**
+     * Handle the form
+     *
+     * @param type $saveLabel
+     * @param type $data
+     * @return type
+     */
+    public function processForm($saveLabel = null, $data = null)
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost() + (array) $data;
+        } else {
+            //Set the defaults for the form here
+            $data = $this->export->getDefaults();
+        }
+
+        $form = $this->getForm($data);
+
+        //Make the form 'autosubmit' so it can refresh
+        $form->setAttrib('id', 'autosubmit');
+        $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true)), 'mainform');
+
+        if ($data) {
+            $form->populate($data);
+        }
+        return $form;
     }
 }
