@@ -351,9 +351,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
             $content = $this->_pdf->convertFromHtml($content);
             $this->_pdf->echoPdfContent($content, $filename, true);
+        } else {
+            echo $content;
         }
-
-        echo $content;
 
         $this->escort->menu->setVisible(true);
     }
