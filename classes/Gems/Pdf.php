@@ -52,6 +52,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     protected $db;
 
+    /**
+     * 
+     * @var string
+     */
+    protected $_pdfExportCommand = "";
+    
     protected $pageFont      = Zend_Pdf_Font::FONT_COURIER;
     protected $pageFontSize  = 12;
     protected $pageX         = 10;
@@ -71,6 +77,16 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     protected $translate;
 
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        // Load the pdf class from the project settings if available
+        if (isset($this->project->export) && isset($this->project->export['pdfExportCommand'])) {
+            $this->_pdfExportCommand = $this->project->export['pdfExportCommand'];
+        }
+    }
+    
     protected function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
     {
         $token = strtoupper($tokenId);
@@ -123,7 +139,17 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false, $exit = true)
     {
         $content = $pdf->render();
+        
+        $this->echoPdfContent($content, $filename, $download);
 
+        if ($exit) {
+            // No further output
+            exit;
+        }
+    }
+    
+    public function echoPdfContent($content, $filename, $download = false)
+    {
         // MUtil_Echo::track($filename);
         if ($download) {
             // Download & save
@@ -138,11 +164,6 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         header('Pragma: public');
 
         echo $content;
-
-        if ($exit) {
-            // No further output
-            exit;
-        }
     }
 
     /**
@@ -283,5 +304,51 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
             $msg .= sprintf($this->translate->_(' The error message is: %s'), $last['message']);
         }
         throw new Gems_Exception_Coding($msg);
+    }
+
+    /**
+     * Calls the PDF convertor (wkhtmltopdf / phantom.js) to convert HTML to PDF
+     *
+     * @param  string $content The HTML source
+     * @return string The converted PDF file
+     * @throws Exception
+     */
+    public function convertFromHtml($content)
+    {
+        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
+        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
+
+        file_put_contents($tempInputFilename, $content);
+
+        if (!file_exists($tempInputFilename)) {
+            throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
+        }
+        
+        $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
+            escapeshellarg($tempOutputFilename));
+
+        $lastLine = exec($command, $outputLines, $return);
+
+        if ($return > 0) {
+            @unlink($tempInputFilename);
+            @unlink($tempOutputFilename);
+
+            throw new Exception(sprintf($this->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
+        }
+
+        $pdfContents = file_get_contents($tempOutputFilename);
+
+        @unlink($tempInputFilename);
+        @unlink($tempOutputFilename);
+
+        return $pdfContents;
+    }
+    
+    /**
+     * @return boolean
+     */
+    public function hasPdfExport()
+    {
+        return !empty($this->_pdfExportCommand);
     }
 }

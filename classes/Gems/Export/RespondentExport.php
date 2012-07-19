@@ -43,8 +43,6 @@
  */
 class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 {
-    public $_pdfExportCommand = "";
-
     protected $_reportFooter         = 'Export_ReportFooterSnippet';
     protected $_reportHeader         = 'Export_ReportHeaderSnippet';
     protected $_respondentSnippet    = 'Export_RespondentSnippet';
@@ -84,58 +82,22 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public $util;
 
     public $view;
-
-    public function _($messageid, $locale = null)
-    {
-        return $this->translate->_($messageid, $locale);
-    }
+    
+    /**
+     * @var Gems_Pdf
+     */
+    protected $_pdf;
 
     public function afterRegistry()
     {
         parent::afterRegistry();
-
-        // Load the pdf class from the project settings if available
-        if (isset($this->project->export) && isset($this->project->export['pdfExportCommand'])) {
-            $this->_pdfExportCommand = $this->project->export['pdfExportCommand'];
-        }
-    }
-
-        /**
-     * Calls 'wkhtmltopdf' to convert HTML to PDF
-     *
-     * @param  string $content The HTML source
-     * @return string The converted PDF file
-     * @throws Exception
-     */
-    protected function _convertToPdf($content)
-    {
-        $tempInputFilename  = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.html';
-        $tempOutputFilename = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand()) . '.pdf';
-
-        file_put_contents($tempInputFilename, $content);
-
-        if (!file_exists($tempInputFilename)) {
-            throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
-        }
         
-        $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
-            escapeshellarg($tempOutputFilename));
-
-        $lastLine = exec($command, $outputLines, $return);
-
-        if ($return > 0) {
-            @unlink($tempInputFilename);
-            @unlink($tempOutputFilename);
-
-            throw new Exception(sprintf($this->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
-        }
-
-        $pdfContents = file_get_contents($tempOutputFilename);
-
-        @unlink($tempInputFilename);
-        @unlink($tempOutputFilename);
-
-        return $pdfContents;
+        $this->_pdf = $this->loader->getPdf();
+    }
+    
+    public function _($messageid, $locale = null)
+    {
+        return $this->translate->_($messageid, $locale);
     }
 
     /**
@@ -328,7 +290,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $element = new Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
         $outputFormats = array('html' => 'HTML');
-        if (!empty($this->_pdfExportCommand)) {
+        if ($this->_pdf->hasPdfExport()) {
             $outputFormats['pdf'] = 'PDF';
             $element->setValue('pdf');
         }
@@ -386,14 +348,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $content = $this->view->layout->render();
 
         if ($this->_format == 'pdf') {
-            $content = $this->_convertToPdf($content);
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
-
-			header('Content-Type: application/x-download');
-            header('Content-Length: '.strlen($content));
-            header('Content-Disposition: inline; filename="'.$filename.'"');
-            header('Cache-Control: private, max-age=0, must-revalidate');
-            header('Pragma: public');
+            $content = $this->_pdf->convertFromHtml($content);
+            $this->_pdf->echoPdfContent($content, $filename, true);
         }
 
         echo $content;
