@@ -88,11 +88,11 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
         }
 
         try {
-            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by LIKE ' . $this->db->quote(':' . $parentId . ':') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
+            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
         } catch (Exception $e) {
             try {
                 // 1.4 fallback
-                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND (gor_accessible_by LIKE ' . $this->db->quote(':' . $parentId . ':') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
+                $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND (gor_accessible_by LIKE ' . $this->db->quote('%:' . $parentId . ':%') . ' OR gor_id_organization = ' . $this->db->quote($parentId) .  ') ORDER BY gor_name');
             } catch (Exception $e) {
                 $organizations = array();
             }
