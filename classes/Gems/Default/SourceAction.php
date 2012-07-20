@@ -104,6 +104,30 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Displays textual information what checking tokens does
+     *
+     * @param MUtil_Html_Sequence $html
+     * @param Zend_Translate $translate
+     * @param string $itemDescription Describe which tokens will be checked
+     */
+    public static function addCheckInformation(MUtil_Html_Sequence $html, Zend_Translate $translate, $itemDescription)
+    {
+        $html->pInfo($translate->_('Check tokens for being answered or not, reruns survey and round event code on completed tokens and recalculates the start and end times of all tokens in tracks that have completed tokens.'));
+        $html->pInfo($translate->_('Run this code when survey result fields, survey or round events or the event code has changed or after bulk changes in a survey source.'));
+        $html->pInfo($itemDescription);
+    }
+
+
+    /**
+     * Displays a textual explanation what synchronization does on the page.
+     */
+    protected function addSynchronizationInformation()
+    {
+        $this->html->pInfo($this->_('Check source for new surveys, changes in survey status and survey deletion. Can also perform maintenance on some sources, e.g. by changing the number of attributes.'));
+        $this->html->pInfo($this->_('Run this code when the status of a survey in a source has changed or when the code has changed and the source must be adapted.'));
+    }
+
+    /**
      * Check all token attributes for a single source
      */
     public function attributesAction()
@@ -117,6 +141,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
         $this->_helper->BatchRunner($batch, $title);
+
+        $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in the source.'));
+        $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
     }
 
     /**
@@ -132,6 +159,8 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $title = sprintf($this->_('Checking survey results for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
         $this->_helper->BatchRunner($batch, $title);
+
+        self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in this source.'));
     }
 
     /**
@@ -143,6 +172,8 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $title = $this->_('Checking survey results for all sources.');
         $this->_helper->BatchRunner($batch, $title);
+
+        self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in all sources.'));
     }
 
     /**
@@ -243,6 +274,8 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
         $this->_helper->BatchRunner($batch, $title);
+
+        $this->addSynchronizationInformation();
     }
 
     /**
@@ -257,5 +290,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $this->_helper->BatchRunner($batch, $title);
 
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
+
+        $this->addSynchronizationInformation();
     }
 }

@@ -333,6 +333,8 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         $title = sprintf($this->_('Checking survey results for the %s survey.'),
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
         $this->_helper->BatchRunner($batch, $title);
+
+        Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for this survey.'));
     }
 
     /**
@@ -344,6 +346,8 @@ WHERE t1.row_number=floor(total_rows/2)+1";
 
         $title = $this->_('Checking survey results for all surveys.');
         $this->_helper->BatchRunner($batch, $title);
+
+        Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for all surveys.'));
     }
 
     /**

@@ -154,7 +154,7 @@ class Gems_Util_DatabasePatcher
         if ($ignoreExecuted) {
             $sql .= ' AND gpa_executed = 0';
         }
-        $sql .= ' ORDER BY gpa_level, gpa_location, gpa_name, gpa_order';
+        $sql .= ' ORDER BY gpa_level, gpa_location, gpa_id_patch';
         // MUtil_Echo::rs($ignoreCompleted, $ignoreExecuted, $sql);
 
         $current  = new Zend_Db_Expr('CURRENT_TIMESTAMP');
@@ -232,6 +232,7 @@ class Gems_Util_DatabasePatcher
         // MUtil_Echo::track($minimum);
 
         $this->_loadPatches($applicationLevel);
+        // MUtil_Echo::track($this->_loaded_patches);
         foreach ($this->_loaded_patches as $patch) {
             if ($minimum <= $patch['gpa_level']) {
                 $level    = $patch['gpa_level'];

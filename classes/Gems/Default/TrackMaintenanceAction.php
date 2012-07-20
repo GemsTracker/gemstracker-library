@@ -91,6 +91,23 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     }
 
     /**
+     * Displays a textual explanation what check tracking does on the page.
+     */
+    protected function addCheckInformation()
+    {
+        $this->html->h2($this->_('Checks'));
+        $ul = $this->html->ul();
+        $ul->li($this->_('Updates existing token description and order to the current round description and order.'));
+        $ul->li($this->_('Updates the survey of unanswered tokens when the round survey was changed.'));
+        $ul->li($this->_('Removes unanswered tokens when the round is no longer active.'));
+        $ul->li($this->_('Creates new tokens for new rounds.'));
+        $ul->li($this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'));
+
+        $this->html->pInfo($this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'));
+        $this->html->pInfo($this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'));
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -156,6 +173,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     {
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRoundsAll', $this->loader->getCurrentUser()->getUserId());
         $this->_helper->BatchRunner($batch, $this->_('Checking round assignments for all tracks.'));
+
+        $this->addCheckInformation();
     }
 
     /**
@@ -170,6 +189,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         $title = sprintf($this->_("Checking round assignments for track '%s'."), $track->getTrackName());
         $this->_helper->BatchRunner($batch, $title);
+
+        $this->addCheckInformation();
     }
 
     public function createAction()

@@ -412,11 +412,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         if (null === $batch) {
             $batch = new Gems_Task_TaskRunnerBatch();
         }
-        //Step one: update existing tokens
+        // Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
         $batch->setMessage('roundChangeUpdates', sprintf($this->_('Round changes propagated to %d tokens.'), $i));
 
-        //Step two: deactivate inactive rounds
+        // Step two: deactivate inactive rounds
         $i = $batch->addToCounter('deletedTokens', $this->removeInactiveRounds($respTrack, $userId));
         $batch->setMessage('deletedTokens', sprintf($this->_('%d tokens deleted by round changes.'), $i));
 

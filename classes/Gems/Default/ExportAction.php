@@ -35,7 +35,7 @@
  */
 
 /**
- * Standard controller for database creation and maintenance.
+ * Standard controller for export of survey data
  *
  * @package    Gems
  * @subpackage Default
@@ -97,6 +97,16 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             }
         }
 
+        if (isset($data['tid'])) {
+            $select = $this->db->select();
+            $select->from('gems__respondent2track', array('gr2t_id_respondent_track'))
+                    ->where('gr2t_id_track = ?', $data['tid']);
+
+            if ($trackArray = $this->db->fetchCol($select)) {
+                $filter['resptrackid'] = $trackArray;
+            }
+        }
+
         if (isset($data['oid'])) {
             $filter['organizationid'] = $data['oid'];
         } else {
@@ -131,7 +141,8 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element = new Zend_Form_Element_Textarea('ids');
         $element->setLabel($this->_('Respondent id\'s'))
                 ->setAttrib('cols', 60)
-                ->setAttrib('rows', 4);
+                ->setAttrib('rows', 4)
+                ->setDescription($this->_('Not respondent nr, but respondent id as exported here.'));
         $elements[] = $element;
 
         $element = new Zend_Form_Element_Select('tid');
