@@ -454,6 +454,73 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         return MUtil_Html::raw(strip_tags($value));
     }
 
+    /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    {
+        $elements = parent::getAutoSearchElements($model, $data);
+
+        if ($elements) {
+            $br = MUtil_Html::create('br');
+            $elements[] = $this->_createSelectElement('gsu_id_primary_group', $model, $this->_('(all groups)'));
+
+            $elements[] = $br;
+
+            $states = array(
+                'act' => $this->_('Active'),
+                'sok' => $this->_('OK in source, not active'),
+                'nok' => $this->_('Blocked in source'),
+            );
+            $element = $this->_createSelectElement('status', $states, $this->_('(every state)'));
+            // $element->setLabel($this->_('Status'));
+            $elements[] = $element;
+
+        }
+
+        return $elements;
+    }
+
+    /**
+     * Additional data filter statements for the user input.
+     *
+     * User input that has the same name as a model field is automatically
+     * used as a filter, but if the name is different processing is needed.
+     * That processing should happen here.
+     *
+     * @param array $data The current user input
+     * @return array New filter statements
+     */
+    protected function getDataFilter(array $data)
+    {
+        $filter = parent::getDataFilter($data);
+
+        if (isset($data['status']) && strlen($data['status'])) {
+            switch ($data['status']) {
+                case 'sok':
+                    $filter['gsu_active'] = 0;
+                    $filter[] = "(gsu_status IS NULL OR LENGTH(gsu_status) = 0)";
+                    break;
+
+                case 'nok':
+                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK'))";
+                    break;
+
+                default:
+                    $filter['gsu_active'] = 1;
+            }
+        }
+
+        return $filter;
+    }
+
     public function getTrackCount($currentId)
     {
         $singleTrack = ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) ? $this->escort->getTrackId() : null;

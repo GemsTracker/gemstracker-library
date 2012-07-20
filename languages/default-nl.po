@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 18:24+0100\n"
+"POT-Creation-Date: 2012-07-20 18:37+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2633,49 +2633,49 @@ msgstr "Scheidt meerdere waarden met verticale streep (|)"
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr "Vink aan als dit veld altijd vanuit de code ingesteld wordt, in plaats van door gebruikers."
 
-#: classes/Gems/Default/TrackFieldsAction.php:99
+#: classes/Gems/Default/TrackFieldsAction.php:92
+msgid "Select one"
+msgstr "Kies één"
+
+#: classes/Gems/Default/TrackFieldsAction.php:92
+msgid "Select multiple"
+msgstr "Meerkeuze vraag"
+
+#: classes/Gems/Default/TrackFieldsAction.php:92
+msgid "Free text"
+msgstr "Vrije tekst"
+
+#: classes/Gems/Default/TrackFieldsAction.php:100
+msgid "Code Name"
+msgstr "Code Naam"
+
+#: classes/Gems/Default/TrackFieldsAction.php:103
+#: classes/Gems/Default/TrackMaintenanceAction.php:227
+msgid "Values"
+msgstr "Waarden"
+
+#: classes/Gems/Default/TrackFieldsAction.php:105
+#: classes/Gems/Default/TrackMaintenanceAction.php:229
+msgid "Required"
+msgstr "Verplicht"
+
+#: classes/Gems/Default/TrackFieldsAction.php:107
+msgid "Readonly"
+msgstr "Alleen lezen"
+
+#: classes/Gems/Default/TrackFieldsAction.php:140
 #, php-format
 msgid "Field also deleted from %s assigned track."
 msgid_plural "Field also deleted from %s assigned tracks."
 msgstr[0] "Veld ook verwijderd bij %s toegewezen traject."
 msgstr[1] "Veld ook verwijderd bij %s toegewezen trajecten."
 
-#: classes/Gems/Default/TrackFieldsAction.php:105
+#: classes/Gems/Default/TrackFieldsAction.php:146
 #, php-format
 msgid "This field will be deleted from %s assigned track."
 msgid_plural "This field will be deleted from %s assigned tracks."
 msgstr[0] "Dit veld wordt bij %s toegewezen traject gebruikt en zal daar ook verwijderd worden."
 msgstr[1] "Dit veld wordt bij %s toegewezen trajecten gebruikt en zal daar ook verwijderd worden."
-
-#: classes/Gems/Default/TrackFieldsAction.php:141
-msgid "Select one"
-msgstr "Kies één"
-
-#: classes/Gems/Default/TrackFieldsAction.php:141
-msgid "Select multiple"
-msgstr "Meerkeuze vraag"
-
-#: classes/Gems/Default/TrackFieldsAction.php:141
-msgid "Free text"
-msgstr "Vrije tekst"
-
-#: classes/Gems/Default/TrackFieldsAction.php:149
-msgid "Code Name"
-msgstr "Code Naam"
-
-#: classes/Gems/Default/TrackFieldsAction.php:152
-#: classes/Gems/Default/TrackMaintenanceAction.php:227
-msgid "Values"
-msgstr "Waarden"
-
-#: classes/Gems/Default/TrackFieldsAction.php:154
-#: classes/Gems/Default/TrackMaintenanceAction.php:229
-msgid "Required"
-msgstr "Verplicht"
-
-#: classes/Gems/Default/TrackFieldsAction.php:156
-msgid "Readonly"
-msgstr "Alleen lezen"
 
 #: classes/Gems/Default/TrackFieldsAction.php:170
 msgid "field"
@@ -2752,9 +2752,9 @@ msgstr "%s in traject"
 #: classes/Gems/Default/TrackRoundAction.php:89
 #: classes/Gems/Default/TrackRoundsAction.php:103
 #: classes/Gems/Default/TrackRoundsAction.php:130
-#: classes/Gems/Default/TrackRoundsAction.php:201
-#: classes/Gems/Default/TrackRoundsAction.php:228
-#: classes/Gems/Default/TrackRoundsAction.php:267
+#: classes/Gems/Default/TrackRoundsAction.php:209
+#: classes/Gems/Default/TrackRoundsAction.php:236
+#: classes/Gems/Default/TrackRoundsAction.php:280
 msgid "Missing track identifier."
 msgstr "Ontbrekende traject identificatie."
 
@@ -2768,24 +2768,31 @@ msgstr "Deactiveer %s"
 msgid "%2$u %1$s deactivated"
 msgstr "%2$u %1$s gedeactiveerd"
 
-#: classes/Gems/Default/TrackRoundsAction.php:187
+#: classes/Gems/Default/TrackRoundsAction.php:189
+#, php-format
+msgid "Also deleted %s unanswered token."
+msgid_plural "Also deleted %s unanswered tokens."
+msgstr[0] "Ook %s onbeantwoord kenmerk is verwijderd."
+msgstr[1] "Ook %s onbeantwoorde kenmerken zijn verwijderd."
+
+#: classes/Gems/Default/TrackRoundsAction.php:195
 #, php-format
 msgid "This round has been completed %s time."
 msgid_plural "This round has been completed %s times."
 msgstr[0] "Deze ronde is al %s keer afgerond."
 msgstr[1] "Deze ronde is al %s keren afgerond."
 
-#: classes/Gems/Default/TrackRoundsAction.php:188
+#: classes/Gems/Default/TrackRoundsAction.php:196
 msgid "This round cannot be deleted, only deactivated."
 msgstr "Dit kenmerk kan niet (meer) verwijderd worden, alleen gedeactiveerd."
 
-#: classes/Gems/Default/TrackRoundsAction.php:251
+#: classes/Gems/Default/TrackRoundsAction.php:222
 msgid "round"
 msgid_plural "rounds"
 msgstr[0] "ronde"
 msgstr[1] "rondes"
 
-#: classes/Gems/Default/TrackRoundsAction.php:256
+#: classes/Gems/Default/TrackRoundsAction.php:227
 msgid "Rounds"
 msgstr "Rondes"
 

@@ -180,7 +180,15 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
                 $model   = $this->getModel();
                 $deleted = $model->delete();
 
+                // Always perform delete, tokens may not be in use
+                $tokens = $this->db->delete('gems__tokens', $this->db->quoteInto('gto_id_round = ?', $roundId));
+
                 $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
+
+                if ($tokens) {
+                    $this->addMessage(sprintf($this->plural('Also deleted %s unanswered token.', 'Also deleted %s unanswered tokens.', $tokens), $tokens));
+                }
+
                 $this->_reroute(array('action' => 'index', MUtil_Model::REQUEST_ID => $this->_getIdParam()), true);
             }
         } elseif ($used) {

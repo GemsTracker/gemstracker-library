@@ -184,6 +184,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     {
         $id    = $this->_getIdParam();
         $track = $this->loader->getTracker()->getTrackEngine($id);
+        $track->applyToMenuSource($this->menu->getParameterSource());
         $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
         $batch = $this->loader->getTracker()->checkTrackRounds('trackCheckRounds' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
 
@@ -339,7 +340,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      * @param string $mode
      * @param array $keys
      */
-    private function showList($mode, array $keys, $rowclassField)
+    private function showList($mode, array $keys, $rowclassField = null)
     {
         $action = $this->getRequest()->getActionName();
         $this->getRequest()->setActionName($mode);

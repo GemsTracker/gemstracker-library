@@ -76,6 +76,47 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return Gems_Model_TrackModel
+     */
+    public function createModel($detailed, $action)
+    {
+        $trackId = $this->_getIdParam();
+        $types = array('select' => $this->_('Select one'), 'multiselect' => $this->_('Select multiple'), 'date' => $this->_('Date'), 'text' => $this->_('Free text'));
+
+        $model = new MUtil_Model_TableModel('gems__track_fields');
+        $model->setKeys(array('fid' => 'gtf_id_field', MUtil_Model::REQUEST_ID => 'gtf_id_track'));
+        $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
+        $model->set('gtf_id_order', 'label', $this->_('Order'));
+        $model->set('gtf_field_name', 'label', $this->_('Name'));
+        if ($detailed) {
+            $model->set('gtf_field_code', 'label', $this->_('Code Name'));
+            $model->set('gtf_field_description', 'label', $this->_('Description'));
+        }
+        $model->set('gtf_field_values', 'label', $this->_('Values'));
+        $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $types);
+        $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+        if ($detailed) {
+            $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+        }
+
+        Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
+
+        if ($trackId) {
+            $model->set('gtf_id_track', 'default', $trackId);
+        }
+
+        return $model;
+    }
+
+    /**
      * Creates a form to delete a record
      *
      * Uses $this->getModel()
@@ -122,47 +163,6 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
         $elements[] = new Zend_Form_Element_Hidden(MUtil_Model::REQUEST_ID);
 
         return $elements;
-    }
-
-    /**
-     * Creates a model for getModel(). Called only for each new $action.
-     *
-     * The parameters allow you to easily adapt the model to the current action. The $detailed
-     * parameter was added, because the most common use of action is a split between detailed
-     * and summarized actions.
-     *
-     * @param boolean $detailed True when the current action is not in $summarizedActions.
-     * @param string $action The current action.
-     * @return Gems_Model_TrackModel
-     */
-    public function createModel($detailed, $action)
-    {
-        $trackId = $this->_getIdParam();
-        $types = array('select' => $this->_('Select one'), 'multiselect' => $this->_('Select multiple'), 'date' => $this->_('Date'), 'text' => $this->_('Free text'));
-
-        $model = new MUtil_Model_TableModel('gems__track_fields');
-        $model->setKeys(array('fid' => 'gtf_id_field', MUtil_Model::REQUEST_ID => 'gtf_id_track'));
-        $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
-        $model->set('gtf_id_order', 'label', $this->_('Order'));
-        $model->set('gtf_field_name', 'label', $this->_('Name'));
-        if ($detailed) {
-            $model->set('gtf_field_code', 'label', $this->_('Code Name'));
-            $model->set('gtf_field_description', 'label', $this->_('Description'));
-        }
-        $model->set('gtf_field_values', 'label', $this->_('Values'));
-        $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $types);
-        $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
-        if ($detailed) {
-            $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
-        }
-
-        Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
-
-        if ($trackId) {
-            $model->set('gtf_id_track', 'default', $trackId);
-        }
-
-        return $model;
     }
 
     public function getTopic($count = 1)
