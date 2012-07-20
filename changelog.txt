@@ -9,7 +9,8 @@ New projects start with a basic css template
 In project.ini, export.wkhtmltopdf has been renamed to export.pdfExportCommand, and which now stores the entire command line to the pdf export binary (wkhtmltopdf, Phantom.js or similar).
 The normal time it takes to answer a survey can be added and surveys have a code field
 Export of survey data can be selected by respondent id or by track
-All maintenance task show some explanation on what they do
+Track and survey maintenance is extended with round and field deletion and more powerfull selection tools
+All maintenance tasks show some explanation on what they do
 
 Important changes from 1.5.3 => 1.5.4
 ============================================================
