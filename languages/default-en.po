@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 13:42+0100\n"
+"POT-Creation-Date: 2012-07-20 18:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -41,58 +41,58 @@ msgstr "Logoff"
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:980
+#: classes/GemsEscort.php:981
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1005
+#: classes/GemsEscort.php:1006
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1451
+#: classes/GemsEscort.php:1452
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 
-#: classes/GemsEscort.php:1580
+#: classes/GemsEscort.php:1581
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1582
-#: classes/GemsEscort.php:1586
+#: classes/GemsEscort.php:1583
 #: classes/GemsEscort.php:1587
+#: classes/GemsEscort.php:1588
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1597
+#: classes/GemsEscort.php:1598
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1599
-#: classes/GemsEscort.php:1642
+#: classes/GemsEscort.php:1600
+#: classes/GemsEscort.php:1643
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1615
+#: classes/GemsEscort.php:1616
 msgid "No access to page"
 msgstr "No access to page"
 
-#: classes/GemsEscort.php:1617
+#: classes/GemsEscort.php:1618
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1627
-#: classes/GemsEscort.php:1640
+#: classes/GemsEscort.php:1628
+#: classes/GemsEscort.php:1641
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1628
+#: classes/GemsEscort.php:1629
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
-#: classes/GemsEscort.php:1769
-#: classes/GemsEscort.php:1771
+#: classes/GemsEscort.php:1770
+#: classes/GemsEscort.php:1772
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -462,94 +462,94 @@ msgstr "Trying upgrade for %s from level %s to level %s"
 msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:356
+#: classes/Gems/Controller/BrowseEditAction.php:358
 #, php-format
 msgid "New %s..."
 msgstr "New %s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:389
+#: classes/Gems/Controller/BrowseEditAction.php:391
 #, php-format
 msgid "Delete %s"
 msgstr "Delete %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:393
+#: classes/Gems/Controller/BrowseEditAction.php:395
 #, php-format
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s deleted"
 
-#: classes/Gems/Controller/BrowseEditAction.php:410
+#: classes/Gems/Controller/BrowseEditAction.php:412
 #, php-format
 msgid "Edit %s %s"
 msgstr "Edit %s %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:412
+#: classes/Gems/Controller/BrowseEditAction.php:414
 #, php-format
 msgid "Edit %s"
 msgstr "Edit %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:513
+#: classes/Gems/Controller/BrowseEditAction.php:515
 msgid "Free search text"
 msgstr "Free search text"
 
-#: classes/Gems/Controller/BrowseEditAction.php:584
+#: classes/Gems/Controller/BrowseEditAction.php:586
 msgid "Search"
 msgstr "Search"
 
-#: classes/Gems/Controller/BrowseEditAction.php:600
+#: classes/Gems/Controller/BrowseEditAction.php:602
 #, php-format
 msgid "No %s found"
 msgstr "No %s found"
 
-#: classes/Gems/Controller/BrowseEditAction.php:684
+#: classes/Gems/Controller/BrowseEditAction.php:686
 #, php-format
 msgid "No %s found."
 msgstr "No %s found."
 
-#: classes/Gems/Controller/BrowseEditAction.php:802
+#: classes/Gems/Controller/BrowseEditAction.php:804
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:818
+#: classes/Gems/Controller/BrowseEditAction.php:820
 msgid "Yes"
 msgstr "Yes"
 
-#: classes/Gems/Controller/BrowseEditAction.php:819
+#: classes/Gems/Controller/BrowseEditAction.php:821
 msgid "No"
 msgstr "No"
 
-#: classes/Gems/Controller/BrowseEditAction.php:872
+#: classes/Gems/Controller/BrowseEditAction.php:874
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Unknown %s requested"
 
-#: classes/Gems/Controller/BrowseEditAction.php:895
+#: classes/Gems/Controller/BrowseEditAction.php:897
 #, php-format
 msgid "New %1$s..."
 msgstr "New %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:903
+#: classes/Gems/Controller/BrowseEditAction.php:905
 msgid "Save"
 msgstr "Save"
 
-#: classes/Gems/Controller/BrowseEditAction.php:939
+#: classes/Gems/Controller/BrowseEditAction.php:941
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s saved"
 
-#: classes/Gems/Controller/BrowseEditAction.php:942
+#: classes/Gems/Controller/BrowseEditAction.php:944
 msgid "No changes to save."
 msgstr "No changes to save."
 
-#: classes/Gems/Controller/BrowseEditAction.php:951
+#: classes/Gems/Controller/BrowseEditAction.php:953
 msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:979
+#: classes/Gems/Controller/BrowseEditAction.php:981
 #, php-format
 msgid "Show %s"
 msgstr "Show %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:986
+#: classes/Gems/Controller/BrowseEditAction.php:988
 #, php-format
 msgid "Unknown %s."
 msgstr "Unknown %s."
@@ -2633,43 +2633,57 @@ msgstr "Separate multiple values with a vertical bar (|)"
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr "Check this box if this field is always set by code instead of the user."
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:99
+#, php-format
+msgid "Field also deleted from %s assigned track."
+msgid_plural "Field also deleted from %s assigned tracks."
+msgstr[0] "Field also deleted from %s assigned track."
+msgstr[1] "Field also deleted from %s assigned tracks."
+
+#: classes/Gems/Default/TrackFieldsAction.php:105
+#, php-format
+msgid "This field will be deleted from %s assigned track."
+msgid_plural "This field will be deleted from %s assigned tracks."
+msgstr[0] "This field will be deleted from %s assigned track."
+msgstr[1] "This field will be deleted from %s assigned tracks."
+
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Select one"
 msgstr "Select one"
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Select multiple"
 msgstr "Select multiple"
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Free text"
 msgstr "Free text"
 
-#: classes/Gems/Default/TrackFieldsAction.php:118
+#: classes/Gems/Default/TrackFieldsAction.php:149
 msgid "Code Name"
 msgstr "Code Name"
 
-#: classes/Gems/Default/TrackFieldsAction.php:121
+#: classes/Gems/Default/TrackFieldsAction.php:152
 #: classes/Gems/Default/TrackMaintenanceAction.php:227
 msgid "Values"
 msgstr "Values"
 
-#: classes/Gems/Default/TrackFieldsAction.php:123
+#: classes/Gems/Default/TrackFieldsAction.php:154
 #: classes/Gems/Default/TrackMaintenanceAction.php:229
 msgid "Required"
 msgstr "Required"
 
-#: classes/Gems/Default/TrackFieldsAction.php:125
+#: classes/Gems/Default/TrackFieldsAction.php:156
 msgid "Readonly"
 msgstr "Readonly"
 
-#: classes/Gems/Default/TrackFieldsAction.php:139
+#: classes/Gems/Default/TrackFieldsAction.php:170
 msgid "field"
 msgid_plural "fields"
 msgstr[0] "field"
 msgstr[1] "fields"
 
-#: classes/Gems/Default/TrackFieldsAction.php:144
+#: classes/Gems/Default/TrackFieldsAction.php:175
 msgid "Fields"
 msgstr "Fields"
 
@@ -2714,34 +2728,64 @@ msgstr "Checking round assignments for all tracks."
 msgid "Checking round assignments for track '%s'."
 msgstr "Checking round assignments for track '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:282
+#: classes/Gems/Default/TrackMaintenanceAction.php:272
+msgid "(all track engines)"
+msgstr "(all track engines)"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:276
+msgid "(both)"
+msgstr "(both)"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:332
 msgid "fields"
 msgstr "fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:283
+#: classes/Gems/Default/TrackMaintenanceAction.php:333
 msgid "rounds"
 msgstr "rounds"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:309
+#: classes/Gems/Default/TrackMaintenanceAction.php:364
 #, php-format
 msgid "%s in track"
 msgstr "%s in track"
 
 #: classes/Gems/Default/TrackRoundAction.php:89
-#: classes/Gems/Default/TrackRoundsAction.php:82
-#: classes/Gems/Default/TrackRoundsAction.php:109
-#: classes/Gems/Default/TrackRoundsAction.php:144
-#: classes/Gems/Default/TrackRoundsAction.php:173
+#: classes/Gems/Default/TrackRoundsAction.php:103
+#: classes/Gems/Default/TrackRoundsAction.php:130
+#: classes/Gems/Default/TrackRoundsAction.php:201
+#: classes/Gems/Default/TrackRoundsAction.php:228
+#: classes/Gems/Default/TrackRoundsAction.php:272
 msgid "Missing track identifier."
 msgstr "Missing track identifier."
 
-#: classes/Gems/Default/TrackRoundsAction.php:157
+#: classes/Gems/Default/TrackRoundsAction.php:169
+#, php-format
+msgid "Deactivate %s"
+msgstr "Deactivate %s"
+
+#: classes/Gems/Default/TrackRoundsAction.php:177
+#, php-format
+msgid "%2$u %1$s deactivated"
+msgstr "%2$u %1$s deactivated"
+
+#: classes/Gems/Default/TrackRoundsAction.php:187
+#, php-format
+msgid "This round has been completed %s time."
+msgid_plural "This round has been completed %s times."
+msgstr[0] "This round has been completed %s time."
+msgstr[1] "This round has been completed %s times."
+
+#: classes/Gems/Default/TrackRoundsAction.php:188
+msgid "This round cannot be deleted, only deactivated."
+msgstr "This round cannot be deleted, only deactivated."
+
+#: classes/Gems/Default/TrackRoundsAction.php:214
 msgid "round"
 msgid_plural "rounds"
 msgstr[0] "round"
 msgstr[1] "rounds"
 
-#: classes/Gems/Default/TrackRoundsAction.php:162
+#: classes/Gems/Default/TrackRoundsAction.php:219
 msgid "Rounds"
 msgstr "Rounds"
 
@@ -3025,11 +3069,11 @@ msgstr "Check all is answered"
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:482
+#: classes/Gems/Menu/MenuAbstract.php:486
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:485
+#: classes/Gems/Menu/MenuAbstract.php:489
 msgid "Check all assignments"
 msgstr "Check all assignments"
 
@@ -3576,20 +3620,20 @@ msgstr "Add new round"
 msgid "Add new track"
 msgstr "Add new track"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:132
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:146
 #, php-format
 msgid "%s round"
 msgstr "%s round"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:144
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:173
 msgid "No round specified."
 msgstr "No round specified."
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:163
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:192
 msgid "&lt; Previous"
 msgstr "&lt; Previous"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:168
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:197
 msgid "Next &gt;"
 msgstr "Next &gt;"
 
@@ -4616,9 +4660,6 @@ msgstr[1] "After this survey there are another %d surveys we would like you to a
 #~ "To set a new password for the [b]{organization}[/b] site [b]{project}[/"
 #~ "b], please click on this link:\n"
 #~ "{reset_url}"
-
-#~ msgid "This token cannot be used (any more)."
-#~ msgstr "This token cannot be used (any more)."
 
 #~ msgid "%s not correct."
 #~ msgstr "%s not correct."

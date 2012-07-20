@@ -96,4 +96,15 @@ class Gems_Default_TrackRoundAction extends Gems_Default_TrackRoundsAction
 
         $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'roundId', $trackEngine->getFirstRoundId(), 'trackEngine', $trackEngine, 'trackId', $trackId);
     }
+
+    /**
+     * Show a single round
+     */
+    public function showAction()
+    {
+        $trackId = $this->_getIdParam();
+        $this->_setParam(Gems_Model::ROUND_ID, $this->db->fetchOne("SELECT gro_id_round FROM gems__rounds WHERE gro_id_track = ? ORDER BY gro_id_order", $trackId));
+
+        parent::showAction();
+    }
 }

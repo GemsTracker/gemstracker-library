@@ -417,3 +417,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.m
 
 -- PATCH: Add code field to surveys
 ALTER TABLE `gems__surveys` ADD gsu_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gsu_duration;
+
+-- PATCH: Assign deletion of track parts to super role
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.delete') WHERE grl_privileges NOT LIKE '%pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.track-maintenance.delete%';

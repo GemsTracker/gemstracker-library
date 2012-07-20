@@ -118,7 +118,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     protected function _createSelectElement($name, $options, $empty = null)
     {
-        if (is_string($options)) {
+        if ($options instanceof MUtil_Model_ModelAbstract) {
+            $options = $options->get($name, 'multiOptions');
+        } elseif (is_string($options)) {
             $options = $this->db->fetchPairs($options);
             natsort($options);
         }

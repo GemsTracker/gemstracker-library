@@ -253,6 +253,56 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $this->addSnippets($tracker->getTrackEngineEditSnippets(), 'trackEngine', $trackEngine, 'trackId', $trackId);
     }
 
+    /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    {
+        $elements = parent::getAutoSearchElements($model, $data);
+
+        if ($elements) {
+            $br = MUtil_Html::create('br');
+            $elements[] = $this->_createSelectElement('gtr_track_class', $model, $this->_('(all track engines)'));
+
+            $elements[] = $br;
+
+            $element = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
+            $element->setLabel($model->get('gtr_active', 'label'));
+            $elements[] = $element;
+
+        }
+
+        return $elements;
+    }
+
+    /**
+     * Additional data filter statements for the user input.
+     *
+     * User input that has the same name as a model field is automatically
+     * used as a filter, but if the name is different processing is needed.
+     * That processing should happen here.
+     *
+     * @param array $data The current user input
+     * @return array New filter statements
+     */
+    protected function getDataFilter(array $data)
+    {
+        $filter = parent::getDataFilter($data);
+
+        if (isset($data['active']) && strlen($data['active'])) {
+            $filter['gtr_active'] = $data['active'];
+        }
+
+        return $filter;
+    }
+
     public function getTopic($count = 1)
     {
         return $this->plural('track', 'tracks', $count);
@@ -276,7 +326,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         parent::showAction();
 
         $this->showList("fields", array(MUtil_Model::REQUEST_ID => 'gtf_id_track', 'fid' => 'gtf_id_field'));
-        $this->showList("rounds", array(MUtil_Model::REQUEST_ID => 'gro_id_track', 'rid' => 'gro_id_round'));
+        $this->showList("rounds", array(MUtil_Model::REQUEST_ID => 'gro_id_track', 'rid' => 'gro_id_round'), 'row_class');
 
         // explicitly translate
         $this->_('fields');
@@ -289,7 +339,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      * @param string $mode
      * @param array $keys
      */
-    private function showList($mode, array $keys)
+    private function showList($mode, array $keys, $rowclassField)
     {
         $action = $this->getRequest()->getActionName();
         $this->getRequest()->setActionName($mode);
@@ -302,6 +352,11 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $this->browseMode = 'track-' . $mode;
 
         $table = $this->getBrowseTable($baseurl);
+        if ($rowclassField) {
+            foreach ($table->tbody() as $tr) {
+                $tr->appendAttrib('class', $repeatable->$rowclassField);
+            }
+        }
         $table->setOnEmpty(sprintf($this->_('No %s found'), $this->_($mode)));
         $table->getOnEmpty()->class = 'centerAlign';
         $table->setRepeater($repeatable);

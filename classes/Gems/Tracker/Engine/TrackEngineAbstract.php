@@ -741,6 +741,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
         $model->set('gro_changed_event',     'label', $this->_('After change'), 'multiOptions', $this->events->listRoundChangedEvents());
         $model->set('gro_active',            'label', $this->_('Active'),       'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
 
+        $model->addColumn(
+            "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",
+            'row_class');
+
         switch ($action) {
             case 'create':
                 $this->_ensureRounds();

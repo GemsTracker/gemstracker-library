@@ -54,6 +54,27 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     public $sortKey = array('gro_id_order' => SORT_ASC);
 
     /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        parent::addBrowseTableColumns($bridge, $model);
+
+        $table = $bridge->getTable();
+        $rep   = $table->getRepeater();
+
+        foreach ($table->tbody() as $tr) {
+            $tr->appendAttrib('class', $bridge->row_class);
+        }
+    }
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -134,6 +155,42 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Creates a form to delete a record
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function deleteAction()
+    {
+        $roundId = $this->_getParam(Gems_Model::ROUND_ID);
+        $used    = $this->db->fetchOne("SELECT COUNT(*) FROM gems__tokens WHERE gto_id_round = ? AND gto_start_time IS NOT NULL", $roundId);
+
+        if ($used) {
+            $title = $this->_('Deactivate %s');
+        } else {
+            $title = $this->_('Delete %s');
+        }
+        if ($this->isConfirmedItem($title)) {
+            if ($used) {
+                $deleted = $this->db->update('gems__rounds', array('gro_active' => 0), $this->db->quoteInto('gro_id_round = ?', $roundId));
+
+                $this->addMessage(sprintf($this->_('%2$u %1$s deactivated'), $this->getTopic($deleted), $deleted));
+                $this->_reroute(array('action' => 'show', 'confirmed' => null), false);
+            } else {
+                $model   = $this->getModel();
+                $deleted = $model->delete();
+
+                $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
+                $this->_reroute(array('action' => 'index', MUtil_Model::REQUEST_ID => $this->_getIdParam()), true);
+            }
+        } elseif ($used) {
+            $this->addMessage(sprintf($this->plural('This round has been completed %s time.', 'This round has been completed %s times.', $used), $used));
+            $this->addMessage($this->_('This round cannot be deleted, only deactivated.'));
+
+        }
+    }
+
+    /**
      * Edit a single round
      */
     public function editAction()
@@ -160,6 +217,48 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     public function getTopicTitle()
     {
         return $this->_('Rounds');
+    }
+
+    public function isConfirmedItem($title, $question = null, $info = null)
+    {
+        $trackId = $this->_getIdParam();
+        $roundId = $this->_getParam(Gems_Model::ROUND_ID);
+
+        if (! $trackId) {
+            throw new Gems_Exception($this->_('Missing track identifier.'));
+        }
+
+        if ($this->_getParam('confirmed')) {
+            return true;
+        }
+
+        if (null === $question) {
+            $question = $this->_('Are you sure?');
+        }
+
+        $this->html->h3(sprintf($title, $this->getTopic()));
+
+        if ($info) {
+            $this->html->pInfo($info);
+        }
+
+        $menuSource  = $this->menu->getParameterSource();
+        $trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
+        $trackEngine->applyToMenuSource($menuSource);
+        $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
+
+        $this->html->p($question);
+        foreach ($trackEngine->getRoundShowSnippetNames() as $snippet) {
+            $this->html->append($this->getSnippet($snippet, 'roundId', $roundId, 'trackEngine', $trackEngine, 'trackId', $trackId, 'showMenu', false, 'showTitle', false));
+        }
+
+        $footer = $this->html->p($question, ' ', array('class' => 'centerAlign'));
+        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'));
+        $footer->actionLink(array('action' => 'show'), $this->_('No'));
+
+        $this->html->buttonDiv($this->createMenuLinks());
+
+        return false;
     }
 
     /**

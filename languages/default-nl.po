@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 13:43+0100\n"
+"POT-Creation-Date: 2012-07-20 18:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -41,58 +41,58 @@ msgstr "Uitloggen"
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:980
+#: classes/GemsEscort.php:981
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:1005
+#: classes/GemsEscort.php:1006
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1451
+#: classes/GemsEscort.php:1452
 msgid "Take note: your session has expired, your inputs were not saved. Please check the input data and try again"
 msgstr "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1580
+#: classes/GemsEscort.php:1581
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1582
-#: classes/GemsEscort.php:1586
+#: classes/GemsEscort.php:1583
 #: classes/GemsEscort.php:1587
+#: classes/GemsEscort.php:1588
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1597
+#: classes/GemsEscort.php:1598
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1599
-#: classes/GemsEscort.php:1642
+#: classes/GemsEscort.php:1600
+#: classes/GemsEscort.php:1643
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1615
+#: classes/GemsEscort.php:1616
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1617
+#: classes/GemsEscort.php:1618
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1627
-#: classes/GemsEscort.php:1640
+#: classes/GemsEscort.php:1628
+#: classes/GemsEscort.php:1641
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1628
+#: classes/GemsEscort.php:1629
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
-#: classes/GemsEscort.php:1769
-#: classes/GemsEscort.php:1771
+#: classes/GemsEscort.php:1770
+#: classes/GemsEscort.php:1772
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -462,94 +462,94 @@ msgstr "Probeert upgrade voor %s van niveau %s naar niveau %s uit te voeren"
 msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:356
+#: classes/Gems/Controller/BrowseEditAction.php:358
 #, php-format
 msgid "New %s..."
 msgstr "Nieuwe %s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:389
+#: classes/Gems/Controller/BrowseEditAction.php:391
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:393
+#: classes/Gems/Controller/BrowseEditAction.php:395
 #, php-format
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s verwijderd"
 
-#: classes/Gems/Controller/BrowseEditAction.php:410
+#: classes/Gems/Controller/BrowseEditAction.php:412
 #, php-format
 msgid "Edit %s %s"
 msgstr "Bewerk %s %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:412
+#: classes/Gems/Controller/BrowseEditAction.php:414
 #, php-format
 msgid "Edit %s"
 msgstr "Bewerk %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:513
+#: classes/Gems/Controller/BrowseEditAction.php:515
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
-#: classes/Gems/Controller/BrowseEditAction.php:584
+#: classes/Gems/Controller/BrowseEditAction.php:586
 msgid "Search"
 msgstr "Zoeken"
 
-#: classes/Gems/Controller/BrowseEditAction.php:600
+#: classes/Gems/Controller/BrowseEditAction.php:602
 #, php-format
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:684
+#: classes/Gems/Controller/BrowseEditAction.php:686
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:802
+#: classes/Gems/Controller/BrowseEditAction.php:804
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:818
+#: classes/Gems/Controller/BrowseEditAction.php:820
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:819
+#: classes/Gems/Controller/BrowseEditAction.php:821
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:872
+#: classes/Gems/Controller/BrowseEditAction.php:874
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:895
+#: classes/Gems/Controller/BrowseEditAction.php:897
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:903
+#: classes/Gems/Controller/BrowseEditAction.php:905
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:939
+#: classes/Gems/Controller/BrowseEditAction.php:941
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:942
+#: classes/Gems/Controller/BrowseEditAction.php:944
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:951
+#: classes/Gems/Controller/BrowseEditAction.php:953
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:979
+#: classes/Gems/Controller/BrowseEditAction.php:981
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:986
+#: classes/Gems/Controller/BrowseEditAction.php:988
 #, php-format
 msgid "Unknown %s."
 msgstr "%s is onbekend."
@@ -1585,7 +1585,7 @@ msgstr "Dit kan nog niet gewijzigd worden"
 
 #: classes/Gems/Default/OrganizationAction.php:180
 msgid "User Definition"
-msgstr "User Definition"
+msgstr "Gebruikers definitie"
 
 #: classes/Gems/Default/OrganizationAction.php:210
 msgid "Participating organizations"
@@ -2633,43 +2633,57 @@ msgstr "Scheidt meerdere waarden met verticale streep (|)"
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr "Vink aan als dit veld altijd vanuit de code ingesteld wordt, in plaats van door gebruikers."
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:99
+#, php-format
+msgid "Field also deleted from %s assigned track."
+msgid_plural "Field also deleted from %s assigned tracks."
+msgstr[0] "Veld ook verwijderd bij %s toegewezen traject."
+msgstr[1] "Veld ook verwijderd bij %s toegewezen trajecten."
+
+#: classes/Gems/Default/TrackFieldsAction.php:105
+#, php-format
+msgid "This field will be deleted from %s assigned track."
+msgid_plural "This field will be deleted from %s assigned tracks."
+msgstr[0] "Dit veld wordt bij %s toegewezen traject gebruikt en zal daar ook verwijderd worden."
+msgstr[1] "Dit veld wordt bij %s toegewezen trajecten gebruikt en zal daar ook verwijderd worden."
+
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Select one"
 msgstr "Kies één"
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Select multiple"
 msgstr "Meerkeuze vraag"
 
-#: classes/Gems/Default/TrackFieldsAction.php:110
+#: classes/Gems/Default/TrackFieldsAction.php:141
 msgid "Free text"
 msgstr "Vrije tekst"
 
-#: classes/Gems/Default/TrackFieldsAction.php:118
+#: classes/Gems/Default/TrackFieldsAction.php:149
 msgid "Code Name"
 msgstr "Code Naam"
 
-#: classes/Gems/Default/TrackFieldsAction.php:121
+#: classes/Gems/Default/TrackFieldsAction.php:152
 #: classes/Gems/Default/TrackMaintenanceAction.php:227
 msgid "Values"
 msgstr "Waarden"
 
-#: classes/Gems/Default/TrackFieldsAction.php:123
+#: classes/Gems/Default/TrackFieldsAction.php:154
 #: classes/Gems/Default/TrackMaintenanceAction.php:229
 msgid "Required"
 msgstr "Verplicht"
 
-#: classes/Gems/Default/TrackFieldsAction.php:125
+#: classes/Gems/Default/TrackFieldsAction.php:156
 msgid "Readonly"
 msgstr "Alleen lezen"
 
-#: classes/Gems/Default/TrackFieldsAction.php:139
+#: classes/Gems/Default/TrackFieldsAction.php:170
 msgid "field"
 msgid_plural "fields"
 msgstr[0] "veld"
 msgstr[1] "velden"
 
-#: classes/Gems/Default/TrackFieldsAction.php:144
+#: classes/Gems/Default/TrackFieldsAction.php:175
 msgid "Fields"
 msgstr "Velden"
 
@@ -2714,34 +2728,64 @@ msgstr "Controleren van ronde toewijzingen voor alle trajecten."
 msgid "Checking round assignments for track '%s'."
 msgstr "Controleren ronde toewijzing voor traject '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:282
+#: classes/Gems/Default/TrackMaintenanceAction.php:272
+msgid "(all track engines)"
+msgstr "(alle traject types)"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:276
+msgid "(both)"
+msgstr "(beide)"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:332
 msgid "fields"
 msgstr "velden"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:283
+#: classes/Gems/Default/TrackMaintenanceAction.php:333
 msgid "rounds"
 msgstr "rondes"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:309
+#: classes/Gems/Default/TrackMaintenanceAction.php:364
 #, php-format
 msgid "%s in track"
 msgstr "%s in traject"
 
 #: classes/Gems/Default/TrackRoundAction.php:89
-#: classes/Gems/Default/TrackRoundsAction.php:82
-#: classes/Gems/Default/TrackRoundsAction.php:109
-#: classes/Gems/Default/TrackRoundsAction.php:144
-#: classes/Gems/Default/TrackRoundsAction.php:173
+#: classes/Gems/Default/TrackRoundsAction.php:103
+#: classes/Gems/Default/TrackRoundsAction.php:130
+#: classes/Gems/Default/TrackRoundsAction.php:201
+#: classes/Gems/Default/TrackRoundsAction.php:228
+#: classes/Gems/Default/TrackRoundsAction.php:267
 msgid "Missing track identifier."
 msgstr "Ontbrekende traject identificatie."
 
-#: classes/Gems/Default/TrackRoundsAction.php:157
+#: classes/Gems/Default/TrackRoundsAction.php:169
+#, php-format
+msgid "Deactivate %s"
+msgstr "Deactiveer %s"
+
+#: classes/Gems/Default/TrackRoundsAction.php:177
+#, php-format
+msgid "%2$u %1$s deactivated"
+msgstr "%2$u %1$s gedeactiveerd"
+
+#: classes/Gems/Default/TrackRoundsAction.php:187
+#, php-format
+msgid "This round has been completed %s time."
+msgid_plural "This round has been completed %s times."
+msgstr[0] "Deze ronde is al %s keer afgerond."
+msgstr[1] "Deze ronde is al %s keren afgerond."
+
+#: classes/Gems/Default/TrackRoundsAction.php:188
+msgid "This round cannot be deleted, only deactivated."
+msgstr "Dit kenmerk kan niet (meer) verwijderd worden, alleen gedeactiveerd."
+
+#: classes/Gems/Default/TrackRoundsAction.php:251
 msgid "round"
 msgid_plural "rounds"
 msgstr[0] "ronde"
 msgstr[1] "rondes"
 
-#: classes/Gems/Default/TrackRoundsAction.php:162
+#: classes/Gems/Default/TrackRoundsAction.php:256
 msgid "Rounds"
 msgstr "Rondes"
 
@@ -3025,11 +3069,11 @@ msgstr "Controleer alles op antwoorden"
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:482
+#: classes/Gems/Menu/MenuAbstract.php:486
 msgid "Check assignments"
 msgstr "Controleer toewijzingen"
 
-#: classes/Gems/Menu/MenuAbstract.php:485
+#: classes/Gems/Menu/MenuAbstract.php:489
 msgid "Check all assignments"
 msgstr "Controleer alle toewijzingen"
 
@@ -3576,20 +3620,20 @@ msgstr "Nieuwe ronde toevoegen"
 msgid "Add new track"
 msgstr "Voeg traject toe"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:132
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:146
 #, php-format
 msgid "%s round"
 msgstr "%s ronde"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:144
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:173
 msgid "No round specified."
 msgstr "Geen ronde opgegeven."
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:163
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:192
 msgid "&lt; Previous"
 msgstr "&lt; Terug"
 
-#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:168
+#: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:197
 msgid "Next &gt;"
 msgstr "Verder &gt;"
 
@@ -4621,9 +4665,6 @@ msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 #~ "Om een nieuw wachtwoord in te stellen voor de [b]{organization}[/b] site "
 #~ "[b]{project}[/b], klik op deze link:\n"
 #~ "{reset_url}"
-
-#~ msgid "This token cannot be used (any more)."
-#~ msgstr "Dit kenmerk kan niet (meer) gebruikt worden."
 
 #~ msgid ""
 #~ "Please enter the organization and username/e-mail address belonging to "

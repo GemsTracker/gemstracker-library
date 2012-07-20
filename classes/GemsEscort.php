@@ -430,7 +430,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initTranslate()
     {
-        $this->bootstrap('locale');      
+        $this->bootstrap('locale');
 
         $language = $this->locale->getLanguage();
 
@@ -517,7 +517,7 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /*protected function _initZFDebug()
-    {        
+    {
         // if ((APPLICATION_ENV === 'development') &&
         if ((APPLICATION_ENV !== 'production') &&
             (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') === FALSE)) {
@@ -545,7 +545,7 @@ class GemsEscort extends MUtil_Application_Escort
             $this->bootstrap('frontController');
             $frontController = $this->getResource('frontController');
             $frontController->registerPlugin($debug);
-        } 
+        }
     }// */
 
     /**
@@ -887,10 +887,11 @@ class GemsEscort extends MUtil_Application_Escort
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
-                $params     = $this->request->getQuery();   //Use only get params, not post
+                $params     = $this->request->getParams();   //Use only get params, not post
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
                 unset($params[Gems_Util_RequestCache::RESET_PARAM]);
                 $currentUri = $this->view->url($params, null, true);
+                // MUtil_Echo::track($currentUri, $this->request->getParams());
 
                 $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
 

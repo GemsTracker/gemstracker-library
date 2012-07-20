@@ -462,6 +462,7 @@ abstract class Gems_Menu_MenuAbstract
         $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
         $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
         $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addDeleteAction('pr.track-maintenance.delete')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
 
         // Standard tracks
         $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
@@ -471,6 +472,9 @@ abstract class Gems_Menu_MenuAbstract
         $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
         $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
         $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
+        $fpage->addDeleteAction('pr.track-maintenance.delete')
+                ->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track')
+                ->setParameterFilter('gtr_track_type', 'T');
 
         // Single survey tracks
         $fpage = $page->addPage($this->_('Round'), 'pr.track-maintenance', 'track-round', 'show')

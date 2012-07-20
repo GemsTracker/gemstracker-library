@@ -76,6 +76,37 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Creates a form to delete a record
+     *
+     * Uses $this->getModel()
+     *      $this->addFormElements()
+     */
+    public function deleteAction()
+    {
+        $field = $this->_getParam('fid');
+        $used  = $this->db->fetchOne("SELECT COUNT(*) FROM gems__respondent2track2field WHERE gr2t2f_id_field = ? AND gr2t2f_value IS NOT NULL", $field);
+
+        if ($this->isConfirmedItem($this->_('Delete %s'))) {
+            $model   = $this->getModel();
+            $deleted = $model->delete();
+
+            // Always perform delete, fields may be empty
+            $this->db->delete('gems__respondent2track2field', $this->db->quoteInto('gr2t2f_id_field = ?', $field));
+
+            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
+
+            if ($used) {
+                $this->addMessage(sprintf($this->plural('Field also deleted from %s assigned track.', 'Field also deleted from %s assigned tracks.', $used), $used));
+            }
+
+            $this->_reroute(array('action' => 'index', MUtil_Model::REQUEST_ID => $this->_getParam(MUtil_Model::REQUEST_ID)), true);
+
+        } elseif ($used) {
+            $this->addMessage(sprintf($this->plural('This field will be deleted from %s assigned track.', 'This field will be deleted from %s assigned tracks.', $used), $used));
+        }
+    }
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -142,5 +173,14 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     public function getTopicTitle()
     {
         return $this->_('Fields');
+    }
+
+    public function init()
+    {
+        // Make sure the menu knows the track type
+        $source = $this->menu->getParameterSource();
+        $source->setTrackType($this->db->fetchOne('SELECT gtr_track_type FROM gems__tracks WHERE gtr_id_track = ?', $this->_getIdParam()));
+
+        return parent::init();
     }
 }

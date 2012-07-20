@@ -76,6 +76,20 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends MUtil_Snippets_Mode
     protected $roundId;
 
     /**
+     * Show menu buttons below data
+     *
+     * @var boolean
+     */
+    protected $showMenu = true;
+
+    /**
+     * Show title above data
+     *
+     * @var boolean
+     */
+    protected $showTitle = true;
+
+    /**
      * Optional, required when creating or $trackId should be set
      *
      * @var Gems_Tracker_Engine_TrackEngineInterface
@@ -128,13 +142,28 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends MUtil_Snippets_Mode
         if ($this->roundId) {
             $htmlDiv   = MUtil_Html::div();
 
-
-            $htmlDiv->h3(sprintf($this->_('%s round'), $this->trackEngine->getName()));
+            if ($this->showTitle) {
+                $htmlDiv->h3(sprintf($this->_('%s round'), $this->trackEngine->getName()));
+            }
 
             $table = parent::getHtmlOutput($view);
             $this->applyHtmlAttributes($table);
 
-            $table->tfrow($this->getMenuList(), array('class' => 'centerAlign'));
+            // Make sure deactivated rounds are show as deleted
+            foreach ($table->tbody() as $tr) {
+                $skip = true;
+                foreach ($tr as $td) {
+                    if ($skip) {
+                        $skip = false;
+                    } else {
+                        $td->appendAttrib('class', $table->getRepeater()->row_class);
+                    }
+                }
+            }
+
+            if ($this->showMenu) {
+                $table->tfrow($this->getMenuList(), array('class' => 'centerAlign'));
+            }
 
             $htmlDiv[] = $table;
 
