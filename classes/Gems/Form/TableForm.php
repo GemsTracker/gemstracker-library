@@ -241,7 +241,7 @@ class Gems_Form_TableForm extends Gems_Form {
     public function setView(Zend_View_Interface $view = null)
     {
         //If we set the view, fix the alternating rows
-        if ($view) {
+        if ($this->_view !== $view) {
             foreach($this as $name => $element) {
                 $decorator = $element->getDecorator('row');
                 if ($decorator) {
