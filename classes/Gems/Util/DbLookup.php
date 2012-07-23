@@ -357,15 +357,14 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         // Read some data from tables, initialize defaults...
         $select = $this->db->select();
 
-        // Fetch al surveys
+        // Fetch all surveys
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
-            ->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_completion_time IS NOT NULL)')
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
-            $select->where('gsu_id_survey IN (SELECT gro_id_survey FROM gems__rounds WHERE gro_id_track = ?)', $trackId);
+            $select->where('gsu_id_survey IN (SELECT gto_id_survey FROM gems__tokens WHERE gto_id_track = ?)', $trackId);
         }
 
         $result = $this->db->fetchAll($select);
