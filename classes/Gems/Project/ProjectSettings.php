@@ -243,6 +243,22 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Get the specified cache method from project settings
+     *
+     * @return string
+     */
+    public function getCache()
+    {
+        if ($this->offsetExists('cache')) {
+            $cache = $this->offsetGet('cache');
+        } else {
+            $cache = 'apc';
+        }
+
+        return $cache;
+    }
+
+    /**
      * Returns an (optional) default organization from the project settings
      *
      * @return int Organization number or -1 when not set
@@ -326,11 +342,11 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
     /**
      * Get the logLevel to use with the Gems_Log
-     * 
+     *
      * Default settings is for development and testing environment to use Zend_Log::DEBUG and
      * for all other environments to use the Zend_Log::ERR level. This can be overruled by
      * specifying a logLevel in the project.ini
-     * 
+     *
      * Using a level higher than Zend_Log::ERR will output full error messages, traces and request
      * info to the logfile. Please be aware that this might introduce a security risk as passwords
      * might be written to the logfile in plain text.

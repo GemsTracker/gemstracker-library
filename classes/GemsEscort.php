@@ -149,13 +149,17 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initCache()
     {
+        $this->bootstrap('project');
+
+        $useCache = $this->getResource('project')->getCache();
+
         $cache       = null;
         $exists      = false;
         $cachePrefix = GEMS_PROJECT_NAME . '_';
 
 
         // Check if APC extension is loaded
-        if( extension_loaded('apc') ) {
+        if($useCache === 'apc' && extension_loaded('apc') ) {
             $cacheBackend = 'Apc';
             $cacheBackendOptions = array();
             //Add path to the prefix as APC is a SHARED cache
@@ -174,7 +178,7 @@ class GemsEscort extends MUtil_Application_Escort
             }
         }
 
-        if ($exists) {
+        if ($exists && $useCache <> 'none') {
             /**
              * automatic_cleaning_factor disables automatic cleaning of the cache and should get rid of
              *                           random delays on heavy traffic sites with File cache. Apc does
