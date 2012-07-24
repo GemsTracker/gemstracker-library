@@ -56,6 +56,8 @@ class MUtil_Form extends Zend_Form
     protected $_no_dojo = true;
     protected $_no_jquery = true;
 
+    protected $_Lazy = false;
+
     /**
      * Constructor
      *
@@ -197,6 +199,16 @@ class MUtil_Form extends Zend_Form
     public function getLabelWidthFactor()
     {
         return $this->_labelWidthFactor;
+    }
+
+    /**
+     * Return true when the form is lazy
+     *
+     * @return boolean
+     */
+    public function isLazy()
+    {
+        return $this->_Lazy;
     }
 
     /**
@@ -358,6 +370,16 @@ class MUtil_Form extends Zend_Form
         $this->_html_element = $layout;
 
         return $this;
+    }
+
+    /**
+     * Is the form Lazy or can it be rendered normally?
+     *
+     * @param boolean $lazy
+     */
+    public function setLazy($lazy = false)
+    {
+        $this->_Lazy = (bool) $lazy;
     }
 
     /**

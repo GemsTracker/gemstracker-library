@@ -357,8 +357,12 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 
     public static function renderForm(Zend_View_Abstract $view, Zend_Form $form)
     {
-        return self::renderUntil($view, $form,
-            array('Zend_Form_Decorator_Form', 'Zend_Dojo_Form_Decorator_DijitForm'));
+        if ($form instanceof MUtil_Form && $form->isLazy()) {
+            return self::renderUntil($view, $form,
+                array('Zend_Form_Decorator_Form', 'Zend_Dojo_Form_Decorator_DijitForm'));
+        } else {
+            return self::renderComplete($view, $form);
+        }
     }
 
     public static function renderOnly(Zend_View_Abstract $view, $element, array $decorators)

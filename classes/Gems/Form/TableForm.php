@@ -43,7 +43,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Form_TableForm extends Gems_Form {
+class Gems_Form_TableForm extends Gems_Form
+{
     /**
      * Whether or not form elements are members of an array
      * @var bool
@@ -52,10 +53,95 @@ class Gems_Form_TableForm extends Gems_Form {
 
     private $_alternate = null;
 
-    public function  __construct($options = null) {
-        //Needed for alternating rows
-        $this->_alternate = new MUtil_Lazy_Alternate(array('odd','even'));
-        parent::__construct($options);
+    protected function _fixDecoratorDisplayGroup(&$element)
+    {
+        // Display group
+        $element->setDecorators(array('FormElements',
+            array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
+            array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
+            'Tooltip',
+            array('Description', array('tag'       => 'label', 'class'     => 'optional', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'escape'    => false)),
+            array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
+            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getName() . ' ' . $element->getAttrib('class')))
+        ));
+
+        //Now add the right decorators to the elements
+        $groupElements = $element->getElements();
+        foreach ($groupElements as $groupElement) {
+            $dec1 = $this->_getImportantDecorator($groupElement);
+
+            $decorators = array(array('Description', array('class' => 'description')),
+                'Errors',
+                'Tooltip',
+            );
+
+            //If we want to see the individual fields labels, do so:
+            if ($element->getAttrib('showLabels') === true) {
+                if ($groupElement instanceof Zend_Form_Element_Checkbox) {
+                    $decorators[] = array('Label', array('escape'    => false, 'placement' => Zend_Form_Decorator_Label::APPEND));
+                } else {
+                    $decorators[] = array('Label', array('escape' => false));
+                }
+            }
+
+            //Apply final class and id to allow for custom styling
+            $decorators[] = array(array('labelCell' => 'HtmlTag'), array('tag'   => 'div', 'class' => 'tab-displaygroup', 'id'    => $groupElement->getName() . '_cont'));
+
+            if (!is_null($dec1))
+                array_unshift($decorators, $dec1);
+            $groupElement->setDecorators($decorators);
+        }
+    }
+
+    protected function _fixDecoratorElement(&$element)
+    {
+        $dec1       = $this->_getImportantDecorator($element);
+        $decorators = array(
+            array('Description', array('class' => 'description')),
+            'Errors',
+            array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
+            array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
+            'Tooltip',
+            array('Label', array('escape' => false)),
+            array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
+            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getName()))
+        );
+        if (!is_null($dec1)) {
+            array_unshift($decorators, $dec1);
+        }
+        $element->setDecorators($decorators);
+    }
+
+    protected function _fixDecoratorHiddenSubmit(&$element)
+    {
+        //No label and tooltip
+        $decorators = array(
+            'ViewHelper',
+            array('Description', array('class' => 'description')),
+            'Errors',
+            array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
+            array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
+            'Tooltip',
+            array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
+            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $element->getName(), 'style' => 'display:none;'))
+        );
+        $element->setDecorators($decorators);
+    }
+
+    protected function _fixDecoratorHtml(&$element)
+    {
+        // Display with colspan = 2
+        $decorators = array(
+            'ViewHelper',
+            array('Description', array('class' => 'description')),
+            'Errors',
+            'Tooltip',
+            array('Label', array('escape' => false)),
+            array(array('labelCell' => 'HtmlTag'), array('tag'     => 'td', 'class'   => 'label', 'colspan' => 2)),
+            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getAttrib('class') . ' ' . $element->getName()))
+        );
+
+        $element->setDecorators($decorators);
     }
 
     /**
@@ -64,7 +150,8 @@ class Gems_Form_TableForm extends Gems_Form {
      * @param Zend_Form_Element $element
      * @return null|Zend_Form_Decorator_Abstract
      */
-    private function _getImportantDecorator($element) {
+    private function _getImportantDecorator($element)
+    {
         $class = get_class($element);
 
         if (strpos($class, 'JQuery')) {
@@ -104,111 +191,33 @@ class Gems_Form_TableForm extends Gems_Form {
     public function addDisplayGroup(array $elements, $name, $options = null)
     {
         //Add the group as usual, but skip decorator loading as we don't need that
-        parent::addDisplayGroup($elements, $name, (array) $options + array('disableLoadDefaultDecorators'=>true));
-
-        //Retrieve it and set decorators
-        $group = $this->getDisplayGroup($name);
-        $group->setDecorators( array('FormElements',
-                            array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
-                            array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-                            'Tooltip',
-                            array('Description', array('tag'=>'label', 'class'=>'optional', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'escape'=>false)),
-                            array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
-                            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $group->getName(). ' ' . $group->getAttrib('class')))
-                            ));
-
-        //Now add the right decorators to the elements
-        $groupElements = $group->getElements();
-        foreach ($groupElements as $element) {
-            $dec1 = $this->_getImportantDecorator($element);
-
-            $decorators = array(    array('Description', array('class'=>'description')),
-                                    'Errors',
-                                    'Tooltip',
-                                    );
-
-            //If we want to see the individual fields labels, do so:
-            if ($group->getAttrib('showLabels')===true) {
-                $decorators[] = array('Label', array('escape'=>false));
-            }
-
-            //Apply final class and id to allow for custom styling
-            $decorators[] = array(array('labelCell' => 'HtmlTag'), array('tag' => 'div', 'class'=>'tab-displaygroup', 'id'=>$element->getName().'_cont'));
-
-            if (!is_null($dec1)) array_unshift($decorators, $dec1);
-            $element->setDecorators($decorators);
-            if ($element instanceof Zend_Form_Element_Checkbox) {
-                $decorator = $element->getDecorator('Label');
-                if ($decorator) {
-                    $decorator->setOption('placement', Zend_Form_Decorator_Label::APPEND);
-                }
-            }
-        }
-        return $this;
+        return parent::addDisplayGroup($elements, $name, (array) $options + array('disableLoadDefaultDecorators' => true));
     }
 
     /**
-     * Add element to stack
-     *
-     * Takes care of setting the right decorators for table display
-     *
-     * @param  string|Zend_Form_Element $element
-     * @param  string $name
-     * @param  array|Zend_Config $options
-     * @throws Zend_Form_Exception on invalid element
-     * @return Gems_Form_TableForm
+     * Fix the decorators so we get the table layout we want. Normally this is called
+     * only once when rendering the form.
      */
-    public function addElement($element, $name = null, $options = null)
+    public function fixDecorators()
     {
-        parent::addElement($element, $name, $options);
+        //Needed for alternating rows
+        $this->_alternate = new MUtil_Lazy_Alternate(array('odd', 'even'));
 
-        if (null === $name) {
-            $name = $element->getName();
-        } else {
-            $element = $this->getElement($name);
+        foreach ($this as $name => $element) {
+            if ($element instanceof MUtil_Form_Element_Html) {
+                $this->_fixDecoratorHtml($element);
+                
+            } elseif ($element instanceof Zend_Form_Element_Hidden || $element instanceof Zend_Form_Element_Submit) {
+                $this->_fixDecoratorHiddenSubmit($element);
+
+            } elseif ($element instanceof Zend_Form_Element) {
+                $this->_fixDecoratorElement($element);
+                
+            } elseif ($element instanceof Zend_Form_DisplayGroup) {
+                $this->_fixDecoratorDisplayGroup($element);
+
+            }
         }
-
-        $dec1 = $this->_getImportantDecorator($element);
-
-        if ($element instanceof MUtil_Form_Element_Html) {
-            //Colspan 2
-            $decorators = array(
-            array('Description', array('class'=>'description')),
-            'Errors',
-            'Tooltip',
-            array('Label', array('escape'=>false)),
-            array(array('labelCell' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'colspan'=>2)),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getAttrib('class') . ' ' . $element->getName()))
-            );
-        } elseif ($element instanceof Zend_Form_Element_Hidden ||
-            $element instanceof Zend_Form_Element_Submit) {
-            //No label and tooltip
-            $decorators = array(
-            array('Description', array('class'=>'description')),
-            'Errors',
-            array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
-            array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-            'Tooltip',
-            array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
-            );
-        } else {
-            $decorators = array(
-            array('Description', array('class'=>'description')),
-            'Errors',
-            array(array('data' => 'HtmlTag'), array('tag' => 'td', 'class' => 'element')),
-            array(array('labelCellClose' => 'HtmlTag'), array('tag' => 'td', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly'=>true)),
-            'Tooltip',
-            array('Label', array('escape'=>false)),
-            array(array('labelCellOpen' => 'HtmlTag'), array('tag' => 'td', 'class'=>'label', 'placement'=>  Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'=>true)),
-            array(array('row' => 'HtmlTag'), array('tag' => 'tr', 'class' => $element->getName()))
-            );
-        }
-
-        if (!is_null($dec1)) array_unshift($decorators, $dec1);
-        $element->setDecorators($decorators);
-
-        return $this;
     }
 
     /**
@@ -230,30 +239,26 @@ class Gems_Form_TableForm extends Gems_Form {
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('AutoFocus')
-                 ->addDecorator('FormElements')
-                 ->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>$class))
-                 ->addDecorator(array('tab' => 'HtmlTag'), array('tag' => 'div', 'class' => 'displayGroup'))
-                 ->addDecorator('Form');
+                ->addDecorator('FormElements')
+                ->addDecorator(array('table' => 'HtmlTag'), array('tag'   => 'table', 'class' => $class))
+                ->addDecorator(array('tab' => 'HtmlTag'), array('tag'   => 'div', 'class' => 'displayGroup'))
+                ->addDecorator('Form');
         }
         return $this;
     }
 
-    public function setView(Zend_View_Interface $view = null)
+    /**
+     * Fix the decorators the first time we try to render the form
+     *
+     * @param Zend_View_Interface $view
+     * @return string
+     */
+    public function render(Zend_View_Interface $view = null)
     {
-        //If we set the view, fix the alternating rows
-        if ($this->_view !== $view) {
-            foreach($this as $name => $element) {
-                $decorator = $element->getDecorator('row');
-                if ($decorator) {
-                    if ($element instanceof Zend_Form_Element_Hidden) {
-                        $decorator->setOption('style', 'display:none;');
-                    } else {
-                        $decorator->setOption('class', $this->_alternate . ' ' . $decorator->getOption('class'));
-                    }
-                }
-            }
+        if (!$this->_getIsRendered()) {
+            $this->fixDecorators();
         }
 
-        return parent::setView($view);
+        return parent::render($view);
     }
 }

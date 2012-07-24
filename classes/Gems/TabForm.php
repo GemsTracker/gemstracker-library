@@ -275,16 +275,16 @@ class Gems_TabForm extends Gems_Form
             $this->selectTab($tab);
         }
 
-        $form = parent::setView($view);
+        parent::setView($view);
         
-        if ($view) {
+        if ($this->_view !== $view) {
             $this->activateJQuery();
             if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
                 $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
             }
         }
 
-        return $form;
+        return $this;
     }
 
     /**
