@@ -114,7 +114,17 @@ class Gems_Form_TableForm extends Gems_Form
 
     protected function _fixDecoratorHiddenSubmit(&$element)
     {
-        //No label and tooltip
+        // No label and tooltip
+        $rowOptions = array(
+            'tag'       => 'tr',
+            'class'     => $element->getName()
+        );
+
+        // Don't display if hidden
+        if ($element instanceof Zend_Form_Element_Hidden) {
+            $rowOptions['style'] = 'display:none;';
+        }
+        
         $decorators = array(
             'ViewHelper',
             array('Description', array('class' => 'description')),
@@ -123,7 +133,7 @@ class Gems_Form_TableForm extends Gems_Form
             array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
             'Tooltip',
             array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
-            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $element->getName(), 'style' => 'display:none;'))
+            array(array('row' => 'HtmlTag'), $rowOptions)
         );
         $element->setDecorators($decorators);
     }
