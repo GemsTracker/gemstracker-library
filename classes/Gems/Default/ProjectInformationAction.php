@@ -110,7 +110,12 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 
     public function changelogAction()
     {
-        $this->_showText($this->_('Changelog'), APPLICATION_PATH . '/changelog.txt');
+        $this->_showText(sprintf($this->_('Changelog %s'), $this->escort->project->name), APPLICATION_PATH . '/changelog.txt');
+    }
+
+    public function changeloggtAction()
+    {
+        $this->_showText(sprintf($this->_('Changelog %s'), 'GemsTracker'), GEMS_LIBRARY_DIR . '/changelog.txt');
     }
 
     public function errorsAction()
