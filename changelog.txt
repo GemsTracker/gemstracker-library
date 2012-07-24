@@ -11,6 +11,8 @@ The normal time it takes to answer a survey can be added and surveys have a code
 Export of survey data can be selected by respondent id or by track
 Track and survey maintenance is extended with round and field deletion and more powerfull selection tools
 All maintenance tasks show some explanation on what they do
+New default: Forms are no longer lazy by default. Use $form->setLazy(true) if you need it
+New setting: in project.ini you can set cache to any of "none", "apc", "file" to influence what kind of cache to use
 
 Important changes from 1.5.3 => 1.5.4
 ============================================================
