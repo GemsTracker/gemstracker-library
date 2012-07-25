@@ -114,6 +114,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        $returnValues = array();
+        
         if (APPLICATION_ENV !== 'production') {
             $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
             $num = mt_rand(100000000, 999999999);
@@ -125,6 +127,13 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $model->set('grs_ssn', 'description', sprintf($this->_('Random Example BSN: %s'), $num));
         } else {
             $model->set('grs_ssn', 'description', $this->_('Enter a 9-digit SSN number.'));
+        }
+
+        if ($model->hashSsn === Gems_Model_RespondentModel::SSN_HASH) {
+            if (strlen($data['grs_ssn']) > 9) {
+                // When longer the grs_ssn contains a hash, not a bsn number
+                $returnValues['grs_ssn'] = '';
+                }
         }
 
         $ucfirst = new Zend_Filter_Callback('ucfirst');
@@ -185,6 +194,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addTab(    'caption4')->h4($this->_('Settings'));
         $bridge->addSelect(  'grs_iso_lang',       'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
         $bridge->addRadio(   'gr2o_consent',       'separator', '', 'description',  $this->_('Has the respondent signed the informed consent letter?'));
+
+        return $returnValues;
     }
 
     public function afterSave(array $data, $isNew)
