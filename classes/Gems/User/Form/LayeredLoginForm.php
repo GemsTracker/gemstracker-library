@@ -25,27 +25,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage User\Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Short description for LoginForm
- *
- * Long description for class LoginForm (if any)...
+ * A layered login form, useful when organizations have some kind of
+ * hierarchy
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage User\Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5.5
  */
 class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 {

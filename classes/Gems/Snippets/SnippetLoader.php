@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,26 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * Short description of file
+ * Gems specific version of the snippet loader
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Short description for SnippetLoader
+ * Gems specific version of the snippet loader
  *
- * Long description for class SnippetLoader (if any)...
+ * Loads snippets like all other classes in gems first with project prefix, then gems, mutil
+ * and when all that fails it will try without prefix from the project\snippets and gems\snippets
+ * folders
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5.5
  */
 class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract implements MUtil_Snippets_SnippetLoaderInterface
 {
@@ -58,6 +58,12 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     protected $backup;
 
+    /**
+     * Initialize the snippetloader (Gems style)
+     *
+     * @param mixed $container A container acting as source for MUtil_Registry_Source
+     * @param array $dirs The directories where to look for requested classes
+     */
     public function __construct($container = null, $dirs = array()) {
         parent::__construct($container, $dirs);
         $this->backup = new MUtil_Snippets_SnippetLoader($this);
@@ -65,6 +71,12 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     }
 
 
+    /**
+     * Add a directory to the front of the list of places where snippets are loaded from.
+     *
+     * @param string $dir
+     * @return MUtil_Snippets_SnippetLoader
+     */
     public function addDirectory($dir)
     {
         if (!array_key_exists('', $this->_dirs)) {
@@ -72,19 +84,38 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
         }
         array_unshift($this->_dirs[''], $dir);
 
-        $this->backup->addDirectory($dir);
+        return $this->backup->addDirectory($dir);
     }
 
+    /**
+     * Add parameter values to the source for snippets.
+     *
+     * @param mixed $container_or_pairs This function can be called with either a single container or a list of name/value pairs.
+     * @return MUtil_Snippets_SnippetLoader
+     */
     public function addSource($container_or_pairs)
     {
-        $this->backup->addSource($container_or_pairs);
+        return $this->backup->addSource($container_or_pairs);
     }
 
+    /**
+     * Returns the directories where snippets are loaded from.
+     *
+     * @param array $dirs
+     * @return array
+     */
     public function getDirectories()
     {
-        $this->backup->getDirectories();
+        return $this->backup->getDirectories();
     }
 
+    /**
+     * Searches and loads a .php snippet file.
+     *
+     * @param string $filename The name of the snippet
+     * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
+     * @return MUtil_Snippets_SnippetInterface The snippet
+     */
     public function getSnippet($filename, array $extraSourceParameters = null)
     {
         try {
@@ -101,18 +132,35 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
         return $snippet;
     }
 
+    /**
+     * Returns a source of values for snippets.
+     *
+     * @return MUtil_Registry_SourceInterface
+     */
     public function getSource()
     {
-        $this->backup->getSource();
+        return $this->backup->getSource();
     }
 
+    /**
+     * Set the directories where snippets are loaded from.
+     *
+     * @param array $dirs
+     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     */
     public function setDirectories(array $dirs)
     {
-        $this->backup->setDirectories($dirs);
+        return $this->backup->setDirectories($dirs);
     }
 
+    /**
+     * Sets the source of variables for snippets
+     *
+     * @param MUtil_Registry_SourceInterface $source
+     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     */
     public function setSource(MUtil_Registry_SourceInterface $source)
     {
-        $this->backup->setSource($source);
+        return $this->backup->setSource($source);
     }
 }
