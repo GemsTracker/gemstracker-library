@@ -786,7 +786,7 @@ class MUtil_Model_FormBridge
         if (is_null($key)) return $this->_allowedOptions;
 
         if (array_key_exists($key, $this->_allowedOptions)) {
-            return $key;
+            return $this->_allowedOptions[$key];
         } else {
             return array();
         }
@@ -832,7 +832,7 @@ class MUtil_Model_FormBridge
      */
     public function setAllowedOptions($key, $options)
     {
-        if (!is_string($options)) {
+        if (is_string($options)) {
             $options = array($options);
         }
 
