@@ -775,6 +775,24 @@ class MUtil_Model_FormBridge
     }
 
     /**
+     * Returns the allowed options for a certain key or all options if no
+     * key specified
+     *
+     * @param string $key
+     * @return array
+     */
+    public function getAllowedOptions($key = null)
+    {
+        if (is_null($key)) return $this->_allowedOptions;
+
+        if (array_key_exists($key, $this->_allowedOptions)) {
+            return $key;
+        } else {
+            return array();
+        }
+    }
+
+    /**
      *
      * @return Zend_Form
      */
@@ -803,5 +821,22 @@ class MUtil_Model_FormBridge
         if (method_exists($this->form, 'getTab')) {
             return $this->form->getTab($name);
         }
+    }
+
+    /**
+     * Set the allowed options for a certain key to the specified options array
+     *
+     * @param string $key
+     * @param array $options
+     * @return MUtil_Model_FormBridge
+     */
+    public function setAllowedOptions($key, $options)
+    {
+        if (!is_string($options)) {
+            $options = array($options);
+        }
+
+        $this->_allowedOptions[$key] = $options;
+        return $this;
     }
 }
