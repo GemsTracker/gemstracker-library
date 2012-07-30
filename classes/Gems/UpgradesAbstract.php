@@ -51,6 +51,18 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
 
     protected $_messages = array();
 
+    /**
+     * Holds the inital config file
+     *
+     * @var Zend_Config
+     */
+    protected $originalFile;
+    
+    /**
+     * Holds the config file specific to this environment
+     * 
+     * @var Zend_Config
+     */
     protected $upgradeFile;
 
     /**
@@ -93,11 +105,17 @@ class Gems_UpgradesAbstract extends Gems_Loader_TargetLoaderAbstract
         //First get a GemsEscort instance, as we might need that a lot (and it can not be injected)
         $this->escort = GemsEscort::getInstance();
 
-        $this->upgradeFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades.ini');
+        $this->originalFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades.ini');
+        $this->upgradeFile = GEMS_ROOT_DIR . str_replace('/', DIRECTORY_SEPARATOR , '/var/settings/upgrades_' . APPLICATION_ENV . '.ini');
+        if(!file_exists($this->originalFile)) {
+            touch($this->originalFile);
+        }
         if(!file_exists($this->upgradeFile)) {
             touch($this->upgradeFile);
         }
-        $this->_info = new Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true));
+        $this->_info = new Zend_Config_Ini($this->originalFile, null, array('allowModifications' => true));
+        // Merge the environment config file
+        $this->_info->merge(new Zend_Config_Ini($this->upgradeFile, null, array('allowModifications' => true)));
     }
 
     /**
