@@ -170,7 +170,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             }
 
             if ($engine->getTrackType() == 'S' || !$groupSurveys) {
-                $this->html->div($token->getSurveyName(), array('class'=>'surveyTitle'));
+                $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
                 $this->html->snippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
                 	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
 
@@ -179,7 +179,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                 if (!isset($surveys[$token->getSurveyId()])) {
                     $surveys[$token->getSurveyId()] = true;
 
-                    $this->html->div($token->getSurveyName(), array('class'=>'surveyTitle'));
+                    $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
                     $this->html->snippet($this->_groupedSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
                     	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
 
