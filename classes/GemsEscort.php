@@ -700,6 +700,7 @@ class GemsEscort extends MUtil_Application_Escort
         if (MUtil_JQuery::usesJQuery($this->view)) {
             $jquery = $this->view->jQuery();
             $jquery->uiEnable(); // enable user interface
+            $jquery->setUiVersion('1.8.9');
 
             if (MUtil_Https::on()) {
                 $jquery->setCdnSsl(true);
