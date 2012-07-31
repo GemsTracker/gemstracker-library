@@ -52,7 +52,7 @@ class Gems_Snippets_Export_SurveyHeaderSnippet extends MUtil_Snippets_SnippetAbs
     {
         $html = $this->getHtmlSequence();
         $html->div($this->token->getSurveyName(), array('class'=>'surveyTitle'));
-        $html->div($this->token->getRoundDescription(), array('class'=>'roundDescription'));
+        $html->div($this->token->getRoundDescription(), array('class'=>'roundDescription', 'renderClosingTag'=>true));
 
         return $html;
     }
