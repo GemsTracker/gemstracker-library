@@ -203,4 +203,25 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
             return parent::getTopic($count);
         }
     }
+
+    /**
+     * If menu item does not exist or is not allowed, redirect to index
+     */
+    public function setAfterSaveRoute()
+    {
+        parent::setAfterSaveRoute();
+
+        if (is_array($this->afterSaveRouteUrl)) {
+            // Make sure controller is set
+            if (!array_key_exists('controller', $this->afterSaveRouteUrl)) {
+                $this->afterSaveRouteUrl['controller'] = $this->request->getControllerName();
+            }
+
+            // If not allowed, redirect to index
+            if (null == $this->menu->find($this->afterSaveRouteUrl)) {
+                $this->afterSaveRouteUrl['action'] = 'index';
+                $this->resetRoute = true;
+            }
+        }
+    }
 }
