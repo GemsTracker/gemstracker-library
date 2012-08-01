@@ -205,7 +205,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
      */
-    private function _updateToken(array $values, $userId)
+    protected function _updateToken(array $values, $userId)
     {
         if ($this->tracker->filterChangesOnly($this->_gemsData, $values)) {
 
