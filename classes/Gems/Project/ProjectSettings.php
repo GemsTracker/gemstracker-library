@@ -365,7 +365,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             }
         }
 
-        return $logLevel;
+        return (int) $logLevel;
     }
 
     /**
