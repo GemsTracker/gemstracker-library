@@ -600,8 +600,11 @@ class GemsEscort extends MUtil_Application_Escort
                 $content = $div->seq();
                 $content->setGlue(MUtil_Html::raw($this->_(' > ')));
 
+                // Add request to existing menu parameter sources
+                $source = array($this->menu->getParameterSource(), $this->request);
+
                 foreach ($path as $menuItem) {
-                    $content->a($menuItem->toHRefAttribute($this->request), $menuItem->get('label'));
+                    $content->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
                 }
 
                 $content->append($last->get('label'));
