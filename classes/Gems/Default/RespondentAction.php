@@ -474,7 +474,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         $params['model']   = $model;
-        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID => $this->_getParam(MUtil_Model::REQUEST_ID));
+        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
         $params['buttons'] = $this->createMenuLinks();
         $params['onclick'] = $this->findAllowedMenuItem('edit');
         if ($params['onclick']) {
