@@ -136,13 +136,13 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
      */
     protected function processSelect(Zend_Db_Select $select)
     {
-        $select->join('gems__rounds',          'gto_id_round = gro_id_round');
-        $select->join('gems__tracks',          'gro_id_track = gtr_id_track');
-        $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey');
-        $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group');
-        $select->join('gems__respondents',     'gto_id_respondent = grs_id_user');
-        $select->join('gems__respondent2track','gr2t_id_respondent_track = gto_id_respondent_track');
-        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code');
+        $select->joinLeft('gems__rounds',          'gto_id_round = gro_id_round', array());
+        $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
+        $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', array());
+        $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group', array());
+        $select->join('gems__respondents',     'gto_id_respondent = grs_id_user', array());
+        $select->join('gems__respondent2track','gto_id_respondent_track = gr2t_id_respondent_track', array());
+        $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
     }
 
     protected function setTableBody(MUtil_Model_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
