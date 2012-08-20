@@ -73,7 +73,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     private $_model_order;
     private $_model_used = false;
 
-    public $orderIncrement = 10;    //The default increment for item ordering
+    /**
+     * The increment for item ordering, default is 10
+     *
+     * @var int
+     */
+    public $orderIncrement = 10;
 
     public function __construct($modelName)
     {
@@ -677,6 +682,18 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         return $value;
+    }
+
+    /**
+     * Find out the order of the requested $name in the model
+     *
+     * @param string $name
+     * @return int|null The order value of the requeste item or null if not defined
+     */
+    public function getOrder($name) {
+        if (isset($this->_model_order[$name])) {
+            return $this->_model_order[$name];
+        }
     }
 
     public function getRequestSort(Zend_Controller_Request_Abstract $request, $ascParam = null, $descParam = null)
