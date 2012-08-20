@@ -101,6 +101,13 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
         } else {
             $this->_surveyId = $gemsSurveyData;
         }
+
+        // If loaded using tracker->getSurveyBySourceId the id can be negative if not found
+        if ($this->_surveyId > 0) {
+            $this->exists = true;
+        } else {
+            $this->exists = false;
+        }
     }
 
     /**
