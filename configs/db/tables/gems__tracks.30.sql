@@ -28,6 +28,7 @@ CREATE TABLE if not exists gems__tracks (
         gtr_created_by bigint unsigned not null,
 
         PRIMARY KEY (gtr_id_track),
+        INDEX (gtr_track_name),
         INDEX (gtr_active)
     )
     ENGINE=InnoDB
