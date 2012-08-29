@@ -375,7 +375,7 @@ class MUtil_Ra
      *
      * @param string $index Index of the column to extract
      * @param array $input A nested array from which we extract a column
-     * @param int $mode RELAXED means a v
+     * @param int $mode STRICT means missing values are returned as 'null'
      * @return array An array containing the requested column
      */
     public static function column($index, array $input, $mode = self::RELAXED)

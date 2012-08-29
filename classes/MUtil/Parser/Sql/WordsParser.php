@@ -56,25 +56,22 @@ class MUtil_Parser_Sql_WordsParser
     const MODE_COMMA = 3;
     const MODE_SEMI_COLON = 4;
     const MODE_QUOTED_STRING = 100;
-    const MODE_LINE_COMMENT = 101;
-    const MODE_ACCESS_NAME = 102;
+    const MODE_DOUBLE_QUOTED_STRING = 101;
+    const MODE_LINE_COMMENT = 102;
+    const MODE_ACCESS_NAME = 104;
     const MODE_MULTI_LINE_COMMENT = 201;
 
-    private $make_word_function;
-    private $len;
-    private $len_minus_1;
-    private $line;
-    private $pos;
-    private $start;
-    private $statement;
+    private $_makeWordFunction;
+    private $_len;
+    private $_lenMinusOne;
+    private $_line;
+    private $_pos;
+    private $_start;
+    private $_statement;
 
     /**
      *
-     * @param unknown_type $statements The sql statements to parse
-     * @param unknown_type $make_word_function aq function in the form: self::makeWord($word, $is_word, $start_line, $start_char)
-     * @return unknown_type
-     *
-     *  $make_word_function should be a function accepting these
+     *  $makeWordFunction should be a function accepting these
      *  parameters and returning an object that should be added to
      *  the array returned as a result from splitStatement():
      *
@@ -82,46 +79,50 @@ class MUtil_Parser_Sql_WordsParser
      *
      *  The default implementations does returns an array of words,
      *  throwing out the positional and word information.
+     *
+     * @param string $statements The sql statements to parse
+     * @param callable $makeWordFunction A function with the parameters:
+     *                      function($word, $is_word, $start_line, $start_char)
      */
-    public function __construct($statements, $make_word_function = null)
+    public function __construct($statements, $makeWordFunction = null)
     {
-        $this->statement = $statements;
-        $this->len = strlen($statements);
-        $this->len_minus_1 = $this->len - 1;
-        $this->line = 1;
-        $this->pos = 1;
-        $this->start = 0;
-        if ($make_word_function) {
-            $this->make_word_function = $make_word_function;
+        $this->_statement = $statements;
+        $this->_len = strlen($statements);
+        $this->_lenMinusOne = $this->_len - 1;
+        $this->_line = 1;
+        $this->_pos = 1;
+        $this->_start = 0;
+        if ($makeWordFunction) {
+            $this->_makeWordFunction = $makeWordFunction;
         } else {
-            $this->make_word_function = array(__CLASS__, 'makeWord');
+            $this->_makeWordFunction = array(__CLASS__, 'makeWord');
         }
     }
 
     private function findCharEnd($i, $char, $start_line = 0, $start_pos = 0)
     {
         if ($start_line == 0) {
-            $start_line = $this->line;
-            $start_pos = $this->pos;
+            $start_line = $this->_line;
+            $start_pos = $this->_pos;
         }
 
-        while ((++$i < $this->len) && ($this->statement[$i] != $char)) {
+        while ((++$i < $this->_len) && ($this->_statement[$i] != $char)) {
             $this->setLine($i);
 
             // Check for escape
-            if ($this->statement[$i] == '\\') {
+            if ($this->_statement[$i] == '\\') {
                 $i++;
-                $this->pos++;
+                $this->_pos++;
             }
         }
 
-        if ($i >= $this->len) {
+        if ($i >= $this->_len) {
             throw new MUtil_Parser_Sql_WordsParserException('Opening '.$char.' does not close', $start_line, $start_pos);
         }
 
         // Check for character repeat
-        if (($i < $this->len_minus_1) && ($this->statement[$i + 1] == $char)) {
-            $this->pos += 2;
+        if (($i < $this->_lenMinusOne) && ($this->_statement[$i + 1] == $char)) {
+            $this->_pos += 2;
             return $this->findCharEnd($i + 1, $char, $start_line, $start_pos);
         }
 
@@ -135,15 +136,15 @@ class MUtil_Parser_Sql_WordsParser
         $char2 = $chars[1];
 
         if ($start_line == 0) {
-            $start_line = $this->line;
-            $start_pos = $this->pos;
+            $start_line = $this->_line;
+            $start_pos = $this->_pos;
         }
 
-        while ((++$i < $this->len_minus_1) && (! (($this->statement[$i] == $char1) && ($this->statement[$i + 1] == $char2)))) {
+        while ((++$i < $this->_lenMinusOne) && (! (($this->_statement[$i] == $char1) && ($this->_statement[$i + 1] == $char2)))) {
             $this->setLine($i);
         }
 
-        if ($i >= $this->len) {
+        if ($i >= $this->_len) {
             throw new MUtil_Parser_Sql_WordsParserException('Opening '.$chars.' does not close', $start_line, $start_pos);
         }
 
@@ -154,14 +155,14 @@ class MUtil_Parser_Sql_WordsParser
 
     private function findLineEnd($i)
     {
-        $epos = strpos($this->statement, "\n", $i + 1);
+        $epos = strpos($this->_statement, "\n", $i + 1);
 
         if ($epos === false) {
-            return $this->len;
+            return $this->_len;
         }
 
         // One less on Windows line end
-        if ($this->statement[$epos - 1] == "\r") {
+        if ($this->_statement[$epos - 1] == "\r") {
             return $epos - 2;
         }
         return $epos - 1;
@@ -187,7 +188,7 @@ class MUtil_Parser_Sql_WordsParser
 
     private function mode($i)
     {
-        switch ($this->statement[$i]) {
+        switch ($this->_statement[$i]) {
         case ' ':
         case "\n":
         case "\t":
@@ -195,6 +196,8 @@ class MUtil_Parser_Sql_WordsParser
             return self::MODE_WHITESPACE;
         case '\'':
             return self::MODE_QUOTED_STRING;
+        case '"':
+            return self::MODE_DOUBLE_QUOTED_STRING;
         case ',':
             return self::MODE_COMMA;
         case ';':
@@ -207,17 +210,17 @@ class MUtil_Parser_Sql_WordsParser
         case '[':
             return self::MODE_ACCESS_NAME;
         case '-':
-            if (($i < $this->len_minus_1) && ($this->statement[$i + 1] == '-')) {
+            if (($i < $this->_lenMinusOne) && ($this->_statement[$i + 1] == '-')) {
                 return self::MODE_LINE_COMMENT;
             }
         case '/':
-            if (($i < $this->len_minus_1) && ($this->statement[$i + 1] == '*') && ($this->statement[$i] != '-')) {
+            if (($i < $this->_lenMinusOne) && ($this->_statement[$i + 1] == '*') && ($this->_statement[$i] != '-')) {
                 return self::MODE_MULTI_LINE_COMMENT;
             }
 
         default:
             // Last ditch check
-            if (ctype_space($this->statement[$i])) {
+            if (ctype_space($this->_statement[$i])) {
                 return self::MODE_WHITESPACE;
             }
 
@@ -261,25 +264,34 @@ class MUtil_Parser_Sql_WordsParser
 
     private function setLine($i)
     {
-        if ($this->statement[$i] == "\n") {
-            $this->line++;
-            $this->pos = 0;
+        if ($this->_statement[$i] == "\n") {
+            $this->_line++;
+            $this->_pos = 0;
         } else {
-            $this->pos++;
+            $this->_pos++;
         }
     }
 
-    public function splitStatement($keep_comments = true)
+    /**
+     * Split the next statement into word parts
+     *
+     * @param boolean $keepComments When false comment statements are removed from the output
+     * @return array Of sql 'words'
+     */
+    public function splitStatement($keepComments = true)
     {
-        $i = $this->start;
+        $i = $this->_start;
 
-        if ($i >= $this->len) {
+        if ($i >= $this->_len) {
             return;
         }
 
         switch ($next_mode = $this->mode(0)) {
         case self::MODE_QUOTED_STRING:
             $i = $this->findCharEnd($i, '\'');
+            break;
+        case self::MODE_DOUBLE_QUOTED_STRING:
+            $i = $this->findCharEnd($i, '"');
             break;
         case self::MODE_LINE_COMMENT:
             $i = $this->findLineEnd($i) + 1;
@@ -293,12 +305,12 @@ class MUtil_Parser_Sql_WordsParser
         }
         $last = null;
         $mode_start = $i;
-        $mode_start_line = $this->line;
-        $mode_start_char = $this->pos;
+        $mode_start_line = $this->_line;
+        $mode_start_char = $this->_pos;
 
         $sql = array();
 
-        while ($i < $this->len) {
+        while ($i < $this->_len) {
 
             // Take care of positioning
             $this->setLine($i);
@@ -307,16 +319,19 @@ class MUtil_Parser_Sql_WordsParser
             $next_mode = $this->mode($i);
 
             if (($this_mode != $next_mode) || self::modeIsOneChar($this_mode)) {
-                if ($keep_comments || self::modeNotComment($this_mode)) {
-                    $sql[] = call_user_func($this->make_word_function, substr($this->statement, $mode_start, $i - $mode_start), self::modeIsWord($this_mode), $mode_start_line, $mode_start_char);
+                if ($keepComments || self::modeNotComment($this_mode)) {
+                    $sql[] = call_user_func($this->_makeWordFunction, substr($this->_statement, $mode_start, $i - $mode_start), self::modeIsWord($this_mode), $mode_start_line, $mode_start_char);
                 }
                 $mode_start = $i;
-                $mode_start_line = $this->line;
-                $mode_start_char = $this->pos;
+                $mode_start_line = $this->_line;
+                $mode_start_char = $this->_pos;
 
                 switch ($next_mode) {
                 case self::MODE_QUOTED_STRING:
                     $i = $this->findCharEnd($i, '\'');
+                    break;
+                case self::MODE_DOUBLE_QUOTED_STRING:
+                    $i = $this->findCharEnd($i, '"');
                     break;
                 case self::MODE_LINE_COMMENT:
                     $i = $this->findLineEnd($i);
@@ -328,7 +343,7 @@ class MUtil_Parser_Sql_WordsParser
                     $i = $this->findCharsEnd($i, '*/');
                     break;
                 case self::MODE_SEMI_COLON:
-                    $this->start = $i + 1;
+                    $this->_start = $i + 1;
                     return $sql;
                 }
             }
@@ -337,22 +352,32 @@ class MUtil_Parser_Sql_WordsParser
         }
         // BUG WARNING: Use $next_mode in this line because the while loop has just
         // exited, so the current mode is the next mode.
-        if ($sql && ($keep_comments || self::modeNotComment($next_mode))) {
-            $sql[] = call_user_func($this->make_word_function, substr($this->statement, $mode_start, $i - $mode_start), self::modeIsWord($this_mode), $mode_start_line, $mode_start_char);
+        if ($sql && ($keepComments || self::modeNotComment($next_mode))) {
+            $sql[] = call_user_func($this->_makeWordFunction, substr($this->_statement, $mode_start, $i - $mode_start), self::modeIsWord($this_mode), $mode_start_line, $mode_start_char);
         }
-        $this->start = $this->len;
+        $this->_start = $this->_len;
 
         return $sql;
     }
 
-    public static function splitStatements($statements, $keep_comments = true, $make_strings = true, $make_word_function = null)
+    /**
+     * Split the whole input into statements
+     *
+     * @param string $statements One or more SQL statements separated by ';' semicolumns
+     * @param boolean $keepComments When false comment statements are removed from the output
+     * @param boolean $makeStrings Return the individual statements as (trimmed) strings instead of arrays
+     * @param callable $makeWordFunction A function with the parameters:
+     *                      function($word, $is_word, $start_line, $start_char)
+     * @return array Of statements
+     */
+    public static function splitStatements($statements, $keepComments = true, $makeStrings = true, $makeWordFunction = null)
     {
-        $parser = new self($statements, $make_word_function);
+        $parser = new self($statements, $makeWordFunction);
 
         $stmts = array();
 
-        while ($stmt = $parser->splitStatement($keep_comments)) {
-            if ($make_strings) {
+        while ($stmt = $parser->splitStatement($keepComments)) {
+            if ($makeStrings) {
                 $sql = implode('', $stmt);
 
                 if (strlen(trim($sql))) {
