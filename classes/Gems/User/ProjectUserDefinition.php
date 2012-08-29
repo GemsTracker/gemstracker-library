@@ -79,6 +79,8 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function getUserData($login_name, $organization)
     {
+        $orgs = null;
+        
         try {
             $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
             natsort($orgs);
