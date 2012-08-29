@@ -290,7 +290,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setHiddenOrgId($orgId);
 
         /*
-        iff(
+        MUtil_Lazy::iff(
             is('gr2o_id_organization', $this->escort->getCurrentOrganization()),
             aget(MUtil_Model::REQUEST_ID,  'gr2o_patient_nr'),
             aget(MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2, 'gr2o_id_organization')
@@ -338,7 +338,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->addAutofilterAction();
 
             /*
-             iff(is('gtr_track_type', $trType), aget(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track'))
+             MUtil_Lazy::iff(is('gtr_track_type', $trType), aget(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track'))
              */
             $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)

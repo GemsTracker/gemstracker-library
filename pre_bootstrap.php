@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -68,7 +67,7 @@ define('GEMS_PROJECT_PATH', APPLICATION_PATH);
 set_include_path(
     GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
-    get_include_path() 
+    get_include_path()
     //. PATH_SEPARATOR . GEMS_ROOT_DIR . '/library'     //Shouldn't be needed, uncomment when neccessary
     );
 
@@ -78,7 +77,7 @@ $GEMS_DIRS = array(
 );
 
 // Make sure Lazy is loaded
-defined('MUTIL_LAZY_FUNCTIONS') || define('MUTIL_LAZY_FUNCTIONS', 1);
+// defined('MUTIL_LAZY_FUNCTIONS') || define('MUTIL_LAZY_FUNCTIONS', 1);
 require_once 'MUtil/Lazy.php';
 
 // Zend_Application: loads the autoloader

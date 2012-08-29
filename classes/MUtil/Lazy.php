@@ -126,6 +126,12 @@ class MUtil_Lazy
         return new MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
     }
 
+    /**
+     * Returns a Lazy version of the parameter
+     *
+     * @param mixed $var
+     * @return MUtil_Lazy_LazyInterface
+     */
     public static function L($var)
     {
         if (is_object($var)) {
