@@ -843,7 +843,11 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentId()
     {
-        return $this->_gemsData['gto_id_respondent'];
+        if (array_key_exists('gto_id_respondent', $this->_gemsData)) {
+            return $this->_gemsData['gto_id_respondent'];
+        } else {
+            throw new Gems_Exception('Token not loaded correctly');
+        }
     }
 
     /**
