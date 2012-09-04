@@ -53,16 +53,51 @@ class Gems_Form_TableForm extends Gems_Form
 
     private $_alternate = null;
 
+    /**
+     *
+     * @param string $content
+     * @param Zend_Form_Element $element
+     * @param array $options
+     * @return string
+     */
+    public static function doRowElement($content, $element, array $options)
+    {
+        return self::doRow($content, $element->getLabel(), $options['class'], $element);
+        
+        return $content;
+    }
+
+    public static function doRowDisplayGroup($content, $element, array $options)
+    {     
+        return self::doRow($content, $element->getDescription(), $options['class'], $element);
+    }
+
+    public static function doRow($content, $label, $class, $element) {
+        if ($element->getAttrib('tooltip')) {
+            $dec = new Gems_Form_Decorator_Tooltip();
+            $dec->setElement($element);
+            $label .= $dec->render('');
+        }
+        $content = sprintf('<tr class="%s"><td class="label">%s</td><td class="element">%s</td></tr>', $class, $label, $content);
+        return $content;
+    }
+
     protected function _fixDecoratorDisplayGroup(&$element)
     {
         // Display group
-        $element->setDecorators(array('FormElements',
+        $element->setDecorators(
+            array('FormElements',
+            array('Callback',  array('callback' => array($this, 'doRowDisplayGroup'), 'class' => $this->_alternate . ' ' . $element->getName(), 'placement'=>false))
+            
+                /*
+            array('FormElements',
             array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
             array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
             'Tooltip',
             array('Description', array('tag'       => 'label', 'class'     => 'optional', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'escape'    => false)),
             array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
             array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getName() . ' ' . $element->getAttrib('class')))
+                 */
         ));
 
         //Now add the right decorators to the elements
@@ -99,12 +134,16 @@ class Gems_Form_TableForm extends Gems_Form
         $decorators = array(
             array('Description', array('class' => 'description')),
             'Errors',
-            array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
-            array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
-            'Tooltip',
-            array('Label', array('escape' => false)),
-            array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
-            array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getName()))
+            array('Callback',  array('callback' => array($this, 'doRowElement'), 'class' => $this->_alternate . ' ' . $element->getName(), 'placement'=>false))
+
+            //array('Description', array('class' => 'description')),
+            //'Errors',
+            //array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
+            //array(array('labelCellClose' => 'HtmlTag'), array('tag'       => 'td', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'closeOnly' => true)),
+            //'Tooltip',
+            //array('Label', array('escape' => false)),
+            //array(array('labelCellOpen' => 'HtmlTag'), array('tag'       => 'td', 'class'     => 'label', 'placement' => Zend_Form_Decorator_Abstract::PREPEND, 'openOnly'  => true)),
+            //array(array('row' => 'HtmlTag'), array('tag'   => 'tr', 'class' => $this->_alternate . ' ' . $element->getName()))
         );
         if (!is_null($dec1)) {
             array_unshift($decorators, $dec1);
