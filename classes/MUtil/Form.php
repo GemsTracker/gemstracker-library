@@ -232,7 +232,7 @@ class MUtil_Form extends Zend_Form
                 $this->setDisableTranslator($disableTranslateValidators);
             }
         }
-
+        
         $valid = parent::isValid($data);
 
         if (isset($oldTranslations)) {
@@ -276,7 +276,7 @@ class MUtil_Form extends Zend_Form
         if ($flag !== $this->translatorIsDisabled()) {
             parent::setDisableTranslator($flag);
 
-            foreach ($this->getElements() as $element) {
+            foreach ($this as $element) {
                 $element->setDisableTranslator($flag);
             }
         }
