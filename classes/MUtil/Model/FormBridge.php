@@ -114,9 +114,12 @@ class MUtil_Model_FormBridge
      * @param Zend_Form_Element $element
      * @return Zend_Form_Element
      */
-    protected function _addToForm($name, Zend_Form_Element $element)
+    protected function _addToForm($name, $element, $options = null)
     {
-        $this->form->addElement($element);
+        $this->form->addElement($element, $name, $options);
+        if (is_string($element)) {
+            $element = $this->form->getElement($name);
+        }
         $this->_applyFilters($name, $element);
         $this->_applyValidators($name, $element);
 
@@ -319,9 +322,7 @@ class MUtil_Model_FormBridge
 
         self::applyFixedOptions(__FUNCTION__, $options);
 
-        $element = new Zend_Form_Element_Checkbox($name, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Checkbox', $options);
     }
 
     /**
@@ -339,8 +340,6 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DATE_OPTIONS, self::DISPLAY_OPTIONS, self::JQUERY_OPTIONS, self::TEXT_OPTIONS);
 
-        $elementName = $name;
-
         // Allow centrally set options
         self::applyFixedOptions(__FUNCTION__, $options);
 
@@ -349,9 +348,7 @@ class MUtil_Model_FormBridge
             $this->getModel()->set($name, 'dateFormat', $options['dateFormat']);
         }
 
-        $element = new MUtil_JQuery_Form_Element_DatePicker($elementName, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'DatePicker', $options);
     }
 
     /**
@@ -521,9 +518,7 @@ class MUtil_Model_FormBridge
             $options['size'] = $count > 5 ? 5 : $count + 1;
         }
 
-        $element = new Zend_Form_Element_Select($name, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Select', $options);
     }
 
     public function addPassword($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -578,11 +573,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new Zend_Form_Element_Radio($name, $options);
-
-        return $this->_addToForm($name, $element);
-        // $this->form->addDisplayGroup(array($name), $name . '__group', array('Legend' => 'Hi'));
-        // return $element;
+        return $this->_addToForm($name, 'Radio', $options);
     }
 
     public function addSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -596,9 +587,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new MUtil_Form_Element_Select($name, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Select', $options);
     }
 
 
@@ -622,9 +611,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new Zend_Form_Element_MultiCheckbox($name, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'MultiCheckbox', $options);
     }
 
     /**
@@ -646,9 +633,7 @@ class MUtil_Model_FormBridge
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
-        $element = new MUtil_Form_Element_Multiselect($name, $options);
-
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Multiselect', $options);
     }
 
     /**
@@ -697,13 +682,11 @@ class MUtil_Model_FormBridge
 
         $stringlength = $this->_getStringLength($options);
 
-        $element = new Zend_Form_Element_Text($name, $options);
-
         if ($stringlength) {
-            $element->addValidator('StringLength', true, $stringlength);
+            $this->model->set($name, 'validators[]', array('StringLength', true, $stringlength));
         }
 
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Text', $options);
     }
 
     public function addTextarea($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -718,13 +701,11 @@ class MUtil_Model_FormBridge
         // Remove as size and maxlength are not used for textarea's
         unset($options['size'], $options['maxlength']);
 
-        $element = new Zend_Form_Element_Textarea($name, $options);
-
         if ($stringlength) {
-            $element->addValidator('StringLength', true, $stringlength);
+            $this->model->set($name, 'validators[]', array('StringLength', true, $stringlength));
         }
 
-        return $this->_addToForm($name, $element);
+        return $this->_addToForm($name, 'Textarea', $options);
     }
 
     /**
