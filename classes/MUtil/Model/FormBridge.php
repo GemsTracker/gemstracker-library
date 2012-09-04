@@ -108,7 +108,7 @@ class MUtil_Model_FormBridge
     }
 
     /**
-     * Add the element to the for and apply any filters & validators
+     * Add the element to the form and apply any filters & validators
      *
      * @param string $name
      * @param Zend_Form_Element $element
@@ -173,13 +173,7 @@ class MUtil_Model_FormBridge
         }
 
         if ($validators) {
-            foreach ($validators as $validator) {
-                if (is_array($validator)) {
-                    call_user_func_array(array($element, 'addValidator'), $validator);
-                } else {
-                    $element->addValidator($validator);
-                }
-            }
+            $element->addValidators($validators);
         }
     }
 
@@ -244,32 +238,36 @@ class MUtil_Model_FormBridge
         if ($allowedOptions) {
             // Remove options already filled. Using simple array addition
             // might trigger a lot of lazy calculations that are not needed.
+            $allowedOptionsFlipped = array_flip($allowedOptions);
 
-            //First strip the options that are not allowed
+            // First strip the options that are not allowed
             if (MUtil_Model::$verbose) {
-                $strippedKeys = array_keys(array_diff_key($options, array_flip($allowedOptions)));
+                $strippedKeys = array_keys(array_diff_key($options, $allowedOptionsflipped));
                 if (!empty($strippedKeys)) {
                     MUtil_Echo::r($strippedKeys, 'stripped from options for ' . $name);
                 }
             }
-            $options = array_intersect_key($options, array_flip($allowedOptions));
+            $options = array_intersect_key($options, $allowedOptionsFlipped);
 
-            foreach ($allowedOptions as $key => $option) {
-                if (array_key_exists($option, $options)) {
-                    unset($allowedOptions[$key]);
-                }
-            }
+            // Now get all options from the model, and extract only the allowed ones
+            $modelOptions = $this->model->get($name);
+            $modelOptions = array_intersect_key($modelOptions, $allowedOptionsFlipped);
 
-            if ($allowedOptions) {
-                // MUtil_Echo::r($allowedOptions);
-                $result = $this->model->get($name, $allowedOptions);
-                return (array) $result + (array) $options;
-            }
+            // Merge them: first use supplied $options, and add missing values from model
+            return (array) $options + (array) $modelOptions;
         }
 
         return $options;
     }
 
+    /**
+     * Find $name in the $options array and unset it. If not found, return the $default value
+     *
+     * @param string $name
+     * @param array $options
+     * @param mixed $default
+     * @return mixed
+     */
     private function _moveOption($name, array &$options, $default = null)
     {
         if (isset($options[$name])) {

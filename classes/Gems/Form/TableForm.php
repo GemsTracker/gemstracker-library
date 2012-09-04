@@ -265,9 +265,11 @@ class Gems_Form_TableForm extends Gems_Form
      */
     public function render(Zend_View_Interface $view = null)
     {
-        if (!$this->_getIsRendered()) {
-            $this->fixDecorators();
+        if ($this->_getIsRendered()) {
+            return;
         }
+
+        $this->fixDecorators();
 
         return parent::render($view);
     }

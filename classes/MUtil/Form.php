@@ -130,7 +130,7 @@ class MUtil_Form extends Zend_Form
         if ($this->_no_jquery) {
             ZendX_JQuery::enableForm($this);
 
-            $this->addPrefixPath('MUtil_JQuery_Form_Decorator', 'MUtil/JQuery/Form/Decorator/', Zend_Form::DECORATOR);
+            //$this->addPrefixPath('MUtil_JQuery_Form_Decorator', 'MUtil/JQuery/Form/Decorator/', Zend_Form::DECORATOR);
             $this->addPrefixPath('MUtil_JQuery_Form_Element', 'MUtil/JQuery/Form/Element/', Zend_Form::ELEMENT);
 
             $this->_activateJQueryView();
