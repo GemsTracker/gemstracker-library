@@ -56,7 +56,7 @@ class Gems_Event_EventCalculations
      * @param array $tokenAnswers The answers to compare to
      * @return boolean True when the value changed.
      */
-    protected function addWhenChanged($name, $value, array &$results, array $tokenAnswers)
+    public static function addWhenChanged($name, $value, array &$results, array $tokenAnswers)
     {
         if ($value != $tokenAnswers[$name]) {
             $results[$name] = $value;
@@ -73,7 +73,7 @@ class Gems_Event_EventCalculations
      * @param string $fieldNames
      * @return array
      */
-    private function _arrayFindName(array $tokenAnswers, $fieldNames)
+    private static function _arrayFindName(array $tokenAnswers, $fieldNames)
     {
         $results = array();
 
@@ -95,10 +95,10 @@ class Gems_Event_EventCalculations
      * @param mixed $fieldNames An array of those names that should be used or a string that should occur in all names that have to be selected.
      * @return float
      */
-    public function averageInt(array $tokenAnswers, $fieldNames)
+    public static function averageInt(array $tokenAnswers, $fieldNames)
     {
         if (is_string($fieldNames)) {
-            $fieldNames = $this->_arrayFindName($tokenAnswers, $fieldNames);
+            $fieldNames = self::_arrayFindName($tokenAnswers, $fieldNames);
         }
 
         $count = 0;
@@ -119,7 +119,7 @@ class Gems_Event_EventCalculations
      * @param array $tokenAnswers
      * @return array Those values that were changed.
      */
-    protected function checkFloatChanged(array $values, array $tokenAnswers)
+    public static function checkFloatChanged(array $values, array $tokenAnswers)
     {
         $results = array();
 
@@ -143,7 +143,7 @@ class Gems_Event_EventCalculations
      * @param array $tokenAnswers
      * @return array Those values that were changed.
      */
-    protected function checkIntegerChanged(array $values, array $tokenAnswers)
+    public static function checkIntegerChanged(array $values, array $tokenAnswers)
     {
         $results = array();
 
@@ -168,7 +168,7 @@ class Gems_Event_EventCalculations
      * @param int $max
      * @return int
      */
-    public function reverseCode($code, $min, $max)
+    public static function reverseCode($code, $min, $max)
     {
         return $max - ($code - $min);
     }
@@ -182,7 +182,7 @@ class Gems_Event_EventCalculations
      * @param int $decimals
      * @return string
      */
-    protected function roundFixed($value, $decimals = 2)
+    public static function roundFixed($value, $decimals = 2)
     {
         $value = round($value, $decimals);
 
@@ -206,10 +206,10 @@ class Gems_Event_EventCalculations
      * @param mixed $fieldNames An array of those names that should be used or a string that should occur in all names that have to be selected.
      * @return int
      */
-    public function sumInt(array $tokenAnswers, $fieldNames)
+    public static function sumInt(array $tokenAnswers, $fieldNames)
     {
         if (is_string($fieldNames)) {
-            $fieldNames = $this->_arrayFindName($tokenAnswers, $fieldNames);
+            $fieldNames = self::_arrayFindName($tokenAnswers, $fieldNames);
         }
 
         $sum = 0;
