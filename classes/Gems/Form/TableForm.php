@@ -78,7 +78,13 @@ class Gems_Form_TableForm extends Gems_Form
             $dec->setElement($element);
             $label .= $dec->render('');
         }
-        $content = sprintf('<tr class="%s"><td class="label"><label for="%s">%s</label></td><td class="element">%s</td></tr>', $class, $element->getName(), $label, $content);
+        if ($element instanceof Zend_Form_Element) {
+            $style = $element->isRequired() ? 'required' : 'optional';
+            $labelClass = sprintf(' class="%s"', $style);
+        } else {
+            $labelClass = '';
+        }
+        $content = sprintf('<tr class="%s"><td class="label"><label for="%s"%s>%s</label></td><td class="element">%s</td></tr>', $class, $element->getName(), $labelClass, $label, $content);
         return $content;
     }
 
