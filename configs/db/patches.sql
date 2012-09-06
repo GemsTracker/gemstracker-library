@@ -428,3 +428,6 @@ ALTER TABLE `gems__tokens` ADD INDEX ( `gto_round_order` );
 ALTER TABLE `gems__tokens` ADD INDEX ( `gto_valid_from`,  `gto_valid_until` );
 ALTER TABLE `gems__tokens` ADD INDEX ( `gto_completion_time` );
 ALTER TABLE `gems__tracks` ADD INDEX ( `gtr_track_name` );
+
+-- PATCH: Add snippet class to gems
+ALTER TABLE `gems__surveys` ADD gsu_display_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_completed_event;

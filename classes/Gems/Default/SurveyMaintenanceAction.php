@@ -127,6 +127,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $bridge->addText(       'gsu_code');
         $bridge->addSelect(     'gsu_beforeanswering_event');
         $bridge->addSelect(     'gsu_completed_event');
+        $bridge->addSelect(     'gsu_display_event');
 
         $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
                 'accept', 'application/pdf',
@@ -442,6 +443,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
 
             $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
             $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
+            $model->set('gsu_display_event',         'label', $this->_('Answer display'),   'multiOptions', $events->listSurveyDisplayEvents());
         }
 
         $model->setCreate(false);

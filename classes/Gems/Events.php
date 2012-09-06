@@ -52,6 +52,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     const ROUND_CHANGED_EVENT           = 'round/changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'survey/beforeanswering';
     const SURVEY_COMPLETION_EVENT       = 'survey/completed';
+    const SURVEY_DISPLAY_EVENT          = 'survey/display';
 
     /**
      * Each event type must implement an event class or interface derived
@@ -66,6 +67,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         self::ROUND_CHANGED_EVENT           => 'Gems_Event_RoundChangedEventInterface',
         self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface',
         self::SURVEY_COMPLETION_EVENT       => 'Gems_Event_SurveyCompletedEventInterface',
+        self::SURVEY_DISPLAY_EVENT          => 'Gems_Event_SurveyDisplayEventInterface',
     );
 
     /**
@@ -100,34 +102,42 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      */
     protected function _listEvents($eventType)
     {
-        $path       = APPLICATION_PATH . '/' . self::EVENTS_DIR . '/' . $eventType;
-        $results    = $this->util->getTranslated()->getEmptyDropdownArray();
+        $paths[]    = APPLICATION_PATH . '/' . self::EVENTS_DIR . '/' . $eventType;
+        $paths[]    = GEMS_LIBRARY_DIR . '/' . self::EVENTS_DIR . '/' . $eventType;
+        $results    = array();
         $eventClass = $this->_getEventClass($eventType);
 
-        if (file_exists($path)) {
-            $eDir = dir($path);
+        foreach ($paths as $path) {
+            if (file_exists($path)) {
+                $eDir = dir($path);
 
-            while (false !== ($filename = $eDir->read())) {
-                if ('.php' === substr($filename, -4)) {
-                    $eventName = substr($filename, 0, -4);
+                while (false !== ($filename = $eDir->read())) {
+                    if ('.php' === substr($filename, -4)) {
+                        $eventName = substr($filename, 0, -4);
 
-                    if (! class_exists($eventName)) {
-                        include($path . '/' . $filename);
-                    }
+                        // Take care of double definitions
+                        if (! isset($results[$eventName])) {
+                            if (! class_exists($eventName)) {
+                                include($path . '/' . $filename);
+                            }
 
-                    $event = new $eventName();
+                            $event = new $eventName();
 
-                    if ($event instanceof $eventClass) {
-                        if ($event instanceof MUtil_Registry_TargetInterface) {
-                            $this->applySource($event);
+                            if ($event instanceof $eventClass) {
+                                if ($event instanceof MUtil_Registry_TargetInterface) {
+                                    $this->applySource($event);
+                                }
+
+                                $results[$eventName] = $event->getEventName();
+                            }
+                            // MUtil_Echo::track($eventName);
                         }
-
-                        $results[$eventName] = $event->getEventName();
                     }
-                    // MUtil_Echo::track($eventName);
                 }
             }
         }
+        natcasesort($results);
+        $results = $this->util->getTranslated()->getEmptyDropdownArray() + $results;
         return $results;
     }
 
@@ -167,7 +177,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Event_RoundChangedEventInterface
+     * @return array eventname => string
      */
     public function listRoundChangedEvents()
     {
@@ -176,7 +186,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Event_SurveyCompletedEventInterface
+     * @return array eventname => string
      */
     public function listSurveyBeforeAnsweringEvents()
     {
@@ -185,7 +195,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Event_SurveyCompletedEventInterface
+     * @return array eventname => string
      */
     public function listSurveyCompletionEvents()
     {
@@ -194,7 +204,16 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @return Gems_Event_TrackCompletedEventInterface
+     * @return array eventname => string
+     */
+    public function listSurveyDisplayEvents()
+    {
+        return $this->_listEvents(self::SURVEY_DISPLAY_EVENT);
+    }
+
+    /**
+     *
+     * @return array eventname => string
      */
     public function listTrackCompletionEvents()
     {
