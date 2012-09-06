@@ -184,7 +184,8 @@ GET DATA
                 $response->appendBody(".\nCACHE.\nEXECUTE.\n");
                 $response->appendBody("\n*Define variable labels.\n");
                 foreach ($labels as $key => $label) {
-                    $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . ' "' . $label . '".' . "\n");
+                    $label = $this->formatString($label);
+                    $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . " " . $label . "." . "\n");
                 }
 
                 $response->appendBody("\n*Define value labels.\n");
@@ -192,12 +193,13 @@ GET DATA
                     if ($options = $answerModel->get($key, 'multiOptions')) {
                         $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
                         foreach ($options as $option => $label) {
+                            $label = $this->formatString($label);
                             if ($types[$key] == 'F') {
                                 //Numeric
-                                $response->appendBody("\n" . $option . ' ' . '"' . $label . '"');
+                                $response->appendBody("\n" . $option . ' ' . $label);
                             } else {
                                 //String
-                                $response->appendBody("\n" . '"' . $option . '" ' . '"' . $label . '"');
+                                $response->appendBody("\n" . '"' . $option . '" ' . $label);
                             }
                         }
                         $response->appendBody(".\n\n");
