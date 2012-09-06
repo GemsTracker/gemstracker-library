@@ -36,17 +36,24 @@
  */
 
 /**
- * Calculates someones BMI from LENGTH and WEIGHT.
+ * This events look for a previous copy of the same
+ *
  *
  * @package    Gems
  * @subpackage Events
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.4.4
  */
-class BmiCalculation // extends MUtil_Registry_TargetAbstract
-        implements Gems_Event_SurveyCompletedEventInterface
+class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswers extends MUtil_Registry_TargetAbstract implements Gems_Event_SurveyBeforeAnsweringEventInterface
 {
+    /**
+     * Set as this is a MUtil_Registry_TargetInterface
+     *
+     * @var Zend_Translate $translate
+     */
+    protected $translate;
+
     /**
      * A pretty name for use in dropdown selection boxes.
      *
@@ -54,30 +61,33 @@ class BmiCalculation // extends MUtil_Registry_TargetAbstract
      */
     public function getEventName()
     {
-        return "Bmi Calculation";
+        return $this->translate->_('Previous Version Answers Lookup');
     }
 
     /**
-     * Process the data and return the answers that should be changed.
+     * Process the data and return the answers that should be filled in beforehand.
      *
      * Storing the changed values is handled by the calling function.
      *
      * @param Gems_Tracker_Token $token Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenData(Gems_Tracker_Token $token)
+    public function processTokenInsertion(Gems_Tracker_Token $token)
     {
-        $tokenAnswers = $token->getRawAnswers();
+        if ($token->hasSuccesCode() && (! $token->isCompleted())) {
+            // Preparation for a more general object class
+            $surveyId   = $token->getSurveyId();
 
-        if (isset($tokenAnswers['LENGTH'], $tokenAnswers['WEIGHT']) && $tokenAnswers['LENGTH'] && $tokenAnswers['WEIGHT']) {
-            $length = $tokenAnswers['LENGTH'] / 100;
-            $newValue = round($tokenAnswers['WEIGHT'] / ($length * $length),  2);
+            $prev = $token;
+            while ($prev = $prev->getPreviousToken()) {
 
-            if ($newValue !== $tokenAnswers['BMI']) {
-                return array('BMI' => $newValue);
+                if ($prev->hasSuccesCode() && $prev->isCompleted()) {
+                    // Check first on survey id and when that does not work by name.
+                    if ($prev->getSurveyId() == $surveyId) {
+                        return $prev->getRawAnswers();
+                    }
+                }
             }
         }
-
-        return false;
     }
 }

@@ -26,33 +26,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *
  * @package    Gems
  * @subpackage Event
- * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveyCompletedEventInterface.php 59 2011-09-22 07:23:44Z mennodekker $
+ * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
- * Survey display event interface.
+ * Displays the variables and their values to help create a new calculation
  *
- * Just a snippet with extra event code.
+ * To start a new calculation you need to know the exact name of the variables returned
+ * by the survey source. This event will show this information and the values for each
+ * token it finds.
  *
  * @package    Gems
  * @subpackage Event
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.6
+ * @since      Class available since version 1.5.1
  */
-interface Gems_Event_SurveyDisplayEventInterface extends Gems_Event_EventInterface
+class Gems_Event_Survey_Completed_DisplayVars extends Gems_Event_EventCalculations implements Gems_Event_SurveyCompletedEventInterface
 {
+
     /**
-     * Function that returns the snippets to use for this display.
+     * A pretty name for use in dropdown selection boxes.
      *
-     * @param boolean $group Should answers be grouped
-     * @return array of Snippet names
+     * @return string Name
      */
-    public function getSnippets($group);
+    public function getEventName()
+    {
+        return "Echo the variables";
+    }
+
+    /**
+     * Process the data and return the answers that should be changed.
+     *
+     * Storing the changed values is handled by the calling function.
+     *
+     * @param Gems_Tracker_Token $token Gems token object
+     * @return array Containing the changed values
+     */
+    public function processTokenData(Gems_Tracker_Token $token)
+    {
+        MUtil_Echo::r($token->getRawAnswers(), $token->getTokenId());
+        return false;
+    }
 }

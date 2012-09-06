@@ -46,13 +46,13 @@
  */
 class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 {
-    const EVENTS_DIR              = 'events';
+    const EVENTS_DIR              = 'Event';
 
-    const TRACK_COMPLETION_EVENT        = 'track/completed';
-    const ROUND_CHANGED_EVENT           = 'round/changed';
-    const SURVEY_BEFORE_ANSWERING_EVENT = 'survey/beforeanswering';
-    const SURVEY_COMPLETION_EVENT       = 'survey/completed';
-    const SURVEY_DISPLAY_EVENT          = 'survey/display';
+    const TRACK_COMPLETION_EVENT        = 'Track/Completed';
+    const ROUND_CHANGED_EVENT           = 'Round/Changed';
+    const SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering';
+    const SURVEY_COMPLETION_EVENT       = 'Survey/Completed';
+    const SURVEY_DISPLAY_EVENT          = 'Survey/Display';
 
     /**
      * Each event type must implement an event class or interface derived
@@ -95,6 +95,28 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     *
+     * @global array $GEMS_DIRS An array of directories that specify where to look for code.
+     * @param string $eventType An event subdirectory (may contain multiple levels split by '/'
+     * @return array An array of type prefix => classname
+     */
+    protected function _getEventDirs($eventType)
+    {
+        global $GEMS_DIRS;
+
+        $eventClass = str_replace('/', '_', $eventType);
+
+        foreach ($GEMS_DIRS as $name => $dir) {
+            $prefix = $name . '_' . self::EVENTS_DIR . '_' . $eventClass . '_';
+            $paths[$prefix] = $dir . '/' . $name . '/' . self::EVENTS_DIR . '/' . $eventType;
+        }
+        $paths[''] = GEMS_PROJECT_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType);
+        // MUtil_Echo::track($paths);
+
+        return $paths;
+    }
+
+    /**
      * Returns a list of selectable events with an empty element as the first option.
      *
      * @param string $eventType The type (i.e. lookup directory with an associated class) of the events to list
@@ -102,18 +124,21 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
      */
     protected function _listEvents($eventType)
     {
-        $paths[]    = APPLICATION_PATH . '/' . self::EVENTS_DIR . '/' . $eventType;
-        $paths[]    = GEMS_LIBRARY_DIR . '/' . self::EVENTS_DIR . '/' . $eventType;
         $results    = array();
         $eventClass = $this->_getEventClass($eventType);
+        $paths      = $this->_getEventDirs($eventType);
 
-        foreach ($paths as $path) {
+        foreach ($paths as $prefix => $path) {
             if (file_exists($path)) {
                 $eDir = dir($path);
+                $parts = explode('_', $prefix, 2);
+                if ($name = reset($parts)) {
+                    $name = ' (' . $name . ')';
+                }
 
                 while (false !== ($filename = $eDir->read())) {
                     if ('.php' === substr($filename, -4)) {
-                        $eventName = substr($filename, 0, -4);
+                        $eventName = $prefix . substr($filename, 0, -4);
 
                         // Take care of double definitions
                         if (! isset($results[$eventName])) {
@@ -128,7 +153,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
                                     $this->applySource($event);
                                 }
 
-                                $results[$eventName] = $event->getEventName();
+                                $results[$eventName] = trim($event->getEventName()) . $name;
                             }
                             // MUtil_Echo::track($eventName);
                         }
@@ -138,6 +163,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         }
         natcasesort($results);
         $results = $this->util->getTranslated()->getEmptyDropdownArray() + $results;
+        // MUtil_Echo::track($paths, $results);
         return $results;
     }
 
@@ -152,12 +178,16 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     {
         $eventClass = $this->_getEventClass($eventType);
 
-        if (! class_exists($eventName)) {
-            $filename = APPLICATION_PATH . '/' . self::EVENTS_DIR . '/' . $eventType . '/' . $eventName . '.php';
+        // MUtil_Echo::track($eventName);
+        if (! class_exists($eventName, true)) {
+            // Autoload is used for Zend standard defined classnames,
+            // so if the class is not autoloaded, define the path here.
+            $filename = APPLICATION_PATH . '/' . self::EVENTS_DIR . 's/' . $eventType . '/' . $eventName . '.php';
 
             if (! file_exists($filename)) {
                 throw new Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
             }
+            // MUtil_Echo::track($filename);
 
             include($filename);
         }
