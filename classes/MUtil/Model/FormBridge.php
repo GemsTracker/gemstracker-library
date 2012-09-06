@@ -348,6 +348,9 @@ class MUtil_Model_FormBridge
             $this->getModel()->set($name, 'dateFormat', $options['dateFormat']);
         }
 
+        // Make sure form knows it is a jQuery form
+        $this->form->activateJQuery();
+        
         return $this->_addToForm($name, 'DatePicker', $options);
     }
 
