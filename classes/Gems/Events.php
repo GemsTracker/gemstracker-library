@@ -182,7 +182,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         if (! class_exists($eventName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
-            $filename = APPLICATION_PATH . '/' . self::EVENTS_DIR . 's/' . $eventType . '/' . $eventName . '.php';
+            $filename = APPLICATION_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType) . '/' . $eventName . '.php';
 
             if (! file_exists($filename)) {
                 throw new Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");
