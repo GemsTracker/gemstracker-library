@@ -1289,7 +1289,10 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                     ->forTokenId($this->_tokenId);
 
             $this->_gemsData = $tokenSelect->fetchRow();
-
+            if (false == $this->_gemsData) {
+                // on failure, reset to empty array
+                $this->_gemsData = array();
+            }
         }
         $this->exists = isset($this->_gemsData['gto_id_token']);
 

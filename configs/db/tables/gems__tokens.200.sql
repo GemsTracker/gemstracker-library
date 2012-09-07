@@ -26,6 +26,7 @@ CREATE TABLE if not exists gems__tokens (
         gto_valid_from      datetime,
         gto_valid_until     datetime,
         gto_mail_sent_date  date,
+        gto_mail_sent_num   int(11) unsigned not null default 0,
         gto_next_mail_date  date,
 
         gto_start_time      datetime,
