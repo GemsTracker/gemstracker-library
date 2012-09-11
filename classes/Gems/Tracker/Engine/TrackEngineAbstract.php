@@ -734,12 +734,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
             $model->set('gro_id_track',  'label', $this->_('Track'), 'elementClass', 'exhibitor', 'multiOptions', MUtil_Lazy::call($this->util->getTrackData()->getAllTracks));
         }
 
-        $model->set('gro_id_survey',         'label', $this->_('Survey'),       'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions());
+        $model->set('gro_id_survey',         'label', $this->_('Survey'),         'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions());
         $model->set('gro_icon_file',         'label', $this->_('Icon'));
-        $model->set('gro_id_order',          'label', $this->_('Order'),        'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
-        $model->set('gro_round_description', 'label', $this->_('Description'),  'size', '30'); //, 'minlength', 4, 'required', true);
-        $model->set('gro_changed_event',     'label', $this->_('After change'), 'multiOptions', $this->events->listRoundChangedEvents());
-        $model->set('gro_active',            'label', $this->_('Active'),       'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
+        $model->set('gro_id_order',          'label', $this->_('Order'),          'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
+        $model->set('gro_round_description', 'label', $this->_('Description'),    'size', '30'); //, 'minlength', 4, 'required', true);
+        $model->set('gro_changed_event',     'label', $this->_('After change'),   'multiOptions', $this->events->listRoundChangedEvents());
+        $model->set('gro_display_event',     'label', $this->_('Answer display'), 'multiOptions', $this->events->listSurveyDisplayEvents());
+        $model->set('gro_active',            'label', $this->_('Active'),         'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
 
         $model->addColumn(
             "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",

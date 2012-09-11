@@ -17,7 +17,8 @@ CREATE TABLE if not exists gems__tracks (
         gtr_track_model varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'TrackModel',
         -- end depreciated
 
-        gtr_track_class varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gtr_track_class     varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- Yes, quick and dirty, will correct later (probably)
         gtr_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

@@ -12,10 +12,10 @@ CREATE TABLE if not exists gems__surveys (
         gsu_token_table varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- end depreciated
 
-        gsu_survey_pdf            varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gsu_beforeanswering_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gsu_completed_event       varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        gsu_display_event         varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_survey_pdf            varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_beforeanswering_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_completed_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gsu_display_event         varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_id_source int unsigned not null
                 references gems__sources (gso_id_source),

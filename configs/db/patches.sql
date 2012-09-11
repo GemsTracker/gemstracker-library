@@ -429,5 +429,13 @@ ALTER TABLE `gems__tokens` ADD INDEX ( `gto_valid_from`,  `gto_valid_until` );
 ALTER TABLE `gems__tokens` ADD INDEX ( `gto_completion_time` );
 ALTER TABLE `gems__tracks` ADD INDEX ( `gtr_track_name` );
 
--- PATCH: Add snippet class to gems
-ALTER TABLE `gems__surveys` ADD gsu_display_event varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_completed_event;
+-- PATCH: Add answer display snippets to gems, lengthen class name space
+ALTER TABLE `gems__surveys` CHANGE gsu_survey_pdf            gsu_survey_pdf            varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+ALTER TABLE `gems__surveys` CHANGE gsu_beforeanswering_event gsu_beforeanswering_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+ALTER TABLE `gems__surveys` CHANGE gsu_completed_event       gsu_completed_event       varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+ALTER TABLE `gems__surveys` ADD gsu_display_event         varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gsu_completed_event;
+
+ALTER TABLE `gems__rounds` CHANGE gro_changed_event gro_changed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+ALTER TABLE `gems__rounds` ADD gro_display_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_changed_event;
+
+ALTER TABLE `gems__tracks` CHANGE gtr_completed_event gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
