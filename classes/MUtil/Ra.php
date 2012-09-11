@@ -470,6 +470,31 @@ class MUtil_Ra
     }
 
     /**
+     * This functions splits an array into two arrays, one containing
+     * the integer keys and one containing the string keys and returns
+     * an array containing first the integer key array and then the
+     * string key array.
+     *
+     * @param array $arg The input array
+     * @return array array(integer_keys, string_keys)
+     */
+    public static function keySplit(array $arg)
+    {
+        $nums    = array();
+        $strings = array();
+
+        foreach ($arg as $key => $value) {
+            if (is_integer($key)) {
+                $nums[$key] = $value;
+            } else {
+                $strings[$key] = $value;
+            }
+        }
+
+        return array($nums, $strings);
+    }
+
+    /**
      * A function that transforms an array in the form key1, value1, key2, value2 into array(key1 => value1, key2 => value2).
      *
      * When the $args array contains only a single sub array, then this value is assumed to be the return value. This allows
