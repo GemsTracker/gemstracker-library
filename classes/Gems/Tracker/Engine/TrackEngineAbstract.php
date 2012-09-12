@@ -657,6 +657,24 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
     }
 
     /**
+     * Returns a snippet name that can be used to display the answers to the token or nothing.
+     *
+     * @param Gems_Tracker_Token $token
+     * @return array Of snippet names
+     */
+    public function getRoundAnswerSnippets(Gems_Tracker_Token $token)
+    {
+        $this->_ensureRounds();
+        $roundId = $token->getRoundId();
+
+        if (isset($this->_rounds[$roundId]['gro_display_event']) && $this->_rounds[$roundId]['gro_display_event']) {
+            $event = $this->events->loadSurveyDisplayEvent($this->_rounds[$roundId]['gro_display_event']);
+
+            return $event->getAnswerDisplaySnippets($token);
+        }
+    }
+
+    /**
      * Return the Round Changed event name for this round
      *
      * @param int $roundId

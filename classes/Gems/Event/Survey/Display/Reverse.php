@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,43 +26,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Gems specific version of the snippet loader
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Events
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $id: OnlyAnswered.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Gems specific version of the snippet loader
- *
- * Loads snippets like all other classes in gems first with project prefix, then gems, mutil
- * and when all that fails it will try without prefix from the project\snippets and gems\snippets
- * folders
+ * Put the last question first
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Events
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.5
+ * @since      Class available since version 1.5.6
  */
-class Gems_Snippets_SnippetLoader extends MUtil_Snippets_SnippetLoader
+class Gems_Event_Survey_Display_Reverse extends Gems_Event_SurveyAnswerFilterAbstract
 {
     /**
-     * Sets the source of variables and the first directory for snippets
+     * This function is called in addBrowseTableColumns() to filter the names displayed
+     * by AnswerModelSnippetGeneric.
      *
-     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @see Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $currentNames The current names in use (allows chaining)
+     * @return array Of the names of labels that should be shown
      */
-    public function __construct($source = null)
+    public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
-        global $GEMS_DIRS;
+        return array_reverse($currentNames);
+    }
 
-        parent::__construct($source);
-
-        foreach ($GEMS_DIRS as $key => $path) {
-            $this->addDirectory($path . '/' . $key);
-        }
+    /**
+     * A pretty name for use in dropdown selection boxes.
+     *
+     * @return string Name
+     */
+    public function getEventName()
+    {
+        return $this->translate->_('Reverse the question order.');
     }
 }

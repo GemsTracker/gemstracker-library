@@ -256,8 +256,9 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
         $this->html->p($question);
-        foreach ($trackEngine->getRoundShowSnippetNames() as $snippet) {
-            $this->html->append($this->getSnippet($snippet, 'roundId', $roundId, 'trackEngine', $trackEngine, 'trackId', $trackId, 'showMenu', false, 'showTitle', false));
+        $snippets = $this->getSnippets($trackEngine->getRoundShowSnippetNames(), 'roundId', $roundId, 'trackEngine', $trackEngine, 'trackId', $trackId, 'showMenu', false, 'showTitle', false);
+        foreach ($snippets as $snippet) {
+            $this->html->append($snippet);
         }
 
         $footer = $this->html->p($question, ' ', array('class' => 'centerAlign'));

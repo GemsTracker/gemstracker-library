@@ -599,6 +599,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     public function applyToModel(MUtil_Model_ModelAbstract $model)
     {
         $map    = $this->_getMap();
+        $parent = null;
 
         foreach ($map as $name => $field) {
 
@@ -621,8 +622,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             // Juggle the labels for sub-questions etc..
             if (isset($field['sq_question'])) {
                 if (isset($tmpres['label'])) {
-                    // Add non answered question for grouping
-                    $model->set('_' . $name . '_', $tmpres);
+                    // Add non answered question for grouping and make it the current parent
+                    $parent = '_' . $name . '_';
+                    $model->set($parent, $tmpres);
                 }
                 if (isset($field['sq_question1'])) {
                     $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeHtml($field['sq_question']), $this->removeHtml($field['sq_question1'])));
@@ -639,6 +641,15 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             if (isset($field['code']) && (! $model->has($field['code']))) {
                 $name = $field['code'];
             }
+
+            // Parent storage
+            if ('question' === $tmpres['thClass']) {
+                $parent = $name;
+            } elseif ($parent) {
+                // Add the name of the parent item
+                $tmpres['parent_question'] = $parent;
+            }
+
             $model->set($name, $tmpres);
 
             $oldfld = $field;

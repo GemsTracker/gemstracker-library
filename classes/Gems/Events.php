@@ -280,6 +280,17 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         return $this->_loadEvent($eventName, self::SURVEY_COMPLETION_EVENT);
     }
 
+
+    /**
+     *
+     * @param string $eventName
+     * @return Gems_Event_SurveyDisplayEventInterface
+     */
+    public function loadSurveyDisplayEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::SURVEY_DISPLAY_EVENT);
+    }
+    
     /**
      *
      * @param string $eventName

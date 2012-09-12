@@ -56,6 +56,14 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $_fixedSort = array('grc_success' => SORT_DESC, 'gto_round_order' => SORT_ASC, 'gto_valid_from' => SORT_ASC);
 
     /**
+     * Empty or a Gems_Tracker_Snippets_AnswerNameFilterInterface object that is
+     * used to filter the answers that are displayed.
+     *
+     * @var Gems_Tracker_Snippets_AnswerNameFilterInterface
+     */
+    protected $answerFilter;
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -83,7 +91,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
     protected $locale;
 
     /**
-     * Switch to put the display of the cancel and pritn buttons.
+     * Switch to put the display of the cancel and print buttons.
      *
      * @var boolean
      */
@@ -91,12 +99,12 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
 
     /**
      * Switch to enable/disable the 'take' button underneath each
-     * open token. 
+     * open token.
      *
      * @var boolean
      */
     protected $showTakeButton = true;
-    
+
     /**
      * Switch to put the display of the headers on or off
      *
@@ -159,8 +167,15 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
 
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
+        // Apply filter on the answers displayed
+        $answerNames = $model->getItemsOrdered();
+        if ($this->answerFilter instanceof Gems_Tracker_Snippets_AnswerNameFilterInterface) {
+            $answerNames = $this->answerFilter->filterAnswers($bridge, $model, $answerNames);
+        }
+
+        foreach($answerNames as $name) {
+            $label = $model->get($name, 'label');
+            if (strlen($label)) {
                 $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
 

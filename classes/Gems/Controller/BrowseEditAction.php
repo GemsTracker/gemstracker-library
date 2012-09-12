@@ -160,10 +160,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         } // */
 
         if ($this->tableSnippets) {
+            $snippets = $this->getSnippets($this->tableSnippets, $params);
             $sequence = new MUtil_Html_Sequence();
-            foreach ((array) $this->tableSnippets as $snippetName) {
-                $snippet = $this->getSnippet($snippetName, $params);
-
+            foreach ($snippets as $snippet) {
                 if ($snippet->hasHtmlOutput()) {
                     $sequence[] = $snippet;
                 }

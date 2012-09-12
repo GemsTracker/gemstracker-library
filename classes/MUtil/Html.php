@@ -305,6 +305,19 @@ class MUtil_Html
             $extraSourceParameters = array();
         }
 
+        if (is_array($name)) {
+            list($names, $params) = MUtil_Ra::keySplit($name);
+
+            if ($params) {
+                $extraSourceParameters = $params + $extraSourceParameters;
+            }
+            if (isset($names[0])) {
+                $name = $names[0];
+            } else {
+                throw new MUtil_Html_HtmlException('Missing snippet name in call to create snippet.');
+            }
+        }
+
         $loader = self::getSnippetLoader();
 
         $snippet = $loader->getSnippet($name, $extraSourceParameters);

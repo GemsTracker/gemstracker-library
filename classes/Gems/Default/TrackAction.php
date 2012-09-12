@@ -483,7 +483,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
             $this->_setParam(Gems_Model::RESPONDENT_TRACK, $data['gr2t_id_respondent_track']);
 
-            $this->html->h2(sprintf($this->_('%s track for respondent nr %s'), $data['gtr_track_name'], $this->_getParam(MUtil_Model::REQUEST_ID)));
+            $this->html->h2(sprintf($this->_('%s track for respondent nr %s'), $data['gtr_track_name'], $this->_getParam(MUtil_Model::REQUEST_ID1)));
 
             if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
                 $table = parent::getShowTable();
@@ -515,7 +515,8 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
                 $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackData', $data);
             }
-            $baseUrl[MUtil_Model::REQUEST_ID]      = $this->_getIdParam();
+            $baseUrl[MUtil_Model::REQUEST_ID1]     = $this->_getParam(MUtil_Model::REQUEST_ID1);
+            $baseUrl[MUtil_Model::REQUEST_ID2]     = $this->_getParam(MUtil_Model::REQUEST_ID2);
             $baseUrl[Gems_Model::RESPONDENT_TRACK] = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
 
             $this->addSnippet('TrackTokenOverviewSnippet', 'trackData', $data, 'baseUrl', $baseUrl);

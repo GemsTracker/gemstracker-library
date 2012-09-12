@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,43 +26,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Gems specific version of the snippet loader
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Events
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $id: OnlyAnswered.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Gems specific version of the snippet loader
- *
- * Loads snippets like all other classes in gems first with project prefix, then gems, mutil
- * and when all that fails it will try without prefix from the project\snippets and gems\snippets
- * folders
+ * Abstract class for defining filters on answer displays
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Events
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.5
+ * @since      Class available since version 1.5.6
  */
-class Gems_Snippets_SnippetLoader extends MUtil_Snippets_SnippetLoader
+abstract class Gems_Event_SurveyAnswerFilterAbstract extends Gems_Registry_TargetAbstract
+    implements Gems_Event_SurveyDisplayEventInterface, Gems_Tracker_Snippets_AnswerNameFilterInterface
 {
     /**
-     * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @var Zend_Translate
      */
-    public function __construct($source = null)
+    protected $translate;
+
+    // public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames);
+
+    /**
+     * Function that returns the snippets to use for this display.
+     *
+     * @param Gems_Tracker_Token $token The token to get the snippets for
+     * @return array of Snippet names or nothing
+     */
+    public function getAnswerDisplaySnippets(Gems_Tracker_Token $token)
     {
-        global $GEMS_DIRS;
+        $snippets = (array) $token->getTrackEngine()->getAnswerSnippetNames();
 
-        parent::__construct($source);
+        $snippets['answerFilter'] = $this;
 
-        foreach ($GEMS_DIRS as $key => $path) {
-            $this->addDirectory($path . '/' . $key);
-        }
+        return $snippets;
     }
+
+    // public function getEventName()
 }

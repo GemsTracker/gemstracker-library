@@ -184,12 +184,14 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
         $model->trackUsage();
         $table = $this->getBrowseTable($model);
 
-        if ($this->browse) {
-            $paginator = $model->loadPaginator();
-            $table->setRepeater($paginator);
-            $this->addPaginator($table, $paginator);
-        } else {
-            $table->setRepeater($model->loadRepeatable());
+        if (! $table->getRepeater()) {
+            if ($this->browse) {
+                $paginator = $model->loadPaginator();
+                $table->setRepeater($paginator);
+                $this->addPaginator($table, $paginator);
+            } else {
+                $table->setRepeater($model->loadRepeatable());
+            }
         }
 
         return $table;

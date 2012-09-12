@@ -188,6 +188,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getPreviousRoundId($roundId, $roundOrder = null);
 
     /**
+     * Returns a snippet name that can be used to display the answers to the token or nothing.
+     *
+     * @param Gems_Tracker_Token $token
+     * @return array Of snippet names
+     */
+    public function getRoundAnswerSnippets(Gems_Tracker_Token $token);
+    
+    /**
      * Return the Round Changed event name for this round
      *
      * @param int $roundId

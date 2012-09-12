@@ -63,6 +63,13 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     protected $_gemsData = array();
 
     /**
+     * Helper var for preventing infinite loops
+     *
+     * @var boolean
+     */
+    protected $_loopCheck = false;
+
+    /**
      *
      * @var Gems_Tracker_Token
      */
@@ -555,6 +562,24 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     public function getAnswerSnippetNames()
     {
         if ($this->exists) {
+            if (! $this->_loopCheck) {
+                // Events should not call $this->getAnswerSnippetNames() but
+                // $this->getTrackEngine()->getAnswerSnippetNames(). Just in
+                // case the code writer made a mistake we have a guard here.
+                $this->_loopCheck = true;
+
+                $snippets = $this->getTrackEngine()->getRoundAnswerSnippets($this);
+
+                if (! $snippets) {
+                    $snippets = $this->getSurvey()->getAnswerSnippetNames($this);
+                }
+
+                if ($snippets) {
+                    $this->_loopCheck = false;
+                    return $snippets;
+                }
+            }
+
             return $this->getTrackEngine()->getAnswerSnippetNames();
         } else {
             return 'TokenNotFoundSnippet';
@@ -1093,7 +1118,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $values['gto_return_url'] = $this->calculateReturnUrl();
 
         // MUtil_Echo::track($values);
-        
+
         $this->_updateToken($values, $userId);
 
         $this->handleBeforeAnswering();

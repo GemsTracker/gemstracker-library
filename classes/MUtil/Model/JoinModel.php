@@ -266,28 +266,35 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             // Gotta repeat this every time, as keys may be set later
             foreach ($this->_joinFields as $source => $target) {
                 // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
-                if (! (is_string($target) && isset($newValues[$target]) && $newValues[$target])) {
-                    if (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
-                        // MUtil_Echo::track('Missing: ' . $source . ' -> ' . $target);
-                        continue;
+                // as $source is an index keys it must be a string
+                if (is_string($target)) {
+                    if (! (isset($newValues[$target]) && $newValues[$target])) {
+                        if (! (isset($newValues[$source]) && $newValues[$source])) {
+                            if (MUtil_Model::$verbose) {
+                                MUtil_Echo::r('Missing: ' . $source . ' -> ' . $target, 'ERROR!');
+                            }
+                            continue;
+                        }
+                        $newValues[$target] = $newValues[$source];
+
+                    } elseif (! (isset($newValues[$source]) && $newValues[$source])) {
+                        $newValues[$source] = $newValues[$target];
+
+                    } elseif ((strlen($newValues[$target]) > 0) && (strlen($newValues[$source]) > 0) && $newValues[$target] != $newValues[$source]) {
+                        // Join key values changed.
+                        //
+                        // Set the old values as the filter
+                        $filter[$target] = $newValues[$target];
+                        $filter[$source] = $newValues[$source];
+
+                        // Switch the target value to the value in the source field.
+                        //
+                        // JOIN FIELD ORDER IS IMPORTANT!!!
+                        // The changing field must be stated first in the join statement.
+                        $newValues[$target] = $newValues[$source];
                     }
-                    $newValues[$target] = $newValues[$source];
-
-                } elseif (! (is_string($source) && isset($newValues[$source]) && $newValues[$source])) {
-                    $newValues[$source] = $newValues[$target];
-
-                } elseif ((strlen($newValues[$target]) > 0) && (strlen($newValues[$source]) > 0) && $newValues[$target] != $newValues[$source]) {
-                    // Join key values changed.
-                    //
-                    // Set the old values as the filter
-                    $filter[$target] = $newValues[$target];
-                    $filter[$source] = $newValues[$source];
-
-                    // Switch the target value to the value in the source field.
-                    //
-                    // JOIN FIELD ORDER IS IMPORTANT!!!
-                    // The changed field must be stated first.
-                    $newValues[$target] = $newValues[$source];
+                } elseif ($target instanceof Zend_Db_Expr && (! (isset($newValues[$source]) && $newValues[$source]))) {
+                    $newValues[$source] = $target;
                 }
             }
 

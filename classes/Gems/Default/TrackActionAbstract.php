@@ -70,11 +70,10 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $result[] = parent::_createTable();
 
         if ($this->trackType) {
-            $id      = $this->_getParam(MUtil_Model::REQUEST_ID);
+            $orgId   = trim($this->db->quote($this->_getParam(MUtil_Model::REQUEST_ID2)), "'");
             $model   = $this->createTrackModel(false, 'index');
             $request = $this->getRequest();
 
-            $organisation_id = $this->escort->getCurrentOrganization();
             $searchText = $this->_getParam($model->getTextFilter());
 
             $model->applyPostRequest($request);
@@ -93,19 +92,24 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             $filter['gtr_track_type'] = $this->trackType;
             $filter['gtr_active']     = 1;
             $filter[]   = '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE';
-            $filter[]   = "gtr_organizations LIKE '%|$organisation_id|%'";
+            $filter[]   = "gtr_organizations LIKE '%|$orgId|%'";
 
-            $baseurl    = array('action' => 'index', 'gr2o_patient_nr' => $id, MUtil_Model::TEXT_FILTER => $searchText);
+            $menuParams = array(
+                'gr2o_patient_nr'        => $this->_getParam(MUtil_Model::REQUEST_ID1),
+                'gr2o_id_organization'   => $orgId);
+            $baseUrl    = $menuParams + array(
+                'action'                 => 'index',
+                MUtil_Model::TEXT_FILTER => $searchText);
 
             $bridge     = new MUtil_Model_TableBridge($model, array('class' => 'browser'));
-            $bridge->setBaseUrl($baseurl);
+            $bridge->setBaseUrl($baseUrl);
             $bridge->setOnEmpty($this->_('No tracks found'));
             $bridge->getOnEmpty()->class = 'centerAlign';
             $bridge->setRepeater($model->loadRepeatable($filter, $this->availableSort));
 
             // Add view button
             if ($menuItem = $this->findAllowedMenuItem('view')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, array('gr2o_patient_nr' => $id)));
+                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
             }
 
             foreach($model->getItemsOrdered() as $name) {
@@ -116,7 +120,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
             // Add create button
             if ($menuItem = $this->findAllowedMenuItem('create')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, array('gr2o_patient_nr' => $id)));
+                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
             }
 
             $result[] = MUtil_Html::create()->h3($this->_('Available tracks'));
@@ -141,7 +145,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
         $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
 
-        return array ($patientId, $orgId);
+        return array($patientId, $orgId);
     }
 
     abstract protected function addTrackUsage($respId, $orgId, $trackId, $baseUrl);
@@ -298,7 +302,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
 
         } else {
-            $this->addMessage(sprintf($this->_('%s %s not found.'), $this->getTopic(1), $this->_getParam(MUtil_Model::REQUEST_ID)));
+            $this->addMessage(sprintf($this->_('%s %s not found.'), $this->getTopic(1), $this->_getParam(MUtil_Model::REQUEST_ID1)));
         }
     }
 
@@ -322,10 +326,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             $data = $this->getRequest()->getParams();
         }
 
-        if (isset($data[MUtil_Model::REQUEST_ID])) {
-            $keys[] = MUtil_Model::REQUEST_ID;
-
-        } elseif (isset($data[MUtil_Model::REQUEST_ID1])) {
+        if (isset($data[MUtil_Model::REQUEST_ID1])) {
             $i = 1;
             while (isset($data[MUtil_Model::REQUEST_ID . $i])) {
                 $keys[] = MUtil_Model::REQUEST_ID . $i;

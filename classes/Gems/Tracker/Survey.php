@@ -241,6 +241,21 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns a snippet name that can be used to display the answers to the token or nothing.
+     *
+     * @param Gems_Tracker_Token $token
+     * @return array Of snippet names
+     */
+    public function getAnswerSnippetNames(Gems_Tracker_Token $token)
+    {
+        if (isset($this->_gemsSurvey['gsu_display_event'])) {
+            $event = $this->events->loadSurveyDisplayEvent($this->_gemsSurvey['gsu_display_event']);
+
+            return $event->getAnswerDisplaySnippets($token);
+        }
+    }
+
+    /**
      * Returns a model for diaplying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string

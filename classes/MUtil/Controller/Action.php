@@ -187,20 +187,13 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     public function addSnippet($filename, $parameter_value_pairs = null)
     {
         $extraSource = MUtil_Ra::pairs(func_get_args(), 1);
-        $snippet = $this->getSnippet($filename, $extraSource);
-
-        if ($snippet->hasHtmlOutput()) {
-            $this->html[] = $snippet;
-            return $snippet;
-        } elseif ($url = $snippet->getRedirectRoute()) {
-            $snippet->redirectRoute();
-        }
-
-        return false;
+        $results     = $this->addSnippets($filename, $extraSource);
+        return $results ? reset($results) : false;
     }
 
     /**
-     * Searches and loads a .php snippet file.
+     * Searches and loads multiple .php snippet files and adds them to this->html using the filename as
+     * content key, unless that key already exists.
      *
      * @param array $filenames Names of snippets
      * @param MUtil_Ra::pairs $parameter_value_pairs name/value pairs ot add to the source for this snippet
@@ -211,13 +204,17 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
         if ($filenames) {
             $extraSource = MUtil_Ra::pairs(func_get_args(), 1);
 
-            $results = array();
-            foreach ((array) $filenames as $filename) {
-                $snippet = $this->getSnippet($filename, $extraSource);
+            $results  = array();
+            $snippets = $this->getSnippets($filenames, $extraSource);
+            foreach ($snippets as $filename => $snippet) {
 
                 if ($snippet->hasHtmlOutput()) {
-                    $this->html[] = $snippet;
-                    $results[$filename] = $snippet;
+                    if (isset($this->html[$filename])) {
+                        $this->html[] = $snippet;
+                    } else {
+                        $this->html[$filename] = $snippet;
+                    }
+                    $results[$filename]    = $snippet;
 
                 } elseif ($snippet->getRedirectRoute()) {
                     $snippet->redirectRoute();
@@ -288,19 +285,47 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      */
     public function getSnippet($filename, $parameter_value_pairs = null)
     {
-        if (! $this->html) {
-            $this->initHtml();
-        }
+        $extraSource = MUtil_Ra::pairs(func_get_args(), 1);
+        $results     = $this->getSnippets($filename, $extraSource);
+        return reset($results);
+    }
 
+    /**
+     * Searches and loads multiple .php snippet file.
+     *
+     * @param string $filenames Array of snippet names with optionally extra parameters included
+     * @param MUtil_Ra::pairs $parameter_value_pairs name/value pairs ot add to the source for this snippet
+     * @return array Of filename => MUtil_Snippets_SnippetInterface snippets
+     */
+    public function getSnippets($filenames, $parameter_value_pairs = null)
+    {
         if (func_num_args() > 1) {
             $extraSourceParameters = MUtil_Ra::pairs(func_get_args(), 1);
         } else {
             $extraSourceParameters = array();
         }
 
-        $loader = $this->getSnippetLoader();
+        if (is_array($filenames)) {
+            list($filenames, $params) = MUtil_Ra::keySplit($filenames);
 
-        return $loader->getSnippet($filename, $extraSourceParameters);
+            if ($params) {
+                $extraSourceParameters = $params + $extraSourceParameters;
+            }
+        } else {
+            $filenames = array($filenames);
+        }
+
+        $results = array();
+
+        if ($filenames) {
+            $loader = $this->getSnippetLoader();
+
+            foreach ($filenames as $filename) {
+                $results[$filename] = $loader->getSnippet($filename, $extraSourceParameters);
+            }
+        }
+
+        return $results;
     }
 
     /**

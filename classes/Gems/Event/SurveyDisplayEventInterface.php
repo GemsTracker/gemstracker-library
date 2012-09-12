@@ -51,8 +51,8 @@ interface Gems_Event_SurveyDisplayEventInterface extends Gems_Event_EventInterfa
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param boolean $group Should answers be grouped
-     * @return array of Snippet names
+     * @param Gems_Tracker_Token $token The token to get the snippets for
+     * @return array of Snippet names or nothing
      */
-    public function getSnippets($group);
+    public function getAnswerDisplaySnippets(Gems_Tracker_Token $token);
 }
