@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__respondents (
-      grs_id_user bigint unsigned not null auto_increment,
+      grs_id_user bigint unsigned not null auto_increment references gems__user_ids (gui_id_user),
 
       -- grs_login varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
       --   null unique key,
@@ -29,8 +29,7 @@ CREATE TABLE if not exists gems__respondents (
       --    references gems_staff (grs_id_user),
       -- grs_id_primary_group bigint unsigned
       --    references gems__groups (umg_id_group),
-      grs_iso_lang char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-            not null default 'en' references gems__languages (gml_iso_lang),
+      grs_iso_lang char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
 
       grs_email varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 

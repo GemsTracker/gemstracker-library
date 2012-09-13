@@ -1,3 +1,4 @@
+
 CREATE TABLE if not exists gems__organizations (
         gor_id_organization  bigint unsigned not null auto_increment,
 
@@ -18,8 +19,7 @@ CREATE TABLE if not exists gems__organizations (
         gor_signature        text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gor_style            varchar(15)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'gems',
-        gor_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-                             not null default 'en' references gems__languages (gml_iso_lang),
+        gor_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
 
         gor_has_login        boolean not null default 1,
         gor_has_respondents  boolean not null default 0,
@@ -34,12 +34,12 @@ CREATE TABLE if not exists gems__organizations (
         gor_created_by       bigint unsigned not null,
 
         PRIMARY KEY(gor_id_organization),
-        UNIQUE (gor_code)
+        KEY (gor_code)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 70
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
-INSERT ignore INTO `gems__organizations` (`gor_id_organization`, `gor_name`, gor_changed, gor_changed_by, gor_created, gor_created_by)
+INSERT ignore INTO gems__organizations (gor_id_organization, gor_name, gor_changed, gor_changed_by, gor_created, gor_created_by)
     VALUES
     (70, 'New organization', CURRENT_TIMESTAMP, 0, CURRENT_TIMESTAMP, 0);

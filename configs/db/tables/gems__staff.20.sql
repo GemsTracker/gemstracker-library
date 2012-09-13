@@ -18,12 +18,10 @@ CREATE TABLE if not exists gems__staff (
 
         gsf_id_primary_group bigint unsigned
                                references gems__groups (ggp_id_group),
-        gsf_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-                               not null default 'nl' references gems__languages (gml_iso_lang),
+        gsf_iso_lang         char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',
         gsf_logout_on_survey boolean not null default 0,
 
-        gsf_email            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
-                               unique key,
+        gsf_email            varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsf_first_name       varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gsf_surname_prefix   varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
@@ -54,9 +52,10 @@ CREATE TABLE if not exists gems__staff (
         gsf_created          timestamp not null,
         gsf_created_by       bigint unsigned not null,
 
-        PRIMARY KEY(gsf_id_user),
-        UNIQUE KEY(gsf_login, gsf_id_organization),
-        UNIQUE KEY(gsf_reset_key)
+        PRIMARY KEY (gsf_id_user),
+        UNIQUE KEY (gsf_login, gsf_id_organization),
+        UNIQUE KEY (gsf_reset_key)
+        KEY (gsf_email)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 2001

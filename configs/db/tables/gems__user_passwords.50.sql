@@ -14,7 +14,8 @@ CREATE TABLE if not exists gems__user_passwords (
         gup_created          timestamp not null,
         gup_created_by       bigint unsigned not null,
 
-        PRIMARY KEY (gup_id_user)
+        PRIMARY KEY (gup_id_user),
+        UNIQUE KEY (gup_reset_key)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

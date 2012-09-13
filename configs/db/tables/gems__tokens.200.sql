@@ -13,7 +13,7 @@ CREATE TABLE if not exists gems__tokens (
         gto_id_organization bigint unsigned not null
                 references gems__organizations (gor_id_organization),
         gto_id_track bigint unsigned not null
-                references gems__track (gtr_id_track),
+                references gems__tracks (gtr_id_track),
 
         -- values initially filled from gems__rounds, but that may get different values later on
         gto_id_survey         bigint unsigned not null references gems__surveys (gsu_id_survey),
@@ -54,6 +54,7 @@ CREATE TABLE if not exists gems__tokens (
         INDEX (gto_id_track),
         INDEX (gto_id_round),
         INDEX (gto_in_source),
+        INDEX (gto_reception_code),
         INDEX (gto_id_respondent_track, gto_round_order),
         INDEX (gto_valid_from, gto_valid_until),
         INDEX (gto_completion_time)

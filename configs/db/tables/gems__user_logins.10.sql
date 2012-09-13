@@ -4,7 +4,7 @@
 CREATE TABLE if not exists gems__user_logins (
         gul_id_user          bigint unsigned not null auto_increment,
 
-        gul_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gul_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null references gems__staff (gsf_login),
         gul_id_organization  bigint not null references gems__organizations (gor_id_organization),
 
         gul_user_class       varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'NoLogin',

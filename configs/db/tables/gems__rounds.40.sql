@@ -2,7 +2,7 @@
 CREATE TABLE if not exists gems__rounds (
         gro_id_round bigint unsigned not null auto_increment,
 
-        gro_id_track bigint unsigned not null references gems__track (gtr_id_track),
+        gro_id_track bigint unsigned not null references gems__tracks (gtr_id_track),
         gro_id_order int not null default 10,
 
         gro_id_survey bigint unsigned not null references gems__surveys (gsu_id_survey),
