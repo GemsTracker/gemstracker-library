@@ -54,7 +54,7 @@ CREATE TABLE if not exists gems__staff (
 
         PRIMARY KEY (gsf_id_user),
         UNIQUE KEY (gsf_login, gsf_id_organization),
-        UNIQUE KEY (gsf_reset_key)
+        UNIQUE KEY (gsf_reset_key),
         KEY (gsf_email)
     )
     ENGINE=InnoDB
