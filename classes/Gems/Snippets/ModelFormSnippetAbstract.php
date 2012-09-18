@@ -217,8 +217,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 $this->afterSaveRouteUrl['controller'] = $this->request->getControllerName();
             }
 
+            // Search array for menu item
+            $find['controller'] = $this->afterSaveRouteUrl['controller'];
+            $find['action'] = $this->afterSaveRouteUrl['action'];
+
             // If not allowed, redirect to index
-            if (null == $this->menu->find($this->afterSaveRouteUrl)) {
+            if (null == $this->menu->find($find)) {
                 $this->afterSaveRouteUrl['action'] = 'index';
                 $this->resetRoute = true;
             }

@@ -1221,6 +1221,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         $this->_setVar('__allowedOrgs', $orgs);
 
+        // Clean this cache
+        $this->_unsetVar('__allowedRespOrgs');
+
         return $this;
     }
 
