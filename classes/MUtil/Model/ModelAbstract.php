@@ -464,10 +464,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             case 0:
                 if (isset($this->_model[$name])) {
                     if ($alias = $this->getAlias($name)) {
-                        return $this->_model[$name] + $this->get($alias);
+                        $result = $this->_model[$name] + $this->get($alias);
                     } else {
-                        return $this->_model[$name];
+                        $result = $this->_model[$name];
                     }
+                    return MUtil_Lazy::rise($result);
                 } else {
                     return array();
                 }
