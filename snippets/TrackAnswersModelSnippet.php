@@ -48,6 +48,14 @@
 class TrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
+     * Use compact view and show all tokens of the same surveyId in
+     * one view. Property used by respondent export
+     *
+     * @var boolean
+     */
+    public $grouped = true;
+
+    /**
      * Overrule to implement snippet specific filtering and sorting.
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -57,8 +65,12 @@ class TrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetG
         if ($this->request) {
             $this->processSortOnly($model);
 
-            $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
-            $filter['gto_id_survey']           = $this->token->getSurveyId();
+            if ($this->grouped) {
+                $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
+                $filter['gto_id_survey']           = $this->token->getSurveyId();
+            } else {
+                $filter['gto_id_token']            = $this->token->getTokenId();
+            }
 
             $model->setFilter($filter);
         }

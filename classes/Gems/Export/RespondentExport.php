@@ -47,16 +47,13 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected $_reportHeader         = 'Export_ReportHeaderSnippet';
     protected $_respondentSnippet    = 'Export_RespondentSnippet';
 
-    protected $_groupedSurveySnippet = 'TrackAnswersModelSnippet';
-    protected $_singleSurveySnippet  = 'AnswerModelSnippet';
-
     /**
      *
      * @var GemsEscort
      */
     public $escort;
     
-    private $html;
+    protected $html;
     
     /**
      *
@@ -169,22 +166,42 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                 continue;
             }
 
+            $showToken = false;
             if ($engine->getTrackType() == 'S' || !$groupSurveys) {
+                // For single survey tracks or when $groupSurvey === false we show all tokens
+                $showToken = true;
+            } else {
+                // For multi survey tracks and $groupSurveys === true, we show only the first token
+                // as the snippet takes care of showing the other tokens
+                if (!isset($surveys[$token->getSurveyId()])) {
+                    $showToken = true;
+                }
+            }
+
+            if ($showToken) {                
+                $params = array(
+                    'token'          => $token,
+                    'tokenId'        => $token->getTokenId(),
+                    'showHeaders'    => false,
+                    'showButtons'    => false,
+                    'showSelected'   => false,
+                    'showTakeButton' => false,
+                    'grouped'        => $groupSurveys);
+                
+                $snippets = $token->getAnswerSnippetNames();
+                
+                if (is_array($snippets)) {
+                    list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
+                    $params = $params + $snippetParams;
+                }
+                
                 $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
-                $this->html->snippet($this->_singleSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
-                	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
+                
+                foreach($snippets as $snippet) {
+                    $this->html->snippet($snippet, $params);
+                }
 
                 $this->html->br();
-            } else {
-                if (!isset($surveys[$token->getSurveyId()])) {
-                    $surveys[$token->getSurveyId()] = true;
-
-                    $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
-                    $this->html->snippet($this->_groupedSurveySnippet, 'token', $token, 'tokenId', $token->getTokenId(),
-                    	'showHeaders', false, 'showButtons', false, 'showSelected', false, 'showTakeButton', false);
-
-                    $this->html->br();
-                }
             }
 
             $token = $token->getNextToken();
