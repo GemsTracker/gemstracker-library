@@ -252,9 +252,8 @@ class MUtil_Model_FormBridge
             }
             $options = array_intersect_key($options, $allowedOptionsFlipped);
 
-            // Now get all options from the model, and extract only the allowed ones
-            $modelOptions = $this->model->get($name);
-            $modelOptions = array_intersect_key($modelOptions, $allowedOptionsFlipped);
+            // Now get allowed options from the model
+            $modelOptions = $this->model->get($name, $allowedOptions);
 
             // Merge them: first use supplied $options, and add missing values from model
             return (array) $options + (array) $modelOptions;

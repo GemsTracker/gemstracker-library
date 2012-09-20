@@ -229,7 +229,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         if ($store instanceof Zend_Session_Namespace) {
             $store->__unset($name);
         } else {
-            $store->offsetUnset($name, $value);
+            if ($store->offsetExists($name)) {
+                $store->offsetUnset($name);
+            }
         }
     }
 
