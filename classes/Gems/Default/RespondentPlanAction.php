@@ -58,7 +58,7 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
     {
         $bridge->gtr_track_type; // Data needed for edit button
         $bridge->gr2t_id_respondent_track; // Data needed for edit button
-
+        $bridge->gr2o_id_organization; // Data needed for edit button
 
         $HTML = MUtil_Html::create();
 
