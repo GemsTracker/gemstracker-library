@@ -102,6 +102,7 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
                 // MUtil_Echo::track($name, $model->get($name, 'thClass'), $model->get($name, 'label'));
             }
         }
+        // MUtil_Echo::track($names);
 
         return $names;
     }

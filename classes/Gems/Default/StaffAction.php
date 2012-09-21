@@ -392,7 +392,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             }
         }
 
-        return parent::getAfterSaveRoute($data, $isNew);
+        return parent::getAfterSaveRoute($data);
     }
 
     protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)

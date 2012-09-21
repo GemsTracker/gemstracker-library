@@ -990,10 +990,25 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     public function hasAllowedRole()
     {
-        if ($allowedGroups = $this->util->getDbLookup()->getAllowedStaffGroups()) {
-            return isset($allowedGroups[$this->getGroup()]) ? 1 : 0;
+        if (! $this->isStaff()) {
+            // Always allow editing of non-staff user
+            // for the time being
+            return true;
+        }
+
+        $dbLookup = $this->util->getDbLookup();
+        $groups   = $dbLookup->getActiveStaffGroups();
+        $group    = $this->getGroup();
+
+        if (! isset($groups[$group])) {
+            // Allow editing when the group does not exist or is no longer active.
+            return true;
+        }
+
+        if ($allowedGroups = $dbLookup->getAllowedStaffGroups()) {
+            return (boolean) isset($allowedGroups[$this->getGroup()]);
         } else {
-            return 0;
+            return false;
         }
     }
 
