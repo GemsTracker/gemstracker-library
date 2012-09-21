@@ -1,5 +1,5 @@
 
--- Table for keeping track of fail;ed login attempts
+-- Table for keeping track of failed login attempts
 --
 CREATE TABLE if not exists gems__user_login_attempts (
         gula_login            varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
