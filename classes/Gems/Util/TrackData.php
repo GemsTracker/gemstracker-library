@@ -168,6 +168,25 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get an array of translated labels for the date units used by this engine
+     *
+     * @param boolean $validAfter True if it concenrs _valid_after_ dates
+     * @return array date_unit => label
+     */
+    public function getDateUnitsList($validAfter)
+    {
+        return array(
+            'N' => $this->translate->_('Minutes'),
+            'H' => $this->translate->_('Hours'),
+            'D' => $this->translate->_('Days'),
+            'W' => $this->translate->_('Weeks'),
+            'M' => $this->translate->_('Months'),
+            'Q' => $this->translate->_('Quarters'),
+            'Y' => $this->translate->_('Years')
+        );
+    }
+
+    /**
      * Returns array (id => name) of all ronds in a track, sorted by order
      *
      * @param int $trackId
@@ -191,5 +210,43 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         }
 
         return $tracks;
+    }
+
+
+    /**
+     * Returns array (id => name) of the track date fields for this track, sorted by order
+     *
+     * @param int $trackId
+     * @return array
+     */
+    public function getTrackDateFields($trackId)
+    {
+        $dateFields = $this->db->fetchPairs("SELECT gtf_id_field, gtf_field_name FROM gems__track_fields WHERE gtf_id_track = ? AND gtf_field_type = 'date' ORDER BY gtf_id_order", $trackId);
+
+        if (! $dateFields) {
+            $dateFields = array();
+        }
+
+        return $dateFields;
+    }
+
+    /**
+     * Returns array (id => name) of all track date fields, sorted alphabetically
+     *
+     * @return array
+     */
+    public function getTracksDateFields()
+    {
+        static $dateFields;
+
+        if (! is_array($dateFields)) {
+            $dateFields = $this->db->fetchPairs("SELECT gtf_id_field, gtf_field_name FROM gems__track_fields WHERE gtf_field_type = 'date' ORDER BY gtf_field_name");
+
+            if (! $dateFields) {
+                $dateFields = array();
+            }
+        }
+
+        return $dateFields;
     }
 }

@@ -79,7 +79,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set($fieldName, 'multiOptions', $options);
 
             if (! array_key_exists($itemData[$fieldName], $options)) {
-                // The value is always the only possible value
+                // Set the value to the first possible value
                 reset($options);
                 $itemData[$fieldName] = key($options);
 
@@ -399,15 +399,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     protected function getDateUnitsList($validAfter)
     {
-        return array(
-            'N' => $this->_('Minutes'),
-            'H' => $this->_('Hours'),
-            'D' => $this->_('Days'),
-            'W' => $this->_('Weeks'),
-            'M' => $this->_('Months'),
-            'Q' => $this->_('Quarters'),
-            'Y' => $this->_('Years')
-        );
+        return $this->util->getTrackData()->getDateUnitsList($validAfter);
     }
 
     /**
