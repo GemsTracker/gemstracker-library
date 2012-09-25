@@ -86,7 +86,7 @@ class Gems_FormattedData extends IteratorIterator
         return $row;
     }
 
-    /**
+     /**
      * This is the actual format function, copied from the Exhibitor for field
      *
      * @param type $name
@@ -95,10 +95,8 @@ class Gems_FormattedData extends IteratorIterator
      */
     private static function _format($name, $result, $model)
     {
-        if ($default = $model->get($name,'default')) {
-            if (null === $result) {
-                $result = $default;
-            }
+        if (null === $result && $default = $model->get($name,'default')) {
+            $result = $default;
         }
 
         if ($multiOptions = $model->get($name, 'multiOptions')) {
@@ -146,13 +144,11 @@ class Gems_FormattedData extends IteratorIterator
 
         // If it is Lazy, execute it
         if ($result instanceof MUtil_Lazy_LazyInterface) {
-            if ($result instanceof MUtil_Lazy_LazyInterface) {
-                $result = MUtil_Lazy::rise($result);
-            }
+            $result = MUtil_Lazy::rise($result);
         }
 
         // If it is Html, render it
-        if ($result instanceof MUtil_Html_HtmlInterface || $result instanceof MUtil_Lazy_LazyInterface) {
+        if ($result instanceof MUtil_Html_HtmlInterface) {
 
             $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
             if (null === $viewRenderer->view) {

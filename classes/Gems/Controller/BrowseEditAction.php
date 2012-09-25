@@ -429,6 +429,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     public function excelAction()
     {
+        ini_set('max_execution_time', 90);  // Quickfix as long as it is not in a batchtask
+
         // Set the request cache to use the search params from the index action
         $this->getCachedRequestData(true, 'index');
 
