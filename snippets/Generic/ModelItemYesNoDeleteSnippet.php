@@ -39,6 +39,7 @@
  * Displays each fields of a single item in a model in a row in a Html table
  * the model set through the $model snippet parameter.
  *
+ * @deprecated No longer needed with new snippet loader
  * @package    Gems
  * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC

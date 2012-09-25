@@ -39,8 +39,6 @@
  * Displays multiple items from a model in a tabel by row using
  * the model set through the $model snippet parameter.
  *
- * If you want to use this class "as is" use the 'Generic_ModelTableSnippet' snippet.
- *
  * This class is not in the standard snippet loading directories and does not follow
  * their naming conventions, but exists only to make it simple to extend this class
  * for a specific implementation.

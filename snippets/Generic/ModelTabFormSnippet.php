@@ -38,6 +38,7 @@
  *
  * Usage snippet for Gems_Snippets_ModelTabFormSnippetGeneric
  *
+ * @deprecated No longer needed with new snippet loader
  * @package    Gems
  * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC

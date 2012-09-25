@@ -39,8 +39,11 @@
  * Displays multiple items from a model in a tabel by row using
  * the model set through the $model snippet parameter.
  *
- * Usage snippet for Gems_Snippets_ModelTableSnippetGeneric
+ * Usage snippet for Gems_Controller_ModelSnippetActionAbstract
  *
+ * @see Gems_Controller_ModelSnippetActionAbstract
+ *
+ * @deprecated No longer needed with new snippet loader
  * @package    MUtil
  * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC

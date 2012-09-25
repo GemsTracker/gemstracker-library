@@ -38,8 +38,6 @@
 /**
  * Displays an edit form based on the model the model set through the $model snippet parameter.
  *
- * If you want to use this class "as is" use the 'Generic_ModelFormSnippet' snippet.
- *
  * This class is not in the standard snippet loading directories and does not follow
  * their naming conventions, but exists only to make it simple to extend this class
  * for a specific implementation.

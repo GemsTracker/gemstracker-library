@@ -38,8 +38,11 @@
 /**
  * Displays an edit form based on the model the model set through the $model snippet parameter.
  *
- * Usage snippet for Gems_Snippets_ModelTableSnippetGeneric
+ * Usage snippet for Gems_Controller_ModelSnippetActionAbstract
  *
+ * @see Gems_Controller_ModelSnippetActionAbstract
+ *
+ * @deprecated No longer needed with new snippet loader
  * @package    Gems
  * @subpackage Snippets\Generic
  * @copyright  Copyright (c) 2011 Erasmus MC

@@ -64,21 +64,21 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Generic_ModelTableSnippet';
+    protected $autofilterSnippets = 'ModelTableSnippetGeneric';
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'Generic_ModelFormSnippet';
+    protected $createEditSnippets = 'ModelFormSnippetGeneric';
 
     /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Generic_ModelItemYesNoDeleteSnippet';
+    protected $deleteSnippets = 'ModelItemYesNoDeleteSnippetGeneric';
 
     /**
      *
