@@ -146,6 +146,10 @@ class MUtil_Model_Type_ConcatenatedRow
             if ($this->valuePad) {
                 $value = trim($value, $this->seperatorChar);
             }
+            // If it was empty, return an empty array instead of array with an empty element
+            if(empty($value)) {
+                return array();
+            }
             $value = explode($this->seperatorChar, $value);
         }
         // MUtil_Echo::track($value);
