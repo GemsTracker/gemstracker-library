@@ -82,7 +82,6 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
 
         $model->set('grc_success',           'label', $this->_('Is success code'),
             'multiOptions', $yesNo ,
-            'disabled', true,
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code is a success code.'));
         $model->set('grc_active',            'label', $this->_('Active'),

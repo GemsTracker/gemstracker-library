@@ -92,6 +92,24 @@ class Gems_Util_ReceptionCode extends Gems_Registry_CachedArrayTargetAbstract
      *
      * @return boolean
      */
+    public function getDescription()
+    {
+        return $this->_get('grc_description');
+    }
+
+    /**
+     *
+     * @return boolean
+     */
+    public function hasDescription()
+    {
+        return (boolean) $this->_get('grc_description');
+    }
+
+    /**
+     *
+     * @return boolean
+     */
     public function hasRedoCode()
     {
         return (boolean) $this->_get('grc_redo_survey');

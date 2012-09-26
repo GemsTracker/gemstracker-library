@@ -243,6 +243,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
     public function redirectRoute()
     {
         if ($url = $this->getRedirectRoute()) {
+            MUtil_Echo::track($url);
             $router = new Zend_Controller_Action_Helper_Redirector();
             $router->gotoRouteAndExit($url, null, $this->resetRoute);
         }

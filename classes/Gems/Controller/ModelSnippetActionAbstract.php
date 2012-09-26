@@ -118,7 +118,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Generic_ModelItemTableSnippet');
+    protected $showSnippets = array('Generic_ContentTitleSnippet', 'ModelItemTableSnippetGeneric');
 
     /**
      *

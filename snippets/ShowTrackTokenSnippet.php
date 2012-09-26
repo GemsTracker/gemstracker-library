@@ -105,7 +105,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
 
         // COMPLETION DATE
         $fields = array();
-        if (! $this->token->hasSuccesCode()) {
+        if ($this->token->getReceptionCode()->hasDescription()) {
             $bridge->addMarkerRow();
             $fields[] = 'grc_description';
         }

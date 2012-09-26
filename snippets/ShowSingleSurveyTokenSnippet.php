@@ -100,7 +100,7 @@ class ShowSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippe
 
         // COMPLETION DATE
         $fields = array();
-        if (! $this->token->hasSuccesCode()) {
+        if ($this->token->getReceptionCode()->hasDescription()) {
             $bridge->addMarkerRow();
             $fields[] = 'grc_description';
         }
