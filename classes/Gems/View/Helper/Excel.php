@@ -50,6 +50,7 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
         } catch (Exception $e) {}
         $this->view->layout()->setLayout('excel');
         if ($rowset instanceof Gems_FormattedData) {
+            $formatted = $rowset->getFormatted();
             $rowset->setFormatted(false);
         }
         $rowcnt = 0;
@@ -72,7 +73,7 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
                 $output .= "\t</thead>\r\n";
                 $output .= "\t<tbody>\r\n";
                 if ($rowset instanceof Gems_FormattedData) {
-                    $rowset->setFormatted(true);
+                    $rowset->setFormatted($formatted);
                 }
             } else {
                 $output .= "\t\t<tr>\r\n";
