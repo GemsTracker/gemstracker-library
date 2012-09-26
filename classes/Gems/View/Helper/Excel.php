@@ -62,6 +62,7 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
                 $row = (array) $row;
             }
             if ($rowcnt == 0) {
+                $headerRow = $row;
                 //Only for the first row: output headers
                 $output = "<table>\r\n";
                 $output .= "\t<thead>\r\n";
@@ -77,7 +78,9 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
                 }
             } else {
                 $output .= "\t\t<tr>\r\n";
-                foreach ($row as $name => $value) {
+                // Make sure we repeat all header rows, even when no data present
+                foreach ($headerRow as $key => $value) {
+                    $value = isset($row[$key]) ? $row[$key] : null;
                     $output .= "\t\t\t<td>$value</td>\r\n";
                 }
                 $output .= "\t\t</tr>\r\n";
