@@ -104,7 +104,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Generic_AutosearchFormSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'AutosearchFormSnippet');
 
     /**
      * The snippets used for the index action, after those in autofilter

@@ -275,6 +275,9 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
         if ($this->requestCache) {
             $data = $this->requestCache->getProgramParams();
 
+            // Remove all empty values (but not arrays) from the filter
+            $data = array_filter($data, function($i) { return is_array($i) || strlen($i); });
+
             $model->applyParameters($data);
 
         } else {

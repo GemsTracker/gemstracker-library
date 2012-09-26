@@ -92,6 +92,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $organizations;
     }
+    
     /**
      * Return key/value pairs of all active staff members
      *
