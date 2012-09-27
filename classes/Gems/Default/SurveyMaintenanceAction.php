@@ -192,10 +192,11 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                     // These fields are needed only when the stand alone survey is being created.
                     $bridge->addHiddenMulti('gro_id_order', 'gro_id_track',
                             'gro_id_survey', 'gro_survey_name', 'gro_round_description',
-                            'gtr_track_name', 'gtr_survey_rounds', 'gtr_track_type');
+                            'gtr_track_name', 'gtr_survey_rounds');
                 }
 
                 $bridge->addHidden('create_stand_alone');
+                $bridge->addHidden('gtr_track_type'); // Always store, otherwise join expression is used as value. :(
                 $bridge->addText(  'gtr_track_info', 'label', $this->_('Description'));
                 $bridge->addDate(  'gtr_date_start', 'label', $this->_('Assignable since'));
                 $bridge->addDate(  'gtr_date_until', 'label', $this->_('Assignable until'));
