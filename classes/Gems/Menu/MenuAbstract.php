@@ -444,6 +444,7 @@ abstract class Gems_Menu_MenuAbstract
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
         $page->addEditAction();
+        $page->addExcelAction();
         $page->addShowAction();
         $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)

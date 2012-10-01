@@ -640,6 +640,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             }
         }
 
+        // Make sure to update the request
+        $this->getRequest()->setParams($data);
+
         return $data;
     }
 
