@@ -579,7 +579,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     protected function getAutoSearchHref()
     {
-        return MUtil_Html::attrib('href', array('action' => 'autofilter', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true));
+        return MUtil_Html::attrib('href', array('action' => 'autofilter', 'RouteReset' => true));
     }
 
     protected function getAutoSearchSubmit(MUtil_Model_ModelAbstract $model, MUtil_Form $form)
@@ -636,7 +636,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             foreach ($data as $key => $value) {
                 if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
                     unset($data[$key]);
-                }
+                }              
             }
         }
 
