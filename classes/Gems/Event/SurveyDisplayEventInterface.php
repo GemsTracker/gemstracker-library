@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveyCompletedEventInterface.php 59 2011-09-22 07:23:44Z mennodekker $
+ * @version    $Id$
  */
 
 /**

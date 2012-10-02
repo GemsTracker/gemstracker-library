@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: UserNewPasswordValidator.php 553 2012-03-16 12:32:50Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

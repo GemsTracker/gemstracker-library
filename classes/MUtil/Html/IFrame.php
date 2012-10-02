@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AElement.php 515 2012-02-23 15:40:31Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

@@ -29,7 +29,7 @@
  * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SourceSyncSurveys.php 528 2012-03-01 14:06:23Z mennodekker $
+ * @version    $Id$
  */
 
 /**

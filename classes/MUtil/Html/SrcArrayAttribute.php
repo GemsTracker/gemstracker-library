@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AttributeAbstract.php 514 2012-02-23 15:00:56Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

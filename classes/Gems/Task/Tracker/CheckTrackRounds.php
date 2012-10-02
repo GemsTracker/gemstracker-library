@@ -31,7 +31,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTokenCompletion.php 528 2012-03-01 14:06:23Z mennodekker $
+ * @version    $Id$
  */
 
 /**

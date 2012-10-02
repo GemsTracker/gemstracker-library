@@ -31,7 +31,7 @@
  * @subpackage View\Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id$
  */
 
 // We need to load the class first
@@ -50,8 +50,7 @@ include_once 'Lessphp/lessc.inc.php';
  * @subpackage View\Helper
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated Class deprecated since version 2.0
+ * @since      Class available since version 1.5.5
  */
 class Gems_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 {

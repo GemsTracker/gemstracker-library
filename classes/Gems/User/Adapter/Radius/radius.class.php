@@ -46,9 +46,9 @@
  * @author: SysCo/al
  * @since CreationDate: 2008-01-04
  * @copyright (c) 2008 by SysCo systemes de communication sa
- * @version $LastChangedRevision: 1.2.2 $
- * @version $LastChangedDate: 2009-01-05 $
- * @version $LastChangedBy: SysCo/al $
+ * @version $LastChangedRevision$
+ * @version $LastChangedDate$
+ * @version $LastChangedBy$
  * @link $HeadURL: radius.class.php $
  * @link http://developer.sysco.ch/php/
  * @link developer@sysco.ch
