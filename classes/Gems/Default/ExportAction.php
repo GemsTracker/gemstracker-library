@@ -314,7 +314,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         //Make the form 'autosubmit' so it can refresh
         $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', MUtil_Model::TEXT_FILTER => null, 'RouteReset' => true)), 'mainform');
+        $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', 'RouteReset' => true)), 'mainform');
 
         if ($data) {
             $form->populate($data);
