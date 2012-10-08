@@ -175,4 +175,22 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
 
         $this->html->pInfo($this->_('With automatic mail jobs and a cron job on the server, mails can be sent without manual user action.'));
     }
+
+    public function showAction()
+    {
+        parent::showAction();
+        
+        $id = $this->getRequest()->getParam('id');
+        if (!is_null($id)) {
+            $id = (int) $id;
+            $job = $this->db->fetchRow("SELECT * FROM gems__mail_jobs WHERE gmj_active = 1 and gmj_id_job = ?", $id);
+            if ($job) {
+                $model  = $this->loader->getTracker()->getTokenModel();
+                $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
+                $params['model'] = $model;
+                $params['filter'] = $filter;
+                $this->addSnippet('TokenPlanTableSnippet', $params);
+             }
+        }
+    }
 }

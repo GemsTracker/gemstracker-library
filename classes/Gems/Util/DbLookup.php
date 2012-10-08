@@ -185,6 +185,44 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Get the filter to use on the tokenmodel when working with a mailjob.
+     *
+     * @param array $job
+     * @return array
+     */
+    public function getFilterForMailJob($job)
+    {
+        // Set up filter
+        $filter = array(
+        	'can_email'           => 1,
+            'gtr_active'          => 1,
+            'gsu_active'          => 1,
+            'grc_success'         => 1,
+        	'gto_completion_time' => NULL,
+        	'gto_valid_from <= CURRENT_DATE',
+            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
+        );
+
+        if ($job['gmj_filter_mode'] == 'R') {
+            $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
+            $filter[] = 'gto_mail_sent_num < ' . $job['gmj_filter_max_reminders'];
+        } else {
+            $filter['gto_mail_sent_date'] = NULL;
+        }
+        if ($job['gmj_id_organization']) {
+            $filter['gto_id_organization'] = $job['gmj_id_organization'];
+        }
+        if ($job['gmj_id_track']) {
+            $filter['gto_id_track'] = $job['gmj_id_track'];
+        }
+        if ($job['gmj_id_survey']) {
+            $filter['gto_id_survey'] = $job['gmj_id_survey'];
+        }
+
+        return $filter;
+    }
+
     public function getGroups()
     {
         static $groups;

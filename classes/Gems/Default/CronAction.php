@@ -44,28 +44,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_CronAction extends MUtil_Controller_Action
+class Gems_Default_CronAction extends Gems_Controller_Action
 {
     /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
     public $db;
-
-    /**
-     * Standard filter that must be true for every token query.
-     *
-     * @var array
-     */
-    protected $defaultFilter = array(
-        	'can_email'           => 1,
-            'gtr_active'          => 1,
-            'gsu_active'          => 1,
-            'grc_success'         => 1,
-        	'gto_completion_time' => NULL,
-        	'gto_valid_from <= CURRENT_DATE',
-            '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
-        );
 
     /**
      *
@@ -179,23 +164,7 @@ class Gems_Default_CronAction extends MUtil_Controller_Action
                         $user->setAsCurrentUser();
                     }
 
-                    // Set up filter
-                    $filter = $this->defaultFilter;
-                    if ($job['gmj_filter_mode'] == 'R') {
-                        $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
-                        $filter[] = 'gto_mail_sent_num < ' . $job['gmj_filter_max_reminders'];
-                    } else {
-                        $filter['gto_mail_sent_date'] = NULL;
-                    }
-                    if ($job['gmj_id_organization']) {
-                        $filter['gto_id_organization'] = $job['gmj_id_organization'];
-                    }
-                    if ($job['gmj_id_track']) {
-                        $filter['gto_id_track'] = $job['gmj_id_track'];
-                    }
-                    if ($job['gmj_id_survey']) {
-                        $filter['gto_id_survey'] = $job['gmj_id_survey'];
-                    }
+                    $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
 
                     $tokensData = $model->load($filter);
 

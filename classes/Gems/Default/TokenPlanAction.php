@@ -110,7 +110,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
     public function createModel($detailed, $action)
     {
         // MUtil_Model::$verbose = true;
-        $model = $this->loader->getTracker()->getTokenModel();;
+        $model = $this->loader->getTracker()->getTokenModel();
         $model->setCreate(false);
 
         $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
