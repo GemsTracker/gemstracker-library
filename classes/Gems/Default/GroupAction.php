@@ -64,9 +64,37 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $bridge->addText('ggp_description', 'size', 40);
         $bridge->addSelect('ggp_role');
         $bridge->addCheckbox('ggp_group_active');
-        $bridge->addCheckbox('ggp_staff_members');
-        $bridge->addCheckbox('ggp_respondent_members');
+        $options = array(
+            '1'=>$model->get('ggp_staff_members', 'label'),
+            '2'=>$model->get('ggp_respondent_members', 'label')
+            );
+        $bridge->addRadio('staff_respondent', 'label', $this->_('Can be assigned to'), 'multiOptions', $options);
+        if (!isset($data['staff_respondent'])) {
+            if (isset($data['ggp_staff_members']) && $data['ggp_staff_members'] == 1) {
+                $data['staff_respondent'] = 1;
+            } else if (isset($data['ggp_respondent_members']) && $data['ggp_respondent_members'] == 1) {
+                $data['staff_respondent'] = 2;
+            }
+        }
         $bridge->addText('ggp_allowed_ip_ranges', 'size', 50, 'validator', new Gems_Validate_IPRanges(), 'maxlength', 500);
+
+        return $data;
+    }
+
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
+    {
+        $data['ggp_staff_members'] = 0;
+        $data['ggp_respondent_members'] = 0;
+        if (isset($data['staff_respondent'])) {
+            if ($data['staff_respondent'] == 1) {
+                $data['ggp_staff_members'] = 1;
+            } elseif ($data['staff_respondent'] == 2) {
+                $data['ggp_respondent_members'] = 1;
+            }
+            unset($data['staff_respondent']);
+        }
+
+        return parent::beforeSave($data, $isNew, $form);
     }
 
     /**
