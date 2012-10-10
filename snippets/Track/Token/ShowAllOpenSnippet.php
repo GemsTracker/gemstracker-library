@@ -157,7 +157,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
                     $lastRound = $row['gto_round_description'];
                     $div = $html->div();
                     $div->class = 'askRound';
-                    $div->append(sprintf($this->_('Round: %s'), $row['gto_round_description']));
+                    $div->strong(sprintf($this->_('Round: %s'), $row['gto_round_description']));
                     $div->br();
                 }
                 $token = $tracker->getToken($row);
