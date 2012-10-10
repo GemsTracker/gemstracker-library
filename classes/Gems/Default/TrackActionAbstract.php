@@ -208,6 +208,9 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->util->getTranslated()->formatDate,
             'default', new Zend_Date());
+        $model->set('gr2t_end_date',   'label', $this->_('Ending on'),
+        	'dateFormat', 'dd-MM-yyyy',
+            'formatFunction', $this->util->getTranslated()->formatDate);
         $model->set('gr2t_reception_code');
         $model->set('gr2t_comment',       'label', $this->_('Comment'));
 

@@ -153,6 +153,10 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
             'default', new Zend_Date());
+        $model->set('gr2t_end_date',   'label', $this->_('Ending on'),
+            'dateFormat', 'dd-MM-yyyy',
+            'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
+            'default', new Zend_Date());
         $model->set('gr2t_reception_code');
         $model->set('gr2t_comment',      'label', $this->_('Comment'));
 

@@ -89,6 +89,7 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
         } else {
             $bridge->addDate('gr2t_start_date', 'size', 30);
         }
+        $bridge->addDate('gr2t_end_date', 'size', 30);
 
         if (isset($this->formData['grc_succes']) && $this->formData['grc_succes']) {
             $bridge->addExhibitor('grc_description', 'label', $this->_('Rejection code'));

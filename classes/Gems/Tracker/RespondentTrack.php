@@ -146,8 +146,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
                 //Handle TrackCompletionEvent, send only changed fields in $values array
                 $this->tracker->filterChangesOnly($this->_respTrackData, $values);
                 $this->handleTrackCompletion($values, $userId);
-            } else {
-                $values['gr2t_end_date'] = null;
+            // } else {
+                // NOTE: end date should not be set to null if already set, i.e. the end date should not change
+                // as it is sometimes set manually or by calculation and rounds can use the date for calculation
+                // (Matijs, 10 October 2012)
+                // $values['gr2t_end_date'] = null;
             }
 
             return $this->_updateTrack($values, $userId);
@@ -228,6 +231,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
     private function _updateTrack(array $values, $userId)
     {
+        // MUtil_Echo::track($values);
         if ($this->tracker->filterChangesOnly($this->_respTrackData, $values)) {
             $where = $this->db->quoteInto('gr2t_id_respondent_track = ?', $this->_respTrackId);
 
@@ -247,6 +251,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             }
 
             $this->_respTrackData = $values + $this->_respTrackData;
+            // MUtil_Echo::track($values);
             // return 1;
             return $this->db->update('gems__respondent2track', $values, $where);
 
@@ -668,6 +673,20 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $this->_ensureFieldData(true);
 
         return $this;
+    }
+
+    /**
+     * Set the end date for this respondent track.
+     *
+     * @param mixed $endDate The new end date for this track
+     * @param int $userId The current user
+     * @return int 1 if the token has changed, 0 otherwise
+     */
+    public function setEndDate($endDate, $userId)
+    {
+        $values['gr2t_end_date'] = $endDate;
+
+        return $this->_updateTrack($values, $userId);
     }
 
     /**
