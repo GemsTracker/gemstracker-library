@@ -115,7 +115,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $returnValues = array();
-        
+
         if (APPLICATION_ENV !== 'production') {
             $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
             $num = mt_rand(100000000, 999999999);
@@ -350,6 +350,28 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         return $elements;
+    }
+
+    /**
+     * Returns the default search values for this class instance.
+     *
+     * Used to specify the filter when no values have been entered by the user.
+     *
+     * @return array
+     */
+    public function getDefaultSearchData()
+    {
+        if ($this->getModel()->isMultiOrganization()) {
+            $user = $this->loader->getCurrentUser();
+
+            $orgId = $user->getCurrentOrganizationId();
+            $orgs  = $user->getRespondentOrganizations();
+
+            if (isset($orgs[$orgId])) {
+                return array(MUtil_Model::REQUEST_ID2 => $orgId);
+            }
+        }
+        return parent::getDefaultSearchData();
     }
 
     /**
