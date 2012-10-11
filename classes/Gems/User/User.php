@@ -94,6 +94,16 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     protected $failureIgnoreTime = 600;
 
     /**
+     * Array containing the parameter names that may point to an organization
+     *
+     * @var array
+     */
+    public $possibleOrgIds = array(
+        MUtil_Model::REQUEST_ID2,
+        'gr2o_id_organization',
+        'gto_id_organization');
+
+    /**
      *
      * @var Gems_Project_ProjectSettings
      */
@@ -1376,15 +1386,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 if ($requestCache = $this->session->requestCache) {
 
                     //Create the list of request cache keys that match an organization ID (to be extended)
-                    $possibleOrgIds = array(
-                        MUtil_Model::REQUEST_ID2,
-                        'gr2o_id_organization',
-                        'gto_id_organization');
-
                     foreach ($requestCache as $key => $value) {
                         if (is_array($value)) {
                             foreach ($value as $paramKey => $paramValue) {
-                                if (in_array($paramKey, $possibleOrgIds)) {
+                                if (in_array($paramKey, $this->possibleOrgIds)) {
+
                                     if ($paramValue == $oldOrganizationId) {
                                         $requestCache[$key][$paramKey] = $organizationId;
                                     }

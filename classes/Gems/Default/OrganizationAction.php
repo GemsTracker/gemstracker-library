@@ -74,14 +74,22 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $user     = $this->loader->getCurrentUser();
         $request  = $this->getRequest();
         $orgId    = urldecode($request->getParam('org'));
-        $url      = base64_decode($request->getParam('current_uri'));
+        $oldOrg   = $user->getCurrentOrganizationId();
+        $origUrl  = base64_decode($request->getParam('current_uri'));
 
         $allowedOrganizations = $user->getAllowedOrganizations();
         if (isset($allowedOrganizations[$orgId])) {
             $user->setCurrentOrganization($orgId);
 
-            if ($url) {
-                $this->getResponse()->setRedirect($url);
+            if ($origUrl) {
+                foreach ($user->possibleOrgIds as $key) {
+                    $finds[]    = '/' . $key. '/' . $oldOrg;
+                    $replaces[] = '/' . $key. '/' . $orgId;
+                }
+                $correctUrl = str_replace($finds, $replaces, $origUrl);
+                // MUtil_Echo::track($origUrl, $correctUrl);
+
+                $this->getResponse()->setRedirect($correctUrl);
             } else {
                 $user->gotoStartPage($this->menu, $request);
             }
