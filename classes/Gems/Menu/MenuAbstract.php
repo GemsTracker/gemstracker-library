@@ -413,7 +413,7 @@ abstract class Gems_Menu_MenuAbstract
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
             foreach ($pages as $sub_page) {
-                $sub_page->setParameterFilter('gsf_id_organization', $filter, 'accessible_role', 1);
+                $sub_page->setParameterFilter('gsf_id_organization', $filter, 'accessible_role', true);
             }
         }
 
