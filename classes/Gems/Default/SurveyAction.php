@@ -75,8 +75,8 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
             case 'No tracks found':
                 return $this->translate->_('No surveys found', $locale);
 
-            case 'Overview of %s track for respondent %s':
-                return $this->translate->_('Overview of %s survey for respondent %s', $locale);
+            case 'Overview of %s track for respondent %s: %s':
+                return $this->translate->_('Overview of %s survey for respondent %s: %s', $locale);
 
             case 'This track is currently not assigned to this respondent.':
                 return $this->translate->_('This survey has not been assigned to this respondent.', $locale);
@@ -141,11 +141,13 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
         $result = $this->db->fetchOne('SELECT gto_id_token FROM gems__tokens WHERE gto_id_respondent = ? AND gto_id_survey = ?', $data);
 
         if ($result) {
-            $this->html->h3(sprintf($this->_('Assignments of this survey to %s'), $respId));
+            $this->html->h3(sprintf($this->_('Assignments of this survey to %s: %s'), $respId, $this->getRespondentName()));
+
+            MUtil_Echo::track($result);
 
             // Make sure request cache object is loaded.
             $this->getCachedRequestData();
-            $this->addSnippet('BrowseSingleSurveyTokenSnippet', 'baseUrl', $baseUrl);
+            $this->addSnippet('BrowseSingleSurveyTokenSnippet', 'baseUrl', $baseUrl, 'filter', $data);
         }
 
         return (boolean) $result;
@@ -209,6 +211,9 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
 
     public function getTopicTitle()
     {
-        return $this->_('Assigned surveys');
+        return sprintf($this->_('Surveys assigned to %s: %s'),
+                $this->_getParam(MUtil_Model::REQUEST_ID1),
+                $this->getRespondentName()
+            );
     }
 }

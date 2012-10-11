@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -65,23 +65,23 @@ class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
         $bridge->can_edit;
-        
+
         $controller = $this->request->getControllerName();
-        
+
         $menuList = $this->menu->getMenuList();
-        
+
         $menuList->addByController($controller, 'show-track')
                 ->addByController($controller, 'edit-track')
                 ->addParameterSources($bridge)
                 ->setLowerCase()->showDisabled();
-        
+
         $bridge->setOnEmpty($this->_('No other assignments of this track.'));
-        
+
         // If we have a track Id and is not excluded: mark it!
         if ($this->respondentTrackId && (! $this->excludeCurrent)) {
             $bridge->tr()->appendAttrib('class', MUtil_Lazy::iff(MUtil_Lazy::comp($bridge->gr2t_id_respondent_track, '==', $this->respondentTrackId), 'currentRow', null));
         }
-        
+
         // Add show-track button if allowed, otherwise show, again if allowed
         $bridge->addItemLink($menuList->getActionLink($controller, 'show-track'));
 
@@ -90,7 +90,7 @@ class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
         // Add edit-track button if allowed (and not current
         $bridge->addItemLink($menuList->getActionLink($controller, 'edit-track'));
     }
-    
+
     /**
      * Creates the model
      *
@@ -99,19 +99,19 @@ class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
     protected function createModel()
     {
         $model = parent::createModel();
-        
+
         $model->addColumn('CONCAT(gr2t_completed, \'' . $this->_(' of ') . '\', gr2t_count)', 'progress');
         $model->set('progress', 'label', $this->_('Progress'), 'tdClass', 'rightAlign', 'thClass', 'rightAlign');
-        
+
         return $model;
-    }    
-    
+    }
+
     protected function getTitle()
     {
         if ($this->excludeCurrent) {
-            return sprintf($this->_('Other assignments of this track to %s'), $this->patientId);
+            return sprintf($this->_('Other assignments of this track to %s: %s'), $this->patientId, $this->getRespondentName());
         } else {
-            return sprintf($this->_('Assignments of this track to %s'), $this->patientId);
+            return sprintf($this->_('Assignments of this track to %s: %s'), $this->patientId, $this->getRespondentName());
         }
     }
 }

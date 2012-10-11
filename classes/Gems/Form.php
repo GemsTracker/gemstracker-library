@@ -75,12 +75,14 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      */
     public function __construct($options = null)
     {
-        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', Zend_Form::DECORATOR);
-        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   Zend_Form::ELEMENT);
         parent::__construct($options);
 
-        $this->addPrefixPath('Gems_Form_Decorator',  'Gems/Form/Decorator', Zend_Form::DECORATOR);
+        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', Zend_Form::DECORATOR);
+        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   Zend_Form::ELEMENT);
+        $this->addPrefixPath('Gems_Form_Decorator', 'Gems/Form/Decorator/', Zend_Form::DECORATOR);
+        $this->addPrefixPath('Gems_Form_Element',   'Gems/Form/Element/',   Zend_Form::ELEMENT);
 
+        $this->addElementPrefixPath(GEMS_PROJECT_NAME_UC . '_Validate', GEMS_PROJECT_NAME_UC . '/Validate/', Zend_Form_Element::VALIDATE);
         $this->addElementPrefixPath('Gems_Form_Decorator',  'Gems/Form/Decorator/',  Zend_Form_Element::DECORATOR);
         $this->addElementPrefixPath('Gems_Filter',          'Gems/Filter/',          Zend_Form_Element::FILTER);
         $this->addElementPrefixPath('Gems_Validate',        'Gems/Validate/',        Zend_Form_Element::VALIDATE);
@@ -142,7 +144,7 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      */
     public function afterRegistry()
     { }
-    
+
 	public function getScripts() {
     	return $this->_scripts;
     }

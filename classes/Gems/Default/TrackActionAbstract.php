@@ -56,14 +56,27 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     /**
      *
+     * @var Zend_Db_Adaptor_Abstract
+     */
+    public $db;
+
+    /**
+     *
      * @var Gems_Menu
      */
     public $menu;
 
-    // Set when this controller should only showe results from a single tracktype.
-    public $trackType = null;
+    /**
+     * Storage for respondents name
+     *
+     * @var string
+     */
+    protected $respondentName;
 
     public $summarizedActions = array('index', 'autofilter', 'create');
+
+    // Set when this controller should only showe results from a single tracktype.
+    public $trackType = null;
 
     protected function _createTable()
     {
@@ -190,7 +203,10 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $source->setPatient($patientId, $orgId);
         $engine->applyToMenuSource($source);
 
-        $this->html->h2(sprintf($this->_('Adding the %s track to respondent %s'), $engine->getTrackName(), $patientId));
+        $this->html->h2(sprintf($this->_('Adding the %s track to respondent %s: %s'),
+                $engine->getTrackName(),
+                $patientId,
+                $this->getRespondentName()));
         $this->addSnippets($engine->getTrackCreateSnippetNames(),
                 'trackEngine', $engine, 'patientId', $patientId, 'organizationId', $orgId);
     }
@@ -345,6 +361,39 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         return $elements;
     }
 
+    /**
+     * Get a display version of the patient name
+     *
+     * @param array $data Already loaded data. If the correct data is not supplied, then the function will retrieve it
+     * @return string
+     */
+    protected function getRespondentName(array $data = array())
+    {
+        if ($this->respondentName) {
+            return $this->respondentName;
+        }
+
+        if (! ($data && isset($data['grs_first_name'], $data['grs_surname_prefix'], $data['grs_last_name']))) {
+            list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
+
+            $select = $this->db->select();
+            $select->from('gems__respondents')
+                    ->joinInner('gems__respondent2org', 'grs_id_user = gr2o_id_user', array())
+                    ->where('gr2o_patient_nr = ?', $patientId)
+                    ->where('gr2o_id_organization = ?', $orgId);
+
+            $data = $this->db->fetchRow($select);
+
+            if (! $data) {
+                return '';
+            }
+        }
+
+        $this->respondentName = trim($data['grs_first_name'] . ' ' . $data['grs_surname_prefix']) . ' ' . $data['grs_last_name'];
+        
+        return $this->respondentName;
+    }
+
     public function indexAction()
     {
         $this->initFilter();
@@ -482,7 +531,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $engine->applyToMenuSource($source);
 
         if ($trackData = $this->db->fetchRow('SELECT * FROM gems__tracks WHERE gtr_id_track = ? ', $trackId)) {
-            $this->html->h2(sprintf($this->_('Overview of %s track for respondent %s'), $trackData['gtr_track_name'], $patientId));
+            $this->html->h2(sprintf($this->_('Overview of %s track for respondent %s: %s'), $trackData['gtr_track_name'], $patientId, $this->getRespondentName($trackData)));
             $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackData', $trackData);
 
             if (! $this->addTrackUsage($patientId, $orgId, $trackId, array())) {

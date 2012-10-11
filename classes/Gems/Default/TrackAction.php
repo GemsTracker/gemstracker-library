@@ -169,7 +169,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
             }
 
-            $this->html->h3(sprintf($this->_('Assignments of this track to %s'), $respId));
+            $this->html->h3(sprintf($this->_('Assignments of this track to %s: %s'), $respId, $this->getRespondentName()));
             $this->html[] = $bridge->getTable();
 
             return true;
@@ -458,7 +458,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         if ($this->getModel() instanceof Gems_Tracker_Model_StandardTokenModel) {
             return $this->_('Token');
         } else {
-            return $this->_('Assigned tracks');
+            return sprintf($this->_('Tracks assigned to %s: %s'),
+                    $this->_getParam(MUtil_Model::REQUEST_ID1),
+                    $this->getRespondentName()
+                );
         }
     }
 
@@ -474,7 +477,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         if ($data = $model->applyRequest($request)->loadFirst()) {
             $this->setMenuParameters($data);
-
+            MUtil_Echo::track($data);
             if ($data['grc_description']) {
                 $model->set('grc_description', 'label', $this->_('Rejection code'), 'formatFunction', array($this->translate, '_'));
             }
@@ -483,7 +486,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
             $this->_setParam(Gems_Model::RESPONDENT_TRACK, $data['gr2t_id_respondent_track']);
 
-            $this->html->h2(sprintf($this->_('%s track for respondent nr %s'), $data['gtr_track_name'], $this->_getParam(MUtil_Model::REQUEST_ID1)));
+            $this->html->h2(sprintf($this->_('%s track for respondent nr %s: %s'),
+                    $data['gtr_track_name'],
+                    $this->_getParam(MUtil_Model::REQUEST_ID1),
+                    $this->getRespondentName($data)));
 
             if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
                 $table = parent::getShowTable();

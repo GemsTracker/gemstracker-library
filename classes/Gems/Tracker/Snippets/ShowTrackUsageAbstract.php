@@ -178,6 +178,32 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
         return $seq;
     }
 
+    /**
+     * Get a display version of the patient name
+     *
+     * @return string
+     */
+    protected function getRespondentName()
+    {
+        if ($this->respondentTrack instanceof Gems_Tracker_RespondentTrack) {
+            return $this->respondentTrack->getRespondentName();
+        } else {
+            $select = $this->db->select();
+            $select->from('gems__respondents')
+                    ->joinInner('gems__respondent2org', 'grs_id_user = gr2o_id_user', array())
+                    ->where('gr2o_patient_nr = ?', $this->patientId)
+                    ->where('gr2o_id_organization = ?', $this->organizationId);
+
+            $data = $this->db->fetchRow($select);
+
+            if ($data) {
+                return trim($data['grs_first_name'] . ' ' . $data['grs_surname_prefix']) . ' ' . $data['grs_last_name'];
+            }
+        }
+
+        return '';
+    }
+
     abstract protected function getTitle();
 
     /**

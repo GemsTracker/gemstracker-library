@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -62,6 +62,12 @@ class BrowseSingleSurveyTokenSnippet extends Gems_Snippets_TokenModelSnippetAbst
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var array Token filter
+     */
+    protected $filter = array();
 
     /**
      *
@@ -122,16 +128,7 @@ class BrowseSingleSurveyTokenSnippet extends Gems_Snippets_TokenModelSnippetAbst
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         // */
 
-        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-            $track1 = $HTML->if($bridge->calc_track_name, $HTML->a($href, $bridge->calc_track_name));
-        } else {
-            $track1 = $bridge->calc_track_name;
-        }
-        $track[] = array($track1, $HTML->if($bridge->calc_track_info, $HTML->small(' [', $bridge->calc_track_info, ']')));
-        $track[] = array($bridge->createSortLink('calc_track_name'), $HTML->small(' [', $bridge->createSortLink('calc_track_info'), ']'));
-
-        $bridge->addMultiSort($track);
+        $bridge->addMultiSort('gtr_track_name');
         $bridge->addMultiSort('calc_round_description');
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
@@ -179,15 +176,18 @@ class BrowseSingleSurveyTokenSnippet extends Gems_Snippets_TokenModelSnippetAbst
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        $respId  = $this->request->getParam(MUtil_Model::REQUEST_ID);
-        $orgId   = $model->getCurrentOrganization();
-        $trackId = $this->request->getParam(Gems_Model::TRACK_ID);
+        if (true || ! $this->filter) {
+            $patientId = $this->request->getParam(MUtil_Model::REQUEST_ID1);
+            $orgId     = $this->request->getParam(MUtil_Model::REQUEST_ID2);
+            $trackId   = $this->request->getParam(Gems_Model::TRACK_ID);
 
-        $data['grs_id_user']   = $this->db->fetchOne('SELECT gr2o_id_user FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?', array($respId, $orgId));
-        $data['gsu_id_survey'] = $this->db->fetchOne('SELECT gro_id_survey FROM gems__rounds WHERE gro_id_track = ?', $trackId);
-        // $data['gr2o_patient_nr'] = $this->request->getParam(MUtil_Model::REQUEST_ID);
-        // $data['gro_id_track']    = $this->request->getParam(Gems_Model::TRACK_ID);
-        $model->addFilter($data);
+            $this->filter['gr2o_patient_nr']      = $patientId;
+            $this->filter['gr2o_id_organization'] = $orgId;
+            $this->filter['gro_id_track']         = $trackId;
+
+            // MUtil_Echo::track($this->filter);
+        }
+        $model->addFilter($this->filter);
 
         $this->processSortOnly($model);
     }

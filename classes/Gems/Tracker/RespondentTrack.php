@@ -511,6 +511,20 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the name of the respondent
+     *
+     * @return string The respondents name
+     */
+    public function getRespondentName()
+    {
+        if (! isset($this->_respTrackData['grs_first_name'], $this->_respTrackData['grs_surname_prefix'], $this->_respTrackData['grs_last_name'])) {
+            $this->_ensureRespondentData();
+        }
+
+        return trim($this->_respTrackData['grs_first_name'] . ' ' . $this->_respTrackData['grs_surname_prefix']) . ' ' . $this->_respTrackData['grs_last_name'];
+    }
+
+    /**
      *
      * @return int The respondent2track id
      */
