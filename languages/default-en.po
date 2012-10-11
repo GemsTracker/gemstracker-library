@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-11 14:52+0100\n"
+"POT-Creation-Date: 2012-10-11 18:28+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -290,7 +290,7 @@ msgstr "Change password"
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:195
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:188
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:197
-#: snippets/BrowseSingleSurveyTokenSnippet.php:167
+#: snippets/BrowseSingleSurveyTokenSnippet.php:164
 #: snippets/TrackTokenOverviewSnippet.php:132
 #: snippets/Organization/OrganizationEditSnippet.php:89
 #: snippets/Track/Token/ShowAllOpenSnippet.php:88
@@ -305,7 +305,7 @@ msgstr "Export"
 #: classes/Gems/Menu.php:310 classes/Gems/Default/MailJobAction.php:99
 #: classes/Gems/Default/ProjectTracksAction.php:64
 #: classes/Gems/Default/TrackAction.php:328
-#: classes/Gems/Default/TrackActionAbstract.php:203
+#: classes/Gems/Default/TrackActionAbstract.php:219
 #: classes/Gems/Default/TrackFieldsAction.php:96
 #: classes/Gems/Email/OneMailForm.php:54
 #: classes/Gems/Export/RespondentExport.php:224
@@ -652,7 +652,7 @@ msgstr "No"
 #: classes/Gems/Default/RespondentAction.php:246
 #: classes/Gems/Default/RespondentAction.php:478
 #: classes/Gems/Default/RespondentAction.php:516
-#: classes/Gems/Default/TrackAction.php:548
+#: classes/Gems/Default/TrackAction.php:554
 #, php-format
 msgid "Unknown %s requested"
 msgstr "Unknown %s requested"
@@ -814,7 +814,7 @@ msgstr "The survey for token %s is no longer active."
 #: classes/Gems/Default/RoleAction.php:232
 #: classes/Gems/Default/SurveyMaintenanceAction.php:200
 #: classes/Gems/Default/SurveyMaintenanceAction.php:414
-#: classes/Gems/Default/TrackActionAbstract.php:204
+#: classes/Gems/Default/TrackActionAbstract.php:220
 #: classes/Gems/Default/TrackFieldsAction.php:101
 #: classes/Gems/Default/UpgradeAction.php:176
 #: classes/Gems/Export/RespondentExport.php:225
@@ -1198,7 +1198,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 #: classes/Gems/Default/ExportAction.php:154
 #: classes/Gems/Default/MailJobAction.php:100
 #: classes/Gems/Default/ProjectSurveysAction.php:67
-#: classes/Gems/Default/SurveyAction.php:191
+#: classes/Gems/Default/SurveyAction.php:193
 #: classes/Gems/Email/OneMailForm.php:57
 #: classes/Gems/Export/RespondentExport.php:145
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:755
@@ -1896,7 +1896,7 @@ msgstr[1] "organizations"
 
 #: classes/Gems/Default/OverviewPlanAction.php:115
 #: classes/Gems/Default/ProjectSurveysAction.php:88
-#: classes/Gems/Default/SurveyAction.php:207
+#: classes/Gems/Default/SurveyAction.php:209
 #: classes/Gems/Default/SurveyMaintenanceAction.php:559
 #: classes/Gems/Tracker/Snippets/EditSingleSurveyTokenSnippetAbstract.php:157
 msgid "survey"
@@ -2022,14 +2022,14 @@ msgid "Session"
 msgstr "Session"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:68
-#: classes/Gems/Default/SurveyAction.php:192
+#: classes/Gems/Default/SurveyAction.php:194
 #: snippets/TrackSurveyOverviewSnippet.php:113
 msgid "By"
 msgstr "By"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:69
 #: classes/Gems/Default/ProjectTracksAction.php:67
-#: classes/Gems/Default/SurveyAction.php:193
+#: classes/Gems/Default/SurveyAction.php:195
 #: classes/Gems/Default/TrackAction.php:330
 #: classes/Gems/Email/EmailFormAbstract.php:193
 #: classes/Gems/Email/EmailFormAbstract.php:251
@@ -2040,7 +2040,7 @@ msgstr "From"
 
 #: classes/Gems/Default/ProjectSurveysAction.php:70
 #: classes/Gems/Default/ProjectTracksAction.php:68
-#: classes/Gems/Default/SurveyAction.php:197
+#: classes/Gems/Default/SurveyAction.php:199
 #: classes/Gems/Default/TrackAction.php:332
 msgid "Until"
 msgstr "Until"
@@ -2084,7 +2084,7 @@ msgid "Survey not specified."
 msgstr "Survey not specified."
 
 #: classes/Gems/Default/ProjectTracksAction.php:132
-#: classes/Gems/Default/TrackActionAbstract.php:496
+#: classes/Gems/Default/TrackActionAbstract.php:545
 #, php-format
 msgid "Track %s does not exist."
 msgstr "Track %s does not exist."
@@ -2219,7 +2219,7 @@ msgstr "Treatment"
 
 #: classes/Gems/Default/RespondentAction.php:257
 #: classes/Gems/Default/TrackAction.php:132
-#: classes/Gems/Default/TrackAction.php:479
+#: classes/Gems/Default/TrackAction.php:482
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:212
 #: snippets/DeleteInSourceTrackSnippet.php:112
 #: snippets/EditTrackSnippet.php:95
@@ -2264,7 +2264,7 @@ msgid "Separate multiple respondents with a comma (,)"
 msgstr "Separate multiple respondents with a comma (,)"
 
 #: classes/Gems/Default/RespondentPlanAction.php:67
-#: classes/Gems/Default/SurveyAction.php:171
+#: classes/Gems/Default/SurveyAction.php:173
 #: classes/Gems/Default/TrackAction.php:297
 #: snippets/DeleteInSourceTrackSnippet.php:132
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
@@ -2604,8 +2604,8 @@ msgstr "No surveys found"
 
 #: classes/Gems/Default/SurveyAction.php:79
 #, php-format
-msgid "Overview of %s survey for respondent %s"
-msgstr "Overview of %s survey for patient %s"
+msgid "Overview of %s survey for respondent %s: %s"
+msgstr "Overview of %s survey for respondent %s: %s"
 
 #: classes/Gems/Default/SurveyAction.php:82
 msgid "This survey has not been assigned to this respondent."
@@ -2613,10 +2613,10 @@ msgstr "This survey has not been assigned to this patient."
 
 #: classes/Gems/Default/SurveyAction.php:144
 #, php-format
-msgid "Assignments of this survey to %s"
-msgstr "Assignments of this survey to %s"
+msgid "Assignments of this survey to %s: %s"
+msgstr "Assignments of this survey to %s: %s"
 
-#: classes/Gems/Default/SurveyAction.php:165
+#: classes/Gems/Default/SurveyAction.php:167
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:144
 #: snippets/EditSingleSurveyTokenSnippet.php:133
@@ -2624,10 +2624,10 @@ msgstr "Assignments of this survey to %s"
 msgid "Show surveys"
 msgstr "Show surveys"
 
-#: classes/Gems/Default/SurveyAction.php:212
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:77
-msgid "Assigned surveys"
-msgstr "Assigned surveys"
+#: classes/Gems/Default/SurveyAction.php:214
+#, php-format
+msgid "Surveys assigned to %s: %s"
+msgstr "Surveys assigned to %s: %s"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:123
 msgid "If empty, survey will never show up!"
@@ -2908,7 +2908,7 @@ msgstr "(all staff)"
 #: classes/Gems/Default/TokenPlanAction.php:471
 #: classes/Gems/Snippets/TokenModelSnippetAbstract.php:59
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:122
-#: snippets/BrowseSingleSurveyTokenSnippet.php:147
+#: snippets/BrowseSingleSurveyTokenSnippet.php:144
 #: snippets/TrackTokenOverviewSnippet.php:98
 msgid "+"
 msgstr "+"
@@ -2934,8 +2934,8 @@ msgstr "Patient name"
 #: classes/Gems/Default/TrackAction.php:172
 #: snippets/ShowTrackUsageSnippet.php:114
 #, php-format
-msgid "Assignments of this track to %s"
-msgstr "Assignments of this track to %s"
+msgid "Assignments of this track to %s: %s"
+msgstr "Assignments of this track to %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:269
 #: classes/Gems/Default/TrackAction.php:282
@@ -2987,50 +2987,50 @@ msgid "Delete track"
 msgstr "Delete track"
 
 #: classes/Gems/Default/TrackAction.php:461
-#: snippets/RespondentDetailsWithAssignmentsSnippet.php:86
-msgid "Assigned tracks"
-msgstr "Assigned tracks"
-
-#: classes/Gems/Default/TrackAction.php:486
 #, php-format
-msgid "%s track for respondent nr %s"
-msgstr "%s track for patient  nr %s"
+msgid "Tracks assigned to %s: %s"
+msgstr "Tracks assigned to %s: %s"
 
-#: classes/Gems/Default/TrackAction.php:543
+#: classes/Gems/Default/TrackAction.php:489
+#, php-format
+msgid "%s track for respondent nr %s: %s"
+msgstr "%s track for respondent nr %s: %s"
+
+#: classes/Gems/Default/TrackAction.php:549
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:184
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:234
 msgid "Add track"
 msgstr "Add track"
 
-#: classes/Gems/Default/TrackAction.php:544
+#: classes/Gems/Default/TrackAction.php:550
 msgid "This respondent does not yet have an active track. Add one here."
 msgstr "This paitent does not yet have an active track. Add one here."
 
-#: classes/Gems/Default/TrackActionAbstract.php:106
+#: classes/Gems/Default/TrackActionAbstract.php:119
 msgid "No tracks found"
 msgstr "No tracks found"
 
-#: classes/Gems/Default/TrackActionAbstract.php:126
+#: classes/Gems/Default/TrackActionAbstract.php:139
 msgid "Available tracks"
 msgstr "Available tracks"
 
-#: classes/Gems/Default/TrackActionAbstract.php:167
+#: classes/Gems/Default/TrackActionAbstract.php:180
 #, php-format
 msgid "Token answers: %s"
 msgstr "Token answers: %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:193
+#: classes/Gems/Default/TrackActionAbstract.php:206
 #, php-format
-msgid "Adding the %s track to respondent %s"
-msgstr "Adding the %s track to patient %s"
+msgid "Adding the %s track to respondent %s: %s"
+msgstr "Adding the %s track to respondent %s: %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:205
+#: classes/Gems/Default/TrackActionAbstract.php:221
 #: classes/Gems/Export/RespondentExport.php:226
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:148
 msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Enter the particulars concerning the assignment to this patient."
 
-#: classes/Gems/Default/TrackActionAbstract.php:206
+#: classes/Gems/Default/TrackActionAbstract.php:222
 #: classes/Gems/Export/RespondentExport.php:227
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:207
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:151
@@ -3039,19 +3039,19 @@ msgstr "Enter the particulars concerning the assignment to this patient."
 msgid "Assigned by"
 msgstr "Assigned by"
 
-#: classes/Gems/Default/TrackActionAbstract.php:207
+#: classes/Gems/Default/TrackActionAbstract.php:223
 #: classes/Gems/Export/RespondentExport.php:228
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:152
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:150
 msgid "Start"
 msgstr "Start"
 
-#: classes/Gems/Default/TrackActionAbstract.php:211
+#: classes/Gems/Default/TrackActionAbstract.php:227
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:156
 msgid "Ending on"
 msgstr "Ending on"
 
-#: classes/Gems/Default/TrackActionAbstract.php:215
+#: classes/Gems/Default/TrackActionAbstract.php:231
 #: classes/Gems/Export/RespondentExport.php:232
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:161
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:278
@@ -3059,23 +3059,23 @@ msgstr "Ending on"
 msgid "Comment"
 msgstr "Comment"
 
-#: classes/Gems/Default/TrackActionAbstract.php:302
+#: classes/Gems/Default/TrackActionAbstract.php:318
 #, php-format
 msgid "Email %s %s"
 msgstr "Email %s %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:308
+#: classes/Gems/Default/TrackActionAbstract.php:324
 #, php-format
 msgid "%s %s not found."
 msgstr "%s %s not found."
 
-#: classes/Gems/Default/TrackActionAbstract.php:485
+#: classes/Gems/Default/TrackActionAbstract.php:534
 #, php-format
-msgid "Overview of %s track for respondent %s"
-msgstr "Overview of %s track for patient %s"
+msgid "Overview of %s track for respondent %s: %s"
+msgstr "Overview of %s track for respondent %s: %s"
 
-#: classes/Gems/Default/TrackActionAbstract.php:489
-#: snippets/BrowseSingleSurveyTokenSnippet.php:98
+#: classes/Gems/Default/TrackActionAbstract.php:538
+#: snippets/BrowseSingleSurveyTokenSnippet.php:104
 msgid "This track is currently not assigned to this respondent."
 msgstr "This track is currently not assigned to this patient."
 
@@ -4060,7 +4060,7 @@ msgid "Duration in seconds"
 msgstr "Duration in seconds"
 
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:202
-#: snippets/BrowseSingleSurveyTokenSnippet.php:141
+#: snippets/BrowseSingleSurveyTokenSnippet.php:138
 #: snippets/RespondentTokenSnippet.php:135
 #: snippets/TrackTokenOverviewSnippet.php:115
 msgid "Score"
@@ -4961,6 +4961,14 @@ msgstr "Patient nr:"
 msgid "Address"
 msgstr "Address"
 
+#: snippets/RespondentDetailsWithAssignmentsSnippet.php:77
+msgid "Assigned surveys"
+msgstr "Assigned surveys"
+
+#: snippets/RespondentDetailsWithAssignmentsSnippet.php:86
+msgid "Assigned tracks"
+msgstr "Assigned tracks"
+
 #: snippets/RespondentDetailsWithAssignmentsSnippet.php:110
 msgid "No surveys"
 msgstr "No surveys"
@@ -5000,8 +5008,8 @@ msgstr "No other assignments of this track."
 
 #: snippets/ShowTrackUsageSnippet.php:112
 #, php-format
-msgid "Other assignments of this track to %s"
-msgstr "Other assignments of this track to %s"
+msgid "Other assignments of this track to %s: %s"
+msgstr "Other assignments of this track to %s: %s"
 
 #: snippets/SurveyQuestionsSnippet.php:129
 msgid "Answer options"
@@ -5629,9 +5637,6 @@ msgstr[1] ""
 
 #~ msgid "In progress"
 #~ msgstr "In progress"
-
-#~ msgid "No tracks assigned to respondent nr: %s"
-#~ msgstr "No tracks assigned to patient nr: %s"
 
 #~ msgid "Hand dom."
 #~ msgstr "Hand dom."
