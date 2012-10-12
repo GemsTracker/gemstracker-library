@@ -82,13 +82,16 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             $user->setCurrentOrganization($orgId);
 
             if ($origUrl) {
-                foreach ($user->possibleOrgIds as $key) {
-                    $finds[]    = '/' . $key. '/' . $oldOrg;
-                    $replaces[] = '/' . $key. '/' . $orgId;
+                if (strpos($origUrl, '/index/') === false) {
+                    $correctUrl = $origUrl;
+                } else {
+                    foreach ($user->possibleOrgIds as $key) {
+                        $finds[]    = '/' . $key. '/' . $oldOrg;
+                        $replaces[] = '/' . $key. '/' . $orgId;
+                    }
+                    $correctUrl = str_replace($finds, $replaces, $origUrl);
                 }
-                $correctUrl = str_replace($finds, $replaces, $origUrl);
                 // MUtil_Echo::track($origUrl, $correctUrl);
-
                 $this->getResponse()->setRedirect($correctUrl);
             } else {
                 $user->gotoStartPage($this->menu, $request);

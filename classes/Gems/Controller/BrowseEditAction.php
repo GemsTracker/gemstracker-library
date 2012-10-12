@@ -439,7 +439,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $this->_applySearchParameters($model, true);
 
         $this->addExcelColumns($model);     // Hook to modify the model
-        
+
         // Use $this->formatExcelData to switch between formatted and unformatted data
         $excelData = new Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
 
@@ -636,7 +636,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             foreach ($data as $key => $value) {
                 if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
                     unset($data[$key]);
-                }              
+                }
             }
         }
 
