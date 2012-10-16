@@ -82,14 +82,15 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             $user->setCurrentOrganization($orgId);
 
             if ($origUrl) {
-                if (strpos($origUrl, '/index/') === false) {
-                    $correctUrl = $origUrl;
-                } else {
+                // Check for organisation id in url, but not when a patient id is stated
+                if (strpos($origUrl, '/' . MUtil_Model::REQUEST_ID1 . '/') === false) {
                     foreach ($user->possibleOrgIds as $key) {
                         $finds[]    = '/' . $key. '/' . $oldOrg;
                         $replaces[] = '/' . $key. '/' . $orgId;
                     }
                     $correctUrl = str_replace($finds, $replaces, $origUrl);
+                } else {
+                    $correctUrl = $origUrl;
                 }
                 // MUtil_Echo::track($origUrl, $correctUrl);
                 $this->getResponse()->setRedirect($correctUrl);
