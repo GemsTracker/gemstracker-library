@@ -74,37 +74,10 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
             $keys += array_filter($row->getArrayCopy());
         }
 
-        $lastMain = null;
-        $names    = array();
-        foreach ($currentNames as $name) {
-            $exists = isset($keys[$name]);
+        $results = array_intersect($currentNames, array_keys($keys));
+        // MUtil_Echo::track($results);
 
-            // Keep track of should a main question be displayed.
-            // The question or a sub question should be answered
-            if ($model->get($name, 'thClass') === 'question') {
-                if ($lastMain) {
-                    unset($names[$lastMain]);
-                }
-
-                if ($exists) {
-                    $lastMain = null; // Has value, display
-                } else {
-                    $exists   = true;  // Add to list for the moment
-                    $lastMain = $name; // But keep track for possible removal
-                }
-            } elseif ($exists) {
-                $lastMain = null; // Must display last main question
-            }
-
-
-            if ($exists) {
-                $names[$name] = $name;
-                // MUtil_Echo::track($name, $model->get($name, 'thClass'), $model->get($name, 'label'));
-            }
-        }
-        // MUtil_Echo::track($names);
-
-        return $names;
+        return $this->restoreHeaderPositions($model, $results);
     }
 
     /**

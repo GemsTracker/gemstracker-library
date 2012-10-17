@@ -59,7 +59,7 @@ class Gems_Event_Survey_Display_Reverse extends Gems_Event_SurveyAnswerFilterAbs
      */
     public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
-        return array_reverse($currentNames);
+        return $this->restoreHeaderPositions($model, array_reverse($currentNames));
     }
 
     /**

@@ -545,7 +545,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Use <code>$this->set('fieldname', 'order', <value>);</code> to set a custom ordering.
      *
      * @see set()
-     * @return array
+     * @return array int => name
      */
     public function getItemsOrdered()
     {

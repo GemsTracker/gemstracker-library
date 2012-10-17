@@ -47,6 +47,16 @@
 class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
 {
     /**
+     * Constant containing css classname for main questions
+     */
+    const CLASS_MAIN_QUESTION = 'question';
+
+    /**
+     * Constant containing css classname for subquestions
+     */
+    const CLASS_SUB_QUESTION  = 'question_sub';
+
+    /**
      *
      * @var Gems_Tracker_Source_SourceInterface
      */

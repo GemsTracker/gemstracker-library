@@ -36,7 +36,11 @@
  */
 
 /**
- * Put the highest value first
+ * Display those questions that are answered with 'yes' op top
+ *
+ * Questions names that are the same as the yes question but with a longer name
+ * separated by an '_' are moved with the question, as are header questions
+ * (which may be doubled when not all question come out on top).
  *
  * @package    Gems
  * @subpackage Events
@@ -44,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Event_Survey_Display_ByValue extends Gems_Event_SurveyAnswerFilterAbstract
+class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAbstract
 {
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
@@ -59,22 +63,32 @@ class Gems_Event_Survey_Display_ByValue extends Gems_Event_SurveyAnswerFilterAbs
      */
     public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
-        $currentNames = array_combine($currentNames, $currentNames);
-        $newOrder     = array();
-        $values       = array_filter($this->token->getRawAnswers(), 'is_numeric');
-        arsort($values);
+        if (! $this->token->isCompleted()) {
+            return $currentNames;
+        }
 
+        $answers  = $this->token->getRawAnswers();
+        $onTop    = array();
 
-        foreach ($values as $key => $value) {
-            if (isset($currentNames[$key])) {
-                unset($currentNames[$key]);
-                $newOrder[] = $key;
+        // MUtil_Echo::track($answers);
+
+        foreach($answers as $name => $value) {
+            if ($value === 'Y') {
+                $onTop[$name] = $name;
+            } else {
+                $nameParts = explode('_', $name);
+
+                if (count($nameParts) > 1) {
+                    if (isset($onTop[$nameParts[0]])) {
+                        $onTop[$name] = $name;
+                    }
+                }
             }
         }
 
-        // MUtil_Echo::track($this->_values, $newOrder, $newOrder + $currentNames);
+        // MUtil_Echo::track($onTop, $onTop + $currentNames, $currentNames);
 
-        return $this->restoreHeaderPositions($model, $newOrder + $currentNames);
+        return $this->restoreHeaderPositions($model, $onTop + $currentNames);
     }
 
     /**
@@ -84,6 +98,6 @@ class Gems_Event_Survey_Display_ByValue extends Gems_Event_SurveyAnswerFilterAbs
      */
     public function getEventName()
     {
-        return $this->translate->_('Show the highest answer first.');
+        return $this->translate->_('Yes answers on top.');
     }
 }

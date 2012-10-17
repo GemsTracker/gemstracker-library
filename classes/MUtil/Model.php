@@ -78,6 +78,7 @@ class MUtil_Model
      */
     const TEXT_FILTER = 'search';
 
+    const TYPE_NOVALUE = 0;
     const TYPE_STRING = 1;
     const TYPE_NUMERIC = 2;
     const TYPE_DATE = 3;

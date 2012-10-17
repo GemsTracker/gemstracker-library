@@ -604,7 +604,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         foreach ($map as $name => $field) {
 
             $tmpres = array();
-            $tmpres['thClass'] = 'question';
+            $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group']   = $field['gid'];
             $tmpres['type']    = $this->_getType($field);
 
@@ -625,13 +625,14 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     // Add non answered question for grouping and make it the current parent
                     $parent = '_' . $name . '_';
                     $model->set($parent, $tmpres);
+                    $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
                     $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeHtml($field['sq_question']), $this->removeHtml($field['sq_question1'])));
                 } else {
                     $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
                 }
-                $tmpres['thClass'] = 'question_sub';
+                $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
             if ($options = $this->_getMultiOptions($field)) {
                 $tmpres['multiOptions'] = $options;
@@ -643,7 +644,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             // Parent storage
-            if ('question' === $tmpres['thClass']) {
+            if (Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
                 $parent = $name;
             } elseif ($parent) {
                 // Add the name of the parent item
@@ -675,7 +676,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
         foreach ($map as $name => $field) {
             $tmpres = array();
-            $tmpres['class'] = 'question';
+            $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group'] = $field['gid'];
             $tmpres['type']  = $field['type'];
             $tmpres['title'] = $field['title'];
@@ -700,7 +701,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     // "Next" question
                     $tmpres['question'] = $this->removeMarkup($field['sq_question']);
                 }
-                $tmpres['class'] = 'question_sub';
+                $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
             $tmpres['answers'] = $this->_getPossibleAnswers($field);
 
