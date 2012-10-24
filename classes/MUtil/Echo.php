@@ -208,7 +208,9 @@ class MUtil_Echo
         if (isset($trace[1]['type'])) {
             $header .= $trace[1]['class'] . $trace[1]['type'];
         }
-        $header .= $trace[1]['function'] . '() ';
+        if (isset($trace[1]['function'])) {
+            $header .= $trace[1]['function'] . '() ';
+        }
         if (isset($trace[0]['line'])) {
             $header .= ': ' . $trace[0]['line'];
         }
