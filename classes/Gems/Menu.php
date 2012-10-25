@@ -278,7 +278,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     {
         $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
 
-        // $params = array(MUtil_Model::REQUEST_ID => 'gr2o_patient_nr');
         $params = array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
 
         // MAIN RESPONDENTS ITEM

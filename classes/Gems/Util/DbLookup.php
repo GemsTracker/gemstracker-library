@@ -92,7 +92,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $organizations;
     }
-    
+
     /**
      * Return key/value pairs of all active staff members
      *
@@ -338,6 +338,27 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         return $organizations;
     }
 
+    /**
+     * Find the respondent id corresponding to this patientNr / Orgid combo
+     *
+     * @param string $patientNr
+     * @param int $orgid
+     * @return int A respondent id or null
+     */
+    public function getRespondentId($patientNr, $orgid)
+    {
+        $result = $this->db->fetchOne("SELECT gr2o_id_user FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?", array($patientNr, $orgid));
+
+        if ($result !== false) {
+            return $result;
+        }
+    }
+
+    /**
+     * Returns the roles in the acl
+     *
+     * @return array roleId => ucfirst(roleId)
+     */
     public function getRoles()
     {
         $roles = array();

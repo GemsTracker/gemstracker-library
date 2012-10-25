@@ -572,9 +572,9 @@ class GemsEscort extends MUtil_Application_Escort
 
             if ($menuItem) {
                 $contactDiv = MUtil_Html::create()->div(
-                        $args,
-                        array('id' => 'contact')
-                        );  // tooltip
+                    $args,
+                    array('id' => 'contact')
+                );  // tooltip
                 $contactDiv->a($menuItem->toHRefAttribute(), $menuItem->get('label'));
 
                 $ul = $menuItem->toUl();
@@ -689,13 +689,13 @@ class GemsEscort extends MUtil_Application_Escort
         $icon = isset($this->project->favicon) ? $this->project->favicon : 'favicon.ico';
         if (file_exists(GEMS_WEB_DIR . '/' . $icon)) {
             $this->view->headLink(
-                    array(
-                        'rel' => 'shortcut icon',
-                        'href' =>  $this->basepath->getBasePath() . '/' . $icon,
-                        'type' => 'image/x-icon'
-                        ),
-                    Zend_View_Helper_Placeholder_Container_Abstract::PREPEND
-                    );
+                array(
+                    'rel' => 'shortcut icon',
+                    'href' =>  $this->basepath->getBasePath() . '/' . $icon,
+                    'type' => 'image/x-icon'
+                    ),
+                Zend_View_Helper_Placeholder_Container_Abstract::PREPEND
+                );
         }
     }
 
@@ -749,12 +749,15 @@ class GemsEscort extends MUtil_Application_Escort
                 if ($locale == $this->view->locale) {
                     $localeDiv->span(strtoupper($locale));
                 } else {
-                    $localeDiv->a(array(
+                    $localeDiv->a(
+                            array(
                                 'controller' => 'language',
                                 'action' => 'change-ui',
                                 'language' => urlencode($locale),
                                 'current_uri' => $currentUri
-                            ), strtoupper($locale));
+                            ),
+                            strtoupper($locale)
+                        );
                 }
                 $localeDiv[] = ' ';
             }
@@ -914,7 +917,12 @@ class GemsEscort extends MUtil_Application_Escort
                 $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
 
                 $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
-                $formDiv->input(array('type' => "hidden", 'name' => "current_uri", 'value' => base64_encode($currentUri)));
+                $formDiv->input(
+                        array(
+                            'type'  => "hidden",
+                            'name'  => "current_uri",
+                            'value' => base64_encode($currentUri))
+                        );
 
                 $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
                 foreach ($orgs as $id => $org) {
@@ -1122,7 +1130,9 @@ class GemsEscort extends MUtil_Application_Escort
 
     protected function createProjectClass($className, $paramOne = null, $paramTwo = null)
     {
-        if (file_exists(APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/' . str_replace('_', '/', $className) . '.php')) {
+        $filename = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/';
+        $filename .= str_replace('_', '/', $className) . '.php';
+        if (file_exists($filename)) {
             $className = GEMS_PROJECT_NAME_UC . '_' . $className;
         } else {
             $className = 'Gems_' . $className;
@@ -1140,7 +1150,9 @@ class GemsEscort extends MUtil_Application_Escort
                 return new $className($paramOne, $paramTwo);
 
             default:
-                throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . '() called with more parameters than possible.');
+                throw new Gems_Exception_Coding(
+                        __CLASS__ . '->' . __FUNCTION__ . '() called with more parameters than possible.'
+                        );
         }
     }
 
@@ -1167,7 +1179,9 @@ class GemsEscort extends MUtil_Application_Escort
     {
         // Check the installation
         if (! isset($this->db)) {
-            $this->setException(new Gems_Exception_Coding('No database registered in ' . GEMS_PROJECT_NAME . 'Application.ini for key resources.db.'));
+            $this->setException(new Gems_Exception_Coding(
+                    'No database registered in ' . GEMS_PROJECT_NAME . 'Application.ini for key resources.db.')
+                    );
         }
     }
 
@@ -1315,7 +1329,9 @@ class GemsEscort extends MUtil_Application_Escort
                     break;
 
                 default:
-                    throw new Zend_Application_Exception('Invalid configuration file provided; unknown config type ' . $extension);
+                    throw new Zend_Application_Exception(
+                            'Invalid configuration file provided; unknown config type ' . $extension
+                            );
 
             }
 
@@ -1402,7 +1418,8 @@ class GemsEscort extends MUtil_Application_Escort
         if ($request->isDispatched()) {
 
             // Only when we need to render the layout, we run the layout prepare
-            if (Zend_Controller_Action_HelperBroker::hasHelper('layout') && Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->isEnabled()) {
+            if (Zend_Controller_Action_HelperBroker::hasHelper('layout') &&
+                    Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->isEnabled()) {
 
                 // Per project layout preparation
                 if (isset($this->project->layoutPrepare)) {
@@ -1609,7 +1626,8 @@ class GemsEscort extends MUtil_Application_Escort
 
         // Gems does not use index/index
         $action = $request->getActionName();
-        if (('index' == $request->getControllerName()) && (('index' == $action) || ($user->isActive() && ('login' == $action)))) {
+        if (('index' == $request->getControllerName()) &&
+                (('index' == $action) || ($user->isActive() && ('login' == $action)))) {
             // Instead Gems routes to the first available menu item when this is the request target
             if (! $user->gotoStartPage($this->menu, $request)) {
                 $this->setError(
@@ -1758,7 +1776,10 @@ class GemsEscort extends MUtil_Application_Escort
         // Count todo
         $tSelect = $this->getLoader()->getTracker()->getTokenSelect(array(
             'all'   => 'COUNT(*)',
-            'track' => $this->db->quoteInto('SUM(CASE WHEN gto_id_respondent_track = ? THEN 1 ELSE 0 END)', $tokenData['gto_id_respondent_track'])));
+            'track' => $this->db->quoteInto(
+                    'SUM(CASE WHEN gto_id_respondent_track = ? THEN 1 ELSE 0 END)',
+                    $tokenData['gto_id_respondent_track'])
+            ));
         $tSelect->andSurveys(array())
             ->forRespondent($tokenData['gto_id_respondent'], $tokenData['gto_id_organization'])
             ->forGroupId($tokenData['gsu_id_primary_group'])
@@ -1770,7 +1791,8 @@ class GemsEscort extends MUtil_Application_Escort
         $result['{first_name}'] = $tokenData['grs_first_name'];
         $result['{full_name}']  = implode(' ', $hello);
         $result['{greeting}']   = implode(' ', $greeting);
-        $result['{last_name}']  = ($tokenData['grs_surname_prefix'] ? $tokenData['grs_surname_prefix'] . ' ' : '') . $tokenData['grs_last_name'];
+        $result['{last_name}']  = ($tokenData['grs_surname_prefix'] ? $tokenData['grs_surname_prefix'] . ' ' : '');
+        $result['{last_name}']  .= $tokenData['grs_last_name'];
         array_shift($hello);
         $result['{name}']       = implode(' ', $hello);
 
@@ -1780,8 +1802,9 @@ class GemsEscort extends MUtil_Application_Escort
 
         $result['{site_ask_url}']            = $orgResults['organization_login_url'] . '/ask/';
         // Url's
-        $url       = $orgResults['organization_login_url'] . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
-        $url_input = $result['{site_ask_url}'] . 'index/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
+        $url      = $orgResults['organization_login_url'] . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/';
+        $url      .= $tokenData['gto_id_token'];
+        $urlInput = $result['{site_ask_url}'] . 'index/' . MUtil_Model::REQUEST_ID . '/' . $tokenData['gto_id_token'];
 
         $result['{survey}']           = $tokenData['gsu_survey_name'];
 
@@ -1792,14 +1815,14 @@ class GemsEscort extends MUtil_Application_Escort
 
         $result['{token}']            = strtoupper($tokenData['gto_id_token']);
         $result['{token_from}']       = MUtil_Date::format($tokenData['gto_valid_from'], Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
-        // $result['{token_input}']      = MUtil_Html::create()->a($url_input, $tokenData['gsu_survey_name']);
+        // $result['{token_input}']      = MUtil_Html::create()->a($urlInput, $tokenData['gsu_survey_name']);
         // $result['{token_link}']       = MUtil_Html::create()->a($url, $tokenData['gsu_survey_name']);
         // $result['{token_link}']       = '<a href="' . $url . '">' . $tokenData['gsu_survey_name'] . '</a>';
         $result['{token_link}']       = '[url=' . $url . ']' . $tokenData['gsu_survey_name'] . '[/url]';
 
         $result['{token_until}']      = MUtil_Date::format($tokenData['gto_valid_until'], Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
         $result['{token_url}']        = $url;
-        $result['{token_url_input}']  = $url_input;
+        $result['{token_url_input}']  = $urlInput;
 
         $result['{track}']            = $tokenData['gtr_track_name'];
 
