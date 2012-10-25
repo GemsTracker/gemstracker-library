@@ -35,6 +35,11 @@
  */
 
 /**
+ * Extends a Zend_Form with automatic Dojo and JQuery activation,
+ * MUtil_Html rendering integration and non-css stylesheet per
+ * form (possibly automatically calculated) fixed label widths.
+ *
+ * @see MUtil_Html
  *
  * @package    MUtil
  * @subpackage Form
@@ -44,6 +49,12 @@
  */
 class MUtil_Form extends Zend_Form
 {
+    /**
+     * The order in which the element parts should be displayed
+     * when using a fixed or dynamic label width.
+     *
+     * @var array
+     */
     protected $_displayOrder = array('element', 'errors', 'description');
 
     /**
@@ -139,6 +150,23 @@ class MUtil_Form extends Zend_Form
         }
     }
 
+    /**
+     * Add a new element
+     *
+     * $element may be either a string element type, or an object of type
+     * Zend_Form_Element. If a string element type is provided, $name must be
+     * provided, and $options may be optionally provided for configuring the
+     * element.
+     *
+     * If a Zend_Form_Element is provided, $name may be optionally provided,
+     * and any provided $options will be ignored.
+     *
+     * @param  string|Zend_Form_Element $element
+     * @param  string $name
+     * @param  array|Zend_Config $options
+     * @throws Zend_Form_Exception on invalid element
+     * @return Zend_Form (continuation pattern)
+     */
     public function addElement($element, $name = null, $options = null)
     {
         parent::addElement($element, $name, $options);
@@ -162,6 +190,14 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
+    /**
+     * The order in which the element parts should be displayed
+     * when using a fixed or dynamic label width.
+     *
+     * @see setLabelWidth
+     *
+     * @return array Array containing element parts like 'element', 'errors' and 'description'
+     */
     public function getDisplayOrder()
     {
         return $this->_displayOrder;
@@ -232,7 +268,7 @@ class MUtil_Form extends Zend_Form
                 $this->setDisableTranslator($disableTranslateValidators);
             }
         }
-        
+
         $valid = parent::isValid($data);
 
         if (isset($oldTranslations)) {
@@ -284,6 +320,15 @@ class MUtil_Form extends Zend_Form
         return $this;
     }
 
+    /**
+     * The order in which the element parts should be displayed
+     * when using a fixed or dynamic label width.
+     *
+     * @see setLabelWidth
+     *
+     * @param array $order Array containing element parts like 'element', 'errors' and 'description'
+     * @return MUtil_Form (continuation pattern)
+     */
     public function setDisplayOrder(array $order)
     {
         $this->_displayOrder = $order;

@@ -544,7 +544,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
                             $options = array();
                             MUtil_Model_FormBridge::applyFixedOptions('date', $options);
 
-                            $element = new MUtil_JQuery_Form_Element_DatePicker($name, $options);
+                            $element = new Gems_JQuery_Form_Element_DatePicker($name, $options);
                             $element->setStorageFormat('yyyy-MM-dd');
                             break;
 

@@ -176,8 +176,16 @@ class Gems_Util_DatabasePatcher
                 $data['gpa_completed'] = 1;
 
             } catch (Zend_Db_Statement_Exception $e) {
-                $data['gpa_result'] = substr($e->getMessage(), 0, 254);
-                $data['gpa_completed'] = $patch['gpa_completed'] ? $patch['gpa_completed'] : 0;
+                $message = $e->getMessage();
+
+                // Make sure these do not remain uncompleted
+                if (MUtil_String::contains($message, 'Duplicate column name')) {
+                    $data['gpa_result'] = 'Column exists in table';
+                    $data['gpa_completed'] = 1;
+                } else {
+                    $data['gpa_result'] = substr($message, 0, 254);
+                    $data['gpa_completed'] = $patch['gpa_completed'] ? $patch['gpa_completed'] : 0;
+                }
             }
 
             $this->db->update('gems__patches', $data, $this->db->quoteInto('gpa_id_patch = ?', $patch['gpa_id_patch']));

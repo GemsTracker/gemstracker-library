@@ -69,6 +69,18 @@ class MUtil_String
     }
 
     /**
+     * Returns true if needle is anywhere in haystack
+     *
+     * @param string $haystack The string to search in
+     * @param string $needle The string to search for
+     * @return boolean
+     */
+    public static function contains($haystack, $needle)
+    {
+        return strpos($haystack, $needle) !== false;
+    }
+
+    /**
      * Return the part after $input and $filter stopped being the same
      *
      * stripStringLeft('abcdef', 'abcx') => 'def'

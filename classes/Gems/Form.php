@@ -77,8 +77,8 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
     {
         parent::__construct($options);
 
-        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', Zend_Form::DECORATOR);
-        // $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   Zend_Form::ELEMENT);
+        $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Decorator', GEMS_PROJECT_NAME_UC . '/Form/Decorator/', Zend_Form::DECORATOR);
+        $this->addPrefixPath(GEMS_PROJECT_NAME_UC . '_Form_Element',   GEMS_PROJECT_NAME_UC . '/Form/Element/',   Zend_Form::ELEMENT);
         $this->addPrefixPath('Gems_Form_Decorator', 'Gems/Form/Decorator/', Zend_Form::DECORATOR);
         $this->addPrefixPath('Gems_Form_Element',   'Gems/Form/Element/',   Zend_Form::ELEMENT);
 
@@ -110,6 +110,24 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         }
     }
 
+    /**
+     * Change all elements into an autosubmit element
+     *
+     * Call only when $_autoSubmit is set
+     *
+     * @param mixed $element
+     */
+    private function _enableAutoSubmitElement($element)
+    {
+        if ($element instanceof Zend_Form || $element instanceof Zend_Form_DisplayGroup) {
+            foreach ($element->getElements() as $sub) {
+                $this->_enableAutoSubmitElement($sub);
+            }
+        } elseif ($element instanceof Gems_Form_AutosubmitElementInterface) {
+            $element->enableAutoSubmit($this->_autosubmit);
+        }
+    }
+
     public function activateJQuery()
     {
         if ($this->_no_jquery) {
@@ -123,6 +141,49 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
 
             $this->_no_jquery = false;
         }
+    }
+
+    /**
+     * Attach a css file to the form with form-specific css
+     *
+     * Optional media parameter can be used to determine media-type (print, screen etc)
+     *
+     * @param string $file
+     * @param string $media
+     */
+    public function addCss($file, $media = '') {
+    	$this->_css[$file] = $media;
+    }
+
+    /**
+     * Add a new element
+     *
+     * $element may be either a string element type, or an object of type
+     * Zend_Form_Element. If a string element type is provided, $name must be
+     * provided, and $options may be optionally provided for configuring the
+     * element.
+     *
+     * If a Zend_Form_Element is provided, $name may be optionally provided,
+     * and any provided $options will be ignored.
+     *
+     * @param  string|Zend_Form_Element $element
+     * @param  string $name
+     * @param  array|Zend_Config $options
+     * @throws Zend_Form_Exception on invalid element
+     * @return Zend_Form (continuation pattern)
+     */
+    public function addElement($element, $name = null, $options = null)
+    {
+        parent::addElement($element, $name, $options);
+
+        if ($this->isAutoSubmit()) {
+            if (null !== $name) {
+                $element = $this->getElement($name);
+            }
+            $this->_enableAutoSubmitElement($element);
+        }
+
+        return $this;
     }
 
     /**
@@ -147,18 +208,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
 
 	public function getScripts() {
     	return $this->_scripts;
-    }
-
-    /**
-     * Attach a css file to the form with form-specific css
-     *
-     * Optional media parameter can be used to determine media-type (print, screen etc)
-     *
-     * @param string $file
-     * @param string $media
-     */
-    public function addCss($file, $media = '') {
-    	$this->_css[$file] = $media;
     }
 
     /**
@@ -204,14 +253,14 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         return '_' !== $name[0];
     }
 
-    public function getCss()
-    {
-    	return $this->_css;
-    }
-
     public function getAutoSubmit()
     {
         return $this->_autosubmit;
+    }
+
+    public function getCss()
+    {
+    	return $this->_css;
     }
 
     /**
@@ -239,9 +288,10 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
     }
 
     /**
+     * Change the form into an autosubmit form
      *
-     * @param type $submitUrl
-     * @param type $targetId
+     * @param mixed $submitUrl Url as MUtil_Html_UrlArrayAttribute, array or string
+     * @param mixed $targetId Id of html element whose content is replaced by the submit result: MUtil_Html_ElementInterface or string
      */
     public function setAutoSubmit($submitUrl, $targetId) {
         // Filter out elements passed by type
@@ -257,6 +307,7 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
             $args['targetId'] = '#' . $args['targetId'];
         }
         $this->_autosubmit = $args;
+        $this->_enableAutoSubmitElement($this);
         $this->activateJQuery();
     }
 }

@@ -1186,7 +1186,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             $formData = Zend_Registry::get(MUtil_Model_FormBridge::REGISTRY_KEY);
             $label    = $this->translate->_('Your birthday');
 
-            $birthdayElem = new MUtil_JQuery_Form_Element_DatePicker('birthday');
+            $birthdayElem = new Gems_JQuery_Form_Element_DatePicker('birthday');
             $birthdayElem->setLabel($label);
             if (isset($formData['date'])) {
                 $birthdayElem->setOptions($formData['date']);

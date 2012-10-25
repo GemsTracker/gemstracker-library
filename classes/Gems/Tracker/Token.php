@@ -626,6 +626,17 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns the staff or respondent id of the person
+     * who created this token.
+     *
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+        return $this->_gemsData['gto_created_by'];
+    }
+
+    /**
      *
      * @param string $fieldName
      * @return MUtil_Date

@@ -439,3 +439,5 @@ ALTER TABLE `gems__rounds` CHANGE gro_changed_event gro_changed_event varchar(12
 ALTER TABLE `gems__rounds` ADD gro_display_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_changed_event;
 
 ALTER TABLE `gems__tracks` CHANGE gtr_completed_event gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+
+-- GEMS VERSION: 50
