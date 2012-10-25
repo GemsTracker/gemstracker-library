@@ -81,7 +81,7 @@ class MUtil_String
     }
 
     /**
-     * Return the part after $input and $filter stopped being the same
+     * Return the part after $input and $filter have stopped being the same
      *
      * stripStringLeft('abcdef', 'abcx') => 'def'
      *
