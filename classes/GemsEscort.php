@@ -159,7 +159,7 @@ class GemsEscort extends MUtil_Application_Escort
 
 
         // Check if APC extension is loaded
-        if($useCache === 'apc' && extension_loaded('apc') ) {
+        if ($useCache === 'apc' && extension_loaded('apc')) {
             $cacheBackend = 'Apc';
             $cacheBackendOptions = array();
             //Add path to the prefix as APC is a SHARED cache
@@ -210,13 +210,13 @@ class GemsEscort extends MUtil_Application_Escort
         $this->bootstrap('project');    // Make sure the project object is available
         $logger = Gems_Log::getLogger();
 
-        $log_path = GEMS_ROOT_DIR . '/var/logs';
+        $logPath = GEMS_ROOT_DIR . '/var/logs';
 
         try {
-            $writer = new Zend_Log_Writer_Stream($log_path . '/errors.log');
+            $writer = new Zend_Log_Writer_Stream($logPath . '/errors.log');
         } catch (Exception $exc) {
             $this->bootstrap(array('locale', 'translate'));
-            die(sprintf($this->translate->_('Path %s not writable'), $log_path));
+            die(sprintf($this->translate->_('Path %s not writable'), $logPath));
         }
 
         $filter = new Zend_Log_Filter_Priority($this->project->getLogLevel());
@@ -286,7 +286,8 @@ class GemsEscort extends MUtil_Application_Escort
         return $acl->getAcl();
     }
 
-    protected function _initActionHelpers() {
+    protected function _initActionHelpers()
+    {
         Zend_Controller_Action_HelperBroker::addPrefix('Gems_Controller_Action_Helper');
     }
 
@@ -571,8 +572,9 @@ class GemsEscort extends MUtil_Application_Escort
 
             if ($menuItem) {
                 $contactDiv = MUtil_Html::create()->div(
-                    $args,
-                    array('id' => 'contact'));  // tooltip
+                        $args,
+                        array('id' => 'contact')
+                        );  // tooltip
                 $contactDiv->a($menuItem->toHRefAttribute(), $menuItem->get('label'));
 
                 $ul = $menuItem->toUl();
@@ -686,12 +688,14 @@ class GemsEscort extends MUtil_Application_Escort
         // FAVICON
         $icon = isset($this->project->favicon) ? $this->project->favicon : 'favicon.ico';
         if (file_exists(GEMS_WEB_DIR . '/' . $icon)) {
-            $this->view->headLink(array(
-                'rel' => 'shortcut icon',
-                'href' =>  $this->basepath->getBasePath() . '/' . $icon,
-                'type' => 'image/x-icon'),
-                Zend_View_Helper_Placeholder_Container_Abstract::PREPEND
-                );
+            $this->view->headLink(
+                    array(
+                        'rel' => 'shortcut icon',
+                        'href' =>  $this->basepath->getBasePath() . '/' . $icon,
+                        'type' => 'image/x-icon'
+                        ),
+                    Zend_View_Helper_Placeholder_Container_Abstract::PREPEND
+                    );
         }
     }
 
@@ -837,7 +841,8 @@ class GemsEscort extends MUtil_Application_Escort
         if ($messages) {
             foreach ($messages as &$message) {
                 // Make sure html is preserved
-                if (is_string($message) && strlen($message) && ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
+                if (is_string($message) && strlen($message) &&
+                        ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
                     $message = MUtil_Html::raw($message);
                 }
             }
@@ -991,10 +996,10 @@ class GemsEscort extends MUtil_Application_Escort
 
         if ($user->isActive()) {
             return MUtil_Html::create()->div(
-                    sprintf($this->_('User: %s'), $user->getFullName()),
-                    $args,
-                    array('id' => 'username')
-                    );
+                sprintf($this->_('User: %s'), $user->getFullName()),
+                $args,
+                array('id' => 'username')
+                );
         }
     }
 
@@ -1115,7 +1120,7 @@ class GemsEscort extends MUtil_Application_Escort
         Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));
     }
 
-    protected function createProjectClass($className, $param1 = null, $param2 = null)
+    protected function createProjectClass($className, $paramOne = null, $paramTwo = null)
     {
         if (file_exists(APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/' . str_replace('_', '/', $className) . '.php')) {
             $className = GEMS_PROJECT_NAME_UC . '_' . $className;
@@ -1129,10 +1134,10 @@ class GemsEscort extends MUtil_Application_Escort
                 return new $className();
 
             case 2:
-                return new $className($param1);
+                return new $className($paramOne);
 
             case 3:
-                return new $className($param1, $param2);
+                return new $className($paramOne, $paramTwo);
 
             default:
                 throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . '() called with more parameters than possible.');
@@ -1786,7 +1791,7 @@ class GemsEscort extends MUtil_Application_Escort
         $result['{todo_track_count}'] = $todo['track'];
 
         $result['{token}']            = strtoupper($tokenData['gto_id_token']);
-        $result['{token_from}']       = MUtil_Date::format($tokenData['gto_valid_from'],  Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
+        $result['{token_from}']       = MUtil_Date::format($tokenData['gto_valid_from'], Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
         // $result['{token_input}']      = MUtil_Html::create()->a($url_input, $tokenData['gsu_survey_name']);
         // $result['{token_link}']       = MUtil_Html::create()->a($url, $tokenData['gsu_survey_name']);
         // $result['{token_link}']       = '<a href="' . $url . '">' . $tokenData['gsu_survey_name'] . '</a>';
