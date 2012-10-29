@@ -81,6 +81,44 @@ class MUtil_String
     }
 
     /**
+     * Split a string whereever the callback returns true (including
+     * the character that returns true.
+     *
+     * MUtil_String::splitOnCharCallback('abcDef', 'ctype_upper') => array(0 => 'abc', 1 => 'Def');
+     *
+     * MUtil_String::splitOnCharCallback('abCDef', 'ctype_upper', true) => array(0 => 'ab', 2 => 'ef');
+     *
+     * @param string $input
+     * @param callback $callBack Taking a single character as input
+     * @param boolean $excludeDelimiter When excluded and 2 delimiters are next to each other, the output
+     *                                  index in the array will skip a value
+     * @return array index => split portion
+     */
+    public static function splitOnCharCallback($input, $callBack, $excludeDelimiter = false)
+    {
+        $current = 0;
+        $length  = strlen($input);
+        $results = array();
+
+        for ($i = 0; $i < $length; $i++) {
+            if ($callBack($input[$i])) {
+                $current++;
+
+                if ($excludeDelimiter) {
+                    continue;
+                }
+            }
+            if (isset($results[$current])) {
+                $results[$current] .= $input[$i];
+            } else {
+                $results[$current] = $input[$i];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Return the part after $input and $filter have stopped being the same
      *
      * stripStringLeft('abcdef', 'abcx') => 'def'
