@@ -67,8 +67,9 @@ class MUtil_Html_MultiWrapper extends MUtil_MultiWrapper implements MUtil_Html_H
     {
         $results = array();
 
+        $renderer = MUtil_Html::getRenderer();
         foreach ($this->_array as $item) {
-            $result = MUtil_Html::renderAny($view, $item);
+            $result = $renderer->renderAny($view, $item);
 
             if ((null !== $result) && strlen($result)) {
                 $results[] = $result;

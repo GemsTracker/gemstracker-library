@@ -114,9 +114,10 @@ abstract class MUtil_Html_Code_DynamicAbstract implements MUtil_Html_HtmlInterfa
 
         $output = array();
 
+        $renderer = MUtil_Html::getRenderer();
         foreach ($this->_content as $content) {
             if (! is_string($content)) {
-                $content = MUtil_Html::renderAny($view, $content);
+                $content = $renderer->renderAny($view, $content);
             }
 
             if ((false === strpos($content, "\n")) && file_exists($content)) {

@@ -762,8 +762,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
     {
         $results = array();
 
+        $renderer = MUtil_Html::getRenderer();
         foreach ($this->_attribs as $key => $value) {
-            $value = MUtil_Html::renderAny($view, $value);
+            $value = $renderer->renderAny($view, $value);
 
             if (null !== $value) {
                 $results[$key] = $value;
@@ -1059,20 +1060,21 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
             if ($this->_repeater && (! $this->_repeatTags)) {
                 if ($this->_repeater->__start()) {
                     $html = null;
+                    $renderer = MUtil_Html::getRenderer();
                     while ($this->_repeater->__next()) {
-                        $html .= implode('', MUtil_Html::renderArray($view, $this->_content));
+                        $html .= implode('', $renderer->renderArray($view, $this->_content));
                     }
 
                     return $html;
                 }
 
-            } elseif ($content = MUtil_Html::renderArray($view, $this->_content)) {
+            } elseif ($content = MUtil_Html::getRenderer()->renderArray($view, $this->_content)) {
                 return implode('', $content);
             }
         }
 
         if ($this->_onEmptyContent) {
-            return MUtil_Html::renderAny($view, $this->_onEmptyContent);
+            return MUtil_Html::getRenderer()->renderAny($view, $this->_onEmptyContent);
         }
 
         return null;

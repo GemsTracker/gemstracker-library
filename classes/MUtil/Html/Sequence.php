@@ -203,9 +203,10 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
 
         $view = $this->getView();
 
+        $renderer = MUtil_Html::getRenderer();
         foreach ($this->getIterator() as $item) {
             $html .= $glue;
-            $html .= MUtil_Html::renderAny($view, $item);
+            $html .= $renderer->renderAny($view, $item);
         }
 
         return substr($html, strlen($glue));

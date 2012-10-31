@@ -101,8 +101,9 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         $results = array();
 
         $view = $this->getView();
+        $renderer = MUtil_Html::getRenderer();
         foreach ($this->getArray() as $key => $value) {
-            $results[$key] = MUtil_Html::renderAny($view, $value);
+            $results[$key] = $renderer->renderAny($view, $value);
         }
 
         return $results;

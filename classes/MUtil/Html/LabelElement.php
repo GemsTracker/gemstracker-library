@@ -150,11 +150,11 @@ class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
 
     protected function renderContent(Zend_View_Abstract $view)
     {
-        if ($content = MUtil_Html::renderAny($view, $this->_currentContent)) {
+        if ($content = MUtil_Html::getRenderer()->renderAny($view, $this->_currentContent)) {
             return $content;
 
         } elseif ($this->_onEmptyContent) {
-            return MUtil_Html::renderAny($view, $this->_onEmptyContent);
+            return MUtil_Html::getRenderer()->renderAny($view, $this->_onEmptyContent);
 
         } else {
             return '&nbsp;';

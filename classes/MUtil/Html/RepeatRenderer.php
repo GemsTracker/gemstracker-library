@@ -173,17 +173,18 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
             $data = $this->getRepeater();
             if ($data->__start()) {
                 $html = array();
+                $renderer = MUtil_Html::getRenderer();
                 while ($data->__next()) {
-                    $html[] = MUtil_Html::renderAny($view, $this->_content);
+                    $html[] = $renderer->renderAny($view, $this->_content);
                 }
 
                 if ($html) {
-                    return implode(MUtil_Html::renderAny($view, $this->_glue), $html);
+                    return implode(MUtil_Html::getRenderer()->renderAny($view, $this->_glue), $html);
                 }
             }
         }
         if ($this->_emptyContent) {
-            return MUtil_Html::renderAny($view, $this->_emptyContent);
+            return MUtil_Html::getRenderer()->renderAny($view, $this->_emptyContent);
         }
 
         return null;
