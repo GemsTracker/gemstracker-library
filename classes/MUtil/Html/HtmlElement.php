@@ -1056,11 +1056,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected function renderContent(Zend_View_Abstract $view)
     {
+        $renderer = MUtil_Html::getRenderer();
         if ($this->_content) {
             if ($this->_repeater && (! $this->_repeatTags)) {
                 if ($this->_repeater->__start()) {
                     $html = null;
-                    $renderer = MUtil_Html::getRenderer();
                     while ($this->_repeater->__next()) {
                         $html .= implode('', $renderer->renderArray($view, $this->_content));
                     }
@@ -1068,13 +1068,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
                     return $html;
                 }
 
-            } elseif ($content = MUtil_Html::getRenderer()->renderArray($view, $this->_content)) {
+            } elseif ($content = $renderer->renderArray($view, $this->_content)) {
                 return implode('', $content);
             }
         }
 
         if ($this->_onEmptyContent) {
-            return MUtil_Html::getRenderer()->renderAny($view, $this->_onEmptyContent);
+            return $renderer->renderAny($view, $this->_onEmptyContent);
         }
 
         return null;

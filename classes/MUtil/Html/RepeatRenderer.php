@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,59 +25,60 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * RepeatRenderer wraps itself around some content and returns at rendering
  * time that content repeated multiple times or the $_emptyContent when the
  * repeater is empty.
- * 
- * Most of the functions are the just to implement the ElementInterface and 
+ *
+ * Most of the functions are the just to implement the ElementInterface and
  * are nothing but a stub to the internal content. These functions will
  * throw errors if you try to use them in ways that the actual $_content does
  * not allow.
  *
  * @see MUtil_Lazy_Repeatable
- * 
- * @author Matijs de Jong
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Html
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
 {
     /**
      * The content to be repeated.
-     * 
-     * @var mixed 
+     *
+     * @var mixed
      */
     protected $_content;
-    
+
     /**
      * The content to show when the $_repeater returns no data.
-     * 
+     *
      * @var mixed Optional
      */
     protected $_emptyContent;
-    
+
     /**
      * Any content to mixed between the instances of content.
-     * 
+     *
      * @var mixed Optional
      */
     protected $_glue;
-    
+
     /**
      * The repeater containing a dataset
-     * 
+     *
      * @var MUtil_Lazy_RepeatableInterface
      */
     protected $_repeater;
@@ -161,7 +161,7 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
 
     /**
      * Renders the element into a html string
-     * 
+     *
      * The $view is used to correctly encode and escape the output
      *
      * @param Zend_View_Abstract $view
@@ -169,22 +169,22 @@ class MUtil_Html_RepeatRenderer implements MUtil_Html_ElementInterface
      */
     public function render(Zend_View_Abstract $view)
     {
+        $renderer = MUtil_Html::getRenderer();
         if ($this->hasRepeater() && $this->_content) {
             $data = $this->getRepeater();
             if ($data->__start()) {
                 $html = array();
-                $renderer = MUtil_Html::getRenderer();
                 while ($data->__next()) {
                     $html[] = $renderer->renderAny($view, $this->_content);
                 }
 
                 if ($html) {
-                    return implode(MUtil_Html::getRenderer()->renderAny($view, $this->_glue), $html);
+                    return implode($renderer->renderAny($view, $this->_glue), $html);
                 }
             }
         }
         if ($this->_emptyContent) {
-            return MUtil_Html::getRenderer()->renderAny($view, $this->_emptyContent);
+            return $renderer->renderAny($view, $this->_emptyContent);
         }
 
         return null;

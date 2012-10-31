@@ -128,7 +128,7 @@ class MUtil_Html_ElementDecorator extends Zend_Form_Decorator_Abstract
             if ($prologue instanceof MUtil_Html_HtmlInterface) {
                 $prologue = $prologue->render($view);
             } else {
-                $prologue = MUtil_Html::getrenderer()->renderAny($view, $prologue);
+                $prologue = MUtil_Html::getRenderer()->renderAny($view, $prologue);
             }
         } else {
             $prologue = '';

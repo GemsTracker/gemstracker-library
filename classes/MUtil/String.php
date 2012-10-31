@@ -81,6 +81,32 @@ class MUtil_String
     }
 
     /**
+     * Returns true if haystack ends with needle or needle is empty
+     *
+     * @param string $haystack The string to search in
+     * @param string $needle The string to search for
+     * @param boolean $caseInSensitive When true a case insensitive compare is performed
+     * @return boolean
+     */
+    public static function endsWith($haystack, $needle, $caseInSensitive = false)
+    {
+        $len = strlen($needle);
+        if ($len == 0) {
+            return true;
+        }
+
+        if ((strlen($haystack) < $len)) {
+            return false;
+        }
+
+        if ($caseInSensitive) {
+            return strtolower(substr($haystack, -$len)) === strtolower($needle);
+        }
+
+        return substr($haystack, -$len) === (string) $needle;
+    }
+
+    /**
      * Split a string whereever the callback returns true (including
      * the character that returns true.
      *
@@ -116,6 +142,32 @@ class MUtil_String
         }
 
         return $results;
+    }
+
+    /**
+     * Returns true if haystack starts with needle or needle is empty
+     *
+     * @param string $haystack The string to search in
+     * @param string $needle The string to search for
+     * @param boolean $caseInSensitive When true a case insensitive compare is performed
+     * @return boolean
+     */
+    public static function startsWith($haystack, $needle, $caseInSensitive = false)
+    {
+        $len = strlen($needle);
+        if ($len == 0) {
+            return true;
+        }
+
+        if ((strlen($haystack) < $len)) {
+            return false;
+        }
+
+        if ($caseInSensitive) {
+            return strtolower(substr($haystack, 0, $len)) === strtolower($needle);
+        }
+
+        return substr($haystack, 0, $len) === (string) $needle;
     }
 
     /**
