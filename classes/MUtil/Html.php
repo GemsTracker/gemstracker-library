@@ -98,6 +98,12 @@ class MUtil_Html
         return self::getCreator()->createAttribute($attributeName, $args);
     }
 
+    /**
+     * Check if the value can be rendered by the default renderer
+     *
+     * @param mixed $value
+     * @return boolean True when the object can be rendered
+     */
     public static function canRender($value)
     {
         return self::getRenderer()->canRender($value);
@@ -235,14 +241,17 @@ class MUtil_Html
         return self::getCreator()->create('raw', array($content));
     }
 
+    /**
+     * Renders the $content so that it can be used as output for the $view,
+     * including output escaping and encoding correction.
+     *
+     * @param Zend_View_Abstract $view
+     * @param mixed $content Anything number, string, array, Lazy, HtmlInterface, object with __toString
+     * @return string Output to echo to the user
+     */
     public static function renderAny(Zend_View_Abstract $view, $content)
     {
         return self::getRenderer()->renderAny($view, $content);
-    }
-
-    public static function renderArray(Zend_View_Abstract $view, array $content)
-    {
-        return self::getRenderer()->renderArray($view, $content);
     }
 
     public static function renderNew(Zend_View_Abstract $view, $tagName, $arg_array = null)
