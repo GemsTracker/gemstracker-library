@@ -118,11 +118,7 @@ class MUtil_Html_Renderer
                     }
                 }
 
-                if (count($new_content)) {
-                    $new_content = implode('', $new_content);
-                } else {
-                    return null;
-                }
+                return $new_content;
 
             } else {
                 if (is_object($content)) {

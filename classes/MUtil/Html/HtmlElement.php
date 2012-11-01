@@ -1062,13 +1062,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
                 if ($this->_repeater->__start()) {
                     $html = null;
                     while ($this->_repeater->__next()) {
-                        $html .= implode('', $renderer->renderArray($view, $this->_content));
+                        $html .= implode('', $renderer->renderAny($view, $this->_content));
                     }
 
                     return $html;
                 }
 
-            } elseif ($content = $renderer->renderArray($view, $this->_content)) {
+            } elseif ($content = $renderer->renderAny($view, $this->_content)) {
                 return implode('', $content);
             }
         }
