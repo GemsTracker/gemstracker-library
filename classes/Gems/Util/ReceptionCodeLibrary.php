@@ -136,7 +136,7 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
     public function getRespondentDeletionCodes()
     {
         $select = $this->_getDeletionCodeSelect();
-        $select->where('(grc_for_respondents = 1 OR grc_for_surveys = ?)', self::APPLY_STOP);
+        $select->where('grc_for_respondents = 1');
 
         return $this->db->fetchPairs($select);
     }

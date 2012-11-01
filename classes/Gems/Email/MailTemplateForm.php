@@ -131,10 +131,10 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
 
             $org_id = $this->getValue('gto_id_organization');
             $filter['gto_id_organization'] = $org_id ? $org_id : $this->escort->getCurrentOrganization();
+            $filter[] = 'grs_email IS NOT NULL';
 
-            // By sorting descending we get the filled values first, so we usually get a correct value
-            // with email and valid_from date, but use any other token afterwards
-            $sort = array('grs_email' => SORT_DESC, 'gto_valid_from' => SORT_DESC);
+            // Without sorting we get the fastest load times
+            $sort = false;
 
             $tokenData = $model->loadFirst($filter, $sort);
 
