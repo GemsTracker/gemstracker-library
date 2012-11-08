@@ -53,6 +53,12 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -376,19 +382,29 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     /**
      * Return key/value pairs of all staff members, currently active or not
      *
-     * @staticvar array $data
      * @return array
      */
     public function getStaff()
     {
-        static $data;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! $data) {
-            $data = $this->db->fetchPairs("SELECT gsf_id_user, CONCAT(COALESCE(gsf_last_name, '-'), ', ', COALESCE(gsf_first_name, ''), COALESCE(CONCAT(' ', gsf_surname_prefix), ''))
-                    FROM gems__staff ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix");
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $data;
+        $select = "SELECT gsf_id_user,
+                        CONCAT(
+                            COALESCE(gsf_last_name, '-'),
+                            ', ',
+                            COALESCE(gsf_first_name, ''),
+                            COALESCE(CONCAT(' ', gsf_surname_prefix), '')
+                            )
+                    FROM gems__staff
+                    ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('staff'));
+        return $results;
     }
 
     public function getStaffGroups()

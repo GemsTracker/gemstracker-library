@@ -483,7 +483,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
 
         // Check for completed tokens
-        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id)) {
+        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id, $data['gr2o_id_organization'])) {
             //As data might have changed due to token events... reload
             $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
         }

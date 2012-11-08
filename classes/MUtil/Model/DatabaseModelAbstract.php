@@ -722,10 +722,17 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 // MUtil_Echo::track($key, $value, $filter, stripos($value, $filter));
                 if (stripos($value, $filter) !== false) {
                     if (null === $key) {
-                        $wheres[] = $sqlField . ' IS NULL';
+                        $wheres[1] = $sqlField . ' IS NULL';
                     } else {
-                        $wheres[] = $sqlField . ' = ' . $adapter->quote($key);
+                        $wheres[0][] = $adapter->quote($key);
                     }
+                }
+            }
+            if (isset($wheres[0])) {
+                if (count($wheres[0]) == 1) {
+                    $wheres[0] = $sqlField . ' = ' . $wheres[0][0];
+                } else {
+                    $wheres[0] = $sqlField . ' IN (' . implode(', ', $wheres[0]) . ')';
                 }
             }
             return $wheres;
@@ -761,7 +768,13 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             foreach ($this->getItemsUsed() as $name) {
                 if ($this->get($name, 'label')) {
                     if ($expression = $this->get($name, 'column_expression')) {
-                        $fields[$name] = $expression;
+                        if ($fieldList = $this->get($name, 'fieldlist')) {
+                            foreach ((array) $fieldList as $field) {
+                                $fields[$field] = $adapter->quoteIdentifier($field);
+                            }
+                        } else {
+                            $fields[$name] = $expression;
+                        }
                     } else {
                         $fields[$name] = $adapter->quoteIdentifier($name);
                     }

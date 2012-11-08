@@ -25,7 +25,11 @@ CREATE TABLE if not exists gems__respondent2track (
       gr2t_created    timestamp not null,
       gr2t_created_by bigint unsigned not null,
 
-      PRIMARY KEY (gr2t_id_respondent_track)
+      PRIMARY KEY (gr2t_id_respondent_track),
+      INDEX (gr2t_id_track),
+      INDEX (gr2t_id_user),
+      INDEX (gr2t_start_date),
+      INDEX (gr2t_id_organization)
    )
    ENGINE=InnoDB
    auto_increment = 100000

@@ -222,7 +222,8 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
             $model->setIfExists('grs_last_name',      'label', $this->translate->_('Last name'));
         }
         $model->set('name',                       'label', $this->translate->_('Name'),
-            'column_expression', "CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))");
+            'column_expression', "CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))",
+            'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
 
         $model->setIfExists('grs_address_1',      'label', $this->translate->_('Street'));
         $model->setIfExists('grs_zipcode',        'label', $this->translate->_('Zipcode'));

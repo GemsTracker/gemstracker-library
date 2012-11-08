@@ -27,8 +27,11 @@ CREATE TABLE if not exists gems__respondent2org (
 
         PRIMARY KEY (gr2o_patient_nr, gr2o_id_organization),
         UNIQUE KEY (gr2o_id_user, gr2o_id_organization),
+        INDEX (gr2o_id_organization),
         INDEX (gr2o_opened),
-        INDEX (gr2o_reception_code) 
+        INDEX (gr2o_reception_code)
+        INDEX (gr2o_opened_by),
+        INDEX (gr2o_changed_by)
     )
     ENGINE=InnoDB
     CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

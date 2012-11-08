@@ -30,7 +30,9 @@ CREATE TABLE if not exists gems__tracks (
 
         PRIMARY KEY (gtr_id_track),
         INDEX (gtr_track_name),
-        INDEX (gtr_active)
+        INDEX (gtr_active),
+        INDEX (gtr_track_type),
+        INDEX (gtr_track_class)
     )
     ENGINE=InnoDB
     auto_increment = 7000

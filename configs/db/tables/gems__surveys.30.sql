@@ -47,6 +47,7 @@ CREATE TABLE if not exists gems__surveys (
 
         PRIMARY KEY(gsu_id_survey),
         INDEX (gsu_active),
+        INDEX (gsu_surveyor_active),
         INDEX (gsu_code)
     )
     ENGINE=InnoDB

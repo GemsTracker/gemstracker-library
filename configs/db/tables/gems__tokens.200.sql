@@ -50,6 +50,8 @@ CREATE TABLE if not exists gems__tokens (
         gto_created_by bigint unsigned not null,
 
         PRIMARY KEY (gto_id_token),
+        INDEX (gto_id_organization);
+        INDEX (gto_id_respondent);
         INDEX (gto_id_survey),
         INDEX (gto_id_track),
         INDEX (gto_id_round),

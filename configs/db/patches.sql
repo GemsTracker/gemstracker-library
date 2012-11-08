@@ -441,3 +441,22 @@ ALTER TABLE `gems__rounds` ADD gro_display_event varchar(128) CHARACTER SET 'utf
 ALTER TABLE `gems__tracks` CHANGE gtr_completed_event gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
 
 -- GEMS VERSION: 50
+-- PATCH: Speedup respondent screen
+ALTER TABLE gems__respondent2org
+      ADD INDEX (gr2o_id_organization),
+      ADD INDEX (gr2o_opened_by),
+      ADD INDEX (gr2o_changed_by);
+
+ALTER TABLE gems__respondent2track
+      ADD INDEX (gr2t_id_track),
+      ADD INDEX (gr2t_id_user),
+      ADD INDEX (gr2t_id_organization),
+      ADD INDEX (gr2t_start_date);
+
+ALTER TABLE `gems__tokens` ADD INDEX (gto_id_organization);
+ALTER TABLE `gems__tokens` ADD INDEX (gto_id_respondent);
+
+ALTER TABLE gems__surveys ADD INDEX (gsu_surveyor_active);
+
+ALTER TABLE gems__tracks ADD INDEX (gtr_track_type), ADD INDEX (gtr_track_class);
+
