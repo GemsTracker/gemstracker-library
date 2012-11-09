@@ -56,9 +56,20 @@ abstract class Gems_Menu_MenuAbstract
 
     protected $_subItems;
 
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
     public function _($text, $locale = null)
     {
-        return $this->escort->translate->_($text, $locale);
+        return $this->escort->translate->getAdapter()->_($text, $locale);
     }
 
     public function __construct(GemsEscort $escort)
@@ -602,6 +613,26 @@ abstract class Gems_Menu_MenuAbstract
     abstract public function isTopLevel();
 
     abstract public function isVisible();
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string using plural notations
+     * Returns the translated string
+     *
+     * @see Zend_Locale
+     * @param  string             $singular Singular translation string
+     * @param  string             $plural   Plural translation string
+     * @param  integer            $number   Number for detecting the correct plural
+     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function plural($singular, $plural, $number, $locale = null)
+    {
+        $args = func_get_args();
+        return call_user_func_array(array($this->escort->translate->getAdapter(), 'plural'), $args);
+    }
 
     /**
      * Make sure only the active branch is visible

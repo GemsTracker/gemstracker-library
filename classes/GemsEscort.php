@@ -66,13 +66,24 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public $menu;
 
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
     public function _($text, $locale = null)
     {
         if (! isset($this->request)) {
             // Locale is fixed by request.
             $this->setException(new Gems_Exception_Coding('Requested translation before request was made available.'));
         }
-        return $this->translate->_($text, $locale);
+        return $this->translate->getAdapter()->_($text, $locale);
     }
 
     /**
@@ -1453,6 +1464,26 @@ class GemsEscort extends MUtil_Application_Escort
                 }
             }
         }
+    }
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string using plural notations
+     * Returns the translated string
+     *
+     * @see Zend_Locale
+     * @param  string             $singular Singular translation string
+     * @param  string             $plural   Plural translation string
+     * @param  integer            $number   Number for detecting the correct plural
+     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function plural($singular, $plural, $number, $locale = null)
+    {
+        $args = func_get_args();
+        return call_user_func_array(array($this->translate->getAdapter(), 'plural'), $args);
     }
 
     /**

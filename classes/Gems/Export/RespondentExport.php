@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -52,21 +52,21 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * @var GemsEscort
      */
     public $escort;
-    
+
     protected $html;
-    
+
     /**
      *
      * @var Gems_Loader
      */
     public $loader;
-    
+
     /**
      *
      * @var Gems_Project_ProjectSettings
      */
     public $project;
-    
+
     /**
      * @var Zend_Translate_Adapter
      */
@@ -79,7 +79,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public $util;
 
     public $view;
-    
+
     /**
      * @var Gems_Pdf
      */
@@ -88,13 +88,24 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         $this->_pdf = $this->loader->getPdf();
     }
-    
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
     public function _($messageid, $locale = null)
     {
-        return $this->translate->_($messageid, $locale);
+        return $this->translate->getAdapter()->_($messageid, $locale);
     }
 
     /**
@@ -125,7 +136,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         if ($token->getReceptionCode()->isSuccess()) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -178,7 +189,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                 }
             }
 
-            if ($showToken) {                
+            if ($showToken) {
                 $params = array(
                     'token'          => $token,
                     'tokenId'        => $token->getTokenId(),
@@ -187,16 +198,16 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                     'showSelected'   => false,
                     'showTakeButton' => false,
                     'grouped'        => $groupSurveys);
-                
+
                 $snippets = $token->getAnswerSnippetNames();
-                
+
                 if (is_array($snippets)) {
                     list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
                     $params = $params + $snippetParams;
                 }
-                
+
                 $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
-                
+
                 foreach($snippets as $snippet) {
                     $this->html->snippet($snippet, $params);
                 }
@@ -288,7 +299,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             $this->_exportTrack($track);
         }
     }
-    
+
     /**
      * Constructs the form
      *

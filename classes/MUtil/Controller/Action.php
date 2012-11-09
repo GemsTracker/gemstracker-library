@@ -138,7 +138,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      */
     public function _($text, $locale = null)
     {
-        return $this->translate->_($text, $locale);
+        return $this->translate->getAdapter()->_($text, $locale);
     }
 
     /**
@@ -483,7 +483,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     public function plural($singular, $plural, $number, $locale = null)
     {
         $args = func_get_args();
-        return call_user_func_array(array($this->translate, 'plural'), $args);
+        return call_user_func_array(array($this->translate->getAdapter(), 'plural'), $args);
     }
 
      /* currently not in use

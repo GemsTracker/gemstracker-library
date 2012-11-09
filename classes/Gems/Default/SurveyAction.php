@@ -56,33 +56,41 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
 
     public $trackType = 'S';
 
+    /**
+     * Overrules specific translations for this action
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
     public function _($text, $locale = null)
     {
         // Thanks to Potemkin adapter there is always a translate variable in MUtil_Controller_Action
         switch ($text) {
             case 'Add track':
-                return $this->translate->_('Add survey', $locale);
+                return $this->translate->getAdapter()->_('Add survey', $locale);
 
             case 'Add another %s track':
-                return $this->translate->_('Add another %s survey', $locale);
+                return $this->translate->getAdapter()->_('Add another %s survey', $locale);
 
             case 'Adding the %s track to respondent %s':
-                return $this->translate->_('Adding the %s survey to respondent %s', $locale);
+                return $this->translate->getAdapter()->_('Adding the %s survey to respondent %s', $locale);
 
             case 'Available tracks':
-                return $this->translate->_('Available surveys', $locale);
+                return $this->translate->getAdapter()->_('Available surveys', $locale);
 
             case 'No tracks found':
-                return $this->translate->_('No surveys found', $locale);
+                return $this->translate->getAdapter()->_('No surveys found', $locale);
 
             case 'Overview of %s track for respondent %s: %s':
-                return $this->translate->_('Overview of %s survey for respondent %s: %s', $locale);
+                return $this->translate->getAdapter()->_('Overview of %s survey for respondent %s: %s', $locale);
 
             case 'This track is currently not assigned to this respondent.':
-                return $this->translate->_('This survey has not been assigned to this respondent.', $locale);
+                return $this->translate->getAdapter()->_('This survey has not been assigned to this respondent.', $locale);
 
             case 'Track %s does not exist.':
-                return $this->translate->_('Survey %s does not exist.', $locale);
+                return $this->translate->getAdapter()->_('Survey %s does not exist.', $locale);
 
             default:
                 return parent::_($text, $locale);

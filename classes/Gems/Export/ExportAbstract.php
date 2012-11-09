@@ -79,6 +79,6 @@ abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstra
      */
     public function _($text, $locale = null)
     {
-        return $this->translate->_($text, $locale);
+        return $this->translate->getAdapter()->_($text, $locale);
     }
 }

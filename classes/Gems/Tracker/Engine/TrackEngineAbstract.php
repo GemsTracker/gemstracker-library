@@ -130,7 +130,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
      */
     public function _($text, $locale = null)
     {
-        return $this->translate->_($text, $locale);
+        return $this->translate->getAdapter()->_($text, $locale);
     }
 
     /**

@@ -1068,8 +1068,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
                     return $html;
                 }
 
-            } elseif ($content = $renderer->renderAny($view, $this->_content)) {
-                return $content;
+            } else {
+                $content = $renderer->renderAny($view, $this->_content);
+                if (strlen($content)) {
+                    return $content;
+                }
             }
         }
 
