@@ -86,6 +86,7 @@ class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAb
             }
         }
 
+        $currentNames = array_combine($currentNames, $currentNames);
         // MUtil_Echo::track($onTop, $onTop + $currentNames, $currentNames);
 
         return $this->restoreHeaderPositions($model, $onTop + $currentNames);

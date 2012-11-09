@@ -68,7 +68,7 @@ class Gems_Event_Survey_Display_ByValue extends Gems_Event_SurveyAnswerFilterAbs
         foreach ($values as $key => $value) {
             if (isset($currentNames[$key])) {
                 unset($currentNames[$key]);
-                $newOrder[] = $key;
+                $newOrder[$key] = $key;
             }
         }
 
