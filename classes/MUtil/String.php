@@ -107,6 +107,26 @@ class MUtil_String
     }
 
     /**
+     * Test if a string is a valid base64 string.
+     *
+     * This test is only performed based on character inputand
+     * does perform an actual decoding to be sure.
+     *
+     * @param string $input
+     * @return boolean
+     */
+    public static function isBase64($input)
+    {
+        if (0 === (strlen($input) % 4)) {
+            if (preg_match('/^[A-Za-z0-9+\\/]{2,}={0,2}$/', $input)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Split a string whereever the callback returns true (including
      * the character that returns true.
      *
