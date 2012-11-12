@@ -2403,7 +2403,7 @@ msgstr "OK in bron, niet actief"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:483
 msgid "Blocked in source"
-msgstr "Gelokkeerd in bron"
+msgstr "Geblokkeerd in bron"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:485
 msgid "(every state)"
