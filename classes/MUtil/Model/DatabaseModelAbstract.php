@@ -416,7 +416,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                             MUtil_Echo::r($key . ' => ' . $newValues[$copyKey], 'Copy key');
                         }
 
-                    } else {
+                    } elseif (isset($newValues[$key])) {
                         $filter[$key . ' = ?'] = $newValues[$key];
                         if (MUtil_Model::$verbose) {
                             MUtil_Echo::r($key . ' => ' . $newValues[$key], 'Key');
