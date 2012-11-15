@@ -245,7 +245,7 @@ class MUtil_Model_FormBridge
 
             // First strip the options that are not allowed
             if (MUtil_Model::$verbose) {
-                $strippedKeys = array_keys(array_diff_key($options, $allowedOptionsflipped));
+                $strippedKeys = array_keys(array_diff_key($options, $allowedOptionsFlipped));
                 if (!empty($strippedKeys)) {
                     MUtil_Echo::r($strippedKeys, 'stripped from options for ' . $name);
                 }
@@ -349,7 +349,7 @@ class MUtil_Model_FormBridge
 
         // Make sure form knows it is a jQuery form
         $this->form->activateJQuery();
-        
+
         return $this->_addToForm($name, 'DatePicker', $options);
     }
 
@@ -379,14 +379,14 @@ class MUtil_Model_FormBridge
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 2);
 
-        //MUtil_Echo::track($elements);
+        // MUtil_Echo::track($elements);
         if (isset($elements['elements'])) {
-            MUtil_Echo::track($elements, $options);
+            // MUtil_Echo::track($elements, $options);
             $tmpElements = $elements['elements'];
             unset($elements['elements']);
             $options = $elements + $options;
             $elements = $tmpElements;
-            //MUtil_Echo::track($elements, $options);
+            // MUtil_Echo::track($elements, $options);
         }
 
         $options = $this->_mergeOptions($name, $options,

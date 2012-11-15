@@ -104,7 +104,13 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
      */
     protected function addUserLogin(Gems_Model_JoinModel $model, $loginField, $organizationField)
     {
-        $model->addTable('gems__user_logins', array($loginField => 'gul_login', $organizationField => 'gul_id_organization'), 'gul');
+        $model->addTable(
+                'gems__user_logins',
+                array($loginField => 'gul_login', $organizationField => 'gul_id_organization'),
+                'gul',
+                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                    MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
+                );
     }
 
     /**

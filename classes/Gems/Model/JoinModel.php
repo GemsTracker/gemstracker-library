@@ -49,14 +49,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Create a model that joins two or more tables
      *
-     * @param string $name          the name of the model
-     * @param string $startTable    The base table for the model
-     * @param string $fieldPrefix   Prefix to use for change fields (date/userid)
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $name        A name for the model
+     * @param string $startTable  The base table for the model
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      */
     public function __construct($name, $startTable, $fieldPrefix = null, $saveable = null)
     {
-        parent::__construct($name, $startTable, (null === $saveable ? $fieldPrefix : $saveable));
+        parent::__construct($name, $startTable, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
@@ -64,18 +64,33 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     }
 
     /**
+     *
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @return mixed The saveable setting to use
+     */
+    protected function _checkSaveable($saveable, $fieldPrefix)
+    {
+        if (null === $saveable) {
+            return $fieldPrefix ? parent::SAVE_MODE_ALL : null;
+        }
+
+        return $saveable;
+    }
+
+    /**
      * Add a table to the model with a left join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param string $fieldPrefix   Prefix to use for change fields (date/userid)
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table       The name of the table to join
+     * @param array  $joinFields  Array of source->dest primary keys for this join
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return Gems_Model_JoinModel
      */
     public function addLeftTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
-        parent::addLeftTable($table, $joinFields, (null === $saveable ? $fieldPrefix : $saveable));
+        parent::addLeftTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
@@ -87,16 +102,16 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Add a table to the model with a right join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param string $fieldPrefix   Prefix to use for change fields (date/userid)
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table       The name of the table to join
+     * @param array  $joinFields  Array of source->dest primary keys for this join
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return Gems_Model_JoinModel
      */
     public function addRightTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
-        parent::addRightTable($table, $joinFields, (null === $saveable ? $fieldPrefix : $saveable));
+        parent::addRightTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
@@ -108,16 +123,16 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Add a table to the model with an inner join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param string $fieldPrefix   Prefix to use for change fields (date/userid)
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table       The name of the table to join
+     * @param array  $joinFields  Array of source->dest primary keys for this join
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return Gems_Model_JoinModel
      */
     public function addTable($table, array $joinFields, $fieldPrefix = null, $saveable = null)
     {
-        parent::addTable($table, $joinFields, (null === $saveable ? $fieldPrefix : $saveable));
+        parent::addTable($table, $joinFields, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);
@@ -127,14 +142,14 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
 
     /**
      *
-     * @param string $table_name    Does not test for existence
-     * @param string $fieldPrefix   Prefix to use for change fields (date/userid)
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table_name  Does not test for existence
+     * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
+     * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
      * @return Gems_Model_JoinModel
      */
     public function setTableSaveable($table_name, $fieldPrefix = null, $saveable = null)
     {
-        parent::setTableSaveable($table_name, (null === $saveable ? $fieldPrefix : $saveable));
+        parent::setTableSaveable($table_name, $this->_checkSaveable($saveable, $fieldPrefix));
 
         if ($fieldPrefix) {
             Gems_Model::setChangeFieldsByPrefix($this, $fieldPrefix);

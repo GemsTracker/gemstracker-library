@@ -60,9 +60,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Create a model that joins two or more tables
      *
-     * @param string $name          the name of the model
-     * @param string $startTable    The base table for the model
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $name       A name for the model
+     * @param string $startTable The base table for the model
+     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      */
     public function __construct($name, $startTable, $saveable = false)
     {
@@ -77,6 +77,40 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $this->_select->from($this->_getTableName($table), array());
     }
 
+    /**
+     * Check the passed saveTable information and return 'new style' SAVE_MODE
+     * constant array
+     *
+     * @param array $saveTables Optional array containing the table names to save,
+     * otherwise the tables set to save at model level will be saved.
+     * @return array Containing savetable data
+     */
+    protected function _checkSaveTables($saveTables)
+    {
+        if (null === $saveTables) {
+            return $this->_saveTables;
+        }
+
+        $results = array();
+        foreach ((array) $saveTables as $tableName => $setting) {
+            if (is_numeric($tableName) || (true === $setting)) {
+                $results[$setting] = self::SAVE_MODE_ALL;
+            } elseif ($setting) {
+                $results[$tableName] = $setting;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Join a table to the select statement and load the table information
+     *
+     * @param string $join      Join function name specifying the type of join
+     * @param mixed $table      The name of the table to join or a table object
+     * @param array $joinFields Array of field pairs that form the join statement
+     * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     */
     protected function _joinTable($join, $table, array $joinFields, $saveable = false)
     {
         $table      = $this->_loadTable($table, $saveable);
@@ -91,32 +125,58 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $this->_select->$join($table_name, implode(' ' . Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
     }
 
+    /**
+     * Load table meta data and set the models table properties
+     *
+     * @param mixed $table    The name of the table to join or a table object
+     * @param mixed $saveable Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     * @return Zend_DB_Table
+     */
     protected function _loadTable($table, $saveable = false)
     {
         if ($table instanceof Zend_Db_Table_Abstract) {
-            $table_name = $this->_getTableName($table);
+            $tableName = $this->_getTableName($table);
         } else {
-            $table_name = (string) $table;
-            $table = new Zend_DB_Table($table_name);
+            $tableName = (string) $table;
+            $table     = new Zend_DB_Table($tableName);
         }
-        $this->_tables[$table_name] = $table;
+        $this->_tables[$tableName] = $table;
 
-        if ($saveable) {
-            $this->_saveTables[] = $table_name;
-        }
-
+        $this->_setTableSaveable($tableName, $saveable);
         $this->_loadTableMetaData($table);
 
         return $table;
     }
 
     /**
+     * Add the table to the default save tables.
+     *
+     * This private functions saves against overloading
+     *
+     * Only tables marked as save tables are saved during a save() or delete(),
+     * unless this is overuled by the extra parameter for those functions in
+     * this object.
+     *
+     * @param string $tableName     Does not test for existence
+     * @param mixed  $saveable      Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     */
+    private function _setTableSaveable($tableName, $saveable)
+    {
+        if (true === $saveable) {
+            $this->_saveTables[$tableName] = self::SAVE_MODE_ALL;
+        } elseif ($saveable) {
+            $this->_saveTables[$tableName] = $saveable;
+        } else {
+            unset($this->_saveTables[$tableName]);
+        }
+    }
+
+    /**
      * Add a table to the model with a left join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param bool   $saveable      Will changes to this table be saved
-     *
+     * @param string $table      The name of the table to join
+     * @param array  $joinFields Array of source->dest primary keys for this join
+     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      * @return MUtil_Model_JoinModel
      */
     public function addLeftTable($table, array $joinFields, $saveable = false)
@@ -128,9 +188,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Add a table to the model with a right join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table      The name of the table to join
+     * @param array  $joinFields Array of source->dest primary keys for this join
+     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return MUtil_Model_JoinModel
      */
@@ -143,9 +203,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Add a table to the model with an inner join
      *
-     * @param string $table         The name of the table to join
-     * @param array  $joinFields    Array of source->dest primary keys for this join
-     * @param bool   $saveable      Will changes to this table be saved
+     * @param string $table      The name of the table to join
+     * @param array  $joinFields Array of source->dest primary keys for this join
+     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return Gems_Model_JoinModel
      */
@@ -169,10 +229,8 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      */
     public function delete($filter = true, array $saveTables = null)
     {
-        if (null === $saveTables) {
-            $saveTables = $this->_saveTables;
-        }
-        $filter = $this->_checkFilterUsed($filter);
+        $saveTables = $this->_checkSaveTables($saveTables);
+        $filter     = $this->_checkFilterUsed($filter);
 
         if ($this->_deleteValues) {
             // First get the old values so we can have all the key values
@@ -182,12 +240,12 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             $changed = $this->save($this->_deleteValues + $oldValues, $filter, $saveTables);
         } else {
             $changed = 0;
-            foreach ($saveTables as $table_name) {
+            foreach ($saveTables as $tableName => $saveMode) {
                 $table_filter = array();
-                $delete       = true;
+                $delete       = $saveMode & self::SAVE_MODE_DELETE;
 
                 // Find per table key filters
-                foreach ($this->_getKeysFor($table_name) as $key) {
+                foreach ($this->_getKeysFor($tableName) as $key) {
                     if (isset($filter[$key])) {
                         $table_filter[$key] = $filter[$key];
                     } else {
@@ -213,7 +271,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
 
                 // MUtil_Echo::r($table_filter, $table_name);
                 if ($delete && $table_filter) {
-                    $changed = max($changed, $this->_deleteTableData($this->_tables[$table_name], $table_filter));
+                    $changed = max($changed, $this->_deleteTableData($this->_tables[$tableName], $table_filter));
                 }
             }
         }
@@ -253,16 +311,13 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      */
     public function save(array $newValues, array $filter = null, array $saveTables = null)
     {
-        if (null === $saveTables) {
-            $saveTables = $this->_saveTables;
-        }
-
+        $saveTables = $this->_checkSaveTables($saveTables);
         $oldChanged = $this->getChanged();
 
         // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
 
         $oldValues = $newValues;
-        foreach ($saveTables as $table_name) {
+        foreach ($saveTables as $tableName => $saveMode) {
             // Gotta repeat this every time, as keys may be set later
             foreach ($this->_joinFields as $source => $target) {
                 // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
@@ -280,7 +335,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                     } elseif (! (isset($newValues[$source]) && $newValues[$source])) {
                         $newValues[$source] = $newValues[$target];
 
-                    } elseif ((strlen($newValues[$target]) > 0) && (strlen($newValues[$source]) > 0) && $newValues[$target] != $newValues[$source]) {
+                    } elseif ((strlen($newValues[$target]) > 0) &&
+                            (strlen($newValues[$source]) > 0) &&
+                            $newValues[$target] != $newValues[$source]) {
                         // Join key values changed.
                         //
                         // Set the old values as the filter
@@ -293,13 +350,15 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                         // The changing field must be stated first in the join statement.
                         $newValues[$target] = $newValues[$source];
                     }
-                } elseif ($target instanceof Zend_Db_Expr && (! (isset($newValues[$source]) && $newValues[$source]))) {
+                } elseif ($target instanceof Zend_Db_Expr &&
+                        (! (isset($newValues[$source]) && $newValues[$source]))) {
                     $newValues[$source] = $target;
                 }
             }
 
             //$this->_saveTableData returns the new row values, including any automatic changes.
-            $newValues = $this->_saveTableData($this->_tables[$table_name], $newValues, $filter) + $oldValues;
+            $newValues = $this->_saveTableData($this->_tables[$tableName], $newValues, $filter, $saveMode)
+                    + $oldValues;
             // MUtil_Echo::track($oldValues, $newValues, $filter);
             $oldValues = $newValues;
         }
@@ -345,22 +404,13 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * unless this is overuled by the extra parameter for those functions in
      * this object.
      *
-     * @param string $table_name    Does not test for existence
-     * @param boolean $saveable     Will changes to this table be saved
+     * @param string $tableName     Does not test for existence
+     * @param mixed  $saveable      Will changes to this table be saved, true or a combination of SAVE_MODE constants
      * @return MUtil_Model_JoinModel (continuation pattern)
      */
-    public function setTableSaveable($table_name, $saveable = true)
+    public function setTableSaveable($tableName, $saveable = true)
     {
-        // MUtil_Echo::r(func_get_args(), __CLASS__ . '->' . __FUNCTION__);
-        if ($saveable) {
-            if (! in_array($table_name, $this->_saveTables)) {
-                $this->_saveTables[] = $table_name;
-            }
-        } else {
-            $key = array_search($table_name, $this->_saveTables);
-            unset($this->_saveTables[$key]);
-        }
-
+        $this->_setTableSaveable($tableName, $saveable);
         return $this;
     }
 }

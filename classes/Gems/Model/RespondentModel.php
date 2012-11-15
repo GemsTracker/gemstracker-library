@@ -128,8 +128,16 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      */
     public function addLoginCheck()
     {
-        $this->addLeftTable('gems__user_logins', array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'), 'gul');
-        $this->addColumn("CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END", 'has_login');
+        $this->addLeftTable(
+                'gems__user_logins',
+                array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
+                'gul',
+                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                    MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
+
+        $this->addColumn(
+                "CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END",
+                'has_login');
 
         return $this;
     }

@@ -62,6 +62,30 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     const KEY_COPIER = '__c_1_3_copy__%s__key_k_0_p_1__';
 
     /**
+     * Default save mode: execute all saves
+     */
+    const SAVE_MODE_ALL    = 7;
+
+    /**
+     * Allow deletes to be executed
+     */
+    const SAVE_MODE_DELETE = 4;
+
+    /**
+     * Allow inserts to be executed
+     */
+    const SAVE_MODE_INSERT = 2;
+
+    /**
+     * Allow updates to be executed
+     */
+    const SAVE_MODE_UPDATE = 1;
+
+    /**
+     * Do nothing
+     */
+    const SAVE_MODE_NONE   = 0;
+    /**
      * Name for query filter transformers
      */
     const TEXTFILTER_TRANSFORMER = 'filter_transformer';
@@ -257,7 +281,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 }
             }
         }
-
         return $this->_filterDataForSave($tableData, $isNew);
     }
 
@@ -373,142 +396,148 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * @see copyKeys()
      *
      * @param Zend_Db_Table_Abstract $table The table to save
-     * @param array $newValues The values to save, including those for other tables
-     * @param array $oldKeys The original keys as they where before the changes
+     * @param array  $newValues The values to save, including those for other tables
+     * @param array  $oldKeys The original keys as they where before the changes
+     * @param int    $saveMode Should updates / inserts occur
      * @return array The values for this table as they were updated
      */
-    protected function _saveTableData(Zend_Db_Table_Abstract $table, array $newValues, array $oldKeys = null)
+    protected function _saveTableData(Zend_Db_Table_Abstract $table, array $newValues,
+            array $oldKeys = null, $saveMode = self::SAVE_MODE_ALL)
     {
-        if ($newValues) {
-            $table_name   = $this->_getTableName($table);
-            $primaryKeys  = $this->_getKeysFor($table_name);
-            $primaryCount = count($primaryKeys);
-            $filter       = array();
-            $update       = true;
+        if (! $newValues) {
+            return array();
+        }
 
-            // MUtil_Echo::r($newValues, $table_name);
+        $table_name   = $this->_getTableName($table);
+        $primaryKeys  = $this->_getKeysFor($table_name);
+        $primaryCount = count($primaryKeys);
+        $filter       = array();
+        $update       = true;
 
-            foreach ($primaryKeys as $key) {
-                if (array_key_exists($key, $newValues) && (0 == strlen($newValues[$key]))) {
-                    // Never include null key values
-                    unset($newValues[$key]);
+        // MUtil_Echo::r($newValues, $table_name);
+        foreach ($primaryKeys as $key) {
+            if (array_key_exists($key, $newValues) && (0 == strlen($newValues[$key]))) {
+                // Never include null key values
+                unset($newValues[$key]);
+                if (MUtil_Model::$verbose) {
+                    MUtil_Echo::r('Null key value: ' . $key, 'INSERT!!');
+                }
+
+                // Now we know we are not updating
+                $update = false;
+
+            } elseif (isset($oldKeys[$key])) {
+                if (MUtil_Model::$verbose) {
+                    MUtil_Echo::r($key . ' => ' . $oldKeys[$key], 'Old key');
+                }
+                $filter[$key . ' = ?'] = $oldKeys[$key];
+                // Key values left in $returnValues in case of partial key insert
+
+            } else {
+                // Check for old key values being stored using copyKeys()
+                $copyKey = $this->getKeyCopyName($key);
+
+                if (isset($newValues[$copyKey])) {
+                    $filter[$key . ' = ?'] = $newValues[$copyKey];
                     if (MUtil_Model::$verbose) {
-                        MUtil_Echo::r('Null key value: ' . $key, 'INSERT!!');
+                        MUtil_Echo::r($key . ' => ' . $newValues[$copyKey], 'Copy key');
                     }
 
-                    // Now we know we are not updating
-                    $update = false;
-
-                } elseif (isset($oldKeys[$key])) {
+                } elseif (isset($newValues[$key])) {
+                    $filter[$key . ' = ?'] = $newValues[$key];
                     if (MUtil_Model::$verbose) {
-                        MUtil_Echo::r($key . ' => ' . $oldKeys[$key], 'Old key');
-                    }
-                    $filter[$key . ' = ?'] = $oldKeys[$key];
-                    // Key values left in $returnValues in case of partial key insert
-
-                } else {
-                    // Check for old key values being stored using copyKeys()
-                    $copyKey = $this->getKeyCopyName($key);
-
-                    if (isset($newValues[$copyKey])) {
-                        $filter[$key . ' = ?'] = $newValues[$copyKey];
-                        if (MUtil_Model::$verbose) {
-                            MUtil_Echo::r($key . ' => ' . $newValues[$copyKey], 'Copy key');
-                        }
-
-                    } elseif (isset($newValues[$key])) {
-                        $filter[$key . ' = ?'] = $newValues[$key];
-                        if (MUtil_Model::$verbose) {
-                            MUtil_Echo::r($key . ' => ' . $newValues[$key], 'Key');
-                        }
+                        MUtil_Echo::r($key . ' => ' . $newValues[$key], 'Key');
                     }
                 }
             }
+        }
+        if (! $filter) {
+            $update = false;
+        }
+
+        if ($update) {
+            // MUtil_Echo::r($filter, 'Filter');
+
+            $adapter = $this->getAdapter();
+            $wheres   = array();
+            foreach ($filter as $text => $value) {
+                $wheres[] = $adapter->quoteInto($text, $value);
+            }
+            // Retrieve the record from the database
+            $oldValues = $table->fetchRow('(' . implode(' ) AND (', $wheres) . ')');
+            if (! $oldValues) {
+                // MUtil_Echo::r('INSERT!!', 'Old not found');
+                // Apparently the record does not exist in the database
+                $update = false;
+            } else {
+                $oldValues = $oldValues->toArray();
+            }
+        }
+
+        // Check for actual values for this table to save.
+        // MUtil_Echo::track($newValues);
+        if ($returnValues = $this->_filterDataFor($table_name, $newValues, ! $update)) {
+            if (true || MUtil_Model::$verbose) {
+                MUtil_Echo::r($returnValues, 'Return');
+            }
+            // MUtil_Echo::track($returnValues);
 
             if ($update) {
-                // MUtil_Echo::r($filter, 'Filter');
+                // MUtil_Echo::r($filter);
 
-                $adapter = $this->getAdapter();
-                $wheres   = array();
-                foreach ($filter as $text => $value) {
-                    $wheres[] = $adapter->quoteInto($text, $value);
-                }
-                // Retrieve the record from the database
-                $oldValues = $table->fetchRow('(' . implode(' ) AND (', $wheres) . ')');
+                // Check for actual changes
+                foreach ($oldValues as $name => $value) {
 
-                if (! $oldValues) {
-                    // MUtil_Echo::r('INSERT!!', 'Old not found');
-                    // Apparently the record does not exist in the database
-                    $update = false;
-                } else {
-                    $oldValues = $oldValues->toArray();
-                }
-            }
+                    // The name is in the set being stored
+                    if (array_key_exists($name, $returnValues)) {
 
-            // Check for actual values for this table to save.
-            // MUtil_Echo::track($newValues);
-            if ($returnValues = $this->_filterDataFor($table_name, $newValues, ! $update)) {
-                if (MUtil_Model::$verbose) {
-                    MUtil_Echo::r($returnValues, 'Return');
-                }
-                // MUtil_Echo::track($returnValues);
+                        // Detect change that is not auto update
+                        if (! (($returnValues[$name] == $value) || $this->isAutoSave($name))) {
+                            // MUtil_Echo::rs($name, $returnValues[$name], $value);
+                            // MUtil_Echo::r($returnValues);
 
-                if ($update) {
-                    // MUtil_Echo::r($filter);
+                            // Update the row, if the saveMode allows it
+                            if (($saveMode & self::SAVE_MODE_UPDATE) &&
+                                    $changed = $table->update($returnValues, $filter)) {
+                                $this->addChanged($changed);
+                                // Make sure the copy keys (if any) have the new values as well
+                                $returnValues = $this->_updateCopyKeys($primaryKeys, $returnValues);
 
-                    // Check for actual changes
-                    foreach ($oldValues as $name => $value) {
+                                // Add the old values as we have them and they may be of use later on.
+                                $returnValues = $returnValues + $oldValues;
 
-                        // The name is in the set being stored
-                        if (array_key_exists($name, $returnValues)) {
-
-                            // Detect change that is not auto update
-                            if (! (($returnValues[$name] == $value) || $this->isAutoSave($name))) {
-                                // MUtil_Echo::rs($name, $returnValues[$name], $value);
-                                // MUtil_Echo::r($returnValues);
-
-                                // Update the row
-                                if ($changed = $table->update($returnValues, $filter)) {
-                                    $this->addChanged($changed);
-                                    // Make sure the copy keys (if any) have the new values as well
-                                    $returnValues = $this->_updateCopyKeys($primaryKeys, $returnValues);
-
-                                    // Add the old values as we have them and they may be of use later on.
-                                    $returnValues = $returnValues + $oldValues;
-
-                                    return $returnValues;
-                                }
+                                return $returnValues;
                             }
                         }
                     }
-                    // Add the old values as we have them and they may be of use later on.
-                    return $returnValues + $oldValues;
+                }
+                // Add the old values as we have them and they may be of use later on.
+                return $returnValues + $oldValues;
 
-                } else {
-                    // Perform insert
-                    // MUtil_Echo::r($returnValues);
-                    $newKeyValues = $table->insert($returnValues);
-                    $this->addChanged();
-                    // MUtil_Echo::rs($newKeyValues, $primaryKeys);
+            } elseif ($saveMode & self::SAVE_MODE_INSERT) {
+                // Perform insert
+                // MUtil_Echo::r($returnValues);
+                $newKeyValues = $table->insert($returnValues);
+                $this->addChanged();
+                // MUtil_Echo::rs($newKeyValues, $primaryKeys);
 
-                    // Composite key returned.
-                    if (is_array($newKeyValues)) {
-                        foreach ($newKeyValues as $key => $value) {
-                            $returnValues[$key] = $value;
-                        }
-                        return $this->_updateCopyKeys($primaryKeys, $returnValues);
-                    } else {
-                        // Single key returned
-                        foreach ($primaryKeys as $key) {
-                            // Fill the first empty value
-                            if (! isset($returnValues[$key])) {
-                                $returnValues[$key] = $newKeyValues;
-                                return $this->_updateCopyKeys($primaryKeys, $returnValues);
-                            }
-                        }
-                        // But if all the key values were already filled, make sure the new values are returned.
-                        return $this->_updateCopyKeys($primaryKeys, $returnValues);
+                // Composite key returned.
+                if (is_array($newKeyValues)) {
+                    foreach ($newKeyValues as $key => $value) {
+                        $returnValues[$key] = $value;
                     }
+                    return $this->_updateCopyKeys($primaryKeys, $returnValues);
+                } else {
+                    // Single key returned
+                    foreach ($primaryKeys as $key) {
+                        // Fill the first empty value
+                        if (! isset($returnValues[$key])) {
+                            $returnValues[$key] = $newKeyValues;
+                            return $this->_updateCopyKeys($primaryKeys, $returnValues);
+                        }
+                    }
+                    // But if all the key values were already filled, make sure the new values are returned.
+                    return $this->_updateCopyKeys($primaryKeys, $returnValues);
                 }
             }
         }
