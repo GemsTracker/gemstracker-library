@@ -133,7 +133,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
             return false;
         }
 
-        if (! $this->loader->getCurrentUser()->isActive()) {
+        if (! ($this->loader->getCurrentUser()->isActive() || $this->token->getSurvey()->isTakenByStaff())) {
             $tokenLang = strtolower($this->token->getRespondentLanguage());
             // MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
             if ($tokenLang != $this->locale->getLanguage()) {
