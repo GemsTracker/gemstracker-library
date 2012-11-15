@@ -83,7 +83,8 @@ class Gems_Tracker_Model_SingleSurveyTokenModel extends Gems_Tracker_Model_Stand
      * @param array $oldKeys The original keys as they where before the changes
      * @return array The values for this table as they were updated
      */
-    protected function _saveTableData(Zend_Db_Table_Abstract $table, array $newValues, array $oldKeys = null)
+    protected function _saveTableData(Zend_Db_Table_Abstract $table, array $newValues,
+            array $oldKeys = null, $saveMode = self::SAVE_MODE_ALL)
     {
         $table_name = $this->_getTableName($table);
 
@@ -98,7 +99,7 @@ class Gems_Tracker_Model_SingleSurveyTokenModel extends Gems_Tracker_Model_Stand
             return $tokenData;
 
         } else {
-            return parent::_saveTableData($table, $newValues, $oldKeys);
+            return parent::_saveTableData($table, $newValues, $oldKeys, $saveMode);
         }
     }
 

@@ -791,7 +791,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $token  = $this->_getToken($tokenId);
 
         try {
-            $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ?", $token);
+            // Order by ID desc to get the same answers used as in the row retrieved by
+            // getRawTokenAnswerRows() in case of double rows
+            $values = $lsDb->fetchRow("SELECT * FROM $lsTab WHERE token = ? ORDER BY id DESC", $token);
         } catch (Zend_Db_Statement_Exception $exception) {
             $this->logger->logError($exception, $this->request);
             $values = false;
@@ -874,16 +876,17 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         //        this way other sources that don't perform changes on the token field don't have to loop
         //        over this field. The survey(answer)model could possibly perform the translation for this source
         if ($rows) {
+            $map = $this->_getFieldMap($sourceSurveyId);
             if (isset($filter[$tokenField])) {
                 foreach ($rows as $values) {
                     $token = $originals[$values['token']];
-                    $results[$token] = $this->_getFieldMap($sourceSurveyId)->mapKeysToTitles($values);
+                    $results[$token] = $map->mapKeysToTitles($values);
                 }
                 return $results;
             } else {
                 //@@TODO If we do the mapping in the select statement, maybe we can gain some performance here
                 foreach ($rows as $values) {
-                    $results[] = $this->_getFieldMap($sourceSurveyId)->mapKeysToTitles($values);
+                    $results[] = $map->mapKeysToTitles($values);
                 }
                 return $results;
             }
@@ -1052,8 +1055,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsTab     = $this->_getSurveyTableName($sourceSurveyId);
         $lsTokenId = $this->_getToken($token->getTokenId());
 
+        // MUtil_Echo::track($answers);
+
         $answers = $this->_getFieldMap($sourceSurveyId)->mapTitlesToKeys($answers);
         $answers = $this->_filterAnswersOnly($sourceSurveyId, $answers);
+
+        // MUtil_Echo::track($answers);
 
         if ($lsDb->fetchOne("SELECT token FROM $lsTab WHERE token = ?", $lsTokenId)) {
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);
@@ -1067,7 +1074,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $answers['startdate'] = $current;
 
             $lsDb->insert($lsTab, $answers);
-
         }
     }
 

@@ -119,6 +119,6 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
     {
         // $this->_saveTableData returns the new row values, including any automatic changes.
         // add $newValues to throw nothing away.
-        return $this->_saveTableData($this->_table, $newValues, $filter) + $newValues;
+        return $this->_saveTableData($this->_table, $newValues, $filter, parent::SAVE_MODE_ALL) + $newValues;
     }
 }
