@@ -65,6 +65,39 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     protected $labelWidthFactor = 0.8;
 
     /**
+     *
+     * @var Zend_Locale
+     */
+    public $locale;
+
+    /**
+     * The current token ID
+     *
+     * set by _initToken()
+     *
+     * @var Gems_Tracker
+     */
+    protected $tokenId;
+
+    /**
+     * The current token
+     *
+     * set by _initToken()
+     *
+     * @var Gems_Tracker_Token
+     */
+    protected $token;
+
+    /**
+     * The tracker
+     *
+     * set by _initToken()
+     *
+     * @var Gems_Tracker
+     */
+    protected $tracker;
+
+    /**
      * Set to true in child class for automatic creation of $this->html.
      *
      * To initiate the use of $this->html from the code call $this->initHtml()
@@ -75,6 +108,52 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      * @var boolean $useHtmlView
      */
     public $useHtmlView = true;
+
+    /**
+     * Common handler utility to initialize tokens from parameters
+     *
+     * @return boolean True if there is a real token specified in the request
+     */
+    protected function _initToken()
+    {
+        if ($this->tracker) {
+            return $this->token && $this->token->exists;
+        }
+
+        $this->tracker = $this->loader->getTracker();
+        $this->tokenId = $this->tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID));
+
+        if (! $this->tokenId) {
+            return false;
+        }
+
+        $this->token = $this->tracker->getToken($this->tokenId);
+
+        if (! $this->token->exists) {
+            return false;
+        }
+
+        if (! $this->loader->getCurrentUser()->isActive()) {
+            $tokenLang = strtolower($this->token->getRespondentLanguage());
+            // MUtil_Echo::track($tokenLang, $this->locale->getLanguage());
+            if ($tokenLang != $this->locale->getLanguage()) {
+                $this->locale->setLocale($tokenLang);
+                $this->translate->getAdapter()->setLocale($this->locale);
+                $this->session->user_locale = $tokenLang;
+                Gems_Cookies::setLocale($tokenLang, $this->basepath->getBasePath());
+            }
+
+            $currentOrg = $this->loader->getOrganization();
+            $tokenOrgId = $this->token->getOrganizationId();
+
+            if ($tokenOrgId != $currentOrg->getId()) {
+                $this->loader->getOrganization($tokenOrgId)
+                        ->setAsCurrentOrganization();
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Function for overruling the display of the login form.
@@ -113,40 +192,47 @@ class Gems_Default_AskAction extends Gems_Controller_Action
          * Find token *
          **************/
 
-        if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
-            $tracker = $this->loader->getTracker();
-            $tokenId = $tracker->filterToken($tokenId);
-            $token   = $tracker->getToken($tokenId);
-
-            if ($token->exists) {
-
-                /****************************
-                 * Update open tokens first *
-                 ****************************/
-                $respId = $token->getRespondentId();
-                $tracker->processCompletedTokens($respId, $token->getChangedBy());
-
-                // Display token when possible
-                if ($this->html->snippet($this->forwardSnippets, 'token', $token)) {
-                    return;
-                }
-
-                // Snippet had nothing to display, because of an answer
-                if ($this->getRequest()->getActionName() == 'return') {
-                    $this->addMessage(sprintf($this->_('Thank you for answering. At the moment we have no further surveys for you to take.'), strtoupper($tokenId)));
-                } else {
-                    $this->addMessage(sprintf($this->_('The survey for token %s has been answered and no further surveys are open.'), strtoupper($tokenId)));
-                }
-
-                // Do not enter a loop!! Reroute!
-                $this->_reroute(array('controller' => 'ask', 'action' => 'index'), true);
-
-            } else {
-                $this->addMessage(sprintf($this->_('The token %s does not exist (any more).'), strtoupper($tokenId)));
+        if (! $this->_initToken()) {
+            if ($this->tokenId) {
+                // There is a token but is incorrect
+                $this->addMessage(sprintf(
+                        $this->_('The token %s does not exist (any more).'),
+                        strtoupper($this->tokenId)
+                        ));
             }
+            $this->_forward('index');
+            return;
         }
 
-        $this->_forward('index');
+        /****************************
+         * Update open tokens first *
+         ****************************/
+        $this->tracker->processCompletedTokens(
+                $this->token->getRespondentId(),
+                $this->token->getChangedBy(),
+                $this->token->getOrganizationId()
+                );
+
+        // Display token when possible
+        if ($this->html->snippet($this->forwardSnippets, 'token', $this->token)) {
+            return;
+        }
+
+        // Snippet had nothing to display, because of an answer
+        if ($this->getRequest()->getActionName() == 'return') {
+            $this->addMessage(sprintf(
+                    $this->_('Thank you for answering. At the moment we have no further surveys for you to take.'),
+                    strtoupper($this->tokenId)
+                    ));
+        } else {
+            $this->addMessage(sprintf(
+                    $this->_('The survey for token %s has been answered and no further surveys are open.'),
+                    strtoupper($this->tokenId)
+                    ));
+        }
+
+        // Do not enter a loop!! Reroute!
+        $this->_reroute(array('controller' => 'ask', 'action' => 'index'), true);
     }
 
     /**
@@ -161,7 +247,10 @@ class Gems_Default_AskAction extends Gems_Controller_Action
 
         $request = $this->getRequest();
         $tracker = $this->loader->getTracker();
-        $form    = $tracker->getAskTokenForm(array('displayOrder' => array('element', 'description', 'errors'), 'labelWidthFactor' => 0.8));
+        $form    = $tracker->getAskTokenForm(array(
+            'displayOrder' => array('element', 'description', 'errors'),
+            'labelWidthFactor' => 0.8
+            ));
 
         if ($request->isPost() && $form->isValid($request->getParams())) {
             $this->_forward('forward');
@@ -173,58 +262,51 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     }
 
     /**
-     * Common handler utility to initialize tokens from parameters
-     */
-    protected function initToken()
-    {
-        $this->tracker = $this->loader->getTracker();
-        $this->tokenId = $this->tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID));
-        $this->token   = $this->tracker->getToken($this->tokenId);
-    }
-
-    /**
      * The action where survey sources should return to after survey completion
      */
     public function returnAction()
     {
-        $tracker = $this->loader->getTracker();
-
-        if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
-            $tokenId = $tracker->filterToken($tokenId);
-            $token   = $tracker->getToken($tokenId);
-
-            if ($url = $token->getReturnUrl()) {
-                // Check for completed tokens
-                $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $token->getChangedBy());
-
-                // Redirect at once, might be another site url
-                header('Location: ' . $url);
-                exit();
-            }
-
-            // Nor return? Check for old style user based return
-            $user = $this->loader->getCurrentUser();
-
-            if ($user->isActive() && ($parameters = $user->getSurveyReturn())) {
-
-                // Check for completed tokens
-                $this->loader->getTracker()->processCompletedTokens($token->getRespondentId(), $user->getUserId());
-
-                if (! $parameters) {
-                    // Default
-                    $request = $this->getRequest();
-                    $parameters[$request->getControllerKey()] = 'respondent';
-                    $parameters[$request->getActionKey()]     = 'show';
-                    $parameters[MUtil_Model::REQUEST_ID]      = $token->getPatientNumber();
-                }
-
-                $this->_reroute($parameters, true);
-                return;
-            }
+        if (! $this->_initToken()) {
+            // In all other cases: the action that generates meaningfull warnings and is reachable for everyone
+            $this->_forward('forward');
+            return;
         }
 
-        // In all other cases: the action that generates meaningfull warnings as is reachable for everyone
-        $this->_forward('forward');
+        if ($url = $this->token->getReturnUrl()) {
+            // Check for completed tokens
+            $this->tracker->processCompletedTokens(
+                    $this->token->getRespondentId(),
+                    $this->token->getChangedBy(),
+                    $this->token->getOrganizationId()
+                    );
+
+            // Redirect at once, might be another site url
+            header('Location: ' . $url);
+            exit();
+        }
+
+        // No return? Check for old style user based return
+        $user = $this->loader->getCurrentUser();
+
+        if (! $user->isActive()) {
+            $this->_forward('forward');
+            return;
+        }
+
+        // Check for completed tokens
+        $this->tracker->processCompletedTokens($this->token->getRespondentId(), $user->getUserId());
+
+        // Get return route parameters
+        $parameters = $user->getSurveyReturn();
+        if (! $parameters) {
+            // Default fallback for the fallback
+            $request = $this->getRequest();
+            $parameters[$request->getControllerKey()] = 'respondent';
+            $parameters[$request->getActionKey()]     = 'show';
+            $parameters[MUtil_Model::REQUEST_ID]      = $this->token->getPatientNumber();
+        }
+
+        $this->_reroute($parameters, true);
     }
 
     /**
@@ -248,34 +330,39 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      */
     public function toSurveyAction()
     {
-        $tracker = $this->loader->getTracker();
-        if ($tokenId = $this->_getParam(MUtil_Model::REQUEST_ID)) {
-            $tokenId = $tracker->filterToken($tokenId);
-
-            if ($token = $tracker->getToken($tokenId)) {
-                $language = $this->locale->getLanguage();
-                $user     = $this->loader->getCurrentUser();
-
-                try {
-                    $url  = $token->getUrl($language, $user->getUserId() ? $user->getUserId() : $token->getRespondentId());
-
-                    /************************
-                     * Optional user logout *
-                     ************************/
-                    if ($user->isLogoutOnSurvey()) {
-                        $user->unsetAsCurrentUser();
-                    }
-
-                    // Redirect at once
-                    header('Location: ' . $url);
-                    exit();
-                } catch (Gems_Tracker_Source_SurveyNotFoundException $e) {
-                    $this->addMessage(sprintf($this->_('The survey for token %s is no longer active.'), $tokenId));
-                }
-            }
+        if (! $this->_initToken()) {
+            // Default option
+            $this->_forward('index');
         }
 
-        // Default option
-        $this->_forward('index');
+        $language = $this->locale->getLanguage();
+        $user     = $this->loader->getCurrentUser();
+
+        try {
+            $url  = $this->token->getUrl(
+                    $language,
+                    $user->getUserId() ? $user->getUserId() : $this->token->getRespondentId()
+                    );
+
+            /************************
+             * Optional user logout *
+             ************************/
+            if ($user->isLogoutOnSurvey()) {
+                $user->unsetAsCurrentUser();
+            }
+
+            // Redirect at once
+            header('Location: ' . $url);
+            exit();
+
+        } catch (Gems_Tracker_Source_SurveyNotFoundException $e) {
+            $this->addMessage(sprintf(
+                    $this->_('The survey for token %s is no longer active.'),
+                    strtoupper($this->tokenId)
+                    ));
+
+            // Default option
+            $this->_forward('index');
+        }
     }
 }

@@ -94,6 +94,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Zend_Locale
+     */
+    protected $locale;
+
+    /**
+     *
      * @var Gems_Tracker
      */
     protected $tracker;
@@ -511,13 +517,32 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the default language for the respondent
+     *
+     * @return string Two letter language code
+     */
+    public function getRespondentLanguage()
+    {
+        if (! isset($this->_respTrackData['grs_iso_lang'])) {
+            $this->_ensureRespondentData();
+
+            if (! isset($this->_respTrackData['grs_iso_lang'])) {
+                // Still not set in a project? The it is single language
+                $this->_respTrackData['grs_iso_lang'] = $this->locale->getLanguage();
+            }
+        }
+
+        return $this->_respTrackData['grs_iso_lang'];
+    }
+
+    /**
      * Return the name of the respondent
      *
      * @return string The respondents name
      */
     public function getRespondentName()
     {
-        if (! isset($this->_respTrackData['grs_first_name'], $this->_respTrackData['grs_surname_prefix'], $this->_respTrackData['grs_last_name'])) {
+        if (! isset($this->_respTrackData['grs_first_name'], $this->_respTrackData['grs_last_name'])) {
             $this->_ensureRespondentData();
         }
 

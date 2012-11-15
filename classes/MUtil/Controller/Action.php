@@ -88,7 +88,7 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      * The code will use a Potemkin Translate adapter when Zend_Translate is not set in the registry, so
      * the code will still work, it just will not translate.
      *
-     * @var Zend_Translate $translate
+     * @var Zend_Translate
      */
     public $translate;
 
@@ -372,9 +372,9 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
     public function getTranslate()
     {
         if (! $this->translate) {
-            $translate = Zend_Registry::get('Zend_Translate');
-
-            if (null === $translate) {
+            if (Zend_Registry::isRegistered('Zend_Translate')) {
+                $translate = Zend_Registry::get('Zend_Translate');
+            } else {
                 // Make sure there always is a translator
                 $translate = new MUtil_Translate_Adapter_Potemkin();
                 Zend_Registry::set('Zend_Translate', $translate);

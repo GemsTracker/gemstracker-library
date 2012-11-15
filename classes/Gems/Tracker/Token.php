@@ -120,6 +120,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Zend_Locale
+     */
+    protected $locale;
+
+    /**
+     *
      * @var Gems_Tracker_Survey
      */
     protected $survey;
@@ -132,7 +138,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Zend_Translate_Adapter
+     * @var Zend_Translate
      */
     public $translate;
 
@@ -195,6 +201,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
             $respId = $this->_gemsData['gto_id_respondent'];
             $orgId  = $this->_gemsData['gto_id_organization'];
+                MUtil_Echo::track($this->_gemsData);
 
             if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
                 $this->_gemsData = $this->_gemsData + $row;
@@ -887,6 +894,25 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the default language for the respondent
+     *
+     * @return string Two letter language code
+     */
+    public function getRespondentLanguage()
+    {
+        if (! isset($this->_gemsData['grs_iso_lang'])) {
+            $this->_ensureRespondentData();
+
+            if (! isset($this->_gemsData['grs_iso_lang'])) {
+                // Still not set in a project? The it is single language
+                $this->_gemsData['grs_iso_lang'] = $this->locale->getLanguage();
+            }
+        }
+
+        return $this->_gemsData['grs_iso_lang'];
+    }
+
+    /**
      *
      * @return string
      */
@@ -989,24 +1015,27 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * Returns a string that tells if the token is open, completed or any other
      * status you might like. This will not be interpreted by the tracker it is
      * for display purposes only
+     *
+     * @return string Token status description
      */
     public function getStatus()
     {
         $today  = new Zend_Date();
-        $status = $this->translate->_('Open');
 
         if ($this->isCompleted()) {
-            $status = $this->translate->_('Completed');
+            $status = $this->translate->getAdapter()->_('Completed');
         } else {
             $validFrom  = $this->getValidFrom();
             $validUntil = $this->getValidUntil();
 
-            if (!empty($validUntil) && $validUntil->isEarlier($today)) {
-                $status = $this->translate->_('Missed');
-            } else if (!empty($validFrom) && $validFrom->isLater($today)) {
-                $status = $this->translate->_('Future');
-            } else if (empty($validFrom) && empty($validUntil)) {
-                $status = $this->translate->_('Future');
+            if (! empty($validUntil) && $validUntil->isEarlier($today)) {
+                $status = $this->translate->getAdapter()->_('Missed');
+            } elseif (! empty($validFrom) && $validFrom->isLater($today)) {
+                $status = $this->translate->getAdapter()->_('Future');
+            } elseif (empty($validFrom) && empty($validUntil)) {
+                $status = $this->translate->getAdapter()->_('Future');
+            } else {
+                $status = $this->translate->getAdapter()->_('Open');
             }
         }
 
