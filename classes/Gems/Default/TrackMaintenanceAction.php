@@ -52,6 +52,12 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      */
     protected $browseMode;
 
+    /**
+     *
+     * @var Zend_Cache_Core
+     */
+    public $cache;
+
     public $sortKey = array('gtr_track_name' => SORT_ASC);
 
     public $summarizedActions = array('index', 'autofilter', 'check-all');
@@ -142,6 +148,22 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
             $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
         }
+    }
+
+    /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        $this->cache->clean('matchTags', array('surveys', 'tracks'));
+
+        return true;
     }
 
     /**

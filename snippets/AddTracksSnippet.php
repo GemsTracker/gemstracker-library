@@ -55,6 +55,12 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
 {
     /**
      *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     public $db;
@@ -83,12 +89,6 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
-
-    /**
-     *
-     * @var Zend_Session
-     */
-    public $session;
 
     /**
      * Switch to set display of respondent dropdown on or off
@@ -137,13 +137,11 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                 throw new exception('Invalid track type requested.');
         }
 
-        $organization_id = intval($this->request->getParam(MUtil_Model::REQUEST_ID2));
-        $trackTypeCache  = $trackType . '_' . $organization_id;
-        $trackTypeTime   = $trackType . '_time';
+        $orgId   = intval($this->request->getParam(MUtil_Model::REQUEST_ID2));
+        $cacheId = __CLASS__ . '_' . $trackType . '_' . $orgId;
+        $tracks  = $this->cache->load($cacheId);
 
-        if (isset($this->session->$trackTypeCache, $this->session->$trackTypeTime) && (time() < $this->session->$trackTypeTime)) {
-            $tracks = $this->session->$trackTypeCache;
-        } else {
+        if (! $tracks) {
             switch ($trackType) {
                 case 'T':
                     $sql = "SELECT gtr_id_track, gtr_track_name
@@ -152,7 +150,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
                             gtr_active = 1 AND
                             gtr_track_type = 'T' AND
-                            gtr_organizations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$orgId|%'
                          ORDER BY gtr_track_name";
                     break;
                 case 'S':
@@ -166,7 +164,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             gtr_active = 1 AND
                             gtr_track_type = 'S' AND
                             ggp_respondent_members = 1 AND
-                            gtr_organizations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$orgId|%'
                          ORDER BY gtr_track_name";
                     break;
                 case 'M':
@@ -180,7 +178,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                             gtr_active = 1 AND
                             gtr_track_type = 'S' AND
                             ggp_respondent_members = 0 AND
-                            gtr_organizations LIKE '%|$organization_id|%'
+                            gtr_organizations LIKE '%|$orgId|%'
                          ORDER BY gtr_track_name";
                     break;
                 // default:
@@ -188,8 +186,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             }
             $tracks = $this->db->fetchPairs($sql);
 
-            $this->session->$trackTypeCache = $tracks;
-            $this->session->$trackTypeTime  = time() + 600;
+            $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
         }
 
         $div = MUtil_Html::create()->div(array('class' => 'toolbox'));

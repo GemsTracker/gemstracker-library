@@ -48,6 +48,12 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 {
     public $autoFilter = true;
 
+    /**
+     *
+     * @var Zend_Cache_Core
+     */
+    public $cache;
+
     public $menuEditIncludeLevel = 100;
 
     public $menuShowIncludeLevel = 100;
@@ -229,6 +235,22 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
             $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
         }
+    }
+
+    /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        $this->cache->clean('matchTags', array('surveys', 'tracks'));
+
+        return true;
     }
 
     /**
