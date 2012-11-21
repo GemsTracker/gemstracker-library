@@ -380,7 +380,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
             $select = $lsDb->select();
-            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', $this->_anonymizedField))
+            $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'tokenanswerspersistence', $this->_anonymizedField))
                     ->joinInner(
                             $this->_getSurveyLanguagesTableName(),
                             'sid = surveyls_survey_id AND language = surveyls_language',
@@ -412,6 +412,11 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             // DATESTAMP
             if ($lsSurvey['datestamp'] == 'N') {
                 $surveyor_status .= 'Not date stamped. ';
+            }
+
+            // DATESTAMP
+            if ($lsSurvey['tokenanswerspersistence'] == 'N') {
+                $surveyor_status .= 'Token-based persistence is disabled. ';
             }
 
             // IS ACTIVE

@@ -477,7 +477,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         // Check for actual values for this table to save.
         // MUtil_Echo::track($newValues);
         if ($returnValues = $this->_filterDataFor($table_name, $newValues, ! $update)) {
-            if (true || MUtil_Model::$verbose) {
+            if (MUtil_Model::$verbose) {
                 MUtil_Echo::r($returnValues, 'Return');
             }
             // MUtil_Echo::track($returnValues);
