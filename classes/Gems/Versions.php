@@ -93,7 +93,7 @@ class Gems_Versions
     {
         $version = $this->getProjectVersion();
 
-        if (APPLICATION_ENV !== 'production') {
+        if (APPLICATION_ENV !== 'production' && APPLICATION_ENV !== 'demo') {
             $version .= '.' . $this->getBuild() . ' [' . APPLICATION_ENV . ']';
         }
 
