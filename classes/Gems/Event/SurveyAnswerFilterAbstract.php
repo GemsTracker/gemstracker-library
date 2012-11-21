@@ -87,6 +87,30 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends Gems_Registry_Targe
     // public function getEventName()
 
     /**
+     * Returns only the headers
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $currentNames The current names in use (allows chaining)
+     * @return array Of the names of labels that should be shown
+     */
+    protected function getHeaders(MUtil_Model_ModelAbstract $model, array $currentNames)
+    {
+        $lastParent = null;
+        $results    = array();
+        foreach ($currentNames as $name) {
+            if ($model->is($name, 'type', MUtil_Model::TYPE_NOVALUE)) {
+                $results[$name] = $name;
+
+            } elseif ($parent = $model->get($name, 'parent_question')) {
+                // Insert parent header on name if it was not shown before
+                $results[$parent] = $parent;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Restores the header position of question before their corresponding question_sub
      *
      * When sub-questions with the same parent are shown continuous the parent is shown

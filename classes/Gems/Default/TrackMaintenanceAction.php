@@ -161,7 +161,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      */
     public function afterSave(array $data, $isNew)
     {
-        $this->cache->clean('matchTags', array('surveys', 'tracks'));
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'tracks'));
 
         return true;
     }

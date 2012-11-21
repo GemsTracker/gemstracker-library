@@ -74,10 +74,16 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
             $keys += array_filter($row->getArrayCopy());
         }
 
-        $results = array_intersect($currentNames, array_keys($keys));
+        $results = array_intersect($currentNames, array_keys($keys), array_keys($this->token->getRawAnswers()));
         // MUtil_Echo::track($results);
 
-        return $this->restoreHeaderPositions($model, $results);
+        $results = $this->restoreHeaderPositions($model, $results);
+
+        if ($results) {
+            return $results;
+        }
+
+        return $this->getHeaders($model, $currentNames);
     }
 
     /**
