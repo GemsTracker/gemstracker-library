@@ -39,8 +39,6 @@
 // $autoloader->registerNamespace has not yet run!!
 include_once('MUtil/Application/Escort.php');
 
-// mb_internal_encoding('UTF-8');
-
 /**
  * Project Application Core code
  *
@@ -588,9 +586,11 @@ class GemsEscort extends MUtil_Application_Escort
                 );  // tooltip
                 $contactDiv->a($menuItem->toHRefAttribute(), $menuItem->get('label'));
 
-                $ul = $menuItem->toUl();
-                $ul->class = 'dropdownContent tooltip';
-                $contactDiv->append($ul);
+                // List may be empty
+                if ($ul = $menuItem->toUl()) {
+                    $ul->class = 'dropdownContent tooltip';
+                    $contactDiv->append($ul);
+                }
 
                 return $contactDiv;
             }
@@ -1731,7 +1731,7 @@ class GemsEscort extends MUtil_Application_Escort
         $front               = $this->frontController;
         $controllerFileName  = $front->getDispatcher()->getControllerClass($request) . '.php';
 
-        // MUtil_Echo::r(GEMS_PROJECT_PATH . '/controllers/' . $controllerFileName);
+        // MUtil_Echo::r(APPLICATION_PATH . '/controllers/' . $controllerFileName);
 
         // Set to project path if that controller exists
         // TODO: Dirs & modules combineren.

@@ -55,7 +55,7 @@ mb_internal_encoding('UTF-8');
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 
 /**
- * Compatibility
+ * Compatibility, remove in 1.6
  */
 define('GEMS_PROJECT_PATH', APPLICATION_PATH);
 

@@ -110,7 +110,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
             $prefix = $name . '_' . self::EVENTS_DIR . '_' . $eventClass . '_';
             $paths[$prefix] = $dir . '/' . $name . '/' . self::EVENTS_DIR . '/' . $eventType;
         }
-        $paths[''] = GEMS_PROJECT_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType);
+        $paths[''] = APPLICATION_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType);
         // MUtil_Echo::track($paths);
 
         return $paths;
@@ -290,7 +290,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     {
         return $this->_loadEvent($eventName, self::SURVEY_DISPLAY_EVENT);
     }
-    
+
     /**
      *
      * @param string $eventName
