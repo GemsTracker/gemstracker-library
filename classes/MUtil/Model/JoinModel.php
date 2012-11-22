@@ -117,9 +117,15 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         $table_name = $this->_getTableName($table);
         $adapter    = $table->getAdapter();
 
+        $joinSql = array();
         foreach ($joinFields as $source => $target) {
-            $this->_joinFields[$source] = $target;
-            $joinSql[] = $adapter->quoteIdentifier($source) . ' = ' . $adapter->quoteIdentifier($target);
+            if (is_numeric($source)) {
+                // A join expression other than equality is used
+                $joinSql[] = $target;
+            } else {
+                $this->_joinFields[$source] = $target;
+                $joinSql[] = $adapter->quoteIdentifier($source) . ' = ' . $adapter->quoteIdentifier($target);
+            }
         }
 
         $this->_select->$join($table_name, implode(' ' . Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
