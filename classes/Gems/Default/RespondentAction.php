@@ -46,16 +46,23 @@
  */
 abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
 {
+    public $exportSnippets = array('RespondentDetailsSnippet');
+
+    public $filterStandard = array('grc_success' => 1);
+
+    /**
+     * Variable for correctly displaying e-mail addresses
+     *
+     * @var MUtil_Lazy_LazyAbstract
+     */
+    protected $grs_email;
+
     public $showSnippets = array(
         'RespondentDetailsSnippet',
     	'AddTracksSnippet',
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
-
-    public $exportSnippets = array('RespondentDetailsSnippet');
-
-    public $filterStandard = array('grc_success' => 1);
 
     public $sortKey = array('gr2o_opened' => SORT_DESC);
 
@@ -72,8 +79,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        $this->grs_email = $bridge->getLazy('grs_email');
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $model->setIfExists('grs_email',   'itemDisplay', 'MUtil_Html_AElement::ifmail');
+        $model->setIfExists('grs_email',   'itemDisplay', array($this, 'ifmail'));
 
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
@@ -329,6 +337,43 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->html[] = $form;
     }
 
+    public function exportAction()
+    {
+        //First show the respondent snippet
+        $model = $this->getModel();
+        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+
+        if (! isset($data['grs_id_user'])) {
+            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
+            $this->_reroute(array('action' => 'index'));
+        }
+
+        $params['model']   = $model;
+        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
+        $params['buttons'] = $this->createMenuLinks();
+        $params['onclick'] = $this->findAllowedMenuItem('edit');
+        if ($params['onclick']) {
+            $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
+        }
+        $params['respondentData'] = $data;
+        $this->addSnippets($this->exportSnippets, $params);
+
+        //Now show the export form
+        $export = $this->loader->getRespondentExport($this);
+        $form = $export->getForm();
+        $this->html->h2($this->_('Export respondent'));
+        $div = $this->html->div(array('id' => 'mainform'));
+        $div[] = $form;
+
+        $request = $this->getRequest();
+
+        $form->populate($request->getParams());
+
+        if ($request->isPost()) {
+            $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+        }
+    }
+
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -426,6 +471,23 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     }
 
     /**
+     * Helper function for preventing the marker value being mixed up in the output
+     *
+     * @param MUtil_Lazy_LazyAbstract $value
+     * @return MUtil_Html_AElement
+     */
+    public function ifmail($value)
+    {
+        return MUtil_Lazy::iff($this->grs_email,
+                new MUtil_Html_AElement(
+                        array('mailto:', $this->grs_email),
+                        $value,
+                        array('onclick' => 'event.cancelBubble=true;')
+                        )
+                );
+    }
+
+    /**
      * Overrule default index for the case that the current
      * organization cannot have users.
      */
@@ -504,42 +566,5 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
         $params['respondentData'] = $data;
         $this->addSnippets($this->showSnippets, $params);
-    }
-
-    public function exportAction()
-    {
-        //First show the respondent snippet
-        $model = $this->getModel();
-        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
-
-        if (! isset($data['grs_id_user'])) {
-            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
-            $this->_reroute(array('action' => 'index'));
-        }
-
-        $params['model']   = $model;
-        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
-        $params['buttons'] = $this->createMenuLinks();
-        $params['onclick'] = $this->findAllowedMenuItem('edit');
-        if ($params['onclick']) {
-            $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
-        }
-        $params['respondentData'] = $data;
-        $this->addSnippets($this->exportSnippets, $params);
-
-        //Now show the export form
-        $export = $this->loader->getRespondentExport($this);
-        $form = $export->getForm();
-        $this->html->h2($this->_('Export respondent'));
-        $div = $this->html->div(array('id' => 'mainform'));
-        $div[] = $form;
-
-        $request = $this->getRequest();
-
-        $form->populate($request->getParams());
-
-        if ($request->isPost()) {
-            $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
-        }
     }
 }

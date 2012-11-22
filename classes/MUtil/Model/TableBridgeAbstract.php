@@ -192,6 +192,12 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $name;
     }
 
+    /**
+     * Return the lazy value without any makeup.
+     *
+     * @param string $name
+     * @return MUtil_Lazy_LazyAbstract
+     */
     public function getLazy($name)
     {
         if (! $this->repeater) {
