@@ -39,7 +39,7 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6
+ * @since      Class available since version 1.5.6
  */
 class Gems_Snippets_Export_SurveyHeaderSnippet extends MUtil_Snippets_SnippetAbstract
 {

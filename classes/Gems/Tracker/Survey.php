@@ -111,7 +111,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Makes sure the receptioncode data is part of the $this->_gemsData
+     * Makes sure the group data is part of the $this->_gemsSurvey
      *
      * @param boolean $reload Optional parameter to force reload.
      */
