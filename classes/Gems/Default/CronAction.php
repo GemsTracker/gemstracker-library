@@ -148,10 +148,16 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         $model  = $this->loader->getTracker()->getTokenModel();
         $mailer = new Gems_Email_TemplateMailer($this->escort);
         $mailer->continueOnError = true;
-        
-        // $mailer->setDefaultTransport(new MUtil_Mail_Transport_EchoLog());
 
-        $jobs = $this->db->fetchAll("SELECT * FROM gems__mail_jobs WHERE gmj_active = 1");
+        // $mailer->setDefaultTransport(new MUtil_Mail_Transport_EchoLog());
+        $sql = "SELECT *
+            FROM gems__mail_jobs
+            WHERE gmj_active = 1
+            ORDER BY CASE WHEN gmj_id_survey IS NULL THEN 1 ELSE 0 END,
+                CASE WHEN gmj_id_track IS NULL THEN 1 ELSE 0 END,
+                CASE WHEN gmj_id_organization IS NULL THEN 1 ELSE 0 END";
+
+        $jobs = $this->db->fetchAll($sql);
 
         if ($jobs) {
             foreach ($jobs as $job) {
