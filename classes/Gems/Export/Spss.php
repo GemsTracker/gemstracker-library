@@ -48,6 +48,22 @@
 class Gems_Export_Spss extends Gems_Export_ExportAbstract
 {
     /**
+     * When no other size available in the answermodel, this will be used
+     * for the size of alphanumeric types
+     * 
+     * @var int
+     */
+    public $defaultAlphaSize   = 64;
+    
+    /**
+     * When no other size available in the answermodel, this will be used
+     * for the size of numeric types
+     * 
+     * @var int
+     */
+    public $defaultNumericSize = 5;
+    
+    /**
      * Set response headers and clean output
      *
      * @param string $filename
@@ -78,12 +94,13 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
     {
         $element = new Zend_Form_Element_Radio('file');
         $element->setLabel($this->_('Which file'));
-        $element->setMultiOptions(array('syntax' => $this->_('syntax'),
-                                        'data'   => $this->_('data')));
+        $element->setMultiOptions(array(
+            'syntax'    => $this->_('syntax'),
+            'data'      => $this->_('data')));
         $elements[] = $element;
 
-        $element = new MUtil_Form_Element_Exhibitor('help');
-        $element->setValue($this->_('Some help for this export'));
+        $element    = new MUtil_Form_Element_Exhibitor('help');
+        $element->setValue($this->_('You need both a syntax and a data file. After downloading, open the syntax file in SPSS and modify the line /FILE="filename.dat" to include the full path to your data file. Then choose Run -> All to execute the syntax.'));
         $elements[] = $element;
 
         return $elements;
@@ -116,13 +133,97 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
 
         if (isset($options['file'])) {
             if ($options['file'] == 'syntax') {
-                $filename    = $survey->getName() . '.sps';
-                $filenameDat = $survey->getName() . '.dat';
-                $response    = $this->_doHeaders($filename);
+                $this->handleExportSyntax($data, $survey, $answers, $answerModel, $language);
+            } else {
+                $this->handleExportData($data, $survey, $answers, $answerModel, $language);
+            }
+        }
+    }
 
-                //first output our script
-                $response->appendBody(
-                    "SET UNICODE=ON.
+    /**
+     * This method handles the export with the given options for a syntax file
+     *
+     * The method takes care of rendering the right script by using $this->export->controller to
+     * access the controller object.
+     *
+     * @param array                     $data        The formdata
+     * @param Gems_Tracker_Survey       $survey      The survey object we are exporting
+     * @param array                     $answers     The array of answers
+     * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
+     * @param string                    $language    The language used / to use for the export
+     */
+    public function handeExportData($data, $survey, $answers, $answerModel, $language)
+    {
+        $filename = $survey->getName() . '.dat';
+        $response = $this->_doHeaders($filename);
+
+        //We should create a model with the transformations we need
+        //think of date translations, numers and strings
+        $answerRow = reset($answers);
+        $spssModel = new Gems_Export_ExportModel();
+        foreach ($answerRow as $key => $value) {
+            $options = array();
+            $type = $answerModel->get($key, 'type');
+            switch ($type) {
+                case MUtil_Model::TYPE_DATE:
+                    $options['storageFormat'] = 'yyyy-MM-dd';
+                    $options['dateFormat']    = 'yyyy-MM-dd';
+                    break;
+
+                case MUtil_Model::TYPE_DATETIME:
+                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+                    $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
+                    break;
+
+                case MUtil_Model::TYPE_TIME:
+                    $options['storageFormat'] = 'HH:mm:ss';
+                    $options['dateFormat']    = 'HH:mm:ss';
+                    break;
+
+                case MUtil_Model::TYPE_NUMERIC:
+                    break;
+
+                //When no type set... assume string
+                case MUtil_Model::TYPE_STRING:
+                default:
+                    $type                      = MUtil_Model::TYPE_STRING;
+                    $options['formatFunction'] = $this->formatString;
+                    break;
+            }
+            $options['type']           = $type;
+            $spssModel->set($key, $options);
+        }
+        //Now apply the model to the answers
+        $answers                   = new Gems_FormattedData($answers, $spssModel);
+
+        //And output the data
+        foreach ($answers as $answerRow) {
+            $resultRow = implode(',', $answerRow);
+            $response->appendBody($resultRow . "\n");
+        }
+    }
+
+    /**
+     * This method handles the export with the given options for a syntax file
+     *
+     * The method takes care of rendering the right script by using $this->export->controller to
+     * access the controller object.
+     *
+     * @param array                     $data        The formdata
+     * @param Gems_Tracker_Survey       $survey      The survey object we are exporting
+     * @param array                     $answers     The array of answers
+     * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
+     * @param string                    $language    The language used / to use for the export
+     */
+    protected function handleExportSyntax($data, $survey, $answers, $answerModel, $language)
+    {
+        $filename    = $survey->getName() . '.sps';
+        $filenameDat = $survey->getName() . '.dat';
+        $response    = $this->_doHeaders($filename);
+
+        //first output our script
+        $response->appendBody(
+            "SET UNICODE=ON.
 GET DATA
  /TYPE=TXT
  /FILE=\"" . $filenameDat . "\"
@@ -133,126 +234,79 @@ GET DATA
  /FIRSTCASE=1
  /IMPORTCASE=ALL
  /VARIABLES=");
-                $answerRow  = reset($answers);
-                $labels     = array();
-                $types      = array();
-                $fixedNames = array();
-                $questions  = $survey->getQuestionList($language);
-                foreach ($answerRow as $key => $value) {
-                    $fixedNames[$key] = $this->fixName($key);
-                    $options          = array();
-                    $type             = $answerModel->get($key, 'type');
-                    switch ($type) {
-                        case MUtil_Model::TYPE_DATE:
-                            $type = 'SDATE10';
-                            break;
+        $answerRow  = reset($answers);
+        $labels     = array();
+        $types      = array();
+        $fixedNames = array();
+        $questions  = $survey->getQuestionList($language);
+        foreach ($answerRow as $key => $value) {
+            $fixedNames[$key] = $this->fixName($key);
+            $options          = array();
+            $type             = $answerModel->get($key, 'type');
+            switch ($type) {
+                case MUtil_Model::TYPE_DATE:
+                    $type = 'SDATE10';
+                    break;
 
-                        case MUtil_Model::TYPE_DATETIME:
-                        case MUtil_Model::TYPE_TIME:
-                            $type = 'DATETIME23';
-                            break;
+                case MUtil_Model::TYPE_DATETIME:
+                case MUtil_Model::TYPE_TIME:
+                    $type = 'DATETIME23';
+                    break;
 
-                        case MUtil_Model::TYPE_NUMERIC:
-                            $defaultSize = 5;
-                            $type        = 'F';
-                            break;
+                case MUtil_Model::TYPE_NUMERIC:
+                    $defaultSize = $this->defaultNumericSize;
+                    $type        = 'F';
+                    break;
 
-                        //When no type set... assume string
-                        case MUtil_Model::TYPE_STRING:
-                        default:
-                            $defaultSize = 64;
-                            $type        = 'A';
-                            break;
+                //When no type set... assume string
+                case MUtil_Model::TYPE_STRING:
+                default:
+                    $defaultSize = $this->defaultAlphaSize;
+                    $type        = 'A';
+                    break;
+            }
+            $types[$key] = $type;
+            if ($type == 'A' || $type == 'F') {
+                $size = $answerModel->get($key, 'maxlength');   // This comes from db when available
+                if (is_null($size)) {
+                    $size = $answerModel->get($key, 'size');    // This is the display width
+                    if ($is_null($size)) {
+                        $size = $defaultSize;                   // We just don't know, make it the default
                     }
-                    $types[$key] = $type;
-                    if ($type == 'A' || $type == 'F') {
-                        $size = $answerModel->get($key, 'size');
-                        if (is_null($size)) {
-                            $size = $defaultSize;
-                        }
-                        if ($type == 'A') {
-                            $type = $type . $size;
-                        } else {
-                            $type = $type . $size . '.' . ($size - 1);    //decimal
-                        }
-                    }
-                    if (isset($questions[$key])) {
-                        $labels[$key] = $questions[$key];
-                    }
-                    $response->appendBody("\n " . $fixedNames[$key] . ' ' . $type);
                 }
-                $response->appendBody(".\nCACHE.\nEXECUTE.\n");
-                $response->appendBody("\n*Define variable labels.\n");
-                foreach ($labels as $key => $label) {
+                if ($type == 'A') {
+                    $type = $type . $size;
+                } else {
+                    $type = $type . $size . '.' . ($size - 1);    //decimal
+                }
+            }
+            if (isset($questions[$key])) {
+                $labels[$key] = $questions[$key];
+            }
+            $response->appendBody("\n " . $fixedNames[$key] . ' ' . $type);
+        }
+        $response->appendBody(".\nCACHE.\nEXECUTE.\n");
+        $response->appendBody("\n*Define variable labels.\n");
+        foreach ($labels as $key => $label) {
+            $label = $this->formatString($label);
+            $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . " " . $label . "." . "\n");
+        }
+
+        $response->appendBody("\n*Define value labels.\n");
+        foreach ($answerRow as $key => $value) {
+            if ($options = $answerModel->get($key, 'multiOptions')) {
+                $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
+                foreach ($options as $option => $label) {
                     $label = $this->formatString($label);
-                    $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . " " . $label . "." . "\n");
-                }
-
-                $response->appendBody("\n*Define value labels.\n");
-                foreach ($answerRow as $key => $value) {
-                    if ($options = $answerModel->get($key, 'multiOptions')) {
-                        $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
-                        foreach ($options as $option => $label) {
-                            $label = $this->formatString($label);
-                            if ($types[$key] == 'F') {
-                                //Numeric
-                                $response->appendBody("\n" . $option . ' ' . $label);
-                            } else {
-                                //String
-                                $response->appendBody("\n" . '"' . $option . '" ' . $label);
-                            }
-                        }
-                        $response->appendBody(".\n\n");
+                    if ($types[$key] == 'F') {
+                        //Numeric
+                        $response->appendBody("\n" . $option . ' ' . $label);
+                    } else {
+                        //String
+                        $response->appendBody("\n" . '"' . $option . '" ' . $label);
                     }
                 }
-            } else {
-                $filename = $survey->getName() . '.dat';
-                $response = $this->_doHeaders($filename);
-
-                //We should create a model with the transformations we need
-                //think of date translations, numers and strings
-                $answerRow = reset($answers);
-                $spssModel = new Gems_Export_ExportModel();
-                foreach ($answerRow as $key => $value) {
-                    $options = array();
-                    $type    = $answerModel->get($key, 'type');
-                    switch ($type) {
-                        case MUtil_Model::TYPE_DATE:
-                            $options['storageFormat'] = 'yyyy-MM-dd';
-                            $options['dateFormat']    = 'yyyy-MM-dd';
-                            break;
-
-                        case MUtil_Model::TYPE_DATETIME:
-                            $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
-                            $options['dateFormat']    = 'dd-MM-yyyy HH:mm:ss';
-                            break;
-
-                        case MUtil_Model::TYPE_TIME:
-                            $options['storageFormat'] = 'HH:mm:ss';
-                            $options['dateFormat']    = 'HH:mm:ss';
-                            break;
-
-                        case MUtil_Model::TYPE_NUMERIC:
-                            break;
-
-                        //When no type set... assume string
-                        case MUtil_Model::TYPE_STRING:
-                        default:
-                            $type                      = MUtil_Model::TYPE_STRING;
-                            $options['formatFunction'] = $this->formatString;
-                            break;
-                    }
-                    $options['type']           = $type;
-                    $spssModel->set($key, $options);
-                }
-                //Now apply the model to the answers
-                $answers = new Gems_FormattedData($answers, $spssModel);
-
-                //And output the data
-                foreach ($answers as $answerRow) {
-                    $resultRow = implode(',', $answerRow);
-                    $response->appendBody($resultRow . "\n");
-                }
+                $response->appendBody(".\n\n");
             }
         }
     }
