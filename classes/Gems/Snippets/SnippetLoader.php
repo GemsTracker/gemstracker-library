@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Gems specific version of the snippet loader
  *
  * @package    Gems
@@ -49,6 +49,11 @@
  */
 class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract implements MUtil_Snippets_SnippetLoaderInterface
 {
+    /**
+     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     *
+     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     */
     protected $cascade = 'Snippets';
 
     protected $loader;
@@ -64,8 +69,13 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      * @param mixed $container A container acting as source for MUtil_Registry_Source
      * @param array $dirs The directories where to look for requested classes
      */
-    public function __construct($container = null, $dirs = array()) {
+    public function __construct($container = null, $dirs = array())
+    {
+        // Add tracker snippets directory
+        $dirs['Gems_Tracker'] = realpath(__DIR__ . '/../..');
+
         parent::__construct($container, $dirs);
+
         $this->backup = new MUtil_Snippets_SnippetLoader($this);
         $this->addDirectory(GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
     }

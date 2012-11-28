@@ -32,19 +32,31 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: SingleTokenAnswerModelSnippet.php 685 2012-05-16 15:11:59Z michieltcs $
  */
 
 /**
  * Displays answers to a survey.
  *
- * @deprecated
  * @package    Gems
  * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.5.7
  */
-class AnswerModelSnippet extends Gems_Tracker_Snippets_SingleTokenAnswerModelSnippet
+class Gems_Tracker_Snippets_SingleTokenAnswerModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
+    /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    {
+        if ($this->request) {
+            $this->processSortOnly($model);
+
+            $model->setFilter(array('gto_id_token' => $this->token->getTokenId()));
+        }
+    }
 }

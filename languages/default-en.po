@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 12:11+0100\n"
+"POT-Creation-Date: 2012-11-28 16:25+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -1816,7 +1816,7 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:152
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Login"
 
@@ -3435,6 +3435,14 @@ msgstr "Invalid e-mail address '%s'."
 msgid "Previous Version Answers Lookup"
 msgstr "Previous Version Answers Lookup"
 
+#: classes/Gems/Event/Survey/Display/AllOfSurvey.php:73
+msgid "Show all answers for this survey type"
+msgstr "Show all answers for this survey type"
+
+#: classes/Gems/Event/Survey/Display/AllSingleSurvey.php:73
+msgid "Show all stand alone surveys for this type"
+msgstr "Show all stand alone surveys for this type"
+
 #: classes/Gems/Event/Survey/Display/ByValue.php:87
 msgid "Show the highest answer first."
 msgstr "Show the highest answer first."
@@ -3446,6 +3454,14 @@ msgstr "Display only the questions with an answer."
 #: classes/Gems/Event/Survey/Display/Reverse.php:72
 msgid "Reverse the question order."
 msgstr "Reverse the question order."
+
+#: classes/Gems/Event/Survey/Display/TokenOnly.php:73
+msgid "Show answers for this token only"
+msgstr "Show answers for this token only"
+
+#: classes/Gems/Event/Survey/Display/TrackOnly.php:73
+msgid "Show all tokens for this survey in the track"
+msgstr "Show all tokens for this survey in the track"
 
 #: classes/Gems/Event/Survey/Display/YesOnTop.php:102
 msgid "Yes answers on top."
@@ -3555,7 +3571,6 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:421
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 

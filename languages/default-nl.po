@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 12:09+0100\n"
+"POT-Creation-Date: 2012-11-28 16:25+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -1826,7 +1826,7 @@ msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:152
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Inloggen"
 
@@ -3462,6 +3462,14 @@ msgstr "Ongeldig email adres '%s'."
 msgid "Previous Version Answers Lookup"
 msgstr "Antwoorden overnemen van vorige keer"
 
+#: classes/Gems/Event/Survey/Display/AllOfSurvey.php:73
+msgid "Show all answers for this survey type"
+msgstr "Toon alle antwoorden voor deze vragenlijst"
+
+#: classes/Gems/Event/Survey/Display/AllSingleSurvey.php:73
+msgid "Show all stand alone surveys for this type"
+msgstr "Toon alle antwoorden voor deze losse vragenlijst"
+
 #: classes/Gems/Event/Survey/Display/ByValue.php:87
 msgid "Show the highest answer first."
 msgstr "Toon het hoogste antwoord eerst."
@@ -3473,6 +3481,14 @@ msgstr "Alleen beantwoorde vragen tonen."
 #: classes/Gems/Event/Survey/Display/Reverse.php:72
 msgid "Reverse the question order."
 msgstr "Draai de vraag volgorde om."
+
+#: classes/Gems/Event/Survey/Display/TokenOnly.php:73
+msgid "Show answers for this token only"
+msgstr "Toon alleen de antwoorden voor dit kenmerk"
+
+#: classes/Gems/Event/Survey/Display/TrackOnly.php:73
+msgid "Show all tokens for this survey in the track"
+msgstr "Toon alle antwoorden voor deze vragenlijst in dit traject"
 
 #: classes/Gems/Event/Survey/Display/YesOnTop.php:102
 msgid "Yes answers on top."
@@ -3583,7 +3599,6 @@ msgid "Clean cache"
 msgstr "Cache opruimen"
 
 #: classes/Gems/Menu/MenuAbstract.php:421
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset wachtwoord"
 

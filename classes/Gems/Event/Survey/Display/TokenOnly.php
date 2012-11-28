@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,23 +28,48 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Events
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $id: TokenOnly.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Displays answers to a survey.
+ * Put the highest value first
  *
- * @deprecated
  * @package    Gems
- * @subpackage Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Events
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
+ * @since      Class available since version 1.5.7
  */
-class AnswerModelSnippet extends Gems_Tracker_Snippets_SingleTokenAnswerModelSnippet
+class Gems_Event_Survey_Display_TokenOnly extends Gems_Registry_TargetAbstract implements Gems_Event_SurveyDisplayEventInterface
 {
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
+     * Function that returns the snippets to use for this display.
+     *
+     * @param Gems_Tracker_Token $token The token to get the snippets for
+     * @return array of Snippet names or nothing
+     */
+    public function getAnswerDisplaySnippets(Gems_Tracker_Token $token)
+    {
+        return 'SingleTokenAnswerModelSnippet';
+    }
+
+    /**
+     * A pretty name for use in dropdown selection boxes.
+     *
+     * @return string Name
+     */
+    public function getEventName()
+    {
+        return $this->translate->_('Show answers for this token only');
+    }
 }
