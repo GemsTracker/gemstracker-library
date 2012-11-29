@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,50 @@
  *
  *
  * @package    Gems
- * @subpackage Events
+ * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $id: AllSingleSurvey.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: TrackAnswersModelSnippet.php 946 2012-09-19 13:08:21Z mennodekker $
  */
 
 /**
- * Put the highest value first
+ * Show all answers for one survey within a track
  *
  * @package    Gems
- * @subpackage Events
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @subpackage Tracker
+ * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.7
+ * @since      Class available since version 1.4
  */
-class Gems_Event_Survey_Display_AllSingleSurvey extends Gems_Registry_TargetAbstract implements Gems_Event_SurveyDisplayEventInterface
+class Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
+     * Use compact view and show all tokens of the same surveyId in
+     * one view. Property used by respondent export
      *
-     * @var Zend_Translate
+     * @var boolean
      */
-    protected $translate;
+    public $grouped = true;
 
     /**
-     * Function that returns the snippets to use for this display.
+     * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param Gems_Tracker_Token $token The token to get the snippets for
-     * @return array of Snippet names or nothing
+     * @param MUtil_Model_ModelAbstract $model
      */
-    public function getAnswerDisplaySnippets(Gems_Tracker_Token $token)
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        return 'SingleSurveyAnswersModelSnippet';
-    }
+        if ($this->request) {
+            $this->processSortOnly($model);
 
-    /**
-     * A pretty name for use in dropdown selection boxes.
-     *
-     * @return string Name
-     */
-    public function getEventName()
-    {
-        return $this->translate->_('Show all stand alone surveys for this type');
+            if ($this->grouped) {
+                $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
+                $filter['gto_id_survey']           = $this->token->getSurveyId();
+            } else {
+                $filter['gto_id_token']            = $this->token->getTokenId();
+            }
+
+            $model->setFilter($filter);
+        }
     }
 }

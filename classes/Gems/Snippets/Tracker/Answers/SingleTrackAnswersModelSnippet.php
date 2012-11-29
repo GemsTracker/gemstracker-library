@@ -33,11 +33,11 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackAnswersModelSnippet.php 946 2012-09-19 13:08:21Z mennodekker $
+ * @version    $Id: SingleSurveyModelSnippet.php 946 2012-09-19 13:08:21Z mennodekker $
  */
 
 /**
- * Class description of TrackAnswersModelSnippet
+ * Show answers for all standalone surveys of this survey type
  *
  * @package    Gems
  * @subpackage Tracker
@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Snippets_TrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class Gems_Snippets_Tracker_Answers_SingleTrackAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in
@@ -66,10 +66,12 @@ class Gems_Tracker_Snippets_TrackAnswersModelSnippet extends Gems_Tracker_Snippe
             $this->processSortOnly($model);
 
             if ($this->grouped) {
-                $filter['gto_id_respondent_track'] = $this->token->getRespondentTrackId();
-                $filter['gto_id_survey']           = $this->token->getSurveyId();
+                $filter['gto_id_track']        = $this->token->getTrackId();
+                $filter['gto_id_respondent']   = $this->token->getRespondentId();
+                $filter['gto_id_organization'] = $this->token->getOrganizationId();
+                $filter['gto_id_survey']       = $this->token->getSurveyId();
             } else {
-                $filter['gto_id_token']            = $this->token->getTokenId();
+                $filter['gto_id_token']        = $this->token->getTokenId();
             }
 
             $model->setFilter($filter);

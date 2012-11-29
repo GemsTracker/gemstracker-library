@@ -104,7 +104,7 @@ class Gems_Tracker_Engine_SingleSurveyEngine extends Gems_Tracker_Engine_TrackEn
      */
     public function getAnswerSnippetNames()
     {
-        return array('SingleTokenAnswerModelSnippet');
+        return array('Tracker_Answers_SingleTokenAnswerModelSnippet');
     }
 
     /**

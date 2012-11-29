@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -71,9 +72,6 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     public function __construct($container = null, $dirs = array())
     {
-        // Add tracker snippets directory
-        $dirs['Gems_Tracker'] = realpath(__DIR__ . '/../..');
-
         parent::__construct($container, $dirs);
 
         $this->backup = new MUtil_Snippets_SnippetLoader($this);

@@ -45,6 +45,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class AnswerModelSnippet extends Gems_Tracker_Snippets_SingleTokenAnswerModelSnippet
+class AnswerModelSnippet extends Gems_Snippets_Tracker_Answers_SingleTokenAnswerModelSnippet
 {
 }

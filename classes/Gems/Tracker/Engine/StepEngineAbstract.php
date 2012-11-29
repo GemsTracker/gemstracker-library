@@ -339,7 +339,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     public function getAnswerSnippetNames()
     {
-        return array('TrackAnswersModelSnippet');
+        return array('Tracker_Answers_TrackAnswersModelSnippet');
     }
 
     /**

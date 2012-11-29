@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-28 16:25+0100\n"
+"POT-Creation-Date: 2012-11-29 12:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -3439,9 +3439,9 @@ msgstr "Previous Version Answers Lookup"
 msgid "Show all answers for this survey type"
 msgstr "Show all answers for this survey type"
 
-#: classes/Gems/Event/Survey/Display/AllSingleSurvey.php:73
-msgid "Show all stand alone surveys for this type"
-msgstr "Show all stand alone surveys for this type"
+#: classes/Gems/Event/Survey/Display/AllSingleTrack.php:73
+msgid "Show all tokens for this survey in this track type"
+msgstr "Show all tokens for this survey in this track type"
 
 #: classes/Gems/Event/Survey/Display/ByValue.php:87
 msgid "Show the highest answer first."
@@ -5175,6 +5175,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "Show all stand alone surveys for this type"
+#~ msgstr "Show all stand alone surveys for this type"
 
 #~ msgid "Gems project path"
 #~ msgstr "Gems project path"

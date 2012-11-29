@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -45,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.7
  */
-class Gems_Tracker_Snippets_SurveyAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+class Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
      * Use compact view and show all tokens of the same surveyId in

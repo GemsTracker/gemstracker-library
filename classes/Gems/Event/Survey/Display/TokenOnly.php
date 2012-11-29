@@ -60,7 +60,7 @@ class Gems_Event_Survey_Display_TokenOnly extends Gems_Registry_TargetAbstract i
      */
     public function getAnswerDisplaySnippets(Gems_Tracker_Token $token)
     {
-        return 'SingleTokenAnswerModelSnippet';
+        return 'Tracker_Answers_SingleTokenAnswerModelSnippet';
     }
 
     /**
