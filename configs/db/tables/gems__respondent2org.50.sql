@@ -29,7 +29,7 @@ CREATE TABLE if not exists gems__respondent2org (
         UNIQUE KEY (gr2o_id_user, gr2o_id_organization),
         INDEX (gr2o_id_organization),
         INDEX (gr2o_opened),
-        INDEX (gr2o_reception_code)
+        INDEX (gr2o_reception_code),
         INDEX (gr2o_opened_by),
         INDEX (gr2o_changed_by)
     )
