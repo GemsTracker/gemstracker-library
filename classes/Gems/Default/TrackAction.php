@@ -477,7 +477,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         if ($data = $model->applyRequest($request)->loadFirst()) {
             $this->setMenuParameters($data);
-            MUtil_Echo::track($data);
+            // MUtil_Echo::track($data);
             if ($data['grc_description']) {
                 $model->set('grc_description', 'label', $this->_('Rejection code'), 'formatFunction', array($this->translate, '_'));
             }
