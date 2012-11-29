@@ -1,3 +1,14 @@
+Important changes from 1.5.6 => 1.5.7
+============================================================
+In LimeSurvey tokenanswerpersistence must be set to true for all surveys
+Token/ask now always sets itself to the language of the token user
+Added Answer display events for selecting more or less tokens
+Increased some small buttons for mobile use
+Many small bugs fixed and display improvements made
+Implemented many speed optimizations in both database access and code speed
+New DEMO application environment
+Simplefied writing project level unit test
+
 Important changes from 1.5.5 => 1.5.6
 ============================================================
 Transparent lessCss compiling was added. When you add a .less file GemsTracker will take care of compiling it to css. If you need to force a recompile, add the ?compilecss parameter to your url.
