@@ -977,7 +977,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function remove($name, $key = null)
     {
-        if (isset($this->_model[$name][$key])) unset($this->_model[$name][$key]);
+        if (null === $key) {
+            if (isset($this->_model[$name])) {
+                unset($this->_model[$name]);
+            }
+        } elseif (isset($this->_model[$name][$key])) {
+            unset($this->_model[$name][$key]);
+        }
 
         return $this;
     }

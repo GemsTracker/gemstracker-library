@@ -50,13 +50,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public $filterStandard = array('grc_success' => 1);
 
-    /**
-     * Variable for correctly displaying e-mail addresses
-     *
-     * @var MUtil_Lazy_LazyAbstract
-     */
-    protected $grs_email;
-
     public $showSnippets = array(
         'RespondentDetailsSnippet',
     	'AddTracksSnippet',
@@ -79,9 +72,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->grs_email = $bridge->getLazy('grs_email');
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
-        $model->setIfExists('grs_email',   'itemDisplay', array($this, 'ifmail'));
+        $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');
 
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
@@ -468,23 +460,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     public function getTopicTitle()
     {
         return $this->_('Respondents');
-    }
-
-    /**
-     * Helper function for preventing the marker value being mixed up in the output
-     *
-     * @param MUtil_Lazy_LazyAbstract $value
-     * @return MUtil_Html_AElement
-     */
-    public function ifmail($value)
-    {
-        return MUtil_Lazy::iff($this->grs_email,
-                new MUtil_Html_AElement(
-                        array('mailto:', $this->grs_email),
-                        $value,
-                        array('onclick' => 'event.cancelBubble=true;')
-                        )
-                );
     }
 
     /**
