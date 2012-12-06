@@ -152,8 +152,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     protected function _filterDataAfterLoad(array $data, $new = false)
     {
-        foreach ($data as $name => $value) {
-            $data[$name] = $this->getOnLoad($value, $new, $name, $data);
+        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+            foreach ($data as $name => $value) {
+                $data[$name] = $this->getOnLoad($value, $new, $name, $data);
+            }
         }
 
         return $data;

@@ -332,6 +332,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     $finfo['type'] = MUtil_Model::TYPE_DATE;
                     $this->set($name, 'storageFormat', 'yyyy-MM-dd');
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
+                    $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'datetime':
@@ -339,12 +340,14 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     $finfo['type'] = MUtil_Model::TYPE_DATETIME;
                     $this->set($name, 'storageFormat', 'yyyy-MM-dd HH:mm:ss');
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
+                    $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'time':
                     $finfo['type'] = MUtil_Model::TYPE_TIME;
                     $this->set($name, 'storageFormat', 'HH:mm:ss');
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
+                    $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'int':
@@ -669,6 +672,32 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         }
 
         throw new MUtil_Model_ModelException("Cannot create UniqueValue validator as no table was defined for field $name.");
+    }
+    
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a 
+     * dateformat read from the database to a Zend_Date format
+     * 
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     * 
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function formatLoadDate($value, $isNew = false, $name = null, array $context = array())
+    {
+        // If not empty or zend_db_expression and not already a zend date, we 
+        // transform to a Zend_Date using the ISO_8601 format
+        if (!empty($value) && !($value instanceof Zend_Date) && !($value instanceof Zend_Db_Expr)) {
+            $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
+            return $tmpDate;
+        }
+        return $value;
     }
 
     /**

@@ -373,6 +373,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         if ($this->getChanged() > $oldChanged) {
             $this->setChanged(++$oldChanged);
         }
+        
+        // Handle possible onLoad
+        $newValues = $this->processAfterLoad($newValues);
 
         return $newValues;
     }
