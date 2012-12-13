@@ -119,7 +119,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
         // Add reset button if allowed
         if ($menuItem = $this->findAllowedMenuItem('reset')) {
-            $bridge->addItemLink($menuItem->toActionLink($this->getRequest(), $bridge, $this->_('reset')));
+            $bridge->addItemLink($menuItem->toActionLink($this->getRequest(), $bridge, $this->_('password')));
         }
     }
 

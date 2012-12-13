@@ -331,11 +331,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * Authenticate a users credentials using the submitted form
      *
      * @param string $password The password to test
+     * @param boolean $testPassword Set to false to test the non-password checks only
      * @return Zend_Auth_Result
      */
-    public function authenticate($password)
+    public function authenticate($password, $testPassword = true)
     {
-        $auths = $this->loadAuthorizers($password);
+        $auths = $this->loadAuthorizers($password, $testPassword);
 
         $lastAuthorizer = null;
         foreach ($auths as $lastAuthorizer => $result) {
@@ -1146,9 +1147,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * is boolean, string or array it is converted into a Zend_Auth_Result.
      *
      * @param string $password
+     * @param boolean $testPassword Set to false to test on the non-password checks only
      * @return array Of Callable|Zend_Auth_Adapter_Interface|Zend_Auth_Result|boolean|string|array
      */
-    protected function loadAuthorizers($password)
+    protected function loadAuthorizers($password, $testPassword = true)
     {
         if ($this->isBlockable()) {
             $auths['block'] = array($this, 'authorizeBlock');
@@ -1160,10 +1162,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         // group ip restriction
         $auths['ip'] = array($this, 'authorizeIp');
 
-        if ($this->isActive()) {
-            $auths['pwd'] = $this->definition->getAuthAdapter($this, $password);
-        } else {
-            $auths['pwd'] = false;
+        if ($testPassword) {
+            if ($this->isActive()) {
+                $auths['pwd'] = $this->definition->getAuthAdapter($this, $password);
+            } else {
+                $auths['pwd'] = false;
+            }
         }
 
         return $auths;

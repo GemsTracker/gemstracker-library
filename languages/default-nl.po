@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-29 12:04+0100\n"
+"POT-Creation-Date: 2012-12-13 15:38+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -380,7 +380,7 @@ msgstr "Antwoorden"
 
 #: classes/Gems/Menu.php:578 classes/Gems/Default/GroupAction.php:122
 #: classes/Gems/Default/OrganizationAction.php:154
-#: classes/Gems/Default/RespondentAction.php:470
+#: classes/Gems/Default/RespondentAction.php:462
 msgid "Respondents"
 msgstr "Patiënten"
 
@@ -404,7 +404,7 @@ msgstr "Traject bouwer"
 msgid "Mail"
 msgstr "Email"
 
-#: classes/Gems/Menu.php:608 classes/Gems/Default/RespondentAction.php:364
+#: classes/Gems/Menu.php:608 classes/Gems/Default/RespondentAction.php:356
 #: classes/Gems/Default/RespondentExportAction.php:60
 msgid "Export respondent"
 msgstr "Exporteer patiënt"
@@ -526,11 +526,11 @@ msgstr "De foutmelding is: %s"
 msgid "Unable to run PDF conversion (%s): \"%s\""
 msgstr "Kan PDF conversie (%s) niet starten: \"%s\""
 
-#: classes/Gems/Upgrades.php:90
+#: classes/Gems/Upgrades.php:91
 msgid "Syncing surveys for all sources"
 msgstr "Vragenlijsten synchroniseren voor alle bronnen."
 
-#: classes/Gems/Upgrades.php:150 classes/Gems/Upgrades.php:162
+#: classes/Gems/Upgrades.php:151 classes/Gems/Upgrades.php:163
 msgid "Make sure to read the changelog as it contains important instructions"
 msgstr "Lees de wijzigingen, er kunnen belangrijke aanwijzingen in staan"
 
@@ -649,9 +649,9 @@ msgid "No"
 msgstr "Nee"
 
 #: classes/Gems/Controller/BrowseEditAction.php:875
-#: classes/Gems/Default/RespondentAction.php:254
-#: classes/Gems/Default/RespondentAction.php:347
-#: classes/Gems/Default/RespondentAction.php:540
+#: classes/Gems/Default/RespondentAction.php:246
+#: classes/Gems/Default/RespondentAction.php:339
+#: classes/Gems/Default/RespondentAction.php:515
 #: classes/Gems/Default/TrackAction.php:554
 #, php-format
 msgid "Unknown %s requested"
@@ -681,7 +681,7 @@ msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
 #: classes/Gems/Controller/BrowseEditAction.php:954
-#: classes/Gems/Default/RespondentAction.php:315
+#: classes/Gems/Default/RespondentAction.php:307
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
@@ -1336,37 +1336,45 @@ msgstr "Login in orde, welkom %s."
 msgid "Good bye: %s."
 msgstr "Tot ziens: %s."
 
-#: classes/Gems/Default/IndexAction.php:339
+#: classes/Gems/Default/IndexAction.php:341
+msgid "For that reason you cannot reset your password."
+msgstr "Om die reden kunt u uw wachtwoord niet wijzigen."
+
+#: classes/Gems/Default/IndexAction.php:375
 msgid ""
 "Your password reset request is no longer valid, please request a new link."
 msgstr ""
 "Uw verzoek om een nieuw wachtwoord is niet meer geldig, maar u kan hieronder "
 "een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:341
+#: classes/Gems/Default/IndexAction.php:377
 msgid ""
 "Your password input request is no longer valid, please request a new link."
 msgstr ""
 "Uw link om een wachtwoord in te voeren is niet meer geldig, maar u kan "
 "hieronder een nieuwe link aanvragen."
 
-#: classes/Gems/Default/IndexAction.php:360
+#: classes/Gems/Default/IndexAction.php:396
+msgid "For that reason you cannot request a password reset."
+msgstr "Om die reden kunt u geen wachtwoord wijziging aanvragen."
+
+#: classes/Gems/Default/IndexAction.php:418
 msgid ""
 "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 msgstr ""
 "We hebben u een email met reset link gestuurd. Klik op de link in de email."
 
-#: classes/Gems/Default/IndexAction.php:369
+#: classes/Gems/Default/IndexAction.php:436
 #: classes/Gems/Default/OptionAction.php:94
 #: classes/Gems/Default/StaffAction.php:510
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
 
-#: classes/Gems/Default/IndexAction.php:390
+#: classes/Gems/Default/IndexAction.php:470
 msgid "Password reset requested"
-msgstr "Wachtwoord reset aangevraagd"
+msgstr "Wachtwoord wijziging aangevraagd"
 
-#: classes/Gems/Default/IndexAction.php:393
+#: classes/Gems/Default/IndexAction.php:473
 msgid ""
 "Dear {greeting},\n"
 "\n"
@@ -1730,7 +1738,7 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/RespondentAction.php:394
+#: classes/Gems/Default/RespondentAction.php:386
 #: classes/Gems/Default/StaffAction.php:335
 #: classes/Gems/Default/StaffAction.php:405
 msgid "(all organizations)"
@@ -1756,7 +1764,7 @@ msgstr "Login Naam"
 
 #: classes/Gems/Default/OptionAction.php:136
 #: classes/Gems/Default/OrganizationAction.php:147
-#: classes/Gems/Default/RespondentAction.php:203
+#: classes/Gems/Default/RespondentAction.php:195
 #: classes/Gems/Default/StaffAction.php:351
 msgid "Language"
 msgstr "Taal"
@@ -2162,69 +2170,69 @@ msgid_plural "reception codes"
 msgstr[0] "Ontvangst code"
 msgstr[1] "Ontvangst code"
 
-#: classes/Gems/Default/RespondentAction.php:135
+#: classes/Gems/Default/RespondentAction.php:127
 #, php-format
 msgid "Random Example BSN: %s"
 msgstr "Willekeurig voorbeeld BSN: %s"
 
-#: classes/Gems/Default/RespondentAction.php:137
+#: classes/Gems/Default/RespondentAction.php:129
 msgid "Enter a 9-digit SSN number."
 msgstr "Voer een BSN nummer van 9 cijfers in."
 
-#: classes/Gems/Default/RespondentAction.php:151
+#: classes/Gems/Default/RespondentAction.php:143
 msgid "Identification"
 msgstr "Identificatie"
 
-#: classes/Gems/Default/RespondentAction.php:162
+#: classes/Gems/Default/RespondentAction.php:154
 msgid "SSN"
 msgstr "SSN"
 
-#: classes/Gems/Default/RespondentAction.php:166
+#: classes/Gems/Default/RespondentAction.php:158
 msgid "Patient number"
 msgstr "Patiënt nummer"
 
-#: classes/Gems/Default/RespondentAction.php:175
+#: classes/Gems/Default/RespondentAction.php:167
 msgid "Medical data"
 msgstr "Medische gegevens"
 
-#: classes/Gems/Default/RespondentAction.php:182
+#: classes/Gems/Default/RespondentAction.php:174
 msgid "DBC's, etc..."
 msgstr "DBC's, etc..."
 
-#: classes/Gems/Default/RespondentAction.php:185
+#: classes/Gems/Default/RespondentAction.php:177
 msgid "Contact information"
 msgstr "Contact informatie"
 
-#: classes/Gems/Default/RespondentAction.php:190
+#: classes/Gems/Default/RespondentAction.php:182
 msgid "Respondent has no e-mail"
 msgstr "Patiënt zonder email"
 
-#: classes/Gems/Default/RespondentAction.php:191
+#: classes/Gems/Default/RespondentAction.php:183
 msgid "With housenumber"
 msgstr "Met huisnummer"
 
-#: classes/Gems/Default/RespondentAction.php:198
+#: classes/Gems/Default/RespondentAction.php:190
 msgid "Country"
 msgstr "Land"
 
-#: classes/Gems/Default/RespondentAction.php:202
+#: classes/Gems/Default/RespondentAction.php:194
 msgid "Settings"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/RespondentAction.php:204
+#: classes/Gems/Default/RespondentAction.php:196
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Heeft de patiënt het \"informed consent\" formulier ondertekend?"
 
-#: classes/Gems/Default/RespondentAction.php:236
+#: classes/Gems/Default/RespondentAction.php:228
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:203
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: classes/Gems/Default/RespondentAction.php:237
+#: classes/Gems/Default/RespondentAction.php:229
 msgid "Treatment"
 msgstr "Behandeling"
 
-#: classes/Gems/Default/RespondentAction.php:265
+#: classes/Gems/Default/RespondentAction.php:257
 #: classes/Gems/Default/TrackAction.php:132
 #: classes/Gems/Default/TrackAction.php:482
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:212
@@ -2233,30 +2241,30 @@ msgstr "Behandeling"
 msgid "Rejection code"
 msgstr "Afkeuringscode"
 
-#: classes/Gems/Default/RespondentAction.php:272
+#: classes/Gems/Default/RespondentAction.php:264
 msgid "Delete respondent"
 msgstr "Verwijder patiënt"
 
-#: classes/Gems/Default/RespondentAction.php:304
+#: classes/Gems/Default/RespondentAction.php:296
 msgid "Respondent deleted."
 msgstr "Patiënt verwijderd"
 
-#: classes/Gems/Default/RespondentAction.php:308
+#: classes/Gems/Default/RespondentAction.php:300
 msgid "Respondent tracks stopped."
 msgstr "Trajecten van patiënt zijn gestopt."
 
-#: classes/Gems/Default/RespondentAction.php:312
+#: classes/Gems/Default/RespondentAction.php:304
 #: classes/Gems/Default/TrackAction.php:405
 msgid "Choose a reception code to delete."
 msgstr "Kies een ontvangst code om te verwijderen."
 
-#: classes/Gems/Default/RespondentAction.php:465
+#: classes/Gems/Default/RespondentAction.php:457
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patiënt"
 msgstr[1] "patiënten"
 
-#: classes/Gems/Default/RespondentAction.php:557
+#: classes/Gems/Default/RespondentAction.php:532
 msgid "Please settle the informed consent form for this respondent."
 msgstr "A.u.b. het informed consent formulier doornemen met deze patiënt"
 
@@ -2529,8 +2537,8 @@ msgid "Synchronize all sources."
 msgstr "Synchroniseer alle bronnen."
 
 #: classes/Gems/Default/StaffAction.php:122
-msgid "reset"
-msgstr "herstellen"
+msgid "password"
+msgstr "wachtwoord"
 
 #: classes/Gems/Default/StaffAction.php:164
 msgid "Unsupported User Definition"
@@ -2559,7 +2567,7 @@ msgstr ""
 "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account "
 "opnieuw activeren?"
 
-#: classes/Gems/Default/StaffAction.php:327 classes/Gems/User/User.php:1208
+#: classes/Gems/Default/StaffAction.php:327 classes/Gems/User/User.php:1212
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
 msgid "Username"
 msgstr "Gebruikersnaam"
@@ -3600,7 +3608,7 @@ msgstr "Cache opruimen"
 
 #: classes/Gems/Menu/MenuAbstract.php:421
 msgid "Reset password"
-msgstr "Reset wachtwoord"
+msgstr "Wijzig wachtwoord"
 
 #: classes/Gems/Menu/MenuAbstract.php:448
 msgid "Check status"
@@ -4511,7 +4519,7 @@ msgstr "mag geen getallen bevatten"
 msgid "Shared secret"
 msgstr "Shared secret"
 
-#: classes/Gems/User/User.php:407
+#: classes/Gems/User/User.php:408
 #, php-format
 msgid "Your account is temporarily blocked, please wait a minute."
 msgid_plural "Your account is temporarily blocked, please wait %d minutes."
@@ -4520,26 +4528,26 @@ msgstr[0] ""
 msgstr[1] ""
 "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw inloggen."
 
-#: classes/Gems/User/User.php:446 classes/Gems/User/User.php:473
+#: classes/Gems/User/User.php:447 classes/Gems/User/User.php:474
 #: languages/FakeTranslations.php:47
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1187
+#: classes/Gems/User/User.php:1191
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1203
+#: classes/Gems/User/User.php:1207
 #: classes/Gems/User/Form/ChangePasswordForm.php:163
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
 
-#: classes/Gems/User/User.php:1288
+#: classes/Gems/User/User.php:1292
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1316
+#: classes/Gems/User/User.php:1320
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -5231,6 +5239,9 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "reset"
+#~ msgstr "herstellen"
 
 #~ msgid "Show all stand alone surveys for this type"
 #~ msgstr "Toon alle antwoorden voor deze losse vragenlijst"
