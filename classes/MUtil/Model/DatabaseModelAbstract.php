@@ -377,7 +377,18 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             if ($field['PRECISION']) {
                 $finfo['decimals'] = $field['PRECISION'];
             }
-            $finfo['default'] = $field['DEFAULT'];
+            switch (strtoupper($field['DEFAULT'])) {
+                case 'CURRENT_DATE':
+                case 'CURRENT_TIME':
+                case 'CURRENT_TIMESTAMP':
+                    $finfo['default'] = new Zend_Db_Expr($field['DEFAULT']);
+                    break;
+                case 'NULL':
+                    break;
+
+                default:
+                    $finfo['default'] = $field['DEFAULT'];
+            }
             $finfo['required'] = ! ($field['NULLABLE'] || $field['DEFAULT']);
 
             if ($field['PRIMARY']) {
@@ -673,14 +684,14 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
         throw new MUtil_Model_ModelException("Cannot create UniqueValue validator as no table was defined for field $name.");
     }
-    
+
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a 
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
      * dateformat read from the database to a Zend_Date format
-     * 
+     *
      * If empty or Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
-     * 
+     *
      * @see MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
@@ -691,7 +702,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     public function formatLoadDate($value, $isNew = false, $name = null, array $context = array())
     {
-        // If not empty or zend_db_expression and not already a zend date, we 
+        // If not empty or zend_db_expression and not already a zend date, we
         // transform to a Zend_Date using the ISO_8601 format
         if (!empty($value) && !($value instanceof Zend_Date) && !($value instanceof Zend_Db_Expr)) {
             $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
