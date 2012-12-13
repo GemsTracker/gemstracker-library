@@ -164,23 +164,32 @@ class Gems_Tracker_Snippets_ShowTokenLoopAbstract extends MUtil_Snippets_Snippet
 
         switch ($days) {
             case 0:
-                return array(MUtil_Html::create('strong', $this->_('Warning!!!')), ' ', $this->_('Survey must be answered today!'));
+                return array(
+                    MUtil_Html::create('strong', $this->_('Warning!!!')),
+                    ' ',
+                    $this->_('This survey must be answered today!')
+                    );
 
             case 1:
-                return array(MUtil_Html::create('strong', $this->_('Warning!!')), ' ', $this->_('Survey must be answered tomorrow!'));
+                return array(
+                    MUtil_Html::create('strong', $this->_('Warning!!')),
+                    ' ',
+                    $this->_('This survey can only be answered until tomorrow!')
+                    );
 
             case 2:
-                return $this->_('Warning! Survey must be answered over 2 days!');
+                return $this->_('Warning! This survey can only be answered for another 2 days!');
 
             default:
-                if (abs($days) <= 14) {
-                    if ($days >= 0) {
-                        return sprintf($this->_('Survey must be answered in %d days.'), $days);
-                    } else {
-                        return $this->_('Survey can no longer be answered.');
-                    }
+                if ($days <= 14) {
+                    return sprintf($this->_('Please answer this survey within %d days.'), $days);
                 }
-                return sprintf($this->_('Survey can be answered until %s.'), $dateTime->toString($this->dateFormat));
+
+                if ($days <= 0) {
+                    return $this->_('This survey can no longer be answered.');
+                }
+
+                return sprintf($this->_('Please answer this survey before %s.'), $dateTime->toString($this->dateFormat));
         }
     }
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 15:38+0100\n"
+"POT-Creation-Date: 2012-12-13 17:55+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4236,39 +4236,39 @@ msgstr "Duurt meestal ongeveer %s."
 msgid "Survey has no time limit."
 msgstr "Vragenlijst zonder eindtijd."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:167
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:168
 msgid "Warning!!!"
 msgstr "Let op!!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:167
-msgid "Survey must be answered today!"
-msgstr "Vragenlijst moet vandaag ingevuld zijn!"
-
 #: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:170
+msgid "This survey must be answered today!"
+msgstr "Deze vragenlijst kan alleen vandaag nog ingevuld worden!"
+
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:175
 msgid "Warning!!"
 msgstr "Let op!!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:170
-msgid "Survey must be answered tomorrow!"
-msgstr "Vragenlijst moet morgen ingevuld zijn!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:177
+msgid "This survey can only be answered until tomorrow!"
+msgstr "Deze vragenlijst kan slechts tot morgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:173
-msgid "Warning! Survey must be answered over 2 days!"
-msgstr "Let op! Vragenlijst moet overmorgen ingevuld zijn!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:181
+msgid "Warning! This survey can only be answered for another 2 days!"
+msgstr "Let op! Deze vragenlijst kan slechts tot overmorgen ingevuld worden!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:178
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:185
 #, php-format
-msgid "Survey must be answered in %d days."
-msgstr "Vragenlijst moet binnen %d dagen  ingevuld zijn!"
+msgid "Please answer this survey within %d days."
+msgstr "Wij verzoeken u deze vragenlijst binnen %d dagen in te vullen."
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:180
-msgid "Survey can no longer be answered."
-msgstr "Vragenlijst kan niet langer worden ingevuld!"
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:189
+msgid "This survey can no longer be answered."
+msgstr "Deze vragenlijst kan niet langer worden ingevuld!"
 
-#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:183
+#: classes/Gems/Tracker/Snippets/ShowTokenLoopAbstract.php:192
 #, php-format
-msgid "Survey can be answered until %s."
-msgstr "Moet ingevuld worden voor %s."
+msgid "Please answer this survey before %s."
+msgstr "Wij verzoeken u deze vragenlijst voor %s in te vullen."
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:376
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:1173
@@ -5239,6 +5239,15 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "Survey can be answered until %s."
+#~ msgstr "Moet ingevuld worden voor %s."
+
+#~ msgid "Survey must be answered tomorrow!"
+#~ msgstr "Vragenlijst moet morgen ingevuld zijn!"
+
+#~ msgid "Survey must be answered in %d days."
+#~ msgstr "Vragenlijst moet binnen %d dagen  ingevuld zijn!"
 
 #~ msgid "reset"
 #~ msgstr "herstellen"
