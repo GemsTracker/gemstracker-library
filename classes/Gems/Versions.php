@@ -51,15 +51,15 @@ class Gems_Versions
     public final function getBuild()
     {
         /**
-         * DO NOT FORGET !!! to update gems__patch_levels:
+         * DO NOT FORGET !!! to update GEMS__PATCH_LEVELS:
          *
          * For new installations the initial patch level should
-         * be THIS LEVEL.
+         * be THIS LEVEL plus one.
          *
-         * This means that future patches for the current level
-         * will be loaded, but that previous patches are ignored.
+         * This means that future patches for will be loaded,
+         * but that previous patches are ignored.
          */
-        return 50;
+        return 51;
     }
 
     /**
@@ -69,7 +69,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.5.7';
+        return '1.5.8';
     }
 
     /**
