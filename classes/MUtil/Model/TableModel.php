@@ -122,7 +122,7 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
         $updatedValues = $this->_saveTableData($this->_table, $newValues, $filter, parent::SAVE_MODE_ALL) + $newValues;
 
         // Handle possible onLoad
-        $updatedValues = $this->processAfterLoad(array($updatedValues));
+        $updatedValues = reset($this->processAfterLoad(array($updatedValues)));
         return  $updatedValues;
     }
 }

@@ -375,7 +375,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         }
 
         // Handle possible onLoad
-        $newValues = $this->processAfterLoad(array($newValues));
+        $newValues = reset($this->processAfterLoad(array($newValues)));
 
         return $newValues;
     }
