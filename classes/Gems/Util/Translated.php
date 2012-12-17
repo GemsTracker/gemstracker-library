@@ -131,7 +131,11 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
             // MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
             // TODO: Timezone seems to screw this one up
             //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
-            $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
+            if ($dateTimeValue instanceof MUtil_Date) {
+                $dateTime = clone $dateTimeValue;
+            } else {
+                $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
+            } 
             $days = $dateTime->diffDays();
 
             switch ($days) {

@@ -410,6 +410,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         }
 
         if ($date) {
+            if ($date instanceof MUtil_Date) {
+                return $date;
+            }
+            
             if (Zend_Date::isDate($date, Gems_Tracker::DB_DATETIME_FORMAT)) {
                 return new MUtil_Date($date, Gems_Tracker::DB_DATETIME_FORMAT);
             }
