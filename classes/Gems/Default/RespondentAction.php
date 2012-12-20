@@ -284,7 +284,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
                     // Perform actual save, but not simple stop codes.
                     if ($code->isForRespondents()) {
                         $values['gr2o_reception_code'] = $data['gr2o_reception_code'];
-                        $values['gr2o_changed']        = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                        $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
                         $values['gr2o_changed_by']     = $userId;
 
                         $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
@@ -497,8 +497,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         if ($patientId) {
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId ? $orgId : $this->escort->getCurrentOrganization();
-            $values['gr2o_opened']    = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-            $values['gr2o_opened_by'] = $this->session->user_id;
+            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gr2o_opened_by']          = $this->session->user_id;
 
             $this->db->update('gems__respondent2org', $values, $where);
         }

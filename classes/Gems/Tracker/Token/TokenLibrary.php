@@ -36,7 +36,7 @@
  */
 
 /**
- * Class description of TokenLibrary
+ * Utility functions for token string functions
  *
  * @package    Gems
  * @subpackage Tracker
@@ -127,7 +127,7 @@ class Gems_Tracker_Token_TokenLibrary extends Gems_Registry_TargetAbstract
      */
     public function createToken(array $tokenData, $userId)
     {
-        $current = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $current = new MUtil_Db_Expr_CurrentTimestamp();
 
         $tokenData['gto_changed']    = $current;
         $tokenData['gto_changed_by'] = $userId;

@@ -79,7 +79,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setKeys($this->_getKeysFor('gems__respondent2org'));
 
-        $this->setOnSave('gr2o_opened', new Zend_Db_Expr('CURRENT_TIMESTAMP'));
+        $this->setOnSave('gr2o_opened', new MUtil_Db_Expr_CurrentTimestamp());
         $this->setSaveOnChange('gr2o_opened');
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');

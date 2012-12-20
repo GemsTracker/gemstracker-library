@@ -163,7 +163,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         } else {
             $data['gsf_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
         }
-        $data['gsf_reset_req'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $data['gsf_reset_req'] = new MUtil_Db_Expr_CurrentTimestamp();
 
         // Loop for case when hash is not unique
         while (true) {
@@ -280,7 +280,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
         try {
             $user_id = $this->db->fetchOne($sql, array($user->getLoginName(), $user->getBaseOrganizationId()));
 
-            $currentTimestamp = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $currentTimestamp = new MUtil_Db_Expr_CurrentTimestamp();
 
             // Move to USER_STAFF
             $values['gup_id_user']         = $user_id;

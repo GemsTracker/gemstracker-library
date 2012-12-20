@@ -176,7 +176,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function createUser($login_name, $organization, $userClassName, $userId)
     {
-        $now = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $now = new MUtil_Db_Expr_CurrentTimestamp();;
 
         $values['gul_user_class'] = $userClassName;
         $values['gul_can_login']  = 1;
@@ -553,9 +553,9 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             $values['gul_id_organization'] = $organization;
             $values['gul_user_class']      = self::USER_OLD_STAFF; // Old staff as password is still in gems__staff
             $values['gul_can_login']       = 1;
-            $values['gul_changed']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gul_changed']         = new MUtil_Db_Expr_CurrentTimestamp();
             $values['gul_changed_by']      = $user_id;
-            $values['gul_created']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gul_created']         = $values['gul_changed'];
             $values['gul_created_by']      = $user_id;
 
             try {

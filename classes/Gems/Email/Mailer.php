@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -166,7 +167,7 @@ class Gems_Email_Mailer
     {
         return $this->messages;
     }
-    
+
     /**
      * Logs the communication if needed
      *
@@ -177,7 +178,7 @@ class Gems_Email_Mailer
     protected function logCommunication($to = null, $from = null, $tokenData = array() )
     {
         if (null === $this->_changeDate) {
-            $this->_changeDate = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $this->_changeDate = new MUtil_Db_Expr_CurrentTimestamp();
         }
 
         $db  = $this->escort->db;
@@ -225,7 +226,7 @@ class Gems_Email_Mailer
             MUtil_Echo::r($from, $from_name);
         }
 
-        
+
         // If bounce is active, the Gems_Mail will take care of resetting the to field
         if (!$this->bounceCheck()) {
             $validate = new Zend_Validate_EmailAddress();
@@ -236,7 +237,7 @@ class Gems_Email_Mailer
         }
 
         $mail = new Gems_Mail();
-        
+
         $mail->setFrom($from, $from_name);
         $mail->addTo($to, $to_name);
         if (isset($this->escort->project->email['bcc'])) {
@@ -254,7 +255,7 @@ class Gems_Email_Mailer
         try {
             $mail->send($this->checkTransport($from));
             $result = false;
-            
+
             // communication successful, now log it
             $this->logCommunication($to, $from, $tokenData);
 

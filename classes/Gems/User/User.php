@@ -300,7 +300,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 }
 
                 // Always record the last fail
-                $values['gula_last_failed']     = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gula_last_failed']     = new MUtil_Db_Expr_CurrentTimestamp();
                 $values['gula_failed_logins']   = max(1, $values['gula_failed_logins']);
 
                 // Response gets slowly slower

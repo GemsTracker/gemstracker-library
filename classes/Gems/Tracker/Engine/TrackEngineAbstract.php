@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_TargetAbstract implements Gems_Tracker_Engine_TrackEngineInterface
+abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_TranslateableAbstract implements Gems_Tracker_Engine_TrackEngineInterface
 {
     const FIELD_SEP = '|';
 
@@ -97,14 +97,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
      */
     protected $tracker;
 
-
-    /**
-     * Set as this is a MUtil_Registry_TargetInterface
-     *
-     * @var Zend_Translate $translate
-     */
-    protected $translate;
-
     /**
      *
      * @var Gems_Util
@@ -116,22 +108,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
      * @var Zend_View
      */
     protected $view;
-
-    /**
-     * Copy from Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($text, $locale);
-    }
 
     /**
      *
@@ -237,7 +213,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Registry_Ta
             }
 
             if (! isset($values['gto_changed'])) {
-                $values['gtr_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gtr_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gtr_changed_by'])) {
                 $values['gtr_changed_by'] = $userId;

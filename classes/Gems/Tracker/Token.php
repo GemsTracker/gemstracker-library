@@ -36,7 +36,7 @@
  */
 
 /**
- * Utility class for checking and changing tokens.
+ * Object class for checking and changing tokens.
  *
  * @package    Gems
  * @subpackage Tracker
@@ -232,7 +232,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             }
 
             if (! isset($values['gto_changed'])) {
-                $values['gto_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gto_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gto_changed_by'])) {
                 $values['gto_changed_by'] = $userId;
@@ -657,7 +657,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             if ($this->_gemsData[$fieldName] instanceof MUtil_Date) {
                 return $this->_gemsData[$fieldName];
             }
-            
+
             if (Zend_Date::isDate($this->_gemsData[$fieldName], Gems_Tracker::DB_DATETIME_FORMAT)) {
                 return new MUtil_Date($this->_gemsData[$fieldName], Gems_Tracker::DB_DATETIME_FORMAT);
             }
@@ -1157,7 +1157,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $survey->copyTokenToSource($this, $language);
 
         if (! $this->_gemsData['gto_in_source']) {
-            $values['gto_start_time'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gto_start_time'] = new MUtil_Db_Expr_CurrentTimestamp();
             $values['gto_in_source']  = 1;
         }
         $values['gto_by']         = $userId;

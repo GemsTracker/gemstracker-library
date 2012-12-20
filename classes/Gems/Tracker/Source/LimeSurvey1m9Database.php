@@ -36,7 +36,8 @@
  */
 
 /**
- * Class description of LimeSurvey1m9Database
+ * LimeSurvey1m9Database is a Source interface that enables the use of LimeSurvey 1.9.x
+ * installation as survey/answer source for Gems projects.
  *
  * @package    Gems
  * @subpackage Tracker
@@ -347,7 +348,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         $values['gso_active'] = $active ? 1 : 0;
         $values['gso_status'] = $active ? 'Active' : 'Inactive';
-        $values['gso_last_synch'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $values['gso_last_synch'] = new MUtil_Db_Expr_CurrentTimestamp();
 
         $this->_updateSource($values, $userId);
 
@@ -1071,7 +1072,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $where = $lsDb->quoteInto("token = ?", $lsTokenId);
             $lsDb->update($lsTab, $answers, $where);
         } else {
-            $current = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $current = new MUtil_Db_Expr_CurrentTimestamp();
 
             $answers['token'] = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();

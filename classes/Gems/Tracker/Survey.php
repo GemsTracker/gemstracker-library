@@ -36,7 +36,7 @@
  */
 
 /**
- * Class description of Survey
+ * Object representing a specific Survey 
  *
  * @package    Gems
  * @subpackage Tracker
@@ -151,7 +151,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
             }
 
             if (! isset($values['gsu_changed'])) {
-                $values['gsu_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gsu_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gsu_changed_by'])) {
                 $values['gsu_changed_by'] = $userId;
@@ -166,7 +166,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
 
             } else {
                 if (! isset($values['gsu_created'])) {
-                    $values['gsu_created'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                    $values['gsu_created'] = new MUtil_Db_Expr_CurrentTimestamp();
                 }
                 if (! isset($values['gsu_created_by'])) {
                     $values['gsu_created_by'] = $userId;

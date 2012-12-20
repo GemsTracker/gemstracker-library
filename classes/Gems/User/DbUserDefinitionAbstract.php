@@ -149,7 +149,7 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
         } else {
             $data['gup_reset_key'] = $this->hashPassword(time() . $user->getEmailAddress());
         }
-        $data['gup_reset_requested'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $data['gup_reset_requested'] = new MUtil_Db_Expr_CurrentTimestamp();
 
         // Loop for case when hash is not unique
         while (true) {

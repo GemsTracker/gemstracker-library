@@ -157,7 +157,7 @@ class Gems_Util_DatabasePatcher
         $sql .= ' ORDER BY gpa_level, gpa_location, gpa_id_patch';
         // MUtil_Echo::rs($ignoreCompleted, $ignoreExecuted, $sql);
 
-        $current  = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $current  = new MUtil_Db_Expr_CurrentTimestamp();
         $executed = 0;
         $patches  = $this->db->fetchAll($sql, $patchLevel);
 
@@ -235,7 +235,7 @@ class Gems_Util_DatabasePatcher
 
         $tree    = MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
         $changed = 0;
-        $current = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+        $current = new MUtil_Db_Expr_CurrentTimestamp();
         $minimum = $this->getMinimumPatchLevel();
         // MUtil_Echo::track($minimum);
 

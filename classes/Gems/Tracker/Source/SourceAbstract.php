@@ -49,11 +49,11 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
 {
     /**
      * Holds the current batch if there is any
-     * 
+     *
      * @var Gems_Task_TaskRunnerBatch
      */
     protected $_batch = null;
-    
+
     /**
      * The database connection to Gems itself
      *
@@ -166,11 +166,11 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
                 AND gsu_surveyor_id NOT IN (' . implode(', ', $surveyorSids) . ')';
 
         // Fixed values
-        $data['gsu_active'] = 0;
+        $data['gsu_active']          = 0;
         $data['gsu_surveyor_active'] = 0;
-        $data['gsu_status'] = 'Survey was removed from source.';
-        $data['gsu_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
-        $data['gsu_changed_by'] = $userId;
+        $data['gsu_status']          = 'Survey was removed from source.';
+        $data['gsu_changed']         = new MUtil_Db_Expr_CurrentTimestamp();
+        $data['gsu_changed_by']      = $userId;
 
         $this->_gemsDb->update('gems__surveys', $data, $sqlWhere);
 
@@ -198,7 +198,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
             }
 
             if (! isset($values['gso_changed'])) {
-                $values['gso_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gso_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gso_changed_by'])) {
                 $values['gso_changed_by'] = $userId;

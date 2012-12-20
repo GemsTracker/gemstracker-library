@@ -36,6 +36,7 @@
  */
 
 /**
+ * Object representing a track assignment to a respondent.
  *
  * @package    Gems
  * @subpackage Tracker
@@ -250,7 +251,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             }
 
             if (! isset($values['gr2t_changed'])) {
-                $values['gr2t_changed'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+                $values['gr2t_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gr2t_changed_by'])) {
                 $values['gr2t_changed_by'] = $userId;
@@ -413,7 +414,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             if ($date instanceof MUtil_Date) {
                 return $date;
             }
-            
+
             if (Zend_Date::isDate($date, Gems_Tracker::DB_DATETIME_FORMAT)) {
                 return new MUtil_Date($date, Gems_Tracker::DB_DATETIME_FORMAT);
             }

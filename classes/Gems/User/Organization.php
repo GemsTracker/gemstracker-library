@@ -373,7 +373,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     {
         if (! $this->_get('gor_has_respondents')) {
             $values['gor_has_respondents'] = 1;
-            $values['gor_changed']         = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $values['gor_changed']         = new MUtil_Db_Expr_CurrentTimestamp();
             $values['gor_changed_by']      = $userId;
 
             $where = $this->db->quoteInto('gor_id_organization = ?', $this->_id);

@@ -518,7 +518,7 @@ class Gems_Email_TemplateMailer
     protected function updateToken(array $tokenData, $to = null, $from = null)
     {
         if (null === $this->_changeDate) {
-            $this->_changeDate = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $this->_changeDate = new MUtil_Db_Expr_CurrentTimestamp();
         }
 
         $db  = $this->escort->db;

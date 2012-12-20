@@ -138,7 +138,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     public function createGemsUserId($value, $isNew = false, $name = null, array $context = array())
     {
         if ($isNew || (null === $value)) {
-            $creationTime = new Zend_Db_Expr('CURRENT_TIMESTAMP');
+            $creationTime = new MUtil_Db_Expr_CurrentTimestamp();
 
             do {
                 $out = mt_rand(1, 9);
@@ -288,9 +288,9 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $created_field    = $prefix . '_created';
         $created_by_field = $prefix . '_created_by';
 
-        $model->setOnSave($changed_field, new Zend_Db_Expr('CURRENT_TIMESTAMP'));
+        $model->setOnSave($changed_field, new MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveOnChange($changed_field);
-        $model->setOnSave($created_field, new Zend_Db_Expr('CURRENT_TIMESTAMP'));
+        $model->setOnSave($created_field, new MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveWhenNew($created_field);
 
         if (! $userid) {

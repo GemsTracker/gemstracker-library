@@ -52,7 +52,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstract implements MUtil_Snippets_SnippetInterface
+abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_TranslateableAbstract implements MUtil_Snippets_SnippetInterface
 {
     /**
      *
@@ -81,29 +81,6 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
      * @var boolean True then the route is reset
      */
     public $resetRoute = false;
-
-    /**
-     * Set as this is a MUtil_Registry_TargetInterface
-     *
-     * @var Zend_Translate $translate
-     */
-    protected $translate;
-
-    /**
-     * Copy from Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($text, $locale);
-    }
 
     /**
      * Adds one or more messages to the session based message store.
@@ -211,26 +188,6 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Registry_TargetAbstr
     public function hasHtmlOutput()
     {
         return true;
-    }
-
-    /**
-     * Copy from Zend_Translate_Adapter
-     *
-     * Translates the given string using plural notations
-     * Returns the translated string
-     *
-     * @see Zend_Locale
-     * @param  string             $singular Singular translation string
-     * @param  string             $plural   Plural translation string
-     * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see Zend_Locale for more information
-     * @return string
-     */
-    public function plural($singular, $plural, $number, $locale = null)
-    {
-        $args = func_get_args();
-        return call_user_func_array(array($this->translate->getAdapter(), 'plural'), $args);
     }
 
     /**
