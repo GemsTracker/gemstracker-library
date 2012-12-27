@@ -723,13 +723,6 @@ class GemsEscort extends MUtil_Application_Escort
         if (MUtil_JQuery::usesJQuery($this->view)) {
             $jquery = $this->view->jQuery();
             $jquery->uiEnable(); // enable user interface
-            $jquery->setUiVersion('1.8.9');
-
-            if (MUtil_Https::on()) {
-                $jquery->setCdnSsl(true);
-            }
-
-            // $jquery->setLocalPath('jquery-1.3.2.min.js');
 
             if (isset($this->project->jquerycss)) {
                 foreach ((array) $this->project->jquerycss as $css) {
@@ -1579,6 +1572,27 @@ class GemsEscort extends MUtil_Application_Escort
 
         // Set the base path, the route is now fixed
         $this->basepath->setBasePath($request->getBasePath());
+
+        // Set the jQuery version and other information needed
+        // by classes using jQuery
+        $jquery = MUtil_JQuery::jQuery();
+
+        $jqueryVersion   = '1.8.3';
+        $jqueryUiVersion = '1.9.2';
+        $jquery->setVersion($jqueryVersion);
+        $jquery->setUiVersion($jqueryUiVersion);
+
+        if ($this->project->isJQueryLocal()) {
+            $jqueryDir = $request->getBasePath() . $this->project->getJQueryLocal();
+
+            $jquery->setLocalPath($jqueryDir . 'jquery-' . $jqueryVersion . '.js');
+            $jquery->setUiLocalPath($jqueryDir . 'jquery-ui-' . $jqueryUiVersion . '.js');
+
+        } else {
+            if (MUtil_Https::on()) {
+                $jquery->setCdnSsl(true);
+            }
+        }
     }
 
 

@@ -341,6 +341,22 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Get the local jQuery directory (without base url)
+     *
+     * Instead of e.g. google Content Delivery Network.
+     *
+     * @return boolean
+     */
+    public function getJQueryLocal()
+    {
+        if (isset($this['jquery']['local'])) {
+            return $this['jquery']['local'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Get the logLevel to use with the Gems_Log
      *
      * Default settings is for development and testing environment to use Zend_Log::DEBUG and
@@ -504,5 +520,17 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function hasInitialPassword()
     {
         return isset($this['password']['initialPassword']);
+    }
+
+    /**
+     * Does this project use a local jQuery
+     *
+     * Instead of e.g. google Content Delivery Network.
+     *
+     * @return boolean
+     */
+    public function isJQueryLocal()
+    {
+        return isset($this['jquery']['local']);
     }
 }

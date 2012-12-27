@@ -189,19 +189,6 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
 
     public function setView(Zend_View_Interface $view = null)
     {
-        /*
-          http://jquery-ui.googlecode.com/svn/tags/latest/ui/minified/i18n/jquery-ui-i18n.min.js"
-
-            $(function() {
-                $.datepicker.setDefaults($.datepicker.regional['']);
-                $("#datepicker").datepicker($.datepicker.regional['fr']);
-                $("#locale").change(function() {
-                    $('#datepicker').datepicker('option', $.datepicker.regional[$(this).val()]);
-                });
-            });
-
-         */
-
         $element = parent::setView($view);
 
         if (null !== $view) {
@@ -210,20 +197,28 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
             }
         }
 
-
         if ($locale = Zend_Registry::get('Zend_Locale')) {
             $language = $locale->getLanguage();
+            // We have a language, but only when not english
             if ($language && $language != 'en') {
-                //TODO : work out correct link / setup: now defaults to last language
-                // $view->jquery()->addJavascriptFile(ZendX_JQuery::CDN_BASE_GOOGLE . ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI . ZendX_JQuery::DEFAULT_UI_VERSION . '/i18n/jquery-ui-i18n.min.js');
+                $jquery = $view->JQuery();
 
-                // $ljs = "$('#" . $this->getId() . "').datepicker('option', $.datepicker.regional['" . $language . "']);";
-                // $view->JQuery()->addOnLoad($ljs);
+                if ($uiPath = $jquery->getUiLocalPath()) {
+                    $baseUrl = dirname($uiPath);
 
-                $http = MUtil_Https::on() ? ZendX_JQuery::CDN_BASE_GOOGLE_SSL : ZendX_JQuery::CDN_BASE_GOOGLE ;
-                $version = ZendX_JQuery::DEFAULT_UI_VERSION;
-                $version = '1.8.9'; //Overrule want vertaling nederlands wordt anders niet gevonden
-                $view->JQuery()->addJavascriptFile($http . ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI . $version . '/i18n/jquery.ui.datepicker-' . $language . '.js');
+                } else {
+                    $baseUrl = MUtil_Https::on() ? ZendX_JQuery::CDN_BASE_GOOGLE_SSL : ZendX_JQuery::CDN_BASE_GOOGLE;
+                    $baseUrl .= ZendX_JQuery::CDN_SUBFOLDER_JQUERYUI;
+                    $baseUrl .= $jquery->getUiVersion();
+                }
+                // Option 1: download single language file
+                $jquery->addJavascriptFile($baseUrl . '/i18n/jquery.ui.datepicker-' . $language . '.js');
+
+                // Option 2: download all languages and select current
+                // $jquery->addJavascriptFile($baseUrl . '/i18n/jquery-ui-i18n.min.js');
+                // $jquery->addOnLoad("$.datepicker.setDefaults($.datepicker.regional['$language'])");
+
+                // TODO: Option 3: enable language setting for each individual date
             }
         }
 

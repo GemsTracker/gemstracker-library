@@ -53,7 +53,7 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
             $this->jquery->addOnLoad($js);
         }
 
-        if (isset($params['dateFormat']) && ($format = $params['dateFormat'])) {
+        if (isset($params['dateFormat']) && $params['dateFormat']) {
             //*
             $js = array();
             $js[] = '{';
@@ -61,10 +61,7 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
             $js[] = '';
             $js[] = "  datePick.blur(function() {";
             $js[] = "    var dateused;";
-            $js[] = "    var dateformat = '" . $format . "';";
-            // TODO: Why won't this work
-            // $js[] = "    var dateformat = datePick.datepicker('option', 'dateFormat');";
-            // $js[] = "    alert(dateformat);";
+            $js[] = "    var dateformat = datePick.datepicker('option', 'dateFormat');";
             $js[] = "    dateused = datePick.attr('value');";
             $js[] = "    dateused = $.datepicker.parseDate(dateformat, dateused);";
             $js[] = "    datePick.attr('value', $.datepicker.formatDate(dateformat, dateused));";
@@ -72,7 +69,6 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
             $js[] = '}';
 
             $this->jquery->addOnLoad(implode("\n", $js));
-            //$this->view->inlineScript()->appendScript(implode("\n", $js)); // */
         }
         return $result;
     }
