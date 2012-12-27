@@ -193,7 +193,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         $bridge->addTab(    'caption4')->h4($this->_('Settings'));
         $bridge->addSelect(  'grs_iso_lang',       'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
-        $bridge->addRadio(   'gr2o_consent',       'separator', '', 'description',  $this->_('Has the respondent signed the informed consent letter?'));
+        $bridge->addRadio(   'gr2o_consent',       'separator', '', 'description',  $this->_('Has the respondent signed the informed consent letter?'), 'required', true);
 
         return $returnValues;
     }
