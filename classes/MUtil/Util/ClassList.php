@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,26 +26,43 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Util
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: ClassList.php 362 2011-12-15 17:21:17Z matijsdejong $
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Return a value (the kind is up to the user), using either an object
+ * or a class name as lookup key.
+ *
+ * When not finding a direct match, this object checks (first) the parent classes
+ * and then the interfaces for a match. Search results are then stored in a cache.
+ *
+ * @package    MUtil
  * @subpackage Util
- */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Util
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Util_ClassList extends MUtil_Util_LookupList
 {
+    /**
+     * Sub classes known to have a mapping
+     *
+     * @var array
+     */
     protected $_subClasses;
+
+    /**
+     * Classes not found in this lookup list
+     *
+     * @var array
+     */
     protected $_notSubClasses;
 
     /**
@@ -75,56 +92,58 @@ class MUtil_Util_ClassList extends MUtil_Util_LookupList
     {
         if (is_object($key)) {
             $class = get_class($key);
+        } else {
+            $class = $key;
+        }
 
-            // Check for existence
-            if ($result = parent::_getItem($class, $default)) {
+        // Check for simple existence
+        if ($result = parent::_getItem($class, $default)) {
+            return $result;
+        }
+
+        // Check was already found
+        if (array_key_exists($class, $this->_subClasses)) {
+            return $this->_subClasses[$class];
+        }
+
+        // Check was already searched and not found
+        if (array_key_exists($class, $this->_notSubClasses)) {
+            return $default;
+        }
+
+        // Check the parent classes of the object
+        $parents = class_parents($key);
+        $result = null;
+        foreach ($parents as $parentClass) {
+            if ($result = parent::_getItem($parentClass, null)) {
+                // Add the current class to the cache
+                $this->_subClasses[$class] = $result;
+
+                // Add all parents up to the one matching to the cache
+                foreach ($parents as $priorParent) {
+                    $this->_subClasses[$priorParent] = $result;
+                    if ($parentClass === $priorParent) {
+                        // Further parents are not automatically in the list
+                        break;
+                    }
+                }
                 return $result;
             }
-            // Check was already found
-            if (array_key_exists($class, $this->_subClasses)) {
-                return $this->_subClasses[$class];
-            }
-            // Check was already searched and not found
-            if (array_key_exists($class, $this->_notSubClasses)) {
-                return $default;
-            }
-
-            // Check the parent classes of the object
-            $parents = class_parents($key);
-            $result = null;
-            foreach ($parents as $parentClass) {
-                if ($result = parent::_getItem($parentClass, null)) {
-                    // Add the current class to the cache
-                    $this->_subClasses[$class] = $result;
-
-                    // Add all parents up to the one matching to the cache
-                    foreach ($parents as $priorParent) {
-                        $this->_subClasses[$priorParent] = $result;
-                        if ($parentClass === $priorParent) {
-                            // Further parents are not automatically in the list
-                            break;
-                        }
-                    }
-                    return $result;
-                }
-            }
-
-            // Check the interfaces implemented by the object
-            $implemented = class_implements($key);
-            foreach ($implemented as $interface) {
-                if ($result = parent::_getItem($interface, null)) {
-                    //    Add the current class to the cache
-                    $this->_subClasses[$class] = $result;
-                    return $result;
-                }
-            }
-
-            // Add to the not found cache
-            $this->_notSubClasses[$class] = true;
-
-            return $default;
-        } else {
-            return parent::_getItem($key, $default);
         }
+
+        // Check the interfaces implemented by the object
+        $implemented = class_implements($key);
+        foreach ($implemented as $interface) {
+            if ($result = parent::_getItem($interface, null)) {
+                //    Add the current class to the cache
+                $this->_subClasses[$class] = $result;
+                return $result;
+            }
+        }
+
+        // Add to the not found cache
+        $this->_notSubClasses[$class] = true;
+
+        return $default;
     }
 }

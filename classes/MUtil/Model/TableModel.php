@@ -52,6 +52,11 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
      */
     private $_table;
 
+    /**
+     *
+     * @param Zend_Db_Table_Abstract $table An Zend abstract table or the table name
+     * @param string $altName An alternative name to use, default is the name of the table itself
+     */
     public function __construct($table, $altName = null)
     {
         if ($table instanceof Zend_Db_Table_Abstract) {

@@ -98,13 +98,13 @@ class MUtil_Html_Renderer
     public function canRender($value)
     {
         if (is_object($value)) {
-            if (method_exists($value, '__toString') ||
-                ($value instanceof MUtil_Lazy_LazyInterface) ||
-                ($value instanceof MUtil_Html_HtmlInterface)) {
+            if (($value instanceof MUtil_Lazy_LazyInterface) ||
+                ($value instanceof MUtil_Html_HtmlInterface) ||
+                method_exists($value, '__toString')) {
                 return true;
             }
 
-            return $this->_classRenderFunctions->get($content);
+            return $this->_classRenderFunctions->get($value);
 
         }  else {
             if (is_array($value)) {
