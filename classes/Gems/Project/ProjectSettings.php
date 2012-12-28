@@ -349,7 +349,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getJQueryLocal()
     {
-        if (isset($this['jquery']['local'])) {
+        if (isset($this['jquery'], $this['jquery']['local'])) {
             return $this['jquery']['local'];
         } else {
             return null;
@@ -531,6 +531,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function isJQueryLocal()
     {
-        return isset($this['jquery']['local']);
+        return isset($this['jquery'], $this['jquery']['local']);
     }
 }
