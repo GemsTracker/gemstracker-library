@@ -47,8 +47,8 @@
 class MUtil_Version
 {
     const MAJOR = 1;
-    const MINOR = 1;
-    const BUILD = 36;
+    const MINOR = 2;
+    const BUILD = 40;
 
     public static function get()
     {
