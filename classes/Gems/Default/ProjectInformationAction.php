@@ -143,6 +143,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Application environment')] = APPLICATION_ENV;
         $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
         $data[$this->_('Application directory')]   = APPLICATION_PATH;
+        $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
         $data[$this->_('PHP version')]             = phpversion();
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
