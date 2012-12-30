@@ -253,26 +253,3 @@ class MUtil_Lazy
         return new MUtil_Lazy_Stack_EmptyStack($source);
     }
 }
-
-if (defined('MUTIL_LAZY_FUNCTIONS')) {
-
-    function iff($if, $then, $else = null)
-    {
-        return MUtil_Lazy::iff($if, $then, $else = null);
-    }
-
-    function iif($if, $then, $else = null)
-    {
-        return MUtil_Lazy::iif($if, $then, $else = null);
-    }
-
-    function L($var)
-    {
-        return MUtil_Lazy::L($var);
-    }
-
-    function lazy($var)
-    {
-        return MUtil_Lazy::L($var);
-    }
- }

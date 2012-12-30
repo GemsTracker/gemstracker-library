@@ -37,7 +37,7 @@
 
 /**
  * LoaderAbstract is used for classes that chain from Gems_Loader and that thus allow
- * projects to overrule the origingal implementation.
+ * projects to overrule the original implementation.
  *
  * I.e if you create a class <Project_name>_Model or <Project_name>_Util, that class is loaded
  * automatically instead of Gems_Model or Gems_Util. <Project_name>_Model should be a subclass

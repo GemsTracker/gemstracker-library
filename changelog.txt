@@ -1,3 +1,8 @@
+Important changes from 1.5.7 => 1.6
+============================================================
+Defined constant GEMS_PROJECT_PATH removed from code
+Moved date_default_timezone_set to index.php (can generate warnings)
+
 Important changes from 1.5.6 => 1.5.7
 ============================================================
 In LimeSurvey tokenanswerpersistence must be set to true for all surveys

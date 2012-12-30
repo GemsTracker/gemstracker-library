@@ -38,14 +38,10 @@
  * @subpackage Project
  */
 
-// GENERAL PHP SETUP
+// PHP ENCODING SETUP
+defined('APPLICATION_ENCODING') || define('APPLICATION_ENCODING', 'UTF-8');
 
-// Needed for strict on >= PHP 5.1.2
-if (version_compare(phpversion(), '5.1.2') > 0) {
-    date_default_timezone_set('Europe/Amsterdam');
-}
-
-mb_internal_encoding('UTF-8');
+mb_internal_encoding(APPLICATION_ENCODING);
 
 // ZEND FRAMEWORK STARTS HERE
 
@@ -55,18 +51,13 @@ mb_internal_encoding('UTF-8');
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
 
 /**
- * Compatibility, remove in 1.6
- */
-define('GEMS_PROJECT_PATH', APPLICATION_PATH);
-
-/**
  * Set path to Zend Framework
  * then to project directory
  * then to Gems application directory
  */
 set_include_path(
-    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
+    GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
     get_include_path()
     //. PATH_SEPARATOR . GEMS_ROOT_DIR . '/library'     //Shouldn't be needed, uncomment when neccessary
     );
@@ -75,10 +66,6 @@ $GEMS_DIRS = array(
     GEMS_PROJECT_NAME_UC => APPLICATION_PATH . '/classes',
     'Gems' =>               GEMS_LIBRARY_DIR . '/classes'
 );
-
-// Make sure Lazy is loaded
-// defined('MUTIL_LAZY_FUNCTIONS') || define('MUTIL_LAZY_FUNCTIONS', 1);
-require_once 'MUtil/Lazy.php';
 
 // Zend_Application: loads the autoloader
 require_once 'Zend/Application.php';
@@ -89,14 +76,11 @@ $application = new Zend_Application(
     APPLICATION_PATH . '/configs/application.ini'
 );
 
-// Set up autoload.
-// require_once "Zend/Loader/Autoloader.php";
+// Set up autoload (included by Zend_Application).
 $autoloader = Zend_Loader_Autoloader::getInstance();
 $autoloader->registerNamespace('MUtil_');
 $autoloader->registerNamespace('Gems_');
 $autoloader->registerNamespace(GEMS_PROJECT_NAME_UC . '_');
-
-// Zend_Date::setOptions(array('format_type' => 'php'));
 
 // MUtil_Model::$verbose = true;
 
