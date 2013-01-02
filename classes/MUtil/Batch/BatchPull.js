@@ -67,7 +67,7 @@ jQuery.widget("ui.pullProgressPanel", {
         }
 
         // For some reason the next two lines are both needed for the code to work
-        this.progressTarget.progressbar("option", "value", data.percent);
+        //this.progressTarget.progressbar("option", "value", data.percent);
         this.progressTarget.progressbar({value: data.percent});
 
         text = data.percent + '%';
