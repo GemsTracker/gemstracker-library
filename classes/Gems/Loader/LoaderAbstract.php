@@ -162,6 +162,8 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         $cname = trim(str_replace('/', '_', ucfirst($name)), '_');
         $cfile = str_replace('_', '/', $cname) . '.php';
 
+        // MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '\var\cache');
+
         $found = false;
 
         /**
@@ -189,7 +191,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
                         $found = true;
                         $this->_loaded[$cname] = get_class($obj);
                         break 2;
-                    }                    
+                    }
                 }
             }
         }
