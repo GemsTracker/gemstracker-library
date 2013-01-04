@@ -539,7 +539,7 @@ class GemsEscort extends MUtil_Application_Escort
      * Add ZFDebug info to the page output.
      *
      * @return void
-     */
+     * /
     protected function _initZFDebug()
     {
         // if ((APPLICATION_ENV === 'development') &&
