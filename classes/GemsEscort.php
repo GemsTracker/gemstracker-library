@@ -38,6 +38,7 @@
 
 // $autoloader->registerNamespace has not yet run!!
 include_once('MUtil/Application/Escort.php');
+include_once('MUtil/Loader/CachedLoader.php');
 
 /**
  * Project Application Core code
@@ -93,6 +94,10 @@ class GemsEscort extends MUtil_Application_Escort
     public function __construct($application)
     {
         parent::__construct($application);
+
+        $autoloader   = Zend_Loader_Autoloader::getInstance();
+        $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '\var\cache');
+        $autoloader->setDefaultAutoloader(array($cachedloader, 'loadClassByPaths'));
 
         self::$_instanceOfSelf = $this;
 
@@ -534,7 +539,7 @@ class GemsEscort extends MUtil_Application_Escort
      * Add ZFDebug info to the page output.
      *
      * @return void
-     * /
+     */
     protected function _initZFDebug()
     {
         // if ((APPLICATION_ENV === 'development') &&

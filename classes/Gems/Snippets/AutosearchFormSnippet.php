@@ -120,13 +120,15 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * @return boolean False if required are missing.
+     * @return void
      */
-    public function checkRegistryRequestsAnswers()
+    public function afterRegistry()
     {
+        parent::afterRegistry();
+
         if ($this->util && (! $this->requestCache)) {
             $this->requestCache = $this->util->getRequestCache();
         }
@@ -134,8 +136,6 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             // Do not store searchButtonId
             $this->requestCache->removeParams($this->searchButtonId);
         }
-
-        return parent::checkRegistryRequestsAnswers();
     }
 
     /**

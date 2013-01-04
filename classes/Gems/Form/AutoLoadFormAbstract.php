@@ -67,18 +67,18 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
     protected $translate;
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * @return boolean False if required values are missing.
+     * @return void
      */
-    public function checkRegistryRequestsAnswers()
+    public function afterRegistry()
     {
+        parent::afterRegistry();
+
         if ($this->loadDefault) {
             $this->loadDefaultElements();
         }
-
-        return true;
     }
 
     /**

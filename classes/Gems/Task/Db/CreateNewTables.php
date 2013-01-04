@@ -79,7 +79,8 @@ class Gems_Task_Db_CreateNewTables extends Gems_Task_TaskAbstract
      *
      * @return boolean
      */
-    public function checkRegistryRequestsAnswers() {
+    public function checkRegistryRequestsAnswers()
+    {
         $this->escort = GemsEscort::getInstance();
 
         //Load the dbaModel

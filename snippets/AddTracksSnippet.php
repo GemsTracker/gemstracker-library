@@ -219,13 +219,15 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * @return boolean False if required are missing.
+     * @return void
      */
-    public function checkRegistryRequestsAnswers()
+    public function afterRegistry()
     {
+        parent::afterRegistry();
+
         if ($this->showForRespondents && is_bool($this->showForRespondents)) {
             $this->showForRespondents = $this->_('by Respondents');
         }
@@ -238,8 +240,6 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
         if ($this->showTitle && is_bool($this->showTitle)) {
             $this->showTitle = $this->_('Add');
         }
-
-        return parent::checkRegistryRequestsAnswers();
     }
 
     /**

@@ -68,7 +68,7 @@ class Gems_Task_Db_CreateNewTable extends Gems_Task_TaskAbstract
     public function execute($tableData = array())
     {
         $this->_batch->addToCounter('createTableStep');
-        
+
         $result = $this->dbaModel->runScript($tableData);
         $result[] = sprintf($this->translate->_('Finished %s creation script for object %d of %d'), $this->translate->_(strtolower($tableData['type'])), $this->_batch->getCounter('createTableStep'), $this->_batch->getCounter('NewTableCount')) . '<br/>';
 
@@ -87,7 +87,8 @@ class Gems_Task_Db_CreateNewTable extends Gems_Task_TaskAbstract
      *
      * @return boolean
      */
-    public function checkRegistryRequestsAnswers() {
+    public function checkRegistryRequestsAnswers()
+    {
         $this->escort = GemsEscort::getInstance();
 
         //Load the dbaModel

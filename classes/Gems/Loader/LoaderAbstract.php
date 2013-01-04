@@ -84,6 +84,12 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     private $_loaded = array();
 
     /**
+     *
+     * @var MUtil_Loader_CachedLoader
+     */
+    private $_loader;
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -108,6 +114,9 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
             }
             $this->_dirs = $newdirs;
         }
+        $this->_loader = MUtil_Loader_CachedLoader::getInstance();
+
+
         if (MUtil_Registry_Source::$verbose) {
             MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
         }
@@ -162,8 +171,6 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         $cname = trim(str_replace('/', '_', ucfirst($name)), '_');
         $cfile = str_replace('_', '/', $cname) . '.php';
 
-        // MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '\var\cache');
-
         $found = false;
 
         /**
@@ -187,18 +194,44 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
                     $paths = array($paths);
                 }
                 foreach ($paths as $path) {
+                    //*
+                    $className = $prefix . $cname;
+
+                    if ($this->_loader->loadClass($className, $path . $fprefix . '/' . $cfile)) {
+                        if (is_subclass_of($className, __CLASS__)) {
+                            $create    = true;
+                            $arguments = array($this->_containers[0], $this->_dirs);
+
+                        } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
+                            $create = true;
+                        }
+
+
+                        if ($create) {
+                            $obj = $this->_loader->createClass($className, $arguments);
+                        } else {
+                            $obj = new MUtil_Lazy_StaticCall($className);
+                        }
+
+                        $found = true;
+                        $this->_loaded[$cname] = get_class($obj);
+                        break 2;
+                    } // */
+
+                    /*
                     if ($obj = $this->_loadClassPath($path . $fprefix . '/' . $cfile, $prefix . $cname, $create, $arguments)) {
                         $found = true;
                         $this->_loaded[$cname] = get_class($obj);
                         break 2;
-                    }
+                    } // */
                 }
             }
         }
 
         if ($found) {
             if ($obj instanceof MUtil_Registry_TargetInterface) {
-                if ((!$this->applySource($obj)) && parent::$verbose) {
+                // error_log(get_class($obj));
+                if ((! $this->applySource($obj)) && parent::$verbose) {
                     MUtil_Echo::track("Source apply to object of type $name failed.");
                 }
             }

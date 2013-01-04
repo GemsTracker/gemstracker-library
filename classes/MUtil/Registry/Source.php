@@ -144,13 +144,12 @@ class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
                 } // */
             }
         }
-        if ($target->checkRegistryRequestsAnswers()) {
-            $target->afterRegistry();
 
-            return true;
-        } else {
-            return false;
-        }
+        $result = $target->checkRegistryRequestsAnswers();
+
+        $target->afterRegistry();
+
+        return $result;
     }
 
     /**
