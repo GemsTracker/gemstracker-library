@@ -96,7 +96,7 @@ class GemsEscort extends MUtil_Application_Escort
         parent::__construct($application);
 
         $autoloader   = Zend_Loader_Autoloader::getInstance();
-        $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '\var\cache');
+        $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache');
         $autoloader->setDefaultAutoloader(array($cachedloader, 'loadClassByPaths'));
 
         self::$_instanceOfSelf = $this;
