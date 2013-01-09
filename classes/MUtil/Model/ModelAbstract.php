@@ -390,6 +390,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Delete all, one or some values for a certain field name.
+     *
+     * @param string $name Field name
+     * @param string|array|null $arrayOrKey1 Null or the name of a single attribute or an array of attribute names
+     * @param string $key2 Optional a second attribute name.
+     */
     public function del($name, $arrayOrKey1 = null, $key2 = null)
     {
         if (func_num_args() == 1) {
@@ -403,6 +410,18 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 unset($this->_model[$name][$arg]);
             }
         }
+    }
+
+    /**
+     * Disable tyhe onload settings. This is sometimes needed for speed/
+     *
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function disableOnLoad()
+    {
+        $this->setMeta(self::LOAD_TRANSFORMER, false);
+
+        return $this;
     }
 
     /**

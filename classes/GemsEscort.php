@@ -95,10 +95,6 @@ class GemsEscort extends MUtil_Application_Escort
     {
         parent::__construct($application);
 
-        $autoloader   = Zend_Loader_Autoloader::getInstance();
-        $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'cache');
-        $autoloader->setDefaultAutoloader(array($cachedloader, 'loadClassByPaths'));
-
         self::$_instanceOfSelf = $this;
 
         $firebug = $application->getOption('firebug');
@@ -315,6 +311,23 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initLoader()
     {
         global $GEMS_DIRS;
+
+        /*
+        $dirs = $this->getOption('loaderDirs');
+
+        if (! $dirs) {
+
+            $dirs = array();
+
+            foreach ($GEMS_DIRS as $prefix => $dir) {
+                $dirs[$prefix] = $dir . '/' . str_replace('_', '/', $prefix);
+            }
+        }
+
+        MUtil_Echo::track($dirs);
+
+        return $this->createProjectClass('Loader', $this->getContainer(), array_reverse($dirs));
+        // */
         return $this->createProjectClass('Loader', $this->getContainer(), $GEMS_DIRS);
     }
 
@@ -555,7 +568,8 @@ class GemsEscort extends MUtil_Application_Escort
                     'Memory',
                     'Time',
                     'Registry',
-                    'Exception')
+                    'Exception'),
+                // 'jquery_path' => not yet initialized
             );
 
             # Instantiate the database adapter and setup the plugin.

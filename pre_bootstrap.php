@@ -67,20 +67,23 @@ $GEMS_DIRS = array(
     'Gems' =>               GEMS_LIBRARY_DIR . '/classes'
 );
 
-// Zend_Application: loads the autoloader
-require_once 'Zend/Application.php';
+// Set up autoload
+require_once 'Zend/Loader/AutoLoader.php';
+$autoloader   = Zend_Loader_Autoloader::getInstance();
+$autoloader->registerNamespace('MUtil_');
+$autoloader->registerNamespace('Gems_');
+$autoloader->registerNamespace(GEMS_PROJECT_NAME_UC . '_');
+
+// Start using cached Loader
+// require_once 'MUtil/Loader/CachedLoader.php';
+// $cachedloader = MUtil_Loader_CachedLoader::getInstance(GEMS_ROOT_DIR . '\var\cache');
+// $autoloader->setDefaultAutoloader(array($cachedloader, 'loadClassByPaths'));
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(
     APPLICATION_ENV,
     APPLICATION_PATH . '/configs/application.ini'
 );
-
-// Set up autoload (included by Zend_Application).
-$autoloader = Zend_Loader_Autoloader::getInstance();
-$autoloader->registerNamespace('MUtil_');
-$autoloader->registerNamespace('Gems_');
-$autoloader->registerNamespace(GEMS_PROJECT_NAME_UC . '_');
 
 // MUtil_Model::$verbose = true;
 

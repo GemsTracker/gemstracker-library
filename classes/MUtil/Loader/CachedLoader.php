@@ -50,26 +50,45 @@ class MUtil_Loader_CachedLoader
      *
      * @var array
      */
-    protected $_cacheArray = array();
+    private $_cacheClassArray = array();
+
+    /**
+     *
+     * @var array
+     */
+    // private $_cacheFileArray = array();
+
+    /**
+     *
+     * @var boolean
+     */
+    private $_cacheChanged = false;
+
+    /**
+     * Unix timestamp cahce file load time
+     *
+     * @var int
+     */
+    private $_cacheLoadTime;
 
     /**
      *
      * @var string
      */
-    protected $_cacheDir  = null;
+    private $_cacheDir  = null;
 
     /**
      *
      * @var string
      */
-    protected $_cacheFile = 'cached.loader.mutil.php';
+    private $_cacheFile = 'cached.loader.mutil.php';
 
     /**
      * An array containg include dir pathNames
      *
      * @var array
      */
-    protected $_includeDirs;
+    private $_includeDirs;
 
     /**
      *
@@ -93,7 +112,10 @@ class MUtil_Loader_CachedLoader
         }
 
         if (! file_exists($this->_cacheFile)) {
-            $this->_saveCache();
+            $this->_cacheChanged  = true;
+            $this->_cacheLoadTime = 0;
+
+            // $this->_saveCache();
         } else {
             if (! is_writable($this->_cacheFile)) {
                 throw new Zend_Exception(sprintf('Cache file %s not writeable.', $this->_cacheFile));
@@ -107,6 +129,14 @@ class MUtil_Loader_CachedLoader
     }
 
     /**
+     * Make sure the changes ot the cache are saved.
+     */
+    public function __destruct()
+    {
+        $this->_saveCache();
+    }
+
+    /**
      * Check for file existence and append status to the cache
      *
      * @param mixed $file String path to file or false if does not exist
@@ -114,25 +144,18 @@ class MUtil_Loader_CachedLoader
      */
     protected function _checkFile($file)
     {
-        if (array_key_exists($file, $this->_cacheArray)) {
-            return $this->_cacheArray[$file];
+        return file_exists($file);
+        /*
+        if (array_key_exists($file, $this->_cacheFileArray)) {
+            return $this->_cacheFileArray[$file];
         }
         // MUtil_Echo::track($file);
 
-        $this->_cacheArray[$file] = file_exists($file);
+        $this->_cacheFileArray[$file] = file_exists($file);
+        $this->_cacheChanged          = true;
 
-        if (! file_exists($this->_cacheFile)) {
-            $this->_saveCache();
-        } else {
-            if (false === $this->_cacheArray[$file]) {
-                $content = "\$this->_cacheArray['$file'] = false;\n";
-            } else {
-                $content = "\$this->_cacheArray['$file'] = true;\n";
-            }
-            file_put_contents($this->_cacheFile, $content, FILE_APPEND | LOCK_EX );
-        }
-
-        return $this->_cacheArray[$file];
+        return $this->_cacheFileArray[$file];
+        // */
     }
 
     /**
@@ -142,10 +165,16 @@ class MUtil_Loader_CachedLoader
     {
         include $this->_cacheFile;
 
-        // Include path has changed
-        if (!isset($include) || (get_include_path() != $include)) {
-            $this->_cacheArray = array();
+        // if (isset($cacheArray, $fileArray, $include) && (get_include_path() != $include)) {
+        if (isset($cacheArray, $include) && (get_include_path() != $include)) {
+            $this->_cacheClassArray = $classArray;
+            // $this->_cacheFileArray  = $fileArray;
+            $this->_cacheLoadTime = filemtime($this->_cacheFile);
         }
+
+        $this->_cacheClassArray   = array();
+        // $this->_cacheFileArray   = array();
+        $this->_cacheChanged = true;
     }
 
     /**
@@ -164,20 +193,50 @@ class MUtil_Loader_CachedLoader
     }
 
     /**
-     * Save the cache to file
+     * Save the cache to file (if changed)
      */
     protected function _saveCache()
     {
-        $content = "<?php\n\n";
-        $content .= "\$include = '" . get_include_path() . "';\n\n";
-
-        foreach ($this->_cacheArray as $file => $exists) {
-            if (false === $file) {
-                $content .= "\$this->_cacheArray['$file'] = false;\n";
-            } else {
-                $content .= "\$this->_cacheArray['$file'] = true;\n";
+        // MUtil_Echo::track(filemtime($this->_cacheFile), $this->_cacheLoadTime, $this->_cacheChanged);
+        if (file_exists($this->_cacheFile)) {
+            if ((! $this->_cacheChanged) && (filemtime($this->_cacheFile) >= $this->_cacheLoadTime)) {
+                return;
             }
         }
+        /*
+        MUtil_Echo::r('Saving load cache (from previous call)');
+
+        include $this->_cacheFile;
+
+        MUtil_Echo::r(array_diff(array_keys($this->_cacheClassArray), array_keys($classArray)));
+        // */
+
+        $content = "<?php\n";
+        $content .= "\$include = '" . get_include_path() . "';\n";
+
+        ksort($this->_cacheClassArray);
+
+        $content .= "\$classArray = array(\n";
+        foreach ($this->_cacheClassArray as $class => $file) {
+            $content .= "'$class' => '$file',\n";
+        }
+        $content .= ");\n";
+
+        /*
+        ksort($this->_cacheFileArray);
+
+        $content .= "\$fileArray = array(\n";
+
+        foreach ($this->_cacheFileArray as $file => $exists) {
+            if (false === $exists) {
+                $content .= "'$file' => false,\n";
+            } else {
+                $content .= "'$file' => true,\n";
+            }
+        }
+        $content .= ");";
+        // */
+
         file_put_contents($this->_cacheFile, $content, LOCK_EX);
     }
 
@@ -269,6 +328,10 @@ class MUtil_Loader_CachedLoader
 
         if (! $instance) {
             $instance = new self($dir);
+
+            if (is_subclass_of('Zend_Loader', 'MUtil_Loader_LoaderMarkerInterface')) {
+                Zend_Loader::setCachedLoader($instance);
+            }
         }
 
         return $instance;;
@@ -281,7 +344,7 @@ class MUtil_Loader_CachedLoader
      */
     public function includeFile($file)
     {
-        if ($this->_checkFile($file)) {
+        if (file_exists($file)) {
             $result = include $file;
 
             return $result ? $result : true;
@@ -299,16 +362,33 @@ class MUtil_Loader_CachedLoader
      */
     public function loadClass($className, $file)
     {
+        if (isset($this->_cacheClassArray[$className])) {
+            if ($this->_cacheClassArray[$className]) {
+                $this->includeFile($this->_cacheClassArray[$className]);
+
+                return true;
+            } else {
+                // return false;
+            }
+        }
+
         if (class_exists($className, false) || interface_exists($className, false)) {
             return true;
         }
 
         if ($this->includeFile($file)) {
             if (class_exists($className, false) || interface_exists($className, false)) {
+                $this->_cacheClassArray[$className] = $file;
+                $this->_cacheChanged                = true;
                 return true;
             }
 
             throw new Zend_Exception("The file '$file' does not contain the class '$class'.");
+        }
+
+        if (! isset($this->_cacheClassArray[$className])) {
+            $this->_cacheClassArray[$className] = '';
+            $this->_cacheChanged                = true;
         }
 
         return false;
@@ -355,38 +435,26 @@ class MUtil_Loader_CachedLoader
         }
         $file .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-        if (null === $dirs) {
-            $dirs = $this->_includeDirs;
+        if (isset($this->_cacheClassArray[$class])) {
+            if ($this->_cacheClassArray[$class]) {
+                $this->includeFile($this->_cacheClassArray[$class]);
+            }
         } else {
-            $dirs = array_merge($dirs, $this->_includeDirs);
-        }
+            if (null === $dirs) {
+                $dirs = $this->_includeDirs;
+            } else {
+                $dirs = array_merge($dirs, $this->_includeDirs);
+            }
 
-        foreach ($dirs as $dir) {
-            // error_log($dir . $file);
-            if ($this->includeFile($dir . $file)) {
-                break;
-            }
-        }
-        /*
-        if (!empty($dirs)) {
-            // use the autodiscovered path
-            $dirPath = dirname($file);
-            if (is_string($dirs)) {
-                $dirs = explode(PATH_SEPARATOR, $dirs);
-            }
-            foreach ($dirs as $key => $dir) {
-                if ($dir == '.') {
-                    $dirs[$key] = $dirPath;
-                } else {
-                    $dir = rtrim($dir, '\\/');
-                    $dirs[$key] = $dir . DIRECTORY_SEPARATOR . $dirPath;
+            foreach ($dirs as $dir) {
+                // error_log($dir . $file);
+                if ($this->includeFile($dir . $file)) {
+                    $this->_cacheClassArray[$class] = $dir . $file;
+                    $this->_cacheChanged            = true;
+                    break;
                 }
             }
-            $file = basename($file);
-            self::loadFile($file, $dirs, true);
-        } else {
-            self::loadFile($file, null, true);
-        } // */
+        }
 
         if (!class_exists($class, false) && !interface_exists($class, false)) {
             require_once 'Zend/Exception.php';

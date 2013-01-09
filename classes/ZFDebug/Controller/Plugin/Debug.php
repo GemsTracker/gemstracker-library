@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -65,10 +65,10 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
             'Time' => null,
             'Memory' => null),
         'z-index'           => 255,
-        'jquery_path'       => 'https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js',
+        'jquery_path'       => 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js',
         'image_path'        => null
     );
-    
+
     /**
      * Standard plugins
      *
@@ -107,7 +107,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
 
             $this->setOptions($options);
         }
-        
+
         /**
          * Creating ZF Version Tab always shown
          */
@@ -122,7 +122,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
          */
         $this->_loadPlugins();
     }
-    
+
     /**
      * Sets options of the Debug Bar
      *
@@ -142,7 +142,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
         if (isset($options['image_path'])) {
             $this->_options['image_path'] = $options['image_path'];
         }
-        
+
         if (isset($options['plugins'])) {
         	$this->_options['plugins'] = $options['plugins'];
         }
@@ -183,7 +183,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
         }
         return $this;
     }
-    
+
     /**
      * Get a registered plugin in the Debug Bar
      *
@@ -198,7 +198,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
         }
         return false;
     }
-    
+
     /**
      * Defined by Zend_Controller_Plugin_Abstract
      */
@@ -440,7 +440,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
                     jQuery.noConflict();
                     ZFDebugCollapsed();
                 };
-                
+
                 function ZFDebugCollapsed() {
                     if ('.$collapsed.' == 1) {
                         ZFDebugPanel();
@@ -448,7 +448,7 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
                         return jQuery("#ZFDebug_debug").css("left", "-"+parseInt(jQuery("#ZFDebug_debug").outerWidth()-jQuery("#ZFDebug_toggler").outerWidth()+1)+"px");
                     }
                 }
-                
+
                 function ZFDebugPanel(name) {
                     jQuery(".ZFDebug_panel").each(function(i){
                         if(jQuery(this).css("display") == "block") {

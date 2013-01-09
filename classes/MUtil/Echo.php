@@ -154,7 +154,7 @@ class MUtil_Echo
     {
         $session = self::getSession();
 
-        if (is_array($var) || is_object($var)) {
+        if (is_array($var) || is_object($var) || ($var instanceof __PHP_Incomplete_Class)) {
             ob_start();
             var_dump($var);
             $content = ob_get_clean();

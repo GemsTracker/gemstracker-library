@@ -196,6 +196,11 @@ class MUtil_Html_Renderer
                         // $new_content = 'WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.';
                         throw new MUtil_Html_HtmlException('WARNING: Object of type ' . get_class($content) . ' cannot be converted to string.');
                     }
+                    
+                } elseif ($content instanceof __PHP_Incomplete_Class) {
+                    MUtil_Echo::track($content);
+                    return '';
+
                 } else {
                     $new_content = (string) $content;
                 }

@@ -85,7 +85,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
     /**
      *
-     * @var MUtil_Loader_CachedLoader
+     * @var Zend_Loader_PluginLoader_Interface
      */
     private $_loader;
 
@@ -107,14 +107,22 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
         $this->_dirs = $dirs;
 
-        // Set the directories to the used cascade pattern
         if ($this->cascade) {
             foreach ($dirs as $prefix => $path) {
                 $newdirs[$prefix . '_' . $this->cascade] = $path;
+                // $newdirs[$prefix . '_' . $this->cascade] = $path . '/' . str_replace('_', '/', $this->cascade);
             }
             $this->_dirs = $newdirs;
         }
-        $this->_loader = MUtil_Loader_CachedLoader::getInstance();
+
+        //$this->_loader = new Zend_Loader_PluginLoader($this->_dirs);
+        //*
+        // Set the directories to the used cascade pattern
+        $this->_loader = new Zend_Loader_PluginLoader();
+        foreach (array_reverse($this->_dirs) as $prefix => $path) {
+            $this->_loader->addPrefixPath($prefix, $path . '/' . str_replace('_', '/', $prefix));
+        }
+        // */
 
 
         if (MUtil_Registry_Source::$verbose) {
@@ -166,6 +174,55 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
      */
     protected function _loadClass($name, $create = false, array $arguments = array())
     {
+        /*
+        $className = $this->_loader->load($name);
+
+        // MUtil_Echo::track($className);
+
+        if (is_subclass_of($className, __CLASS__)) {
+            $create    = true;
+            // error_log($className);
+            $arguments = array($this->_containers[0], $this->_dirs);
+
+        } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
+            $create = true;
+        }
+
+        if ($create) {
+            switch (count($arguments)) {
+                case 0:
+                    $obj = new $className();
+                    break;
+
+                case 1:
+                    $obj = new $className($arguments[0]);
+                    break;
+
+                case 2:
+                    $obj = new $className($arguments[0], $arguments[1]);
+                    break;
+
+                case 3:
+                    $obj = new $className($arguments[0], $arguments[1], $arguments[2]);
+                    break;
+
+                default:
+                    throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . ' cannot create class with ' . count($arguments) . ' parameters.');
+            }
+        } else {
+            $obj = new MUtil_Lazy_StaticCall($className);
+        }
+
+        if ($obj instanceof MUtil_Registry_TargetInterface) {
+            // error_log(get_class($obj));
+            if ((! $this->applySource($obj)) && parent::$verbose) {
+                MUtil_Echo::track("Source apply to object of type $name failed.");
+            }
+        }
+
+        return $obj;
+        // */
+
         // echo $name . ($create ? ' create' : ' not created') . "<br/>\n";
 
         $cname = trim(str_replace('/', '_', ucfirst($name)), '_');
@@ -194,7 +251,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
                     $paths = array($paths);
                 }
                 foreach ($paths as $path) {
-                    //*
+                    /*
                     $className = $prefix . $cname;
 
                     if ($this->_loader->loadClass($className, $path . $fprefix . '/' . $cfile)) {
@@ -218,8 +275,9 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
                         break 2;
                     } // */
 
-                    /*
+                    //*
                     if ($obj = $this->_loadClassPath($path . $fprefix . '/' . $cfile, $prefix . $cname, $create, $arguments)) {
+                        MUtil_Echo::track($prefix . $cname);
                         $found = true;
                         $this->_loaded[$cname] = get_class($obj);
                         break 2;
