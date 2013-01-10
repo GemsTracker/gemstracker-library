@@ -46,8 +46,6 @@
  */
 class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 {
-    const EVENTS_DIR              = 'Event';
-
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
     const ROUND_CHANGED_EVENT           = 'Round/Changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering';
@@ -96,22 +94,19 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @global array $GEMS_DIRS An array of directories that specify where to look for code.
      * @param string $eventType An event subdirectory (may contain multiple levels split by '/'
      * @return array An array of type prefix => classname
      */
     protected function _getEventDirs($eventType)
     {
-        global $GEMS_DIRS;
-
         $eventClass = str_replace('/', '_', $eventType);
 
-        foreach ($GEMS_DIRS as $name => $dir) {
-            $prefix = $name . '_' . self::EVENTS_DIR . '_' . $eventClass . '_';
-            $paths[$prefix] = $dir . '/' . $name . '/' . self::EVENTS_DIR . '/' . $eventType;
+        foreach ($this->_dirs as $name => $dir) {
+            $prefix = $name . '_' . $eventClass . '_';
+            $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . $eventType;
         }
-        $paths[''] = APPLICATION_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType);
-        // MUtil_Echo::track($paths);
+        $paths[''] = APPLICATION_PATH . '/events/' . strtolower($eventType);
+        MUtil_Echo::track($paths);
 
         return $paths;
     }
@@ -182,7 +177,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         if (! class_exists($eventName, true)) {
             // Autoload is used for Zend standard defined classnames,
             // so if the class is not autoloaded, define the path here.
-            $filename = APPLICATION_PATH . '/' . strtolower(self::EVENTS_DIR . 's/' . $eventType) . '/' . $eventName . '.php';
+            $filename = APPLICATION_PATH . '/events/' . strtolower($eventType) . '/' . $eventName . '.php';
 
             if (! file_exists($filename)) {
                 throw new Gems_Exception_Coding("The event '$eventName' of type '$eventType' does not exist at location: $filename.");

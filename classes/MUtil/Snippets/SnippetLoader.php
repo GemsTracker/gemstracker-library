@@ -48,6 +48,12 @@
 class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterface
 {
     /**
+     *
+     * @var MUtil_Loader_PluginLoader
+     */
+    protected $loader;
+
+    /**
      * The file locations where to look for snippets.
      *
      * Can be overruled in descendants
@@ -67,118 +73,65 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
      * Sets the source of variables and the first directory for snippets
      *
      * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param array $dirs prefix => pathname The inital paths to load from
      */
-    public function __construct($source = null)
+    public function __construct($source = null, array $dirs = array())
     {
         if (! $source instanceof MUtil_Registry_Source) {
             $source = new MUtil_Registry_Source($source);
         }
         $this->setSource($source);
-        $this->setDirectories(array(dirname(__FILE__) . '/Standard'));
+        $this->loader = new MUtil_Loader_PluginLoader($dirs);
+        $this->loader->addPrefixPath('', dirname(__FILE__) . '/Standard');
     }
 
     /**
-     * Add a directory to the front of the list of places where snippets are loaded from.
+     * Add prefixed paths to the registry of paths
      *
-     * @param string $dir
-     * @return MUtil_Snippets_SnippetLoader
+     * @param string $prefix
+     * @param string $path
+     * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function addDirectory($dir)
+    public function addPrefixPath($prefix, $path)
     {
-        if (! in_array($dir, $this->snippetsDirectories)) {
-            if (file_exists($dir)) {
-                array_unshift($this->snippetsDirectories, $dir);
-            }
-        }
+        $this->loader->addPrefixPath($prefix, $path);
 
         return $this;
-    }
-
-    /**
-     * Add parameter values to the source for snippets.
-     *
-     * @param mixed $container_or_pairs This function can be called with either a single container or a list of name/value pairs.
-     * @return MUtil_Snippets_SnippetLoader
-     */
-    public function addSource($container_or_pairs)
-    {
-        if (1 == func_num_args()) {
-            $container = $container_or_pairs;
-        } else {
-            $container = MUtil_Ra::pairs(func_get_args());
-        }
-
-        $source = $this->getSnippetsSource();
-        $source->addRegistryContainer($container);
-
-        return $this;
-    }
-
-    /**
-     * Returns the directories where snippets are loaded from.
-     *
-     * @param array $dirs
-     * @return array
-     */
-    public function getDirectories()
-    {
-        return $this->snippetsDirectories;
     }
 
     /**
      * Searches and loads a .php snippet file.
      *
-     * @param string $filename The name of the snippet
+     * @param string $className The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
      * @return MUtil_Snippets_SnippetInterface The snippet
      */
-    public function getSnippet($filename, array $extraSourceParameters = null)
+    public function getSnippet($className, array $extraSourceParameters = null)
     {
-        $source = $this->getSource();
+        $className = $this->loader->load($className);
 
-        // Add extra parameters when specified
-        if ($extraSourceParameters) {
-            $extraSourceName = __CLASS__ . '->' . __FUNCTION__;
-            $source->addRegistryContainer($extraSourceParameters, $extraSourceName);
-        }
+        $snippet = new $className();
 
-        $dirs  = $this->getDirectories();
-
-        $classname = $filename;
-        if (strpos($filename, '_') === false) {
-            $filename  = $filename . '.php';
-        } else {
-            $filename  = str_replace('_', '/', $filename) . '.php';
-        }
-
-        foreach ($dirs as $dir) {
-            $filepath = $dir . '/' . $filename;
-
-            // MUtil_Echo::r($filepath);
-            if (file_exists($filepath)) {
-                require_once($filepath);
-
-                $snippet = new $classname();
-
-                if ($snippet instanceof MUtil_Snippets_SnippetInterface) {
-                    if ($source->applySource($snippet)) {
-                        if ($extraSourceParameters) {
-                            // Can remove now, it was applied
-                            $source->removeRegistryContainer($extraSourceName);
-                        }
-
-                        return $snippet;
-
-                    } else {
-                        throw new Zend_Exception("Not all parameters set for html snippet: '$filepath'. \n\nRequested variables were: " . implode(", ", $snippet->getRegistryRequests()));
-                    }
-                } else {
-                    throw new Zend_Exception("The snippet: '$filepath' does not implement the MUtil_Snippets_SnippetInterface interface.");
-                }
+        if ($snippet instanceof MUtil_Snippets_SnippetInterface) {
+            // Add extra parameters when specified
+            if ($extraSourceParameters) {
+                $this->snippetsSource->addRegistryContainer($extraSourceParameters, 'tmpContainer');
             }
-        }
 
-        throw new Zend_Exception("Call for non existing html snippet: '$filename'. \n\nLooking in directories: " . implode(", ", $dirs));
+            if ($this->snippetsSource->applySource($snippet)) {
+                if ($extraSourceParameters) {
+                    // Can remove now, it was applied
+                    $this->snippetsSource->removeRegistryContainer('tmpContainer');
+                }
+
+                return $snippet;
+
+            } else {
+                throw new Zend_Exception("Not all parameters set for html snippet: '$className'. \n\nRequested variables were: " . implode(", ", $snippet->getRegistryRequests()));
+            }
+        } else {
+            throw new Zend_Exception("The snippet: '$className' does not implement the MUtil_Snippets_SnippetInterface interface.");
+        }
     }
 
     /**
@@ -192,14 +145,15 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
     }
 
     /**
-     * Set the directories where snippets are loaded from.
+     * Remove a prefix (or prefixed-path) from the registry
      *
-     * @param array $dirs
-     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param string $prefix
+     * @param string $path OPTIONAL
+     * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function setDirectories(array $dirs)
+    public function removePrefixPath($prefix, $path = null)
     {
-        $this->snippetsDirectories = array_reverse($dirs);
+        $this->loader->removePrefixPath($prefix, $path);
 
         return $this;
     }

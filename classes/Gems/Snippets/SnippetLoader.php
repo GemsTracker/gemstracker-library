@@ -57,65 +57,44 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     protected $cascade = 'Snippets';
 
-    protected $loader;
-
     /**
-     * @var MUtil_Snippets_SnippetLoader
-     */
-    protected $backup;
-
-    /**
-     * Initialize the snippetloader (Gems style)
+     * Sets the source of variables and the first directory for snippets
      *
-     * @param mixed $container A container acting as source for MUtil_Registry_Source
-     * @param array $dirs The directories where to look for requested classes
+     * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param array $dirs prefix => pathname The inital paths to load from
      */
-    public function __construct($container = null, $dirs = array())
+    public function __construct($source = null, array $dirs = array())
     {
-        parent::__construct($container, $dirs);
+        parent::__construct($source, $dirs);
 
-        $this->backup = new MUtil_Snippets_SnippetLoader($this);
-        $this->addDirectory(GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
-    }
-
-
-    /**
-     * Add a directory to the front of the list of places where snippets are loaded from.
-     *
-     * @param string $dir
-     * @return MUtil_Snippets_SnippetLoader
-     */
-    public function addDirectory($dir)
-    {
-        if (!array_key_exists('', $this->_dirs)) {
-            $this->_dirs[''] = array();
+        $noPrefixDirs = array(
+            GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard',
+            GEMS_LIBRARY_DIR . '/snippets',
+            GEMS_ROOT_DIR . '/application/snippets',
+        );
+        foreach ($noPrefixDirs as $dir) {
+            if (file_exists($dir)) {
+                $this->_loader->addPrefixPath('', $dir);
+            }
         }
-        array_unshift($this->_dirs[''], $dir);
 
-        return $this->backup->addDirectory($dir);
+        // $this->_loader->addPrefixPath('MUtil_Snippets', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
     }
 
     /**
-     * Add parameter values to the source for snippets.
+     * Add prefixed paths to the registry of paths
      *
-     * @param mixed $container_or_pairs This function can be called with either a single container or a list of name/value pairs.
-     * @return MUtil_Snippets_SnippetLoader
+     * @param string $prefix
+     * @param string $path
+     * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function addSource($container_or_pairs)
+    public function addPrefixPath($prefix, $path)
     {
-        return $this->backup->addSource($container_or_pairs);
+        $this->_loader->addPrefixPath($prefix, $path);
+
+        return $this;
     }
 
-    /**
-     * Returns the directories where snippets are loaded from.
-     *
-     * @param array $dirs
-     * @return array
-     */
-    public function getDirectories()
-    {
-        return $this->backup->getDirectories();
-    }
 
     /**
      * Searches and loads a .php snippet file.
@@ -133,8 +112,6 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
         } catch (Exception $exc) {
             MUtil_Echo::track($exc->getMessage());
             throw $exc;
-            //Class loading failed, now defer
-            //$snippet = $this->backup->getSnippet($filename, $extraSourceParameters);
         }
 
         return $snippet;
@@ -147,18 +124,21 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     public function getSource()
     {
-        return $this->backup->getSource();
+        return $this;
     }
 
     /**
-     * Set the directories where snippets are loaded from.
+     * Remove a prefix (or prefixed-path) from the registry
      *
-     * @param array $dirs
-     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
+     * @param string $prefix
+     * @param string $path OPTIONAL
+     * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function setDirectories(array $dirs)
+    public function removePrefixPath($prefix, $path = null)
     {
-        return $this->backup->setDirectories($dirs);
+        $this->_loader->removePrefixPath($prefix, $path);
+
+        return $this;
     }
 
     /**
@@ -169,6 +149,6 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      */
     public function setSource(MUtil_Registry_SourceInterface $source)
     {
-        return $this->backup->setSource($source);
+        throw new Gems_Exception_Coding('Cannot set source for ' . __CLASS__);
     }
 }

@@ -76,18 +76,10 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     protected $_dirs;
 
     /**
-     * This array holds a cache of requested class -> resulting classname pairs so we don't have
-     * to check all prefixes and paths over and over again
      *
-     * @var array classname->resulting class
+     * @var MUtil_Loader_PluginLoader
      */
-    private $_loaded = array();
-
-    /**
-     *
-     * @var Zend_Loader_PluginLoader_Interface
-     */
-    private $_loader;
+    protected $_loader;
 
     /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
@@ -109,21 +101,12 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
         if ($this->cascade) {
             foreach ($dirs as $prefix => $path) {
-                $newdirs[$prefix . '_' . $this->cascade] = $path;
-                // $newdirs[$prefix . '_' . $this->cascade] = $path . '/' . str_replace('_', '/', $this->cascade);
+                $newdirs[$prefix . '_' . $this->cascade] = $path . '/' . strtr($this->cascade, '_', '/');
             }
             $this->_dirs = $newdirs;
         }
 
-        //$this->_loader = new Zend_Loader_PluginLoader($this->_dirs);
-        //*
-        // Set the directories to the used cascade pattern
-        $this->_loader = new Zend_Loader_PluginLoader();
-        foreach (array_reverse($this->_dirs) as $prefix => $path) {
-            $this->_loader->addPrefixPath($prefix, $path . '/' . str_replace('_', '/', $prefix));
-        }
-        // */
-
+        $this->_loader = new MUtil_Loader_PluginLoader($this->_dirs);
 
         if (MUtil_Registry_Source::$verbose) {
             MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
@@ -174,180 +157,30 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
      */
     protected function _loadClass($name, $create = false, array $arguments = array())
     {
-        /*
         $className = $this->_loader->load($name);
 
         // MUtil_Echo::track($className);
 
         if (is_subclass_of($className, __CLASS__)) {
             $create    = true;
-            // error_log($className);
             $arguments = array($this->_containers[0], $this->_dirs);
 
         } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
             $create = true;
         }
 
-        if ($create) {
-            switch (count($arguments)) {
-                case 0:
-                    $obj = new $className();
-                    break;
-
-                case 1:
-                    $obj = new $className($arguments[0]);
-                    break;
-
-                case 2:
-                    $obj = new $className($arguments[0], $arguments[1]);
-                    break;
-
-                case 3:
-                    $obj = new $className($arguments[0], $arguments[1], $arguments[2]);
-                    break;
-
-                default:
-                    throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . ' cannot create class with ' . count($arguments) . ' parameters.');
-            }
-        } else {
-            $obj = new MUtil_Lazy_StaticCall($className);
+        if (! $create) {
+            return new MUtil_Lazy_StaticCall($className);
         }
 
+        $obj = $this->_loader->createClass($className, $arguments);
+
         if ($obj instanceof MUtil_Registry_TargetInterface) {
-            // error_log(get_class($obj));
             if ((! $this->applySource($obj)) && parent::$verbose) {
                 MUtil_Echo::track("Source apply to object of type $name failed.");
             }
         }
 
         return $obj;
-        // */
-
-        // echo $name . ($create ? ' create' : ' not created') . "<br/>\n";
-
-        $cname = trim(str_replace('/', '_', ucfirst($name)), '_');
-        $cfile = str_replace('_', '/', $cname) . '.php';
-
-        $found = false;
-
-        /**
-         * First check if the class was already loaded
-         * If so, we don't have to try loading from the other paths
-         **/
-        if (array_key_exists($cname, $this->_loaded) && $obj = $this->_loadClassPath('', $this->_loaded[$cname], $create, $arguments)) {
-            $found = true;
-        }
-
-        if (!$found) {
-            foreach ($this->_dirs as $prefix => $paths) {
-                if (!empty($prefix)) {
-                    $fprefix = '/' . str_replace('_', '/', $prefix);
-                    $prefix .= '_';
-                } else {
-                    $fprefix = '';
-                }
-
-                if (!is_array($paths)) {
-                    $paths = array($paths);
-                }
-                foreach ($paths as $path) {
-                    /*
-                    $className = $prefix . $cname;
-
-                    if ($this->_loader->loadClass($className, $path . $fprefix . '/' . $cfile)) {
-                        if (is_subclass_of($className, __CLASS__)) {
-                            $create    = true;
-                            $arguments = array($this->_containers[0], $this->_dirs);
-
-                        } elseif (is_subclass_of($className, 'MUtil_Registry_TargetInterface')) {
-                            $create = true;
-                        }
-
-
-                        if ($create) {
-                            $obj = $this->_loader->createClass($className, $arguments);
-                        } else {
-                            $obj = new MUtil_Lazy_StaticCall($className);
-                        }
-
-                        $found = true;
-                        $this->_loaded[$cname] = get_class($obj);
-                        break 2;
-                    } // */
-
-                    //*
-                    if ($obj = $this->_loadClassPath($path . $fprefix . '/' . $cfile, $prefix . $cname, $create, $arguments)) {
-                        MUtil_Echo::track($prefix . $cname);
-                        $found = true;
-                        $this->_loaded[$cname] = get_class($obj);
-                        break 2;
-                    } // */
-                }
-            }
-        }
-
-        if ($found) {
-            if ($obj instanceof MUtil_Registry_TargetInterface) {
-                // error_log(get_class($obj));
-                if ((! $this->applySource($obj)) && parent::$verbose) {
-                    MUtil_Echo::track("Source apply to object of type $name failed.");
-                }
-            }
-
-            return $obj;
-        }
-
-        // Throw exception when not found
-        throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . ' cannot find class with name ' .$name . ' in ' . print_r($this->_dirs, true));
-    }
-
-    /**
-     * Try the actual loading of the class.
-     *
-     * @param string $filepath The full path to the class
-     * @param string $classname The full class name.
-     * @param boolean $create Create the object, or only when an MUtil_Registry_TargetInterface instance.
-     * @param array $arguments Class initialization arguments.
-     * @return mixed Null or object of type $classname or MUtil_Lazy_StaticCall
-     */
-    private function _loadClassPath($filepath, $classname, $create, array $arguments)
-    {
-        // echo '_loadClassPath: ' . $this->cascade . '-' . $classname . '-' . ($create ? 1 : 0) . "<br/>\n";
-        // debug_print_backtrace();
-        // MUtil_Echo::track($filepath, $classname, $this->cascade);
-
-        if (! class_exists($classname, false)) {
-            if (file_exists($filepath)) {
-                // echo $classname . ' :: ' . $filepath . "<br/>\n";
-                include_once($filepath);
-            } else {
-                return;
-            }
-        }
-
-        if (is_subclass_of($classname, __CLASS__)) {
-            return new $classname($this->_containers[0], $this->_dirs);
-
-        } elseif ($create || is_subclass_of($classname, 'MUtil_Registry_TargetInterface')) {
-            switch (count($arguments)) {
-                case 0:
-                    return new $classname();
-
-                case 1:
-                    return new $classname($arguments[0]);
-
-                case 2:
-                    return new $classname($arguments[0], $arguments[1]);
-
-                case 3:
-                    return new $classname($arguments[0], $arguments[1], $arguments[2]);
-
-                default:
-                    throw new Gems_Exception_Coding(__CLASS__ . '->' . __FUNCTION__ . ' cannot create class with ' . count($arguments) . ' parameters.');
-            }
-
-        } else {
-            return new MUtil_Lazy_StaticCall($classname);
-        }
     }
 }

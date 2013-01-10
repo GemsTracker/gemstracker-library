@@ -533,4 +533,14 @@ class Gems_Project_ProjectSettings extends ArrayObject
     {
         return isset($this['jquery'], $this['jquery']['local']);
     }
+
+    /**
+     * Is this project use a multi locale project
+     *
+     * @return boolean
+     */
+    public function isMultiLocale()
+    {
+        return (boolean) (isset($this['multiLocale']) && $this['multiLocale']);
+    }
 }

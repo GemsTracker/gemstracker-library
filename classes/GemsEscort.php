@@ -51,11 +51,44 @@ include_once('MUtil/Loader/CachedLoader.php');
  */
 class GemsEscort extends MUtil_Application_Escort
 {
+    /**
+     * Default reception code value
+     */
     const RECEPTION_OK = 'OK';
 
+    /**
+     * Static instance
+     *
+     * @var self
+     */
     private static $_instanceOfSelf;
 
+    /**
+     * Targets for _updateVariable
+     *
+     * @var array
+     */
     private $_copyDestinations;
+
+    /**
+     * The prefix / directory paths where the Gems Loaders should look
+     *
+     * @var array prefix => path
+     */
+    private $_loaderDirs;
+
+    /**
+     * The project loader
+     *
+     * @var MUtil_Loader_PluginLoader
+     */
+    private $_projectLoader;
+
+    /**
+     * Is firebird logging on (set by constructor from application.ini)
+     *
+     * @var boolean
+     */
     private $_startFirebird;
 
     /**
@@ -64,6 +97,64 @@ class GemsEscort extends MUtil_Application_Escort
      * @var Gems_Menu
      */
     public $menu;
+
+    /**
+     * Constructor
+     *
+     * @param  Zend_Application|Zend_Application_Bootstrap_Bootstrapper $application
+     * @return void
+     */
+    public function __construct($application)
+    {
+        parent::__construct($application);
+
+        self::$_instanceOfSelf = $this;
+
+        // DIRECTORIES USED BY LOADER
+        $dirs = $this->getOption('loaderDirs');
+        if (! $dirs) {
+            global $GEMS_DIRS;
+
+            // Use $GEMS_DIRS if defined
+            if (isset($GEMS_DIRS)) {
+                $dirs = array();
+
+                foreach ($GEMS_DIRS as $prefix => $dir) {
+                    $dirs[$prefix] = $dir . '/' . strtr($prefix, '_', '/');
+                }
+            } else {
+                // Default setting
+                $dirs = array(
+                        GEMS_PROJECT_NAME_UC => APPLICATION_PATH . '/classes/' .GEMS_PROJECT_NAME_UC,
+                        'Gems' =>               GEMS_LIBRARY_DIR . '/classes/Gems'
+                );
+            }
+        }
+        // MUtil_Echo::track($dirs);
+        $this->_loaderDirs = array_reverse($dirs);
+
+        // NAMESPACES
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        foreach ($this->_loaderDirs as $prefix => $path) {
+            if ($prefix) {
+                $autoloader->registerNamespace($prefix . '_');
+            }
+        }
+
+        // PROJECT LOADER
+        $this->_projectLoader = new MUtil_Loader_PluginLoader($this->_loaderDirs);
+
+        // FIRE BUG
+        $firebug = $application->getOption('firebug');
+        $this->_startFirebird = $firebug['log'];
+
+        // START SESSIE
+        $sessionOptions['name']            = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
+        $sessionOptions['cookie_path']     = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
+        $sessionOptions['cookie_httponly'] = true;
+        $sessionOptions['cookie_secure']   = (APPLICATION_ENV == 'production');
+        Zend_Session::start($sessionOptions);
+    }
 
     /**
      * Copy from Zend_Translate_Adapter
@@ -83,29 +174,6 @@ class GemsEscort extends MUtil_Application_Escort
             $this->setException(new Gems_Exception_Coding('Requested translation before request was made available.'));
         }
         return $this->translate->getAdapter()->_($text, $locale);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param  Zend_Application|Zend_Application_Bootstrap_Bootstrapper $application
-     * @return void
-     */
-    public function __construct($application)
-    {
-        parent::__construct($application);
-
-        self::$_instanceOfSelf = $this;
-
-        $firebug = $application->getOption('firebug');
-        $this->_startFirebird = $firebug['log'];
-
-        $sessionOptions['name']            = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
-        $sessionOptions['cookie_path']     = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
-        $sessionOptions['cookie_httponly'] = true;
-        $sessionOptions['cookie_secure']   = (APPLICATION_ENV == 'production');
-
-        Zend_Session::start($sessionOptions);
     }
 
     /**
@@ -310,25 +378,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initLoader()
     {
-        global $GEMS_DIRS;
-
-        /*
-        $dirs = $this->getOption('loaderDirs');
-
-        if (! $dirs) {
-
-            $dirs = array();
-
-            foreach ($GEMS_DIRS as $prefix => $dir) {
-                $dirs[$prefix] = $dir . '/' . str_replace('_', '/', $prefix);
-            }
-        }
-
-        MUtil_Echo::track($dirs);
-
-        return $this->createProjectClass('Loader', $this->getContainer(), array_reverse($dirs));
-        // */
-        return $this->createProjectClass('Loader', $this->getContainer(), $GEMS_DIRS);
+        return $this->createProjectClass('Loader', $this->getContainer(), $this->_loaderDirs);
     }
 
     /**
@@ -552,39 +602,46 @@ class GemsEscort extends MUtil_Application_Escort
      * Add ZFDebug info to the page output.
      *
      * @return void
-     * /
+     */
     protected function _initZFDebug()
     {
-        // if ((APPLICATION_ENV === 'development') &&
-        if ((APPLICATION_ENV !== 'production') &&
-            (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') === FALSE)) {
-
-            $autoloader = Zend_Loader_Autoloader::getInstance();
-            $autoloader->registerNamespace('ZFDebug');
-
-            $options = array(
-                'plugins' => array('Variables',
-                    'File' => array('base_path' => '/path/to/project'),
-                    'Memory',
-                    'Time',
-                    'Registry',
-                    'Exception'),
-                // 'jquery_path' => not yet initialized
-            );
-
-            # Instantiate the database adapter and setup the plugin.
-            # Alternatively just add the plugin like above and rely on the autodiscovery feature.
-            $this->bootstrap('db');
-            $db = $this->getPluginResource('db');
-            $options['plugins']['Database']['adapter'] = $db->getDbAdapter();
-
-            $debug = new ZFDebug_Controller_Plugin_Debug($options);
-
-            $this->bootstrap('frontController');
-            $frontController = $this->getResource('frontController');
-            $frontController->registerPlugin($debug);
+        if ((APPLICATION_ENV === 'production') &&
+                (false !== strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.'))) {
+            // Never on on production systems, never for IE 6
+            return;
         }
-    }// */
+
+        $debug = $this->getOption('zfdebug');
+        if (! isset($debug['activate']) || ('1' !== $debug['activate'])) {
+            // Only turn on when activated
+            return;
+        }
+
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->registerNamespace('ZFDebug');
+
+        $options = array(
+            'plugins' => array('Variables',
+                'File' => array('base_path' => '/path/to/project'),
+                'Memory',
+                'Time',
+                'Registry',
+                'Exception'),
+            // 'jquery_path' => not yet initialized
+        );
+
+        # Instantiate the database adapter and setup the plugin.
+        # Alternatively just add the plugin like above and rely on the autodiscovery feature.
+        $this->bootstrap('db');
+        $db = $this->getPluginResource('db');
+        $options['plugins']['Database']['adapter'] = $db->getDbAdapter();
+
+        $debug = new ZFDebug_Controller_Plugin_Debug($options);
+
+        $this->bootstrap('frontController');
+        $frontController = $this->getResource('frontController');
+        $frontController->registerPlugin($debug);
+    }
 
     /**
      * Function called if specified in the Project.ini layoutPrepare section before
@@ -1126,14 +1183,6 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $this->_copyVariables($actionController ? $actionController : $this->controllerAfterAction);
 
-        // Ste the directories where the snippets are/
-        if ($actionController instanceof MUtil_Controller_Action) {
-            $snippetLoader = $actionController->getSnippetLoader();
-            $snippetLoader->addDirectory(GEMS_ROOT_DIR . '/library/Gems/snippets');
-            $snippetLoader->addDirectory(APPLICATION_PATH . '/snippets');
-            // MUtil_Echo::track($snippetLoader->getDirectories());
-        }
-
         $this->prepareController();
 
         // Now set some defaults
@@ -1151,32 +1200,20 @@ class GemsEscort extends MUtil_Application_Escort
         Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));
     }
 
+    /**
+     * Creates an object of the specified className seareching the loader dirs path
+     *
+     * @param string $className
+     * @param mixed $paramOne Optional
+     * @param mixed $paramTwo Optional
+     * @return object
+     */
     protected function createProjectClass($className, $paramOne = null, $paramTwo = null)
     {
-        $filename = APPLICATION_PATH . '/classes/' . GEMS_PROJECT_NAME_UC . '/';
-        $filename .= str_replace('_', '/', $className) . '.php';
-        if (file_exists($filename)) {
-            $className = GEMS_PROJECT_NAME_UC . '_' . $className;
-        } else {
-            $className = 'Gems_' . $className;
-        }
+        $arguments = func_get_args();
+        array_shift($arguments);
 
-        switch (func_num_args())
-        {
-            case 1:
-                return new $className();
-
-            case 2:
-                return new $className($paramOne);
-
-            case 3:
-                return new $className($paramOne, $paramTwo);
-
-            default:
-                throw new Gems_Exception_Coding(
-                        __CLASS__ . '->' . __FUNCTION__ . '() called with more parameters than possible.'
-                        );
-        }
+        return $this->_projectLoader->createClass($className, $arguments);
     }
 
     /**
@@ -1564,7 +1601,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function requestChanged(Zend_Controller_Request_Abstract $request)
     {
-        if ($this->project->multiLocale) {
+        if ($this->project->isMultiLocale()) {
             // Get the choosen language
             $localeId = Gems_Cookies::getLocale($request);
 

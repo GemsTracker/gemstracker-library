@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Loader_CachedLoader
+class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
 {
     /**
      *
@@ -241,6 +241,46 @@ class MUtil_Loader_CachedLoader
     }
 
     /**
+     * Autoload a class
+     *
+     * @abstract
+     * @param   string $class
+     * @return  mixed
+     *          False [if unable to load $class]
+     *          get_class($class) [if $class is successfully loaded]
+     */
+    public function autoload($class)
+    {
+        $className = ltrim($class, '\\');
+        $file      = '';
+        $namespace = '';
+        if ($lastNsPos = strripos($className, '\\')) {
+            $namespace = substr($className, 0, $lastNsPos);
+            $className = substr($className, $lastNsPos + 1);
+            $file      = strtr($namespace, '\\', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        }
+        $file .= strtr($className, '_', DIRECTORY_SEPARATOR) . '.php';
+
+        if (isset($this->_cacheClassArray[$class])) {
+            if ($this->_cacheClassArray[$class]) {
+                return (boolean) $this->includeFile($this->_cacheClassArray[$class]);
+            }
+        } else {
+            $dirs = $this->_includeDirs;
+
+            foreach ($dirs as $dir) {
+                // error_log($dir . $file);
+                if ($this->includeFile($dir . $file)) {
+                    $this->_cacheClassArray[$class] = $dir . $file;
+                    $this->_cacheChanged            = true;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Create a new instance of a class
      *
      * @param string $className The name of the class
@@ -341,13 +381,14 @@ class MUtil_Loader_CachedLoader
      * Include a file with cached existence check
      *
      * @param string $file The full path to the file
+     * @return mixed The load return value if available, "1" if loaded without return, false otherwise
      */
     public function includeFile($file)
     {
         if (file_exists($file)) {
             $result = include $file;
 
-            return $result ? $result : true;
+            return $result ? $result : false;
         }
 
         return false;
@@ -431,9 +472,9 @@ class MUtil_Loader_CachedLoader
         if ($lastNsPos = strripos($className, '\\')) {
             $namespace = substr($className, 0, $lastNsPos);
             $className = substr($className, $lastNsPos + 1);
-            $file      = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+            $file      = strtr($namespace, '\\', DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
-        $file .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+        $file .= strtr($className, '_', DIRECTORY_SEPARATOR) . '.php';
 
         if (isset($this->_cacheClassArray[$class])) {
             if ($this->_cacheClassArray[$class]) {

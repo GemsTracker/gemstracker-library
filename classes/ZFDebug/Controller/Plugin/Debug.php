@@ -410,6 +410,11 @@ class ZFDebug_Controller_Plugin_Debug extends Zend_Controller_Plugin_Abstract
     protected function _headerOutput() {
         $collapsed = isset($_COOKIE['ZFDebugCollapsed']) ? $_COOKIE['ZFDebugCollapsed'] : 0;
 
+        $jquery = MUtil_JQuery::jQuery();
+        if ($jquery->useLocalPath()) {
+            $this->_options['jquery_path'] = $jquery->getLocalPath();
+        }
+
         return ('
             <style type="text/css" media="screen">
                 #ZFDebug_debug { font: 11px/1.4em Lucida Grande, Lucida Sans Unicode, sans-serif; position:fixed; bottom:5px; left:5px; color:#000; z-index: ' . $this->_options['z-index'] . ';}

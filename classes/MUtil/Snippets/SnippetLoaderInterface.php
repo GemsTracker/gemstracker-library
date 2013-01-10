@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -47,41 +47,27 @@ interface MUtil_Snippets_SnippetLoaderInterface
      * Sets the source of variables and the first directory for snippets
      *
      * @param mixed $source Something that is or can be made into MUtil_Registry_SourceInterface, otheriwse Zend_Registry is used.
+     * @param array $dirs prefix => pathname The inital paths to load from
      */
-    public function __construct($source = null);
+    public function __construct($source = null, array $dirs = array());
 
     /**
-     * Add a directory to the front of the list of places where snippets are loaded from.
+     * Add prefixed paths to the registry of paths
      *
-     * @param string $dir
+     * @param string $prefix
+     * @param string $path
      * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function addDirectory($dir);
-
-    /**
-     * Add parameter values to the source for snippets.
-     *
-     * @param mixed $container_or_pairs This function can be called with either a single container or a list of name/value pairs.
-     * @return MUtil_Snippets_SnippetLoaderInterface
-     */
-    public function addSource($container_or_pairs);
-
-    /**
-     * Returns the directories where snippets are loaded from.
-     *
-     * @param array $dirs
-     * @return array
-     */
-    public function getDirectories();
+    public function addPrefixPath($prefix, $path);
 
     /**
      * Searches and loads a .php snippet file.
      *
-     * @param string $filename The name of the snippet
+     * @param string $className The name of the snippet
      * @param array $extraSourceParameters name/value pairs to add to the source for this snippet
      * @return MUtil_Snippets_SnippetInterface The snippet
      */
-    public function getSnippet($filename, array $extraSourceParameters = null);
+    public function getSnippet($className, array $extraSourceParameters = null);
 
     /**
      * Returns a source of values for snippets.
@@ -91,18 +77,19 @@ interface MUtil_Snippets_SnippetLoaderInterface
     public function getSource();
 
     /**
-     * Set the directories where snippets are loaded from.
+     * Remove a prefix (or prefixed-path) from the registry
      *
-     * @param array $dirs
-     * @return MUtil_Snippets_SnippetLoaderInterface (continuation pattern)
+     * @param string $prefix
+     * @param string $path OPTIONAL
+     * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function setDirectories(array $dirs);
+    public function removePrefixPath($prefix, $path = null);
 
     /**
      * Sets the source of variables for snippets
      *
      * @param MUtil_Registry_SourceInterface $source
-     * @return MUtil_Snippets_SnippetLoaderInterface (continuation pattern)
+     * @return MUtil_Snippets_SnippetLoader (continuation pattern)
      */
     public function setSource(MUtil_Registry_SourceInterface $source);
 }
