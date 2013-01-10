@@ -47,6 +47,26 @@
 class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
 {
     /**
+     * Add prefixed paths to the registry of paths
+     *
+     * @param string $prefix
+     * @param string $path
+     * @return Zend_Loader_PluginLoader
+     */
+    public function addPrefixPath($prefix, $path)
+    {
+        if (!is_string($prefix) || !is_string($path)) {
+            throw new Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
+        }
+
+        // Only add existing directories
+        if (file_exists(rtrim($path, '/\\'))) {
+            parent::addPrefixPath($prefix, $path);
+        }
+
+        return $this;
+    }
+    /**
      * Instantiate a new class using the arguments array for initiation
      *
      * @param string $className
