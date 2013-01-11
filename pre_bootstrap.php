@@ -62,7 +62,7 @@ set_include_path(
     );
 
 // Set up autoload for MUtil
-require_once 'Zend/Loader/AutoLoader.php';
+require_once 'Zend/Loader/Autoloader.php';
 $autoloader = Zend_Loader_Autoloader::getInstance();
 $autoloader->registerNamespace('MUtil_');
 
