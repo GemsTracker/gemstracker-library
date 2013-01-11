@@ -80,9 +80,6 @@ class MUtil_Form extends Zend_Form
      */
     public function __construct($options = null)
     {
-        $this->addPrefixPath('MUtil_Form_Decorator', 'MUtil/Form/Decorator/', Zend_Form::DECORATOR);
-        $this->addPrefixPath('MUtil_Form_Element',   'MUtil/Form/Element/',   Zend_Form::ELEMENT);
-
         $this->addElementPrefixPath('MUtil_Form_Decorator', 'MUtil/Form/Decorator',  Zend_Form_Element::DECORATOR);
         $this->addElementPrefixPath('MUtil_Validate',       'MUtil/Validate/',       Zend_Form_Element::VALIDATE);
 
@@ -235,6 +232,46 @@ class MUtil_Form extends Zend_Form
     public function getLabelWidthFactor()
     {
         return $this->_labelWidthFactor;
+    }
+
+    /**
+     * Retrieve plugin loader for given type
+     *
+     * $type may be one of:
+     * - decorator
+     * - element
+     *
+     * If a plugin loader does not exist for the given type, defaults are
+     * created.
+     *
+     * @param  string $type
+     * @return Zend_Loader_PluginLoader_Interface
+     */
+    public function getPluginLoader($type = null)
+    {
+        $type = strtoupper($type);
+        if (!isset($this->_loaders[$type])) {
+            switch ($type) {
+                case self::DECORATOR:
+                    $prefixSegment = 'Form_Decorator';
+                    $pathSegment   = 'Form/Decorator';
+                    break;
+                case self::ELEMENT:
+                    $prefixSegment = 'Form_Element';
+                    $pathSegment   = 'Form/Element';
+                    break;
+                default:
+                    require_once 'Zend/Form/Exception.php';
+                    throw new Zend_Form_Exception(sprintf('Invalid type "%s" provided to getPluginLoader()', $type));
+            }
+
+            $this->_loaders[$type] = new MUtil_Loader_PluginLoader(array(
+                'Zend_'  . $prefixSegment . '_' => 'Zend/'  . $pathSegment . '/',
+                'MUtil_' . $prefixSegment . '_' => 'MUtil/' . $pathSegment . '/',
+                ));
+        }
+
+        return $this->_loaders[$type];
     }
 
     /**

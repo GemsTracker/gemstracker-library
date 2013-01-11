@@ -71,10 +71,15 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
             throw new Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
         }
 
-        // Only add existing directories
-        if (file_exists(rtrim($path, '/\\'))) {
-            parent::addPrefixPath($prefix, $path);
+        if ($path) {
+            if (('/' == $path[0]) || ('.' == $path[0]) || ((strlen($path) > 1) && (':' == $path[1]))) {
+                // Only add existing directories
+                if (! file_exists(rtrim($path, '/\\'))) {
+                    return $this;
+                }
+            }
         }
+        parent::addPrefixPath($prefix, $path);
 
         return $this;
     }
