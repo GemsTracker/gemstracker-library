@@ -47,11 +47,23 @@
 class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
 {
     /**
+     * Add the default autoloader to this plugin loader.
+     *
+     * @return Zend_Loader_PluginLoader (continuation pattern)
+     */
+    public function addFallBackPath()
+    {
+        parent::addPrefixPath('', '');
+
+        return $this;
+    }
+
+    /**
      * Add prefixed paths to the registry of paths
      *
      * @param string $prefix
      * @param string $path
-     * @return Zend_Loader_PluginLoader
+     * @return Zend_Loader_PluginLoader (continuation pattern)
      */
     public function addPrefixPath($prefix, $path)
     {
@@ -66,6 +78,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
 
         return $this;
     }
+
     /**
      * Instantiate a new class using the arguments array for initiation
      *
@@ -75,7 +88,7 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      */
     public function createClass($className, array $arguments = array())
     {
-        if (!class_exists($className)) {
+        if (!class_exists($className, false)) {
             $className = $this->load($className);
         }
 

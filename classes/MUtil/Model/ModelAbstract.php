@@ -67,10 +67,46 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     private $_changedCount = 0;
     private $_keys;
+
+    /**
+     * Contains the per field settings of the model
+     *
+     * @var array field_name => array(settings)
+     */
     private $_model = array();
-    private $_model_meta;
+
+    /**
+     * Contains the settings for the model as a whole
+     *
+     * @var array
+     */
+    private $_model_meta = array(
+        MUtil_Model::META_ASSEMBLERS => array(
+            MUtil_Model::FORM => 'FormAssembler',
+            ),
+    );
+
+    /**
+     * An identifying name for the model
+     *
+     * @var string
+     */
     private $_model_name;
+
+    /**
+     * The order in which field names where ->set() since
+     * the last ->resetOrder() - minus those not set.
+     *
+     * @var array
+     */
     private $_model_order;
+
+    /**
+     * Contains the (order in which) fields where accessed using
+     * ->get(), containing only those fields that where accesed.
+     *
+     * @var type
+     */
     private $_model_used = false;
 
     /**
@@ -509,6 +545,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Returns the field that name is an Alias of
+     *
+     * @param string $name
+     * @return string
+     */
     public function getAlias($name)
     {
         if (isset($this->_model[$name][self::ALIAS_OF])) {
@@ -516,6 +558,42 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Get/load the assembler for the specific idenitifier
+     *
+     * @param string $identifier
+     * @param array $data Optional array with data.
+     * @return MUtil_Model_AssemblerInterface
+     */
+    public function getAssemblerFor($identifier, array $data = null)
+    {
+        $assemblers = $this->getMeta(MUtil_Model::META_ASSEMBLERS);
+
+        if (isset($assemblers[$identifier])) {
+            if ($assemblers[$identifier] instanceof MUtil_Model_AssemblerInterface) {
+                return $assemblers[$identifier];
+            }
+
+            $loader    = MUtil_Model::getAssemblerLoader();
+            $assembler = $loader->createClass($assemblers[$identifier]);
+            $assembler->setModel($this);
+
+            if (null !== $data) {
+                $assembler->setRow($data);
+            }
+
+            $assemblers[$identifier] = $assembler;
+            $this->setMeta(MUtil_Model::META_ASSEMBLERS, $assemblers);
+
+            return $assembler;
+        }
+    }
+
+    /**
+     * The number of item rows changed since the last save or delete
+     *
+     * @return int
+     */
     public function getChanged()
     {
         return $this->_changedCount;
@@ -546,11 +624,30 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $results;
     }
 
+    /**
+     * Get the current default filter for save/loade
+     * @return array
+     */
     public function getFilter()
     {
         return $this->getMeta('filter', array());
     }
 
+    /**
+     * Get/load the assembler for forms
+     *
+     * @param array $data Optional array with data.
+     * @return MUtil_Model_AssemblerInterface
+     */
+    public function getFormAssembler(array $data = null)
+    {
+        return $this->getAssemblerFor(MUtil_Model::FORM, $data);
+    }
+
+    /**
+     * Returns all the field names in this model
+     * @return array
+     */
     public function getItemNames()
     {
         return array_keys($this->_model);

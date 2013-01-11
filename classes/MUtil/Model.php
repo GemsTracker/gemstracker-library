@@ -37,6 +37,16 @@
 class MUtil_Model
 {
     /**
+     * Indentifier for form (meta) assemblers and (field) processors
+     */
+    const FORM = 'form';
+
+    /**
+     * Indentifier for assemblers meta key
+     */
+    const META_ASSEMBLERS = 'assemblers';
+
+    /**
      * In order to keep the url's short and to hide any field names from
      * the user, model identifies key values by using 'id' for a single
      * key value and id1, id2, etc... for multiple keys.
@@ -86,6 +96,12 @@ class MUtil_Model
     const TYPE_TIME = 5;
 
     /**
+     *
+     * @var MUtil_Loader_PluginLoader
+     */
+    private static $_assemblerLoader;
+
+    /**
      * Static variable for debuggging purposes. Toggles the echoing of e.g. of sql
      * select statements, using MUtil_Echo.
      *
@@ -100,4 +116,34 @@ class MUtil_Model
      * @var boolean $verbose If true echo retrieval statements.
      */
     public static $verbose = false;
+
+    /**
+     * Returns the plugin loader for assemblers
+     *
+     * @return MUtil_Loader_PluginLoader
+     */
+    public static function getAssemblerLoader()
+    {
+        if (! self::$_assemblerLoader) {
+            $loader = new MUtil_Loader_PluginLoader();
+
+            $loader->addPrefixPath('MUtil_Model_Assembler', __DIR__ . '/Model/Assembler')
+                    ->addFallBackPath();
+            // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+
+            self::$_assemblerLoader = $loader;
+        }
+
+        return self::$_assemblerLoader;
+    }
+
+    /**
+     * Sets the plugin loader for assemblers
+     *
+     * @param MUtil_Loader_PluginLoader $loader
+     */
+    public static function setAssemblerLoader(MUtil_Loader_PluginLoader $loader)
+    {
+        self::$_assemblerLoader = $loader;
+    }
 }
