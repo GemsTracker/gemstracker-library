@@ -36,7 +36,13 @@
  */
 
 /**
+ * Abstract implementation of AssemblerInterface, only _assmble() needs to be
+ * implemented.
  *
+ * This abstract class contains helper functions to facilitate working
+ * with processors.
+ *
+ * @see MUtil_Model_AssemblerInterface
  *
  * @package    MUtil
  * @subpackage Model
@@ -54,9 +60,21 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
 
     /**
      *
+     * @var array name => extra options for name
+     */
+    protected $_extraArgs = array();
+
+    /**
+     *
      * @var MUtil_Model_ModelAbstract
      */
     protected $_model;
+
+    /**
+     *
+     * @var MUtil_Loader_PluginLoader
+     */
+    private $_processorLoader = array();
 
     /**
      *
@@ -79,21 +97,37 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
     /**
      * Create the processor for this name
      *
+     * @param MUtil_Model_ModelAbstract $model
      * @param string $name
-     * @return MUtil_Model_ProcessorInterface or null when it does not exist
+     * @return MUtil_Model_ProcessorInterface or string or array for creation null when it does not exist
      */
-    abstract protected function _assemble($name);
+    abstract protected function _assemble(MUtil_Model_ModelAbstract $model, $name);
 
     /**
      * Get the processed output of the input or a lazy object if the data is repeated
      * or not yet set using setRepeater() or setRow().
      *
      * @param string $name
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     *                            These setting are applied to the model.
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
      * @return mixed MUtil_Lazy_Call when not using setRow(), actual output otherwise
      */
-    public function getOutput($name)
+    public function getOutput($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
-        if (! $this->hasProcessor($name)) {
+        // Process new settings
+        if ($args = MUtil_Ra::pairs(func_get_args(), 1)) {
+            if (! $this->_model) {
+                throw new MUtil_Model_ModelException("Cannot use processor without a model.");
+            }
+
+            $this->_model->set($name, $args);
+        }
+
+        if (! $this->hasProcessor($name, $args)) {
             if ($this->_row) {
                 if (isset($this->_row[$name])) {
                     return $this->_row[$name];
@@ -119,14 +153,44 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
         return new MUtil_Lazy_Call(array($this, 'output'), array($name));
     }
 
+
+    /**
+     * Returns the plugin loader for processors.
+     *
+     * @return MUtil_Loader_PluginLoader
+     */
+    public function getProcessorLoader()
+    {
+        if (! $this->_processorLoader) {
+            $this->setProcessorLoader(MUtil_Model::getProcessorLoader());
+        }
+
+        return $this->_processorLoader;
+    }
+
     /**
      * Returns the processor for the name
      *
      * @param string $name
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     *                            These setting are applied to the model.
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
      * @return MUtil_Model_ProcessorInterface or null when it does not exist
      */
-    public function getProcessor($name)
+    public function getProcessor($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
+        // Process new settings
+        if ($args = MUtil_Ra::pairs(func_get_args(), 1)) {
+            if (! $this->_model) {
+                throw new MUtil_Model_ModelException("Cannot use processor without a model.");
+            }
+
+            $this->_model->set($name, $args);
+        }
+
         if ($this->hasProcessor($name)) {
             return $this->_processors[$name];
         }
@@ -140,13 +204,17 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
      */
     public function hasProcessor($name)
     {
+        if (! $this->_model) {
+            throw new MUtil_Model_ModelException("Cannot use processor without a model.");
+        }
+
         if (! array_key_exists($name, $this->_processors)) {
             // Default if nothing there
             $this->_processors[$name] = false;
 
             // Try to create one
             if ($this->_model->has($name)) {
-                if ($processor = $this->_assemble($name)) {
+                if ($processor = $this->_assemble($this->_model, $name)) {
                     $this->setProcessor($name, $processor);
                 }
             }
@@ -185,20 +253,6 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
     }
 
     /**
-     * Set the processor for a name
-     *
-     * @param string $name
-     * $param MUtil_Model_ProcessorInterface $processor
-     * @return MUtil_Model_AssemblerInterface (continuation pattern)
-     */
-    public function setProcessor($name, MUtil_Model_ProcessorInterface $processor)
-    {
-        $this->_processors[$name] = $processor;
-
-        return $this;
-    }
-
-    /**
      * Set the model of this assembler
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -209,6 +263,47 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
         $this->_model = $model;
 
         return $this;
+    }
+
+    /**
+     * Sets the plugin loader for processors.
+     *
+     * @param MUtil_Loader_PluginLoader $loader
+     */
+    public function setProcessorLoader(MUtil_Loader_PluginLoader $loader)
+    {
+        $this->_processorLoader = $loader;
+    }
+
+    /**
+     * Set the processor for a name
+     *
+     * @param string $name
+     * $param mixed $processor MUtil_Model_ProcessorInterface or string or array that can be used to create processor
+     * @return MUtil_Model_AssemblerInterface (continuation pattern)
+     */
+    public function setProcessor($name,  $processor)
+    {
+        if (is_string($processor)) {
+            $loader    = $this->getProcessorLoader();
+            $processor = $loader->createClass($processor);
+
+        } elseif (is_array($processor)) {
+            $loader    = $this->getProcessorLoader();
+            $arguments = $processor;
+            $processor = array_shift($arguments);
+
+            $processor = $loader->createClass($processor, $arguments);
+
+        }
+
+        if ($processor instanceof MUtil_Model_ProcessorInterface) {
+            $this->_processors[$name] = $processor;
+
+            return $this;
+        }
+
+        throw new MUtil_Model_ModelException("No valid processor set for '$name'.");
     }
 
     /**

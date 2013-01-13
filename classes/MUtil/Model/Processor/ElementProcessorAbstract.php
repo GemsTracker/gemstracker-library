@@ -62,7 +62,14 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
     protected $useDisplayOptions = true;
 
     /**
-     * Allow use textbox specific options
+     * Allow use of answers select specific options
+     *
+     * @var boolean
+     */
+    protected $useMultiOptions = false;
+
+    /**
+     * Allow use of textbox specific options
      *
      * @var boolean
      */
@@ -111,6 +118,18 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
                 );
         }
 
+        if ($this->useMultiOptions) {
+            $options[] = array(
+                'disable',
+                'multiOptions',
+                'onchange',
+                'separator',
+                'size',
+                'disableTranslator'
+                );
+
+        }
+
         if ($this->useTextOptions) {
             $options[] = array(
                 'maxlength',
@@ -120,6 +139,7 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
                 'onselect',
                 'size');
         }
+
         /*
         self::CHECK_OPTIONS    => array('checkedValue', 'uncheckedValue'),
         self::DATE_OPTIONS     => array('dateFormat', 'storageFormat'),
@@ -127,7 +147,6 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
         self::FILE_OPTIONS     => array('accept', 'count', 'destination', 'valueDisabled'),
         self::GROUP_OPTIONS    => array('elements', 'legend', 'separator'),
         self::JQUERY_OPTIONS   => array('jQueryParams'),
-        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
         self::PASSWORD_OPTIONS => array('repeatLabel'),
         self::TAB_OPTIONS      => array('value'),
         self::TEXTAREA_OPTIONS => array('cols', 'rows', 'wrap'),
@@ -146,7 +165,7 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
     {
         $allowedOptions = MUtil_Ra::flatten($this->getAllowedOptionsNames());
 
-        $options = $input->getOptions();
+        $options = $input->getOptions($allowedOptions);
 
         return array_intersect_key($options, array_flip($allowedOptions));
     }

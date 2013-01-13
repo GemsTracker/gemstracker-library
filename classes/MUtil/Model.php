@@ -97,9 +97,15 @@ class MUtil_Model
 
     /**
      *
-     * @var MUtil_Loader_PluginLoader
+     * @var array of MUtil_Loader_PluginLoader
      */
-    private static $_assemblerLoader;
+    private static $_loaders = array();
+
+    /**
+     *
+     * @var array of global for directory paths
+     */
+    private static $_nameSpaces = array('MUtil');
 
     /**
      * Static variable for debuggging purposes. Toggles the echoing of e.g. of sql
@@ -124,17 +130,43 @@ class MUtil_Model
      */
     public static function getAssemblerLoader()
     {
-        if (! self::$_assemblerLoader) {
+        return self::getLoader('Assembler');
+        // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+    }
+
+    /**
+     * Returns a subClass plugin loader
+     *
+     * @param string $prefix The prefix to load the loader for. CamelCase and should not contain an '_', '/' or '\'.
+     * @return MUtil_Loader_PluginLoader
+     */
+    public static function getLoader($subClass)
+    {
+        if (! isset(self::$_loaders[$subClass])) {
             $loader = new MUtil_Loader_PluginLoader();
 
-            $loader->addPrefixPath('MUtil_Model_Assembler', __DIR__ . '/Model/Assembler')
-                    ->addFallBackPath();
-            // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+            foreach (self::$_nameSpaces as $nameSpace) {
+                $loader->addPrefixPath(
+                        $nameSpace . '_Model_' . $subClass,
+                        $nameSpace . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $subClass);
+            }
+            $loader->addFallBackPath();
 
-            self::$_assemblerLoader = $loader;
+            self::$_loaders[$subClass] = $loader;
         }
 
-        return self::$_assemblerLoader;
+        return self::$_loaders[$subClass];
+    }
+
+    /**
+     * Returns the plugin loader for processors.
+     *
+     * @return MUtil_Loader_PluginLoader
+     */
+    public static function getProcessorLoader()
+    {
+        return self::getLoader('Processor');
+        // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
     }
 
     /**
@@ -144,6 +176,26 @@ class MUtil_Model
      */
     public static function setAssemblerLoader(MUtil_Loader_PluginLoader $loader)
     {
-        self::$_assemblerLoader = $loader;
+        self::setLoader($loader, 'Assembler');
+    }
+
+    /**
+     * Sets the plugin loader for assemblers
+     *
+     * @param MUtil_Loader_PluginLoader $loader
+     */
+    public static function setLoader(MUtil_Loader_PluginLoader $loader, $subClass)
+    {
+        self::$_loaders[$subClass] = $loader;
+    }
+
+    /**
+     * Sets the plugin loader for processors.
+     *
+     * @param MUtil_Loader_PluginLoader $loader
+     */
+    public static function setProcessorLoader(MUtil_Loader_PluginLoader $loader)
+    {
+        self::setLoader($loader, 'Processor');
     }
 }

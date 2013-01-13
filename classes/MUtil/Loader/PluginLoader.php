@@ -71,15 +71,10 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
             throw new Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
         }
 
-        if ($path) {
-            if (('/' == $path[0]) || ('.' == $path[0]) || ((strlen($path) > 1) && (':' == $path[1]))) {
-                // Only add existing directories
-                if (! file_exists(rtrim($path, '/\\'))) {
-                    return $this;
-                }
-            }
+        // MUtil_Echo::track(self::getAbsolutePaths($path));
+        foreach (self::getAbsolutePaths($path) as $sub) {
+            parent::addPrefixPath($prefix, $sub);
         }
-        parent::addPrefixPath($prefix, $path);
 
         return $this;
     }
@@ -162,5 +157,82 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
                         count($arguments) . ' parameters.'
                         );
         }
+    }
+
+    /**
+     * Add existing include path directories to subdirectory (if not absolute)
+     *
+     * @staticvar string $includePaths Array containing exploded and checked include path
+     * @param string $path
+     * @return array Can be empty if none of the options exist
+     */
+    public static function getAbsolutePaths($path)
+    {
+        static $includePaths;
+
+        if ($path) {
+            // Try to see if the path is an absolute path. Some exotic absolute paths can fail this test,
+            // but it is more error prone to test for them here than to loop through them afterwards.
+            if (self::isAbsolutePath($path)) {
+                if ($real = realpath($path)) {
+                    return array($real);
+                } else {
+                    return array();
+                }
+            }
+        }
+
+        if (! is_array($includePaths)) {
+            // Make sure the include path are loaded
+            foreach (Zend_Loader::explodeIncludePath() as $include) {
+                // Current path will be checked, for each file
+                // but check the other paths for exiistence
+                if (('.' != $include) && ($real = realpath($include))) {
+                    $includePaths[] = $real . DIRECTORY_SEPARATOR;
+                }
+            }
+        }
+
+        // Check path name
+        $results = array();
+        if ($real = realpath($path)) {
+            $results[] = $real;
+        }
+
+        // Check simple concatenation
+        foreach ($includePaths as $include) {
+            if ($real = realpath($include . $path)) {
+                $results[] = $real;;
+            }
+        }
+
+        // Reverse the result as that is the order this loader handles the directories
+        return array_reverse($results);
+    }
+
+    /**
+     * Do a quick check for a path being absolute (may not work for some exotic absolute paths though)
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public static function isAbsolutePath($path)
+    {
+        if ($path) {
+            // Try to see if the path is an absolute path. Some exotic absolute paths can fail this test,
+            // but it is more error prone to test for them here than to loop through them afterwards.
+            if (substr(PHP_OS, 0, 1) === 'WIN') {
+                // Match for A:\ and \\ network paths
+                if (preg_match('/([A-Za-z]:\\|\\\\)./', $path)) {
+                    return true;
+                }
+            } else {
+                if (strlen($path) && (DIRECTORY_SEPARATOR === $path[0])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

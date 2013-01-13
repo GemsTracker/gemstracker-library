@@ -70,7 +70,7 @@ class MUtil_Model_Input
      *
      * @var array
      */
-    protected $_options;
+    protected $_options = array();
 
     /**
      * The original begin value
@@ -102,7 +102,6 @@ class MUtil_Model_Input
         $this->_context   = $context;
         $this->_model     = $model;
         $this->_name      = $name;
-        $this->_options   = $model->get($name);
         $this->_origValue = $context[$name];
         $this->_output    = $this->_origValue;
     }
@@ -144,17 +143,29 @@ class MUtil_Model_Input
     {
         if (array_key_exists($name, $this->_options)) {
             return $this->_options[$name];
+        } else {
+            return $this->_model->get($this->_name, $name);
         }
     }
 
     /**
-     * Return all options
+     * Return all or a named subset of options
      *
+     * @param array $names Optional: an array of names to get the options from
      * @return array
      */
-    public function getOptions()
+    public function getOptions(array $names = null)
     {
-        return $this->_options;
+        if (null === $names) {
+            // Return all
+            return $this->_options + $this->_model->get($this->_name);
+        }
+
+        $result = array();
+        foreach ($names as $name) {
+            $result[$name] = $this->getOption($name);
+        }
+        return $result;
     }
 
     /**
@@ -206,6 +217,11 @@ class MUtil_Model_Input
     {
         // If $key end with ] it is array value
         if (substr($name, -1) == ']') {
+            // Load from original model
+            if (! isset($this->_options[$name])) {
+                $this->_options[$name] = $this->_model->get($this->_name, $name);
+            }
+
             if (substr($name, -2) == '[]') {
                 // If $name ends with [], append it to array
                 $name = substr($name, 0, -2);

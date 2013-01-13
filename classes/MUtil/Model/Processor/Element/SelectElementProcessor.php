@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: FormAssembler.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $id: DateProcessor.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -44,23 +44,31 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Model_Assembler_FormAssembler extends MUtil_Model_AssemblerAbstract
+class MUtil_Model_Processor_Element_SelectElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
 {
     /**
-     * Create the processor for this name
+     * Allow use of answers select specific options
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param string $name
-     * @return MUtil_Model_ProcessorInterface or string or array for creation null when it does not exist
+     * @var boolean
      */
-    protected function _assemble(MUtil_Model_ModelAbstract $model, $name)
+    protected $useMultiOptions = true;
+
+    /**
+     * Processes the input, changing e.g. the result, context or options
+     *
+     * @param MUtil_Model_Input $input
+     * @return void
+     */
+    public function process(MUtil_Model_Input $input)
     {
+        $options = $this->getFilteredOptions($input);
 
-        if ($model->has($name, 'multiOptions')) {
-            return 'Element_SelectElementProcessor';
-        }
+        // Is sometimes added automatically, but should not be used here
+        unset($options['maxlength']);
 
-        return 'Element_TextElementProcessor';
+        $this->applyElement(
+                $input,
+                new Zend_Form_Element_Select($input->getName(), $options)
+                );
     }
-
 }

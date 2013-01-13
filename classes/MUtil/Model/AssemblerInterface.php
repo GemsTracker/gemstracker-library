@@ -36,7 +36,12 @@
  */
 
 /**
+ * An assembler creates Processors that generate output for fieldnames.
  *
+ * The processer for a field (accessed through getProcessor()) does not depend
+ * on the specific current row data, but the output of that processor
+ * (accesible through getOutput()) can change depending on the content
+ * of the row data.
  *
  * @package    MUtil
  * @subpackage Model
@@ -51,17 +56,29 @@ interface MUtil_Model_AssemblerInterface
      * or not yet set using setRepeater() or setRow().
      *
      * @param string $name
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     *                            These setting are applied to the model.
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
      * @return mixed MUtil_Lazy_Call when not using setRow(), actual output otherwise
      */
-    public function getOutput($name);
+    public function getOutput($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
     /**
      * Returns the processor for the name
      *
      * @param string $name
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     *                            These setting are applied to the model.
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
      * @return MUtil_Model_ProcessorInterface or null when it does not exist
      */
-    public function getProcessor($name);
+    public function getProcessor($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null);
 
     /**
      * Returns true if a processor exist for $name
@@ -83,10 +100,10 @@ interface MUtil_Model_AssemblerInterface
      * Set the processor for a name
      *
      * @param string $name
-     * $param MUtil_Model_ProcessorInterface $processor
+     * $param mixed $processor MUtil_Model_ProcessorInterface or string or array that can be used to create processor
      * @return MUtil_Model_AssemblerInterface (continuation pattern)
      */
-    public function setProcessor($name, MUtil_Model_ProcessorInterface $processor);
+    public function setProcessor($name,  $processor);
 
     /**
      * Use this method when you want to repeat the output for each row when rendering.

@@ -569,24 +569,27 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         $assemblers = $this->getMeta(MUtil_Model::META_ASSEMBLERS);
 
-        if (isset($assemblers[$identifier])) {
-            if ($assemblers[$identifier] instanceof MUtil_Model_AssemblerInterface) {
-                return $assemblers[$identifier];
-            }
-
-            $loader    = MUtil_Model::getAssemblerLoader();
-            $assembler = $loader->createClass($assemblers[$identifier]);
-            $assembler->setModel($this);
-
-            if (null !== $data) {
-                $assembler->setRow($data);
-            }
-
-            $assemblers[$identifier] = $assembler;
-            $this->setMeta(MUtil_Model::META_ASSEMBLERS, $assemblers);
-
-            return $assembler;
+        if (! isset($assemblers[$identifier])) {
+            // We cannot create when noting is specified
+            return null;
         }
+
+        if ($assemblers[$identifier] instanceof MUtil_Model_AssemblerInterface) {
+            return $assemblers[$identifier];
+        }
+
+        $loader    = MUtil_Model::getAssemblerLoader();
+        $assembler = $loader->createClass($assemblers[$identifier]);
+        $assembler->setModel($this);
+
+        if (null !== $data) {
+            $assembler->setRow($data);
+        }
+
+        $assemblers[$identifier] = $assembler;
+        $this->setMeta(MUtil_Model::META_ASSEMBLERS, $assemblers);
+
+        return $assembler;
     }
 
     /**
@@ -1165,10 +1168,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Both set the attribute 'save' to true for 'field_x'.
      *
      * @param string $name The fieldname
-     * @param string|array $arrayOrKey1 A key => value array or the name of the first key
-     * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
-     * @param string $key2 Optional second key when $arrayOrKey1 is a string
-     * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
      * @return $this
      */
     public function set($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
