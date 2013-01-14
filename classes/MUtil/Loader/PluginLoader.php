@@ -53,7 +53,13 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      */
     public function addFallBackPath()
     {
-        parent::addPrefixPath('', '');
+        // Add each of the classpath directories to the prefixpaths
+        // with an empty prefix.
+        foreach (Zend_Loader::explodeIncludePath() as $include) {
+            if ($real = realpath($include)) {
+                parent::addPrefixPath('', $real);
+            }
+        }
 
         return $this;
     }
@@ -234,5 +240,82 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         }
 
         return false;
+    }
+
+    /**
+     * Load a plugin via the name provided
+     *
+     * @param  string $name
+     * @param  bool $throwExceptions Whether or not to throw exceptions if the
+     * class is not resolved
+     * @return string|false Class name of loaded class; false if $throwExceptions
+     * if false and no class found
+     * @throws Zend_Loader_Exception if class not found
+     */
+    public function load($name, $throwExceptions = true)
+    {
+        if ($this->isLoaded($name)) {
+            return $this->getClassName($name);
+        }
+        $name = $this->_formatName($name);
+
+        if ($this->_useStaticRegistry) {
+            $registry = self::$_staticPrefixToPaths[$this->_useStaticRegistry];
+        } else {
+            $registry = $this->_prefixToPaths;
+        }
+
+        $registry  = array_reverse($registry, true);
+        $found     = false;
+        $classFile = str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
+        $incFile   = self::getIncludeFileCache();
+        foreach ($registry as $prefix => $paths) {
+            $className = $prefix . $name;
+
+            if (class_exists($className, false)) {
+                $found = true;
+                break;
+            }
+
+            $paths     = array_reverse($paths, true);
+
+            foreach ($paths as $path) {
+                $loadFile = $path . $classFile;
+                // Can use file_exist now, as any paths in the class path that
+                // could be use are already in use.
+                // if (Zend_Loader::isReadable($loadFile)) {
+                if (file_exists($loadFile)) {
+                    // include_once $loadFile;
+                    include $loadFile; // Is faster
+                    if (class_exists($className, false)) {
+                        if (null !== $incFile) {
+                            self::_appendIncFile($loadFile);
+                        }
+                        $found = true;
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        if (!$found) {
+            if (!$throwExceptions) {
+                return false;
+            }
+
+            $message = "Plugin by name '$name' was not found in the registry; used paths:";
+            foreach ($registry as $prefix => $paths) {
+                $message .= "\n$prefix: " . implode(PATH_SEPARATOR, $paths);
+            }
+            require_once 'Zend/Loader/PluginLoader/Exception.php';
+            throw new Zend_Loader_PluginLoader_Exception($message);
+       }
+
+        if ($this->_useStaticRegistry) {
+            self::$_staticLoadedPlugins[$this->_useStaticRegistry][$name]     = $className;
+        } else {
+            $this->_loadedPlugins[$name]     = $className;
+        }
+        return $className;
     }
 }
