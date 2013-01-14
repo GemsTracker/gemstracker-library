@@ -42,7 +42,7 @@
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since MUtil version 1.0
  */
 class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 {
@@ -99,7 +99,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             } else {
                 // Prevent double escaping by using rawurlencode() instead
                 // of urlencode() that is used by Zend_Controller_Router_Route
-                $url_parameters[$key] =  rawurlencode($value);
+                $url_parameters[$key] = rawurlencode($value);
             }
         }
 
@@ -117,11 +117,27 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
 
         // Only when no string is defined we assume this is a Zend MVC url
         if ($url_parameters) {
+
+            if (! $this->getRouteReset()) {
+                // Add the request parameters here as otherwise $router->assemble()
+                // will add the existing parameters without escaping.
+                $request = $this->getRequest();
+
+                foreach ($request->getParams() as $key => $value) {
+                    if (!array_key_exists($key, $url_parameters)) {
+                        // E.g. Exceptions are stored as parameters :(
+                        if (! is_object($value)) {
+                            $url_parameters[$key] = rawurlencode($value);
+                        }
+                    }
+                }
+            }
+
             // Make sure controllor, action, module are specified
             $url_parameters = self::rerouteUrl($this->getRequest(), $url_parameters);
 
             $router = $this->getRouter();
-            return $router->assemble($url_parameters, null, $this->getRouteReset(), false);
+            return $router->assemble($url_parameters, null, true, false);
         }
 
         return null;
