@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -30,75 +30,40 @@
  * @package    MUtil
  * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $id: ModelTransformerInterface.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * This class wraps around a select as a paginator, while allowing model->onload
- * functions to apply.
- *
- * @see MUtil_Model_DatabaseModelAbstract
+ * An general interface to transform the data retrieved by a model
  *
  * @package    MUtil
  * @subpackage Model
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since MUtil version 1.2
  */
-class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interface
+interface MUtil_Model_ModelTransformerInterface
 {
     /**
+     * If the transformer add's fields, these should be returned here.
+     * Called in $model->AddTransformer(), so the transformer MUST
+     * know which fields to add by then (optionally using the model
+     * for that).
      *
-     * @var MUtil_Model_DatabaseModelAbstract
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @return array Of filedname => set() values
      */
-    protected $_model;
+    public function getFieldInfo(MUtil_Model_ModelAbstract $model);
 
     /**
+     * The transform function performs the actual transformation of the data and is called after
+     * the loading of the data in the source model.
      *
-     * @var Zend_Paginator_Adapter_DbSelect
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $data Nested array
+     * @return array Nested array containing (optionally) transformed data
      */
-    protected $_selectAdapter;
-
-    /**
-     *
-     * @param Zend_Db_Select $select
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    public function __construct(Zend_Db_Select $select, MUtil_Model_DatabaseModelAbstract $model)
-    {
-        $this->_selectAdapter = new Zend_Paginator_Adapter_DbSelect($select);
-        $this->_model = $model;
-    }
-
-    /**
-     * Returns the total number of rows in the result set.
-     *
-     * @return integer
-     */
-    public function count()
-    {
-        return $this->_selectAdapter->count();
-    }
-
-    /**
-     * Returns an array of items for a page.
-     *
-     * @param  integer $offset Page offset
-     * @param  integer $itemCountPerPage Number of items per page
-     * @return array
-     */
-    public function getItems($offset, $itemCountPerPage)
-    {
-        $items = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
-
-        // MUtil_Echo::track($items);
-        if (is_array($items)) {
-            $items = $this->_model->processAfterLoad($items);
-        }
-        // MUtil_Echo::track($items);
-
-        return $items;
-    }
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data);
 }

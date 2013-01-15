@@ -329,7 +329,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         } else {
             $this->dateFactorChanges = array_fill_keys(array('D', 'W', 'M', 'Y'), 0);
         }
-        // MUtil_Echo::r($requiredRows);
+        // M qUtil_Echo::track($requiredRows);
         // MUtil_Echo::rs($start, $end, $where);
 
         $select = new Zend_Db_Select($this->db);
@@ -346,12 +346,13 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         // Display by column cannot use formatFunction as it is a simple repeater
         // $model->set('duration_avg', 'formatFunction', $this->util->getLocalized()->formatNumber);
 
-        $tmodel = new MUtil_Model_Transform_RequiredRowsTransformer($model);
-        $tmodel->setDefaultRow($this->getDefaultRow());
-        $tmodel->setRequiredRows($requiredRows);
-        $tmodel->setKeyItemCount($keyCount);
+        $transformer = new MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer->setDefaultRow($this->getDefaultRow());
+        $transformer->setRequiredRows($requiredRows);
+        $transformer->setKeyItemCount($keyCount);
+        $model->addTransformer($transformer);
 
-        return $tmodel;
+        return $model;
     }
 
     protected function getDateDescriptions()

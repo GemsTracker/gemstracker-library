@@ -49,22 +49,33 @@
  */
 class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTransformerAbstract
 {
+    /**
+     * Contains default values for all missing row values
+     *
+     * @var mixed Something that can be made into an array using MUtil_Ra::to()
+     */
     protected $_defaultRow;
+
+    /**
+     * The number of key values to compare, if empty the number of fields in the first required row
+     *
+     * @var int
+     */
     protected $_keyItemCount;
+
+    /**
+     *
+     * @var mixed Something that can be made into an array using MUtil_Ra::to()
+     */
     protected $_requiredRows;
 
-    public function __construct($requiredRows, $sourceModel_args = null)
-    {
-        $args = func_get_args();
-        $paramTypes = array(
-                'sourceModel'  => 'MUtil_Model_ModelAbstract',
-                'requiredRows' => 'is_ra_array',
-                'keyItemCount' => 'is_int',
-            );
-
-        parent::__construct($args, $paramTypes);
-    }
-
+    /**
+     *
+     * @param array $required
+     * @param array $row
+     * @param int $count
+     * @return boolean True if the rows refer to the same row
+     */
     protected function _compareRows($required, $row, $count)
     {
         if ($row) {
@@ -87,10 +98,16 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         }
     }
 
-    public function getDefaultRow()
+    /**
+     * Returns the required rows set or calculates the rows using the $model and the required rows info
+     *
+     * @param MUtil_Model_ModelAbstract $model Optional model for calculation
+     * @return array
+     * @throws MUtil_Model_ModelException
+     */
+    public function getDefaultRow(MUtil_Model_ModelAbstract $model = null)
     {
         if (! $this->_defaultRow) {
-            $model     = $this->getSourceModel();
             $requireds = $this->getRequiredRows();
             $required  = MUtil_Ra::to(reset($requireds));
 
@@ -98,7 +115,7 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
                 $this->setKeyItemCount(count($required));
             }
 
-            if ($model && $required) {
+            if ($required && ($model instanceof MUtil_Model_ModelAbstract)) {
                 $defaults = array();
                 foreach ($model->getItemNames() as $name) {
                     if (! array_key_exists($name, $required)) {
@@ -116,6 +133,11 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         return $this->_defaultRow;
     }
 
+    /**
+     * The number of key values to compare
+     *
+     * @return int
+     */
     public function getKeyItemCount()
     {
         if (! $this->_keyItemCount) {
@@ -126,6 +148,11 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         return $this->_keyItemCount;
     }
 
+    /**
+     * Array of required rows
+     *
+     * @return array
+     */
     public function getRequiredRows()
     {
         if (! is_array($this->_requiredRows)) {
@@ -135,6 +162,13 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         return $this->_requiredRows;
     }
 
+    /**
+     * Contains default values for all missing row values
+     *
+     * @param mixed $defaultRow Something that can be made into an array using MUtil_Ra::to()
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     * @throws MUtil_Model_ModelException
+     */
     public function setDefaultRow($defaultRow)
     {
         if (MUtil_Ra::is($defaultRow)) {
@@ -145,12 +179,25 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         throw new MUtil_Model_ModelException('Invalid parameter type for ' . __FUNCTION__ . ': $rows cannot be converted to an array.');
     }
 
+    /**
+     * The number of key values to compare
+     *
+     * @param int $count
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     */
     public function setKeyItemCount($count)
     {
         $this->_keyItemCount = $count;
         return $this;
     }
 
+    /**
+     * The keys for the required rows
+     *
+     * @param mixed $rows Something that can be made into an array using MUtil_Ra::to()
+     * @return \MUtil_Model_Transform_RequiredRowsTransformer
+     * @throws MUtil_Model_ModelException
+     */
     public function setRequiredRows($rows)
     {
         if (MUtil_Ra::is($rows)) {
@@ -161,9 +208,17 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         throw new MUtil_Model_ModelException('Invalid parameter type for ' . __FUNCTION__ . ': $rows cannot be converted to an array.');
     }
 
-    public function transform($data, $filter = true, $sort = true)
+    /**
+     * The transform function performs the actual transformation of the data and is called after
+     * the loading of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $data Nested array
+     * @return array Nested array containing (optionally) transformed data
+     */
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
     {
-        $defaults  = $this->getDefaultRow();
+        $defaults  = $this->getDefaultRow($model);
         $keyCount  = $this->getKeyItemCount();
         $requireds = $this->getRequiredRows();
         $data      = MUtil_Ra::to($data, MUtil_Ra::RELAXED);

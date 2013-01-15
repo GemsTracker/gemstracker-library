@@ -166,6 +166,16 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 }
                 if (null === $value) {
                     $select->where($name . ' IS NULL');
+                } elseif (is_array($value)) {
+                    if ($value) {
+                        foreach ($value as $sub) {
+                            $subs[] = $adapter->quote($value);
+                        }
+                        $select->where($name . ' IN (' . implode(', ', $subs) . ')');
+                    } else {
+                        // Never a result when a value should be one of an empty set.
+                        $select->where('1=0');
+                    }
                 } else {
                     $select->where($name . ' = ?', $value);
                 }
@@ -316,6 +326,23 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     protected function _load($filter = true, $sort = true)
     {
         return $this->_createSelect($filter, $sort)->query(Zend_Db::FETCH_ASSOC)->fetchAll();
+    }
+
+    /**
+     * Returns an array containing the first requested item.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array An array or false
+     */
+    protected function _loadFirst($filter = true, $sort = true)
+    {
+        $select = $this->_createSelect($filter, $sort);
+        $select->limit(1, 0);
+
+        $data = $select->query(Zend_Db::FETCH_ASSOC)->fetch();
+
+        return $data;
     }
 
     protected function _loadTableMetaData(Zend_Db_Table_Abstract $table)
@@ -703,10 +730,10 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     public function formatLoadDate($value, $isNew = false, $name = null, array $context = array())
     {
         // If not empty or zend_db_expression and not already a zend date, we
-        // transform to a Zend_Date using the ISO_8601 format                     
+        // transform to a Zend_Date using the ISO_8601 format
         if (!empty($value) && !($value instanceof Zend_Date) && !($value instanceof Zend_Db_Expr)) {
             try {
-                $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);    
+                $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
             } catch (Exception $exc) {
                 // On failure, we use the input value
                 $tmpDate = $value;
@@ -895,26 +922,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
-     * Returns an array containing the first requested item.
-     *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array An array or false
-     */
-    public function loadFirst($filter = true, $sort = true)
-    {
-        $select = $this->_createSelect($filter, $sort);
-        $select->limit(1, 0);
-
-        $data = $select->query(Zend_Db::FETCH_ASSOC)->fetch();
-        if (is_array($data)) {
-            $data = $this->_filterDataAfterLoad($data, false);
-        }
-
-        return $data;
-    }
-
-    /**
      * Returns a Zend_Paginator for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -927,26 +934,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         $adapter = new MUtil_Model_SelectModelPaginator($select, $this);
 
         return new Zend_Paginator($adapter);
-    }
-
-    /**
-     * Helper function for SelectModelPaginator to process
-     * setOnLoads.
-     *
-     * @see MUtil_Model_SelectModelPaginator
-     *
-     * @param array $data Nested array
-     * @return array Nested
-     */
-    public function processAfterLoad(array $data)
-    {
-        if ($this->getMeta(parent::LOAD_TRANSFORMER)) {
-            foreach ($data as $key => $row) {
-                $data[$key] = $this->_filterDataAfterLoad($row, false);
-            }
-        }
-
-        return $data;
     }
 
     // abstract public function save(array $newValues);

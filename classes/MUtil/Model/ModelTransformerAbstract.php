@@ -25,208 +25,140 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2012 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: ModelTransformerInterface.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * A general transformer that implements all required functions, without
+ * them doing anything so you can just implement what you need.
+ *
+ * @package    MUtil
  * @subpackage Model
+ * @copyright  Copyright (c) 2012 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.2 (in current form)
  */
-abstract class MUtil_Model_ModelTransformerAbstract extends MUtil_Model_ModelAbstract
+abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_ModelTransformerInterface
 {
-    protected $sourceModel;
-
-    public function __construct(array $args, array $paramTypes = array())
-    {
-        $paramTypes['sourceModel'] = 'MUtil_Model_ModelAbstract';
-        $paramTypes['name']        = 'is_string';
-
-        $args = MUtil_Ra::args($args, $paramTypes);
-
-        if (isset($args['name'])) {
-            $name = $args['name'];
-            unset($args['name']);
-        } else {
-            if (isset($args['sourceModel'])) {
-                $name = $args['sourceModel']->getName();
-            } else {
-                // MUtil_Echo::r($args);
-                throw new MUtil_Model_ModelException('No $name or $sourceModel parameter specified for ' . get_class($this) . ' constructor.');
-            }
-        }
-        // MUtil_Echo::r($args, $name);
-
-        parent::__construct($name);
-
-        foreach ($args as $name => $arg) {
-            $function = 'set' . ucfirst($name);
-            if (method_exists($this, $function)) {
-                $this->$function($arg);
-            } else {
-                throw new MUtil_Model_ModelException("Unknown argument $name in " . get_class($this) . ' constructor.');
-            }
-        }
-    }
-
-    protected function _getKeyValue($name, $key)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->_getKeyValue($name, $key);
-        }
-    }
+    /**
+     *
+     * @var array
+     */
+    protected $_fields = array();
 
     /**
-     * Returns a nested array containing the items requested.
+     * Gets one or more values for a certain field name.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array Nested array or false
+     * @see MUtil_Model_ModelAbstract->get()
+     *
+     * @param string $name Field name
+     * @param string|array|null $arrayOrKey1 Null or the name of a single attribute or an array of attribute names
+     * @param string $key2 Optional a second attribute name.
+     * @return mixed
      */
-    protected function _load($filter = true, $sort = true)
-    {
-        $data = $this->sourceModel->_load($filter, $sort);
-
-        return $this->transform($data, $filter, $sort);
-    }
-
-    public function delete($filter = true)
-    {
-        throw new Exception('Cannot delete ' . get_class($this) . ' data.');
-    }
-
     public function get($name, $arrayOrKey1 = null, $key2 = null)
     {
-        if ($this->sourceModel) {
-            $args = func_get_args();
+        $args = func_get_args();
+        $args = MUtil_Ra::args($args, 1);
 
-            call_user_func_array(array($this->sourceModel, 'get'), $args);
-        }
-        return $this;
-    }
+        switch (count($args)) {
+            case 0:
+                if (isset($this->_fields[$name])) {
+                    return $this->_fields[$name];
+                } else {
+                    return array();
+                }
 
-    public function getAlias($name)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getAlias($name);
-        }
-    }
+            case 1:
+                $key = $arrayOrKey1;
+                if (isset($this->_fields[$name][$arrayOrKey1])) {
+                    return $this->_fields[$name][$arrayOrKey1];
+                } else {
+                    return null;
+                }
 
-    public function getItemNames()
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getItemNames();
-        }
-    }
-
-    public function getItemsOrdered()
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getItemsOrdered();
+            default:
+                $results = array();
+                foreach ($args as $key) {
+                    if (isset($this->_fields[$name][$arrayOrKey1])) {
+                        $results[$key] = $this->_fields[$name][$arrayOrKey1];
+                    }
+                }
+                return $results;
         }
     }
 
     /**
-     * Return an identifier the item specified by $forData
+     * If the transformer add's fields, these should be returned here.
+     * Called in $model->AddTransformer(), so the transformer MUST
+     * know which fields to add by then (optionally using the model
+     * for that).
      *
-     * basically transforms the fieldnames ointo oan IDn => value array
-     *
-     * @param mixed $forData Array value to vilter on
-     * @param array $href Or ArrayObject
-     * @return array That can by used as href
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @return array Of filedname => set() values
      */
-    public function getKeyRef($forData, $href = array())
+    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
     {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getKeyRef($forData, $href);
-        }
+        return $this->_fields;
     }
 
-    public function getKeys($reset = false)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getKeys($reset);
-        }
-    }
-
-    public function getMeta($key, $default = null)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->getMeta($key, $default);
-        }
-    }
-
-    public function getSourceModel()
-    {
-        return $this->sourceModel;
-    }
-
-    public function has($name, $subkey = null)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->has($name, $subkey);
-        }
-        return false;
-    }
-
-    public function hasMeta($key)
-    {
-        if ($this->sourceModel) {
-            return $this->sourceModel->hasMeta($key);
-        }
-        return false;
-    }
-
-    public function hasNew()
-    {
-        return false;
-    }
-
-    public function resetOrder()
-    {
-        if ($this->sourceModel) {
-            $this->sourceModel->resetOrder();
-        }
-        return $this;
-    }
-
-    public function save(array $newValues, array $filter = null)
-    {
-        throw new Exception('Cannot save ' . get_class($this) . ' data.');
-    }
-
+    /**
+     * Set one or more attributes for a field names in the model.
+     *
+     * @see MUtil_Model_ModelAbstract->set()
+     *
+     * @param string $name The fieldname
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
+     * @return \MUtil_Model_ModelTransformerAbstract
+     */
     public function set($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
-        if ($this->sourceModel) {
-            $args = func_get_args();
+        $args = func_get_args();
+        $args = MUtil_Ra::pairs($args, 1);
 
-            call_user_func_array(array($this->sourceModel, 'set'), $args);
+        foreach ($args as $key => $value) {
+            // If $key end with ] it is array value
+            if (substr($key, -1) == ']') {
+                if (substr($key, -2) == '[]') {
+                    // If $key ends with [], append it to array
+                    $key    = substr($key, 0, -2);
+                    $this->_fields[$name][$key][] = $value;
+                } else {
+                    // Otherwise extract subkey
+                    $pos    = strpos($key, '[');
+                    $subkey = substr($key, $pos + 1, -1);
+                    $key    = substr($key, 0, $pos);
+
+                    $this->_fields[$name][$key][$subkey] = $value;
+                }
+            } else {
+                $this->_fields[$name][$key] = $value;
+            }
         }
+
         return $this;
     }
 
-    public function setKeys(array $keys)
+    /**
+     * The transform function performs the actual transformation of the data and is called after
+     * the loading of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $data Nested array
+     * @return array Nested array containing (optionally) transformed data
+     */
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
     {
-        if ($this->sourceModel) {
-            $this->sourceModel->setKeys($key, $value);
-        }
-        return $this;
+        return $data;
     }
-
-    public function setMeta($key, $value)
-    {
-        if ($this->sourceModel) {
-            $this->sourceModel->setMeta($key, $value);
-        }
-        return $this;
-    }
-
-    public function setSourceModel(MUtil_Model_ModelAbstract $model)
-    {
-        $this->sourceModel = $model;
-        return $this;
-    }
-
-    abstract public function transform($data, $filter = true, $sort = true);
 }

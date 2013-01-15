@@ -110,12 +110,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     private $_model_used = false;
 
     /**
+     *
+     * @var array of MUtil_Model_ModelTransformerInterface
+     */
+    private $_transformers = array();
+
+    /**
      * The increment for item ordering, default is 10
      *
      * @var int
      */
     public $orderIncrement = 10;
 
+    /**
+     *
+     * @param string $modelName Hopefully unique model name
+     */
     public function __construct($modelName)
     {
         $this->_model_name = $modelName;
@@ -267,6 +277,20 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     abstract protected function _load($filter = true, $sort = true);
 
+    /**
+     * Returns a nested array containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return array Nested array or false
+     */
+    protected function _loadFirst($filter = true, $sort = true)
+    {
+        $data = $this->_load($filter, $sort);
+
+        return reset($data);
+    }
+
     protected function addChanged($add = 1)
     {
         $this->_changedCount += $add;
@@ -306,6 +330,21 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         } else {
             $this->setSort($value);
         }
+        return $this;
+    }
+
+    /**
+     * Add a model transformer
+     *
+     * @param MUtil_Model_ModelTransformerInterface $transformer
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function addTransformer(MUtil_Model_ModelTransformerInterface $transformer)
+    {
+        foreach ($transformer->getFieldInfo($this) as $name => $info) {
+            $this->set($name, $info);
+        }
+        $this->_transformers[] = $transformer;
         return $this;
     }
 
@@ -864,6 +903,17 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Get the model transformers
+     *
+     * @return array of MUtil_Model_ModelTransformerInterface
+     */
+    public function getTransformers()
+    {
+        $this->_transformers[] = $transformer;
+        return $this;
+    }
+
+    /**
      * Splits a wildcard search text into its constituent parts.
      *
      * @param string $searchText
@@ -1000,10 +1050,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         $data = $this->_load($filter, $sort);
 
-        if (is_array($data) && $this->getMeta(self::LOAD_TRANSFORMER)) {
-            foreach ($data as $key => $row) {
-                $data[$key] = $this->_filterDataAfterLoad($row, false);
-            }
+        if (is_array($data)) {
+            $data = $this->processAfterLoad($data);
         }
 
         return $data;
@@ -1018,13 +1066,20 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function loadFirst($filter = true, $sort = true)
     {
-        $data = $this->_load($filter, $sort);
-        // Return the first row or null.
-        $data = reset($data);
-        if (is_array($data) && $this->getMeta(self::LOAD_TRANSFORMER)) {
-            $data = $this->_filterDataAfterLoad($data, false);
+        $row = $this->_loadFirst($filter, $sort);
+        MUtil_Echo::track($row);
+
+        if (! is_array($row)) {
+            // Return false
+            return false;
         }
-        return $data;
+
+        // Transform the row
+        $data = $this->processAfterLoad(array($row));
+        MUtil_Echo::track($data);
+
+        // Return resulting first row
+        return reset($data);
     }
 
     /**
@@ -1084,6 +1139,29 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
 
     /**
+     * Helper function that procesess the raw data after a load.
+     *
+     * @see MUtil_Model_SelectModelPaginator
+     *
+     * @param array $data Nested array containing rows
+     * @return array Nested
+     */
+    public function processAfterLoad(array $data)
+    {
+        foreach ($this->_transformers as $transformer) {
+            $data = $transformer->transformLoad($this, $data);
+        }
+
+        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+            foreach ($data as $key => $row) {
+                $data[$key] = $this->_filterDataAfterLoad($row, false);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Remove one attribute for a field name in the model.
      *
      * Example:
@@ -1094,7 +1172,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param string $name The fieldname
      * @param string $key The name of the key
-     * @return $this
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function remove($name, $key = null)
     {
@@ -1167,13 +1245,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * </code>
      * Both set the attribute 'save' to true for 'field_x'.
      *
-     * @param string $name The fieldname
+     * @param string $name        The fieldname
      * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
      * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2        Optional second key when $arrayOrKey1 is a string
      * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
      *                            an unlimited number of $key values pairs can be given.
-     * @return $this
+     * @return \MUtil_Model_ModelAbstract
      */
     public function set($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
@@ -1261,7 +1339,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
-     * @return $this
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setCol($arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
@@ -1353,7 +1431,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
-     * @return $this
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setMulti(array $names, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
@@ -1442,6 +1520,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         return $this->setSaveWhen($name, array(__CLASS__, 'whenNotNull'));
     }
+
+    /**
+     * set the model transformers
+     *
+     * @param array $transformers of MUtil_Model_ModelTransformerInterface
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function setTransformers(array $transformers)
+    {
+        $this->_transformers = array();
+        foreach ($transformers as $transformer) {
+            $this->addTransformer($transformer);
+        }
+        return $this;
+    }
+
 
     public function setSort($value)
     {
