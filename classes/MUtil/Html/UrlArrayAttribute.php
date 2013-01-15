@@ -126,7 +126,9 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
                 foreach ($request->getParams() as $key => $value) {
                     if (!array_key_exists($key, $url_parameters)) {
                         // E.g. Exceptions are stored as parameters :(
-                        if (! is_object($value)) {
+                        if (is_array($value)) {
+                            $url_parameters[$key] = array_map('rawurlencode', $value);
+                        } else if (! is_object($value)) {
                             $url_parameters[$key] = rawurlencode($value);
                         }
                     }
