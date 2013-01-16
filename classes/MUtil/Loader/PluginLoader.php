@@ -49,17 +49,14 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
     /**
      * Add the default autoloader to this plugin loader.
      *
+     * @param boolean $prepend Put path at the beginning of the stack, the default is false
      * @return Zend_Loader_PluginLoader (continuation pattern)
      */
-    public function addFallBackPath()
+    public function addFallBackPath($prepend = false)
     {
         // Add each of the classpath directories to the prefixpaths
         // with an empty prefix.
-        foreach (Zend_Loader::explodeIncludePath() as $include) {
-            if ($real = realpath($include)) {
-                parent::addPrefixPath('', $real);
-            }
-        }
+        $this->addPrefixPath('', Zend_Loader::explodeIncludePath(), $prepend);
 
         return $this;
     }
@@ -68,19 +65,71 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
      * Add prefixed paths to the registry of paths
      *
      * @param string $prefix
-     * @param string $path
+     * @param mixed $paths String or an array of strings
+     * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
      * @return Zend_Loader_PluginLoader (continuation pattern)
      */
-    public function addPrefixPath($prefix, $path)
+    public function addPrefixPath($prefix, $paths, $prepend = true)
     {
-        if (!is_string($prefix) || !is_string($path)) {
+        if (!is_string($prefix) || !(is_string($paths) || is_array($paths))) {
             throw new Zend_Loader_PluginLoader_Exception('Zend_Loader_PluginLoader::addPrefixPath() method only takes strings for prefix and path.');
         }
 
-        // MUtil_Echo::track(self::getAbsolutePaths($path));
-        foreach (self::getAbsolutePaths($path) as $sub) {
-            parent::addPrefixPath($prefix, $sub);
+        $prefix = $this->_formatPrefix($prefix);
+        if ($this->_useStaticRegistry) {
+            $registry = self::$_staticPrefixToPaths[$this->_useStaticRegistry];
+        } else {
+            $registry = $this->_prefixToPaths;
         }
+
+        if (isset($registry[$prefix])) {
+            $newPaths = $registry[$prefix];
+        } else {
+            $newPaths = array();
+        }
+
+        $changed = false;
+        foreach ((array) $paths as $path) {
+            $path   = rtrim($path, '/\\') . '/';
+
+            // MUtil_Echo::track(self::getAbsolutePaths($path));
+            foreach (self::getAbsolutePaths($path) as $sub) {
+                if (! in_array($sub, $newPaths)) {
+                    if ($prepend) {
+                        array_unshift($newPaths, $sub . DIRECTORY_SEPARATOR);
+                    } else {
+                        array_push($newPaths, $sub . DIRECTORY_SEPARATOR);
+                    }
+                    $changed = true;
+                }
+            }
+        }
+
+        if ($changed) {
+            if ($this->_useStaticRegistry) {
+                if ($prepend && !isset(self::$_staticPrefixToPaths[$this->_useStaticRegistry][$prefix])) {
+                    self::$_staticPrefixToPaths[$this->_useStaticRegistry] =
+                            array($prefix => $newPaths) +
+                            self::$_staticPrefixToPaths[$this->_useStaticRegistry];
+                } else {
+                    self::$_staticPrefixToPaths[$this->_useStaticRegistry][$prefix] = $newPaths;
+                }
+            } else {
+                if ($prepend && !isset($this->_prefixToPaths[$prefix])) {
+                    $this->_prefixToPaths =
+                            array($prefix => $newPaths) +
+                            $this->_prefixToPaths;
+                } else {
+                    $this->_prefixToPaths[$prefix] = $newPaths;
+                }
+            }
+        }
+        /*
+        if (isset($this->_prefixToPaths[$prefix])) {
+            MUtil_Echo::track($prefix, $this->_prefixToPaths);
+        } else {
+            MUtil_Echo::track($prefix);
+        } // */
 
         return $this;
     }
@@ -208,12 +257,24 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         // Check simple concatenation
         foreach ($includePaths as $include) {
             if ($real = realpath($include . $path)) {
-                $results[] = $real;;
+                $results[] = $real;
             }
         }
 
         // Reverse the result as that is the order this loader handles the directories
         return array_reverse($results);
+    }
+
+    /**
+     * Get path stack
+     *
+     * @param  string $prefix
+     * @return false|array False if prefix does not exist, array otherwise
+     */
+    public function getPaths($prefix = null)
+    {
+        // To return the same result as in the past.
+        return array_reverse(parent::getPaths($prefix));
     }
 
     /**
@@ -265,7 +326,6 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
             $registry = $this->_prefixToPaths;
         }
 
-        $registry  = array_reverse($registry, true);
         $found     = false;
         $classFile = str_replace('_', DIRECTORY_SEPARATOR, $name) . '.php';
         $incFile   = self::getIncludeFileCache();
@@ -276,8 +336,6 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
                 $found = true;
                 break;
             }
-
-            $paths     = array_reverse($paths, true);
 
             foreach ($paths as $path) {
                 $loadFile = $path . $classFile;

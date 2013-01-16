@@ -72,13 +72,8 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
             GEMS_LIBRARY_DIR . '/snippets',
             GEMS_ROOT_DIR . '/application/snippets',
         );
-        foreach ($noPrefixDirs as $dir) {
-            if (file_exists($dir)) {
-                $this->_loader->addPrefixPath('', $dir);
-            }
-        }
-
-        // $this->_loader->addPrefixPath('MUtil_Snippets', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
+        $this->_loader->addPrefixPath('', $noPrefixDirs, false);
+        // $this->_loader->addFallBackPath(); // Enable to allow full class name specification 
     }
 
     /**
