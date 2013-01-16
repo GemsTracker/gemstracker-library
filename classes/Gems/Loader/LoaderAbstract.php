@@ -103,7 +103,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
             foreach ($dirs as $prefix => $path) {
                 $newdirs[$prefix . '_' . $this->cascade] = $path . '/' . strtr($this->cascade, '_', '/');
             }
-            $this->_dirs = $newdirs;
+            $this->_dirs = array ('' =>'') +  $newdirs; // Quick fix for fallback path
         }
 
         $this->_loader = new MUtil_Loader_PluginLoader($this->_dirs);
