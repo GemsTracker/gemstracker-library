@@ -322,7 +322,9 @@ abstract class Gems_Menu_MenuAbstract
     {
         $infoPage = $this->addContainer($label);
 
-        $infoPage->addPage($this->_('Compliance'), 'pr.plan.compliance', 'compliance', 'index')
+        $infoPage->addPage($this->_('Track Summary'), 'pr.plan.summary', 'summary', 'index')
+                ->addAutofilterAction();
+        $infoPage->addPage($this->_('Track Compliance'), 'pr.plan.compliance', 'compliance', 'index')
                 ->addAutofilterAction();
 
         $plans[] = $infoPage->addPage($this->_('By period'), 'pr.plan.overview', 'overview-plan', 'index');

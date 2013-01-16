@@ -937,7 +937,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function has($name, $subkey = null)
     {
         if (null === $subkey) {
-            return isset($this->_model[$name]);
+            return array_key_exists($name, $this->_model);
         } else {
             return isset($this->_model[$name][$subkey]);
         }
@@ -1258,27 +1258,32 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $args = func_get_args();
         $args = MUtil_Ra::pairs($args, 1);
 
-        foreach ($args as $key => $value) {
-            // If $key end with ] it is array value
-            if (substr($key, -1) == ']') {
-                if (substr($key, -2) == '[]') {
-                    // If $key ends with [], append it to array
-                    $key    = substr($key, 0, -2);
-                    $this->_model[$name][$key][] = $value;
-                } else {
-                    // Otherwise extract subkey
-                    $pos    = strpos($key, '[');
-                    $subkey = substr($key, $pos + 1, -1);
-                    $key    = substr($key, 0, $pos);
+        if ($args) {
+            foreach ($args as $key => $value) {
+                // If $key end with ] it is array value
+                if (substr($key, -1) == ']') {
+                    if (substr($key, -2) == '[]') {
+                        // If $key ends with [], append it to array
+                        $key    = substr($key, 0, -2);
+                        $this->_model[$name][$key][] = $value;
+                    } else {
+                        // Otherwise extract subkey
+                        $pos    = strpos($key, '[');
+                        $subkey = substr($key, $pos + 1, -1);
+                        $key    = substr($key, 0, $pos);
 
-                    $this->_model[$name][$key][$subkey] = $value;
+                        $this->_model[$name][$key][$subkey] = $value;
+                    }
+                } else {
+                    $this->_model[$name][$key] = $value;
                 }
-            } else {
-                $this->_model[$name][$key] = $value;
             }
+        } elseif (!array_key_exists($name, $this->_model)) {
+            // Make sure this key occurs
+            $this->_model[$name] = array();
         }
 
-        //Now set the order (repeat always, because order can be changed later on)
+        // Now set the order (repeat always, because order can be changed later on)
         if (isset($this->_model[$name]['order'])) {
             $order = $this->_model[$name]['order'];
         } elseif (isset($this->_model_order[$name]) && is_int($this->_model_order[$name])) {

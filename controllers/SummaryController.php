@@ -28,44 +28,23 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: ComplianceSearchFormSnippet.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $id: ComplianceController.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Default
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.6
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
+class SummaryController extends Gems_Default_SummaryAction
 {
-    /**
-     * Returns a text element for autosearch. Can be overruled.
-     *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
-     */
-    protected function getAutoSearchElements(array $data)
-    {
-        $elements[] = $this->_createSelectElement('gr2t_id_track',
-                $this->util->getTrackData()->getAllTracks(),
-                $this->_('(select a track)'));
-
-        $elements[] = $this->_createSelectElement('gr2t_id_organization',
-                $this->util->getDbLookup()->getOrganizationsWithRespondents(),
-                $this->_('(all organizations)'));
-
-        return $elements;
-    }
 
 }

@@ -465,3 +465,5 @@ ALTER TABLE gems__tracks ADD INDEX (gtr_track_type), ADD INDEX (gtr_track_class)
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.compliance')
     WHERE grl_privileges LIKE '%pr.plan.%' AND grl_privileges NOT LIKE '%pr.plan.compliance%';
 
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.summary')
+    WHERE grl_privileges LIKE '%pr.plan.%' AND grl_privileges NOT LIKE '%pr.plan.summary%';

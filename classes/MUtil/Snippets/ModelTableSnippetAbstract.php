@@ -121,7 +121,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
         } else {
             foreach($model->getItemsOrdered() as $name) {
                 if ($label = $model->get($name, 'label')) {
-                    $bridge->addColumn($bridge->$name, $label);
+                    $bridge->add($name, $label);
                 }
             }
         }

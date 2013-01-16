@@ -93,8 +93,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
             END
             ");
 
-        // $labels = $model->getCol('label');
-
         $select = $this->db->select();
         $select->from('gems__tokens', array('gto_id_respondent_track', 'gto_id_round', 'status' => $status))
                 ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
@@ -107,10 +105,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
 
         $newModel = new MUtil_Model_SelectModel($select, 'tok');
         $newModel->setKeys(array('gto_id_respondent_track'));
-        // $model->addLeftTable('gems__tokens', array('gr2t_id_track' => 'gto_id_track'));
-        // $model->addLeftTable('gems__reception_codes', array('gto_reception_code' => 'grc_id_reception_code'));
-        // $model->addFilter(array('grc_success' => 1));
-        // $newModel = $model;
 
         $transformer = new MUtil_Model_Transform_CrossTabTransformer();
         $transformer->setCrosstabFields('gto_id_round', 'status');
@@ -118,7 +112,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         foreach ($data as $row) {
             $name = 'col_' . $row['gro_id_round'];
             $transformer->set($name, 'label', $row['gro_id_order'], 'description', $row['gro_round_description']);
-            // break;
         }
 
         $newModel->addTransformer($transformer);
@@ -132,8 +125,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         $model->set('gr2t_start_date');
         $model->addTransformer($joinTrans);
         return $model;
-
-        return $newModel;
     }
 
     /**

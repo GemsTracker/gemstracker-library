@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
 {
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -57,13 +57,26 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_
      */
     protected function getAutoSearchElements(array $data)
     {
-        $elements[] = $this->_createSelectElement('gr2t_id_track',
+        $elements[] = $this->_createSelectElement('gto_id_track',
                 $this->util->getTrackData()->getAllTracks(),
                 $this->_('(select a track)'));
 
-        $elements[] = $this->_createSelectElement('gr2t_id_organization',
+        $elements[] = $this->_createSelectElement('gto_id_organization',
                 $this->util->getDbLookup()->getOrganizationsWithRespondents(),
                 $this->_('(all organizations)'));
+
+        $elements[] = null;
+        
+        $sql = "SELECT DISTINCT ggp_id_group, ggp_name
+                    FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                        INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                        INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                    WHERE ggp_group_active = 1 AND
+                        gro_active=1 AND
+                        gtr_active=1 AND
+                        gtr_track_type='T'
+                    ORDER BY ggp_name";
+        $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 
         return $elements;
     }
