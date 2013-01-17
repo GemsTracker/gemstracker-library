@@ -66,7 +66,18 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
                 $this->_('(all organizations)'));
 
         $elements[] = null;
-        
+
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+            'gto_valid_from'  => $this->_('Valid from'),
+            'gto_valid_until' => $this->_('Valid until'),
+            );
+        // $dates = 'gto_valid_from';
+        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+
+        $elements[] = null;
+
         $sql = "SELECT DISTINCT ggp_id_group, ggp_name
                     FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
                         INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
@@ -80,5 +91,4 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
 
         return $elements;
     }
-
 }

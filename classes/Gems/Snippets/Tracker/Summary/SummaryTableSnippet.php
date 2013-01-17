@@ -122,6 +122,10 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
      */
     public function showPercentage($part, $total)
     {
-        return sprintf($this->_('%d%%'), round($part / $total * 100, 0));
+        if ($total) {
+            return sprintf($this->_('%d%%'), round($part / $total * 100, 0));
+        } else {
+            return $this->_('-');
+        }
     }
 }

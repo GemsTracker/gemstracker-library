@@ -89,6 +89,103 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected $searchButtonId = 'AUTO_SEARCH_TEXT_BUTTON';
 
+    /**
+     * Generate two date selectors and - depending on the number of $dates passed -
+     * either a hidden element containing the field name or an radio button or
+     * dropdown selector for the type of date to use.
+     *
+     * @param array $elements Search element array to which the element are added.
+     * @param mixed $dates A string fieldName to use or an array of fieldName => Label
+     * @param string $defaultDate Optional element, otherwise first is used.
+     * @param int $switchToSelect The number of dates where this function should switch to select display
+     */
+    protected function _addPeriodSelectors(array &$elements, $dates, $defaultDate = null, $switchToSelect = 4)
+    {
+        if (is_array($dates) && (1 === count($dates))) {
+            reset($dates);
+            $dates = key($dates);
+        }
+        if (is_string($dates)) {
+            $element = new Zend_Form_Element_Hidden('dateused');
+            $element->setValue($dates);
+
+            $fromLabel = $this->_('From');
+        } else {
+            if (count($dates) >= $switchToSelect) {
+                $element = $this->_createSelectElement('dateused', $dates);
+                $element->setLabel($this->_('For date'));
+
+                $fromLabel = '';
+            } else {
+                $element = $this->_createRadioElement('dateused', $dates);
+                $element->setSeparator(' ');
+
+                $fromLabel = html_entity_decode(' &raquo; ',  ENT_QUOTES, 'UTF-8');
+            }
+            $fromLabel .= $this->_('from');
+
+            if ((null === $defaultDate) || (! isset($dates[$defaultDate]))) {
+                // Set value to first key
+                reset($dates);
+                $defaultDate = key($dates);
+            }
+            $element->setValue($defaultDate);
+        }
+        $elements[] = $element;
+
+        $options = array();
+        $options['label'] = $fromLabel;
+        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        $elements[] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
+
+        $options['label'] = ' ' . $this->_('until');
+        $elements[] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
+    }
+
+    /**
+     * Creates a Zend_Form_Element_Select
+     *
+     * If $options is a string it is assumed to contain an SQL statement.
+     *
+     * @param string        $class   Name of the class to use
+     * @param string        $name    Name of the select element
+     * @param string|array  $options Can be a SQL select string or key/value array of options
+     * @param string        $empty   Text to display for the empty selector
+     * @return Zend_Form_Element_Multi
+     */
+    private function _createMultiElement($class, $name, $options, $empty)
+    {
+        if ($options instanceof MUtil_Model_ModelAbstract) {
+            $options = $options->get($name, 'multiOptions');
+        } elseif (is_string($options)) {
+            $options = $this->db->fetchPairs($options);
+            natsort($options);
+        }
+        if ($options || null !== $empty)
+        {
+            if (null !== $empty) {
+                $options = array('' => $empty) + $options;
+            }
+            $element = new $class($name, array('multiOptions' => $options));
+
+            return $element;
+        }
+    }
+
+    /**
+     * Creates a Zend_Form_Element_Select
+     *
+     * If $options is a string it is assumed to contain an SQL statement.
+     *
+     * @param string        $name    Name of the select element
+     * @param string|array  $options Can be a SQL select string or key/value array of options
+     * @param string        $empty   Text to display for the empty selector
+     * @return Zend_Form_Element_Radio
+     */
+    protected function _createRadioElement($name, $options, $empty = null)
+    {
+        return $this->_createMultiElement('Zend_Form_Element_Radio', $name, $options, $empty);
+    }
 
     /**
      * Creates a Zend_Form_Element_Select
@@ -102,21 +199,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function _createSelectElement($name, $options, $empty = null)
     {
-        if ($options instanceof MUtil_Model_ModelAbstract) {
-            $options = $options->get($name, 'multiOptions');
-        } elseif (is_string($options)) {
-            $options = $this->db->fetchPairs($options);
-            natsort($options);
-        }
-        if ($options || null !== $empty)
-        {
-            if (null !== $empty) {
-                $options = array('' => $empty) + $options;
-            }
-            $element = new Zend_Form_Element_Select($name, array('multiOptions' => $options));
-
-            return $element;
-        }
+        return $this->_createMultiElement('Zend_Form_Element_Select', $name, $options, $empty);
     }
 
     /**
@@ -252,6 +335,47 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
         return $this->getAutoSearchForm();
+    }
+
+    /**
+     * Helper function to generate a period query string
+     *
+     * @param array $data A filter array or $request->getParams()
+     * @param Zend_Db_Adapter_Abstract $db
+     * @return string
+     */
+    public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db)
+    {
+        if (isset($data['dateused'])) {
+            $options = array();
+            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+
+            $outFormat = 'yyyy-MM-dd';
+            $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+
+            if (isset($data['datefrom']) && $data['datefrom']) {
+                if (isset($data['dateuntil']) && $data['dateuntil']) {
+                    return sprintf(
+                            '%s BETWEEN %s AND %s',
+                            $db->quoteIdentifier($data['dateused']),
+                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                return sprintf(
+                        '%s >= %s',
+                        $db->quoteIdentifier($data['dateused']),
+                        $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                        );
+            }
+            if (isset($data['dateuntil']) && $data['dateuntil']) {
+                return sprintf(
+                        '%s <= %s',
+                        $db->quoteIdentifier($data['dateused']),
+                        $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                        );
+            }
+        }
     }
 
     /**

@@ -47,84 +47,117 @@
 class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
+     * Adds columns from the model to the bridge that creates the browse table.
      *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
      *
-     * @var Gems_Loader
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
      */
-    protected $loader;
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $model = parent::createModel();
-        $trackId = $this->getTrackId();
+        $table = $bridge->getTable();
+        $table->appendAttrib('class', 'compliance');
 
-        if (! $trackId) {
-            return $model;
+        $thead  = $table->thead();
+        $th_row = $thead->tr(array('class' => 'rounds'));
+        $th     = $th_row->td();
+        $span   = 1;
+        $cRound = null;
+        $thead->tr();
+
+        if ($showMenuItem = $this->getShowMenuItem()) {
+            $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }
 
-        $select = $this->db->select();
-        $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description'))
-                ->where('gro_id_track = ?', $trackId)
-                ->order('gro_id_order');
+        foreach($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $round = $model->get($name, 'round');
+                if ($round == $cRound) {
+                    $span++;
+                    $class = null;
+                } else {
+                    $th->append($cRound);
+                    $th->colspan = $span;
 
-        $data = $this->db->fetchAll($select);
+                    $span   = 1;
+                    $cRound = $round;
+                    $class = 'newRound';
+                    $th     = $th_row->td(array('class' => $class));
+                }
 
-        if (! $data) {
-            return $model;
+                if ($model->get($name, 'noSort')) {
+                    $tds = $bridge->addColumn(
+                            array(
+                                $bridge->$name,
+                                'class' => array('round', MUtil_Lazy::method($this, 'getClassFor', $bridge->$name)),
+                                'title' => array(
+                                    MUtil_Lazy::method($this, 'getDescriptionFor', $bridge->$name),
+                                    "\n" . $model->get($name, 'description')
+                                    ),
+                                ),
+                            array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
+                            );
+                } else {
+                    $tds = $bridge->addSortable($name, $label);
+                }
+                if ($class) {
+                    $tds->appendAttrib('class', $class);
+                }
+            }
         }
+        $th->append($cRound);
+        $th->colspan = $span;
+    }
 
-        $status = new Zend_Db_Expr("
-            CASE
-            WHEN gto_completion_time IS NOT NULL     THEN 'A'
-            WHEN gto_valid_from IS NULL              THEN 'U'
-            WHEN gto_valid_from > CURRENT_TIMESTAMP  THEN 'W'
-            WHEN gto_valid_until < CURRENT_TIMESTAMP THEN 'M'
-            ELSE 'O'
-            END
-            ");
-
-        $select = $this->db->select();
-        $select->from('gems__tokens', array('gto_id_respondent_track', 'gto_id_round', 'status' => $status))
-                ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
-                ->where('grc_success = 1')
-                ->where('gto_id_track = ?', $trackId)
-                ->order('gto_id_respondent_track')
-                ->order('gto_round_order');
-
-        // MUtil_Echo::track($this->db->fetchAll($select));
-
-        $newModel = new MUtil_Model_SelectModel($select, 'tok');
-        $newModel->setKeys(array('gto_id_respondent_track'));
-
-        $transformer = new MUtil_Model_Transform_CrossTabTransformer();
-        $transformer->setCrosstabFields('gto_id_round', 'status');
-
-        foreach ($data as $row) {
-            $name = 'col_' . $row['gro_id_round'];
-            $transformer->set($name, 'label', $row['gro_id_order'], 'description', $row['gro_round_description']);
+    /**
+     * Returns the class to display the answer
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getClassFor($value)
+    {
+        switch ($value) {
+            case 'A':
+                return 'answered';
+            case 'M':
+                return 'missed';
+            case 'O':
+                return 'open';
+            case 'U':
+                return 'unknown';
+            case 'W':
+                return 'waiting';
+            default:
+                return 'empty';
         }
+    }
 
-        $newModel->addTransformer($transformer);
-        // MUtil_Echo::track($data);
-
-        $joinTrans = new MUtil_Model_Transform_JoinTransformer();
-        $joinTrans->addModel($newModel, array('gr2t_id_respondent_track' => 'gto_id_respondent_track'));
-
-        $model->resetOrder();
-        $model->set('gr2o_patient_nr');
-        $model->set('gr2t_start_date');
-        $model->addTransformer($joinTrans);
-        return $model;
+    /**
+     * Returns the decription to add to the answer
+     *
+     * @param string $value Character
+     * @return string
+     */
+    public function getDescriptionFor($value)
+    {
+        switch ($value) {
+            case 'A':
+                return $this->_('Answered');
+            case 'M':
+                return $this->_('Missed deadline');
+            case 'O':
+                return $this->_('Open - can be answered now');
+            case 'U':
+                return $this->_('Valid from date unknown');
+            case 'W':
+                return $this->_('Valid from date in the future');
+            default:
+                return $this->_('Token does not exist');
+        }
     }
 
     /**
@@ -135,38 +168,5 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
     protected function getShowMenuItem()
     {
         return $this->findMenuItem('track', 'show-track');
-    }
-
-    /**
-     *
-     * @return int Return the track id if any or null
-     */
-    public function getTrackId()
-    {
-        if ($this->requestCache) {
-            $data = $this->requestCache->getProgramParams();
-            if (isset($data['gr2t_id_track'])) {
-                return $data['gr2t_id_track'];
-            }
-        } else {
-            return $this->request->getParam('gr2t_id_track');
-        }
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    {
-        $trackId = $this->getTrackId();
-
-        if ($trackId) {
-            parent::processFilterAndSort($model);
-        } else {
-            $model->setFilter(array('1=0'));
-            $this->onEmpty = $this->_('No track selected...');
-        }
     }
 }

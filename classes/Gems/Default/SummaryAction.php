@@ -153,7 +153,6 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey',
                         array('gsu_survey_name', 'gsu_id_primary_group'))
                 ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'gsu_id_primary_group'));
-                // ->order('gto_round_order');
 
         // MUtil_Model::$verbose = true;
         $model = new MUtil_Model_SelectModel($select, 'summary');
@@ -181,7 +180,14 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
                 'multiOptions', $this->util->getDbLookup()->getGroups());
 
-        if (!$this->getTrackId()) {
+        $data = $this->util->getRequestCache('index')->getProgramParams();
+        if (isset($data['gto_id_track'])) {
+            // Add the period filter
+            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+                $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
+                $model->addFilter(array($where));
+            }
+        } else {
             $model->setFilter(array('1=0'));
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
         }
@@ -208,17 +214,5 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
     public function getTopic($count = 1)
     {
         return $this->plural('token', 'tokens', $count);
-    }
-
-    /**
-     *
-     * @return int Return the track id if any or null
-     */
-    public function getTrackId()
-    {
-        $data = $this->util->getRequestCache('index')->getProgramParams();
-        if (isset($data['gto_id_track'])) {
-            return $data['gto_id_track'];
-        }
     }
 }

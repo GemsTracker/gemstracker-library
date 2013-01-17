@@ -65,6 +65,28 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_
                 $this->util->getDbLookup()->getOrganizationsWithRespondents(),
                 $this->_('(all organizations)'));
 
+        $elements[] = null;
+
+        $dates = array(
+            'gr2t_start_date' => $this->_('Track start'),
+            'gr2t_end_date'   => $this->_('Track end'),
+            );
+        // $dates = 'gto_valid_from';
+        $this->_addPeriodSelectors($elements, $dates, 'gto_valid_from');
+
+        $elements[] = null;
+
+        $sql = "SELECT DISTINCT ggp_id_group, ggp_name
+                    FROM gems__groups INNER JOIN gems__surveys ON ggp_id_group = gsu_id_primary_group
+                        INNER JOIN gems__rounds ON gsu_id_survey = gro_id_survey
+                        INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+                    WHERE ggp_group_active = 1 AND
+                        gro_active=1 AND
+                        gtr_active=1 AND
+                        gtr_track_type='T'
+                    ORDER BY ggp_name";
+        $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
+
         return $elements;
     }
 

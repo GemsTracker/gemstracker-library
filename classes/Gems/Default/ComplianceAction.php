@@ -79,11 +79,87 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
             'gr2t_id_organization' => 'gr2o_id_organization'
             ));
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
+        $model->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
+        $model->addFilter(array('grc_success' => 1));
 
         $model->resetOrder();
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
+
+        $filter = $this->util->getRequestCache('index')->getProgramParams();
+        MUtil_Echo::track($filter);
+        if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
+            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+            return $model;
+        }
+
+        // Add the period filter - if any
+        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+            $model->addFilter(array($where));
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description'))
+                ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
+                ->where('gro_id_track = ?', $filter['gr2t_id_track'])
+                ->order('gro_id_order');
+
+        if (isset($filter['gsu_id_primary_group']) && $filter['gsu_id_primary_group']) {
+            $select->where('gsu_id_primary_group = ?', $filter['gsu_id_primary_group']);
+        }
+
+        $data = $this->db->fetchAll($select);
+
+        if (! $data) {
+            return $model;
+        }
+
+        $status = new Zend_Db_Expr("
+            CASE
+            WHEN gto_completion_time IS NOT NULL     THEN 'A'
+            WHEN gto_valid_from IS NULL              THEN 'U'
+            WHEN gto_valid_from > CURRENT_TIMESTAMP  THEN 'W'
+            WHEN gto_valid_until < CURRENT_TIMESTAMP THEN 'M'
+            ELSE 'O'
+            END
+            ");
+
+        $select = $this->db->select();
+        $select->from('gems__tokens', array('gto_id_respondent_track', 'gto_id_round', 'status' => $status))
+                ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
+                ->where('grc_success = 1')
+                ->where('gto_id_track = ?', $filter['gr2t_id_track'])
+                ->order('gto_id_respondent_track')
+                ->order('gto_round_order');
+
+        // MUtil_Echo::track($this->db->fetchAll($select));
+        $newModel = new MUtil_Model_SelectModel($select, 'tok');
+        $newModel->setKeys(array('gto_id_respondent_track'));
+
+        $transformer = new MUtil_Model_Transform_CrossTabTransformer();
+        $transformer->setCrosstabFields('gto_id_round', 'status');
+
+        foreach ($data as $row) {
+            $name = 'col_' . $row['gro_id_round'];
+            $transformer->set($name, 'label', MUtil_Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
+                    'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
+                    'noSort', true,
+                    'round', $row['gro_round_description']
+                    );
+        }
+
+        $newModel->addTransformer($transformer);
+        // MUtil_Echo::track($data);
+
+        $joinTrans = new MUtil_Model_Transform_JoinTransformer();
+        $joinTrans->addModel($newModel, array('gr2t_id_respondent_track' => 'gto_id_respondent_track'));
+
+        $model->resetOrder();
+        $model->set('gr2o_patient_nr');
+        $model->set('gr2t_start_date');
+        $model->addTransformer($joinTrans);
 
         return $model;
     }
