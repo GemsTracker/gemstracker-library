@@ -53,10 +53,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var array Mixed key => value array for snippet initialization
      */
     private $_autofilterExtraParameters = array(
-        'browse' => true,
-        'containingId' => 'autofilter_target',
-        'keyboard' => true,
-        'onEmpty' => 'getOnEmptyText',
+        'browse'        => true,
+        'containingId'  => 'autofilter_target',
+        'keyboard'      => true,
+        'onEmpty'       => 'getOnEmptyText',
+        'sortParamAsc'  => 'asrt',
+        'sortParamDesc' => 'dsrt',
         );
 
     /**
@@ -187,13 +189,33 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function excelAction()
     {
+        // Make sure we have all the parameters used by the model
+        $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
+
         // Set the request cache to use the search params from the index action
         $requestCache = $this->util->getRequestCache('index', true);
-        $filter = $requestCache->getProgramParams();
+        $filter       = $requestCache->getProgramParams();
+        $model        = $this->getModel();
 
-        $model = $this->getModel();
+        // Set any defaults.
+        if (isset($this->autofilterParameters['sortParamAsc'])) {
+            $model->setSortParamAsc($this->autofilterParameters['sortParamAsc']);
+        }
+        if (isset($this->autofilterParameters['sortParamDesc'])) {
+            $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
+        }
 
+        // Remove all empty values (but not arrays) from the filter
+        $filter = array_filter($filter, function($i) { return is_array($i) || strlen($i); });
         $model->applyParameters($filter);
+
+        // Add any defaults.
+        if (isset($this->autofilterParameters['extraFilter'])) {
+            $model->addFilter($this->autofilterParameters['extraFilter']);
+        }
+        if (isset($this->autofilterParameters['extraSort'])) {
+            $model->addSort($this->autofilterParameters['extraSort']);
+        }
 
         // $this->addExcelColumns($model);     // Hook to modify the model
 

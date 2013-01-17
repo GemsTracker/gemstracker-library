@@ -56,7 +56,10 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array('browse' => false);
+    protected $autofilterParameters = array(
+        'browse'    => false,
+        'extraSort' => array('gro_id_order' => SORT_ASC),
+    );
 
     /**
      * The snippets used for the autofilter action.
@@ -110,6 +113,15 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
                 (gto_valid_until >= CURRENT_TIMESTAMP OR gto_valid_until IS NULL)
             THEN 1 ELSE 0 END
             )');
+        $fields['total'] = new Zend_Db_Expr('SUM(
+            CASE
+            WHEN grc_success = 1 AND (
+                    gto_completion_time IS NOT NULL OR
+                    (gto_valid_from IS NOT NULL AND gto_valid_from <= CURRENT_TIMESTAMP)
+                )
+            THEN 1 ELSE 0 END
+            )');
+        /*
         $fields['future'] = new Zend_Db_Expr('SUM(
             CASE
             WHEN grc_success = 1 AND gto_completion_time IS NULL AND gto_valid_from > CURRENT_TIMESTAMP
@@ -131,6 +143,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
             WHEN grc_success = 0
             THEN 1 ELSE 0 END
             )');
+        // */
 
         $select = $this->db->select();
         $select->from('gems__tokens', $fields)
@@ -139,32 +152,39 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
                         array('gro_round_description', 'gro_id_survey'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey',
                         array('gsu_survey_name', 'gsu_id_primary_group'))
-                ->group(array('gro_round_description', 'gro_id_order', 'gsu_survey_name', 'gsu_id_primary_group'))
-                ->order('gto_round_order');
+                ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'gsu_id_primary_group'));
+                // ->order('gto_round_order');
 
         // MUtil_Model::$verbose = true;
         $model = new MUtil_Model_SelectModel($select, 'summary');
 
-        // Make sure of filter for these fields
+        // Make sure of filter and sort for these fields
+        $model->set('gro_id_order');
+        $model->set('gsu_id_primary_group');
         $model->set('gto_id_track');
         $model->set('gto_id_organization');
-        $model->set('gsu_id_primary_group');
 
         $model->resetOrder();
         $model->set('gro_round_description', 'label', $this->_('Round'));
         $model->set('gsu_survey_name',       'label', $this->_('Survey'));
-        $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
-                'multiOptions', $this->util->getDbLookup()->getGroups());
-
         $model->set('answered', 'label', $this->_('Answered'), 'tdClass', 'centerAlign', 'thClass', 'centerAlign');
         $model->set('missed',   'label', $this->_('Missed'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
         $model->set('open',     'label', $this->_('Open'),     'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('future',   'label', $this->_('Future'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('unknown',  'label', $this->_('Unknown'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        $model->set('total',    'label', $this->_('Total'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('future',   'label', $this->_('Future'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('unknown',  'label', $this->_('Unknown'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
         // $model->set('is',       'label', ' ',                  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('success',  'label', $this->_('Success'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
-                'thClass', 'centerAlign');
+        // $model->set('success',  'label', $this->_('Success'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
+        //         'thClass', 'centerAlign');
+
+        $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
+                'multiOptions', $this->util->getDbLookup()->getGroups());
+
+        if (!$this->getTrackId()) {
+            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+        }
 
         return $model;
     }
@@ -188,5 +208,17 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
     public function getTopic($count = 1)
     {
         return $this->plural('token', 'tokens', $count);
+    }
+
+    /**
+     *
+     * @return int Return the track id if any or null
+     */
+    public function getTrackId()
+    {
+        $data = $this->util->getRequestCache('index')->getProgramParams();
+        if (isset($data['gto_id_track'])) {
+            return $data['gto_id_track'];
+        }
     }
 }

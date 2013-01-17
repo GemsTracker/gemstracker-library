@@ -47,13 +47,6 @@
 class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
-     * When true (= default) the headers get sortable links.
-     *
-     * @var boolean
-     */
-    public $sortableLinks = false;
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -65,20 +58,37 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
+        // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
 
-        $bridge->add('gro_round_description');
-        $bridge->add('answered');
-        $bridge->add('missed');
-        $bridge->add('open');
-        $bridge->add('future');
-        $bridge->add('unknown');
+        // MUtil_Model::$verbose = true;
+
+        $bridge->add(
+                'gro_round_description',
+                $bridge->createSortLink('gro_id_order', $model->get('gro_round_description', 'label'))
+                );
+        $bridge->addSortable('gsu_survey_name');
+        $bridge->th(array($bridge->createSortLink('answered'), 'colspan' => 2))->class = 'centerAlign';
+        $bridge->td($bridge->answered)->class = 'centerAlign';
+        $bridge->td($this->percentageLazy($bridge->answered, $bridge->total))->class = 'rightAlign';
+        $bridge->th(array($bridge->createSortLink('missed'), 'colspan' => 2))->class = 'centerAlign';
+        $bridge->td($bridge->missed)->class = 'centerAlign';
+        $bridge->td($this->percentageLazy($bridge->missed, $bridge->total))->class = 'rightAlign';
+        $bridge->th(array($bridge->createSortLink('open'), 'colspan' => 2))->class = 'centerAlign';
+        $bridge->td($bridge->open)->class = 'centerAlign';
+        $bridge->td($this->percentageLazy($bridge->open, $bridge->total))->class = 'rightAlign';
+        // $bridge->addSortable('answered');
+        // $bridge->addSortable('missed');
+        // $bridge->addSortable('open');
+        // $bridge->add('future');
+        // $bridge->add('unknown');
         $bridge->addColumn(array('=', 'class' => 'centerAlign'));
-        $bridge->add('success');
-        $bridge->tr();
+        $bridge->addSortable('total');
+        $bridge->addSortable('gsu_id_primary_group');
+        // $bridge->tr();
         // $bridge->add('gsu_survey_name')->colspan = 4;
         // $bridge->add('gsu_id_primary_group')->colspan = 2;
         // $bridge->addColumn();
+        /*
         $bridge->addColumn(
                 array(
                     $bridge->gsu_survey_name,
@@ -90,38 +100,28 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
                     )
                 )->colspan = 7;
         $bridge->add('removed');
+         // */
     }
 
     /**
      *
-     * @return int Return the track id if any or null
+     * @param MUtil_Lazy_LazyInterface $part
+     * @param MUtil_Lazy_LazyInterface $total
+     * @return MUtil_Lazy_Call
      */
-    public function getTrackId()
+    public function percentageLazy($part, $total)
     {
-        if ($this->requestCache) {
-            $data = $this->requestCache->getProgramParams();
-            if (isset($data['gto_id_track'])) {
-                return $data['gto_id_track'];
-            }
-        } else {
-            return $this->request->getParam('gto_id_track');
-        }
+        return MUtil_Lazy::method($this, 'showPercentage', $part, $total);
     }
 
     /**
-     * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param int $part
+     * @param int $total
+     * @return string
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    public function showPercentage($part, $total)
     {
-        $trackId = $this->getTrackId();
-
-        if ($trackId) {
-            parent::processFilterAndSort($model);
-        } else {
-            $model->setFilter(array('1=0'));
-            $this->onEmpty = $this->_('No track selected...');
-        }
+        return sprintf($this->_('%d%%'), round($part / $total * 100, 0));
     }
 }
