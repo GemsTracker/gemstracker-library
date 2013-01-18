@@ -94,6 +94,66 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function createModel($detailed, $action)
     {
+        $select = $this->getSelect();
+        
+        // MUtil_Model::$verbose = true;
+        $model = new MUtil_Model_SelectModel($select, 'summary');
+
+        // Make sure of filter and sort for these fields
+        $model->set('gro_id_order');
+        $model->set('gsu_id_primary_group');
+        $model->set('gto_id_track');
+        $model->set('gto_id_organization');
+
+        $model->resetOrder();
+        $model->set('gro_round_description', 'label', $this->_('Round'));
+        $model->set('gsu_survey_name',       'label', $this->_('Survey'));
+        $model->set('answered', 'label', $this->_('Answered'), 'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        $model->set('missed',   'label', $this->_('Missed'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        $model->set('open',     'label', $this->_('Open'),     'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        $model->set('total',    'label', $this->_('Total'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('future',   'label', $this->_('Future'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('unknown',  'label', $this->_('Unknown'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('is',       'label', ' ',                  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('success',  'label', $this->_('Success'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
+        // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
+        //         'thClass', 'centerAlign');
+
+        $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
+                'multiOptions', $this->util->getDbLookup()->getGroups());
+
+        $data = $this->util->getRequestCache('index')->getProgramParams();
+        if (isset($data['gto_id_track']) &&$data['gto_id_track']) {
+            // Add the period filter
+            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+                $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
+                $model->addFilter(array($where));
+            }
+        } else {
+            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+        }
+
+        return $model;
+    }
+
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Summary');
+    }
+
+    /**
+     * Select creation function, allowes overruling in child classes
+     *
+     * @return Zend_Db_Select
+     */
+    public function getSelect()
+    {
         $select = $this->db->select();
 
         $fields['answered'] = new Zend_Db_Expr("SUM(
@@ -154,55 +214,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
                         array('gsu_survey_name', 'gsu_id_primary_group'))
                 ->group(array('gro_id_order', 'gro_round_description', 'gsu_survey_name', 'gsu_id_primary_group'));
 
-        // MUtil_Model::$verbose = true;
-        $model = new MUtil_Model_SelectModel($select, 'summary');
-
-        // Make sure of filter and sort for these fields
-        $model->set('gro_id_order');
-        $model->set('gsu_id_primary_group');
-        $model->set('gto_id_track');
-        $model->set('gto_id_organization');
-
-        $model->resetOrder();
-        $model->set('gro_round_description', 'label', $this->_('Round'));
-        $model->set('gsu_survey_name',       'label', $this->_('Survey'));
-        $model->set('answered', 'label', $this->_('Answered'), 'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('missed',   'label', $this->_('Missed'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('open',     'label', $this->_('Open'),     'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        $model->set('total',    'label', $this->_('Total'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('future',   'label', $this->_('Future'),   'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('unknown',  'label', $this->_('Unknown'),  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('is',       'label', ' ',                  'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('success',  'label', $this->_('Success'),    'tdClass', 'centerAlign', 'thClass', 'centerAlign');
-        // $model->set('removed',  'label', $this->_('Removed'),  'tdClass', 'deleted centerAlign',
-        //         'thClass', 'centerAlign');
-
-        $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
-                'multiOptions', $this->util->getDbLookup()->getGroups());
-
-        $data = $this->util->getRequestCache('index')->getProgramParams();
-        if (isset($data['gto_id_track'])) {
-            // Add the period filter
-            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
-                $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
-                $model->addFilter(array($where));
-            }
-        } else {
-            $model->setFilter(array('1=0'));
-            $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
-        }
-
-        return $model;
-    }
-
-    /**
-     * Helper function to get the title for the index action.
-     *
-     * @return $string
-     */
-    public function getIndexTitle()
-    {
-        return $this->_('Summary');
+        return $select;
     }
 
     /**

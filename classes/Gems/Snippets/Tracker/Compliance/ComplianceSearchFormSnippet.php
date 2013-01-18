@@ -58,7 +58,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_
     protected function getAutoSearchElements(array $data)
     {
         $elements[] = $this->_createSelectElement('gr2t_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $this->util->getTrackData()->getSteppedTracks(),
                 $this->_('(select a track)'));
 
         $elements[] = $this->_createSelectElement('gr2t_id_organization',

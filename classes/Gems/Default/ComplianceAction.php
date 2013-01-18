@@ -88,7 +88,6 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
         $filter = $this->util->getRequestCache('index')->getProgramParams();
-        MUtil_Echo::track($filter);
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $model->setFilter(array('1=0'));
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');

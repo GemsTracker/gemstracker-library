@@ -45,13 +45,6 @@
  */
 class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 {
-    public $defaultPeriodEnd   = 2;
-    public $defaultPeriodStart = -4;
-    public $defaultPeriodType  = 'W';
-
-    public $maxPeriod = 15;
-    public $minPeriod = -15;
-
     public $sortKey = array(
         'gto_valid_from'          => SORT_ASC,
         'gto_mail_sent_date'      => SORT_ASC,
@@ -69,6 +62,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         // Row with dates and patient data
         $bridge->gtr_track_type; // Data needed for buttons
+        
+        $bridge->tr()->appendAttrib('class', $bridge->row_class);
 
         $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
@@ -224,54 +219,24 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $elements[] = null; // break into separate spans
         }
 
-        // Create date range elements
-        $min  = $this->minPeriod;
-        $max  = $this->maxPeriod;
-        $size = max(strlen($min), strlen($max));
-
-        $options = array(
+        $dates = array(
             'gto_valid_from'      => $this->_('Valid from'),
             'gto_valid_until'     => $this->_('Valid until'),
             'gto_mail_sent_date'  => $this->_('E-Mailed on'),
             'gto_completion_time' => $this->_('Completion date'),
             );
-        $element = $this->_createSelectElement('date_used', $options);
-        $element->class = 'minimal';
+
+        $element = $this->_createSelectElement('dateused', $dates);
         $element->setLabel($this->_('For date'));
         $elements[] = $element;
 
-        $element = new Zend_Form_Element_Text('period_start', array('label' => $this->_('from'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));
-        $element->addValidator(new Zend_Validate_Int());
-        $element->addValidator(new Zend_Validate_Between($min, $max));
-        $elements[] = $element;
+        $options = array();
+        $options['label'] = $this->_('from');
+        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        $elements[] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
-        $element = new Zend_Form_Element_Text('period_end', array('label' => $this->_('until'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));
-        $element->addValidator(new Zend_Validate_Int());
-        $element->addValidator(new Zend_Validate_Between($min, $max));
-        $elements[] = $element;
-
-        $options = array(
-            'D' => $this->_('days'),
-            'W' => $this->_('weeks'),
-            'M' => $this->_('months'),
-            'Y' => $this->_('years'),
-            );
-        $element = $this->_createSelectElement('date_type', $options);
-        $element->class = 'minimal';
-        $elements[] = $element;
-
-        $joptions['change'] = new Zend_Json_Expr('function(e, ui) {
-jQuery("#period_start").attr("value", ui.values[0]);
-jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
-
-}');
-        $joptions['min']    = $this->minPeriod;
-        $joptions['max']    = $this->maxPeriod;
-        $joptions['range']  = true;
-        $joptions['values'] = new Zend_Json_Expr('[jQuery("#period_start").attr("value"), jQuery("#period_end").attr("value")]');
-
-        $element = new ZendX_JQuery_Form_Element_Slider('period', array('class' => 'periodSlider', 'jQueryParams' => $joptions));
-        $elements[] = $element;
+        $options['label'] = ' ' . $this->_('until');
+        $elements[] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
 
         $elements[] = null; // break into separate spans
 
@@ -319,12 +284,14 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         $options = array(
             'all'       => $this->_('(all actions)'),
+            'open'      => $this->_('Open'),
             'notmailed' => $this->_('Not emailed'),
             'tomail'    => $this->_('To email'),
             'toremind'  => $this->_('Needs reminder'),
             'toanswer'  => $this->_('Yet to Answer'),
             'answered'  => $this->_('Answered'),
             'missed'    => $this->_('Missed'),
+            'removed'   => $this->_('Removed'),
             );
         $elements[] = $this->_createSelectElement('main_filter', $options);
 
@@ -368,6 +335,9 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         //Add default filter
         $filter = array();
+        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+            $filter[] = $where;
+        }
         $filter['gto_id_organization'] = isset($data['gto_id_organization']) ? $data['gto_id_organization'] : $this->escort->getCurrentOrganization(); // Is overruled when set in param
         $filter['gtr_active']  = 1;
         $filter['gsu_active']  = 1;
@@ -375,10 +345,40 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
         if (isset($data['main_filter'])) {
             switch ($data['main_filter']) {
+                case 'answered':
+                    $filter[] = 'gto_completion_time IS NOT NULL';
+                    break;
+
+                case 'missed':
+                    $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
+                    $filter[] = 'gto_valid_until < CURRENT_TIMESTAMP';
+                    $filter['gto_completion_time'] = null;
+                    break;
+
                 case 'notmailed':
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
+                    break;
+
+                case 'open':
+                    $filter['gto_completion_time'] = null;
+                    $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
+                    $filter[] = '(gto_valid_until >= CURRENT_TIMESTAMP OR gto_valid_until IS NULL)';
+                    break;
+
+                // case 'other':
+                //    $filter[] = "grs_email IS NULL OR grs_email = '' OR ggp_respondent_members = 0";
+                //    $filter['can_email'] = 0;
+                //    $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
+                //    break;
+
+                case 'removed':
+                    $filter['grc_success'] = 0;
+                    break;
+
+                case 'toanswer':
+                    $filter[] = 'gto_completion_time IS NULL';
                     break;
 
                 case 'tomail':
@@ -393,26 +393,6 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
                     $filter[] = 'gto_mail_sent_date < CURRENT_TIMESTAMP';
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
-                    break;
-
-                // case 'other':
-                //    $filter[] = "grs_email IS NULL OR grs_email = '' OR ggp_respondent_members = 0";
-                //    $filter['can_email'] = 0;
-                //    $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
-                //    break;
-
-                case 'missed':
-                    $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
-                    $filter[] = 'gto_valid_until < CURRENT_TIMESTAMP';
-                    $filter['gto_completion_time'] = null;
-                    break;
-
-                case 'answered':
-                    $filter[] = 'gto_completion_time IS NOT NULL';
-                    break;
-
-                case 'toanswer':
-                    $filter[] = 'gto_completion_time IS NULL';
                     break;
 
                 default:
@@ -454,12 +434,15 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
 
     public function getDefaultSearchData()
     {
+        $options  = array();
+        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        $inFormat = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+        $now      = new MUtil_Date();
+
         return array(
-            'date_used'           => 'gto_valid_from',
-            'date_type'           => $this->defaultPeriodType,
+            'datefrom'            => $now->toString($inFormat),
+            'dateused'            => 'gto_valid_from',
             'gto_id_organization' => $this->escort->getCurrentOrganization(),
-            'period_start'        => $this->defaultPeriodStart,
-            'period_end'          => $this->defaultPeriodEnd,
             'main_filter'         => 'all',
         );
     }

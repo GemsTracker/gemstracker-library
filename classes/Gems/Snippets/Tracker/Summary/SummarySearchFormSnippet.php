@@ -58,7 +58,7 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
     protected function getAutoSearchElements(array $data)
     {
         $elements[] = $this->_createSelectElement('gto_id_track',
-                $this->util->getTrackData()->getAllTracks(),
+                $this->util->getTrackData()->getSteppedTracks(),
                 $this->_('(select a track)'));
 
         $elements[] = $this->_createSelectElement('gto_id_organization',
