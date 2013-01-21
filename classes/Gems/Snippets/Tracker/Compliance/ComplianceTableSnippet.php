@@ -96,7 +96,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                 }
 
                 if ($model->get($name, 'noSort')) {
-                    // http://localhost/pulse/track/show/id/afw8-o725
                     $title = array(
                         MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
                         "\n" . $model->get($name, 'description')
@@ -109,7 +108,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                                         $bridge->$token,
                                         array(
                                             'href' => array(
-                                                'controller' => 'track',
+                                                'controller' => 'track', // This code is only used for tracks :)
                                                 'action' => 'show',
                                                 MUtil_Model::REQUEST_ID => $bridge->$token,
                                             ),
