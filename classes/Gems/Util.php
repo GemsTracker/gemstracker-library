@@ -91,6 +91,12 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Gems_Util_TokenData
+     */
+    protected $tokenData;
+
+    /**
+     *
      * @var Gems_Util_TrackData
      */
     protected $trackData;
@@ -271,6 +277,15 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     public function getRequestCache($sourceAction = null, $readonly = false)
     {
         return $this->_getClass('requestCache', null, array($sourceAction, $readonly));
+    }
+
+    /**
+     *
+     * @return Gems_Util_TokenData
+     */
+    public function getTokenData()
+    {
+        return $this->_getClass('tokenData');
     }
 
     /**

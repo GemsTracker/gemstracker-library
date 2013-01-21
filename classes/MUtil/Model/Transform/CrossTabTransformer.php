@@ -47,28 +47,46 @@
 class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransformerAbstract
 {
     /**
-     * The field to crosstab over
+     * The fields to crosstab over
      *
-     * @var string
+     * @var array Nested array: index => array('id' => idField, 'val' => valueField, 'pre' => prefix)
      */
-    protected $idField;
+    protected $crossTabs;
 
     /**
+     * The fields to exclude from the crosstab result
      *
-     * @var string
+     * Calculated by setCrosstabFields
+     *
+     * @var array idField => idField
      */
-    protected $valueField;
+    protected $excludes;
 
     /**
+     * Set the idField / crossTab output fields for the transformer.
      *
-     * @param string $idField The field values to perform the crosstab over
+     * You can define multiple crossTabs over the same id value.
+     *
+     * @param string $idField    The field values to perform the crosstab over
      * @param string $valueField The field values to crosstab
+     * @param string $prefix     Optional prefix to add before the $idField value as the identifier
+     *                           for the output field, otherwise
      * @return MUtil_Model_Transform_CrossTabTransformer (continuation pattern)
      */
-    public function setCrosstabFields($idField, $valueField)
+    public function addCrosstabField($idField, $valueField, $prefix = null)
     {
-        $this->idField = $idField;
-        $this->valueField = $valueField;
+        if (null === $prefix) {
+            $prefix = $valueField . '_';
+        }
+
+        $this->crossTabs[] = array(
+            'id'  => $idField,
+            'val' => $valueField,
+            'pre' => $prefix,
+            );
+
+        $this->excludes[$idField]    = $idField;
+        $this->excludes[$valueField] = $valueField;
 
         return $this;
 
@@ -90,33 +108,33 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
 
         //*
         $row = reset($data);
-        if (! ($this->idField &&
-                $this->valueField &&
-                isset($row[$this->idField]) &&
-                array_key_exists($this->valueField, $row)
-                )) {
+        if (! ($this->crossTabs)) {
             return $data;
         }
 
         $keys    = $model->getKeys();
         $keys    = array_combine($keys, $keys);
-        $default = array_fill_keys(array_keys($this->_fields), null);
-        $except  = array($this->idField => 1, $this->valueField => 1);
+        $default = array_fill_keys(array_keys(array_diff_key($this->_fields, $this->excludes)), null);
         $results = array();
-        foreach ($data as $row) {
-            $name = 'col_' . $row[$this->idField];
+        // MUtil_Echo::track($default);
 
-            if (isset($this->_fields[$name])) {
+        foreach ($data as $row) {
+            foreach ($this->crossTabs as $crossTab) {
+                $name = $crossTab['pre'] . $row[$crossTab['id']];
+
                 $key = implode("\t", array_intersect_key($row, $keys));
 
                 if (! isset($results[$key])) {
-                    $results[$key] = array_diff_key($row, $except) + $default;
+                    $results[$key] = array_diff_key($row, $this->excludes) + $default;
                 }
-                $results[$key][$name] = $row[$this->valueField];
+
+                $results[$key][$name] = $row[$crossTab['val']];
             }
         }
 
-        // MUtil_Echo::track($results, $data);
+        if (MUtil_Model::$verbose) {
+            MUtil_Echo::r($results, 'Transform output');
+        }
         return $results;
     }
 }

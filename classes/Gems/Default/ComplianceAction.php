@@ -61,6 +61,13 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
     protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Tracker_Compliance_ComplianceSearchFormSnippet');
 
     /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = array('Tracker_TokenStatusLegenda', 'Generic_CurrentButtonRowSnippet');
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -117,6 +124,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
 
         $status = new Zend_Db_Expr("
             CASE
+            WHEN grc_success = 0                     THEN 'D'
             WHEN gto_completion_time IS NOT NULL     THEN 'A'
             WHEN gto_valid_from IS NULL              THEN 'U'
             WHEN gto_valid_from > CURRENT_TIMESTAMP  THEN 'W'
@@ -126,10 +134,13 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
             ");
 
         $select = $this->db->select();
-        $select->from('gems__tokens', array('gto_id_respondent_track', 'gto_id_round', 'status' => $status))
+        $select->from('gems__tokens', array(
+            'gto_id_respondent_track', 'gto_id_round', 'gto_id_token', 'status' => $status,
+            ))
                 ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
-                ->where('grc_success = 1')
+                // ->where('grc_success = 1')
                 ->where('gto_id_track = ?', $filter['gr2t_id_track'])
+                ->order('grc_success')
                 ->order('gto_id_respondent_track')
                 ->order('gto_round_order');
 
@@ -138,15 +149,17 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         $newModel->setKeys(array('gto_id_respondent_track'));
 
         $transformer = new MUtil_Model_Transform_CrossTabTransformer();
-        $transformer->setCrosstabFields('gto_id_round', 'status');
+        $transformer->addCrosstabField('gto_id_round', 'status', 'stat_')
+                ->addCrosstabField('gto_id_round', 'gto_id_token', 'tok_');
 
         foreach ($data as $row) {
-            $name = 'col_' . $row['gro_id_round'];
+            $name = 'stat_' . $row['gro_id_round'];
             $transformer->set($name, 'label', MUtil_Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
                     'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
                     'noSort', true,
                     'round', $row['gro_round_description']
                     );
+            $transformer->set('tok_' . $row['gro_id_round']);
         }
 
         $newModel->addTransformer($transformer);

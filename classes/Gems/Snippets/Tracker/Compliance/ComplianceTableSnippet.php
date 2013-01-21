@@ -47,6 +47,12 @@
 class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -58,6 +64,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'compliance');
 
@@ -89,14 +96,30 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                 }
 
                 if ($model->get($name, 'noSort')) {
-                    $tds = $bridge->addColumn(
+                    // http://localhost/pulse/track/show/id/afw8-o725
+                    $title = array(
+                        MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
+                        "\n" . $model->get($name, 'description')
+                        );
+                    $token = 'tok_' . substr($name, 5);
+
+                    $tds   = $bridge->addColumn(
                             array(
-                                $bridge->$name,
-                                'class' => array('round', MUtil_Lazy::method($this, 'getClassFor', $bridge->$name)),
-                                'title' => array(
-                                    MUtil_Lazy::method($this, 'getDescriptionFor', $bridge->$name),
-                                    "\n" . $model->get($name, 'description')
-                                    ),
+                                MUtil_Html_AElement::iflink(
+                                        $bridge->$token,
+                                        array(
+                                            'href' => array(
+                                                'controller' => 'track',
+                                                'action' => 'show',
+                                                MUtil_Model::REQUEST_ID => $bridge->$token,
+                                            ),
+                                            'onclick' => 'event.cancelBubble = true;',
+                                            'title' => $title,
+                                            $bridge->$name,
+                                            ),
+                                        $bridge->$name),
+                                'class' => array('round', MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
+                                'title' => $title,
                                 ),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
@@ -110,54 +133,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         }
         $th->append($cRound);
         $th->colspan = $span;
-    }
-
-    /**
-     * Returns the class to display the answer
-     *
-     * @param string $value Character
-     * @return string
-     */
-    public function getClassFor($value)
-    {
-        switch ($value) {
-            case 'A':
-                return 'answered';
-            case 'M':
-                return 'missed';
-            case 'O':
-                return 'open';
-            case 'U':
-                return 'unknown';
-            case 'W':
-                return 'waiting';
-            default:
-                return 'empty';
-        }
-    }
-
-    /**
-     * Returns the decription to add to the answer
-     *
-     * @param string $value Character
-     * @return string
-     */
-    public function getDescriptionFor($value)
-    {
-        switch ($value) {
-            case 'A':
-                return $this->_('Answered');
-            case 'M':
-                return $this->_('Missed deadline');
-            case 'O':
-                return $this->_('Open - can be answered now');
-            case 'U':
-                return $this->_('Valid from date unknown');
-            case 'W':
-                return $this->_('Valid from date in the future');
-            default:
-                return $this->_('Token does not exist');
-        }
     }
 
     /**
