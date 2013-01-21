@@ -1067,7 +1067,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function loadFirst($filter = true, $sort = true)
     {
         $row = $this->_loadFirst($filter, $sort);
-        MUtil_Echo::track($row);
+        // MUtil_Echo::track($row);
 
         if (! is_array($row)) {
             // Return false
@@ -1076,7 +1076,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         // Transform the row
         $data = $this->processAfterLoad(array($row));
-        MUtil_Echo::track($data);
+        // MUtil_Echo::track($data);
 
         // Return resulting first row
         return reset($data);
