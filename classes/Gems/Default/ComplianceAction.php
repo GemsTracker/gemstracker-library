@@ -136,8 +136,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         $select = $this->db->select();
         $select->from('gems__tokens', array(
             'gto_id_respondent_track', 'gto_id_round', 'gto_id_token', 'status' => $status,
-            ))
-                ->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
+            ))->joinInner('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array())
                 // ->where('grc_success = 1')
                 ->where('gto_id_track = ?', $filter['gr2t_id_track'])
                 ->order('grc_success')

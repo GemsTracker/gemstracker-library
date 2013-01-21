@@ -102,23 +102,33 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                         );
                     $token = 'tok_' . substr($name, 5);
 
+                    $href = new MUtil_Html_HrefArrayAttribute(array(
+                        $this->request->getControllerKey() => 'track', // This code is only used for tracks :)
+                        $this->request->getActionKey()     => 'show',
+                        MUtil_Model::REQUEST_ID            => $bridge->$token,
+                        ));
+                    $href->setRouteReset();
+
+                    $onclick = new MUtil_Html_OnClickArrayAttribute();
+                    $onclick->addUrl($href)
+                            ->addCancelBubble();
+
                     $tds   = $bridge->addColumn(
                             array(
                                 MUtil_Html_AElement::iflink(
                                         $bridge->$token,
                                         array(
-                                            'href' => array(
-                                                'controller' => 'track', // This code is only used for tracks :)
-                                                'action' => 'show',
-                                                MUtil_Model::REQUEST_ID => $bridge->$token,
-                                            ),
+                                            $href,
                                             'onclick' => 'event.cancelBubble = true;',
                                             'title' => $title,
                                             $bridge->$name,
                                             ),
-                                        $bridge->$name),
-                                'class' => array('round', MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
-                                'title' => $title,
+                                        $bridge->$name
+                                        ),
+                                'class'   => array('round', MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
+                                'title'   => $title,
+                                // onclick is needed because the link does not fill the whole cell
+                                'onclick' => MUtil_Lazy::iff($bridge->$token, $onclick),
                                 ),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
