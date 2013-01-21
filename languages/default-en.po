@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-18 17:59+0100\n"
+"POT-Creation-Date: 2013-01-21 16:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -418,7 +418,7 @@ msgstr "Contact"
 msgid "Changelog"
 msgstr "Changelog"
 
-#: classes/Gems/Model.php:212 classes/Gems/Default/ComplianceAction.php:86
+#: classes/Gems/Model.php:212 classes/Gems/Default/ComplianceAction.php:93
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:213
 msgid "Respondent nr"
 msgstr "Patient nr"
@@ -808,24 +808,24 @@ msgstr ""
 msgid "The survey for token %s is no longer active."
 msgstr "The survey for token %s is no longer active."
 
-#: classes/Gems/Default/ComplianceAction.php:87
+#: classes/Gems/Default/ComplianceAction.php:94
 msgid "Start date"
 msgstr "Start date"
 
-#: classes/Gems/Default/ComplianceAction.php:88
+#: classes/Gems/Default/ComplianceAction.php:95
 msgid "End date"
 msgstr "End date"
 
-#: classes/Gems/Default/ComplianceAction.php:93
-#: classes/Gems/Default/SummaryAction.php:192
+#: classes/Gems/Default/ComplianceAction.php:100
+#: classes/Gems/Default/SummaryAction.php:134
 msgid "No track selected..."
 msgstr "No track selected..."
 
-#: classes/Gems/Default/ComplianceAction.php:173
+#: classes/Gems/Default/ComplianceAction.php:185
 msgid "Compliance"
 msgstr "Compliance"
 
-#: classes/Gems/Default/ComplianceAction.php:184
+#: classes/Gems/Default/ComplianceAction.php:196
 #: classes/Gems/Default/ProjectTracksAction.php:85
 #: classes/Gems/Default/TrackAction.php:452
 #: classes/Gems/Default/TrackMaintenanceAction.php:331
@@ -1226,7 +1226,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 #: classes/Gems/Default/ExportAction.php:154
 #: classes/Gems/Default/MailJobAction.php:100
 #: classes/Gems/Default/ProjectSurveysAction.php:67
-#: classes/Gems/Default/SummaryAction.php:168
+#: classes/Gems/Default/SummaryAction.php:110
 #: classes/Gems/Default/SurveyAction.php:201
 #: classes/Gems/Email/OneMailForm.php:57
 #: classes/Gems/Export/RespondentExport.php:156
@@ -2611,7 +2611,7 @@ msgstr "Reset password for: %s"
 msgid "You are not allowed to change this password."
 msgstr "You are not allowed to change this password."
 
-#: classes/Gems/Default/SummaryAction.php:167
+#: classes/Gems/Default/SummaryAction.php:109
 #: classes/Gems/Email/OneMailForm.php:55
 #: classes/Gems/Export/RespondentExport.php:157
 #: classes/Gems/Menu/MenuAbstract.php:500
@@ -2619,14 +2619,14 @@ msgstr "You are not allowed to change this password."
 msgid "Round"
 msgstr "Round"
 
-#: classes/Gems/Default/SummaryAction.php:169
+#: classes/Gems/Default/SummaryAction.php:111
 #: classes/Gems/Default/TokenPlanAction.php:292
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:139
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:149
+#: classes/Gems/Util/TokenData.php:67
 msgid "Answered"
 msgstr "Answered"
 
-#: classes/Gems/Default/SummaryAction.php:170
+#: classes/Gems/Default/SummaryAction.php:112
 #: classes/Gems/Default/TokenPlanAction.php:293
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:129
 #: classes/Gems/Tracker/Token.php:1038
@@ -2634,25 +2634,25 @@ msgstr "Answered"
 msgid "Missed"
 msgstr "Missed"
 
-#: classes/Gems/Default/SummaryAction.php:171
+#: classes/Gems/Default/SummaryAction.php:113
 #: classes/Gems/Default/TokenPlanAction.php:287
 #: classes/Gems/Tracker/Token.php:1044
 msgid "Open"
 msgstr "Open"
 
-#: classes/Gems/Default/SummaryAction.php:172
+#: classes/Gems/Default/SummaryAction.php:114
 msgid "Total"
 msgstr "Total"
 
-#: classes/Gems/Default/SummaryAction.php:180
+#: classes/Gems/Default/SummaryAction.php:122
 msgid "Filler"
 msgstr "Filler"
 
-#: classes/Gems/Default/SummaryAction.php:205
+#: classes/Gems/Default/SummaryAction.php:147
 msgid "Summary"
 msgstr "Summary"
 
-#: classes/Gems/Default/SummaryAction.php:216
+#: classes/Gems/Default/SummaryAction.php:228
 #: classes/Gems/Default/TokenPlanAction.php:463
 #: classes/Gems/Default/TrackAction.php:450
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:141
@@ -3907,6 +3907,10 @@ msgstr "Generated on"
 msgid "Unknown respondent %s"
 msgstr "Unknown respondent %s"
 
+#: classes/Gems/Snippets/Tracker/TokenStatusLegenda.php:72
+msgid "Legend"
+msgstr "Legend"
+
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:62
 msgid "(select a track)"
@@ -3923,26 +3927,6 @@ msgstr "Track start"
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:371
 msgid "Track end"
 msgstr "Track end"
-
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:151
-msgid "Missed deadline"
-msgstr "Missed deadline"
-
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:153
-msgid "Open - can be answered now"
-msgstr "Open - can be answered now"
-
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:155
-msgid "Valid from date unknown"
-msgstr "Valid from date unknown"
-
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:157
-msgid "Valid from date in the future"
-msgstr "Valid from date in the future"
-
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceTableSnippet.php:159
-msgid "Token does not exist"
-msgstr "Token does not exist"
 
 #: classes/Gems/Snippets/Tracker/Summary/SummaryTableSnippet.php:126
 #, php-format
@@ -4699,6 +4683,26 @@ msgstr "Yes (individual surveys only)"
 #: classes/Gems/Util/ReceptionCodeLibrary.php:125
 msgid "Stop (per respondent or track only)"
 msgstr "Stop (per patient or track only)"
+
+#: classes/Gems/Util/TokenData.php:64
+msgid "Valid from date unknown"
+msgstr "Valid from date unknown"
+
+#: classes/Gems/Util/TokenData.php:65
+msgid "Valid from date in the future"
+msgstr "Valid from date in the future"
+
+#: classes/Gems/Util/TokenData.php:66
+msgid "Open - can be answered now"
+msgstr "Open - can be answered now"
+
+#: classes/Gems/Util/TokenData.php:68
+msgid "Missed deadline"
+msgstr "Missed deadline"
+
+#: classes/Gems/Util/TokenData.php:69
+msgid "Token does not exist"
+msgstr "Token does not exist"
 
 #: classes/Gems/Util/TrackData.php:147
 msgid "Inactive"
