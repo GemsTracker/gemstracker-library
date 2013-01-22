@@ -154,6 +154,21 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     }
 
     /**
+     * This transform function checks the filter for
+     * a) retreiving filters to be applied to the transforming data,
+     * b) adding filters that are the result
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $filter
+     * @return array The (optionally changed) filter
+     */
+    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
+    {
+        // No changes
+        return $filter;
+    }
+
+    /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *

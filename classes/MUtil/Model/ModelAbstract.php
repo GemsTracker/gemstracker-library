@@ -144,6 +144,9 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $filter = $this->getFilter();
         }
         if ($filter && is_array($filter)) {
+            foreach ($this->_transformers as $transformer) {
+                $filter = $transformer->transformFilter($this, $filter);
+            }
 
             if ($this->hasTextSearchFilter() && ($param = $this->getTextFilter())) {
                 if (isset($filter[$param])) {
@@ -271,20 +274,20 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Returns a nested array containing the items requested.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
      * @return array Nested array or false
      */
-    abstract protected function _load($filter = true, $sort = true);
+    abstract protected function _load(array $filter, array $sort);
 
     /**
      * Returns a nested array containing the items requested.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
      * @return array Nested array or false
      */
-    protected function _loadFirst($filter = true, $sort = true)
+    protected function _loadFirst(array $filter, array $sort)
     {
         $data = $this->_load($filter, $sort);
 
@@ -1048,7 +1051,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function load($filter = true, $sort = true)
     {
-        $data = $this->_load($filter, $sort);
+        $data = $this->_load(
+                $this->_checkFilterUsed($filter),
+                $this->_checkSortUsed($sort)
+                );
 
         if (is_array($data)) {
             $data = $this->processAfterLoad($data);
@@ -1066,7 +1072,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function loadFirst($filter = true, $sort = true)
     {
-        $row = $this->_loadFirst($filter, $sort);
+        $row = $this->_loadFirst(
+                $this->_checkFilterUsed($filter),
+                $this->_checkSortUsed($sort)
+                );
         // MUtil_Echo::track($row);
 
         if (! is_array($row)) {

@@ -61,13 +61,11 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
 
     public function addModel(MUtil_Model_ModelAbstract $subModel, array $joinFields)
     {
+        // MUtil_Model::$verbose = true;
+
         $name = $subModel->getName();
         $this->_subModels[$name] = $subModel;
         $this->_joins[$name]     = $joinFields;
-
-        if (count($joinFields) > 1) {
-            throw new MUtil_Model_ModelException(__CLASS__ . " currently accepts single field joins only.");
-        }
 
         return $this;
     }
@@ -88,10 +86,36 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
             foreach ($sub->getItemNames() as $name) {
                 if (! $model->has($name)) {
                     $data[$name] = $sub->get($name);
+
+                    // Remove unsuited data
+                    unset($data[$name]['table'], $data[$name]['column_expression']);
                 }
             }
         }
         return $data;
+    }
+
+    /**
+     * This transform function checks the filter for
+     * a) retreiving filters to be applied to the transforming data,
+     * b) adding filters that are the result
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $filter
+     * @return array The (optionally changed) filter
+     */
+    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
+    {
+        // Make sure the join fields are in the result set/
+        foreach ($this->_joins as $joins) {
+            foreach ($joins as $source => $target) {
+                if (!is_integer($source)) {
+                    $model->get($source);
+                }
+            }
+        }
+
+        return $filter;
     }
 
     /**
@@ -122,17 +146,45 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
                 $sdata = $sub->load(array($skey => $mfor));
                 // MUtil_Echo::track($sdata);
 
-                $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
-                $empty = array_fill_keys(array_keys(reset($sdata)), null);
+                if ($sdata) {
+                    $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
+                    $empty = array_fill_keys(array_keys(reset($sdata)), null);
 
+                    foreach ($data as &$mrow) {
+                        $mfind = $mrow[$mkey];
+
+                        if (isset($skeys[$mfind])) {
+                            $mrow += $sdata[$skeys[$mfind]];
+                        } else {
+                            $mrow += $empty;
+                        }
+                    }
+                } else {
+                    $empty = array_fill_keys($sub->getItemNames(), null);
+
+                    foreach ($data as &$mrow) {
+                        $mrow += $empty;
+                    }
+                }
+            } else {
+                $empty = array_fill_keys($sub->getItemNames(), null);
                 foreach ($data as &$mrow) {
-                    $mfind = $mrow[$mkey];
+                    $filter = $sub->getFilter();
+                    foreach ($this->_joins[$name] as $from => $to) {
+                        if (isset($mrow[$from])) {
+                            $filter[$to] = $mrow[$from];
+                        }
+                    }
 
-                    if (isset($skeys[$mfind])) {
-                        $mrow += $sdata[$skeys[$mfind]];
+                    $sdata = $sub->loadFirst($filter);
+
+                    if ($sdata) {
+                        $mrow += $sdata;
                     } else {
                         $mrow += $empty;
                     }
+
+                    // MUtil_Echo::track($sdata, $mrow);
                 }
             }
         }

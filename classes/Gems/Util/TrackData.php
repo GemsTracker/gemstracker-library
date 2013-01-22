@@ -48,6 +48,12 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 {
     /**
      *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;

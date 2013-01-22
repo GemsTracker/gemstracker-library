@@ -87,11 +87,11 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     /**
      * Returns a nested array containing the items requested.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
      * @return array Nested array or false
      */
-    protected function _load($filter = true, $sort = true)
+    protected function _load(array $filter, array $sort)
     {
         return $this->addAnswers(parent::_load($filter, $sort));
     }

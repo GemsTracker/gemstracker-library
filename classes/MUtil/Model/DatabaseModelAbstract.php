@@ -120,11 +120,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     /**
      * Get a select statement using a filter and sort
      *
-     * @param array $filter
-     * @param array $sort
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
      * @return Zend_Db_Table_Select
      */
-    protected function _createSelect($filter = null, $sort = null)
+    protected function _createSelect(array $filter, array $sort)
     {
         $select  = $this->getSelect();
 
@@ -154,7 +154,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         $adapter = $this->getAdapter();
 
         // Filter
-        foreach ($this->_checkFilterUsed($filter) as $name => $value) {
+        foreach ($filter as $name => $value) {
             if (is_int($name)) {
                 $select->where($value);
             } else {
@@ -183,43 +183,41 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         }
 
         // Sort
-        if ($sort = $this->_checkSortUsed($sort)) {
-            foreach ($sort as $key => $order) {
-                if (is_numeric($key) || is_string($order)) {
-                    if ($this->has($order)) {
-                        $sqlsort[] = $order;
-                    }
-                } else {
-                    // Code not needed at least for MySQL, a named calculated column can be used in
-                    // an ORDER BY. However, it does work.
-                    /*
-                    if ($expression = $this->get($key, 'column_expression')) {
-                        //The brackets tell Zend_Db_Select that this is an epression in a sort.
-                        $key = '(' . $expression . ')';
-                    } // */
-                    switch ($order) {
-                        case SORT_ASC:
-                            if ($this->has($key)) {
-                                $sqlsort[] = $key . ' ASC';
-                            }
-                            break;
-                        case SORT_DESC:
-                            if ($this->has($key)) {
-                                $sqlsort[] = $key . ' DESC';
-                            }
-                            break;
-                        default:
-                            if ($this->has($order)) {
-                                $sqlsort[] = $order;
-                            }
-                            break;
-                    }
+        foreach ($sort as $key => $order) {
+            if (is_numeric($key) || is_string($order)) {
+                if ($this->has($order)) {
+                    $sqlsort[] = $order;
+                }
+            } else {
+                // Code not needed at least for MySQL, a named calculated column can be used in
+                // an ORDER BY. However, it does work.
+                /*
+                if ($expression = $this->get($key, 'column_expression')) {
+                    //The brackets tell Zend_Db_Select that this is an epression in a sort.
+                    $key = '(' . $expression . ')';
+                } // */
+                switch ($order) {
+                    case SORT_ASC:
+                        if ($this->has($key)) {
+                            $sqlsort[] = $key . ' ASC';
+                        }
+                        break;
+                    case SORT_DESC:
+                        if ($this->has($key)) {
+                            $sqlsort[] = $key . ' DESC';
+                        }
+                        break;
+                    default:
+                        if ($this->has($order)) {
+                            $sqlsort[] = $order;
+                        }
+                        break;
                 }
             }
+        }
 
-            if (isset($sqlsort)) {
-                $select->order($sqlsort);
-            }
+        if (isset($sqlsort)) {
+            $select->order($sqlsort);
         }
 
         if (MUtil_Model::$verbose) {
@@ -319,11 +317,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     /**
      * Returns a nested array containing the items requested.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
      * @return array Nested array or false
      */
-    protected function _load($filter = true, $sort = true)
+    protected function _load(array $filter, array $sort)
     {
         return $this->_createSelect($filter, $sort)->query(Zend_Db::FETCH_ASSOC)->fetchAll();
     }
@@ -331,11 +329,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     /**
      * Returns an array containing the first requested item.
      *
-     * @param mixed $filter True to use the stored filter, array to specify a different filter
-     * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return array An array or false
+     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
+     * @param array $sort Sort array field name => sort type
+     * @return array Nested array or false
      */
-    protected function _loadFirst($filter = true, $sort = true)
+    protected function _loadFirst(array $filter, array $sort)
     {
         $select = $this->_createSelect($filter, $sort);
         $select->limit(1, 0);
@@ -930,7 +928,10 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     public function loadPaginator($filter = true, $sort = true)
     {
-        $select  = $this->_createSelect($filter, $sort);
+        $select  = $this->_createSelect(
+                $this->_checkFilterUsed($filter),
+                $this->_checkSortUsed($sort)
+                );
         $adapter = new MUtil_Model_SelectModelPaginator($select, $this);
 
         return new Zend_Paginator($adapter);
