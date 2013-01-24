@@ -346,15 +346,89 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db)
     {
-        if (isset($data['dateused'])) {
-            $options = array();
-            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        $isUsed = isset($data['dateused']) && $data['dateused'];
+        if (! $isUsed) {
+            return;
+        }
 
-            $outFormat = 'yyyy-MM-dd';
-            $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+        $options   = array();
+        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        $outFormat = 'yyyy-MM-dd';
+        $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
 
-            if (isset($data['datefrom']) && $data['datefrom']) {
-                if (isset($data['dateuntil']) && $data['dateuntil']) {
+        $isFrom  = isset($data['datefrom'])  && $data['datefrom']  && MUtil_Date::isDate($data['datefrom'],  $inFormat);
+        $isUntil = isset($data['dateuntil']) && $data['dateuntil'] && MUtil_Date::isDate($data['dateuntil'], $inFormat);
+        if (! ($isFrom || $isUntil)) {
+            return;
+        }
+
+
+        switch ($data['dateused'][0]) {
+            case '<':
+                // overlaps
+                $periods = explode(' ', substr($data['dateused'], 1));
+
+                if ($isFrom && $isUntil) {
+                    return sprintf(
+                            '(%1$s <= %4$s OR (%1$s IS NULL AND %2$s IS NOT NULL)) AND
+                                (%2$s >= %3$s OR %2$s IS NULL)',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                if ($isFrom) {
+                    return sprintf(
+                            '%2$s >= %3$s OR (%2$s IS NULL AND %1$s IS NOT NULL)',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            );
+                }
+                if ($isUntil) {
+                    return sprintf(
+                            '%1$s <= %3$s OR (%1$s IS NULL AND %2$s IS NOT NULL)',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                return;
+
+            case '>':
+                // within
+                $periods = explode(' ', substr($data['dateused'], 1));
+
+                if ($isFrom && $isUntil) {
+                    return sprintf(
+                            '%1$s >= %3$s AND %2$s <= %4$s',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                if ($isFrom) {
+                    return sprintf(
+                            '%1$s >= %3$s AND (%2$s IS NULL OR %2$s >= %3$s)',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            );
+                }
+                if ($isUntil) {
+                    return sprintf(
+                            '%2$s <= %3$s AND (%1$s IS NULL OR %1$s <= %3$s)',
+                            $db->quoteIdentifier($periods[0]),
+                            $db->quoteIdentifier($periods[1]),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                return;
+
+            default:
+                if ($isFrom && $isUntil) {
                     return sprintf(
                             '%s BETWEEN %s AND %s',
                             $db->quoteIdentifier($data['dateused']),
@@ -362,19 +436,21 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
                             );
                 }
-                return sprintf(
-                        '%s >= %s',
-                        $db->quoteIdentifier($data['dateused']),
-                        $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
-                        );
-            }
-            if (isset($data['dateuntil']) && $data['dateuntil']) {
-                return sprintf(
-                        '%s <= %s',
-                        $db->quoteIdentifier($data['dateused']),
-                        $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
-                        );
-            }
+                if ($isFrom) {
+                    return sprintf(
+                            '%s >= %s',
+                            $db->quoteIdentifier($data['dateused']),
+                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            );
+                }
+                if ($isUntil) {
+                    return sprintf(
+                            '%s <= %s',
+                            $db->quoteIdentifier($data['dateused']),
+                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            );
+                }
+                return;
         }
     }
 

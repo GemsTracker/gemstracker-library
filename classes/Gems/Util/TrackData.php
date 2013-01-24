@@ -204,6 +204,30 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @param string $code
+     * @return array survey id => survey name
+     */
+    public function getSurveysByCode($code)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $code;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_survey_name'))
+                ->where("gsu_code = ?", $code)
+                ->where("gsu_active = 1")
+                ->order('gsu_survey_name');
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys'));
+        return $results;
+    }
+
+    /**
      * Returns array (id => name) of all 'T' tracks, sorted alphabetically
      * @return array
      */

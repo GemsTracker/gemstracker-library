@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 16:58+0100\n"
+"POT-Creation-Date: 2013-01-24 18:21+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -1278,7 +1278,7 @@ msgstr "Rol"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:503
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:737
 #: classes/Gems/Tracker/Model/TrackModel.php:102
-#: classes/Gems/Util/TrackData.php:147
+#: classes/Gems/Util/TrackData.php:153
 msgid "Active"
 msgstr "Actief"
 
@@ -1442,13 +1442,13 @@ msgid "Invalid language setting."
 msgstr "Ongeldige taal instelling."
 
 #: classes/Gems/Default/LogAction.php:78
-#: classes/Gems/Default/TokenPlanAction.php:234
+#: classes/Gems/Default/TokenPlanAction.php:238
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:125
 msgid "from"
 msgstr "vanaf"
 
 #: classes/Gems/Default/LogAction.php:83
-#: classes/Gems/Default/TokenPlanAction.php:238
+#: classes/Gems/Default/TokenPlanAction.php:242
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:141
 msgid "until"
 msgstr "tot"
@@ -1768,8 +1768,8 @@ msgstr "Email servers"
 #: classes/Gems/Default/RespondentAction.php:386
 #: classes/Gems/Default/StaffAction.php:335
 #: classes/Gems/Default/StaffAction.php:405
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:66
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:66
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:75
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:75
 msgid "(all organizations)"
 msgstr "(alle organisaties)"
 
@@ -2636,14 +2636,14 @@ msgid "Round"
 msgstr "Ronde"
 
 #: classes/Gems/Default/SummaryAction.php:111
-#: classes/Gems/Default/TokenPlanAction.php:292
+#: classes/Gems/Default/TokenPlanAction.php:296
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:139
 #: classes/Gems/Util/TokenData.php:67
 msgid "Answered"
 msgstr "Beantwoord"
 
 #: classes/Gems/Default/SummaryAction.php:112
-#: classes/Gems/Default/TokenPlanAction.php:293
+#: classes/Gems/Default/TokenPlanAction.php:297
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:129
 #: classes/Gems/Tracker/Token.php:1038
 #: snippets/RespondentTokenTabsSnippet.php:68
@@ -2651,7 +2651,7 @@ msgid "Missed"
 msgstr "Gemist"
 
 #: classes/Gems/Default/SummaryAction.php:113
-#: classes/Gems/Default/TokenPlanAction.php:287
+#: classes/Gems/Default/TokenPlanAction.php:291
 #: classes/Gems/Tracker/Token.php:1044
 msgid "Open"
 msgstr "Open"
@@ -2669,7 +2669,7 @@ msgid "Summary"
 msgstr "Samenvatting"
 
 #: classes/Gems/Default/SummaryAction.php:228
-#: classes/Gems/Default/TokenPlanAction.php:463
+#: classes/Gems/Default/TokenPlanAction.php:469
 #: classes/Gems/Default/TrackAction.php:450
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:141
 msgid "token"
@@ -2910,17 +2910,17 @@ msgid "Round / Details"
 msgstr "Ronde / Details"
 
 #: classes/Gems/Default/TokenPlanAction.php:113
-#: classes/Gems/Default/TokenPlanAction.php:223
+#: classes/Gems/Default/TokenPlanAction.php:227
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:57
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:73
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:83
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:385
 msgid "Valid from"
 msgstr "Geldig vanaf"
 
 #: classes/Gems/Default/TokenPlanAction.php:114
-#: classes/Gems/Default/TokenPlanAction.php:224
+#: classes/Gems/Default/TokenPlanAction.php:228
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:58
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:74
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:84
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:386
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:198
 msgid "Valid until"
@@ -2940,70 +2940,78 @@ msgstr "Email %s"
 msgid "No tokens found."
 msgstr "Geen kenmerken gevonden."
 
-#: classes/Gems/Default/TokenPlanAction.php:225
+#: classes/Gems/Default/TokenPlanAction.php:224
+msgid "Is valid during"
+msgstr "Is geldig gedurende"
+
+#: classes/Gems/Default/TokenPlanAction.php:226
+msgid "Is valid within"
+msgstr "Is geldig tijdens"
+
+#: classes/Gems/Default/TokenPlanAction.php:229
 msgid "E-Mailed on"
 msgstr "Email verstuurd op"
 
-#: classes/Gems/Default/TokenPlanAction.php:226
+#: classes/Gems/Default/TokenPlanAction.php:230
 msgid "Completion date"
 msgstr "Datum ingevuld op"
 
-#: classes/Gems/Default/TokenPlanAction.php:230
+#: classes/Gems/Default/TokenPlanAction.php:234
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:116
 msgid "For date"
 msgstr "Met datum"
 
-#: classes/Gems/Default/TokenPlanAction.php:252
+#: classes/Gems/Default/TokenPlanAction.php:256
 msgid "Select:"
 msgstr "Selecteren:"
 
-#: classes/Gems/Default/TokenPlanAction.php:258
+#: classes/Gems/Default/TokenPlanAction.php:262
 msgid "(all tracks)"
 msgstr "(alle trajecten)"
 
-#: classes/Gems/Default/TokenPlanAction.php:269
+#: classes/Gems/Default/TokenPlanAction.php:273
 msgid "(all rounds)"
 msgstr "(alle rondes)"
 
-#: classes/Gems/Default/TokenPlanAction.php:283
+#: classes/Gems/Default/TokenPlanAction.php:287
 msgid "(all surveys)"
 msgstr "(alle vragenlijsten)"
 
-#: classes/Gems/Default/TokenPlanAction.php:286
+#: classes/Gems/Default/TokenPlanAction.php:290
 msgid "(all actions)"
 msgstr "(alle acties)"
 
-#: classes/Gems/Default/TokenPlanAction.php:288
+#: classes/Gems/Default/TokenPlanAction.php:292
 msgid "Not emailed"
 msgstr "Niet gemaild"
 
-#: classes/Gems/Default/TokenPlanAction.php:289
+#: classes/Gems/Default/TokenPlanAction.php:293
 msgid "To email"
 msgstr "Te mailen"
 
-#: classes/Gems/Default/TokenPlanAction.php:290
+#: classes/Gems/Default/TokenPlanAction.php:294
 msgid "Needs reminder"
 msgstr "Herinnering nodig"
 
-#: classes/Gems/Default/TokenPlanAction.php:291
+#: classes/Gems/Default/TokenPlanAction.php:295
 msgid "Yet to Answer"
 msgstr "Nog te beantwoorden"
 
-#: classes/Gems/Default/TokenPlanAction.php:294
+#: classes/Gems/Default/TokenPlanAction.php:298
 msgid "Removed"
 msgstr "Verwijderd"
 
-#: classes/Gems/Default/TokenPlanAction.php:308
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:88
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:90
+#: classes/Gems/Default/TokenPlanAction.php:312
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:98
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:100
 msgid "(all fillers)"
 msgstr "(alle invullers)"
 
-#: classes/Gems/Default/TokenPlanAction.php:327
+#: classes/Gems/Default/TokenPlanAction.php:331
 msgid "(all staff)"
 msgstr "(alle medewerkers)"
 
-#: classes/Gems/Default/TokenPlanAction.php:454
+#: classes/Gems/Default/TokenPlanAction.php:460
 #: classes/Gems/Snippets/TokenModelSnippetAbstract.php:59
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:122
 #: snippets/BrowseSingleSurveyTokenSnippet.php:144
@@ -3011,7 +3019,7 @@ msgstr "(alle medewerkers)"
 msgid "+"
 msgstr "+"
 
-#: classes/Gems/Default/TokenPlanAction.php:468
+#: classes/Gems/Default/TokenPlanAction.php:474
 msgid "Token planning"
 msgstr "Per kenmerk plannen"
 
@@ -3079,7 +3087,7 @@ msgstr "Verwijder traject"
 #: classes/Gems/Default/TrackAction.php:461
 #, php-format
 msgid "Tracks assigned to %s: %s"
-msgstr "Geen traject toegewezen aan patiënt nr: %s: %s"
+msgstr "Trajecten toegewezen aan patiënt nr: %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:489
 #, php-format
@@ -3939,19 +3947,19 @@ msgstr "Onbekende patiënt %s"
 msgid "Legend"
 msgstr "Legenda"
 
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:62
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:62
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:69
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:69
 msgid "(select a track)"
 msgstr "(selecteer een traject)"
 
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:71
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:71
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:81
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:81
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:370
 msgid "Track start"
 msgstr "Traject start"
 
-#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:72
-#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:72
+#: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:82
+#: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:82
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:371
 msgid "Track end"
 msgstr "Traject einde"
@@ -4106,7 +4114,7 @@ msgstr ""
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:387
 msgid "Start time"
-msgstr "Starten tijd"
+msgstr "Start tijd"
 
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:388
 msgid "Completion time"
@@ -4749,35 +4757,35 @@ msgstr "Deadline gemist"
 msgid "Token does not exist"
 msgstr "Kenmerk bestaat niet"
 
-#: classes/Gems/Util/TrackData.php:147
+#: classes/Gems/Util/TrackData.php:153
 msgid "Inactive"
 msgstr "Inactief"
 
-#: classes/Gems/Util/TrackData.php:179
+#: classes/Gems/Util/TrackData.php:185
 msgid "Minutes"
 msgstr "Minuten"
 
-#: classes/Gems/Util/TrackData.php:180
+#: classes/Gems/Util/TrackData.php:186
 msgid "Hours"
 msgstr "Uren"
 
-#: classes/Gems/Util/TrackData.php:181
+#: classes/Gems/Util/TrackData.php:187
 msgid "Days"
 msgstr "Dagen"
 
-#: classes/Gems/Util/TrackData.php:182
+#: classes/Gems/Util/TrackData.php:188
 msgid "Weeks"
 msgstr "Weken"
 
-#: classes/Gems/Util/TrackData.php:183
+#: classes/Gems/Util/TrackData.php:189
 msgid "Months"
 msgstr "Maanden"
 
-#: classes/Gems/Util/TrackData.php:184
+#: classes/Gems/Util/TrackData.php:190
 msgid "Quarters"
 msgstr "Kwartieren"
 
-#: classes/Gems/Util/TrackData.php:185
+#: classes/Gems/Util/TrackData.php:191
 msgid "Years"
 msgstr "Jaren"
 
@@ -5363,9 +5371,6 @@ msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
 
 #~ msgid "Some help for this export"
 #~ msgstr "Uitleg over deze export mogelijkheid"
-
-#~ msgid "Invalid organization."
-#~ msgstr "Ongeldige organisatie."
 
 #~ msgid "Check all is answersed"
 #~ msgstr "Controleer alles is beantwoord"

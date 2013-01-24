@@ -62,7 +62,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         // Row with dates and patient data
         $bridge->gtr_track_type; // Data needed for buttons
-        
+
         $bridge->tr()->appendAttrib('class', $bridge->row_class);
 
         $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
@@ -220,6 +220,10 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
 
         $dates = array(
+            '<gto_valid_from gto_valid_until'
+                                  => $this->_('Is valid during'),
+            '>gto_valid_from gto_valid_until'
+                                  => $this->_('Is valid within'),
             'gto_valid_from'      => $this->_('Valid from'),
             'gto_valid_until'     => $this->_('Valid until'),
             'gto_mail_sent_date'  => $this->_('E-Mailed on'),
@@ -336,6 +340,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         //Add default filter
         $filter = array();
         if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+            // MUtil_Echo::track($where);
             $filter[] = $where;
         }
         $filter['gto_id_organization'] = isset($data['gto_id_organization']) ? $data['gto_id_organization'] : $this->escort->getCurrentOrganization(); // Is overruled when set in param
@@ -441,7 +446,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         return array(
             'datefrom'            => $now->toString($inFormat),
-            'dateused'            => 'gto_valid_from',
+            'dateused'            => '<gto_valid_from gto_valid_until',
+            'dateuntil'           => $now->toString($inFormat),
             'gto_id_organization' => $this->escort->getCurrentOrganization(),
             'main_filter'         => 'all',
         );

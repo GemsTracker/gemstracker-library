@@ -36,7 +36,7 @@
  */
 
 /**
- * Object representing a specific Survey 
+ * Object representing a specific Survey
  *
  * @package    Gems
  * @subpackage Tracker
@@ -425,7 +425,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
      */
     public function getSource()
     {
-        if (! $this->_source && isset($this->_gemsSurvey['gsu_id_source'])) {
+        if (! $this->_source && isset($this->_gemsSurvey['gsu_id_source']) && $this->_gemsSurvey['gsu_id_source']) {
             $this->_source = $this->tracker->getSource($this->_gemsSurvey['gsu_id_source']);
 
             if (! $this->_source) {

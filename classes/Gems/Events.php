@@ -106,7 +106,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
             $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . $eventType;
         }
         $paths[''] = APPLICATION_PATH . '/events/' . strtolower($eventType);
-        MUtil_Echo::track($paths);
+        // MUtil_Echo::track($paths);
 
         return $paths;
     }

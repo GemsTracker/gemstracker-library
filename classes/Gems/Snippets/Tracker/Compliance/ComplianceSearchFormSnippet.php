@@ -47,6 +47,12 @@
 class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
 {
     /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -57,13 +63,17 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends Gems_
      */
     protected function getAutoSearchElements(array $data)
     {
-        $elements[] = $this->_createSelectElement('gr2t_id_track',
+        $elements[] = $this->_createSelectElement(
+                'gr2t_id_track',
                 $this->util->getTrackData()->getSteppedTracks(),
-                $this->_('(select a track)'));
+                $this->_('(select a track)')
+                );
 
-        $elements[] = $this->_createSelectElement('gr2t_id_organization',
-                $this->util->getDbLookup()->getOrganizationsWithRespondents(),
-                $this->_('(all organizations)'));
+        $elements[] = $this->_createSelectElement(
+                'gr2t_id_organization',
+                $this->loader->getCurrentUser()->getRespondentOrganizations(),
+                $this->_('(all organizations)')
+                );
 
         $elements[] = null;
 
