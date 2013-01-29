@@ -270,7 +270,7 @@ GET DATA
                 $size = $answerModel->get($key, 'maxlength');   // This comes from db when available
                 if (is_null($size)) {
                     $size = $answerModel->get($key, 'size');    // This is the display width
-                    if ($is_null($size)) {
+                    if (is_null($size)) {
                         $size = $defaultSize;                   // We just don't know, make it the default
                     }
                 }
