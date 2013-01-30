@@ -201,7 +201,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
             $respId = $this->_gemsData['gto_id_respondent'];
             $orgId  = $this->_gemsData['gto_id_organization'];
-                MUtil_Echo::track($this->_gemsData);
+            // MUtil_Echo::track($this->_gemsData);
 
             if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
                 $this->_gemsData = $this->_gemsData + $row;

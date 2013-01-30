@@ -68,7 +68,11 @@ class RespondentDetailsSnippet extends Gems_Snippets_RespondentDetailSnippetAbst
         $address[] = $bridge->grs_city;
 
         // ROW 0
-        $bridge->addItem($bridge->gr2o_patient_nr, $this->_('Respondent nr: '));
+        $label = $this->model->get('gr2o_patient_nr', 'label');
+        if (empty($label)) {
+            $label = $this->_('Respondent nr: ');
+        }
+        $bridge->addItem($bridge->gr2o_patient_nr, $label);
         $bridge->addItem(
             $HTML->spaced($bridge->itemIf('grs_last_name', array($bridge->grs_last_name, ',')), $bridge->grs_gender, $bridge->grs_first_name, $bridge->grs_surname_prefix),
             $this->_('Respondent'));
