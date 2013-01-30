@@ -52,6 +52,12 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * @var GemsEscort
      */
     public $escort;
+    
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
 
     protected $html;
 
@@ -282,9 +288,21 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected function _exportRespondent($respondentId)
     {
         $respondentModel = $this->loader->getModels()->getRespondentModel(false);
+        
         //Insert orgId when set
-        $respondentModel->applyRequest(Zend_Controller_Front::getInstance()->getRequest());
-        $respondentModel->addFilter(array('gr2o_patient_nr' => $respondentId));
+        if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
+            $filter['gr2o_id_organization'] = $respondentId['gr2o_id_organization'];
+            $respondentId = $respondentId['gr2o_patient_nr'];
+        } else {
+            // Or accept to find in current organization
+            $filter['gr2o_id_organization'] = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+            // Or use any organization?
+            // $allowedOrgs = $this->loader->getCurrentUser()->getAllowedOrganizations();
+            // $filter[] = sprintf('%s IN(%s)', $this->db->quoteIdentifier('gto_id_organization'), array_keys($allowedOrgs));
+        }
+        $filter['gr2o_patient_nr'] = $respondentId;
+
+        $respondentModel->setFilter($filter);
         $respondentData = $respondentModel->loadFirst();
 
         $this->html->snippet($this->_respondentSnippet,
