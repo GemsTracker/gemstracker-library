@@ -342,7 +342,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
             }
             $this->_fieldMap = $map;
-            $this->cache->save($this->_fieldMap, $cacheId);
+            // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
+            $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
         }
 
         return $this->_fieldMap;
