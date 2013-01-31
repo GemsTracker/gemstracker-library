@@ -152,7 +152,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
      * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
      * @param string                    $language    The language used / to use for the export
      */
-    public function handeExportData($data, $survey, $answers, $answerModel, $language)
+    public function handleExportData($data, $survey, $answers, $answerModel, $language)
     {
         $filename = $survey->getName() . '.dat';
         $response = $this->_doHeaders($filename);
