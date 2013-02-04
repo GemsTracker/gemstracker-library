@@ -729,7 +729,12 @@ class GemsEscort extends MUtil_Application_Escort
                     $url = $css;
                     $media = 'screen';
                 }
-                $this->view->headLink()->prependStylesheet($this->basepath->getBasePath() . '/' . $url, $media);
+                // When exporting to pdf, we need full urls
+                if (substr($url,0,4) == 'http') {
+                    $this->view->headLink()->prependStylesheet($url, $media);
+                } else {
+                    $this->view->headLink()->prependStylesheet($this->view->serverUrl() . $this->basepath->getBasePath() . '/' . $url, $media);
+                }
             }
         }
     }
