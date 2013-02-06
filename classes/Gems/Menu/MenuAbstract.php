@@ -112,13 +112,13 @@ abstract class Gems_Menu_MenuAbstract
      */
     protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
+        $this->sortByOrder();
         if ($this->_subItems) {
             $lastParams = null;
             $i = 0;
             $pages = array();
             foreach ($this->_subItems as $item) {
-                $item->sortByOrder();
-                if (! $item->get('button_only')) {
+                 if (! $item->get('button_only')) {
                     $page = $item->_toNavigationArray($source);
 
                     if (($this instanceof Gems_Menu_SubMenuItem) &&
