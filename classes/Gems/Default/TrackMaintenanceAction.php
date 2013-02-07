@@ -61,6 +61,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     public $sortKey = array('gtr_track_name' => SORT_ASC);
 
     public $summarizedActions = array('index', 'autofilter', 'check-all');
+    
+    public $menuShowIncludeLevel = 10;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -187,6 +189,62 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         return true;
     }
+    
+    public function copyAction()
+    {
+        $trackId = $this->_getIdParam();
+        $trackModel = $this->getModel();
+        $roundModel = $this->createModel(true, 'rounds');
+        $fieldModel = $this->createModel(true, 'fields');
+
+        // First load the track
+        $trackModel->applyRequest($this->getRequest());
+        $track = $trackModel->loadFirst();
+
+        // Create an empty track
+        $newTrack = $trackModel->loadNew();
+        unset($track['gtr_id_track'], $track['gtr_changed'], $track['gtr_changed_by'], $track['gtr_created'], $track['gtr_created_by']);
+        $track['gtr_track_name'] .= $this->_(' - Copy');
+        $newTrack = $track + $newTrack;
+        // Now save (not done yet)
+        $savedValues = $trackModel->save($newTrack);
+        $newTrackId = $savedValues['gtr_id_track'];
+        
+        // Now copy the rounds
+        $roundModel->applyRequest($this->getRequest());
+        $rounds = $roundModel->load();
+        
+        $newRounds = $roundModel->loadNew(count($rounds));
+        foreach ($newRounds as $idx => $newRound) {
+            $round = $rounds[$idx];
+            unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
+            unset($round['grp_id_round'], $round['grp_changed'], $round['grp_changed_by'], $round['grp_created'], $round['grp_created_by']);
+            $round['gro_id_track'] = $newTrackId;
+            $newRounds[$idx] = $round + $newRounds[$idx];
+        }
+        // Now save (not done yet)
+        $savedValues = $roundModel->saveAll($newRounds);
+        
+        // Now copy the fields
+        $fieldModel->applyRequest($this->getRequest());
+        $fields = $fieldModel->load();
+        
+        $newFields = $fieldModel->loadNew(count($fields));
+        foreach ($newFields as $idx => $newField) {
+            $field = $fields[$idx];
+            unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
+            $field['gtf_id_track'] = $newTrackId;
+            $newFields[$idx] = $field + $newFields[$idx];
+        }
+        // Now save (not done yet)
+        $savedValues = $fieldModel->saveAll($newFields);
+
+        //MUtil_Echo::track($track, $copy);
+        //MUtil_Echo::track($rounds, $newRounds);
+        //MUtil_Echo::track($fields, $newFields);
+        $this->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), count($rounds), count($fields)));
+        $this->_reroute(array('action' => 'edit', MUtil_Model::REQUEST_ID => $newTrackId));
+    }
 
     /**
      * Action for checking all assigned rounds using a batch
@@ -245,6 +303,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
             case "fields": {
                 $model = new MUtil_Model_TableModel('gems__track_fields');
+                Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
                 $model->setKeys(array('id' => 'gtf_id_track'));
                 $model->set('gtf_field_name', 'label', $this->_('Name'));
                 $model->set('gtf_field_values', 'label', $this->_('Values'));

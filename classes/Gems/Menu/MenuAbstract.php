@@ -476,6 +476,8 @@ abstract class Gems_Menu_MenuAbstract
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
+        $page->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
+                ->setModelParameters(1);
 
         // Fields
         $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
