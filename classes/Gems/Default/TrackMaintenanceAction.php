@@ -214,35 +214,45 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $roundModel->applyRequest($this->getRequest());
         $rounds = $roundModel->load();
         
-        $newRounds = $roundModel->loadNew(count($rounds));
-        foreach ($newRounds as $idx => $newRound) {
-            $round = $rounds[$idx];
-            unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
-            unset($round['grp_id_round'], $round['grp_changed'], $round['grp_changed_by'], $round['grp_created'], $round['grp_created_by']);
-            $round['gro_id_track'] = $newTrackId;
-            $newRounds[$idx] = $round + $newRounds[$idx];
+        if ($rounds) {
+            $numRounds = count($rounds);
+            $newRounds = $roundModel->loadNew($numRounds);
+            foreach ($newRounds as $idx => $newRound) {
+                $round = $rounds[$idx];
+                unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
+                unset($round['grp_id_round'], $round['grp_changed'], $round['grp_changed_by'], $round['grp_created'], $round['grp_created_by']);
+                $round['gro_id_track'] = $newTrackId;
+                $newRounds[$idx] = $round + $newRounds[$idx];
+            }
+            // Now save (not done yet)
+            $savedValues = $roundModel->saveAll($newRounds);
+        } else {
+            $numRounds = 0;
         }
-        // Now save (not done yet)
-        $savedValues = $roundModel->saveAll($newRounds);
         
         // Now copy the fields
         $fieldModel->applyRequest($this->getRequest());
         $fields = $fieldModel->load();
         
-        $newFields = $fieldModel->loadNew(count($fields));
-        foreach ($newFields as $idx => $newField) {
-            $field = $fields[$idx];
-            unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
-            $field['gtf_id_track'] = $newTrackId;
-            $newFields[$idx] = $field + $newFields[$idx];
+        if ($fields) {
+            $numFields = count($fields);
+            $newFields = $fieldModel->loadNew($numFields);
+            foreach ($newFields as $idx => $newField) {
+                $field = $fields[$idx];
+                unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
+                $field['gtf_id_track'] = $newTrackId;
+                $newFields[$idx] = $field + $newFields[$idx];
+            }
+            // Now save (not done yet)
+            $savedValues = $fieldModel->saveAll($newFields);
+        } else {
+            $numFields = 0;
         }
-        // Now save (not done yet)
-        $savedValues = $fieldModel->saveAll($newFields);
 
         //MUtil_Echo::track($track, $copy);
         //MUtil_Echo::track($rounds, $newRounds);
         //MUtil_Echo::track($fields, $newFields);
-        $this->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), count($rounds), count($fields)));
+        $this->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
         $this->_reroute(array('action' => 'edit', MUtil_Model::REQUEST_ID => $newTrackId));
     }
 
