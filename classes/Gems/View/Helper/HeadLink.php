@@ -61,13 +61,15 @@ class Gems_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
         if (isset($attributes['type']) && $attributes['type'] == 'text/css') {
             // This is a stylesheet, consider extension and compile .less to .css
             if (substr($attributes['href'],-5) == '.less') {
-
-
-                // Get the baseurl, it was appende to the href in escort
-                $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+                if (substr($attributes['href'],0,4) === 'http') {
+                    // This must be a local url, strip the serverUrl and basepath
+                    $href = $attributes['href'];
+                    $base = $this->view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath();
+                    $href = substr($href, strlen($base));
+                }
 
                 // String the baseurl and add full path to the webdir
-                $inFile = GEMS_WEB_DIR . substr($attributes['href'], strlen($baseUrl));
+                $inFile = GEMS_WEB_DIR . $href;
                 $outFile = substr($inFile, 0, -4) . 'css';
 
                 // Try compiling
