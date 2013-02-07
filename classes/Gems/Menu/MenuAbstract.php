@@ -264,6 +264,25 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Shortcut function to create the export container.
+     *
+     * @param string $label Label for the container
+     * @return Gems_Menu_MenuAbstract The new contact page
+     */
+    public function addExportContainer($label)
+    {
+        $export = $this->addContainer($label);
+
+        // EXPORT
+        $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+
+        // EXPORT TO HTML
+        $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');
+
+        return $export;
+    }
+
+    /**
      * Add a Mail menu tree to the menu
      *
      * @param string $label

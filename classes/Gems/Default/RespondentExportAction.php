@@ -44,27 +44,30 @@
  */
 class Gems_Default_RespondentExportAction extends Gems_Controller_Action
 {
-    public $useHtmlView = true; 
+    public $useHtmlView = true;
 
     public function indexAction()
     {
         $export = $this->loader->getRespondentExport($this);
-        
-        $element = new Zend_Form_Element_Text('id');
-        $element->setLabel($this->_('Respondent number'));
-        $element->setOrder(-1);
-        $element->setDescription($this->_('Separate multiple respondents with a comma (,)'));
-        $form = $export->getForm();
+        $form   = $export->getForm();
+
+        $element = new Zend_Form_Element_Textarea('id');
+        $element->setLabel($this->_('Respondent numbers'))
+                ->setAttrib('cols', 60)
+                ->setAttrib('rows', 4)
+                ->setOrder(-1)
+                ->setDescription($this->_('Separate multiple respondents with a comma (,)'));
+
         $form->addElement($element);
-        
-        $this->html->h2($this->_('Export respondent'));
+
+        $this->html->h2($this->_('Export respondent archive'));
         $div = $this->html->div(array('id' => 'mainform'));
         $div[] = $form;
-        
+
         $request = $this->getRequest();
-        
+
         $form->populate($request->getParams());
-        
+
         if ($request->isPost()) {
             $respondents = explode(',', $request->getParam('id'));
             $respondents = array_map('trim', $respondents);

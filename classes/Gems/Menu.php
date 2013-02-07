@@ -127,8 +127,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
-     * @param string $project The project object
-     * @param string $privilege The privilege for reporting bugs
+     * @return Gems_Menu_MenuAbstract The new contact page
      */
     public function addContactPage($label)
     {
@@ -164,7 +163,17 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     {
         $setup = $this->addContainer($label);
 
-        $setup->addProjectInfoPage($this->_('Project setup'));
+        // PROJECT LEVEL
+        $cont = $setup->addProjectInfoPage($this->_('Project setup'));
+        //UPGRADES CONTROLLER
+        $page = $cont->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
+        $page->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
+        $page->addPage(sprintf($this->_('Changelog %s'), GEMS_PROJECT_NAME), 'pr.upgrade', 'project-information', 'changelog');
+        $show = $page->addAction($this->_('Show'), null, 'show')->setNamedParameters('id','context');
+        $page->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')->setModelParameters(1);
+        $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
+        $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')->setModelParameters(1)->addNamedParameters('from','from');
+        $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')->setModelParameters(1)->addNamedParameters('to','to');
 
         // DATABASE CONTROLLER
         $page = $setup->addPage($this->_('Database'), 'pr.database', 'database');
@@ -186,25 +195,27 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         }
         $page->addAction($this->_('Run SQL'), 'pr.database.execute', 'run-sql');
 
-        // RECEPTION CODE CONTROLLER
-        $page->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
+        // CODE LEVEL
+        $cont = $setup->addContainer($this->_('Codes'));
+        $cont->addBrowsePage($this->_('Reception codes'), 'pr.reception', 'reception');
+        $cont->addBrowsePage($this->_('Consents'), 'pr.consent', 'consent');
 
-        // CONSENT CONTROLLER
-        $page->addBrowsePage($this->_('Consents'), 'pr.consent', 'consent');
-
+        // ACCESS LEVEL
+        $cont = $setup->addContainer($this->_('Access'));
         // ROLES CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
+        $page = $cont->addBrowsePage($this->_('Roles'), 'pr.role', 'role');
         $page->addAction($this->_('Assigned'),   null, 'overview');
         $page->addAction($this->_('Privileges'), null, 'privilege');
-
         // GROUPS CONTROLLER
-        $setup->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
-
+        $cont->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
         // ORGANIZATIONS CONTROLLER
-        $setup->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
-
+        $cont->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
         // STAFF CONTROLLER
-        $page = $setup->addStaffPage($this->_('Staff'));
+        $page = $cont->addStaffPage($this->_('Staff'));
+
+        // MAIL CONTAINER
+        $setup->addMailSetupMenu($this->_('Mail'));
+
 
         // LOG CONTROLLER
         $page = $setup->addPage($this->_('Logging'), 'pr.log', 'log', 'index');
@@ -215,15 +226,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $logMaint->addAutofilterAction();
         $logMaint->addEditAction('pr.log.maintenance');
 
-        //UPGRADES CONTROLLER
-        $page = $setup->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
-        $page->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
-        $page->addPage(sprintf($this->_('Changelog %s'), GEMS_PROJECT_NAME), 'pr.upgrade', 'project-information', 'changelog');
-        $show = $page->addAction($this->_('Show'), null, 'show')->setNamedParameters('id','context');
-        $page->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')->setModelParameters(1);
-        $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
-        $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')->setModelParameters(1)->addNamedParameters('from','from');
-        $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')->setModelParameters(1)->addNamedParameters('to','to');
         return $setup;
     }
 
@@ -274,6 +276,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     }
 
+    /**
+     * Shortcut function to create the respondent page.
+     *
+     * @param string $label Label for the container
+     * @return Gems_Menu_MenuAbstract The new respondent page
+     */
     public function addRespondentPage($label)
     {
         $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
@@ -297,9 +305,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         */
 
         $page->addEditAction('pr.respondent.edit')
-                ->setNamedParameters($params)
-                ->setHiddenOrgId($orgId);
-        $page->addAction($this->_('Export'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
@@ -428,6 +433,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
                     ->set('target', MUtil_Model::REQUEST_ID);
         }
+
+        $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
@@ -598,14 +607,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // TRACK BUILDER
         $this->addTrackBuilderMenu($this->_('Track Builder'));
 
-        // MAIL CONTAINER
-        $this->addMailSetupMenu($this->_('Mail'));
-
-        // EXPORT DATA
-        $this->addPage('Export data', 'pr.export', 'export', 'index');
-
-        // EXPORT TO HTML
-        $this->addPage($this->_('Export respondent'), 'pr.export-html', 'respondent-export', 'index');
+        // EXPORT
+        $this->addExportContainer($this->_('Export'));
 
         // OTHER ITEMS
         $this->addLogonOffToken();

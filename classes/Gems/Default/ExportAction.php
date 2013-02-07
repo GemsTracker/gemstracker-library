@@ -221,7 +221,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
     public function getTopicTitle()
     {
-        return $this->_('Export data');
+        return $this->_('Export survey answers');
     }
 
 
