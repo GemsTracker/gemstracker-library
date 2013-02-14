@@ -125,6 +125,49 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->_showText($this->_('Logged errors'), GEMS_ROOT_DIR . '/var/logs/errors.log', $this->_('Empty logfile'));
     }
 
+    /**
+     * Format in drive units
+     *
+     * @param int $size
+     * @return string
+     */
+    protected function getByteSized($size)
+    {
+        $units = array( '', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb', 'Eb', 'Zb', 'Yb');
+        $power = $size > 0 ? floor(log($size, 1024)) : 0;
+        return Zend_Locale_Format::toInteger($size / pow(1024, $power)) . ' ' . $units[$power];
+    }
+
+    /**
+     * Tell all about it
+     *
+     * @param string $directory
+     * @return string
+     */
+    protected function getDirInfo($directory)
+    {
+        if (! is_dir($directory)) {
+            return sprintf($this->_('%s - does not exist'), $directory);
+        }
+
+        $free = disk_free_space($directory);
+        $total = disk_total_space($directory);
+
+        if ((false === $free) || (false === $total)) {
+            return sprintf($this->_('%s - no disk information available'), $directory);
+        }
+
+        $percent = intval($free / $total * 100);
+
+        return sprintf(
+                $this->_('%s - %s free of %s = %d%% available'),
+                $directory,
+                $this->getByteSized($free),
+                $this->getByteSized($total),
+                $percent
+                );
+    }
+
     public function indexAction()
     {
         $this->html->h2($this->_('Project information'));
@@ -136,19 +179,31 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Gems version')]            = $versions->getGemsVersion();
         $data[$this->_('Gems build')]              = $versions->getBuild();
         $data[$this->_('Gems project')]            = GEMS_PROJECT_NAME;
-        $data[$this->_('Gems web directory')]      = GEMS_WEB_DIR;
-        $data[$this->_('Gems root directory')]     = GEMS_ROOT_DIR;
-        $data[$this->_('Gems code directory')]     = GEMS_LIBRARY_DIR;
+        $data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
+        $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
+        $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
+        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '\var');
         $data[$this->_('MUtil version')]           = MUtil_Version::get();
         $data[$this->_('Zend version')]            = Zend_Version::VERSION;
         $data[$this->_('Application environment')] = APPLICATION_ENV;
         $data[$this->_('Application baseuri')]     = $this->loader->getUtil()->getCurrentURI();
-        $data[$this->_('Application directory')]   = APPLICATION_PATH;
+        $data[$this->_('Application directory')]   = $this->getDirInfo(APPLICATION_PATH);
         $data[$this->_('Application encoding')]    = APPLICATION_ENCODING;
         $data[$this->_('PHP version')]             = phpversion();
         $data[$this->_('Server Hostname')]         = php_uname('n');
         $data[$this->_('Server OS')]               = php_uname('s');
         $data[$this->_('Time on server')]          = date('r');
+
+        $driveVars = array(
+            $this->_('Session directory') => Zend_Session::getOptions('save_path'),
+            $this->_('Temporary files directory') => realpath(getenv('TMP')),
+        );
+        if ($system =  getenv('SystemDrive')) {
+            $driveVars[$this->_('System Drive')] = realpath($system);
+        }
+        foreach ($driveVars as $name => $drive) {
+            $data[$name] = $this->getDirInfo($drive);
+        }
 
         $lock = $this->util->getMaintenanceLock();
         if ($lock->isLocked()) {
