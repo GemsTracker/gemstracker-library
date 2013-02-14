@@ -128,7 +128,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     {
         $select  = $this->getSelect();
 
-
         if ($this->hasItemsUsed()) {
             // Add expression columns by default
             // getColumn() triggers the columns as 'used'
