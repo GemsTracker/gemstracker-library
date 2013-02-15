@@ -142,8 +142,7 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
 
         $this->html->h3()->sprintf($this->_('About %s'), $this->_('GemsTracker'));
         $this->html->pInfo($this->_(
-                'GemsTracker (GEneric Medical Survey Tracker) is a software package for (complex) distribution
-                of questionnaires and forms during clinical research and for quality registration in healthcare.'));
+                'GemsTracker (GEneric Medical Survey Tracker) is a software package for (complex) distribution of questionnaires and forms during clinical research and for quality registration in healthcare.'));
         $this->html->pInfo()->sprintf(
                 $this->_('%s is a project built using GemsTracker as a foundation.'),
                 $this->project->getName());
@@ -196,21 +195,21 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
                 );
 
         if ($url = $this->project->getDocumentationUrl()) {
-            $this->html->h4('Documentation');
+            $this->html->h4($this->_('Documentation'));
 
             $this->html->pInfo()->sprintf($this->_('All available documentation is gathered at: %s'))
                     ->a($url, array('rel' => 'external', 'target' => 'documentation'));
         }
 
         if ($url = $this->project->getManualUrl()) {
-            $this->html->h4('Manual');
+            $this->html->h4($this->_('Manual'));
 
             $this->html->pInfo()->sprintf($this->_('The manual is available here: %s'))
                     ->a($url, array('rel' => 'external', 'target' => 'manual'));
         }
 
         if ($url = $this->project->getForumUrl()) {
-            $this->html->h4('The forum');
+            $this->html->h4($this->_('The forum'));
 
             $this->html->pInfo()->sprintf($this->_(
                     'You will find questions asked by other users and ask new questions at our forum site: %s'
@@ -218,7 +217,7 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
         }
 
         if ($url = $this->project->getSupportUrl()) {
-            $this->html->h4('Support site');
+            $this->html->h4($this->_('Support site'));
 
             $this->html->pInfo()->sprintf($this->_('Check our support site at %s.'))
                     ->a($url, array('rel' => 'external', 'target' => 'support'));
