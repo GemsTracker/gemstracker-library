@@ -2,6 +2,9 @@ Important changes from 1.5.7 => 1.6
 ============================================================
 Defined constant GEMS_PROJECT_PATH removed from code (update at least your application.ini and use APPLICATION_PATH instead)
 Moved date_default_timezone_set to index.php (can generate warnings)
+longDescr in project.ini enables more project specific information on the about pages
+New "About GemsTracker" page, implemented as menu item
+Support can now be provided through support, manuals, documentation or forum url's.
 The global variable $GEMS_DIRS is deprecated, redefine it the application.ini using loaderDirs.Gems = .... (see NewProject)
 ZFDebug is now activated in the application.ini using: zfdebug.activate = 1
 
@@ -14,7 +17,7 @@ Increased some small buttons for mobile use
 Many small bugs fixed and display improvements made
 Implemented many speed optimizations in both database access and code speed
 New DEMO application environment
-Simplefied writing project level unit test
+Simplified writing project level unit test
 
 Important changes from 1.5.5 => 1.5.6
 ============================================================

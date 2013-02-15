@@ -135,14 +135,13 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $page = $this->addPage($label, null, 'contact');
 
-        if (isset($project->contact, $project->contact['supportUrl'])) {
-            $page->addAction(sprintf($this->_('About %s'), $project->name), null, 'about');
-        }
-        // $page->addAction($this->_('Request account'), null, 'request-account');
-        if (isset($project->contact, $project->contact['bugsUrl'])) {
+        $page->addAction(sprintf($this->_('About %s'), $project->getName()), null, 'about');
+        $page->addAction(sprintf($this->_('About %s'), $this->_('GemsTracker')), 'pr.contact.gems', 'gems');
+        
+        if ($project->hasBugsUrl()) {
             $page->addAction($this->_('Reporting bugs'), 'pr.contact.bugs', 'bugs');
         }
-        if (isset($project->contact, $project->contact['supportUrl'])) {
+        if ($project->hasAnySupportUrl()) {
             $page->addAction($this->_('Support'), 'pr.contact.support', 'support');
         }
 

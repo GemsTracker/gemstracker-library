@@ -124,7 +124,7 @@ class MUtil_Html_Creator
         'seq'               => 'MUtil_Html_Sequence::createSequence',
         'sequence'          => 'MUtil_Html_Sequence::createSequence',   // A sequence can contain another sequence, so other function name used
         'snippet'           => 'MUtil_Html::snippet',
-        'sprintf'           => 'sprintf',
+        'sprintf'           => 'MUtil_Html_Sprintf::sprintf',
         'spaced'            => 'MUtil_Html_Sequence::createSpaced',     // A sequence can contain another sequence, so other function name used
         'table'             => 'MUtil_Html_TableElement::table',
         'tbody'             => 'MUtil_Html_TBodyElement::tbody',

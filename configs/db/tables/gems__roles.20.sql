@@ -26,7 +26,7 @@ CREATE TABLE if not exists gems__roles (
 INSERT INTO gems__roles (grl_name, grl_description, grl_privileges, grl_parents, grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
     ('nologin','nologin','pr.contact.bugs,pr.contact.support,pr.nologin','', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    ('guest','guest','pr.ask,pr.contact.bugs,pr.contact.support,pr.islogin,pr.respondent','', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    ('guest','guest','pr.ask,pr.contact.bugs,pr.contact.gems,pr.contact.support,pr.islogin,pr.respondent','', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('respondent','respondent','','guest', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('security','security','','guest', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
     ('staff','staff','pr.option.edit,pr.option.password,pr.plan,pr.plan.overview,pr.plan.token,pr.project,pr.project.questions,pr.respondent.create,pr.respondent.edit,pr.respondent.who,pr.setup,pr.staff,pr.survey,pr.survey.create,pr.token,pr.token.answers,pr.token.delete,pr.token.edit,pr.token.mail,pr.token.print,pr.track,pr.track.create,pr.track.delete,pr.track.edit,pr.respondent.reportdeath','guest', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),

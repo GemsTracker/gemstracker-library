@@ -473,3 +473,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.complia
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.summary.excel')
     WHERE grl_privileges LIKE '%pr.plan.%' AND grl_privileges NOT LIKE '%pr.plan.summary.excel%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact.gems')
+    WHERE grl_privileges LIKE '%pr.plan.%' AND grl_privileges NOT LIKE '%pr.contact%';

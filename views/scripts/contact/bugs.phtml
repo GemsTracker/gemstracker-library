@@ -1,12 +1,12 @@
-<?php 
+<?php
 // ENGLISH
-if ('en' == $this->locale->getLanguage()): 
+if ('en' == $this->locale->getLanguage()):
 ?>
 <h3>Reporting bugs</h3>
 
 <p class="info">
-    <?php echo $this->project->name; ?> uses the <a href="http://www.mantisbt.org/" rel="external">Mantis Bug Tracker</a> 
-    for reporting and solving bugs. 
+    <?php echo $this->project->name; ?> uses the <a href="http://www.mantisbt.org/" rel="external">Mantis Bug Tracker</a>
+    for reporting and solving bugs.
     <br/>
     To help us to quickly solve bugs we request you read the suggestions below.
 </p>
@@ -14,8 +14,8 @@ if ('en' == $this->locale->getLanguage()):
 <div class="indent">
     <h4>Report each bug by itself</h4>
     <p class="info">
-        Every bug has to be assigned to someone to solve it. 
-        Combining multiple problems in a single report can obstruct this process. 
+        Every bug has to be assigned to someone to solve it.
+        Combining multiple problems in a single report can obstruct this process.
     </p>
     <h4>Add a link</h4>
     <p class="info">
@@ -40,31 +40,17 @@ if ('en' == $this->locale->getLanguage()):
 
 <div class="centerAlign">
     <a href="<?php echo $this->project->contact['bugsUrl'] ?>" class="actionlink" rel="external" target="pulse_bugs">Report a bug</a>
-</div><?php   
-    if (isset($this->project->contact['supportUrl'])): 
-?>
-<h3>Support</h3>
-
-<p class="info">
-    When you have questions about using <?php echo $this->project->name; ?> the place to look for answers is the 
-    <strong>forum</strong> on 
-    <a href="<?php echo $this->project->contact['supportUrl'] ?>" rel="external" target="pulse_support">our support site</a>.
-</p>
-
-<div class="centerAlign">
-    <a href="<?php echo $this->project->contact['supportUrl'] ?>" class="actionlink" rel="external" target="pulse_support">Go to the support site</a>
-</div><?php   
-    endif; 
+</div><?php
 endif;
 
 // NEDERLANDS
-if ('nl' == $this->locale->getLanguage()): 
+if ('nl' == $this->locale->getLanguage()):
 ?>
 <h3>Problemen melden</h3>
 
 <p class="info">
     <?php echo $this->project->name; ?> gebruikt de <a href="http://www.mantisbt.org/" rel="external">Mantis Bug Tracker</a>
-    voor de rapportage en verwerking van problemen. 
+    voor de rapportage en verwerking van problemen.
     <br/>
     Voor een snelle verwerking van problemen verzoeken wij u de onderstaande suggesties te lezen.
 </p>
@@ -72,8 +58,8 @@ if ('nl' == $this->locale->getLanguage()):
 <div class="indent">
     <h4>Meld elk probleem apart</h4>
     <p class="info">
-        Elk probleem moet aan iemand toegewezen worden voor behandeling. 
-        Dit kan lastig zijn als verschillende problemen in &eacute;&eacute;n melding staan. 
+        Elk probleem moet aan iemand toegewezen worden voor behandeling.
+        Dit kan lastig zijn als verschillende problemen in &eacute;&eacute;n melding staan.
     </p>
     <h4>Voeg een link toe</h4>
     <p class="info">
@@ -98,19 +84,5 @@ if ('nl' == $this->locale->getLanguage()):
 
 <div class="centerAlign">
     <a href="<?php echo $this->project->contact['bugsUrl'] ?>" class="actionlink" rel="external" target="pulse_bugs">Meld een probleem</a>
-</div><?php   
-    if (isset($this->project->contact['supportUrl'])): 
-?>
-<h3>Ondersteuning</h3>
-
-<p class="info">
-    Als u vragen heeft over het gebruik van <?php echo $this->project->name; ?> dan kan u die beter stellen op het 
-    <strong>forum</strong> van de 
-    <a href="<?php echo $this->project->contact['supportUrl'] ?>" rel="external" target="pulse_support">onze support site</a>.
-</p>
-
-<div class="centerAlign">
-    <a href="<?php echo $this->project->contact['supportUrl'] ?>" class="actionlink" rel="external" target="pulse_support">Ga naar de support site</a>
-</div><?php   
-    endif; 
+</div><?php
 endif; ?>

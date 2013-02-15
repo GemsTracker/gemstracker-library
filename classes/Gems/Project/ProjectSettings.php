@@ -292,6 +292,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Returns the documentation url
+     *
+     * @return string
+     */
+    public function getDocumentationUrl()
+    {
+        if (isset($this['contact'], $this['contact']['docsUrl'])) {
+            return $this['contact']['docsUrl'];
+        }
+    }
+
+    /**
      * The the email BCC address - if any
      *
      * @return string
@@ -314,6 +326,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return (boolean) $this->email['bounce'];
         }
         return false;
+    }
+
+    /**
+     * Returns the forum url
+     *
+     * @return string
+     */
+    public function getForumUrl()
+    {
+        if (isset($this['contact'], $this['contact']['forumUrl'])) {
+            return $this['contact']['forumUrl'];
+        }
     }
 
     /**
@@ -385,6 +409,23 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Return a long description, in the correct language if available
+     *
+     * @param string $language Iso code languahe
+     * @return string
+     */
+    public function getLongDescription($language)
+    {
+        if (isset($this['longDescr' . ucfirst($language)])) {
+            return $this['longDescr' . ucfirst($language)];
+        }
+
+        if (isset($this['longDescr'])) {
+            return $this['longDescr'];
+        }
+    }
+
+    /**
      * Array of field name => values for sending E-Mail
      *
      * @return array
@@ -397,6 +438,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
         $result['project_from']         = $this->getFrom();
 
         return $result;
+    }
+
+    /**
+     * Returns the manual url
+     *
+     * @return string
+     */
+    public function getManualUrl()
+    {
+        if (isset($this['contact'], $this['contact']['manualUrl'])) {
+            return $this['contact']['manualUrl'];
+        }
     }
 
     /**
@@ -492,6 +545,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Returns the support url
+     *
+     * @return string
+     */
+    public function getSupportUrl()
+    {
+        if (isset($this['contact'], $this['contact']['supportUrl'])) {
+            return $this['contact']['supportUrl'];
+        }
+    }
+
+    /**
      * Returns a salted hash on the
      *
      * @param string $value The value to hash
@@ -513,13 +578,38 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * True at least one support url exists.
+     *
+     * @return boolean
+     */
+    public function hasAnySupportUrl()
+    {
+        return isset($this['contact']) && (
+                isset($this['contact']['docsUrl']) ||
+                isset($this['contact']['forumUrl']) ||
+                isset($this['contact']['manualUrl']) ||
+                isset($this['contact']['supportUrl'])
+            );
+    }
+
+    /**
+     * True the bugs url exists.
+     *
+     * @return boolean
+     */
+    public function hasBugsUrl()
+    {
+        return isset($this['contact'], $this['contact']['bugsUrl']);
+    }
+
+    /**
      * True if an initial password was specified for users.
      *
      * @return boolean
      */
     public function hasInitialPassword()
     {
-        return isset($this['password']['initialPassword']);
+        return isset($this['password'], $this['password']['initialPassword']);
     }
 
     /**

@@ -36,22 +36,15 @@
  */
 
 /**
- * The Sequence class is for sequentional Html content, kind of like a DOM document fragment.
- *
- * It usual use is where you should return a single ElementInterface object but want to return a
- * sequence of objects. While implementing the MUtil_Html_ElementInterface it does have attributes
- * nor does it return a tagname so it is not really an element, just treated as one.
- *
- * This object also contains functions for processing parameters of special types. E.g. when a
- * Zend_View object is passed it should be stored in $this->view, not added to the core array.
+ * Sprintf class is used to use sprintf with renderable content .
  *
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.0
+ * @since      Class available since MUtil version 1.2
  */
-class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_ElementInterface
+class MUtil_Html_Sprintf extends ArrayObject implements MUtil_Html_ElementInterface
 {
     /**
      * Object classes that should not be added to the core array, but should be set using
@@ -114,42 +107,6 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         foreach ($args as $key => $arg) {
             $this->offsetSet($key, $arg);
         }
-    }
-
-    public static function createSequence($args_array = null)
-    {
-        // BUG FIX: this function used to be called sequence() just
-        // like all other static HtmlInterface element creation
-        // functions, but as a sequence can contain a sequence
-        // this lead to unexpected behaviour.
-
-        $args = MUtil_Ra::args(func_get_args());
-
-        $seq = new self($args);
-
-        if (! isset($args['glue'])) {
-            $seq->setGlue('');
-        }
-
-        return $seq;
-    }
-
-    public static function createSpaced($args_array = null)
-    {
-        // BUG FIX: this function used to be called spaced() just
-        // like all other static HtmlInterface element creation
-        // functions, but as a sequence can contain a sequence
-        // this lead to unexpected behaviour.
-
-        $args = MUtil_Ra::args(func_get_args());
-
-        $seq = new self($args);
-
-        if (! isset($args['glue'])) {
-            $seq->setGlue(' ');
-        }
-
-        return $seq;
     }
 
     /**
@@ -219,23 +176,23 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
      */
     public function render(Zend_View_Abstract $view)
     {
-        $html = '';
-        $glue = $this->getGlue();
-
         if (null !== $view) {
             $this->setView($view);
         }
-        // MUtil_Echo::r($this->count(), $glue);
 
         $view = $this->getView();
 
         $renderer = MUtil_Html::getRenderer();
+        $params   = array();
         foreach ($this->getIterator() as $item) {
-            $html .= $glue;
-            $html .= $renderer->renderAny($view, $item);
+            $params[] = $renderer->renderAny($view, $item);
         }
 
-        return substr($html, strlen($glue));
+        if ($params) {
+            return call_user_func_array('sprintf', $params);
+        }
+
+        return '';
     }
 
     /**
@@ -248,5 +205,16 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     {
         $this->view = $view;
         return $this;
+    }
+
+    /**
+     *
+     * @param mixed $arg_array MUtil_Ra::args parameter passing
+     */
+    public static function sprintf($arg_array = null)
+    {
+        $args = MUtil_Ra::args(func_get_args());
+
+        return new self($args);
     }
 }
