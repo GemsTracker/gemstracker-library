@@ -56,7 +56,7 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
                 ->setAttrib('cols', 60)
                 ->setAttrib('rows', 4)
                 ->setOrder(-1)
-                ->setDescription($this->_('Separate multiple respondents with a comma (,)'));
+                ->setDescription($this->_('Separate multiple respondents with a comma (,) or whitespace'));
 
         $form->addElement($element);
 
@@ -69,8 +69,8 @@ class Gems_Default_RespondentExportAction extends Gems_Controller_Action
         $form->populate($request->getParams());
 
         if ($request->isPost()) {
-            $respondents = explode(',', $request->getParam('id'));
-            $respondents = array_map('trim', $respondents);
+            $respondents = preg_split('/[\s,]/', $request->getParam('id'));
+            $respondents = array_filter(array_map('trim', $respondents));
 
             $export->render($respondents, $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
         }

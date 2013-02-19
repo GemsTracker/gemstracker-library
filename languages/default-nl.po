@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-15 18:22+0100\n"
+"POT-Creation-Date: 2013-02-19 18:03+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2437,8 +2437,10 @@ msgid "Respondent numbers"
 msgstr "Patiënt nummers"
 
 #: classes/Gems/Default/RespondentExportAction.php:59
-msgid "Separate multiple respondents with a comma (,)"
-msgstr "Scheid meerdere patienten met een comma (,)"
+msgid "Separate multiple respondents with a comma (,) or whitespace"
+msgstr ""
+"Scheid verschillende patiënten met een comma (,), spatie, tab of een nieuwe "
+"regel"
 
 #: classes/Gems/Default/RespondentPlanAction.php:67
 #: classes/Gems/Default/SurveyAction.php:181
