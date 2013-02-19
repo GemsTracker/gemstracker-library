@@ -182,7 +182,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $data[$this->_('Gems web directory')]      = $this->getDirInfo(GEMS_WEB_DIR);
         $data[$this->_('Gems root directory')]     = $this->getDirInfo(GEMS_ROOT_DIR);
         $data[$this->_('Gems code directory')]     = $this->getDirInfo(GEMS_LIBRARY_DIR);
-        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '\var');
+        $data[$this->_('Gems variable directory')] = $this->getDirInfo(GEMS_ROOT_DIR . '/var');
         $data[$this->_('MUtil version')]           = MUtil_Version::get();
         $data[$this->_('Zend version')]            = Zend_Version::VERSION;
         $data[$this->_('Application environment')] = APPLICATION_ENV;
