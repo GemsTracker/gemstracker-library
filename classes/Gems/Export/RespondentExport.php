@@ -186,6 +186,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                 // as the snippet takes care of showing the other tokens
                 if (!isset($surveys[$token->getSurveyId()])) {
                     $showToken = true;
+                    $surveys[$token->getSurveyId()] = 1;
                 }
             }
 
