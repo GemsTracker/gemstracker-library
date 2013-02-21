@@ -59,6 +59,13 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     public $defaultStaffDefinition = Gems_User_UserLoader::USER_STAFF;
 
     public $filterStandard = array('gsf_active' => 1);
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
+
     public $sortKey = array('name' => SORT_ASC);
 
     /**
@@ -348,7 +355,11 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $org    = $this->loader->getOrganization($this->menu->getParameterSource()->getMenuParameter('gsf_id_organization', $this->loader->getCurrentUser()->getCurrentOrganizationId()));
             $orgDef = $org->get('gor_user_class', $this->defaultStaffDefinition);
             $model->set('gul_user_class',       'default', $orgDef, 'multiOptions', $this->loader->getUserLoader()->getAvailableStaffDefinitions());
-            $model->set('gsf_iso_lang',         'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());
+            $model->set('gsf_iso_lang',
+                    'label', $this->_('Language'),
+                    'multiOptions', $this->util->getLocalized()->getLanguages(),
+                    'default', $this->project->locale['default']
+                    );
             $model->set('gul_can_login',        'label', $this->_('Can login'), 'multiOptions', $this->util->getTranslated()->getYesNo(), 'default', 1);
             $model->set('gsf_logout_on_survey', 'label', $this->_('Logout on survey'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         }
