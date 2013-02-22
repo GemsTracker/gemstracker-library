@@ -76,14 +76,14 @@ class Gems_Form_Decorator_Form extends Zend_Form_Decorator_Form
         $css        = $form->getCss();
 
         if (!is_null($scripts) && is_array($scripts)) {
-    		$baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    		$baseUrl = $view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath();
             $headscript = $view->headScript();
 	        foreach ($scripts as $script) {
 	        	$headscript->appendFile($baseUrl . $script);
 	        }
     	}
         if (!is_null($css) && is_array($css)) {
-            $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+            $baseUrl = $view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath();
             $headLink = $view->headLink();
             foreach($css as $cssFile => $media) {
                 $headLink->appendStylesheet($baseUrl . $cssFile, $media);
