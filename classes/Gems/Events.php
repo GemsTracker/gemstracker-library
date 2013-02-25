@@ -45,7 +45,7 @@
  * @since      Class available since version 1.4
  */
 class Gems_Events extends Gems_Loader_TargetLoaderAbstract
-{
+{   
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
     const ROUND_CHANGED_EVENT           = 'Round/Changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering';
@@ -102,8 +102,8 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
         $eventClass = str_replace('/', '_', $eventType);
 
         foreach ($this->_dirs as $name => $dir) {
-            $prefix = $name . '_' . $eventClass . '_';
-            $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . $eventType;
+            $prefix = $name . '_Event_'. $eventClass . '_';
+            $paths[$prefix] = $dir . DIRECTORY_SEPARATOR . 'Event' . DIRECTORY_SEPARATOR . $eventType;
         }
         $paths[''] = APPLICATION_PATH . '/events/' . strtolower($eventType);
         // MUtil_Echo::track($paths);
