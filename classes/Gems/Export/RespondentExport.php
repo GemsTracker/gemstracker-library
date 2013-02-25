@@ -201,12 +201,14 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                     'grouped'        => $groupSurveys);
 
                 $snippets = $token->getAnswerSnippetNames();
-
-                if (is_array($snippets)) {
-                    list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
-                    $params = $params + $snippetParams;
+                
+                if (!is_array($snippets)) {
+                    $snippets = array($snippets);
                 }
 
+                list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
+                $params = $params + $snippetParams;
+                
                 $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
 
                 foreach($snippets as $snippet) {
