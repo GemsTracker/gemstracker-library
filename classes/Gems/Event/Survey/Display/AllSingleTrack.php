@@ -47,6 +47,19 @@
 class Gems_Event_Survey_Display_AllSingleTrack extends Gems_Registry_TargetAbstract implements Gems_Event_SurveyDisplayEventInterface
 {
     /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = array(
+        'grc_success' => SORT_DESC,
+        'gto_valid_from' => SORT_ASC,
+        'gto_completion_time' => SORT_ASC,
+        'gto_round_order' => SORT_ASC);
+
+    /**
      *
      * @var Zend_Translate
      */

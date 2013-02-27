@@ -47,6 +47,19 @@
 class Gems_Snippets_Tracker_Answers_SurveyAnswersModelSnippet extends Gems_Tracker_Snippets_AnswerModelSnippetGeneric
 {
     /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
+    protected $_fixedSort = array(
+        'grc_success' => SORT_DESC,
+        'gto_valid_from' => SORT_ASC,
+        'gto_completion_time' => SORT_ASC,
+        'gto_round_order' => SORT_ASC);
+
+    /**
      * Use compact view and show all tokens of the same surveyId in
      * one view. Property used by respondent export
      *
