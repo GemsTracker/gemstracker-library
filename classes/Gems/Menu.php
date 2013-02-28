@@ -167,7 +167,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         //UPGRADES CONTROLLER
         $page = $cont->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
         $page->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
-        $page->addPage(sprintf($this->_('Changelog %s'), GEMS_PROJECT_NAME), 'pr.upgrade', 'project-information', 'changelog');
+        $page->addPage(sprintf($this->_('Changelog %s'), $this->escort->project->getName()), 'pr.upgrade', 'project-information', 'changelog');
         $show = $page->addAction($this->_('Show'), null, 'show')->setNamedParameters('id','context');
         $page->addAction($this->_('Execute all'), 'pr.upgrade.all', 'execute-all')->setModelParameters(1);
         $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
