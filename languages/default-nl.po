@@ -2344,7 +2344,7 @@ msgstr "Identificatie"
 
 #: classes/Gems/Default/RespondentAction.php:154
 msgid "SSN"
-msgstr "SSN"
+msgstr "BSN"
 
 #: classes/Gems/Default/RespondentAction.php:158
 msgid "Patient number"
