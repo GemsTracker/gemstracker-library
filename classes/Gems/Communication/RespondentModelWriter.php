@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,7 +32,7 @@
 
 /**
  * Writer implementation to save respondents to the database
- * 
+ *
  * @author     Michiel Rook <michiel@touchdownconsulting.nl>
  * @version    $Id$
  * @package    Gems
@@ -44,22 +44,22 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
      * @var Gems_Model_RespondentModel
      */
     private $_model = null;
-    
+
     public function __construct()
     {
-        $this->_model = GemsEscort::getInstance()->getLoader()->getModels()->getRespondentModel(true);
+        $this->_model = GemsEscort::getInstance()->getLoader()->getModels()->createRespondentModel();
     }
-    
+
     /**
      * - Fetches respondent based on bsn / reception code and patient nr
      * - Creates the respondent if it does not exist, updates otherwise
-     * 
+     *
 	 * @see Gems_Model_RespondentModel
      * @see Gems_Communication_RespondentWriter::writeRespondent()
 	 *
 	 * @param  Gems_Communication_RespondentContainer $respondent
 	 * @param  int $userId
-	 * @return boolean True if a new respondent was added, false if one was updated 
+	 * @return boolean True if a new respondent was added, false if one was updated
      */
     public function writeRespondent(Gems_Communication_RespondentContainer $respondent, &$userId)
     {
@@ -70,17 +70,17 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
                 'gr2o_patient_nr' => $respondent->getPatientId()
             )
         );
-        
+
         $data = $this->_model->loadFirst();
         $isNew = false;
-        
+
         if (empty($data)) {
             $isNew = true;
             $data = $this->_model->loadNew();
         }
-        
+
         unset($data['grs_email']);
-        
+
         $data['gr2o_patient_nr'] = $respondent->getPatientId();
         $data['grs_first_name'] = $respondent->getFirstName();
         $data['grs_last_name'] = $respondent->getLastName();
@@ -88,11 +88,11 @@ class Gems_Communication_RespondentModelWriter implements Gems_Communication_Res
         $data['grs_ssn'] = $respondent->getBsn();
         $data['grs_gender'] = $respondent->getGender();
         $data['grs_birthday'] = $respondent->getBirthday();
-        
+
         $data = $this->_model->save($data);
-        
+
         $userId = $data['grs_id_user'];
-        
+
         return $isNew;
     }
 }

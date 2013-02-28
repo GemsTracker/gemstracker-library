@@ -113,7 +113,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $autofilterParameters = array();
+    protected $autofilterParameters = array('columns' => 'getBrowseColumns');
 
     /**
      * The snippets used for the autofilter action.
@@ -377,6 +377,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
             $this->addSnippets($this->createEditSnippets, $params);
         }
+    }
+
+    /**
+     * Set column usage to use for the browser.
+     *
+     * Must be an array of arrays containing the input for TableBridge->setMultisort()
+     *
+     * @return array or false
+     */
+    public function getBrowseColumns()
+    {
+        return false;
     }
 
     /**

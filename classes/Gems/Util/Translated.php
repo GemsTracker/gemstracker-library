@@ -126,48 +126,50 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
 
     public function formatDateTime($dateTimeValue)
     {
-        if ($dateTimeValue) {
-            //$dateTime = strtotime($dateTimeValue);
-            // MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
-            // TODO: Timezone seems to screw this one up
-            //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
-            if ($dateTimeValue instanceof MUtil_Date) {
-                $dateTime = clone $dateTimeValue;
-            } else {
-                $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
-            } 
-            $days = $dateTime->diffDays();
-
-            switch ($days) {
-                case -2:
-                    return $this->_('2 days ago');
-
-                case -1:
-                    return $this->_('Yesterday');
-
-                case 0:
-                    return $this->_('Today');
-
-                case 1:
-                    return $this->_('Tomorrow');
-
-                case 2:
-                    return $this->_('Over 2 days');
-
-                default:
-                    if (($days > -14) && ($days < 14)) {
-                        if ($days > 0) {
-                            return sprintf($this->_('Over %d days'), $days);
-                        } else {
-                            return sprintf($this->_('%d days ago'), -$days);
-                        }
-                    }
-
-                    return date($this->phpDateFormatString, $dateTime->getTimestamp()); //  . ' (' . $days . ')';
-            }
+        if (! $dateTimeValue) {
+            return null;
         }
 
-        return null;
+        //$dateTime = strtotime($dateTimeValue);
+        // MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
+        // TODO: Timezone seems to screw this one up
+        //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
+        if ($dateTimeValue instanceof MUtil_Date) {
+            $dateTime = clone $dateTimeValue;
+        } elseif (MUtil_Date::isDate($dateTimeValue, Zend_Date::ISO_8601)) {
+            $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
+        } else {
+            return null;
+        }
+        $days = $dateTime->diffDays();
+
+        switch ($days) {
+            case -2:
+                return $this->_('2 days ago');
+
+            case -1:
+                return $this->_('Yesterday');
+
+            case 0:
+                return $this->_('Today');
+
+            case 1:
+                return $this->_('Tomorrow');
+
+            case 2:
+                return $this->_('Over 2 days');
+
+            default:
+                if (($days > -14) && ($days < 14)) {
+                    if ($days > 0) {
+                        return sprintf($this->_('Over %d days'), $days);
+                    } else {
+                        return sprintf($this->_('%d days ago'), -$days);
+                    }
+                }
+
+                return date($this->phpDateFormatString, $dateTime->getTimestamp()); //  . ' (' . $days . ')';
+        }
     }
 
     /**

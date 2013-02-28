@@ -89,17 +89,13 @@ class Organization_ChooseOrganizationSnippet extends MUtil_Snippets_SnippetAbstr
         $url[$this->request->getControllerKey()] = 'organization';
         $url[$this->request->getActionKey()]     = 'change-ui';
 
-        if ($orgs = $user->getAllowedOrganizations()) {
+        if ($orgs = $user->getRespondentOrganizations()) {
             $html->pInfo($this->_('This organization cannot have any respondents, please choose one that does:'));
 
             foreach ($orgs as $orgId => $name) {
-                $org = $this->loader->getOrganization($orgId);
+                $url['org'] = $orgId;
 
-                if ($org->canHaveRespondents()) {
-                    $url['org'] = $orgId;
-
-                    $html->pInfo()->actionLink($url, $name, array('style' => 'font-size: 120%;'));
-                }
+                $html->pInfo()->actionLink($url, $name, array('style' => 'font-size: 120%;'));
             }
         } else {
             $html->pInfo($this->_('This organization cannot have any respondents.'));

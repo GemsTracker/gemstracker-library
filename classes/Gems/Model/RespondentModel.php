@@ -69,6 +69,14 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      */
     protected $project;
 
+    /**
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Self constructor
+     */
     public function __construct()
     {
         // gems__respondents MUST be first table for INSERTS!!
@@ -84,8 +92,12 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
 
+        if (! $this->has('grs_ssn')) {
+            $this->hashSsn = self::SSN_HIDE;
+        }
         if (self::SSN_HASH === $this->hashSsn) {
-            $this->setSaveWhenNotNull('grs_ssn');
+            $this->setSaveWhen('grs_ssn', array($this, 'whenSSN'));
+            $this->setOnLoad('grs_ssn', array($this, 'saveSSN'));
             $this->setOnSave('grs_ssn', array($this, 'formatSSN'));
         }
     }
@@ -145,6 +157,201 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     * Set those settings needed for the browse display
+     *
+     * @return \Gems_Model_RespondentModel
+     */
+    public function applyBrowseSettings()
+    {
+        $dbLookup   = $this->util->getDbLookup();
+        $translated = $this->util->getTranslated();
+        $translator = $this->translate->getAdapter();
+
+        $this->resetOrder();
+
+        if ($this->has('gr2o_id_organization') && $this->isMultiOrganization()) {
+            $this->set('gr2o_id_organization',
+                    'label', $translator->_('Organization'),
+                    'multiOptions', $dbLookup->getOrganizationsWithRespondents()
+                    );
+        }
+
+        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent nr'));
+
+        $this->set('name',
+                'label', $translator->_('Name'),
+                'column_expression', "CONCAT(
+                    COALESCE(CONCAT(grs_last_name, ', '), '-, '),
+                    COALESCE(CONCAT(grs_first_name, ' '), ''),
+                    COALESCE(grs_surname_prefix, ''))",
+                'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
+
+        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
+
+        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
+        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
+        $this->setIfExists('grs_city',        'label', $translator->_('City'));
+
+        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
+
+        $this->setIfExists('grs_birthday',
+                'label', $translator->_('Birthday'),
+                'dateFormat', Zend_Date::DATE_MEDIUM);
+
+        $this->setIfExists('gr2o_opened',
+                'label', $translator->_('Opened'),
+                'formatFunction', $translated->formatDateTime);
+        $this->setIfExists('gr2o_consent',
+                'label', $translator->_('Consent'),
+                'multiOptions', $dbLookup->getUserConsents()
+                );
+
+        return $this;
+    }
+
+    /**
+     * Set those settings needed for the detailed display
+     *
+     * @param mixed $locale The locale for the settings
+     * @return \Gems_Model_RespondentModel
+     */
+    public function applyDetailSettings($locale = null)
+    {
+        $dbLookup   = $this->util->getDbLookup();
+        $translated = $this->util->getTranslated();
+        $translator = $this->translate->getAdapter();
+
+        $this->resetOrder();
+        if ($this->has('gr2o_id_organization')) {
+            $this->set('gr2o_id_organization',
+                    'label', $translator->_('Organization'),
+                    'tab', $translator->_('Identification')
+                    );
+
+            if ($this->isMultiOrganization()) {
+                $user = $this->loader->getCurrentUser();
+
+                $this->set('gr2o_id_organization',
+                        'default', $user->getCurrentOrganizationId(),
+                        'multiOptions', $user->getRespondentOrganizations()
+                        );
+            }
+        }
+
+        // The SSN
+        if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
+            $this->set('grs_ssn', 'label', $translator->_('SSN'));
+        }
+
+        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent number'));
+
+        $this->setIfExists('grs_first_name',  'label', $translator->_('First name'));
+        $this->setIfExists('grs_surname_prefix',
+                'label', $translator->_('Surname prefix'),
+                'description', $translator->_('de, van der, \'t, etc...')
+                );
+        $this->setIfExists('grs_last_name',   'label', $translator->_('Last name'));
+
+        $this->setIfExists('grs_gender',
+                'label', $translator->_('Gender'),
+                'multiOptions', $translated->getGenderHello()
+                );
+
+        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
+
+        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
+        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
+        $this->setIfExists('grs_city',        'label', $translator->_('City'));
+
+        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
+
+        $this->setIfExists('grs_birthday',
+                'label', $translator->_('Birthday'),
+                'dateFormat', Zend_Date::DATE_MEDIUM
+                );
+
+        $this->setIfExists('gr2o_opened',
+                'label', $translator->_('Opened'),
+                'formatFunction', $translated->formatDateTime
+                );
+
+        $this->setIfExists('gr2o_consent',
+                'label', $translator->_('Consent'),
+                'multiOptions', $dbLookup->getUserConsents()
+                );
+
+        $this->set('gr2o_comments',           'label', $translator->_('Comments'));
+        $this->set('gr2o_treatment',          'label', $translator->_('Treatment'));
+
+        $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
+
+        return $this;
+    }
+
+    /**
+     * Set those values needed for editing
+     *
+     * @param mixed $locale The locale for the settings
+     * @return \Gems_Model_RespondentModel
+     */
+    public function applyEditSettings($locale = null)
+    {
+        $this->applyDetailSettings($locale);
+        $this->copyKeys(); // The user can edit the keys.
+
+        $translated = $this->util->getTranslated();
+        $translator = $this->translate->getAdapter();
+        $ucfirst    = new Zend_Filter_Callback('ucfirst');
+
+        if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
+            $this->set('grs_ssn',
+                    'size', 10,
+                    'maxlength', 12,
+                    'filter', 'Digits');
+
+            if (APPLICATION_ENV !== 'production') {
+                $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
+                $num = mt_rand(100000000, 999999999);
+
+                while (! $bsn->isValid($num)) {
+                    $num++;
+                }
+
+                $this->setIfExists('grs_ssn', 'description', sprintf($translator->_('Random Example BSN: %s'), $num));
+            } else {
+                $this->setIfExists('grs_ssn', 'description', $translator->_('Enter a 9-digit SSN number.'));
+            }
+        }
+
+        $this->setIfExists('gr2o_patient_nr',
+                'size', 15,
+                'minlength', 4,
+                'validator', $this->createUniqueValidator(
+                        array('gr2o_patient_nr', 'gr2o_id_organization'),
+                        array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
+                        )
+                );
+
+        $this->setIfExists('grs_first_name', 'filter', $ucfirst);
+        $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
+
+        $this->setIfExists('grs_gender',
+                'elementClass', 'Radio',
+                'separator', '',
+                'multiOptions', $translated->getGenders(),
+                'tab', $translator->_('Medical data')
+                );
+
+        $this->setIfExists('gr2o_opened', 'elementClass', 'Exhibitor');
+
+        $this->setIfExists('gr2o_consent', 'default', $this->util->getDefaultConsent());
+
+        $this->setIfExists('grs_iso_lang', 'default', 'nl');
+
+        return $this;
+    }
+
+    /**
      * Apply hash function for array_walk_recursive in _checkFilterUsed()
      *
      * @see _checkFilterUsed()
@@ -156,22 +363,6 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     {
         if ('grs_ssn' === $filterKey) {
             $filterValue = $this->project->getValueHash($filterValue);
-        }
-    }
-
-    /**
-     * Return a hashed version of the input value.
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return string The salted hash as a 32-character hexadecimal number.
-     */
-    public function formatSSN($value, $isNew = false, $name = null, array $context = array())
-    {
-        if ($value) {
-            return $this->project->getValueHash($value);
         }
     }
 
@@ -196,6 +387,22 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     * Return a hashed version of the input value.
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string The output to display
+     */
+    public function hideSSN($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($value) {
+            return str_repeat('*', 9);
+        }
+    }
+
+    /**
      * True when the default filter can contain multiple organizations
      *
      * @return boolean
@@ -204,6 +411,36 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     {
         // return ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents()));
         return $this->user->hasPrivilege('pr.respondent.multiorg');
+    }
+
+    /**
+     * Return a hashed version of the input value.
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string The salted hash as a 32-character hexadecimal number.
+     */
+    public function saveSSN($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($value) {
+            return $this->project->getValueHash($value);
+        }
+    }
+
+    /**
+     * Return a hashed version of the input value.
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function whenSSN($value, $isNew = false, $name = null, array $context = array())
+    {
+        return $value && ($value !== $this->hideSSN($value, $isNew, $name, $context));
     }
 }
 

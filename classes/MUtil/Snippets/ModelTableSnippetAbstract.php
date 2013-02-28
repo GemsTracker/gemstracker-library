@@ -78,6 +78,13 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
     public $caption;
 
     /**
+     * An array of nested arrays, each defining the input for setMultiSort
+     *
+     * @var array
+     */
+    public $columns;
+
+    /**
      * Content to show when there are no rows.
      *
      * Null shows '&hellip;'
@@ -112,7 +119,11 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        if ($this->sortableLinks) {
+        if ($this->columns) {
+            foreach ($this->columns as $column) {
+                call_user_func_array(array($bridge, 'addMultiSort'), $column);
+            }
+        } elseif ($this->sortableLinks) {
             foreach($model->getItemsOrdered() as $name) {
                 if ($label = $model->get($name, 'label')) {
                     $bridge->addSortable($name, $label);

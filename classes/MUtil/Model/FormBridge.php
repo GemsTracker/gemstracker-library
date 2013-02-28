@@ -50,19 +50,20 @@
  */
 class MUtil_Model_FormBridge
 {
-    const AUTO_OPTIONS     = 'auto';
-    const CHECK_OPTIONS    = 'check';
-    const DATE_OPTIONS     = 'date';
-    const DISPLAY_OPTIONS  = 'display';
-    const EXHIBIT_OPTIONS  = 'exhibit';
-    const FILE_OPTIONS     = 'file';
-    const GROUP_OPTIONS    = 'displaygroup';
-    const JQUERY_OPTIONS   = 'jquery';
-    const MULTI_OPTIONS    = 'multi';
-    const PASSWORD_OPTIONS = 'password';
-    const TAB_OPTIONS      = 'tab';
-    const TEXT_OPTIONS     = 'text';
-    const TEXTAREA_OPTIONS = 'textarea';
+    const AUTO_OPTIONS       = 'auto';
+    const CHECK_OPTIONS      = 'check';
+    const DATE_OPTIONS       = 'date';
+    const DISPLAY_OPTIONS    = 'display';
+    const EXHIBIT_OPTIONS    = 'exhibit';
+    const FAKESUBMIT_OPTIONS = 'fakesubmit';
+    const FILE_OPTIONS       = 'file';
+    const GROUP_OPTIONS      = 'displaygroup';
+    const JQUERY_OPTIONS     = 'jquery';
+    const MULTI_OPTIONS      = 'multi';
+    const PASSWORD_OPTIONS   = 'password';
+    const TAB_OPTIONS        = 'tab';
+    const TEXT_OPTIONS       = 'text';
+    const TEXTAREA_OPTIONS   = 'textarea';
 
     /**
      * The key to use in the Zend_Registry to store global fixed options
@@ -82,19 +83,20 @@ class MUtil_Model_FormBridge
 
     // First list html attributes, then Zend attributes, lastly own attributes
     private $_allowedOptions = array(
-        self::AUTO_OPTIONS     => array('elementClass', 'multiOptions'),
-        self::CHECK_OPTIONS    => array('checkedValue', 'uncheckedValue'),
-        self::DATE_OPTIONS     => array('dateFormat', 'storageFormat'),
-        self::DISPLAY_OPTIONS  => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex', 'value', 'showLabels', 'labelplacement'),
-        self::EXHIBIT_OPTIONS  => array('formatFunction'),
-        self::FILE_OPTIONS     => array('accept', 'count', 'destination', 'valueDisabled'),
-        self::GROUP_OPTIONS    => array('elements', 'legend', 'separator'),
-        self::JQUERY_OPTIONS   => array('jQueryParams'),
-        self::MULTI_OPTIONS    => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
-        self::PASSWORD_OPTIONS => array('repeatLabel'),
-        self::TAB_OPTIONS      => array('value'),
-        self::TEXT_OPTIONS     => array('maxlength', 'minlength', 'onchange', 'onfocus', 'onselect', 'size'),
-        self::TEXTAREA_OPTIONS => array('cols', 'rows', 'wrap'),
+        self::AUTO_OPTIONS       => array('elementClass', 'multiOptions'),
+        self::CHECK_OPTIONS      => array('checkedValue', 'uncheckedValue'),
+        self::DATE_OPTIONS       => array('dateFormat', 'storageFormat'),
+        self::DISPLAY_OPTIONS    => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex', 'value', 'showLabels', 'labelplacement'),
+        self::EXHIBIT_OPTIONS    => array('formatFunction'),
+        self::FAKESUBMIT_OPTIONS => array('label', 'tabindex', 'disabled'),
+        self::FILE_OPTIONS       => array('accept', 'count', 'destination', 'valueDisabled'),
+        self::GROUP_OPTIONS      => array('elements', 'legend', 'separator'),
+        self::JQUERY_OPTIONS     => array('jQueryParams'),
+        self::MULTI_OPTIONS      => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
+        self::PASSWORD_OPTIONS   => array('repeatLabel'),
+        self::TAB_OPTIONS        => array('value'),
+        self::TEXT_OPTIONS       => array('maxlength', 'minlength', 'onchange', 'onfocus', 'onselect', 'size'),
+        self::TEXTAREA_OPTIONS   => array('cols', 'rows', 'wrap'),
         );
 
     public function __construct(MUtil_Model_ModelAbstract $model, Zend_Form $form)
@@ -402,15 +404,48 @@ class MUtil_Model_FormBridge
         return $this->_addToForm($element->getName(), $element);
     }
 
+    /**
+     * Add an element that just displays the value to the user
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_Exhibitor
+     */
     public function addExhibitor($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
-        $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
-
-        $options = $this->_mergeOptions($name, $options,
-            self::DATE_OPTIONS, self::DISPLAY_OPTIONS, self::EXHIBIT_OPTIONS, self::MULTI_OPTIONS);
+        $options = $this->_mergeOptions(
+                $name,
+                MUtil_Ra::pairs(func_get_args(), 1),
+                self::DATE_OPTIONS,
+                self::DISPLAY_OPTIONS,
+                self::EXHIBIT_OPTIONS,
+                self::MULTI_OPTIONS
+                );
 
         $element = new MUtil_Form_Element_Exhibitor($name, $options);
+
+        $this->form->addElement($element);
+        // MUtil_Echo::r($element->getOrder(), $element->getName());
+
+        return $element;
+    }
+
+    /**
+     * Add an element that just displays the value to the user
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return \MUtil_Form_Element_FakeSubmit
+     */
+    public function addFakeSubmit($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = $this->_mergeOptions(
+                $name,
+                MUtil_Ra::pairs(func_get_args(), 1),
+                self::FAKESUBMIT_OPTIONS
+                );
+
+        $element = new MUtil_Form_Element_FakeSubmit($name, $options);
 
         $this->form->addElement($element);
         // MUtil_Echo::r($element->getOrder(), $element->getName());
@@ -523,6 +558,52 @@ class MUtil_Model_FormBridge
         return $this->_addToForm($name, 'Select', $options);
     }
 
+
+    /**
+     * Adds a group of checkboxes (multicheckbox)
+     *
+     * @see Zend_Form_Element_MultiCheckbox
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return Zend_Form_Element_MultiCheckbox
+     */
+    public function addMultiCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = func_get_args();
+        $options = MUtil_Ra::pairs($options, 1);
+
+        // Is often added automatically, but should not be used here
+        $this->_moveOption('maxlength', $options);
+
+        $options = $this->_mergeOptions($name, $options,
+            self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
+
+        return $this->_addToForm($name, 'MultiCheckbox', $options);
+    }
+
+    /**
+     * Adds a select box with multiple options
+     *
+     * @see Zend_Form_Element_Multiselect
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     */
+    public function addMultiSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = func_get_args();
+        $options = MUtil_Ra::pairs($options, 1);
+
+        // Is often added automatically, but should not be used here
+        $this->_moveOption('maxlength', $options);
+
+        $options = $this->_mergeOptions($name, $options,
+            self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
+
+        return $this->_addToForm($name, 'Multiselect', $options);
+    }
+
     public function addPassword($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
@@ -592,52 +673,6 @@ class MUtil_Model_FormBridge
         return $this->_addToForm($name, 'Select', $options);
     }
 
-
-    /**
-     * Adds a group of checkboxes (multicheckbox)
-     *
-     * @see Zend_Form_Element_MultiCheckbox
-     *
-     * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return Zend_Form_Element_MultiCheckbox
-     */
-    public function addMultiCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
-    {
-        $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
-
-        // Is often added automatically, but should not be used here
-        $this->_moveOption('maxlength', $options);
-
-        $options = $this->_mergeOptions($name, $options,
-            self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
-
-        return $this->_addToForm($name, 'MultiCheckbox', $options);
-    }
-
-    /**
-     * Adds a select box with multiple options
-     *
-     * @see Zend_Form_Element_Multiselect
-     *
-     * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     */
-    public function addMultiSelect($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
-    {
-        $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
-
-        // Is often added automatically, but should not be used here
-        $this->_moveOption('maxlength', $options);
-
-        $options = $this->_mergeOptions($name, $options,
-            self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
-
-        return $this->_addToForm($name, 'Multiselect', $options);
-    }
-
     /**
      * Start a tab after this element, with the given name / title
      *
@@ -676,11 +711,12 @@ class MUtil_Model_FormBridge
 
     public function addText($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
-        $options = func_get_args();
-        $options = MUtil_Ra::pairs($options, 1);
-
-        $options = $this->_mergeOptions($name, $options,
-            self::DISPLAY_OPTIONS, self::TEXT_OPTIONS);
+        $options = $this->_mergeOptions(
+                $name,
+                MUtil_Ra::pairs(func_get_args(), 1),
+                self::DISPLAY_OPTIONS,
+                self::TEXT_OPTIONS
+                );
 
         $stringlength = $this->_getStringLength($options);
 

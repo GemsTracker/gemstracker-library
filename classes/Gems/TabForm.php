@@ -128,7 +128,9 @@ class Gems_TabForm extends Gems_Form
      */
     public function addTab($name, $title)
     {
-        if ($title instanceof MUtil_Html_Sequence) $title = $title->render($form->getView());
+        if ($title instanceof MUtil_Html_HtmlInterface) {
+            $title = $title->render($this->getView());
+        }
         $tab = new Gems_Form_TabSubForm(array('name' => $name, 'title' => strip_tags($title)));
         $this->currentTab = $tab;
         $this->addSubForm($tab, $name);
@@ -247,13 +249,13 @@ class Gems_TabForm extends Gems_Form
      * As addElement and addDisplayGroup provide a fluent way of working with subforms
      * we need to provide a method to skip back to the main form again.
      */
-    public function resetContext() {   
+    public function resetContext() {
         $this->currentTab = null;
     }
 
     /**
      * Select a tab by it's numerical index
-     * 
+     *
      * @param int $tabIdx
      */
     public function selectTab($tabIdx) {
@@ -276,7 +278,7 @@ class Gems_TabForm extends Gems_Form
         }
 
         parent::setView($view);
-        
+
         if ($this->_view !== $view) {
             $this->activateJQuery();
             if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
