@@ -69,7 +69,7 @@ class Gems_Versions
      */
     public final function getGemsVersion()
     {
-        return '1.5.8';
+        return '1.6';
     }
 
     /**
