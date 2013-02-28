@@ -175,7 +175,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
 
         foreach($answerNames as $name) {
             $label = $model->get($name, 'label');
-            if (strlen($label)) {
+            if (!is_null($label)) {     // Was strlen($label), but this ruled out empty sub-questions
                 $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
 
