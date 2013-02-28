@@ -8,6 +8,18 @@ Support can now be provided through support, manuals, documentation or forum url
 The global variable $GEMS_DIRS is deprecated, redefine it the application.ini using loaderDirs.Gems = .... (see NewProject)
 ZFDebug is now activated in the application.ini using: zfdebug.activate = 1
 
+New project.ini settings:
+longDescr   = ""
+longDescrNl = "" ; Append language for localised long decription
+
+contact.docsUrl    = "" ; The path to the documentation of the project
+contact.forumUrl   = "" ; The path to the forum if available
+contact.gemsUrl    = "http://gemstracker.org/"
+
+New application.ini settings (add before the first resource and change NewProject to your own project prefix):
+loaderDirs.NewProject = APPLICATION_PATH "/classes/NewProject"
+loaderDirs.Gems  = GEMS_LIBRARY_DIR "/classes/Gems"
+
 Important changes from 1.5.6 => 1.5.7
 ============================================================
 In LimeSurvey tokenanswerpersistence must be set to true for all surveys
