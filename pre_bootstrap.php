@@ -46,9 +46,10 @@ mb_internal_encoding(APPLICATION_ENCODING);
 // ZEND FRAMEWORK STARTS HERE
 
 /**
- *  Define path to application directory
+ *  Define path to application directory and UC project name if it does not yet exist
  */
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', GEMS_ROOT_DIR . '/application');
+defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_PROJECT_NAME));
 
 /**
  * Set path to Zend Framework
