@@ -133,63 +133,75 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
         }
 
         foreach ($this->_subModels as $name => $sub) {
-            /* @var $sub MUtil_Model_ModelAbstract */
+            $this->transformSubModel($model, $sub, $data, $name);
+        }
+        // MUtil_Echo::track($data);
 
-            if (1 === count($this->_joins[$name])) {
-                $mkey = key($this->_joins[$name]);
-                $skey = reset($this->_joins[$name]);
+        return $data;
+    }
 
-                $mfor = MUtil_Ra::column($mkey, $data);
+    /**
+     * Function to allow overruling of transform for certain models
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param MUtil_Model_ModelAbstract $sub
+     * @param array $data
+     * @param string $name
+     */
+    protected function transformSubModel
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, $name)
+    {
+        if (1 === count($this->_joins[$name])) {
+            $mkey = key($this->_joins[$name]);
+            $skey = reset($this->_joins[$name]);
 
-                // MUtil_Echo::track($mfor);
+            $mfor = MUtil_Ra::column($mkey, $data);
 
-                $sdata = $sub->load(array($skey => $mfor));
-                // MUtil_Echo::track($sdata);
+            // MUtil_Echo::track($mfor);
 
-                if ($sdata) {
-                    $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
-                    $empty = array_fill_keys(array_keys(reset($sdata)), null);
+            $sdata = $sub->load(array($skey => $mfor));
+            // MUtil_Echo::track($sdata);
 
-                    foreach ($data as &$mrow) {
-                        $mfind = $mrow[$mkey];
+            if ($sdata) {
+                $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
+                $empty = array_fill_keys(array_keys(reset($sdata)), null);
 
-                        if (isset($skeys[$mfind])) {
-                            $mrow += $sdata[$skeys[$mfind]];
-                        } else {
-                            $mrow += $empty;
-                        }
-                    }
-                } else {
-                    $empty = array_fill_keys($sub->getItemNames(), null);
+                foreach ($data as &$mrow) {
+                    $mfind = $mrow[$mkey];
 
-                    foreach ($data as &$mrow) {
+                    if (isset($skeys[$mfind])) {
+                        $mrow += $sdata[$skeys[$mfind]];
+                    } else {
                         $mrow += $empty;
                     }
                 }
             } else {
                 $empty = array_fill_keys($sub->getItemNames(), null);
+
                 foreach ($data as &$mrow) {
-                    $filter = $sub->getFilter();
-                    foreach ($this->_joins[$name] as $from => $to) {
-                        if (isset($mrow[$from])) {
-                            $filter[$to] = $mrow[$from];
-                        }
-                    }
-
-                    $sdata = $sub->loadFirst($filter);
-
-                    if ($sdata) {
-                        $mrow += $sdata;
-                    } else {
-                        $mrow += $empty;
-                    }
-
-                    // MUtil_Echo::track($sdata, $mrow);
+                    $mrow += $empty;
                 }
             }
-        }
-        // MUtil_Echo::track($data);
+        } else {
+            $empty = array_fill_keys($sub->getItemNames(), null);
+            foreach ($data as &$mrow) {
+                $filter = $sub->getFilter();
+                foreach ($this->_joins[$name] as $from => $to) {
+                    if (isset($mrow[$from])) {
+                        $filter[$to] = $mrow[$from];
+                    }
+                }
 
-        return $data;
+                $sdata = $sub->loadFirst($filter);
+
+                if ($sdata) {
+                    $mrow += $sdata;
+                } else {
+                    $mrow += $empty;
+                }
+
+                // MUtil_Echo::track($sdata, $mrow);
+            }
+        }
     }
 }

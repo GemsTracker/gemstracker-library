@@ -51,7 +51,7 @@ class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_F
      *
      * @param  string $method
      * @param  array $args
-     * @return string
+     * @return MUtil_Html_HtmlElement or at least something that implements the MUtil_Html_HtmlInterface interface
      * @throws Zend_Form_Exception for invalid decorator or invalid method call
      */
     public function __call($method, $args)
@@ -70,7 +70,7 @@ class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_F
         $value->append($elem);
         $this->setValue($value);
 
-        return $this;
+        return $elem;
     }
 
     /**

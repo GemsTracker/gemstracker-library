@@ -204,6 +204,22 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns array (id => name) of all 'T' tracks, sorted alphabetically
+     * @return array
+     */
+    public function getSteppedTracks()
+    {
+        static $tracks;
+
+        if (! $tracks) {
+            $tracks = $this->db->fetchPairs("SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name");
+        }
+
+        return $tracks;
+    }
+
+    /**
+     * Get all the surveys for a certain code
      *
      * @param string $code
      * @return array survey id => survey name
@@ -226,22 +242,6 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
         $this->cache->save($results, $cacheId, array('surveys'));
         return $results;
     }
-
-    /**
-     * Returns array (id => name) of all 'T' tracks, sorted alphabetically
-     * @return array
-     */
-    public function getSteppedTracks()
-    {
-        static $tracks;
-
-        if (! $tracks) {
-            $tracks = $this->db->fetchPairs("SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name");
-        }
-
-        return $tracks;
-    }
-
 
     /**
      * Returns array (id => name) of the track date fields for this track, sorted by order

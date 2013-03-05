@@ -95,7 +95,7 @@ class Organization_ChooseOrganizationSnippet extends MUtil_Snippets_SnippetAbstr
             foreach ($orgs as $orgId => $name) {
                 $url['org'] = $orgId;
 
-                $html->pInfo()->actionLink($url, $name, array('style' => 'font-size: 120%;'));
+                $html->pInfo()->actionLink($url, $name)->appendAttrib('class', 'larger'); 
             }
         } else {
             $html->pInfo($this->_('This organization cannot have any respondents.'));
