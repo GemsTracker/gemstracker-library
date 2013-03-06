@@ -37,7 +37,7 @@
 /**
  * After a round has changed/completed run this code.
  *
- * As it passes Gemns_Tracker objects it is more powerfull than survey completion events,
+ * As it passes Gems_Tracker objects it is more powerfull than survey completion events,
  * but then the code may be more difficult to implement.
  *
  * @package    Gems
