@@ -865,7 +865,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
             $fields = array();
             foreach ($this->getItemsUsed() as $name) {
-                if ($this->get($name, 'label')) {
+                if ($this->get($name, 'label') && (! $this->get($name, 'no_text_search'))) {
                     if ($expression = $this->get($name, 'column_expression')) {
                         if ($fieldList = $this->get($name, 'fieldlist')) {
                             foreach ((array) $fieldList as $field) {

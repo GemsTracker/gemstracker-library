@@ -86,6 +86,7 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
             foreach ($sub->getItemNames() as $name) {
                 if (! $model->has($name)) {
                     $data[$name] = $sub->get($name);
+                    $data[$name]['no_text_search'] = true;
 
                     // Remove unsuited data
                     unset($data[$name]['table'], $data[$name]['column_expression']);

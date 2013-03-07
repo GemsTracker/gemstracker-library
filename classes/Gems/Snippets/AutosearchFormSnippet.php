@@ -102,14 +102,14 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     protected function _addPeriodSelectors(array &$elements, $dates, $defaultDate = null, $switchToSelect = 4)
     {
         if (is_array($dates) && (1 === count($dates))) {
-            reset($dates);
+            $fromLabel = reset($dates);
             $dates = key($dates);
+        } else {
+            $fromLabel = $this->_('From');
         }
         if (is_string($dates)) {
             $element = new Zend_Form_Element_Hidden('dateused');
             $element->setValue($dates);
-
-            $fromLabel = $this->_('From');
         } else {
             if (count($dates) >= $switchToSelect) {
                 $element = $this->_createSelectElement('dateused', $dates);
