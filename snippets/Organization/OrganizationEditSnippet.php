@@ -130,7 +130,7 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         if (count($this->_items)>0 && !($bridge->getTab('other'))) {
             $bridge->addTab('other', 'value', $this->_('Other'));
         }
-        parent::addFormElements($bridge, $model);
+        parent::addItems($bridge, $this->_items);
     }
 
     public function afterSave($changed)

@@ -97,8 +97,8 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         }
         if (self::SSN_HASH === $this->hashSsn) {
             $this->setSaveWhen('grs_ssn', array($this, 'whenSSN'));
-            $this->setOnLoad('grs_ssn', array($this, 'saveSSN'));
-            $this->setOnSave('grs_ssn', array($this, 'formatSSN'));
+            $this->setOnLoad('grs_ssn', array($this, 'hideSSN'));
+            $this->setOnSave('grs_ssn', array($this, 'saveSSN'));
         }
     }
 
@@ -218,6 +218,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     public function applyDetailSettings($locale = null)
     {
         $dbLookup   = $this->util->getDbLookup();
+        $localized  = $this->util->getLocalized();
         $translated = $this->util->getTranslated();
         $translator = $this->translate->getAdapter();
 
@@ -240,16 +241,14 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         // The SSN
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
-            $this->set('grs_ssn', 'label', $translator->_('SSN'));
+            $this->set('grs_ssn', 'label', $translator->_('SSN'),
+                    'tab', $translator->_('Identification'));
         }
 
-        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent number'));
+        $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent number'),
+                'tab', $translator->_('Identification'));
 
         $this->setIfExists('grs_first_name',  'label', $translator->_('First name'));
-        $this->setIfExists('grs_surname_prefix',
-                'label', $translator->_('Surname prefix'),
-                'description', $translator->_('de, van der, \'t, etc...')
-                );
         $this->setIfExists('grs_last_name',   'label', $translator->_('Last name'));
 
         $this->setIfExists('grs_gender',
@@ -257,33 +256,44 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'multiOptions', $translated->getGenderHello()
                 );
 
-        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
-
-        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
-        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
-        $this->setIfExists('grs_city',        'label', $translator->_('City'));
-
-        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
-
         $this->setIfExists('grs_birthday',
                 'label', $translator->_('Birthday'),
                 'dateFormat', Zend_Date::DATE_MEDIUM
+                );
+
+        $this->setIfExists('gr2o_treatment',          'label', $translator->_('Treatment'));
+        $this->setIfExists('gr2o_comments',           'label', $translator->_('Comments'));
+
+        $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'),
+                'tab', $translator->_('Contact information'));
+
+        $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
+        $this->setIfExists('grs_address_2',   'label', $translator->_('&nbsp;'));
+
+        // MUtil_Echo::track($this->getItemsOrdered());
+        //MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
+
+        $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
+        $this->setIfExists('grs_city',        'label', $translator->_('City'));
+        $this->setIfExists('grs_iso_country', 'label', $translator->_('Country'),
+                'multiOptions', $localized->getCountries());
+
+        $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
+        $this->setIfExists('grs_phone_2',     'label', $translator->_('Phone 2'));
+        $this->setIfExists('grs_phone_3',     'label', $translator->_('Phone 3'));
+
+        $this->setIfExists('grs_iso_lang',    'label', $translator->_('Language'),
+                'multiOptions', $localized->getLanguages(),
+                'tab', $translator->_('Settings'));
+
+        $this->setIfExists('gr2o_consent',    'label', $translator->_('Consent'),
+                'multiOptions', $dbLookup->getUserConsents()
                 );
 
         $this->setIfExists('gr2o_opened',
                 'label', $translator->_('Opened'),
                 'formatFunction', $translated->formatDateTime
                 );
-
-        $this->setIfExists('gr2o_consent',
-                'label', $translator->_('Consent'),
-                'multiOptions', $dbLookup->getUserConsents()
-                );
-
-        $this->set('gr2o_comments',           'label', $translator->_('Comments'));
-        $this->set('gr2o_treatment',          'label', $translator->_('Treatment'));
-
-        $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
 
         return $this;
     }
@@ -304,23 +314,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $ucfirst    = new Zend_Filter_Callback('ucfirst');
 
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
-            $this->set('grs_ssn',
-                    'size', 10,
-                    'maxlength', 12,
-                    'filter', 'Digits');
-
-            if (APPLICATION_ENV !== 'production') {
-                $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
-                $num = mt_rand(100000000, 999999999);
-
-                while (! $bsn->isValid($num)) {
-                    $num++;
-                }
-
-                $this->setIfExists('grs_ssn', 'description', sprintf($translator->_('Random Example BSN: %s'), $num));
-            } else {
-                $this->setIfExists('grs_ssn', 'description', $translator->_('Enter a 9-digit SSN number.'));
-            }
+            $this->set('grs_ssn', 'validator[]', $this->createUniqueValidator('grs_ssn'));
         }
 
         $this->setIfExists('gr2o_patient_nr',
@@ -329,6 +323,22 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'validator', $this->createUniqueValidator(
                         array('gr2o_patient_nr', 'gr2o_id_organization'),
                         array('gr2o_id_user' => 'grs_id_user', 'gr2o_id_organization')
+                        )
+                );
+        $this->set('grs_id_user');
+
+        $this->set('grs_email',
+                'size', 30,
+                'validator', 'SimpleEmail');
+        $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
+        $this->set('calc_email',
+                'label', $translator->_('Respondent has no e-mail'),
+                'elementClass', 'Checkbox',
+                'order', $this->getOrder('grs_email') + 1,
+                'validator', new Gems_Validate_OneOf(
+                        $translator->_('Respondent has no e-mail'),
+                        'grs_email',
+                        $this->get('grs_email', 'label')
                         )
                 );
 
@@ -342,11 +352,33 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'tab', $translator->_('Medical data')
                 );
 
+        $this->setIfExists('grs_birthday',
+                'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
+                'elementClass', 'Date',
+                'validator', new MUtil_Validate_Date_DateBefore());
+
+        $this->setIfExists('gr2o_treatment', 'size', 30);
+        $this->setIfExists('gr2o_comments',  'elementClass', 'Textarea', 'rows', 4, 'cols', 60);
+
+        $this->setIfExists('grs_address_1',
+                'size',  40,
+                'description', $translator->_('With housenumber'),
+                'filter', $ucfirst
+                );
+        $this->setIfExists('grs_address_2', 'size', 40);
+        $this->setIfExists('grs_city', 'filter', $ucfirst);
+        $this->setIfExists('grs_phone_1', 'size', 15);
+        $this->setIfExists('grs_phone_2', 'size', 15);
+        $this->setIfExists('grs_phone_3', 'size', 15);
+
         $this->setIfExists('gr2o_opened', 'elementClass', 'Exhibitor');
 
-        $this->setIfExists('gr2o_consent', 'default', $this->util->getDefaultConsent());
-
-        $this->setIfExists('grs_iso_lang', 'default', 'nl');
+        $this->setIfExists('gr2o_consent',
+                'default', $this->util->getDefaultConsent(),
+                'elementClass', 'Radio',
+                'separator', '',
+                'description', $translator->_('Has the respondent signed the informed consent letter?'),
+                'required', true);
 
         return $this;
     }

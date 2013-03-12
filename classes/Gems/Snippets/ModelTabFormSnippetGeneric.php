@@ -74,25 +74,29 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
         }
         $bridge->setAllowedOptions(MUtil_Model_FormBridge::DISPLAY_OPTIONS, $displayOptions);
 
-        $tab   = 0;
-        $group = 0;
+        $tab    = 0;
+        $group  = 0;
+        $oldTab = null;
+        // MUtil_Echo::track($model->getItemsOrdered());
         foreach ($model->getItemsOrdered() as $name) {
             // Get all options at once
             $modelOptions = $model->get($name);
-            if ($tabName = $model->get($name, 'tab')) {
+            $tabName      = $model->get($name, 'tab');
+            if ($tabName && ($tabName !== $oldTab)) {
                 $bridge->addTab('tab' . $tab, 'value', $tabName);
+                $oldTab = $tabName;
                 $tab++;
             }
 
             if ($model->has($name, 'label')) {
                 $bridge->add($name);
-                
-                if ($theName = $model->get('startGroup')) {
+
+                if ($theName = $model->get($name, 'startGroup')) {
                     //We start a new group here!
                     $groupElements   = array();
                     $groupElements[] = $name;
                     $groupName       = $theName;
-                } elseif ($theName = $model->get('endGroup')) {
+                } elseif ($theName = $model->get($name, 'endGroup')) {
                     //Ok, last element define the group
                     $groupElements[] = $name;
                     $bridge->addDisplayGroup('grp_' . $groupElements[0], $groupElements,
@@ -111,6 +115,7 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
             } else {
                 $bridge->addHidden($name);
             }
+            unset($this->_items[$name]);
         }
     }
 
@@ -146,7 +151,10 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
                 $form->resetContext();
             }
             $form->addElement($element);
+            $element->removeDecorator('HtmlTag');
+            $element->removeDecorator('Label');
             $form->addDisplayGroup(array('formLinks'), 'form_buttons');
+            $form->getDisplayGroup(Gems_TabForm::GROUP_OTHER)->removeElement($element->getName());
         }
     }
 

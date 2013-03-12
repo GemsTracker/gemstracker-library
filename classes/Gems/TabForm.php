@@ -43,6 +43,11 @@
 class Gems_TabForm extends Gems_Form
 {
     /**
+     * Group ID for elements below form
+     */
+    const GROUP_OTHER = 'not_in_tab';
+
+    /**
      * Holds the last tab we added information to
      *
      * @var Gems_Form_TabSubForm
@@ -97,18 +102,40 @@ class Gems_TabForm extends Gems_Form
      */
     public function addElement($element, $name = null, $options = null)
     {
+        if ($element instanceof Zend_Form_Element_Hidden) {
+            parent::addElement($element, $name, $options);
+
+            //Remove decorators
+            $element->removeDecorator('HtmlTag');
+            $element->removeDecorator('Label');
+
+            $this->addToOtherGroup($element);
+
+            $element->removeDecorator('DtDdWrapper');
+            
+            return $this;
+        }
+
         if ($this->currentTab) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
             parent::addElement($element, $name, $options);
+
             if (is_string($element)) {
                 $element = $this->getElement($element);
             }
+
+            $this->addToOtherGroup($element);
+
+            $element->removeDecorator('DtDdWrapper');
+
             if ($element instanceof Zend_Form_Element_Hidden) {
                 //Remove decorators
-                $element->removeDecorator('htmlTag');
+                $element->removeDecorator('HtmlTag');
                 $element->removeDecorator('Label');
+
             } elseif ($element instanceof Zend_Form_Element) {
+
                 $error = $element->getDecorator('Errors');
                 if ($error instanceof Zend_Form_Decorator_Errors) {
                     $element->removeDecorator('Errors');
@@ -135,6 +162,24 @@ class Gems_TabForm extends Gems_Form
         $this->currentTab = $tab;
         $this->addSubForm($tab, $name);
         return $tab;
+    }
+
+    /**
+     * Add to the group all non-tab elements are in
+     *
+     * @param mixed $element
+     * @return \Gems_TabForm
+     */
+    public function addToOtherGroup($element)
+    {
+        if ($element instanceof Zend_Form_Element) {
+            if ($group = $this->getDisplayGroup(self::GROUP_OTHER)) {
+                $group->addElement($element);
+            } else  {
+                $this->addDisplayGroup(array($element), self::GROUP_OTHER);
+            }
+        }
+        return $this;
     }
 
     /**

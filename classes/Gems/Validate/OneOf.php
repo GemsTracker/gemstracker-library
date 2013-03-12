@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,50 +27,97 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package     MUtil
+ * @package    Gems
  * @subpackage Validate
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: SimpleEmail.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $id: EmailCheck.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
+ * Check for one of the two values being filled
  *
- * @package    MUtil
+ * @package    Gems
  * @subpackage Validate
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since version 1.6
  */
-class MUtil_Validate_SimpleEmail extends Zend_Validate_Regex
+class Gems_Validate_OneOf extends Zend_Validate_Abstract
 {
-    // Reg checked at Wikipedia, only | char is technically allowed in name and not in there.
-    const EMAIL_REGEX = '/^([[:alnum:]._!#$%*\/&?{}+=`\'^~-])+@[[:alnum:]]+[[:alnum:].-]+\\.[[:alpha:]]{2,}$/';
+    /**
+     * Error codes
+     * @const string
+     */
+    const NEITHER  = 'neither';
+
+    protected $_messageTemplates = array(
+        self::NEITHER => "Either '%description%' or '%fieldDescription%' must be entered.",
+    );
 
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::INVALID   => "Invalid type given, value should be string, integer or float",
-        self::NOT_MATCH => "'%value%' is not an email address (e.g. name@somewhere.com).",
+    protected $_messageVariables = array(
+        'description' => '_description',
+        'fieldDescription' => '_fieldDescription'
     );
 
+
+    protected $_description;
+
     /**
-     * Regular expression pattern
-     *
+     * The field name against which to validate
      * @var string
      */
-    protected $_pattern = self::EMAIL_REGEX;
+    protected $_fieldName;
+
+    /**
+     * Description of field name against which to validate
+     * @var string
+     */
+    protected $_fieldDescription;
 
     /**
      * Sets validator options
      *
-     * @param  string|Zend_Config $pattern
+     * @param  string $fieldName  Field name against which to validate
+     * $param string $fieldDescription  Description of field name against which to validate
      * @return void
      */
-    public function __construct($pattern = self::EMAIL_REGEX)
+    public function __construct($description, $fieldName, $fieldDescription)
     {
-        parent::__construct($pattern);
+        $this->_description = $description;
+        $this->_fieldName = $fieldName;
+        $this->_fieldDescription = $fieldDescription;
+    }
+
+    /**
+     * Defined by Zend_Validate_Interface
+     *
+     * Returns true if and only if a token has been set and the provided value
+     * matches that token.
+     *
+     * @param  mixed $value
+     * @return boolean
+     */
+    public function isValid($value, $context = array())
+    {
+        $this->_setValue((string) $value);
+
+        $fieldSet = (boolean) isset($context[$this->_fieldName]) && $context[$this->_fieldName];
+        $valueSet = (boolean) $value;
+
+        if ($valueSet && (! $fieldSet))  {
+            return true;
+        }
+
+        if ((! $valueSet) && $fieldSet)  {
+            return true;
+        }
+
+        $this->_error(self::NEITHER);
+        return false;
     }
 }
