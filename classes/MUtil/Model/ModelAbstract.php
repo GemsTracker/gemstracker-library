@@ -712,9 +712,19 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function getItemsOrdered()
     {
-        asort($this->_model_order);
-        $order = array_keys($this->_model_order);
-        return $order + array_diff(array_keys($this->_model), $order);
+        $order = (array) $this->_model_order;
+        asort($order);
+        $result = array_keys($order);
+        foreach($this->_model as $field => $element) {
+            if (! array_key_exists($field, $order)) {
+                $result[] = $field;
+            }
+        }
+        return $result;
+
+        // asort($this->_model_order);
+        // $order = array_keys($this->_model_order);
+        // return $order + array_diff(array_keys($this->_model), $order);
     }
 
     public function getItemsUsed()
