@@ -224,18 +224,18 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
+            $user = $this->loader->getCurrentUser();
+
             $this->set('gr2o_id_organization',
                     'label', $translator->_('Organization'),
-                    'tab', $translator->_('Identification')
+                    'tab', $translator->_('Identification'),
+                    'multiOptions', $user->getRespondentOrganizations()
                     );
 
-            if ($this->isMultiOrganization()) {
-                $user = $this->loader->getCurrentUser();
+            $this->set('gr2o_id_organization', 'default', $user->getCurrentOrganizationId());
 
-                $this->set('gr2o_id_organization',
-                        'default', $user->getCurrentOrganizationId(),
-                        'multiOptions', $user->getRespondentOrganizations()
-                        );
+            if (count($user->getAllowedOrganizations()) == 1) {
+                $this->set('gr2o_id_organization', 'elementClass', 'Exhibitor');
             }
         }
 
