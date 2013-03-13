@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-07 18:05+0100\n"
+"POT-Creation-Date: 2013-03-13 16:39+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -445,7 +445,7 @@ msgstr "Patient nr"
 #: classes/Gems/Default/MailJobAction.php:98
 #: classes/Gems/Default/StaffAction.php:347
 #: classes/Gems/Model/RespondentModel.php:174
-#: classes/Gems/Model/RespondentModel.php:227
+#: classes/Gems/Model/RespondentModel.php:228
 #: classes/Gems/Snippets/Export/ReportHeaderSnippet.php:63
 #: classes/Gems/User/Form/LayeredLoginForm.php:254
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:166
@@ -454,43 +454,43 @@ msgid "Organization"
 msgstr "Organization"
 
 #: classes/Gems/Model.php:217 classes/Gems/Model/RespondentModel.php:202
-#: classes/Gems/Model/RespondentModel.php:274
+#: classes/Gems/Model/RespondentModel.php:294
 msgid "Opened"
 msgstr "Opened"
 
 #: classes/Gems/Model.php:218 classes/Gems/Model/RespondentModel.php:205
-#: classes/Gems/Model/RespondentModel.php:279
+#: classes/Gems/Model/RespondentModel.php:289
 msgid "Consent"
 msgstr "Consent"
 
 #: classes/Gems/Model.php:220 classes/Gems/Default/OptionAction.php:130
 #: classes/Gems/Default/StaffAction.php:337
 #: classes/Gems/Model/RespondentModel.php:189
-#: classes/Gems/Model/RespondentModel.php:260
+#: classes/Gems/Model/RespondentModel.php:267
 msgid "E-Mail"
 msgstr "E-Mail"
 
 #: classes/Gems/Model.php:225 classes/Gems/Default/OptionAction.php:134
 #: classes/Gems/Default/StaffAction.php:350
-#: classes/Gems/Model/RespondentModel.php:256
+#: classes/Gems/Model/RespondentModel.php:255
 msgid "Gender"
 msgstr "Gender"
 
 #: classes/Gems/Model.php:226 classes/Gems/Default/OptionAction.php:131
 #: classes/Gems/Default/StaffAction.php:192
-#: classes/Gems/Model/RespondentModel.php:248
+#: classes/Gems/Model/RespondentModel.php:251
 msgid "First name"
 msgstr "First name"
 
 #: classes/Gems/Model.php:227 classes/Gems/Default/OptionAction.php:132
 #: classes/Gems/Default/StaffAction.php:194
-#: classes/Gems/Model/RespondentModel.php:250
+#: classes/Gems/Model/RespondentNlModel.php:64
 msgid "Surname prefix"
 msgstr "Surname prefix"
 
 #: classes/Gems/Model.php:228 classes/Gems/Default/OptionAction.php:133
 #: classes/Gems/Default/StaffAction.php:195
-#: classes/Gems/Model/RespondentModel.php:253
+#: classes/Gems/Model/RespondentModel.php:252
 msgid "Last name"
 msgstr "Last name"
 
@@ -512,31 +512,31 @@ msgid "Name"
 msgstr "Name"
 
 #: classes/Gems/Model.php:234 classes/Gems/Model/RespondentModel.php:191
-#: classes/Gems/Model/RespondentModel.php:262
+#: classes/Gems/Model/RespondentModel.php:270
 msgid "Street"
 msgstr "Street"
 
 #: classes/Gems/Model.php:235 classes/Gems/Model/RespondentModel.php:192
-#: classes/Gems/Model/RespondentModel.php:263
+#: classes/Gems/Model/RespondentModel.php:276
 msgid "Zipcode"
 msgstr "Zipcode"
 
 #: classes/Gems/Model.php:236
 #: classes/Gems/Default/RespondentPlanAction.php:134
 #: classes/Gems/Model/RespondentModel.php:193
-#: classes/Gems/Model/RespondentModel.php:264
+#: classes/Gems/Model/RespondentModel.php:277
 msgid "City"
 msgstr "City"
 
 #: classes/Gems/Model.php:238 classes/Gems/Model/RespondentModel.php:195
-#: classes/Gems/Model/RespondentModel.php:266
+#: classes/Gems/Model/RespondentModel.php:281
 msgid "Phone"
 msgstr "Phone"
 
 #: classes/Gems/Model.php:240
 #: classes/Gems/Default/RespondentPlanAction.php:133
 #: classes/Gems/Model/RespondentModel.php:198
-#: classes/Gems/Model/RespondentModel.php:269
+#: classes/Gems/Model/RespondentModel.php:260
 msgid "Birthday"
 msgstr "Birthday"
 
@@ -1909,6 +1909,7 @@ msgstr "Login Name"
 #: classes/Gems/Default/OrganizationAction.php:147
 #: classes/Gems/Default/RespondentAction.php:195
 #: classes/Gems/Default/StaffAction.php:359
+#: classes/Gems/Model/RespondentModel.php:285
 msgid "Language"
 msgstr "Language"
 
@@ -2342,23 +2343,25 @@ msgstr[0] "reception code"
 msgstr[1] "reception codes"
 
 #: classes/Gems/Default/RespondentAction.php:127
-#: classes/Gems/Model/RespondentModel.php:320
+#: classes/Gems/Model/RespondentNlModel.php:119
 #, php-format
 msgid "Random Example BSN: %s"
 msgstr "Random Example BSN: %s"
 
 #: classes/Gems/Default/RespondentAction.php:129
-#: classes/Gems/Model/RespondentModel.php:322
+#: classes/Gems/Model/RespondentNlModel.php:121
 msgid "Enter a 9-digit SSN number."
 msgstr "Enter a 9-digit BSN number."
 
 #: classes/Gems/Default/RespondentAction.php:143
-#: classes/Gems/Model/RespondentModel.php:228
+#: classes/Gems/Model/RespondentModel.php:229
+#: classes/Gems/Model/RespondentModel.php:245
+#: classes/Gems/Model/RespondentModel.php:249
 msgid "Identification"
 msgstr "Identification"
 
 #: classes/Gems/Default/RespondentAction.php:154
-#: classes/Gems/Model/RespondentModel.php:243
+#: classes/Gems/Model/RespondentModel.php:244
 msgid "SSN"
 msgstr "BSN"
 
@@ -2367,46 +2370,54 @@ msgid "Patient number"
 msgstr "Patient number"
 
 #: classes/Gems/Default/RespondentAction.php:167
-#: classes/Gems/Model/RespondentModel.php:342
+#: classes/Gems/Model/RespondentModel.php:352
 msgid "Medical data"
 msgstr "Medical data"
 
 #: classes/Gems/Default/RespondentAction.php:174
+#: classes/Gems/Model/RespondentNlModel.php:88
 msgid "DBC's, etc..."
 msgstr "DBC's, etc..."
 
 #: classes/Gems/Default/RespondentAction.php:177
+#: classes/Gems/Model/RespondentModel.php:268
 msgid "Contact information"
 msgstr "Contact information"
 
 #: classes/Gems/Default/RespondentAction.php:182
+#: classes/Gems/Model/RespondentModel.php:335
+#: classes/Gems/Model/RespondentModel.php:339
 msgid "Respondent has no e-mail"
 msgstr "Patient has no e-mail"
 
 #: classes/Gems/Default/RespondentAction.php:183
+#: classes/Gems/Model/RespondentModel.php:365
 msgid "With housenumber"
 msgstr "With housenumber"
 
 #: classes/Gems/Default/RespondentAction.php:190
+#: classes/Gems/Model/RespondentModel.php:278
 msgid "Country"
 msgstr "Country"
 
 #: classes/Gems/Default/RespondentAction.php:194
+#: classes/Gems/Model/RespondentModel.php:287
 msgid "Settings"
 msgstr "Settings"
 
 #: classes/Gems/Default/RespondentAction.php:196
+#: classes/Gems/Model/RespondentModel.php:380
 msgid "Has the respondent signed the informed consent letter?"
 msgstr "Has the patient signed the informed consent letter?"
 
 #: classes/Gems/Default/RespondentAction.php:228
-#: classes/Gems/Model/RespondentModel.php:283
+#: classes/Gems/Model/RespondentModel.php:265
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:203
 msgid "Comments"
 msgstr "Comments"
 
 #: classes/Gems/Default/RespondentAction.php:229
-#: classes/Gems/Model/RespondentModel.php:284
+#: classes/Gems/Model/RespondentModel.php:264
 msgid "Treatment"
 msgstr "Treatment"
 
@@ -3170,7 +3181,7 @@ msgid "Token planning"
 msgstr "Token planning"
 
 #: classes/Gems/Default/TrackAction.php:121
-#: classes/Gems/Model/RespondentModel.php:246
+#: classes/Gems/Model/RespondentModel.php:248
 #: snippets/DeleteInSourceTrackSnippet.php:82 snippets/EditTrackSnippet.php:72
 msgid "Respondent number"
 msgstr "Patient number"
@@ -3941,9 +3952,25 @@ msgstr "  in step "
 msgid "No script for %1$s."
 msgstr "No script for %1$s."
 
-#: classes/Gems/Model/RespondentModel.php:251
+#: classes/Gems/Model/RespondentModel.php:271
+msgid "&nbsp;"
+msgstr "&nbsp;"
+
+#: classes/Gems/Model/RespondentModel.php:282
+msgid "Phone 2"
+msgstr "Phone 2"
+
+#: classes/Gems/Model/RespondentModel.php:283
+msgid "Phone 3"
+msgstr "Phone 3"
+
+#: classes/Gems/Model/RespondentNlModel.php:65
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
+
+#: classes/Gems/Model/RespondentNlModel.php:136
+msgid "E.g.: 0000 AA"
+msgstr "E.g.: 0000 AA"
 
 #: classes/Gems/Selector/DateSelectorAbstract.php:309
 msgid "<<"
