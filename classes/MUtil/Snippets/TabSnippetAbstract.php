@@ -52,7 +52,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      *
      * @var array
      */
-    protected $baseurl = array();
+    protected $baseUrl = array();
 
     /**
      * Shortfix to add class attribute

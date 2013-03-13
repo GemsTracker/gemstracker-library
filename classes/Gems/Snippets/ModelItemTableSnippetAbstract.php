@@ -173,13 +173,8 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      */
     protected function setShowTableFooter(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $controller = $this->request->getControllerName();
-
-        $menuList = $this->menu->getMenuList();
-        $menuList->addParameterSources($bridge)
-                ->addByController($controller, 'index', $this->_('Cancel'))
-                ->addByController($controller, 'edit')
-                ->addByController($controller, 'delete');
+        $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+        $menuList->addParameterSources($bridge);
 
         $bridge->tfrow($menuList, array('class' => 'centerAlign'));
     }

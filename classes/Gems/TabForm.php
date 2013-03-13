@@ -112,7 +112,7 @@ class Gems_TabForm extends Gems_Form
             $this->addToOtherGroup($element);
 
             $element->removeDecorator('DtDdWrapper');
-            
+
             return $this;
         }
 
@@ -127,14 +127,15 @@ class Gems_TabForm extends Gems_Form
 
             $this->addToOtherGroup($element);
 
-            $element->removeDecorator('DtDdWrapper');
-
             if ($element instanceof Zend_Form_Element_Hidden) {
                 //Remove decorators
                 $element->removeDecorator('HtmlTag');
                 $element->removeDecorator('Label');
+                $element->removeDecorator('DtDdWrapper');
 
             } elseif ($element instanceof Zend_Form_Element) {
+
+                $element->removeDecorator('DtDdWrapper');
 
                 $error = $element->getDecorator('Errors');
                 if ($error instanceof Zend_Form_Decorator_Errors) {

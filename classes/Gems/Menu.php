@@ -137,7 +137,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $page->addAction(sprintf($this->_('About %s'), $project->getName()), null, 'about');
         $page->addAction(sprintf($this->_('About %s'), $this->_('GemsTracker')), 'pr.contact.gems', 'gems');
-        
+
         if ($project->hasBugsUrl()) {
             $page->addAction($this->_('Reporting bugs'), 'pr.contact.bugs', 'bugs');
         }
@@ -516,6 +516,37 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             return array();
         }
     }
+
+    /**
+     * Menulist populated with current items
+     *
+     * @param Zend_Controller_Request_Abstract $request
+     * @param $parentLabel
+     * @return Gems_Menu_MenuList
+     */
+    public function getCurrentMenuList(Zend_Controller_Request_Abstract $request, $parentLabel = null)
+    {
+        $controller = $request->getControllerName();
+        $action     = $request->getActionName();
+
+        $menuList = $this->getMenuList();
+
+        if ($controller !== 'index') {
+            $menuList->addByController($controller, 'index', $parentLabel);
+        }
+
+        foreach ($this->getCurrentParent()->getChildren() as $child) {
+            if ($child instanceof Gems_Menu_SubMenuItem) {
+                $chAction = $child->get('action');
+                $chContr  = $child->get('controller');
+                if (! ($controller == $chContr && $action == $chAction)) {
+                    $menuList->addByController($chContr, $chAction);
+                }
+            }
+        }
+        return $menuList;
+    }
+
 
     /**
      *

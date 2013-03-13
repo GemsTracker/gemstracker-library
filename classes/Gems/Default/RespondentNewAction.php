@@ -47,6 +47,18 @@
 abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array('resetRoute' => true);
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
@@ -54,10 +66,53 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     protected $createEditSnippets = 'ModelTabFormSnippetGeneric';
 
     /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    public $deleteSnippets = array('RespondentDetailsSnippet');
+
+    /**
+     * The snippets used for the export action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    public $exportSnippets = array('RespondentDetailsSnippet');
+
+    /**
      *
      * @var Gems_Loader
      */
     public $loader;
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'RespondentDetailsSnippet',
+    	'AddTracksSnippet',
+        'RespondentTokenTabsSnippet',
+        'RespondentTokenSnippet',
+    );
+
+    /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = array(
+        'baseUrl'        => 'getItemUrlArray',
+        'onclick'        => 'getEditLink',
+        'respondentData' => 'getRespondentData',
+    );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -85,6 +140,110 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
             default:
                 return $model->applyDetailSettings();
+        }
+    }
+
+    /**
+     * Adjusted delete action
+     */
+    public function deleteAction()
+    {
+        $model   = $this->getModel();
+        $params  = $this->_processParameters($this->showParameters);
+        $data    = $params['respondentData'];
+        $request = $this->getRequest();
+
+        $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
+
+        $bridge = new MUtil_Model_FormBridge($model, new Gems_Form());
+        $bridge->addSelect('gr2o_reception_code',
+            'label', $this->_('Rejection code'),
+            'multiOptions', $options,
+            'required', true,
+            'size', max(7, min(3, count($options) + 1)));
+
+        $form = $bridge->getForm();
+
+        $save = new Zend_Form_Element_Submit('save_button', array('label' => $this->_('Delete respondent'), 'class' => 'button'));
+        $form->addElement($save);
+
+        if ($request->isPost()) {
+            $data = $_POST + $data;
+            if ($form->isValid($data )) {
+
+                $code = $this->util->getReceptionCode($data['gr2o_reception_code']);
+
+                // Is the respondent really removed
+                if (! $code->isSuccess()) {
+                    $userId = $this->loader->getCurrentUser()->getUserId();
+
+                    // Cascade to tracks
+                    // the responsiblilty to handle it correctly is on the sub objects now.
+                    $tracks = $this->loader->getTracker()->getRespondentTracks($data['gr2o_id_user'], $data['gr2o_id_organization']);
+                    foreach ($tracks as $track) {
+                        $track->setReceptionCode($code, null, $userId);
+                    }
+
+                    // Perform actual save, but not simple stop codes.
+                    if ($code->isForRespondents()) {
+                        $values['gr2o_reception_code'] = $data['gr2o_reception_code'];
+                        $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
+                        $values['gr2o_changed_by']     = $userId;
+
+                        $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
+                        $where = $this->db->quoteInto($where, $data['gr2o_id_user'], null, 1);
+                        $where = $this->db->quoteInto($where, $data['gr2o_id_organization'], null, 1);
+
+                        $this->db->update('gems__respondent2org', $values, $where);
+
+                        $this->addMessage($this->_('Respondent deleted.'));
+                        $this->_reroute(array('action' => 'index'), true);
+                    } else {
+                        // Just a stop code
+                        $this->addMessage($this->_('Respondent tracks stopped.'));
+                        $this->_reroute(array('action' => 'show'));
+                    }
+                } else {
+                    $this->addMessage($this->_('Choose a reception code to delete.'));
+                }
+            } else {
+                $this->addMessage($this->_('Input error! No changes saved!'));
+            }
+        }
+        $form->populate($data);
+
+        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        $table->setAsFormLayout($form, true, true);
+        $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+
+        $this->addSnippets($this->deleteSnippets, $params);
+
+        $this->html[] = $form;
+    }
+
+    /**
+     * Action for dossier export
+     */
+    public function exportAction()
+    {
+        $params = $this->_processParameters($this->showParameters);
+        $data   = $params['respondentData'];
+
+        $this->addSnippets($this->exportSnippets, $params);
+
+        //Now show the export form
+        $export = $this->loader->getRespondentExport($this);
+        $form = $export->getForm();
+        $this->html->h2($this->_('Export respondent archive'));
+        $div = $this->html->div(array('id' => 'mainform'));
+        $div[] = $form;
+
+        $request = $this->getRequest();
+
+        $form->populate($request->getParams());
+
+        if ($request->isPost()) {
+            $export->render((array) $data['gr2o_patient_nr'], $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
         }
     }
 
@@ -122,6 +281,25 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     }
 
     /**
+     * Get the link to edit respondent
+     *
+     * @return MUtil_Html_HrefArrayAttribute
+     */
+    public function getEditLink()
+    {
+        $request = $this->getRequest();
+
+        $item = $this->menu->find(array(
+            $request->getControllerKey() => $request->getControllerName(),
+            $request->getActionKey() => 'edit',
+            'allowed' => true));
+
+        if ($item) {
+            return $item->toHRefAttribute($request);
+        }
+    }
+
+    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -129,6 +307,48 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     public function getIndexTitle()
     {
         return $this->_('Respondents');
+    }
+
+    /**
+     * Return the array with items that should be used to find this item
+     *
+     * @return array
+     */
+    public function getItemUrlArray()
+    {
+        return array(
+            MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1),
+            MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2)
+                );
+    }
+
+    /**
+     * Retrieve the respondent data in advance
+     * (So we don't need to repeat that for every snippet.)
+     *
+     * @return array
+     */
+    public function getRespondentData()
+    {
+        $model = $this->getModel();
+        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+
+        if (! isset($data['grs_id_user'])) {
+            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
+            $this->_reroute(array('action' => 'index'), true);
+            return array();
+        }
+
+        // Log
+        $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
+
+        // Check for completed tokens
+        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id, $data['gr2o_id_organization'])) {
+            //As data might have changed due to token events... reload
+            $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+        }
+
+        return $data;
     }
 
     /**
@@ -155,5 +375,27 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         } else {
             $this->addSnippet('Organization_ChooseOrganizationSnippet');
         }
+    }
+
+    /**
+     * Log the respondent opening
+     *
+     * @param string $patientId
+     * @param int $orgId
+     * @param int $userId
+     * @return \Gems_Default_RespondentNewAction
+     */
+    protected function openedRespondent($patientId, $orgId = null, $userId = null)
+    {
+        if ($patientId) {
+            $where['gr2o_patient_nr = ?']      = $patientId;
+            $where['gr2o_id_organization = ?'] = $orgId ? $orgId : $this->escort->getCurrentOrganization();
+            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gr2o_opened_by']          = $this->session->user_id;
+
+            $this->db->update('gems__respondent2org', $values, $where);
+        }
+
+        return $this;
     }
 }

@@ -182,7 +182,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addCheckBox('calc_email',         'label', $this->_('Respondent has no e-mail'));
         $bridge->addText(    'grs_address_1',      'size',  40, 'description', $this->_('With housenumber'))
             ->addFilter(     $ucfirst);
-        $bridge->addText(    'grs_address_2',      'size', 40);
+        if ($model->has('grs_address_2')) {
+            $bridge->addText(    'grs_address_2',      'size', 40);
+        }
         $bridge->addText(    'grs_zipcode',        'size', 7, 'description', '0000 AA');
         $bridge->addFilter(  'grs_zipcode',        new Gems_Filter_DutchZipcode());
         $bridge->addText(    'grs_city')
@@ -252,6 +254,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
+        $this->useTabbedForms = false;
         $bridge = new MUtil_Model_FormBridge($model, $this->createForm());
         $bridge->addSelect('gr2o_reception_code',
             'label', $this->_('Rejection code'),

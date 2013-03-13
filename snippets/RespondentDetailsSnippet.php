@@ -61,8 +61,10 @@ class RespondentDetailsSnippet extends Gems_Snippets_RespondentDetailSnippetAbst
         $br = $HTML->br();
         $address[] = $bridge->grs_address_1;
         $address[] = $br;
-        $address[] = $bridge->grs_address_2;
-        $address[] = $bridge->itemIf('grs_address_2', $br);
+        if ($this->model->has('grs_address_2')) {
+            $address[] = $bridge->grs_address_2;
+            $address[] = $bridge->itemIf('grs_address_2', $br);
+        }
         $address[] = $bridge->grs_zipcode;
         $address[] = $bridge->itemIf('grs_zipcode', new MUtil_Html_Raw('&nbsp;&nbsp;'));
         $address[] = $bridge->grs_city;

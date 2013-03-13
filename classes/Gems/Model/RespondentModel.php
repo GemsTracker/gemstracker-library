@@ -268,7 +268,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'tab', $translator->_('Contact information'));
 
         $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
-        $this->setIfExists('grs_address_2',   'label', $translator->_('&nbsp;'));
+        $this->setIfExists('grs_address_2',   'label', '&nbsp;');
 
         // MUtil_Echo::track($this->getItemsOrdered());
         //MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));

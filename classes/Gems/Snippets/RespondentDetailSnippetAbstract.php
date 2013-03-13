@@ -102,6 +102,11 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
     {
         if ($this->buttons) {
             $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
+        } else {
+            $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+            $menuList->addParameterSources($bridge);
+
+            $bridge->tfrow($menuList, array('class' => 'centerAlign'));
         }
     }
 
