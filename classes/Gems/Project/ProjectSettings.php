@@ -94,14 +94,48 @@ class Gems_Project_ProjectSettings extends ArrayObject
         } elseif (! is_array($array)) {
             $array = (array) $array;
         }
-
-        parent::__construct($array, ArrayObject::ARRAY_AS_PROPS);
+        
+        // Now load default values for (new) keys and merge them with the ones provided by project.ini
+        $projectValues = $array + $this->_getDefaultValues();
+        
+        parent::__construct($projectValues, ArrayObject::ARRAY_AS_PROPS);
 
         if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
             $this->offsetSet('name', GEMS_PROJECT_NAME);
         }
 
         $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
+    }
+    
+    /**
+     * Set the default values for all keys.
+     * 
+     * By doing this, we make sure the settings show up in the project information 
+     * with the defaults even if the settings was not present in the project.ini
+     */
+    public function _getDefaultValues()
+    {
+        
+        return array(
+            '>>> defaults <<<' => '>>> Below are default settings, since they were not found in your project.ini <<<',
+            
+            // What to do when user is going to or has answered a survey
+            'askNextDelay' => -1, // No auto advance
+            'askDelay'     => -1, // No auto advance
+            
+            // How to react to false token attempts
+            'askThrottle'  => array(
+                'period'    => 15 * 60, // Detection window: 15 minutes
+                'threshold' => 15 * 20, // Threshold: 20 requests per minute
+                'delay'     => 10       // Delay: 10 seconds
+            ),
+            
+            'cache'        => 'apc',   // Use apc cache as default
+            
+            'organization' => array(
+                'default'   => -1  // No default organization
+            )            
+        );
     }
 
     /**
@@ -275,7 +309,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         return -1;
     }
-
+    
 
     /**
      * Returns the public description of this project.
