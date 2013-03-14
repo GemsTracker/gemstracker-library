@@ -425,12 +425,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Create model for rounds. Allowes overriding by sub classes.
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return Gems_Model_JoinModel
      */
     protected function createRoundModel()
     {
-        $model = new MUtil_Model_TableModel('gems__rounds');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gro');
+        $model = new Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
 
         return $model;
     }

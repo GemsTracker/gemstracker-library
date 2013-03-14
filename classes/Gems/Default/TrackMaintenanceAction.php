@@ -309,6 +309,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                 $trackId = $this->_getIdParam();
                 $engine = $tracker->getTrackEngine($trackId);
                 $model  = $engine->getRoundModel(false, $action);
+                $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
+                $model->set('gsu_id_primary_group',   'label', $this->_('Group'), 'multiOptions', $this->util->getDbLookup()->getGroups());
             } break;
 
             case "fields": {

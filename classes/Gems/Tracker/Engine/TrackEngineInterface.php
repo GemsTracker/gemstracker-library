@@ -215,7 +215,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return Gems_Model_JoinModel
      */
     public function getRoundModel($detailed, $action);
 
