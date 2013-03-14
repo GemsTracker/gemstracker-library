@@ -421,6 +421,9 @@ ALTER TABLE `gems__surveys` ADD gsu_code varchar(64)  CHARACTER SET 'utf8' COLLA
 -- PATCH: Assign deletion of track parts to super role
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.delete') WHERE grl_privileges NOT LIKE '%pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.track-maintenance.delete%';
 
+-- PATCH: Add track completion event
+ALTER TABLE `gems__tracks` ADD gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
+
 -- GEMS VERSION: 49
 -- PATCH: Speed up show respondent
 ALTER TABLE `gems__respondent2org` ADD INDEX ( `gr2o_reception_code` );
