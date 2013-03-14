@@ -245,17 +245,10 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     protected function createForm($options = null)
     {
         if ($this->useTabbedForm) {
-            $form = new Gems_TabForm($options);
-            $this->_form = $form;
-
-            //Now first add the saveButton as it needs to be outside the tabs
-            $this->addSaveButton();
-        } else {
-            // $form = new Zend_Form($options);
-            $form = new Gems_Form($options);
+            return new Gems_TabForm($options);
         }
 
-        return $form;
+        return new Gems_Form($options);
     }
 
     /**
