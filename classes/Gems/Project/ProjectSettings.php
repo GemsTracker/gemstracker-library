@@ -94,10 +94,10 @@ class Gems_Project_ProjectSettings extends ArrayObject
         } elseif (! is_array($array)) {
             $array = (array) $array;
         }
-        
+
         // Now load default values for (new) keys and merge them with the ones provided by project.ini
         $projectValues = $array + $this->_getDefaultValues();
-        
+
         parent::__construct($projectValues, ArrayObject::ARRAY_AS_PROPS);
 
         if (! ($this->offsetExists('name') && $this->offsetGet('name'))) {
@@ -106,35 +106,35 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
     }
-    
+
     /**
      * Set the default values for all keys.
-     * 
-     * By doing this, we make sure the settings show up in the project information 
+     *
+     * By doing this, we make sure the settings show up in the project information
      * with the defaults even if the settings was not present in the project.ini
      */
     public function _getDefaultValues()
     {
-        
+
         return array(
             '>>> defaults <<<' => '>>> Below are default settings, since they were not found in your project.ini <<<',
-            
+
             // What to do when user is going to or has answered a survey
             'askNextDelay' => -1, // No auto advance
             'askDelay'     => -1, // No auto advance
-            
+
             // How to react to false token attempts
             'askThrottle'  => array(
                 'period'    => 15 * 60, // Detection window: 15 minutes
                 'threshold' => 15 * 20, // Threshold: 20 requests per minute
                 'delay'     => 10       // Delay: 10 seconds
             ),
-            
+
             'cache'        => 'apc',   // Use apc cache as default
-            
+
             'organization' => array(
                 'default'   => -1  // No default organization
-            )            
+            )
         );
     }
 
@@ -309,7 +309,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         return -1;
     }
-    
+
 
     /**
      * Returns the public description of this project.
@@ -591,12 +591,13 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Returns a salted hash on the
+     * Returns a salted hash optionally using the specified hash algorithm
      *
      * @param string $value The value to hash
-     * @return string The salted hash as a 32-character hexadecimal number.
+     * @param string $algoritm Optional, hash() algorithm; uses md5() otherwise
+     * @return string The salted hexadecimal hash, length depending on the algorithm (32 for md5, 128 for sha512.
      */
-    public function getValueHash($value)
+    public function getValueHash($value, $algorithm = null)
     {
         $salt = $this->offsetExists('salt') ? $this->offsetGet('salt') : '';
 
@@ -607,8 +608,11 @@ class Gems_Project_ProjectSettings extends ArrayObject
         }
 
         // MUtil_Echo::track($value, md5($salted));
+        if (null == $algorithm) {
+            return md5($salted, false);
+        }
 
-        return md5($salted, false);
+        return hash($algorithm, $value, false);
     }
 
     /**

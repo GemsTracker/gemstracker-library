@@ -56,14 +56,14 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $createEditParameters = array('resetRoute' => true);
+    protected $createEditParameters = array('resetRoute' => true, 'useTabbedForm' => true);
 
     /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelTabFormSnippetGeneric';
+    protected $createEditSnippets = 'RespondentFormSnippet';
 
     /**
      * The snippets used for the delete action.

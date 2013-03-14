@@ -103,10 +103,16 @@ class Gems_Model_RespondentNlModel extends Gems_Model_RespondentModel
     {
         $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
 
+        $match = '/[^0-9\*]/';
+        /*
+        $m = preg_quote($model->hideSSN(true));
+        $match = '/(?>(?(?=' . $m . ')(?!' . $m . ').|[^0-9]))/';
+        MUtil_Echo::track($match);
+        // */
         $model->set($fieldName,
                 'size', 10,
                 'maxlength', 12,
-                'filter', 'Digits',
+                'filter', new Zend_Filter_PregReplace(array('match' => $match)),
                 'validator[]', $bsn);
 
         if (APPLICATION_ENV !== 'production') {

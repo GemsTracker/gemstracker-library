@@ -2,7 +2,7 @@
 CREATE TABLE if not exists gems__respondents (
       grs_id_user bigint unsigned not null auto_increment references gems__user_ids (gui_id_user),
 
-      grs_ssn varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+      grs_ssn varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
             null unique key,
 
       grs_iso_lang char(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'en',

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,22 +25,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Validate
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- *
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * Unique database validation with provision for the value not being changed
+ * 
+ * @package    MUtil
  * @subpackage Validate
- */
-
-/**
- *
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Validate
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
 class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
 {

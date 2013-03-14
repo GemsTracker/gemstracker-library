@@ -95,7 +95,7 @@ class MUtil_Model_FormBridge
         self::MULTI_OPTIONS      => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
         self::PASSWORD_OPTIONS   => array('repeatLabel'),
         self::TAB_OPTIONS        => array('value'),
-        self::TEXT_OPTIONS       => array('maxlength', 'minlength', 'onchange', 'onfocus', 'onselect', 'size'),
+        self::TEXT_OPTIONS       => array('maxlength', 'minlength', 'onblur', 'onchange', 'onfocus', 'onselect', 'size'),
         self::TEXTAREA_OPTIONS   => array('cols', 'rows', 'wrap'),
         );
 

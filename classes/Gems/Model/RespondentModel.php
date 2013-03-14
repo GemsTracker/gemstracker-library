@@ -55,6 +55,15 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     const SSN_OPEN = 2;
 
     /**
+     * Determines the algorithm used to hash the social security number
+     *
+     * Can be changed is derived classes, set to null to use old md5() method
+     *
+     * @var int One of the SSN_ constants
+     */
+    public $hashAlgorithm = 'sha512';
+
+    /**
      * Determines how the social security number is stored.
      *
      * Can be changed is derived classes.
@@ -73,6 +82,12 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      * @var Gems_Util
      */
     protected $util;
+
+    /**
+     *
+     * @var Zend_View
+     */
+    public $view;
 
     /**
      * Self constructor
@@ -314,7 +329,13 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $ucfirst    = new Zend_Filter_Callback('ucfirst');
 
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
-            $this->set('grs_ssn', 'validator[]', $this->createUniqueValidator('grs_ssn'));
+            $onblur = new MUtil_Html_JavascriptArrayAttribute('onblur');
+            $onblur->addSumbitOnChange('this.value');
+
+            $this->set('grs_ssn',
+                    'onblur', $onblur->render($this->view),  // Render needed as element does not know HtmlInterface
+                    'validator[]', $this->createUniqueValidator('grs_ssn')
+                    );
         }
 
         $this->setIfExists('gr2o_patient_nr',
@@ -394,7 +415,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     public function applyHash(&$filterValue, $filterKey)
     {
         if ('grs_ssn' === $filterKey) {
-            $filterValue = $this->project->getValueHash($filterValue);
+            $filterValue = $this->project->getValueHash($filterValue, $this->hashAlgorithm);
         }
     }
 
@@ -457,7 +478,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     public function saveSSN($value, $isNew = false, $name = null, array $context = array())
     {
         if ($value) {
-            return $this->project->getValueHash($value);
+            return $this->project->getValueHash($value, $this->hashAlgorithm);
         }
     }
 

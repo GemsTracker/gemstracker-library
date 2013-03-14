@@ -479,3 +479,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.plan.summary
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact.gems')
     WHERE grl_privileges LIKE '%pr.plan.%' AND grl_privileges NOT LIKE '%pr.contact%';
+
+-- PATCH: Longer SSN hashes
+ALTER TABLE gems__respondents CHANGE grs_ssn
+      grs_ssn varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';

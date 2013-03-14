@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -43,28 +42,14 @@
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
+ * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_OnClickArrayAttribute extends MUtil_Html_ArrayAttribute
+class MUtil_Html_OnClickArrayAttribute extends MUtil_Html_JavascriptArrayAttribute
 {
     /**
-     * String used to glue items together
      *
-     * Empty string as not each array element corresponds to a single command.
-     *
-     * @var string
+     * @param mixed $arg_array MUtil_Ra::args
      */
-    protected $_separator = '';
-
-    /**
-     * Specially treated types for a specific subclass
-     *
-     * @var array function name => class
-     */
-    protected $_specialTypes = array(
-        'addUrl' => 'MUtil_Html_UrlArrayAttribute',
-    );
-
     public function __construct($arg_array = null)
     {
         $args = func_get_args();
@@ -72,41 +57,10 @@ class MUtil_Html_OnClickArrayAttribute extends MUtil_Html_ArrayAttribute
     }
 
     /**
-     * Add a cancel bubble command
-     *
-     * @param boolean $cancelBubble
-     * @return MUtil_Html_OnClickArrayAttribute (continuation pattern)
+     * 
+     * @param array $commands
+     * @return \self
      */
-    public function addCancelBubble($cancelBubble = true)
-    {
-        if ($cancelBubble) {
-            $this->add("event.cancelBubble = true;");
-        } else {
-            $this->add("event.cancelBubble = false;");
-        }
-        return $this;
-    }
-
-    /**
-     * Add a url open command by specifying only the link
-     *
-     * @param mixed $href Anything, e.g. a MUtil_Html_UrlArrayAttribute that the code will transform to an url
-     * @return MUtil_Html_OnClickArrayAttribute (continuation pattern)
-     */
-    public function addUrl($href)
-    {
-        $last = is_array($this->_values) ? end($this->_values) : null;
-        if (false === strpos($last, 'location.href')) {
-            $this->_values[] = "location.href='";
-            $this->_values[] = $href;
-            $this->_values[] = "';";
-        } else {
-            $this->_values[] = $href;
-        }
-
-        return $this;
-    }
-
     public static function onclickAttribute(array $commands = null)
     {
         return new self($commands);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -17,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -25,27 +26,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: RespondentFormSnippet.php$
  */
 
 /**
- * Displays an edit form using tabs based on the model the model set through the $model snippet parameter.
  *
- * This class is not in the standard snippet loading directories and does not follow
- * their naming conventions, but exists only to make it simple to extend this class
- * for a specific implementation.
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSnippetGeneric
+class Gems_Snippets_RespondentFormSnippet extends Gems_Snippets_ModelFormSnippetGeneric
 {
     /**
      * When true a tabbed form is used.
@@ -53,4 +52,22 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
      * @var boolean
      */
     protected $useTabbedForm = true;
+
+    /**
+     * Hook that loads the form data from $_POST or the model
+     *
+     * Or from whatever other source you specify here.
+     */
+    protected function loadFormData()
+    {
+        parent::loadFormData();
+
+        if ($this->createData && $this->request->isPost()) {
+            if ((! $this->_saveButton) || (! $this->_saveButton->isChecked())) {
+                if ($this->formData['grs_ssn'])  {
+                    // $this->formData['grs_first_name'] = 'Jan';
+                }
+            }
+        }
+    }
 }

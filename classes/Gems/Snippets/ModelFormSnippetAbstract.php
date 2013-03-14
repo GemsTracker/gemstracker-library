@@ -92,6 +92,98 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     protected $routeAction = 'show';
 
     /**
+     * When true a tabbed form is used.
+     *
+     * @var boolean
+     */
+    protected $useTabbedForm = false;
+
+    /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        if (! $this->_form instanceof Gems_TabForm) {
+            parent::addFormElements($bridge, $model);
+            return;
+        }
+
+        //Get all elements in the model if not already done
+        $this->initItems();
+
+        // Add 'tooltip' to the allowed displayoptions
+        $displayOptions = $bridge->getAllowedOptions(MUtil_Model_FormBridge::DISPLAY_OPTIONS);
+        if (!array_search('tooltip', $displayOptions)) {
+            $displayOptions[] = 'tooltip';
+        }
+        $bridge->setAllowedOptions(MUtil_Model_FormBridge::DISPLAY_OPTIONS, $displayOptions);
+
+        $tab    = 0;
+        $group  = 0;
+        $oldTab = null;
+        // MUtil_Echo::track($model->getItemsOrdered());
+        foreach ($model->getItemsOrdered() as $name) {
+            // Get all options at once
+            $modelOptions = $model->get($name);
+            $tabName      = $model->get($name, 'tab');
+            if ($tabName && ($tabName !== $oldTab)) {
+                $bridge->addTab('tab' . $tab, 'value', $tabName);
+                $oldTab = $tabName;
+                $tab++;
+            }
+
+            if ($model->has($name, 'label')) {
+                $bridge->add($name);
+
+                if ($theName = $model->get($name, 'startGroup')) {
+                    //We start a new group here!
+                    $groupElements   = array();
+                    $groupElements[] = $name;
+                    $groupName       = $theName;
+                } elseif ($theName = $model->get($name, 'endGroup')) {
+                    //Ok, last element define the group
+                    $groupElements[] = $name;
+                    $bridge->addDisplayGroup('grp_' . $groupElements[0], $groupElements,
+                            'description', $groupName,
+                            'showLabels', ($theName == 'showLabels'),
+                            'class', 'grp' . $group);
+                    $group++;
+                    unset($groupElements);
+                    unset($groupName);
+                } else {
+                    //If we are in a group, add the elements to the group
+                    if (isset($groupElements)) {
+                        $groupElements[] = $name;
+                    }
+                }
+            } else {
+                $bridge->addHidden($name);
+            }
+            unset($this->_items[$name]);
+        }
+    }
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addSaveButton()
+    {
+        if ($this->_form instanceof Gems_TabForm) {
+            $this->_form->resetContext();
+        }
+        parent::addSaveButton();
+    }
+
+    /**
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
@@ -100,15 +192,36 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      */
     public function beforeDisplay()
     {
-        $table = new MUtil_Html_TableElement(array('class' => $this->class));
-        $table->setAsFormLayout($this->_form, true, true);
+        if ($this->_form instanceof Gems_TabForm) {
+            if ($links = $this->getMenuList()) {
+                $element = new MUtil_Form_Element_Html('formLinks');
+                $element->setValue($links)
+                        ->setOrder(999)
+                        ->removeDecorator('HtmlTag')
+                        ->removeDecorator('Label')
+                        ->removeDecorator('DtDdWrapper');
+;
 
-        // There is only one row with formLayout, so all in output fields get class.
-        $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+                $this->_form->resetContext();
+                $this->_form->addElement($element);
 
-        if ($links = $this->getMenuList()) {
-            $table->tf(); // Add empty cell, no label
-            $table->tf($links);
+                if (is_null($this->_form->getDisplayGroup(Gems_TabForm::GROUP_OTHER))) {
+                    $this->_form->addDisplayGroup(array($element), Gems_TabForm::GROUP_OTHER);
+                } else {
+                    $this->_form->getDisplayGroup(Gems_TabForm::GROUP_OTHER)->addElement($element);
+                }
+            }
+        } else {
+            $table = new MUtil_Html_TableElement(array('class' => $this->class));
+            $table->setAsFormLayout($this->_form, true, true);
+
+            // There is only one row with formLayout, so all in output fields get class.
+            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+
+            if ($links = $this->getMenuList()) {
+                $table->tf(); // Add empty cell, no label
+                $table->tf($links);
+            }
         }
     }
 
@@ -131,8 +244,16 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      */
     protected function createForm($options = null)
     {
-        // $form = new Zend_Form($options);
-        $form = new Gems_Form($options);
+        if ($this->useTabbedForm) {
+            $form = new Gems_TabForm($options);
+            $this->_form = $form;
+
+            //Now first add the saveButton as it needs to be outside the tabs
+            $this->addSaveButton();
+        } else {
+            // $form = new Zend_Form($options);
+            $form = new Gems_Form($options);
+        }
 
         return $form;
     }
