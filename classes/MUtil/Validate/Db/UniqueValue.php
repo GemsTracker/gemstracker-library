@@ -108,8 +108,7 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
 
     public function isValid($value, $context = array())
     {
-        // Quick fix for context not being complete in subform
-        $context = $context + $_POST;
+        $context = $context;
 
         /**
          * Check for an adapter being defined. if not, fetch the default adapter.

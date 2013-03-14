@@ -153,8 +153,12 @@ class Gems_Snippets_ModelTabFormSnippetGeneric extends Gems_Snippets_ModelFormSn
             $form->addElement($element);
             $element->removeDecorator('HtmlTag');
             $element->removeDecorator('Label');
-            $form->addDisplayGroup(array('formLinks'), 'form_buttons');
-            $form->getDisplayGroup(Gems_TabForm::GROUP_OTHER)->removeElement($element->getName());
+            
+            if (is_null($form->getDisplayGroup(Gems_TabForm::GROUP_OTHER))) {
+                $form->addDisplayGroup(array($element), Gems_TabForm::GROUP_OTHER);
+            } else {
+                $form->getDisplayGroup(Gems_TabForm::GROUP_OTHER)->addElement($element);
+            }
         }
     }
 

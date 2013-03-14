@@ -102,27 +102,13 @@ class Gems_TabForm extends Gems_Form
      */
     public function addElement($element, $name = null, $options = null)
     {
-        if ($element instanceof Zend_Form_Element_Hidden) {
-            parent::addElement($element, $name, $options);
-
-            //Remove decorators
-            $element->removeDecorator('HtmlTag');
-            $element->removeDecorator('Label');
-
-            $this->addToOtherGroup($element);
-
-            $element->removeDecorator('DtDdWrapper');
-
-            return $this;
-        }
-
         if ($this->currentTab) {
             return $this->currentTab->addElement($element, $name, $options);
         } else {
             parent::addElement($element, $name, $options);
 
             if (is_string($element)) {
-                $element = $this->getElement($element);
+                $element = $this->getElement($name);
             }
 
             $this->addToOtherGroup($element);
