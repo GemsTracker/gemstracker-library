@@ -428,7 +428,7 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
 
                 // Check all items
                 foreach ($data as $row) {
-                    if (count($row) !== $count) {
+                    if (is_array($row) || (count($row) !== $count)) {
                         $nested = false;
                         break;
                     }
