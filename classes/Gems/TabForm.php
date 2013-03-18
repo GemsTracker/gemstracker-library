@@ -111,8 +111,8 @@ class Gems_TabForm extends Gems_Form
                 $element = $this->getElement($name);
             }
 
-            $this->addToOtherGroup($element);
-
+            //$this->addToOtherGroup($element); // Causes duplicate links on old browse edit
+            
             if ($element instanceof Zend_Form_Element_Hidden) {
                 //Remove decorators
                 $element->removeDecorator('HtmlTag');
@@ -122,6 +122,11 @@ class Gems_TabForm extends Gems_Form
             } elseif ($element instanceof Zend_Form_Element) {
 
                 $element->removeDecorator('DtDdWrapper');
+                
+                if ($element instanceof MUtil_Form_Element_Html) {
+                    $element->removeDecorator('HtmlTag');
+                    $element->removeDecorator('Label');
+                }
 
                 $error = $element->getDecorator('Errors');
                 if ($error instanceof Zend_Form_Decorator_Errors) {
@@ -274,7 +279,7 @@ class Gems_TabForm extends Gems_Form
             ));
         }
     }
-
+    
     /**
      * Reset the currentTab to be the main form again
      *

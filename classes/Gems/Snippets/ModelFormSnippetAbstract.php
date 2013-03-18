@@ -200,7 +200,6 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                         ->removeDecorator('HtmlTag')
                         ->removeDecorator('Label')
                         ->removeDecorator('DtDdWrapper');
-;
 
                 $this->_form->resetContext();
                 $this->_form->addElement($element);
