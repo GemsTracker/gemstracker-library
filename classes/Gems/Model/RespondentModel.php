@@ -130,7 +130,13 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     {
         $filter = parent::_checkFilterUsed($filter);
 
-        if (! isset($filter['gr2o_id_organization'])) {
+        if (isset($filter['gr2o_id_organization'])) {
+            // Check for option to check for any organisation
+            if (true === $filter['gr2o_id_organization']) {
+                unset($filter['gr2o_id_organization']);
+            }
+        } else {
+            // Add the correct filter
             if ($this->isMultiOrganization() && !isset($filter['gr2o_patient_nr'])) {
                 $allowed = $this->user->getAllowedOrganizations();
 

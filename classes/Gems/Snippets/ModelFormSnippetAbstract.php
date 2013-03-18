@@ -109,7 +109,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        if (! $this->_form instanceof Gems_TabForm) {
+        if (! $bridge->getForm() instanceof Gems_TabForm) {
             parent::addFormElements($bridge, $model);
             return;
         }

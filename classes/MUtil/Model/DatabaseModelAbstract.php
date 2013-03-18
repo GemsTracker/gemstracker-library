@@ -167,10 +167,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     $select->where($name . ' IS NULL');
                 } elseif (is_array($value)) {
                     if ($value) {
-                        foreach ($value as $sub) {
-                            $subs[] = $adapter->quote($value);
-                        }
-                        $select->where($name . ' IN (' . implode(', ', $subs) . ')');
+                        $select->where($name . ' IN (' . $adapter->quote($value) . ')');
                     } else {
                         // Never a result when a value should be one of an empty set.
                         $select->where('1=0');
