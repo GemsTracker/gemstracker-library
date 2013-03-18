@@ -385,11 +385,11 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             // added to the url.
             $surveyReturn['RouteReset'] = true;
 
+            // MUtil_Echo::track($currentUri, MUtil_Html::urlString($surveyReturn));
             return $currentUri . MUtil_Html::urlString($surveyReturn);
-            // MUtil_Echo::track($currentUri . MUtil_Html::urlString($surveyReturn));
         }
 
-        // Ultimate backup solution for reutrn
+        // Ultimate backup solution for return
         return $currentUri . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/' . urlencode($this->getTokenId());
     }
 

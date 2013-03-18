@@ -120,6 +120,29 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
     }
 
     /**
+     * This transform function checks the sort to
+     * a) remove sorts from the main model that are not possible
+     * b) add sorts that are required needed
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $sort
+     * @return array The (optionally changed) sort
+     */
+    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort)
+    {
+        foreach ($this->_subModels as $sub) {
+            foreach ($sort as $key => $value) {
+                if ($sub->has($key)) {
+                    // Remove all sorts on columns from the submodel
+                    unset($sort[$key]);
+                }
+            }
+        }
+
+        return $sort;
+    }
+
+    /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *

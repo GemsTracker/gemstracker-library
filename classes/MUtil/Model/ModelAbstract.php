@@ -132,7 +132,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Checks the filter on sematic correctness and replaces the text seacrh filter
+     * Checks the filter on sematic correctness and replaces the text search filter
      * with the real filter.
      *
      * @param mixed $filter True for the filter stored in this model or a filter array
@@ -143,7 +143,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if (true === $filter) {
             $filter = $this->getFilter();
         }
-        if ($filter && is_array($filter)) {
+        if (is_array($filter)) {
             foreach ($this->_transformers as $transformer) {
                 $filter = $transformer->transformFilter($this, $filter);
             }
@@ -162,16 +162,27 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return array();
     }
 
+    /**
+     * Checks the sort on sematic correctness
+     *
+     * @param mixed $sort True for the sort stored in this model or a sort array or a single sort value
+     * @return array The filter to use
+     */
     protected function _checkSortUsed($sort)
     {
         if (true === $sort) {
-            return $this->getSort();
-        }
-        if (false === $sort) {
-            return array();
+            $sort = $this->getSort();
+        } elseif (false === $sort) {
+            $sort = array();
+        } else {
+            $sort = $this->_checkSortValue($sort);
         }
 
-        return $this->_checkSortValue($sort);
+        foreach ($this->_transformers as $transformer) {
+            $sort = $transformer->transformSort($this, $sort);
+        }
+
+        return $sort;
     }
 
     protected function _checkSortValue($value)
@@ -1313,13 +1324,21 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
-    public function setAlias($name, $alias)
+    /**
+     * Set the value to be an alias of another field
+     * 
+     * @param string $name
+     * @param string $aliasOf
+     * @return \MUtil_Model_ModelAbstract
+     * @throws MUtil_Model_ModelException
+     */
+    public function setAlias($name, $aliasOf)
     {
-        if ($this->has($alias)) {
-            $this->set($name, self::ALIAS_OF, $alias);
+        if ($this->has($aliasOf)) {
+            $this->set($name, self::ALIAS_OF, $aliasOf);
             return $this;
         }
-        throw new MUtil_Model_ModelException("Alias for '$name' set to non existing field '$alias'");
+        throw new MUtil_Model_ModelException("Alias for '$name' set to non existing field '$aliasOf'");
     }
 
     /**

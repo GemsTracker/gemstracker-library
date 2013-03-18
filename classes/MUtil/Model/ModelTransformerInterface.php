@@ -60,14 +60,25 @@ interface MUtil_Model_ModelTransformerInterface
     /**
      * This transform function checks the filter for
      * a) retreiving filters to be applied to the transforming data,
-     * b) adding filters that are the result
+     * b) adding filters that are needed
      *
      * @param MUtil_Model_ModelAbstract $model
      * @param array $filter
      * @return array The (optionally changed) filter
      */
     public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter);
-    
+
+    /**
+     * This transform function checks the sort to
+     * a) remove sorts from the main model that are not possible
+     * b) add sorts that are required needed
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $sort
+     * @return array The (optionally changed) sort
+     */
+    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort);
+
     /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
