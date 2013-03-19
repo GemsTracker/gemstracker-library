@@ -1,5 +1,11 @@
 Important changes from 1.5.7 => 1.6
 ============================================================
+Patients can now be shared between organizations on the basis of their social security number
+No longer Dutch: the default new project is still Dutch, but the basic GemsTracker core is international
+New summary and compliance reports
+Mail log now shows more information and is better searchable
+Tracks can be cloned
+Better menu structure
 Defined constant GEMS_PROJECT_PATH removed from code (update at least your application.ini and use APPLICATION_PATH instead)
 Moved date_default_timezone_set to index.php (can generate warnings)
 longDescr in project.ini enables more project specific information on the about pages
@@ -19,6 +25,8 @@ contact.gemsUrl    = "http://gemstracker.org/"
 New application.ini settings (add before the first resource and change NewProject to your own project prefix):
 loaderDirs.NewProject = APPLICATION_PATH "/classes/NewProject"
 loaderDirs.Gems  = GEMS_LIBRARY_DIR "/classes/Gems"
+
+Numerous small bugs solved
 
 Important changes from 1.5.6 => 1.5.7
 ============================================================
