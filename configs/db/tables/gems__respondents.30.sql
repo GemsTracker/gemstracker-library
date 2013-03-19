@@ -10,7 +10,7 @@ CREATE TABLE if not exists gems__respondents (
       grs_email varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
       grs_first_name varchar(30) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-      -- grs_surname_prefix varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+      grs_surname_prefix varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       grs_last_name varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
       grs_gender char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
             not null default 'U',
