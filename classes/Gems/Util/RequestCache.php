@@ -187,8 +187,8 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
             $programParams = array_diff($request->getParams(), $this->getRequestKey());
 
             if (isset($programParams[self::RESET_PARAM]) && $programParams[self::RESET_PARAM]) {
-                unset($programParams[self::RESET_PARAM]);
                 unset($this->session->requestCache[$this->_storageKey]);
+                $request->setParam(self::RESET_PARAM, null);
             } else {
                 // Add cache
                 $programParams = $programParams + $this->getCachedRequest();
@@ -196,8 +196,9 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
                 // Set menu up for reset
                 $menu->getCurrent()->addParameters(self::RESET_PARAM);
                 // Means this
-                $request->setParam(self::RESET_PARAM, 1);
+                $menu->getParameterSource()->offsetSet(self::RESET_PARAM, 1);
             }
+            unset($programParams[self::RESET_PARAM]);
 
             $this->setProgramParams($programParams);
 

@@ -101,6 +101,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         if ($filter = $this->getDataFilter($data)) {
             $model->addFilter($filter);
+            // MUtil_Echo::track($filter, $data, $model->getFilter());
         }
 
         if ($this->sortKey) {

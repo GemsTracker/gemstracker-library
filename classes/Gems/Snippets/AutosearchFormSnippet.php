@@ -364,7 +364,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
 
         switch ($data['dateused'][0]) {
-            case '<':
+            case '_':
                 // overlaps
                 $periods = explode(' ', substr($data['dateused'], 1));
 
@@ -396,7 +396,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                 }
                 return;
 
-            case '>':
+            case '-':
                 // within
                 $periods = explode(' ', substr($data['dateused'], 1));
 

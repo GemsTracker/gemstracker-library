@@ -220,9 +220,9 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
 
         $dates = array(
-            '<gto_valid_from gto_valid_until'
+            '_gto_valid_from gto_valid_until'
                                   => $this->_('Is valid during'),
-            '>gto_valid_from gto_valid_until'
+            '-gto_valid_from gto_valid_until'
                                   => $this->_('Is valid within'),
             'gto_valid_from'      => $this->_('Valid from'),
             'gto_valid_until'     => $this->_('Valid until'),
@@ -446,7 +446,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         return array(
             'datefrom'            => $now->toString($inFormat),
-            'dateused'            => '<gto_valid_from gto_valid_until',
+            'dateused'            => '_gto_valid_from gto_valid_until',
             'dateuntil'           => $now->toString($inFormat),
             'gto_id_organization' => $this->escort->getCurrentOrganization(),
             'main_filter'         => 'all',

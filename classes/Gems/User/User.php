@@ -1452,6 +1452,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         } elseif (! is_array($return)) {
             $return = MUtil_Ra::to($return);
         }
+        if ('autofilter' == $return['action']) {
+            $return['action'] = 'index';
+        }
+
+        $return = array_filter($return);
+        // MUtil_Echo::track($return);
 
         $this->_setVar('surveyReturn', $return);
 
