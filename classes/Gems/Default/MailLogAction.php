@@ -58,7 +58,6 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array(
-        'extraFilter' => 'getExtraFilter',
         'extraSort'   => array('grco_created' => SORT_DESC),
         );
 
@@ -68,6 +67,13 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Mail_Log_MailLogBrowseSnippet';
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail_Log_MailLogSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -88,6 +94,11 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->addLeftTable('gems__staff', array('grco_id_by' => 'gsf_id_user'));
         $model->addLeftTable('gems__mail_templates', array('grco_id_message' => 'gmt_id_message'));
 
+        $model->addLeftTable('gems__tokens', array('grco_id_token' => 'gto_id_token'));
+        $model->addLeftTable('gems__reception_codes', array('gto_reception_code' => 'grc_id_reception_code'));
+        $model->addLeftTable('gems__tracks', array('gto_id_track' => 'gtr_id_track'));
+        $model->addLeftTable('gems__surveys', array('gto_id_survey' => 'gsu_id_survey'));
+
         $model->addColumn(
             "TRIM(CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')))",
             'respondent_name');
@@ -103,6 +114,7 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
                     )
                 END",
             'assigned_by');
+        $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'status');
 
         $model->resetOrder();
 
@@ -113,6 +125,10 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('grco_sender',     'label', $this->_('From address'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
         $model->set('grco_id_token',   'label', $this->_('Token'));
         $model->set('grco_topic',      'label', $this->_('Subject'));
+        $model->set('gtr_track_name',  'label', $this->_('Track'));
+        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
+        $model->set('status',          'label', $this->_('Status'),
+                'formatFunction', array($this->util->getTokenData(), 'getStatusDescription'));
 
         if ($detailed) {
             $model->set('gmt_subject', 'label', $this->_('Template'));
@@ -120,17 +136,14 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
             $model->set('grco_created', 'formatFunction', $this->util->getTranslated()->formatDate);
         }
 
-        return $model;
-    }
+        $filter = $this->util->getRequestCache('index', $detailed)->getProgramParams();
 
-    /**
-     * Returns an extra filter for this action
-     *
-     * @return array
-     */
-    protected function getExtraFilter()
-    {
-        return array('grco_organization' => $this->escort->getCurrentOrganization());
+        // Add the period filter - if any
+        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
+            $model->addFilter(array($where));
+        }
+
+        return $model;
     }
 
     /**

@@ -122,16 +122,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
             return $model;
         }
 
-        $status = new Zend_Db_Expr("
-            CASE
-            WHEN grc_success = 0                     THEN 'D'
-            WHEN gto_completion_time IS NOT NULL     THEN 'A'
-            WHEN gto_valid_from IS NULL              THEN 'U'
-            WHEN gto_valid_from > CURRENT_TIMESTAMP  THEN 'W'
-            WHEN gto_valid_until < CURRENT_TIMESTAMP THEN 'M'
-            ELSE 'O'
-            END
-            ");
+        $status = $this->util->getTokenData()->getStatusExpression();
 
         $select = $this->db->select();
         $select->from('gems__tokens', array(
