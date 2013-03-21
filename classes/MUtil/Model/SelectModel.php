@@ -109,7 +109,7 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * The select object where we get the query from.
      *
-     * @return Zend_Db_Table_Select
+     * @return Zend_Db_Select
      */
     public function getSelect()
     {

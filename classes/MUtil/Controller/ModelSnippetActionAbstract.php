@@ -323,7 +323,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
             $this->addSnippets($this->autofilterSnippets, $params);
         }
 
-        if ($resetMvc && MUtil_Echo::hasOutput()) {
+        if ($resetMvc) {
             // Lazy call here, because any echo calls in the snippets have not yet been
             // performed. so they will appear only in the next call when not lazy.
             $this->html->raw(MUtil_Lazy::call(array('MUtil_Echo', 'out')));

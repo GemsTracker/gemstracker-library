@@ -292,6 +292,11 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         return $this->_select->getAdapter();
     }
 
+    /**
+     * The select object where we get the query from.
+     *
+     * @return Zend_Db_Select
+     */
     public function getSelect()
     {
         $select = clone $this->_select;

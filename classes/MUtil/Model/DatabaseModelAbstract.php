@@ -843,7 +843,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     /**
      * The select object where we get the query from.
      *
-     * @return Zend_Db_Table_Select
+     * @return Zend_Db_Select
      */
     abstract public function getSelect();
 
