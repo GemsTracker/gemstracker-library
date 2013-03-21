@@ -164,17 +164,6 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
     }
 
     /**
-     * Helper function to allow generalized statements about the items in the model to used specific item names.
-     *
-     * @param int $count
-     * @return $string
-     */
-    public function getTopic($count = 1)
-    {
-        return $this->plural('track', 'tracks', $count);
-    }
-
-    /**
      *
      * @return string The header title to display
      */
@@ -185,6 +174,17 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
         } else {
             return parent::getTitle();
         }
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model to used specific item names.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('track', 'tracks', $count);
     }
 
     /**
