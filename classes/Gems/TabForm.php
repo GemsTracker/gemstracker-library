@@ -299,6 +299,20 @@ class Gems_TabForm extends Gems_Form
         $this->getElement('tab')->setValue($tabIdx);
         $this->setAttrib('selected', $tabIdx);
     }
+    
+    /**
+     * Set the form to be verbose, showing above the form what tabs have errors and
+     * possibly add custom (sub)formlevel error messages
+     * 
+     * @param boolean $bool
+     */
+    public function setVerbose($bool)
+    {
+        $decorator = $this->getDecorator('TabErrors');
+        if ($decorator) {
+            $decorator->setOption('verbose', (bool) $bool);
+        }
+    }
 
     /**
      * Set the view object
