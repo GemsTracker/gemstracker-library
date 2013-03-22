@@ -177,6 +177,20 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
+    
+    /**
+     * Returns the OpenRosaFormModel
+     *
+     * It is special since it can show how many responses each table has
+     *
+     * @return OpenRosa_Model_OpenRosaFormModel
+     */
+    public function getOpenRosaFormModel()
+    {
+        $model = $this->_loadClass('OpenRosaFormModel', true);
+
+        return $model;
+    }
 
     /**
      * Load the organization model

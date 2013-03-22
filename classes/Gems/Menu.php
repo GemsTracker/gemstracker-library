@@ -224,6 +224,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $logMaint = $page->addPage($this->_('Maintenance'), 'pr.log.maintenance', 'log-maintenance');
         $logMaint->addAutofilterAction();
         $logMaint->addEditAction('pr.log.maintenance');
+        
+        // OpenRosa
+        $this->addOpenRosaContainer($this->_('OpenRosa'));
 
         return $setup;
     }
@@ -273,6 +276,26 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $this->addPage(null, 'pr.organization-switch', 'organization', 'change-ui');
         }
 
+    }
+    
+    /**
+     * Shortcut function to add all items needed for OpenRosa
+     * 
+     * Should be enabled in application.ini by using useOpenRosa = 1
+     * 
+     * @param string $label Label for the container
+     */
+    public function addOpenRosaContainer($label)
+    {
+        if ($this->escort->getOption('useOpenRosa')) {
+            $page = $this->addBrowsePage($label, 'pr.openrosa','openrosa');
+            $page->addButtonOnly($this->_('Scan FormDefs'), 'pr.openrosa.scan', 'openrosa', 'scan');
+            $page->addButtonOnly($this->_('Scan Responses'), 'pr.openrosa.scan', 'openrosa', 'scanresponses');
+            $this->addPage(null, null, 'openrosa', 'submission');
+            $this->addPage(null, null, 'openrosa', 'formList'); //mind the capital L here
+            $this->addPage(null, null, 'openrosa', 'download');
+            $this->addPage(null, null, 'openrosa', 'barcode'); // For barcode rendering
+        }
     }
 
     /**

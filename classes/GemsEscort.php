@@ -430,6 +430,25 @@ class GemsEscort extends MUtil_Application_Escort
 
         return $locale;
     }
+    
+    /**
+     * Initialize the OpenRosa survey source
+     * 
+     * @param Zend_Controller_Action $actionController
+     */
+    public function _initOpenRosa(Zend_Controller_Action $actionController = null)
+    {
+        if ($this->getOption('useOpenRosa')) {
+            // First handle dependencies
+            $this->bootstrap(array('db', 'loader', 'util'));
+            
+            /**
+             * Add Source for OpenRosa
+             */
+            $tracker = $this->loader->getTracker();
+            $tracker->addSourceClasses(array('OpenRosa'=>'OpenRosa form'));
+        }
+    }
 
 
     /**
