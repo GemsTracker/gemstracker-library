@@ -80,7 +80,7 @@ class OpenRosa_Model_OpenRosaFormModel extends Gems_Model_JoinModel
      * @param array $sort
      * @return Zend_Db_Table_Select
      */
-    public function _createSelect($filter = null, $sort = null)
+    public function _createSelect(array $filter, array $sort)
     {
         $select = parent::_createSelect($filter, $sort);
 

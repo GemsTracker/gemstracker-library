@@ -183,4 +183,26 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
         return $obj;
     }
+    
+    public function addPrefixPath($prefix, $path, $prepend = true) {
+        if ($this->cascade) {
+            $newPrefix = $prefix . '_' . $this->cascade;
+            $newPath = $path . '/' . strtr($this->cascade, '_', '/');
+        } else {
+            $newPrefix = $prefix;
+            $newPath = $path;
+        }
+        
+        if ($prepend) {
+            $this->_dirs = array($newPrefix => $newPath) + $this->_dirs;
+        } else {
+            $this->_dirs[$newPrefix] = $newPath;
+        }
+
+        $this->_loader->addPrefixPath($newPrefix, $newPath, $prepend);
+
+        if (MUtil_Registry_Source::$verbose) {
+            MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
+        }
+    }
 }

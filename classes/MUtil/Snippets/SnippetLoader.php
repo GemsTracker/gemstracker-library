@@ -92,9 +92,9 @@ class MUtil_Snippets_SnippetLoader implements MUtil_Snippets_SnippetLoaderInterf
      * @param string $path
      * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function addPrefixPath($prefix, $path)
+    public function addPrefixPath($prefix, $path, $prepend = true)
     {
-        $this->loader->addPrefixPath($prefix, $path);
+        $this->loader->addPrefixPath($prefix, $path, $prepend);
 
         return $this;
     }

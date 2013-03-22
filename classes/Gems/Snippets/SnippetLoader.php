@@ -83,9 +83,9 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
      * @param string $path
      * @return MUtil_Snippets_SnippetLoaderInterface
      */
-    public function addPrefixPath($prefix, $path)
+    public function addPrefixPath($prefix, $path, $prepend = true)
     {
-        $this->_loader->addPrefixPath($prefix, $path);
+        $this->_loader->addPrefixPath($prefix, $path, $prepend);
 
         return $this;
     }

@@ -442,6 +442,8 @@ class GemsEscort extends MUtil_Application_Escort
             // First handle dependencies
             $this->bootstrap(array('db', 'loader', 'util'));
             
+            $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
+            
             /**
              * Add Source for OpenRosa
              */

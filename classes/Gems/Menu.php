@@ -226,7 +226,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $logMaint->addEditAction('pr.log.maintenance');
         
         // OpenRosa
-        $this->addOpenRosaContainer($this->_('OpenRosa'));
+        $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
 
         return $setup;
     }
@@ -285,10 +285,13 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      * 
      * @param string $label Label for the container
      */
-    public function addOpenRosaContainer($label)
+    public function addOpenRosaContainer($label, $parent = null)
     {
         if ($this->escort->getOption('useOpenRosa')) {
-            $page = $this->addBrowsePage($label, 'pr.openrosa','openrosa');
+            if (is_null($parent)) {
+                $parent = $this;
+            }
+            $page = $parent->addBrowsePage($label, 'pr.openrosa','openrosa');
             $page->addButtonOnly($this->_('Scan FormDefs'), 'pr.openrosa.scan', 'openrosa', 'scan');
             $page->addButtonOnly($this->_('Scan Responses'), 'pr.openrosa.scan', 'openrosa', 'scanresponses');
             $this->addPage(null, null, 'openrosa', 'submission');
