@@ -269,43 +269,6 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             }
         }
     }
-
-    public function scanAction()
-    {
-        $model = $this->getModel();
-
-        //Perform a scan of the form directory, to update the database of forms
-        $eDir = dir($this->formDir);
-
-        $formCnt  = 0;
-        $addCnt   = 0;
-        while (false !== ($filename = $eDir->read())) {
-            if (substr($filename, -4) == '.xml') {
-                $formCnt++;
-                $form                       = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $filename);
-                $filter['gof_form_id']      = $form->getFormID();
-                $filter['gof_form_version'] = $form->getFormVersion();
-                $forms                      = $model->load($filter);
-
-                if (!$forms) {
-                    $newValues = array();
-                    $newValues['gof_id']           = null;
-                    $newValues['gof_form_id']      = $form->getFormID();
-                    $newValues['gof_form_version'] = $form->getFormVersion();
-                    $newValues['gof_form_title']   = $form->getTitle();
-                    $newValues['gof_form_xml']     = $filename;
-                    $newValues                     = $model->save($newValues);
-                    MUtil_Echo::r($newValues, 'added form');
-                    $addCnt++;
-                }
-            }
-        }
-
-        $cache = GemsEscort::getInstance()->cache;
-        $cache->clean();
-
-        $this->html[] = sprintf('Checked %s forms and added %s forms', $formCnt, $addCnt);
-    }
     
     public function scanresponsesAction()
     {

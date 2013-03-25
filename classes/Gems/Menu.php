@@ -292,7 +292,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 $parent = $this;
             }
             $page = $parent->addBrowsePage($label, 'pr.openrosa','openrosa');
-            $page->addButtonOnly($this->_('Scan FormDefs'), 'pr.openrosa.scan', 'openrosa', 'scan');
             $page->addButtonOnly($this->_('Scan Responses'), 'pr.openrosa.scan', 'openrosa', 'scanresponses');
             $this->addPage(null, null, 'openrosa', 'submission');
             $this->addPage(null, null, 'openrosa', 'formList'); //mind the capital L here

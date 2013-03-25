@@ -51,18 +51,63 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
 {
     /**
      * This holds the path to the location where the form definitions will be stored.
-     * Will be set on init to: GEMS_ROOT_DIR . '/var/uploads/openrosa/forms/';
      *
      * @var string
      */
-    public $formDir;
+    protected $formDir;
+    
+    /**
+     * This holds the path to the location where OpenRosa will store it's files.
+     * Will be set on init to: GEMS_ROOT_DIR . '/var/uploads/openrosa/';
+     *
+     * @var string
+     */
+    protected $baseDir;
+    
+    /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+    
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+    
 
     public function __construct(array $sourceData, Zend_Db_Adapter_Abstract $gemsDb)
     {
         parent::__construct($sourceData, $gemsDb);
-        $this->formDir = GEMS_ROOT_DIR . '/var/uploads/openrosa/forms/';
+        $this->baseDir = GEMS_ROOT_DIR . '/var/uploads/openrosa/';
+        $this->formDir = $this->baseDir . 'forms/';
     }
-
+    
+    /**
+     * Open the dir, suppressing possible errors and try to
+     * create when it does not exist
+     * 
+     * @param type $directory
+     * @return Directory
+     */
+    protected function _checkDir($directory)
+    {
+        $eDir = @dir($directory);
+        if (false == $eDir) {
+            // Dir does probably not exist
+            if (!is_dir($directory)) {
+                if (false === @mkdir($directory, 0777, true)) {
+                    MUtil_Echo::pre(sprintf($this->translate->_('Directory %s not found and unable to create'), $directory), 'OpenRosa ERROR');
+                } else {
+                    $eDir = @dir($directory);            
+                }
+            }
+        }
+        
+        return $eDir;
+    }
+    
     /**
      * Returns the source surveyId for a given Gems survey Id
      * 
@@ -72,6 +117,46 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
     private function _getSid($surveyId)
     {
         return $this->tracker->getSurvey($surveyId)->getSourceSurveyId();
+    }
+    
+    protected function _scanForms()
+    {
+        $messages = array();
+        $formCnt  = 0;
+        $addCnt   = 0;
+        $eDir = $this->_checkDir($this->formDir);
+        
+        if ($eDir !== false) {  
+            $model = $this->loader->getModels()->getOpenRosaFormModel();
+            while (false !== ($filename = $eDir->read())) {
+                if (substr($filename, -4) == '.xml') {
+                    $formCnt++;
+                    $form                       = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $filename);
+                    $filter['gof_form_id']      = $form->getFormID();
+                    $filter['gof_form_version'] = $form->getFormVersion();
+                    $forms                      = $model->load($filter);
+
+                    if (!$forms) {
+                        $newValues = array();
+                        $newValues['gof_id']           = null;
+                        $newValues['gof_form_id']      = $form->getFormID();
+                        $newValues['gof_form_version'] = $form->getFormVersion();
+                        $newValues['gof_form_title']   = $form->getTitle();
+                        $newValues['gof_form_xml']     = $filename;
+                        $newValues                     = $model->save($newValues);
+                        if (Gems_Tracker::$verbose) {
+                            MUtil_Echo::r($newValues, 'added form');
+                        }
+                        $addCnt++;
+                    }
+                }
+            }
+        }
+
+        $cache = GemsEscort::getInstance()->cache;
+        $cache->clean();
+
+        $messages[] = sprintf('Checked %s forms and added %s forms', $formCnt, $addCnt);
     }
 
     //put your code here
@@ -247,6 +332,8 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
 
     public function synchronizeSurveys($userId)
     {
+        $messages = $this->_scanForms();
+        
         // Surveys in LS
         $db = $this->getSourceDatabase();
 
@@ -258,8 +345,9 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         if (!$openRosaSurveys) {
             //If no surveys present, just use an empty array as array_combine fails
             $openRosaSurveys = array();
+            $openRosaSurveyIds = array();
         } else {
-            $openRosaSurveyIds = array_combine(array_keys($openRosaSurveys), array_keys($openRosaSurveys));
+            $openRosaSurveyIds = array_combine(array_keys($openRosaSurveys), array_keys($openRosaSurveys));   
         }
 
         // Surveys in Gems
@@ -293,6 +381,8 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
             $survey->exists = false;
             $survey->saveSurvey($values, $userId);
         }
+        
+        return $messages;
     }
 
     public function updateConsent(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null, $consentCode = null)

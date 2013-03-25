@@ -401,7 +401,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         if ($translations) {
             $filedir  = APPLICATION_PATH . '/languages';
             if (! file_exists($filedir)) {
-                mkdir($filedir, 0777, true);
+                @mkdir($filedir, 0777, true);
             }
 
             $filename = $filedir . '/' . GEMS_PROJECT_NAME . 'DatabaseTranslations.php';
