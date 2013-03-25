@@ -444,6 +444,9 @@ class GemsEscort extends MUtil_Application_Escort
             
             $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
             
+            $autoloader = Zend_Loader_Autoloader::getInstance();
+            $autoloader->registerNamespace('OpenRosa_');
+            
             /**
              * Add Source for OpenRosa
              */

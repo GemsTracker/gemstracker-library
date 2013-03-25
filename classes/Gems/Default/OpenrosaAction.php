@@ -193,7 +193,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
      * this only handles storing form data and can be used for resubmission too.
      * 
      * @param type $xmlFile
-     * @return string DeviceID or false on failure
+     * @return string ResultID or false on failure
      */
     private function processReceivedForm($answerXmlFile)
     {
@@ -214,10 +214,8 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
         );
         if ($formData          = $model->loadFirst($filter)) {
             $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
-            $form->saveAnswer($answerXmlFile);
-
-            $deviceId = $xml->DeviceId[0];
-            return $deviceId;
+            $answers = $form->saveAnswer($answerXmlFile);
+            return $answers['orf_id'];
         } else {
             return false;
         }
@@ -279,6 +277,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
 
         $formCnt  = 0;
         $addCnt   = 0;
+        $files    = array();
         $rescan = $this->getRequest()->getParam('rescan', false);
         while (false !== ($filename = $eDir->read())) {
             $ext = substr($filename, -4);
@@ -355,8 +354,8 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             if ($upload->receive('xml_submission_file')) {
                 $xmlFile = $upload->getFileInfo('xml_submission_file');
                 $answerXmlFile = $xmlFile['xml_submission_file']['tmp_name'];
-                $deviceId = $this->processReceivedForm($answerXmlFile);
-                if ($deviceId === false) {
+                $resultId = $this->processReceivedForm($answerXmlFile);
+                if ($resultId === false) {
                     //form not accepted!
                     foreach ($xml->children() as $child) {
                         $log->log($child->getName() . ' -> ' . $child, Zend_Log::ERR);
@@ -366,9 +365,9 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                     //$log->log($deviceId, Zend_Log::ERR);
                     foreach ($upload->getFileInfo() as $file => $info) {
                         if ($info['received'] != 1) {
-                            //Rename to deviceid_md5(time)_filename
+                            //Rename to responseid_filename
                             //@@TODO: move to form subdir, for better separation
-                            $upload->addFilter('Rename', $deviceId . '_' . md5(time()) . '_' . $info['name'], $file);
+                            $upload->addFilter('Rename', $resultId . '_' . $info['name'], $file);
                         }
                     }
 

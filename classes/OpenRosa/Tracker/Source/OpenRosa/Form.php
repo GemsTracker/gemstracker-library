@@ -108,7 +108,11 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         foreach ($this->instance as $name => $element) {
             $bindName = str_replace('_', '/', '_data_' . $name);
-            $bindInfo = $this->bind[$bindName];
+            if (array_key_exists($bindName, $this->bind)) {
+                $bindInfo = $this->bind[$bindName];    
+            } else {
+                $bindInfo['type'] = 'string';
+            }
 
             $field = array();
             switch ($bindInfo['type']) {
@@ -247,6 +251,8 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $result['value'] = (string) $element;
                     break;
 
+                case 'trigger':
+                case 'upload':
                 case 'input':
                 case 'select':
                 case 'select1':
@@ -381,7 +387,12 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             $checkbox[0]  = $this->translate->_('Not checked');
             foreach ($this->instance as $name => $element) {
                 $bindName = str_replace('_', '/', '_data_' . $name);
-                $bindInfo = $this->bind[$bindName];
+                if (array_key_exists($bindName, $this->bind)) {
+                    $bindInfo = $this->bind[$bindName];    
+                } else {
+                    $bindInfo['type'] = 'string';
+                }
+                
 
                 switch ($bindInfo['type']) {
                     case 'select':
@@ -413,7 +424,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             }
             $this->model = $model;
         }
-
+        
         return $this->model;
     }
 
@@ -460,7 +471,11 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         //Now we should parse the response, extract the options given for a (multi)select
         foreach ($this->instance as $name => $element) {
                 $bindName = str_replace('_', '/', '_data_' . $name);
-                $bindInfo = $this->bind[$bindName];
+                if (array_key_exists($bindName, $this->bind)) {
+                    $bindInfo = $this->bind[$bindName];    
+                } else {
+                    $bindInfo['type'] = 'string';
+                }
 
                 if ($bindInfo['type'] == 'dateTime') {
                     $answers[$name] = new Zend_Date($answers[$name], Zend_Date::ISO_8601);
