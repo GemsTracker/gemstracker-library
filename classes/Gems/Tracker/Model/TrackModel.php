@@ -80,7 +80,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
 
         Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
 
-        $this->set('gtr_date_start', 'default', date('d-m-Y'));
+        $this->set('gtr_date_start', 'default', new Zend_Date());
     }
 
     /**
