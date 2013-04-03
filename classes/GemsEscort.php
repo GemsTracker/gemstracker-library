@@ -430,10 +430,10 @@ class GemsEscort extends MUtil_Application_Escort
 
         return $locale;
     }
-    
+
     /**
      * Initialize the OpenRosa survey source
-     * 
+     *
      * @param Zend_Controller_Action $actionController
      */
     public function _initOpenRosa(Zend_Controller_Action $actionController = null)
@@ -441,12 +441,12 @@ class GemsEscort extends MUtil_Application_Escort
         if ($this->getOption('useOpenRosa')) {
             // First handle dependencies
             $this->bootstrap(array('db', 'loader', 'util'));
-            
+
             $this->getLoader()->addPrefixPath('OpenRosa', GEMS_LIBRARY_DIR . '/classes/OpenRosa', true);
-            
+
             $autoloader = Zend_Loader_Autoloader::getInstance();
             $autoloader->registerNamespace('OpenRosa_');
-            
+
             /**
              * Add Source for OpenRosa
              */
@@ -629,7 +629,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initZFDebug()
     {
-        if ((APPLICATION_ENV === 'production') &&
+        if ((APPLICATION_ENV === 'production') ||
                 (false !== strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.'))) {
             // Never on on production systems, never for IE 6
             return;
