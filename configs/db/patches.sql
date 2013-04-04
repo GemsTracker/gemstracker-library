@@ -483,3 +483,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.contact.gems
 -- PATCH: Longer SSN hashes
 ALTER TABLE gems__respondents CHANGE grs_ssn
       grs_ssn varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+
+-- GEMS VERSION: 52
+-- PATCH: Agenda items
+ALTER TABLE gems__surveys ADD gsu_agenda_result varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_result_field;

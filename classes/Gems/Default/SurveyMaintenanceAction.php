@@ -100,7 +100,10 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $survey       = $this->loader->getTracker()->getSurvey($currentId);
         $standAlone   = $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface;
-        $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() + $survey->getQuestionList($this->locale->getLanguage());
+        $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
+                $survey->getQuestionList($this->locale->getLanguage());
+        $dateFields   = $this->util->getTranslated()->getEmptyDropdownArray() +
+                $survey->getDatesList($this->locale->getLanguage());
         $surveyNotOK  = $data['gsu_surveyor_active'] ? null : 'disabled';
 
         // Forced data changes
@@ -128,6 +131,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
         $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
+        $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
         $bridge->addText(       'gsu_duration');
         $bridge->addExhibitor(  'calc_duration', 'label', $this->_('Duration calculated'), 'value', $this->calculateDuration(isset($data['gsu_id_survey']) ? $data['gsu_id_survey'] : null));
         $bridge->addText(       'gsu_code');
