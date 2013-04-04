@@ -464,6 +464,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
             $events = $this->loader->getEvents();
 
             $model->set('gsu_result_field',          'label', $this->_('Result field'));
+            $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
         }
         $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
