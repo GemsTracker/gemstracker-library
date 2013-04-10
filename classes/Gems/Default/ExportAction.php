@@ -129,7 +129,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     {
         $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
         $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
-        $surveys       = $this->util->getDbLookup()->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
+        $surveys       = $empty + $this->util->getDbLookup()->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
         $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
         $types         = $this->export->getExportClasses();
 
@@ -158,7 +158,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         //Add a field to the form showing the record count. If this is too slow for large recordsets
         //then remove it or make it more efficient
         unset($data['records']);
-        if (isset($data['sid'])) {
+        if (!empty($data['sid'])) {
             $survey   = $this->loader->getTracker()->getSurvey(intval($data['sid']));
             $filter   = $this->_getFilter($data);
             //$answers  = $survey->getRawTokenAnswerRows($filter);

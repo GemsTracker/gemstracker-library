@@ -110,7 +110,6 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                             $cDesc = null;
                         }
                     }
-                    $cIcon   = $model->get($name, 'roundIcon');
                     $class   = 'newRound';
                     $thClass = $class .' ' . $alternateClass; // Add alternate class only for th
                     $th      = $th_row->td(array('class' => $thClass));
