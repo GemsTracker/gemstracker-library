@@ -228,6 +228,28 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
             $this->_sourceData['gso_ls_table_prefix'] .
             $tableName;
     }
+    
+    /**
+     * Extract limit and offset from the filter and add it to a select
+     * 
+     * @param array $filter
+     * @param Zend_Db_Select $select
+     */
+    protected function filterLimitOffset(&$filter, $select)
+    {
+        $limit = null;
+        $offset = null;
+        
+        if (array_key_exists('limit', $filter)) {
+            $limit = (int) $filter['limit'];
+            unset($filter['limit']);
+        }
+        if (array_key_exists('offset', $filter)) {
+            $offset = (int) $filter['offset'];
+            unset($filter['offset']);
+        }
+        $select->limit($limit, $offset);
+    }
 
     /**
      *
@@ -245,6 +267,23 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     public function getId()
     {
         return $this->_sourceData['gso_id_source'];
+    }
+    
+    /**
+     * Returns the recordcount for a given filter
+     * 
+     * Abstract implementation is not efficient, sources should handle this as efficient
+     * as possible.
+     * 
+     * @param array $filter filter array
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return int
+     */
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null)
+    {
+        $answers = $this->getRawTokenAnswerRows($filter, $surveyId, $sourceSurveyId);
+        return count($answers);
     }
 
     /**

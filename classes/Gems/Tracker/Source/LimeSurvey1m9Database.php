@@ -828,6 +828,79 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($surveyId);
         }
+        $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
+        
+        //Now process the filters
+        $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
+        $tokenField    = $lsSurveyTable . '.token';
+        if (is_array($filter)) {
+            //first preprocess the tokens
+            if (isset($filter['token'])) {
+                foreach ((array) $filter['token'] as $key => $tokenId) {
+                    $token = $this->_getToken($tokenId);
+
+                    $originals[$token] = $tokenId;
+                    $filter[$tokenField][$key] = $token;
+                }
+                unset($filter['token']);
+            }
+        }
+
+        $rows = $select->query()->fetchAll(Zend_Db::FETCH_ASSOC);
+        $results = array();
+        //@@TODO: check if we really need this, or can just change the 'token' field to have the 'original'
+        //        this way other sources that don't perform changes on the token field don't have to loop
+        //        over this field. The survey(answer)model could possibly perform the translation for this source
+        if ($rows) {
+            $map = $this->_getFieldMap($sourceSurveyId);
+            if (isset($filter[$tokenField])) {
+                foreach ($rows as $values) {
+                    $token = $originals[$values['token']];
+                    $results[$token] = $map->mapKeysToTitles($values);
+                }
+                return $results;
+            } else {
+                //@@TODO If we do the mapping in the select statement, maybe we can gain some performance here
+                foreach ($rows as $values) {
+                    $results[] = $map->mapKeysToTitles($values);
+                }
+                return $results;
+            }
+        }
+
+        return array();
+    }
+    
+    /**
+     * Returns the recordcount for a given filter
+     * 
+     * @param array $filter filter array
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return int
+     */
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null) {
+        $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
+        
+        $p = new Zend_Paginator_Adapter_DbSelect($select);
+        MUtil_Echo::track($p->getCountSelect()->__toString());
+        $count = $p->getCountSelect()->query()->fetchColumn();
+        
+        return $count;
+    }
+    
+    /**
+     * Get the select object to use for RawTokenAnswerRows
+     * 
+     * @param array $filter
+     * @param type $surveyId
+     * @param type $sourceSurveyId
+     * @return Zend_Db_Select
+     */
+    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null) {
+        if (null === $sourceSurveyId) {
+            $sourceSurveyId = $this->_getSid($surveyId);
+        }
 
         $lsDb = $this->getSourceDatabase();
         $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
@@ -863,6 +936,9 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             }
         }
 
+        // Add limit / offset to select and remove from filter
+        $this->filterLimitOffset($filter, $select);
+        
         foreach ($filter as $field => $values) {
             $field = $lsDb->quoteIdentifier($field);
             if (is_array($values)) {
@@ -876,29 +952,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             MUtil_Echo::r($select->__toString(), 'Select');
         }
 
-        $rows = $select->query()->fetchAll(Zend_Db::FETCH_ASSOC);
-        $results = array();
-        //@@TODO: check if we really need this, or can just change the 'token' field to have the 'original'
-        //        this way other sources that don't perform changes on the token field don't have to loop
-        //        over this field. The survey(answer)model could possibly perform the translation for this source
-        if ($rows) {
-            $map = $this->_getFieldMap($sourceSurveyId);
-            if (isset($filter[$tokenField])) {
-                foreach ($rows as $values) {
-                    $token = $originals[$values['token']];
-                    $results[$token] = $map->mapKeysToTitles($values);
-                }
-                return $results;
-            } else {
-                //@@TODO If we do the mapping in the select statement, maybe we can gain some performance here
-                foreach ($rows as $values) {
-                    $results[] = $map->mapKeysToTitles($values);
-                }
-                return $results;
-            }
-        }
-
-        return array();
+        return $select;
     }
 
     /**

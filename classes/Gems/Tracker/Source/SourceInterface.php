@@ -184,6 +184,16 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
     public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null);
+    
+    /**
+     * Returns the recordcount for a given filter
+     * 
+     * @param array $filter filter array
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return int
+     */
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null);
 
     /**
      * Gets the time the survey was started according to the source.

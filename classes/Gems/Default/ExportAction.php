@@ -114,7 +114,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             //$filter['organizationid'] = '-1';
         }
         $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
-
+        
         // Gems_Tracker::$verbose = true;
         return $filter;
     }
@@ -161,10 +161,12 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         if (isset($data['sid'])) {
             $survey   = $this->loader->getTracker()->getSurvey(intval($data['sid']));
             $filter   = $this->_getFilter($data);
-            $answers  = $survey->getRawTokenAnswerRows($filter);
+            //$answers  = $survey->getRawTokenAnswerRows($filter);
+            //$recordCount = count($answers);
+            $recordCount = $survey->getRawTokenAnswerRowsCount($filter);
 
             $element = new MUtil_Form_Element_Exhibitor('records');
-            $element->setValue(sprintf($this->_('%s records found.'), count($answers)));
+            $element->setValue(sprintf($this->_('%s records found.'), $recordCount));
             $elements[] = $element;
         }
 

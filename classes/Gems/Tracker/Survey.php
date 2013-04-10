@@ -395,6 +395,18 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
         $source = $this->getSource();
         return $source->getRawTokenAnswerRows((array) $filter, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
     }
+    
+    /**
+     * Returns the number of answers of multiple tokens
+     *
+     * @param array $filter XXX
+     * @return array Of nested Field => Value arrays indexed by tokenId
+     */
+    public function getRawTokenAnswerRowsCount($filter = array())
+    {
+        $source = $this->getSource();
+        return $source->getRawTokenAnswerRowsCount((array) $filter, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
+    }
 
     /**
      * Retrieve the name of the resultfield
