@@ -237,15 +237,54 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
 
     public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null)
     {
+        $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
+        
+        $data = $select->query()->fetchAll();
+        if (is_array($data)) {
+            $data = $model->processAfterLoad($data);
+        }
+        
+        if ($data) {
+            return $data;
+        }
+        return array();
+    }
+    
+    /**
+     * Returns the recordcount for a given filter
+     * 
+     * @param array $filter filter array
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return int
+     */
+    public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null)
+    {
+        $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
+        
+        $p = new Zend_Paginator_Adapter_DbSelect($select);
+        $count = $p->getCountSelect()->query()->fetchColumn();
+        
+        return $count;
+    }
+    
+    /**
+     * Get the select object to use for RawTokenAnswerRows
+     * 
+     * @param array $filter
+     * @param type $surveyId
+     * @param type $sourceSurveyId
+     * @return Zend_Db_Select
+     */
+    public function getRawTokenAnswerRowsSelect(array $filter, $surveyId, $sourceSurveyId = null)
+    {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
 
-        $result = $model->load();
+        $select = $model->getSelect();
+        $this->filterLimitOffset($filter, $select);
         
-        if ($result) {
-            return $result;
-        }
-        return array();
+        return $select;
     }
 
     public function getStartTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
