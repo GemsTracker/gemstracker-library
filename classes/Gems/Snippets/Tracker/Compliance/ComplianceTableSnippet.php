@@ -73,6 +73,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         $th     = $th_row->td();
         $span   = 1;
         $cRound = null;
+        $cDesc  = null;
         $thead->tr();
 
         if ($showMenuItem = $this->getShowMenuItem()) {
@@ -91,20 +92,24 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                 } else {
                     // If the round has an icon, show the icon else just 'R' since 
                     // complete round description messes up the display
-                    if (!empty($cIcon)) {
-                        $content = MUtil_Html_ImgElement::imgFile($cIcon, array(
-                            'alt'   => $cRound, 
-                            'title' => $cRound
-                        ));
-                    } else {
-                        $content = 'R';
-                    }
-                    $th->append($content);
+                    $th->append($cDesc);
                     $th->title = $cRound;
                     $th->colspan = $span;
 
                     $span    = 1;
                     $cRound  = $round;
+                    if ($cIcon = $model->get($name, 'roundIcon')) {
+                        $cDesc = MUtil_Html_ImgElement::imgFile($cIcon, array(
+                            'alt'   => $cRound, 
+                            'title' => $cRound
+                        ));
+                    } else {
+                        if (substr($name, 0, 5) == 'stat_') {
+                            $cDesc = 'R';
+                        } else {
+                            $cDesc = null;
+                        }
+                    }
                     $cIcon   = $model->get($name, 'roundIcon');
                     $class   = 'newRound';
                     $thClass = $class .' ' . $alternateClass; // Add alternate class only for th
