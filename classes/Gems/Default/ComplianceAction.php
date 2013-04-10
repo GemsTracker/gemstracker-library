@@ -107,7 +107,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         }
 
         $select = $this->db->select();
-        $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description'))
+        $select->from('gems__rounds', array('gro_id_round', 'gro_id_order', 'gro_round_description', 'gro_icon_file'))
                 ->joinInner('gems__surveys', 'gro_id_survey = gsu_id_survey', array('gsu_survey_name'))
                 ->where('gro_id_track = ?', $filter['gr2t_id_track'])
                 ->order('gro_id_order');
@@ -147,7 +147,8 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
             $transformer->set($name, 'label', MUtil_Lazy::call('substr', $row['gsu_survey_name'], 0, 2),
                     'description', sprintf("%s\n[%s]", $row['gsu_survey_name'], $row['gro_round_description']),
                     'noSort', true,
-                    'round', $row['gro_round_description']
+                    'round', $row['gro_round_description'],
+                    'roundIcon', $row['gro_icon_file']
                     );
             $transformer->set('tok_' . $row['gro_id_round']);
         }

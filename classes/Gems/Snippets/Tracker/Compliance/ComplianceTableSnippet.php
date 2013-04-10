@@ -78,6 +78,9 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         if ($showMenuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }
+        
+        // Initialize alter
+        $alternateClass = new MUtil_Lazy_Alternate(array('odd', 'even'));
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -86,13 +89,26 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                     $span++;
                     $class = null;
                 } else {
-                    $th->append($cRound);
+                    // If the round has an icon, show the icon else just 'R' since 
+                    // complete round description messes up the display
+                    if (!empty($cIcon)) {
+                        $content = MUtil_Html_ImgElement::imgFile($cIcon, array(
+                            'alt'   => $cRound, 
+                            'title' => $cRound
+                        ));
+                    } else {
+                        $content = 'R';
+                    }
+                    $th->append($content);
+                    $th->title = $cRound;
                     $th->colspan = $span;
 
-                    $span   = 1;
-                    $cRound = $round;
-                    $class = 'newRound';
-                    $th     = $th_row->td(array('class' => $class));
+                    $span    = 1;
+                    $cRound  = $round;
+                    $cIcon   = $model->get($name, 'roundIcon');
+                    $class   = 'newRound';
+                    $thClass = $class .' ' . $alternateClass; // Add alternate class only for th
+                    $th      = $th_row->td(array('class' => $thClass));
                 }
 
                 if ($model->get($name, 'noSort')) {
