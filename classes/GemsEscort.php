@@ -112,7 +112,17 @@ class GemsEscort extends MUtil_Application_Escort
 
         // DIRECTORIES USED BY LOADER
         $dirs = $this->getOption('loaderDirs');
-        if (! $dirs) {
+        if ($dirs) {
+            $newDirs = array();
+            foreach ($dirs as $key => $path) {
+                if (defined($key)) {
+                    $newDirs[constant($key)] = $path;
+                } else {
+                    $newDirs[$key] = $path;
+                }
+            }
+            $dirs = $newDirs;
+        } else {
             global $GEMS_DIRS;
 
             // Use $GEMS_DIRS if defined

@@ -22,8 +22,8 @@ contact.docsUrl    = "" ; The path to the documentation of the project
 contact.forumUrl   = "" ; The path to the forum if available
 contact.gemsUrl    = "http://gemstracker.org/"
 
-New application.ini settings (add before the first resource and change NewProject to your own project prefix):
-loaderDirs.NewProject = APPLICATION_PATH "/classes/NewProject"
+New application.ini settings:
+loaderDirs.GEMS_PROJECT_NAME_UC = APPLICATION_PATH "/classes/" GEMS_PROJECT_NAME_UC
 loaderDirs.Gems  = GEMS_LIBRARY_DIR "/classes/Gems"
 
 Numerous small bugs solved
