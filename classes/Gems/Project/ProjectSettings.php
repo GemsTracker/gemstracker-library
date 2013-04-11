@@ -567,7 +567,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
-     * Returns the super admin password, if it exists
+     * Returns the super admin ip range, if it exists
      *
      * @return string
      */
