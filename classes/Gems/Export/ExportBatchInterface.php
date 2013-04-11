@@ -25,8 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
- *
  * @package    Gems
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -35,56 +33,48 @@
  */
 
 /**
- * Short description for ExportAbstract
+ * The export interface
  *
- * Long description for class ExportAbstract (if any)...
+ * Exporting survey-data can be done for various sorts of output formats, this interface
+ * describes the methods needed to implement an output format
  *
  * @package    Gems
  * @subpackage Export
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.6.1
  */
-abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstract implements Gems_Export_ExportInterface
+interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
 {
     /**
-     * Variable needed to access the controller functions
+     * This method handles setting up all needed stept for the batch export
      *
-     * $this->export->controller
+     * Normally this will initialize the file to download and set up as much
+     * steps as needed and the final job to close the file.
      *
-     * @var Gems_Export
+     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
+     * @param array                     $filter      The filter to use
+     * @param string                    $language    The language used / to use for the export
+     * @param array                     $data        The formdata
      */
-    public $export;
+    public function handleExportBatch($batch, $filter, $language, $data);
     
     /**
-     *
-     * @var Gems_Loader
+     * Executes a step in exporting the data, this should be as large as possible
+     * without hitting max request time limits
+     * 
+     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
+     * @param array                     $data        The formdata
+     * @param array                     $filter      The filter to use
+     * @param string                    $language    The language used / to use for the export
      */
-    public $loader;
-
+    public function handleExportBatchStep($batch, $data, $filter, $language);
+            
     /**
-     * @var Zend_Translate
+     * Final step in batch export, perform cleanup / finalize the file
+     * 
+     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param array $data
      */
-    public $translate;
-
-    /**
-     * @var Zend_View
-     */
-    public $view;
-
-    /**
-     * Copy from Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($text, $locale);
-    }
+    public function handleExportBatchFinalize($batch, $data);
 }

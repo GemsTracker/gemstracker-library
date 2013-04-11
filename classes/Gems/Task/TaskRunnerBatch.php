@@ -54,6 +54,16 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
      */
     public $loader;
 
+    /**
+     * The minimal time used between send progress reports.
+     *
+     * This enables quicker processing as multiple steps can be taken in a single
+     * run(), without the run taking too long to answer.
+     *
+     * Set to 0 to report back on each step.
+     *
+     * @var int
+     */
     public $minimalStepDurationMs = 1000;
 
     public function __construct($id = null)
@@ -98,6 +108,23 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Batch_BatchAbstract
         $this->addStep('runTask', $task, $params);
 
         return $this;
+    }
+    
+    /**
+     * Get a message from the message stack with a specific id.
+     *
+     * @param scalar $id
+     * @param string $default A default message
+     * @return string
+     */
+    public function getMessage($id, $default = null)
+    {
+        $messages = parent::getMessages();
+        if (array_key_exists($id, $messages)) {
+            return $messages[$id];
+        } else {
+            return $default;
+        }
     }
 
     public function runTask($task, $params)

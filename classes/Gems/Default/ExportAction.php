@@ -61,6 +61,18 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      * @var Zend_Locale
      */
     public $locale;
+    
+    /**
+     *
+     * @var Gems_Util_RequestCache
+     */
+    public $requestCache;
+    
+    /**
+     *
+     * @var Zend_Session_Namespace
+     */
+    protected $_session;
 
     public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
     {
@@ -69,6 +81,8 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         //Add this controller to the export so it can render view when needed
         $this->export->controller = $this;
+        
+        $this->_session = GemsEscort::getInstance()->session;
     }
 
 
@@ -117,6 +131,39 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         
         // Gems_Tracker::$verbose = true;
         return $filter;
+    }
+    
+    /**
+     * Modify request to hold a cache
+     * 
+     * @return array
+     */
+    public function getCachedRequestData()
+    {
+        if (! $this->requestCache) {
+            $this->requestCache = $this->util->getRequestCache($this->getRequest()->getActionName(), false);
+            $this->requestCache->setMenu($this->menu);
+            $this->requestCache->setRequest($this->getRequest());
+
+            // Button text should not be stored.
+            $this->requestCache->removeParams('export', 'action');
+        }
+
+        $data = $this->requestCache->getProgramParams();
+
+        // Clean up empty values
+        //
+        // We do this here because empty values can be valid filters that overrule the default
+        foreach ($data as $key => $value) {
+            if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
+                unset($data[$key]);
+            }
+        }
+
+        // Do not set, we only want to have the data as a default
+        //$this->getRequest()->setParams($data);
+
+        return $data;
     }
 
     /**
@@ -234,36 +281,117 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      */
     public function handleExport($data)
     {
-        $language    = $this->locale->getLanguage();
-        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
-        $filter      = $this->_getFilter($data);
-        $answers     = $survey->getRawTokenAnswerRows($filter);
-        $answerModel = $survey->getAnswerModel($language);
-
-        //Now add the organization id => name mapping
-        $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
-
-        if (count($answers) === 0) {
-            $answers[0] = array('' => sprintf($this->_('No %s found.'), $this->getTopic(0)));
-        }
-
         if (isset($data['type'])) {
             //Do the logging
             $message = Zend_Json::encode($data);
             Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
-
+            
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);
-            $exportClass->handleExport($data, $survey, $answers, $answerModel, $language);
+            
+            if ($exportClass instanceof Gems_Export_ExportBatchInterface) {
+                // Clear possible existing batch
+                $batch = $this->loader->getTaskRunnerBatch('export_data');
+                $batch->reset();
+                // Have a batch handle the export
+                $this->_session->exportParams = $data;
+                $this->_reroute(array('action'=>'handle-export'));
+                
+            } else {
+                // If not possible / available, handle direct
+                $language    = $this->locale->getLanguage();
+                $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+                $filter      = $this->_getFilter($data);
+                $answers     = $survey->getRawTokenAnswerRows($filter);
+                $answerModel = $survey->getAnswerModel($language);
+
+                //Now add the organization id => name mapping
+                $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
+
+                if (count($answers) === 0) {
+                    $answers[0] = array('' => sprintf($this->_('No %s found.'), $this->getTopic(0)));
+                }
+
+                $exportClass->handleExport($data, $survey, $answers, $answerModel, $language);
+            }
         }
     }
+    
+    public function handleExportAction()
+    {
+        $this->initHtml();
+        $batch = $this->loader->getTaskRunnerBatch('export_data');
+        $batch->minimalStepDurationMs = 2000;
+        if (!$batch->count()) {
+            $data     = $this->_session->exportParams;
+            $filter   = $this->_getFilter($data);
+            $language = $this->locale->getLanguage();
+            
+            $exportClass = $this->export->getExport($data['type']);
+            $exportClass->handleExportBatch($batch, $filter, $language, $data);            
+            $batch->autoStart = true;
+        }
+        
+        $title = $this->_('Export');
+        // Not using batchrunner since we need something else
+        if ($batch->run($this->getRequest())) {
+            exit;
+        } else {
+            $controller = $this;          
+            $controller->html->h3($title);
+
+            if ($batch->isFinished()) {
+                $messages = $batch->getMessages();
+                if (array_key_exists('file', $messages)) {
+                    $files = $messages['file'];
+                    unset($messages['file']);
+                    unset($messages['export-progress']);
+                }
+                
+                $controller->addMessage($messages);
+
+                if (!empty($files)) {
+                    // Forward to download action
+                    $this->_session->exportFile = $files;
+                    $this->_reroute(array('action'=>'download'));
+                }
+            } else {
+                if ($batch->count()) {
+                    $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));                   
+                } else {
+                    $controller->html->pInfo($controller->_('Nothing to do.'));
+                }
+                $controller->html->pInfo(MUtil_Html_AElement::a(MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index')), array('class'=>'actionlink'), $this->_('Back')));
+            }
+        }
+    }
+    
+    public function downloadAction()
+    {
+        $this->view->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $files = $this->_session->exportFile;
+        foreach($files['headers'] as $header) {
+            header($header);
+        }
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        readfile(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        // Now clean up the file
+        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        exit;
+    }
+           
 
     public function indexAction()
     {
         $this->initHtml();
+        
+        $data = $this->getCachedRequestData();
 
         //Hacked around to get a self-refreshing form, quite hardcoded but fine for now
-        if ($form = $this->processForm()) {
+        if ($form = $this->processForm(null, $data)) {
             if (!$this->getRequest()->isPost() || $form->getElement('export')->isChecked()) {
                 if ($form->getElement('export')->isChecked()) {
                     $data = $form->getValues();
@@ -309,7 +437,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $data = $request->getPost() + (array) $data;
         } else {
             //Set the defaults for the form here
-            $data = $this->export->getDefaults();
+            $data = $data + $this->export->getDefaults();
         }
 
         $form = $this->getForm($data);

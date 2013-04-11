@@ -275,6 +275,8 @@ abstract class Gems_Menu_MenuAbstract
 
         // EXPORT
         $export->addPage($this->_('Survey answers'), 'pr.export', 'export', 'index');
+        $export->addButtonOnly('', 'pr.export', 'export', 'handle-export');
+        $export->addButtonOnly('', 'pr.export', 'export', 'download');
 
         // EXPORT TO HTML
         $export->addPage($this->_('Respondent archives'), 'pr.export-html', 'respondent-export', 'index');

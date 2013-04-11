@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export_Excel extends Gems_Export_ExportAbstract
+class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Export_ExportBatchInterface
 {
     /**
      * Return an array of Form Elements for this specific export
@@ -135,4 +135,164 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract
         $this->view->setScriptPath(GEMS_LIBRARY_DIR . '/views/scripts');
         $this->export->controller->render('excel',null,true);
     }
+
+    /**
+     * This method handles the export with the given options
+     *
+     * The method takes care of rendering the right script by using $this->export->controller to
+     * access the controller object.
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
+     * @param array                     $filter      The filter to use
+     * @param string                    $language    The language used / to use for the export
+     * @param array                     $data        The formdata
+     */
+    public function handleExportBatch($batch, $filter, $language, $data) {
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
+        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
+        $filename    = $survey->getName() . '.xls';
+        
+        $files['file']= 'export-' . md5(time() . rand());
+        $files['headers'][] = "Content-Type: application/download";
+        $files['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
+        $files['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
+        $files['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
+        $files['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
+        $files['headers'][] = "Pragma: cache";                          // HTTP/1.0
+        
+        $batch->setMessage('file', $files);
+        $batch->setMessage('export-progress', $this->_('Initializing export'));
+        
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'w');
+        fwrite($f, '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=UTF-8">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 11">
+<style>
+    /* Default styles for tables */
+
+    table {
+        border-collapse: collapse;
+        border: .5pt solid #000000;
+    }
+
+    tr th {
+        font-weight: bold;
+        padding: 3px 8px;
+        border: .5pt solid #000000;
+        background: #c0c0c0	
+    }
+    tr td {
+        padding: 3px 8px;
+        border: .5pt solid #000000;
+    }
+    td {mso-number-format:"\@";}
+</style>
+</head>
+<body>');
+        
+        if (isset($data[$this->getName()])) {
+            $options = $data[$this->getName()];
+            if (isset($options['format']))  {
+                $options = $options['format'];
+            }
+        } else {
+            $options = array();
+        }
+
+        $headers = array();
+        if (in_array('formatVariable', $options)) {
+            $questions = $survey->getQuestionList($language);
+            //@@TODO This breaks date formatting, think of a way to fix this, check out the spss exports for
+            //a more direct export, also check UTF-8 differences between view / direct output
+            foreach ($answers[0] as $key => $value) {
+                if (isset($questions[$key])) {
+                    $headers[$key] = $questions[$key];
+                } else {
+                    $headers[$key] = $key;
+                }
+            }
+        } else {
+            $headers = array_keys($answers[0]);
+        }
+        
+        //Only for the first row: output headers
+        $output = "<table>\r\n";
+        $output .= "\t<thead>\r\n";
+        $output .= "\t\t<tr>\r\n";
+        foreach ($headers as $name => $value) {
+            $output .= "\t\t\t<th>$value</th>\r\n";
+        }
+        $output .= "\t\t</tr>\r\n";
+        $output .= "\t</thead>\r\n";
+        $output .= "\t<tbody>\r\n";
+        
+        fwrite($f, $output);
+        
+        fclose($f);
+        // Add as many steps as needed
+        $current = 0;
+        $step = 500;
+        do {
+            $filter['limit']  = $step;
+            $filter['offset'] = $current;
+            $batch->addTask('Export_Step', $data['type'], $filter, $language, $data);
+            $current = $current + $step;            
+        } while ($current < $answerCount);
+        
+        $batch->addTask('Export_Finalize', $data['type']);
+        
+        return;
+    }
+    
+    public function handleExportBatchStep($batch, $data, $filter, $language)
+    {
+        $files = $batch->getMessage('file', array());
+        $survey  = $this->loader->getTracker()->getSurvey($data['sid']);        
+        $answers = $survey->getRawTokenAnswerRows($filter);        
+        $answerModel = $survey->getAnswerModel($language);
+        //Now add the organization id => name mapping
+        $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
+        $batch->setMessage('export-progress', sprintf($this->_('Exporting records %s and up'), $filter['offset']));
+        
+        if (isset($data[$this->getName()])) {
+            $options = $data[$this->getName()];
+            if (isset($options['format']))  {
+                $options = $options['format'];
+            }
+        } else {
+            $options = array();
+        }
+        
+        if (in_array('formatAnswer', $options)) {
+            $answers = new Gems_FormattedData($answers, $answerModel);
+        }
+        
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
+        foreach($answers as $answer)
+        {
+            $output = "\t\t<tr>\r\n";
+            foreach ($answer as $key => $value) {
+                $output .= "\t\t\t<td>$value</td>\r\n";
+            }
+            $output .= "\t\t</tr>\r\n";
+            fwrite($f,$output);
+        }
+        fclose($f);
+    }
+    
+    public function handleExportBatchFinalize($batch, $data)
+    {
+        $files = $batch->getMessage('file', array());
+        $batch->setMessage('export-progress', $this->_('Export finished'));
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
+        fwrite($f, '            </tbody>
+        </table>
+    </body>
+</html>');
+        fclose($f);
+    }    
+    
 }
