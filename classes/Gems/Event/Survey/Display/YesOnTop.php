@@ -76,10 +76,9 @@ class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAb
             if ($value === 'Y') {
                 $onTop[$name] = $name;
             } else {
-                $nameParts = explode('_', $name);
-
-                if (count($nameParts) > 1) {
-                    if (isset($onTop[$nameParts[0]])) {
+                // Split on last underscore instead of first
+                if ($i = strrpos($name, '_')) {
+                    if (isset($onTop[substr($name, 0, $i)])) {
                         $onTop[$name] = $name;
                     }
                 }
