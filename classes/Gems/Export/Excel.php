@@ -139,9 +139,15 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
     /**
      * This method handles the export with the given options
      *
-     * The method takes care of rendering the right script by using $this->export->controller to
-     * access the controller object.
-     *
+     * We open the file and add tasks to the batch to export in steps of 500 records. 
+     * This should be small enough to not run out of time/memory.
+     * 
+     * We make use of the Export_ExportCommand to forward calls to this class.
+     * Extra methods in this class are 
+     *      handleExportBatchStep Exports the records
+     * and 
+     *      handleExportBatchFinalize Write the footer to the file
+     * 
      * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
      * @param array                     $filter      The filter to use
      * @param string                    $language    The language used / to use for the export
@@ -238,17 +244,18 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         do {
             $filter['limit']  = $step;
             $filter['offset'] = $current;
-            $batch->addTask('Export_Step', $data['type'], $filter, $language, $data);
+            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchStep', $data, $filter, $language);
             $current = $current + $step;            
         } while ($current < $answerCount);
         
-        $batch->addTask('Export_Finalize', $data['type']);
+        $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchFinalize');
         
         return;
     }
     
-    public function handleExportBatchStep($batch, $data, $filter, $language)
+    public function handleExportBatchStep($data, $filter, $language)
     {
+        $batch = $this->_batch;
         $files = $batch->getMessage('file', array());
         $survey  = $this->loader->getTracker()->getSurvey($data['sid']);        
         $answers = $survey->getRawTokenAnswerRows($filter);        
@@ -283,10 +290,10 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         fclose($f);
     }
     
-    public function handleExportBatchFinalize($batch, $data)
+    public function handleExportBatchFinalize()
     {
-        $files = $batch->getMessage('file', array());
-        $batch->setMessage('export-progress', $this->_('Export finished'));
+        $files = $this->_batch->getMessage('file', array());
+        $this->_batch->setMessage('export-progress', $this->_('Export finished'));
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
         fwrite($f, '            </tbody>
         </table>

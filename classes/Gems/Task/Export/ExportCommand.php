@@ -33,22 +33,26 @@
  */
 
 /**
- * Perform one step of results export
+ * Executes any command in an Export class for a given $exportType
  *
  * @package    Gems
- * @subpackage Task_Export
+ * @subpackage Task_Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.1
+ * @since      Class available since version 1.5.3
  */
-class Gems_Task_Export_Finalize extends Gems_Task_TaskAbstract {
-   
-    public function execute($exportType = null, $filter = array(), $language = null, $data = array())
+class Gems_Task_Export_ExportCommand extends Gems_Task_TaskAbstract
+{
+    public function execute($exportType = null, $command = null)
     {
-        // $filter now has a limit and offset        
+        $params = array_slice(func_get_args(), 2);
         $export = $this->loader->getExport()->getExport($exportType);
-        $export->handleExportBatchFinalize($this->_batch, $data);
-        
-        return;        
+        $export->setBatch($this->_batch);
+
+        if ($messages = call_user_func_array(array($export, $command), $params)) {
+            foreach ($messages as $message) {
+                $this->_batch->addMessage($command . ': ' . $message);
+            }
+        }
     }
 }

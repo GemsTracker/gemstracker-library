@@ -47,7 +47,7 @@
 interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
 {
     /**
-     * This method handles setting up all needed stept for the batch export
+     * This method handles setting up all needed steps for the batch export
      *
      * Normally this will initialize the file to download and set up as much
      * steps as needed and the final job to close the file.
@@ -58,23 +58,13 @@ interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
      * @param array                     $data        The formdata
      */
     public function handleExportBatch($batch, $filter, $language, $data);
-    
+        
     /**
-     * Executes a step in exporting the data, this should be as large as possible
-     * without hitting max request time limits
-     * 
-     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
-     * @param array                     $data        The formdata
-     * @param array                     $filter      The filter to use
-     * @param string                    $language    The language used / to use for the export
-     */
-    public function handleExportBatchStep($batch, $data, $filter, $language);
-            
-    /**
-     * Final step in batch export, perform cleanup / finalize the file
-     * 
+     * Set the batch to be used by this source
+     *
+     * Use $this->hasBatch to check for existence
+     *
      * @param Gems_Task_TaskRunnerBatch $batch
-     * @param array $data
      */
-    public function handleExportBatchFinalize($batch, $data);
+    public function setBatch(Gems_Task_TaskRunnerBatch $batch);
 }

@@ -35,9 +35,10 @@
  */
 
 /**
- * Short description for ExportAbstract
+ * This is a helper class to make implementing exports easier
  *
- * Long description for class ExportAbstract (if any)...
+ * The setBatch method will only be used when running batch exports. To do so 
+ * you must implement the Gems_Export_ExportBatchInterface
  *
  * @package    Gems
  * @subpackage Export
@@ -46,7 +47,14 @@
  * @since      Class available since version 1.5
  */
 abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstract implements Gems_Export_ExportInterface
-{
+{  
+    /**
+     * Holds the current batch if there is any
+     *
+     * @var Gems_Task_TaskRunnerBatch
+     */
+    protected $_batch = null;
+    
     /**
      * Variable needed to access the controller functions
      *
@@ -86,5 +94,17 @@ abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstra
     public function _($text, $locale = null)
     {
         return $this->translate->getAdapter()->_($text, $locale);
+    }
+    
+    /**
+     * Set the batch to be used by this source
+     *
+     * Use $this->hasBatch to check for existence
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
+     */
+    public function setBatch(Gems_Task_TaskRunnerBatch $batch)
+    {
+        $this->_batch = $batch;
     }
 }
