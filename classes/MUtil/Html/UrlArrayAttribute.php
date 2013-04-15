@@ -123,7 +123,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
                 // will add the existing parameters without escaping.
                 $request = $this->getRequest();
 
-                foreach ($request->getParams() as $key => $value) {
+                foreach ($request->getQuery() as $key => $value) {
                     if (!array_key_exists($key, $url_parameters)) {
                         // E.g. Exceptions are stored as parameters :(
                         if (is_array($value)) {

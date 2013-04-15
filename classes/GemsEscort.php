@@ -1025,7 +1025,7 @@ class GemsEscort extends MUtil_Application_Escort
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
-                $params     = $this->request->getParams();   //Use only get params, not post
+                $params     = $this->request->getQuery();   //Use only get params, not post
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
                 unset($params[Gems_Util_RequestCache::RESET_PARAM]);
                 $currentUri = $this->view->url($params, null, true);
