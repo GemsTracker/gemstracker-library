@@ -137,6 +137,22 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
         return $input;
     }
 
+    /**
+     * This method handles setting up all needed steps for the batch export
+     *
+     * Normally this will initialize the file to download and set up as much
+     * steps as needed and the final job to close the file.
+     * 
+     * To offer a file for download, add a message with the key 'file' to the
+     * batch. The message must be an array of 'headers' that contains an array
+     * of headers to set for the download and 'file' that holds the path to the 
+     * file relative to GEMS_ROOT_DIR . '/var/tmp/'
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
+     * @param array                     $filter      The filter to use
+     * @param string                    $language    The language used / to use for the export
+     * @param array                     $data        The formdata
+     */
     public function handleExportBatch($batch, $filter, $language, $data)
     {
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
@@ -144,8 +160,8 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
         $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
 
         if (count($answers) === 0) {
-            $noData = sprintf($this->_('No %s found.'), $this->_('data'));
-            $answers = array($noData => $noData);
+            // don't export empty data
+            return;
         } else {
             $answers = reset($answers);
         }

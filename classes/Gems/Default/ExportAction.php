@@ -281,7 +281,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      */
     public function handleExport($data)
     {
-        if (isset($data['type'])) {
+        if (isset($data['type']) && !empty($data['sid'])) {
             //Do the logging
             $message = Zend_Json::encode($data);
             Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
