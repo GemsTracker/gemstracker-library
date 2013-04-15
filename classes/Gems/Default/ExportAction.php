@@ -350,7 +350,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 
                 $controller->addMessage($messages);
 
-                if (!empty($files)) {
+                if (!empty($files) && array_key_exists('file', $files) && file_exists(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'])) {
                     // Forward to download action
                     $this->_session->exportFile = $files;
                     $this->_reroute(array('action'=>'download'));

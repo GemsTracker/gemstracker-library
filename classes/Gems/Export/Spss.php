@@ -45,45 +45,23 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export_Spss extends Gems_Export_ExportAbstract
+class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export_ExportBatchInterface
 {
     /**
      * When no other size available in the answermodel, this will be used
      * for the size of alphanumeric types
-     * 
+     *
      * @var int
      */
     public $defaultAlphaSize   = 64;
-    
+
     /**
      * When no other size available in the answermodel, this will be used
      * for the size of numeric types
-     * 
+     *
      * @var int
      */
     public $defaultNumericSize = 5;
-    
-    /**
-     * Set response headers and clean output
-     *
-     * @param string $filename
-     * @return Zend_Controller_Response_Abstract
-     */
-    private function _doHeaders($filename)
-    {
-        $controller = $this->export->controller;
-        $controller->getHelper('layout')->disableLayout();
-        $controller->getHelper('viewRenderer')->setNoRender(true);
-        $response   = $controller->getResponse();
-        $response->clearAllHeaders();
-
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"', true)
-            ->setHeader('Content-type', 'text/plain; charset=UTF-8', true)
-            ->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true)
-            ->setHeader('Pragma', 'public', true);
-
-        return $response;
-    }
 
     public function getDefaults()
     {
@@ -92,15 +70,8 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
 
     public function getFormElements(&$form, &$data)
     {
-        $element = new Zend_Form_Element_Radio('file');
-        $element->setLabel($this->_('Which file'));
-        $element->setMultiOptions(array(
-            'syntax'    => $this->_('syntax'),
-            'data'      => $this->_('data')));
-        $elements[] = $element;
-
         $element    = new MUtil_Form_Element_Exhibitor('help');
-        $element->setValue($this->_('You need both a syntax and a data file. After downloading, open the syntax file in SPSS and modify the line /FILE="filename.dat" to include the full path to your data file. Then choose Run -> All to execute the syntax.'));
+        $element->setValue($this->_('Extract both syntax and data file form the archive. Open the syntax file in SPSS and modify the line /FILE="filename.dat" to include the full path to your data file. Then choose Run -> All to execute the syntax.'));
         $elements[] = $element;
 
         return $elements;
@@ -125,40 +96,94 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
      */
     public function handleExport($data, $survey, $answers, $answerModel, $language)
     {
-        if (isset($data[$this->getName()])) {
-            $options = $data[$this->getName()];
-        } else {
-            $options = array();
-        }
-
-        if (isset($options['file'])) {
-            if ($options['file'] == 'syntax') {
-                $this->handleExportSyntax($data, $survey, $answers, $answerModel, $language);
-            } else {
-                $this->handleExportData($data, $survey, $answers, $answerModel, $language);
-            }
-        }
+        // We only do batch export
+        return;
     }
 
     /**
-     * This method handles the export with the given options for a syntax file
+     * Formatting of strings for SPSS export. Enclose in single quotes and escape single quotes
+     * with a single quote
      *
-     * The method takes care of rendering the right script by using $this->export->controller to
-     * access the controller object.
+     * Example:
+     * This isn't hard to understand
+     * ==>
+     * 'This isn''t hard to understand'
      *
-     * @param array                     $data        The formdata
-     * @param Gems_Tracker_Survey       $survey      The survey object we are exporting
-     * @param array                     $answers     The array of answers
-     * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
-     * @param string                    $language    The language used / to use for the export
+     * @param type $input
+     * @return string
      */
-    public function handleExportData($data, $survey, $answers, $answerModel, $language)
+    public function formatString($input)
     {
-        $filename = $survey->getName() . '.dat';
-        $response = $this->_doHeaders($filename);
+        $output = strip_tags($input);
+        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
+        $output = "'" . $output . "'";
+        return $output;
+    }
 
-        //We should create a model with the transformations we need
-        //think of date translations, numers and strings
+    /**
+     * Make sure the $input fieldname is correct for usage in SPSS
+     *
+     * Should start with alphanum, and contain no spaces
+     *
+     * @param string $input
+     * @return string
+     */
+    public function fixName($input)
+    {
+        if (!preg_match("/^([a-z]|[A-Z])+.*$/", $input)) {
+            $input = "q_" . $input;
+        }
+        $input = str_replace(array(" ", "-", ":", ";", "!", "/", "\\", "'"), array("_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'), $input);
+        return $input;
+    }
+
+    public function handleExportBatch($batch, $filter, $language, $data)
+    {
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
+        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
+
+        if (count($answers) === 0) {
+            $noData = sprintf($this->_('No %s found.'), $this->_('data'));
+            $answers = array($noData => $noData);
+        } else {
+            $answers = reset($answers);
+        }
+
+        $file = 'export-' . md5(time() . rand());
+        
+        // Now create syntax and data file
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', 'w');
+        fclose($f);
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', 'w');
+        fclose($f);        
+
+        // Add as many steps as needed
+        $current = 0;
+        $step = 500;
+        do {
+            $filter['limit']  = $step;
+            $filter['offset'] = $current;
+            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchStepData', $data, $filter, $language, $file);
+            $current = $current + $step;
+        } while ($current < $answerCount);
+        
+        $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchStepSyntax', $data, $filter, $language, $file);
+
+        $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchFinalize', $data, $file);
+    }
+    
+    public function handleExportBatchStepData($data, $filter, $language, $file)
+    {
+        $batch       = $this->_batch;        
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $answers     = $survey->getRawTokenAnswerRows($filter);
+        $answerModel = $survey->getAnswerModel($language);
+
+        //Now add the organization id => name mapping
+        $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
+        $batch->setMessage('export-progress', sprintf($this->_('Exporting records %s and up'), $filter['offset']));
+        
         $answerRow = reset($answers);
         $spssModel = new Gems_Export_ExportModel();
         foreach ($answerRow as $key => $value) {
@@ -194,35 +219,35 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract
             $spssModel->set($key, $options);
         }
         //Now apply the model to the answers
-        $answers                   = new Gems_FormattedData($answers, $spssModel);
+        $answers  = new Gems_FormattedData($answers, $spssModel);
 
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', 'a');
+        
         //And output the data
         foreach ($answers as $answerRow) {
             $resultRow = implode(',', $answerRow);
-            $response->appendBody($resultRow . "\n");
+            fwrite($f, $resultRow . "\n");
         }
-    }
 
-    /**
-     * This method handles the export with the given options for a syntax file
-     *
-     * The method takes care of rendering the right script by using $this->export->controller to
-     * access the controller object.
-     *
-     * @param array                     $data        The formdata
-     * @param Gems_Tracker_Survey       $survey      The survey object we are exporting
-     * @param array                     $answers     The array of answers
-     * @param MUtil_Model_ModelAbstract $answerModel The modified answermodel that includes info about extra attributes
-     * @param string                    $language    The language used / to use for the export
-     */
-    protected function handleExportSyntax($data, $survey, $answers, $answerModel, $language)
+        fclose($f);
+    }
+    
+    public function handleExportBatchStepSyntax($data, $filter, $language, $file)
     {
-        $filename    = $survey->getName() . '.sps';
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
+        $answerModel = $survey->getAnswerModel($language);
+
+        //Now add the organization id => name mapping
+        $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
+        $this->_batch->setMessage('export-progress', sprintf($this->_('Exporting records %s and up'), $filter['offset']));
+
+        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', 'a');
+             
         $filenameDat = $survey->getName() . '.dat';
-        $response    = $this->_doHeaders($filename);
 
         //first output our script
-        $response->appendBody(
+        fwrite($f, 
             "SET UNICODE=ON.
 GET DATA
  /TYPE=TXT
@@ -234,6 +259,8 @@ GET DATA
  /FIRSTCASE=1
  /IMPORTCASE=ALL
  /VARIABLES=");
+        
+        
         $answerRow  = reset($answers);
         $labels     = array();
         $types      = array();
@@ -283,68 +310,59 @@ GET DATA
             if (isset($questions[$key])) {
                 $labels[$key] = $questions[$key];
             }
-            $response->appendBody("\n " . $fixedNames[$key] . ' ' . $type);
+            fwrite($f, "\n " . $fixedNames[$key] . ' ' . $type);
         }
-        $response->appendBody(".\nCACHE.\nEXECUTE.\n");
-        $response->appendBody("\n*Define variable labels.\n");
+        fwrite($f, ".\nCACHE.\nEXECUTE.\n");
+        fwrite($f, "\n*Define variable labels.\n");
         foreach ($labels as $key => $label) {
             $label = $this->formatString($label);
-            $response->appendBody("VARIABLE LABELS " . $fixedNames[$key] . " " . $label . "." . "\n");
+            fwrite($f, "VARIABLE LABELS " . $fixedNames[$key] . " " . $label . "." . "\n");
         }
 
-        $response->appendBody("\n*Define value labels.\n");
+        fwrite($f, "\n*Define value labels.\n");
         foreach ($answerRow as $key => $value) {
             if ($options = $answerModel->get($key, 'multiOptions')) {
-                $response->appendBody('VALUE LABELS ' . $fixedNames[$key]);
+                fwrite($f, 'VALUE LABELS ' . $fixedNames[$key]);
                 foreach ($options as $option => $label) {
                     $label = $this->formatString($label);
                     if ($types[$key] == 'F') {
                         //Numeric
-                        $response->appendBody("\n" . $option . ' ' . $label);
+                        fwrite($f, "\n" . $option . ' ' . $label);
                     } else {
                         //String
-                        $response->appendBody("\n" . '"' . $option . '" ' . $label);
+                        fwrite($f, "\n" . '"' . $option . '" ' . $label);
                     }
                 }
-                $response->appendBody(".\n\n");
+                fwrite($f, ".\n\n");
             }
         }
+        
+        fclose($f);
     }
 
-    /**
-     * Formatting of strings for SPSS export. Enclose in single quotes and escape single quotes
-     * with a single quote
-     *
-     * Example:
-     * This isn't hard to understand
-     * ==>
-     * 'This isn''t hard to understand'
-     *
-     * @param type $input
-     * @return string
-     */
-    public function formatString($input)
+    public function handleExportBatchFinalize($data, $file)
     {
-        $output = strip_tags($input);
-        $output = str_replace(array("'", "\r", "\n"), array("''", ' ', ' '), $output);
-        $output = "'" . $output . "'";
-        return $output;
-    }
-
-    /**
-     * Make sure the $input fieldname is correct for usage in SPSS
-     *
-     * Should start with alphanum, and contain no spaces
-     *
-     * @param string $input
-     * @return string
-     */
-    public function fixName($input)
-    {
-        if (!preg_match("/^([a-z]|[A-Z])+.*$/", $input)) {
-            $input = "q_" . $input;
-        }
-        $input = str_replace(array(" ", "-", ":", ";", "!", "/", "\\", "'"), array("_", "_hyph_", "_dd_", "_dc_", "_excl_", "_fs_", "_bs_", '_qu_'), $input);
-        return $input;
+        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $filename    = $survey->getName() . '.zip';
+        $zipFile     = 'export-' . md5(time() . rand());
+        
+        $zipArchive = new ZipArchive();
+        $zipArchive->open( GEMS_ROOT_DIR . '/var/tmp/' . $zipFile, ZipArchive::CREATE);
+        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', $survey->getName() . '.dat');
+        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', $survey->getName() . '.sps');
+        $zipArchive->close();
+        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat');
+        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps');
+        
+        $files = array();
+        $files['file']      = $zipFile;
+        $files['headers'][] = "Content-Type: application/download";
+        $files['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
+        $files['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
+        $files['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
+        $files['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
+        $files['headers'][] = "Pragma: cache";                          // HTTP/1.0
+        
+        $this->_batch->setMessage('file', $files);        
     }
 }

@@ -51,6 +51,11 @@ interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
      *
      * Normally this will initialize the file to download and set up as much
      * steps as needed and the final job to close the file.
+     * 
+     * To offer a file for download, add a message with the key 'file' to the
+     * batch. The message must be an array of 'headers' that contains an array
+     * of headers to set for the download and 'file' that holds the path to the 
+     * file relative to GEMS_ROOT_DIR . '/var/tmp/'
      *
      * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
      * @param array                     $filter      The filter to use
