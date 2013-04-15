@@ -327,8 +327,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $filter   = $this->_getFilter($data);
             $language = $this->locale->getLanguage();
             
-            $exportClass = $this->export->getExport($data['type']);
-            $exportClass->handleExportBatch($batch, $filter, $language, $data);            
+            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatch', $filter, $language, $data);
             $batch->autoStart = true;
         }
         

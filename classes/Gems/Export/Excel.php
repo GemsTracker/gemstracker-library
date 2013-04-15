@@ -122,7 +122,8 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
      * @param string                    $language    The language used / to use for the export
      * @param array                     $data        The formdata
      */
-    public function handleExportBatch($batch, $filter, $language, $data) {
+    public function handleExportBatch($filter, $language, $data) {
+        $batch = $this->_batch;
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
         $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
         $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response

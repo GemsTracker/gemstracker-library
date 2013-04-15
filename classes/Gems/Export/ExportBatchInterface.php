@@ -57,12 +57,11 @@ interface Gems_Export_ExportBatchInterface extends Gems_Export_ExportInterface
      * of headers to set for the download and 'file' that holds the path to the 
      * file relative to GEMS_ROOT_DIR . '/var/tmp/'
      *
-     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
      * @param array                     $filter      The filter to use
      * @param string                    $language    The language used / to use for the export
      * @param array                     $data        The formdata
      */
-    public function handleExportBatch($batch, $filter, $language, $data);
+    public function handleExportBatch($filter, $language, $data);
         
     /**
      * Set the batch to be used by this source

@@ -883,7 +883,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
         
         $p = new Zend_Paginator_Adapter_DbSelect($select);
-        MUtil_Echo::track($p->getCountSelect()->__toString());
         $count = $p->getCountSelect()->query()->fetchColumn();
         
         return $count;
