@@ -518,7 +518,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             return $this->loadUser(self::USER_PROJECT, $organization, $login_name);
         }
 
-        if ((null == $login_name) || (null == $organization)) {
+        if ((null == $login_name) || (null == $organization) || (! intval($organization))) {
             return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
         }
 

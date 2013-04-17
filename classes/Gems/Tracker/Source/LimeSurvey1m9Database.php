@@ -91,6 +91,13 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     private $_languageMap;
 
     /**
+     * The default text length attribute fields should have.
+     *
+     * @var int
+     */
+    protected $attributeSize = 255;
+
+    /**
      *
      * @var Zend_Locale
      */
@@ -130,25 +137,44 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     {
         $missingFields = array();
 
-        $lengths = array();
-        if (preg_match('/\(([^\)]+)\)/', $tokenTable['token']['Type'], $lengths)) {
-            $tokenLength = $lengths[1];
-        } else {
-            $tokenLength = 0;
-        }
+        $tokenLength = $this->_extractFieldLength($tokenTable['token']['Type']);
         $token_library = $this->tracker->getTokenLibrary();
         if ($tokenLength < $token_library->getLength()) {
             $tokenLength = $token_library->getLength();
-            $missingFields['token'] = "CHANGE COLUMN `token` `token` varchar($tokenLength) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
+            $missingFields['token'] = 'CHANGE COLUMN `token` `token` varchar(' . $tokenLength .
+                    ") CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
         }
 
         foreach ($this->_attributeMap as $name => $field) {
             if (! isset($tokenTable[$field])) {
-                $missingFields[$field] = "ADD $field varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
+                $missingFields[$field] = 'ADD ' . $field . ' varchar(' . $this->attributeSize .
+                        ") CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
+            } else {
+                $attrLength = $this->_extractFieldLength($tokenTable[$field]['Type']);
+                if ($attrLength < $this->attributeSize) {
+                    $missingFields[$field] = "CHANGE COLUMN `$field` `$attrLength` varchar(" .
+                            $this->attributeSize .
+                            ") CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL";
+                }
             }
         }
 
         return $missingFields;
+    }
+
+    /**
+     *
+     * @param string $typeDescr E.g. int(11) or varchar(36)
+     * @return int In case 11 or 36
+     */
+    private function _extractFieldLength($typeDescr)
+    {
+        $lengths = array();
+        if (preg_match('/\(([^\)]+)\)/', $typeDescr, $lengths)) {
+            return $lengths[1];
+        }
+
+        return 0;
     }
 
     /**
@@ -159,10 +185,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      */
     protected function _fillAttributeMap(Gems_Tracker_Token $token)
     {
-        $values[$this->_attributeMap['respondentid']]   = (string) $token->getRespondentId();
-        $values[$this->_attributeMap['organizationid']] = (string) $token->getOrganizationId();
-        $values[$this->_attributeMap['consentcode']]    = (string) $token->getConsentCode();
-        $values[$this->_attributeMap['resptrackid']]    = (string) $token->getRespondentTrackId();
+        $values[$this->_attributeMap['respondentid']]   =
+                substr($token->getRespondentId(), 0, $this->attributeSize);
+        $values[$this->_attributeMap['organizationid']] =
+                substr($token->getOrganizationId(), 0, $this->attributeSize);
+        $values[$this->_attributeMap['consentcode']]    =
+                substr($token->getConsentCode(), 0, $this->attributeSize);
+        $values[$this->_attributeMap['resptrackid']]    =
+                substr($token->getRespondentTrackId(), 0, $this->attributeSize);
 
         return $values;
     }
@@ -381,6 +411,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
             // SELECT sid, surveyls_title AS short_title, surveyls_description AS description, active, datestamp, ' . $this->_anonymizedField . '
             $select = $lsDb->select();
+            // 'alloweditaftercompletion' ?
             $select->from($this->_getSurveysTableName(), array('active', 'datestamp', 'tokenanswerspersistence', $this->_anonymizedField))
                     ->joinInner(
                             $this->_getSurveyLanguagesTableName(),
@@ -829,7 +860,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $sourceSurveyId = $this->_getSid($surveyId);
         }
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
-        
+
         //Now process the filters
         $lsSurveyTable = $this->_getSurveyTableName($sourceSurveyId);
         $tokenField    = $lsSurveyTable . '.token';
@@ -870,10 +901,10 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return array();
     }
-    
+
     /**
      * Returns the recordcount for a given filter
-     * 
+     *
      * @param array $filter filter array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
@@ -881,16 +912,16 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      */
     public function getRawTokenAnswerRowsCount(array $filter, $surveyId, $sourceSurveyId = null) {
         $select = $this->getRawTokenAnswerRowsSelect($filter, $surveyId, $sourceSurveyId);
-        
+
         $p = new Zend_Paginator_Adapter_DbSelect($select);
         $count = $p->getCountSelect()->query()->fetchColumn();
-        
+
         return $count;
     }
-    
+
     /**
      * Get the select object to use for RawTokenAnswerRows
-     * 
+     *
      * @param array $filter
      * @param type $surveyId
      * @param type $sourceSurveyId
@@ -937,7 +968,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         // Add limit / offset to select and remove from filter
         $this->filterLimitOffset($filter, $select);
-        
+
         foreach ($filter as $field => $values) {
             $field = $lsDb->quoteIdentifier($field);
             if (is_array($values)) {

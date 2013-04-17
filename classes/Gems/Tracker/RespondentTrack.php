@@ -371,6 +371,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $this->_activeTokens[$token->getRoundId()] = $token;
         }
 
+        // Nothing to find
+        if (! $roundId) {
+            return null;
+        }
+
         // Use array_key_exists since there may not be a valid round
         if (! array_key_exists($roundId, $this->_activeTokens)) {
             $tokenSelect = $this->tracker->getTokenSelect();

@@ -125,6 +125,21 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     protected $locale;
 
     /**
+     * The size of the result field, calculated from meta data when null,
+     * but can be set by project specific class to fixed value
+     *
+     * @var int The maximum character length of the result field
+     */
+    protected $resultFieldLength = null;
+
+    /**
+     * Cache for storing the calculation of the length
+     *
+     * @var int the character length of the result field
+     */
+    protected static $staticResultFieldLength = null;
+
+    /**
      *
      * @var Gems_Tracker_Survey
      */
@@ -210,6 +225,29 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                 throw new Gems_Exception("Respondent data missing for token $token.");
             }
         }
+    }
+
+    /**
+     * The maximum length of the result field
+     *
+     * @return int
+     */
+    protected function _getResultFieldLength()
+    {
+        if (null !== $this->resultFieldLength) {
+            return $this->resultFieldLength;
+        }
+
+        if (null !== self::$staticResultFieldLength) {
+            $this->resultFieldLength = self::$staticResultFieldLength;
+            return $this->resultFieldLength;
+        }
+
+        $model = new MUtil_Model_TableModel('gems__tokens');
+        self::$staticResultFieldLength = $model->get('gto_result', 'maxlength');
+        $this->resultFieldLength = self::$staticResultFieldLength;
+
+        return $this->resultFieldLength;
     }
 
     /**
@@ -500,6 +538,11 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                             // not casting to strings means e.g. float results always result in
                             // an update, even when they did not change.
                             $values['gto_result'] = (string) $rawAnswers[$resultField];
+
+                            // Chunk of text that is too long
+                            if ($len = $this->_getResultFieldLength()) {
+                                $values['gto_result'] = substr($values['gto_result'], 0, $len);
+                            }
                         }
                     }
                 }
