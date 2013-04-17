@@ -75,6 +75,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     protected $_sourceClasses = array(
         'LimeSurvey1m9Database'  => 'Lime Survey 1.90 DB',
         'LimeSurvey1m91Database' => 'Lime Survey 1.91+ DB',
+        'LimeSurvey2m00Database' => 'Lime Survey 2.00 DB',
         );
 
     /**
@@ -337,7 +338,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     {
         return $this->getTokenLibrary()->filter($tokenId);
     }
-    
+
     /**
      *
      * @param mixed $respTrackData Track id or array containing trackdata
@@ -360,9 +361,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      * Get all tracks for a respondent
-     * 
+     *
      * Specify the optional $order to sort other than on start date
-     * 
+     *
      * @param int $userId
      * @param int $organizationId
      * @param mixed $order The column(s) and direction to order by

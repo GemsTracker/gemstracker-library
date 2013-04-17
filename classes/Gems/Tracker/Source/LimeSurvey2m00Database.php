@@ -28,63 +28,53 @@
  *
  *
  * @package    Gems
- * @subpackage User
- * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
 /**
+ * Class description of LimeSurvey1m91Database
  *
+ * Difference with 1.9 version:
+ *   - private field was renamed to anonymized
  *
  * @package    Gems
- * @subpackage User
+ * @subpackage Tracker
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.6.1
  */
-class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_LimeSurvey1m91Database
 {
     /**
-     * Returns an initialized Zend_Auth_Adapter_Interface
+     * Returns a list of field names that should be set in a newly inserted token.
      *
-     * @param Gems_User_User $user
-     * @param string $password
-     * @return Zend_Auth_Adapter_Interface
+     * Adds the fields without default new in 2.00
+     * 
+     * @param Gems_Tracker_Token $token
+     * @return array Of fieldname => value type
      */
-    public function getAuthAdapter(Gems_User_User $user, $password)
+    protected function _fillAttributeMap(Gems_Tracker_Token $token)
     {
-        return false;
+        $values = parent::_fillAttributeMap($token);
+
+        return self::addnewAttributeDefaults($values);
     }
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Adds the fields without default new in 2.00
      *
-     * @param string $login_name
-     * @param int $organization
-     * @return array Of data to fill the user with.
+     * @param Gems_Tracker_Token $token
+     * @return array Of fieldname => value type
      */
-    public function getUserData($login_name, $organization)
+    public static function addnewAttributeDefaults(array $values)
     {
-        return array(
-            'user_login'       => $login_name,
-            'user_name'        => $login_name,
-            'user_base_org_id' => $organization,
-            'user_active'      => false,
-            'user_role'        => 'nologin',
-            );
-    }
+        // Not really attributes, but htey need a value
+        $values['participant_id'] = '';
+        $values['blacklisted']    = '';
 
-    /**
-     * Returns true when users using this definition are staff members.
-     *
-     * Used only when the definition does not return a user_staff field.
-     *
-     * @return boolean
-     */
-    public function isStaff()
-    {
-        return false;
+        return $values;
     }
 }
