@@ -390,10 +390,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         if ($this->request->isPost()) {
             $this->formData = $this->request->getPost() + $this->formData;
         } else {
-            $model = $this->getModel();
-
             // Assume that if formData is set it is the correct formData
             if (! $this->formData)  {
+                $model = $this->getModel();
+
                 if ($this->createData) {
                     $this->formData = $model->loadNew();
                 } else {
@@ -401,6 +401,15 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
 
                     if (! $this->formData) {
                         throw new Zend_Exception($this->_('Unknown edit data requested'));
+                    }
+                }
+
+                // Check for values hardcoded in the model
+                if ($col = $model->getCol('value')) {
+                    foreach ($col as $name => $value) {
+                        if (! isset($this->formData[$name])) {
+                            $this->formData[$name] = $value;
+                        }
                     }
                 }
             }
