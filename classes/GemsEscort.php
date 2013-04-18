@@ -638,8 +638,9 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initZFDebug()
     {
         if ((APPLICATION_ENV === 'production') ||
+                (! isset($_SERVER['HTTP_USER_AGENT'])) ||
                 (false !== strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.'))) {
-            // Never on on production systems, never for IE 6
+            // Never on on production systems, never on command line, never for IE 6
             return;
         }
 
