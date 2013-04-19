@@ -403,15 +403,6 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                         throw new Zend_Exception($this->_('Unknown edit data requested'));
                     }
                 }
-
-                // Check for values hardcoded in the model
-                if ($col = $model->getCol('value')) {
-                    foreach ($col as $name => $value) {
-                        if (! isset($this->formData[$name])) {
-                            $this->formData[$name] = $value;
-                        }
-                    }
-                }
             }
         }
     }

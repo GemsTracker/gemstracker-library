@@ -916,6 +916,33 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
+     * Creates new items - in memory only.
+     *
+     * @param int $count When null a single new item is return, otherwise a nested array with $count new items
+     * @return array Nested when $count is not null, otherwise just a simple array
+     */
+    public function loadNew($count = null)
+    {
+        $empty = array();
+        foreach ($this->getCol('table') as $name => $table) {
+            $empty[$name] = $this->get($name, 'default');
+        }
+        $empty = $this->_filterDataAfterLoad($empty, true);
+
+        // Return only a single row when no count is specified
+        if (null === $count) {
+            return $empty;
+        }
+
+        $empties = array();
+        for ($i = 0; $i < $count; $i++) {
+            $empties[] = $empty;
+        }
+
+        return $empties;
+    }
+
+    /**
      * Returns a Zend_Paginator for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
