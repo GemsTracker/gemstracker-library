@@ -123,15 +123,21 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
                 // will add the existing parameters without escaping.
                 $request = $this->getRequest();
 
-                foreach ($request->getQuery() as $key => $value) {
+                if ($request instanceof Zend_Controller_Request_Http) {
+                    $old = $request->getParamSources();
+                    $request->setParamSources(array('_GET'));
+                }
+                foreach ($request->getParams() as $key => $value) {
                     if (!array_key_exists($key, $url_parameters)) {
-                        // E.g. Exceptions are stored as parameters :(
-                        if (is_array($value)) {
-                            $url_parameters[$key] = array_map('rawurlencode', $value);
-                        } else if (! is_object($value)) {
+                        // E.g. Exceptions are stored as parameters
+                        // and posted arrays can be a problem as well
+                        if (is_scalar($value)) {
                             $url_parameters[$key] = rawurlencode($value);
                         }
                     }
+                }
+                if ($request instanceof Zend_Controller_Request_Http) {
+                    $request->setParamSources($old);
                 }
             }
 

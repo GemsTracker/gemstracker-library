@@ -61,13 +61,13 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
      * @var Zend_Locale
      */
     public $locale;
-    
+
     /**
      *
      * @var Gems_Util_RequestCache
      */
     public $requestCache;
-    
+
     /**
      *
      * @var Zend_Session_Namespace
@@ -81,7 +81,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         //Add this controller to the export so it can render view when needed
         $this->export->controller = $this;
-        
+
         $this->_session = GemsEscort::getInstance()->session;
     }
 
@@ -128,14 +128,31 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             //$filter['organizationid'] = '-1';
         }
         $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
-        
+
         // Gems_Tracker::$verbose = true;
         return $filter;
     }
-    
+
+    public function downloadAction()
+    {
+        $this->view->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $files = $this->_session->exportFile;
+        foreach($files['headers'] as $header) {
+            header($header);
+        }
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        readfile(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        // Now clean up the file
+        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        exit;
+    }
+
     /**
      * Modify request to hold a cache
-     * 
+     *
      * @return array
      */
     public function getCachedRequestData()
@@ -285,10 +302,10 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             //Do the logging
             $message = Zend_Json::encode($data);
             Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
-            
+
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);
-            
+
             if ($exportClass instanceof Gems_Export_ExportBatchInterface) {
                 // Clear possible existing batch
                 $batch = $this->loader->getTaskRunnerBatch('export_data');
@@ -296,7 +313,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 // Have a batch handle the export
                 $this->_session->exportParams = $data;
                 $this->_reroute(array('action'=>'handle-export'));
-                
+
             } else {
                 // If not possible / available, handle direct
                 $language    = $this->locale->getLanguage();
@@ -316,7 +333,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             }
         }
     }
-    
+
     public function handleExportAction()
     {
         $this->initHtml();
@@ -326,17 +343,17 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $data     = $this->_session->exportParams;
             $filter   = $this->_getFilter($data);
             $language = $this->locale->getLanguage();
-            
+
             $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatch', $filter, $language, $data);
             $batch->autoStart = true;
         }
-        
+
         $title = $this->_('Export');
         // Not using batchrunner since we need something else
         if ($batch->run($this->getRequest())) {
             exit;
         } else {
-            $controller = $this;          
+            $controller = $this;
             $controller->html->h3($title);
 
             if ($batch->isFinished()) {
@@ -346,7 +363,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                     unset($messages['file']);
                     unset($messages['export-progress']);
                 }
-                
+
                 $controller->addMessage($messages);
 
                 if (!empty($files) && array_key_exists('file', $files) && file_exists(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'])) {
@@ -356,7 +373,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 }
             } else {
                 if ($batch->count()) {
-                    $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));                   
+                    $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
                 } else {
                     $controller->html->pInfo($controller->_('Nothing to do.'));
                 }
@@ -364,29 +381,11 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             }
         }
     }
-    
-    public function downloadAction()
-    {
-        $this->view->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-        $files = $this->_session->exportFile;
-        foreach($files['headers'] as $header) {
-            header($header);
-        }
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
-        readfile(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
-        // Now clean up the file
-        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
-        exit;
-    }
-           
 
     public function indexAction()
     {
         $this->initHtml();
-        
+
         $data = $this->getCachedRequestData();
 
         //Hacked around to get a self-refreshing form, quite hardcoded but fine for now
