@@ -153,6 +153,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             $bridge->setRepeater($data);
             $bridge->setSort($sort);
 
+            $tr = $bridge->tbody()->tr();
+            $tr->appendAttrib('class', $bridge->row_class);
+
             // Add show-track button if allowed, otherwise show, again if allowed
             if ($menuItem = $this->findAllowedMenuItem('show-track', 'show')) {
                 $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
