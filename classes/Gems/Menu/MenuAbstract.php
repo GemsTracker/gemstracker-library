@@ -427,7 +427,9 @@ abstract class Gems_Menu_MenuAbstract
             } else {
                 $infoPage = $this->addPage($label, 'pr.project', 'project-tracks');
                 $infoPage->addAutofilterAction();
-                $infoPage->addShowAction('pr.project');
+                $trackSurveys = $infoPage->addShowAction('pr.project');
+                $trackSurveys->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
+                        ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::SURVEY_ID, 'gsu_id_survey');
             }
         }
 

@@ -420,7 +420,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     ->where('sid = ?', $sourceSurveyId);
             $lsSurvey = $lsDb->fetchRow($select);
 
-            $surveyor_title = substr($lsSurvey['surveyls_title'], 0, 100);
+            $surveyor_title = substr(MUtil_Html::removeMarkup($lsSurvey['surveyls_title']), 0, 100);
             $surveyor_status = '';
 
             // ANONIMIZATION
@@ -534,7 +534,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
                 $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
-            $values['gsu_survey_description'] = strtr(substr($lsSurvey['surveyls_description'], 0, 100), "\xA0\xC2", '  ');
+            $values['gsu_survey_description'] = strtr(substr(MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
         }
 

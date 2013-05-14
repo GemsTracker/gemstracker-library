@@ -837,82 +837,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     }
 
     /**
-     * Mimics strip_tags but allows to strip the content of certain tags (like script) too
-     *
-     * function copied from a comment http://www.php.net/manual/en/function.strip-tags.php#97386
-     *
-     * @param string $s             The string to strip
-     * @param string $keepTags      Pipe | separated tags to keep
-     * @param string $removeContent Pipe | separated tags from which contect will be stripped
-     * @return string
-     */
-    private function removeHtml($s, $keepTags = '' , $removeContent = 'script|style|noframes|select|option'){
-        /**///prep the string
-        $s = ' ' . $s;
-
-        /**///initialize keep tag logic
-        if(strlen($keepTags) > 0){
-            $k = explode('|', $keepTags);
-            for($i=0;$i<count($k);$i++){
-                $s = str_replace('<' . $k[$i] . ' ', '[{(' . $k[$i] . ' ', $s); // Tag name followed by space
-                $s = str_replace('<' . $k[$i] . '>', '[{(' . $k[$i] . '>', $s); // Tag name followed by clossing bracket
-                $s = str_replace('<' . $k[$i] . '/>', '[{(' . $k[$i] . '/>', $s); // Stand alone tag
-                $s = str_replace('</' . $k[$i],'[{(/' . $k[$i],$s);
-            }
-        }
-
-        //begin removal
-        /**///remove comment blocks
-        while(stripos($s,'<!--') > 0){
-            $pos[1] = stripos($s,'<!--');
-            $pos[2] = stripos($s,'-->', $pos[1]);
-            $len[1] = $pos[2] - $pos[1] + 3;
-            $x = substr($s,$pos[1],$len[1]);
-            $s = str_replace($x,'',$s);
-        }
-
-        /**///remove tags with content between them
-        if(strlen($removeContent) > 0){
-            $e = explode('|', $removeContent);
-            for($i=0;$i<count($e);$i++){
-                while(stripos($s,'<' . $e[$i]) > 0){
-                    $len[1] = strlen('<' . $e[$i]);
-                    $pos[1] = stripos($s,'<' . $e[$i]);
-                    $pos[2] = stripos($s,$e[$i] . '>', $pos[1] + $len[1]);
-                    $len[2] = $pos[2] - $pos[1] + $len[1];
-                    $x = substr($s,$pos[1],$len[2]);
-                    $s = str_replace($x,'',$s);
-                }
-            }
-        }
-
-        /**///remove remaining tags
-        $start = 0;
-        while(stripos($s,'<', $start) > 0){
-            $pos[1] = stripos($s,'<', $start);
-            $pos[2] = stripos($s,'>', $pos[1]);
-            if (!$pos[2]) {
-                //No closing tag! Skip this one
-                $start = $pos[1]+1;
-            } else {
-                $len[1] = $pos[2] - $pos[1] + 1;
-                $x = substr($s,$pos[1],$len[1]);
-                $s = str_replace($x,'',$s);
-            }
-        }
-
-        if (strlen($keepTags) > 0) {
-            /**///finalize keep tag
-            for($i=0;$i<count($k);$i++){
-                $s = str_replace('[{(' . $k[$i],'<' . $k[$i],$s);
-                $s = str_replace('[{(/' . $k[$i],'</' . $k[$i],$s);
-            }
-        }
-
-        return trim($s);
-    }
-
-    /**
      * Removes all markup from input
      *
      * @param string $text Input possibly containing html
@@ -920,6 +844,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     public function removeMarkup($text)
     {
-        return $this->removeHtml($text, 'b|i|u|em|strong');
+        return MUtil_String::beforeChars(MUtil_Html::removeMarkup($text, 'b|i|u|em|strong'), '{');
     }
 }
