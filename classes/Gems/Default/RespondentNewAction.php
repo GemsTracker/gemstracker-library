@@ -110,6 +110,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     protected $showParameters = array(
         'baseUrl'        => 'getItemUrlArray',
+        'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
         'respondentData' => 'getRespondentData',
     );
@@ -268,9 +269,11 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $phonesep = MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, MUtil_Html::raw('&#9743; '));
         $citysep  = MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
 
-        if ($this->loader->getCurrentUser()->hasPrivilege('pr.respondent.multiorg')) {
+        $user = $this->loader->getCurrentUser();
+        if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
             $columns[] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
         } else {
+            $model->addFilter(array('gr2o_id_organization' => $user->getCurrentOrganizationId()));
             $columns[] = array('gr2o_patient_nr', $br, 'gr2o_opened');
         }
         $columns[] = array('name',            $br, 'grs_email');
@@ -320,6 +323,25 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
             MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1),
             MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2)
                 );
+    }
+
+    /**
+     * The organisations whose tokens are shown.
+     *
+     * When true: show tokens for all organisations, false: only current organisation, array => those organisations
+     *
+     * @return boolean|array
+     */
+    public function getOtherOrgs()
+    {
+        // Do not show data from other orgs
+        return false;
+
+        // Do show data from all other orgs
+        // return true;
+
+        // Return the organisations the user is allowed to see.
+        // return array_keys($this->loader->getCurrentUser()->getAllowedOrganizations());
     }
 
     /**

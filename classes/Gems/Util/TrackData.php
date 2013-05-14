@@ -279,4 +279,19 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
         return $dateFields;
     }
+
+    /**
+     * Returns title of the track.
+     *
+     * @param int $trackId
+     * @return string
+     */
+    public function getTrackTitle($trackId)
+    {
+        $tracks = $this->getAllTracks();
+
+        if ($tracks && isset($tracks[$trackId])) {
+            return $tracks[$trackId];
+        }
+    }
 }

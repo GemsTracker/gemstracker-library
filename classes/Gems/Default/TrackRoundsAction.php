@@ -224,7 +224,8 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
 
     public function getTopicTitle()
     {
-        return $this->_('Rounds');
+        return $this->_('Rounds') . ' ' .
+            $this->util->getTrackData()->getTrackTitle($this->_getIdParam());
     }
 
     public function isConfirmedItem($title, $question = null, $info = null)

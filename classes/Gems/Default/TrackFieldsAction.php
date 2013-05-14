@@ -172,7 +172,9 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
 
     public function getTopicTitle()
     {
-        return $this->_('Fields');
+
+        return $this->_('Fields') . ' ' .
+            $this->util->getTrackData()->getTrackTitle($this->_getIdParam());
     }
 
     public function init()
