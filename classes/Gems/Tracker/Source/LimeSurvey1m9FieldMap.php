@@ -617,7 +617,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             // MUtil_Echo::track($field);
             if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
-                $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['question']));
+                $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['question']));
             }
 
             // Juggle the labels for sub-questions etc..
@@ -629,9 +629,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeHtml($field['sq_question']), $this->removeHtml($field['sq_question1'])));
+                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeMarkup($field['sq_question']), $this->removeMarkup($field['sq_question1'])));
                 } else {
-                    $tmpres['label'] = MUtil_Html::raw($this->removeHtml($field['sq_question']));
+                    $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['sq_question']));
                 }
                 $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
