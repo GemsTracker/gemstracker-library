@@ -75,6 +75,22 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
         $bridge->addCheckBox('gtf_readonly', 'description', $this->_('Check this box if this field is always set by code instead of the user.'));
     }
 
+
+    /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('tracks'));
+        return true;
+    }
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *

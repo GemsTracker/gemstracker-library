@@ -75,6 +75,21 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
+     * Hook to perform action after a record (with changes) was saved
+     *
+     * As the data was already saved, it can NOT be changed anymore
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @return boolean  True when you want to display the default 'saved' messages
+     */
+    public function afterSave(array $data, $isNew)
+    {
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'rounds', 'tracks'));
+        return true;
+    }
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.

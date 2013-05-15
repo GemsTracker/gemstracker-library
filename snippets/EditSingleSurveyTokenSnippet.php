@@ -87,6 +87,12 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         $bridge->addExhibitor('gsu_survey_name');
         $bridge->addExhibitor('ggp_name');
 
+        /*
+        $bridge->addSelect('to_existing_track', 'label', $this->_('Existing track'), 'multiOptions',
+                $this->util->getR);
+         * 
+         */
+
         if ($this->trackEngine) {
             $elements = $this->trackEngine->getFieldsElements();
 

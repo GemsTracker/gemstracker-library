@@ -47,6 +47,32 @@
 class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 {
     /**
+     * When displaying tokens for a respondent only those of
+     * the current organization should be shown.
+     * /
+    const SEE_CURRENT_ONLY = 1;
+
+    /**
+     * When displaying tokens for a respondent all tokens from all organizations
+     * should be shown.
+     * /
+    const SEE_EVERYTHING = 2;
+
+    /**
+     * When displaying tokens for a respondent all tokens from organizations
+     * accessible by the user should be shown.
+     * /
+    const SEE_ALL_ACCESSIBLE = 3;
+
+    /**
+     * Determine what to show when displaying tokens for a respondent.
+     * The default is only those of the current organization.
+     *
+     * @var int One of the self::SEE_ constants
+     * /
+    public $accessMode = self::SEE_CURRENT_ONLY;
+
+    /**
      *
      * @var Zend_Cache_Core
      */
@@ -60,46 +86,15 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var Zend_Translate
      */
     protected $translate;
-
-    /*
-    public function getStartDates()
-    {
-        $db = $this->db;
-        $t  = $this->translate;
-
-        $table = new Zend_DB_Table('gems__respondents');
-
-        $lq = Gems_Util::decodeHtml('&laquo;');
-        $rq = Gems_Util::decodeHtml('&raquo;');
-        $dates[''] = $lq . $t->_('manual assignment') . $rq;
-        $dates['gtr_start_date'] = $lq . $t->_('earliest date') . $rq;
-        $dates['grs_created'] = $lq . $t->_('respondent creation') . $rq;
-
-        foreach ($table->info('metadata') as $field) {
-            if ('date' === strtolower($field['DATA_TYPE'])) {
-                $name = $field['COLUMN_NAME'];
-                $dates[$name] = $t->_($name);
-            }
-        }
-
-        return $dates;
-    } // */
-
-    /*
-    public function getActiveSurveys()
-    {
-        static $surveys;
-
-        if (! $surveys) {
-            $surveys = $this->util->getTranslated()->getEmptyDropdownArray();
-            $surveys = $surveys + $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys WHERE gsu_active = 1 AND gsu_surveyor_active = 1 ORDER BY gsu_survey_name');
-        }
-
-        return $surveys;
-    } // */
 
 
     /**
@@ -109,12 +104,20 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getAllRounds()
     {
-        static $rounds;
-        if (! $rounds) {
-            $rounds = $this->db->fetchPairs("SELECT gro_id_round, CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey ORDER BY gro_id_order");
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $rounds;
+        $select = "SELECT gro_id_round,
+                        CONCAT(gro_id_order, ' - ', SUBSTR(gsu_survey_name, 1, 80)) AS name
+                    FROM gems__rounds INNER JOIN gems__surveys ON gro_id_survey = gsu_id_survey
+                    ORDER BY gro_id_order";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('rounds', 'surveys'));
+        return $results;
     }
 
     /**
@@ -125,13 +128,17 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getAllSurveys()
     {
-        static $surveys;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! $surveys) {
-            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name');
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $surveys;
+        $select = "SELECT gsu_id_survey, gsu_survey_name FROM gems__surveys ORDER BY gsu_survey_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys'));
+        return $results;
     }
 
     /**
@@ -142,20 +149,24 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getAllSurveysAndDescriptions()
     {
-        static $surveys;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! $surveys) {
-            $surveys = $this->db->fetchPairs('SELECT gsu_id_survey,
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = 'SELECT gsu_id_survey,
             	CONCAT(
             		LEFT(CONCAT_WS(
             			" - ", gsu_survey_name, CASE WHEN LENGTH(TRIM(gsu_survey_description)) = 0 THEN NULL ELSE gsu_survey_description END
             		), 50),
         			CASE WHEN gsu_active = 1 THEN " (' . $this->translate->_('Active') . ')" ELSE " (' . $this->translate->_('Inactive') . ')" END
     			)
-            	FROM gems__surveys ORDER BY gsu_survey_name');
-        }
+            	FROM gems__surveys ORDER BY gsu_survey_name';
 
-        return $surveys;
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys'));
+        return $results;
     }
 
     /**
@@ -164,13 +175,17 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getAllTracks()
     {
-        static $tracks;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! $tracks) {
-            $tracks = $this->db->fetchPairs('SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name');
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $tracks;
+        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('tracks'));
+        return $results;
     }
 
     /**
@@ -193,6 +208,14 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+    public function getRespondentTokenFilter($respId, $orgId = null)
+    {
+        if (null === $orgId) {
+            $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+        }
+    } // */
+
+    /**
      * Returns array (id => name) of all ronds in a track, sorted by order
      *
      * @param int $trackId
@@ -209,13 +232,17 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getSteppedTracks()
     {
-        static $tracks;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! $tracks) {
-            $tracks = $this->db->fetchPairs("SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name");
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $tracks;
+        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('tracks'));
+        return $results;
     }
 
     /**
@@ -267,17 +294,20 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      */
     public function getTracksDateFields()
     {
-        static $dateFields;
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
-        if (! is_array($dateFields)) {
-            $dateFields = $this->db->fetchPairs("SELECT gtf_id_field, gtf_field_name FROM gems__track_fields WHERE gtf_field_type = 'date' ORDER BY gtf_field_name");
-
-            if (! $dateFields) {
-                $dateFields = array();
-            }
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
         }
 
-        return $dateFields;
+        $select = "SELECT gtf_id_field, gtf_field_name
+                    FROM gems__track_fields
+                    WHERE gtf_field_type = 'date'
+                    ORDER BY gtf_field_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('tracks'));
+        return $results;
     }
 
     /**
