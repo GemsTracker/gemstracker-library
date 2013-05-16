@@ -49,19 +49,19 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     /**
      * When displaying tokens for a respondent only those of
      * the current organization should be shown.
-     * /
+     */
     const SEE_CURRENT_ONLY = 1;
 
     /**
      * When displaying tokens for a respondent all tokens from all organizations
      * should be shown.
-     * /
+     */
     const SEE_EVERYTHING = 2;
 
     /**
      * When displaying tokens for a respondent all tokens from organizations
      * accessible by the user should be shown.
-     * /
+     */
     const SEE_ALL_ACCESSIBLE = 3;
 
     /**
@@ -69,7 +69,7 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
      * The default is only those of the current organization.
      *
      * @var int One of the self::SEE_ constants
-     * /
+     */
     public $accessMode = self::SEE_CURRENT_ONLY;
 
     /**
@@ -208,6 +208,10 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @param type $respId
+     * @param type $orgId
+     */
     public function getRespondentTokenFilter($respId, $orgId = null)
     {
         if (null === $orgId) {

@@ -50,9 +50,20 @@
  */
 class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 {
-    const SSN_HASH = 0;
-    const SSN_HIDE = 1;
-    const SSN_OPEN = 2;
+    /**
+     * Store the SSN hashed in the database and display only '*****'
+     */
+    const SSN_HASH = 1;
+
+    /**
+     * Do not use the SSN
+     */
+    const SSN_HIDE = 2;
+
+    /**
+     * Store the SSN as is and display the value.
+     */
+    const SSN_OPEN = 4;
 
     /**
      * Determines the algorithm used to hash the social security number
