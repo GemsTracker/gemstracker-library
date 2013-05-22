@@ -638,9 +638,8 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initZFDebug()
     {
         if ((APPLICATION_ENV === 'production') ||
-                (! isset($_SERVER['HTTP_USER_AGENT'])) ||
                 (false !== strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.'))) {
-            // Never on on production systems, never on command line, never for IE 6
+            // Never on on production systems, never for IE 6
             return;
         }
 
@@ -722,7 +721,7 @@ class GemsEscort extends MUtil_Application_Escort
             $last = array_pop($path);
 
             // Only display when there is a path of more than one step
-            if ($path) {
+            if ($path || (isset($args['always']) && $args['always'])) {
                 $div = MUtil_Html::create()->div($args + array('id' => 'crumbs'));
                 $content = $div->seq();
                 $content->setGlue(MUtil_Html::raw($this->_(' > ')));
@@ -734,7 +733,9 @@ class GemsEscort extends MUtil_Application_Escort
                     $content->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
                 }
 
-                $content->append($last->get('label'));
+                if ($last) {
+                    $content->append($last->get('label'));
+                }
 
                 return $div;
             }
@@ -884,26 +885,6 @@ class GemsEscort extends MUtil_Application_Escort
     }
 
     /**
-     * Function called if specified in the Project.ini layoutPrepare section before
-     * the layout is drawn, but after the rest of the program has run it's course.
-     *
-     * @return mixed If null nothing is set, otherwise the name of
-     * the function is used as Zend_View variable name.
-     */
-    protected function _layoutMenuHtml()
-    {
-        // ACL && Menu
-        if ($this->menu && $this->menu->isVisible()) {
-
-            // Make sure the actual $request and $controller in use at the end
-            // of the dispatchloop is used and make Zend_Navigation object
-            return $this->menu->render($this->view);
-        }
-
-        return null;
-    }
-
-    /**
      * Display either a link to the login screen or displays the name of the current user
      * and a logoff link.
      *
@@ -934,6 +915,60 @@ class GemsEscort extends MUtil_Application_Escort
 
             return $div;
         }
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as Zend_View variable name.
+     */
+    protected function _layoutMenuActiveBranch()
+    {
+        // ACL && Menu
+        if ($this->menu && $this->menu->isVisible()) {
+            return $this->menu->toActiveBranchElement();
+        }
+
+        return null;
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as Zend_View variable name.
+     */
+    protected function _layoutMenuHtml()
+    {
+        // ACL && Menu
+        if ($this->menu && $this->menu->isVisible()) {
+
+            // Make sure the actual $request and $controller in use at the end
+            // of the dispatchloop is used and make Zend_Navigation object
+            return $this->menu->render($this->view);
+        }
+
+        return null;
+    }
+
+    /**
+     * Function called if specified in the Project.ini layoutPrepare section before
+     * the layout is drawn, but after the rest of the program has run it's course.
+     *
+     * @return mixed If null nothing is set, otherwise the name of
+     * the function is used as Zend_View variable name.
+     */
+    protected function _layoutMenuTopLevel()
+    {
+        // ACL && Menu
+        if ($this->menu && $this->menu->isVisible()) {
+            return $this->menu->toTopLevelElement();
+        }
+
+        return null;
     }
 
     /**
@@ -1614,6 +1649,11 @@ class GemsEscort extends MUtil_Application_Escort
         $this->setControllerDirectory($request);
     }
 
+    /**
+     * Hook function called during controllerInit
+     *
+     * return @void
+     */
     public function prepareController() {
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $this->layoutSwitch();

@@ -56,7 +56,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     const USER_STAFF      = 'StaffUser';
 
     /**
-     * When true a user is allowed to login to a different organization then the
+     * When true a user is allowed to login to a different organization than the
      * one that provides an account. See GetUserClassSelect for the possible options
      * but be aware that duplicate accounts could lead to problems. To avoid
      * problems you can always use the organization switch AFTER login.
@@ -64,6 +64,17 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @var boolean
      */
     public $allowLoginOnOtherOrganization = false;
+
+
+    /**
+     * When true a user is allowed to login withut specifying an organization
+     * See GetUserClassSelect for the possible options
+     * but be aware that duplicate accounts could lead to problems. To avoid
+     * problems you can always use the organization switch AFTER login.
+     *
+     * @var boolean
+     */
+    public $allowLoginOnWithoutOrganization = false;
 
     /**
      * When true Respondent members can use their e-mail address as login name
@@ -446,12 +457,16 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $user = $this->getUserClass($login_name, $currentOrganization);
 
-        // Check: can the user log in as this organization, if not load non-existing user
-        if (! $user->isAllowedOrganization($currentOrganization)) {
-            $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);
-        }
+        if ($this->allowLoginOnWithoutOrganization && (! $currentOrganization)) {
+            $user->setCurrentOrganization($user->getBaseOrganizationId());
+        } else {
+            // Check: can the user log in as this organization, if not load non-existing user
+            if (! $user->isAllowedOrganization($currentOrganization)) {
+                $user = $this->loadUser(self::USER_NOLOGIN, $currentOrganization, $login_name);
+            }
 
-        $user->setCurrentOrganization($currentOrganization);
+            $user->setCurrentOrganization($currentOrganization);
+        }
 
         return $user;
     }
@@ -518,8 +533,15 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             return $this->loadUser(self::USER_PROJECT, $organization, $login_name);
         }
 
-        if ((null == $login_name) || (null == $organization) || (! intval($organization))) {
+
+        if (null == $login_name) {
             return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
+        }
+
+        if (!$this->allowLoginOnWithoutOrganization) {
+            if ((null == $organization) || (! intval($organization))) {
+                return $this->loadUser(self::USER_NOLOGIN, $organization, $login_name);
+            }
         }
 
         try {
@@ -590,12 +612,22 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
          *     (could be allowed due to privilege with rights to ALL organizations)
          */
         $select->from('gems__user_logins', array("gul_user_class", 'gul_id_organization', 'gul_login'))
-                ->from('gems__organizations', array())
-                ->columns(new Zend_Db_Expr("CASE WHEN gor_id_organization = gul_id_organization THEN 1 WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2 ELSE 3 END AS tolerance"))
+                ->where('gul_can_login = 1');
+
+        if ($this->allowLoginOnWithoutOrganization && !$organization) {
+            $select->columns(new Zend_Db_Expr('1 AS tolerance'));
+        } else {
+            $select->from('gems__organizations', array())
+                ->columns(new Zend_Db_Expr(
+                        "CASE
+                            WHEN gor_id_organization = gul_id_organization THEN 1
+                            WHEN gor_accessible_by LIKE CONCAT('%:', gul_id_organization, ':%') THEN 2
+                            ELSE 3
+                        END AS tolerance"))
                 ->where('gor_active = 1')
-                ->where('gul_can_login = 1')
                 ->where('gor_id_organization = ?', $organization)
                 ->order('tolerance');
+        }
 
         $ids[] = 'gul_login';
 

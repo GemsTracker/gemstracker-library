@@ -224,7 +224,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $logMaint = $page->addPage($this->_('Maintenance'), 'pr.log.maintenance', 'log-maintenance');
         $logMaint->addAutofilterAction();
         $logMaint->addEditAction('pr.log.maintenance');
-        
+
         // OpenRosa
         $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
 
@@ -277,12 +277,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         }
 
     }
-    
+
     /**
      * Shortcut function to add all items needed for OpenRosa
-     * 
+     *
      * Should be enabled in application.ini by using useOpenRosa = 1
-     * 
+     *
      * @param string $label Label for the container
      */
     public function addOpenRosaContainer($label, $parent = null)
@@ -707,10 +707,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      */
     public function render(Zend_View_Abstract $view)
     {
-        $activePath = $this->_findPath($this->escort->request);
-
         if ($this->_onlyActiveBranchVisible) {
+            $activePath = $this->_findPath($this->escort->request);
+
             // MUtil_Echo::r($activePath);
+
             $this->setBranchVisible($activePath);
         }
 
@@ -757,7 +758,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     protected function renderItems(MUtil_Html_ListElement $ul, array $items)
     {
         foreach ($items as $item) {
-            if ($item['visible'] && $item['label']) {
+            if (isset($item['visible'], $item['label']) && $item['visible'] && $item['label']) {
                 $url = $item['params'];
                 $url['controller'] = $item['controller'];
                 $url['action']     = $item['action'];
@@ -778,7 +779,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     $a->target = $item['target'];
                 }
 
-                if (isset($item['pages'])) {
+                if (isset($item['pages']) && is_array($item['pages'])) {
                     $this->renderItems($li->ul(), $item['pages']);
                 }
             }
@@ -819,6 +820,88 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->_visible = $value;
 
         return $this;
+    }
+
+    /**
+     * Renders the top level menu items into a html element
+     *
+     * @return MUtil_Html_HtmlElement
+     */
+    public function toActiveBranchElement()
+    {
+        $activePath = $this->_findPath($this->escort->request);
+
+        if (! $activePath) {
+            return null;
+        }
+
+        $this->setBranchVisible($activePath);
+
+        $activeItem = array_pop($activePath);
+
+        if (! $activeItem instanceof Gems_Menu_SubMenuItem) {
+            return null;
+        }
+        // MUtil_Echo::track($activeItem->get('label'));
+
+        $parameterSources[] = $this->escort->request;
+
+        if ($this->_menuParameters) {
+            $parameterSources[] = $this->_menuParameters;
+        }
+
+        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        // self::$verbose = true;
+
+        $nav = $this->_toNavigationArray($source);
+
+        $ul = $this->renderFirst();
+
+        foreach ($nav as $item => $sub) {
+            if ($sub['label'] === $activeItem->get('label')) {
+
+                if (isset($sub['pages'])) {
+                    $this->renderItems($ul, $sub['pages']);
+                }
+
+                return $ul;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Renders the top level menu items into a html element
+     *
+     * @return MUtil_Html_HtmlElement
+     */
+    public function toTopLevelElement()
+    {
+
+        $this->setBranchVisible(array());
+        $activeItem = reset($this->_findPath($this->escort->request));
+        if ($activeItem instanceof Gems_Menu_SubMenuItem) {
+            $activeItem->set('class', 'active');
+        }
+
+        $parameterSources[] = $this->escort->request;
+
+        if ($this->_menuParameters) {
+            $parameterSources[] = $this->_menuParameters;
+        }
+
+        $source = new Gems_Menu_ParameterCollector($parameterSources);
+
+        $nav = $this->_toNavigationArray($source);
+
+        // MUtil_Echo::track($nav);
+
+        $ul = $this->renderFirst();
+
+        $this->renderItems($ul, $nav);
+
+        return $ul;
     }
 
     /**
