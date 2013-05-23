@@ -512,12 +512,19 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         /*************
          * Make form *
          *************/
-        $form = $this->_user->getChangePasswordForm(array('askOld' => false));
+        $form = $this->_user->getChangePasswordForm(array(
+            'askOld'     => false,
+            'forceRules' => false    // If user logs in using password that does not obey the rules, he is forced to change it
+            ));
 
         /****************
          * Process form *
          ****************/
         if ($this->_request->isPost() && $form->isValid($_POST, false)) {
+            // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules
+            if ($form->getMessages()) {
+                $this->addMessage($form->getMessages());
+            }
             $this->addMessage($this->_('New password is active.'));
             $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
         } else {

@@ -107,6 +107,13 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
      * @return array Of 'label name' => 'required values' or Zend_Form_Element elements
      */
     protected $checkFields = array();
+    
+    /**
+     * Should the password rules be enforced.
+     *
+     * @var boolean
+     */
+    protected $forceRules = true;
 
     /**
      * Should the password rules be reported.
@@ -367,10 +374,18 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     public function isValid($data, $disableTranslateValidators = null)
     {
         $valid = parent::isValid($data, $disableTranslateValidators);
+        
+        if ($valid === false && $this->forceRules === false) {
+            $messages = $this->getMessages();
+            // If we don't enforce password rules, we pass validation but leave error messages in place.
+            if (count($messages) == 1 && array_key_exists('new_password', $messages)) {
+                $valid = true;
+            }
+        }
 
         if ($valid) {
             $this->user->setPassword($data['new_password']);
-
+            
         } else {
             if ($this ->getAskOld() && isset($data['old_password'])) {
                 if ($data['old_password'] === strtoupper($data['old_password'])) {
@@ -460,7 +475,7 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
 
         return $this;
     }
-
+    
     /**
      * Should the form report the password rules
      *
@@ -472,6 +487,21 @@ class Gems_User_Form_ChangePasswordForm extends Gems_Form_AutoLoadFormAbstract i
     public function setReportRules($reportRules = true)
     {
         $this->reportRules = $reportRules;
+
+        return $this;
+    }
+
+    /**
+     * Should the form enforce the password rules
+     *
+     * Enables loading of parameter through Zend_Form::__construct()
+     *
+     * @param boolean $forceRules
+     * @return Gems_User_Form_ChangePasswordForm (continuation pattern)
+     */
+    public function setForceRules($forceRules = true)
+    {
+        $this->forceRules = $forceRules;
 
         return $this;
     }
