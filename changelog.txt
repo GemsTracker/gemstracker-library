@@ -1,3 +1,8 @@
+Important changes from 1.6 => 1.6.1
+============================================================
+Added support for ODK Collect by adding OpenRosa support
+Export data now operates in batch mode, allowing bigger exports and combining spss files in one download
+
 Important changes from 1.5.7 => 1.6
 ============================================================
 Patients can now be shared between organizations on the basis of their social security number
