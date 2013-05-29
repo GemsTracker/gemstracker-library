@@ -84,7 +84,7 @@ class MUtil_Lazy
     {
         $args = func_get_args();
 
-        return new MUtil_Lazy_Call('implode', array('', new MUtil_Lazy_Call('MUtil_Ra::flatten', $args)));
+        return new MUtil_Lazy_Call('implode', array('', new MUtil_Lazy_Call('MUtil_Ra::flatten', array($args))));
     }
 
     public static function first($args_array)
