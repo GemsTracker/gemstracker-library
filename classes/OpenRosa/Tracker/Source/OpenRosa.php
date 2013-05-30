@@ -241,7 +241,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         
         $data = $select->query()->fetchAll();
         if (is_array($data)) {
-            $data = $model->processAfterLoad($data);
+            $data = $this->getSurvey($surveyId, $sourceSurveyId)->getModel()->processAfterLoad($data);
         }
         
         if ($data) {
@@ -332,7 +332,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         $questionsList = $this->getQuestionList($language, $survey->getSurveyId(), $sourceSurveyId);
         foreach($questionsList as $item => $question) {
             $allOptions = $surveyModel->get($item);
-            $allowed = array_fill_keys(array('storageFormat', 'dateFormat', 'label', 'multiOptions', 'maxlength', 'type'),1);
+            $allowed = array_fill_keys(array('storageFormat', 'dateFormat', 'label', 'multiOptions', 'maxlength', 'type', 'itemDisplay', 'formatFunction'),1);
             $options = array_intersect_key($allOptions, $allowed);
 
             $options['label'] = strip_tags($question);
