@@ -487,3 +487,6 @@ ALTER TABLE gems__respondents CHANGE grs_ssn
 -- GEMS VERSION: 52
 -- PATCH: Agenda items
 ALTER TABLE gems__surveys ADD gsu_agenda_result varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gsu_result_field;
+
+-- PATCH: Track code
+ALTER TABLE gems__tracks ADD gtr_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gtr_track_info;

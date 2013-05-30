@@ -98,10 +98,12 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
         $this->set('gtr_track_name',    'label', $this->translate->_('Name'));
         $this->set('gtr_track_class',   'label', $this->translate->_('Track Engine'), 'multiOptions', $this->tracker->getTrackEngineList($detailed));
         $this->set('gtr_survey_rounds', 'label', $this->translate->_('Surveys'));
-
+       
         $this->set('gtr_active',        'label', $this->translate->_('Active'), 'multiOptions', $translated->getYesNo());
         $this->set('gtr_date_start',    'label', $this->translate->_('From'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDate);
         $this->set('gtr_date_until',    'label', $this->translate->_('Use until'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDateForever);
+        
+        $this->setIfExists('gtr_code',  'label', $this->translate->_('Code name'), 'size', 10, 'description', $this->translate->_('Only for programmers.'));
 
         if ($detailed) {
             $this->setIfExists('gtr_completed_event',

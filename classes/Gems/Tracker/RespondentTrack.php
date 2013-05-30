@@ -395,6 +395,25 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_activeTokens[$roundId];
     }
+    
+    /**
+     *
+     * @return string Internal code of the track
+     */
+    public function getCode()
+    {
+        static $track = false;
+        
+        if (!$track) {
+            $track = $this->tracker->getTrackModel()->loadFirst(array('gtr_id_track'=>$this->_respTrackData['gr2t_id_track']));
+        }
+        
+        if (is_array($track)) {
+            return $track['gtr_code'];
+        } else {
+            return false;
+        }        
+    }
 
     /**
      *
@@ -512,9 +531,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         return $this->_respTrackData['gr2t_id_organization'];
     }
 
+    /**
+     * Return the Gems_Util_ReceptionCode object
+     *
+     * @return Gems_Util_ReceptionCode reception code
+     */
     public function getReceptionCode()
     {
-        return $this->_respTrackData['gr2t_reception_code'];
+        return $this->util->getReceptionCode($this->_respTrackData['gr2t_reception_code']);
     }
 
     /**

@@ -5,6 +5,7 @@ CREATE TABLE if not exists gems__tracks (
                 not null unique key,
 
         gtr_track_info varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_code       varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gtr_date_start date not null,
         gtr_date_until date null,
