@@ -17,6 +17,8 @@
     table {
         border-collapse: collapse;
         border: .5pt solid #000000;
+        mso-displayed-decimal-separator:"\.";
+		mso-displayed-thousand-separator:" ";
     }
 
     tr th {
@@ -29,7 +31,13 @@
         padding: 3px 8px;
         border: .5pt solid #000000;
     }
-    td {mso-number-format:"\@";}
+    /*td {mso-number-format:General;}*/
+    .num {
+        mso-number-format:General;
+      }
+    .text{
+      mso-number-format:"\@";/*force text*/
+    }
 </style>
 </head>
 <body>
