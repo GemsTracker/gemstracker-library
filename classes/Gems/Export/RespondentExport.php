@@ -71,6 +71,22 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * @var Zend_Translate_Adapter
      */
     public $translate;
+    
+    /**
+     * Holds the optional track filter.
+     * 
+     * When set, a track needs to have all elements in the trackFilter in order to have _isTrackInFilter return true.
+     * The trackFilter is an array containing an array with one or more of the following elements:
+     * <pre>
+     *  code            The track code
+     *  trackid         The track ID
+     *  resptrackid     The respondent-track ID
+     *  respid          The respondent ID
+     * </pre>
+     * 
+     * @var array 
+     */
+    public $trackFilter = array();
 
     /**
      *
@@ -134,6 +150,44 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     {
         // Only if token has a success code
         if ($token->getReceptionCode()->isSuccess()) {
+            return true;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Determines if this particular track should be included
+     * in the report
+     *
+     * @param  Gems_Tracker_RespondentTrack $track
+     * @return boolean This dummy implementation always returns true
+     */
+    protected function _isTrackInFilter(Gems_Tracker_RespondentTrack $track)
+    {   
+        $result    = false;
+        $trackInfo = array(
+            'code'        => $track->getCode(),
+            'trackid'     => $track->getTrackId(),
+            'resptrackid' => $track->getRespondentTrackId(),
+            'respid'      => $track->getRespondentId(),
+        );
+        
+        if (empty($this->trackFilter)) {
+            $result = true;
+        } else {
+            // Now read the filter and split by track code or track id
+            foreach($this->trackFilter as $filter) {
+                $remaining = array_diff_assoc($filter, $trackInfo);
+                if (empty($remaining)) {
+                    $result = true;
+                    break;
+                }
+            }
+        }
+        
+        // Only if track has a success code
+        if ($result && $track->getReceptionCode()->isSuccess()) {
             return true;
         }
 
@@ -229,7 +283,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      */
     protected function _exportTrack(Gems_Tracker_RespondentTrack $track)
     {
-        if ($track->getReceptionCode() != GemsEscort::RECEPTION_OK) {
+        if (!$this->_isTrackInFilter($track)) {
             return;
         }
 

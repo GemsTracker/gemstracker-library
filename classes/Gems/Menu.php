@@ -385,6 +385,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
+            
+            $tkPages[$trType]->addAction($this->_('Export track'), 'pr.track', 'export-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType);
 
             $tkPages[$trType]->addAction($this->_('Token'), 'pr.token', 'show')
                     ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')

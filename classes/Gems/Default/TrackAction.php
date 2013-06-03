@@ -55,7 +55,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
     public $sortKey = array('gr2t_created' => SORT_DESC);
 
-    public $summarizedActions = array('index', 'autofilter', 'create', 'delete-track', 'edit-track', 'show-track');
+    public $summarizedActions = array('index', 'autofilter', 'create', 'delete-track', 'edit-track', 'show-track', 'export-track');
 
     public $trackType = 'T';
 
@@ -445,6 +445,69 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 'respondentTrackId', $respTrackId,
                 'trackId', $respTrack->getTrackId(),
                 'userId', $this->session->user_id);
+    }
+    
+    public function exportTrackAction()
+    {
+        $request = $this->getRequest();
+        $model   = $this->getModel();
+        if ($data = $model->applyRequest($request)->loadFirst()) {
+            $menuData = $data;
+            unset($menuData['gto_id_token']);   // To fix menu
+            $this->setMenuParameters($menuData);
+        }
+        
+        $this->html->h2(sprintf($this->_('%s track for respondent nr %s: %s'),
+            $data['gtr_track_name'],
+            $this->_getParam(MUtil_Model::REQUEST_ID1),
+            $this->getRespondentName($data)));
+        
+        if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+            $links = parent::createMenuLinks(10);
+            $table = parent::getShowTable();
+            $table->setRepeater(array($data));
+
+            // Show the track is deleted
+            if (! $data['grc_success']) {
+                foreach ($table->tbody() as $row) {
+                    if (isset($row[1])) {
+                        $row[1]->appendAttrib('class', 'deleted');
+                    }
+                }
+            }
+            // lookup and display fields that are linked to this respondent track
+            $sql = "SELECT gems__respondent2track2field.*,gems__track_fields.* FROM gems__respondent2track2field LEFT JOIN gems__track_fields ON gtf_id_field = gr2t2f_id_field WHERE gr2t2f_id_respondent_track = ? ORDER BY gtf_id_order";
+            $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
+
+            foreach ($fieldValues as $field) {
+                $table->tr();
+                $table->tdh($field['gtf_field_name']);
+                $table->td($field['gr2t2f_value']);
+            }
+
+            $this->html[] = $table;
+
+            if ($links) {
+                $this->html->buttonDiv($links);
+            }               
+
+        }
+        
+        $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+        $patNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $orgId = $this->_getParam(MUtil_Model::REQUEST_ID2);
+        $export = $this->loader->getRespondentExport($this);
+        $export->trackFilter = array(array('resptrackid'=>(int) $respTrackId));
+        
+        $form = $export->getForm();
+        $div = $this->html->div(array('id' => 'mainform'));
+        $div[] = $form;
+
+        $form->populate($request->getParams());
+
+        if ($request->isPost()) {
+            $export->render(array(array('gr2o_id_organization'=>$orgId, 'gr2o_patient_nr'=>$patNr)), $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
+        }        
     }
 
     public function getTopic($count = 1)
