@@ -69,7 +69,8 @@ class Gems_Event_Survey_Completed_DisplayVars extends Gems_Event_EventCalculatio
      */
     public function processTokenData(Gems_Tracker_Token $token)
     {
-        MUtil_Echo::r($token->getRawAnswers(), $token->getTokenId());
+        $result = var_export($token->getRawAnswers(), true);
+        MUtil_Echo::r($result, $token->getTokenId());
         return false;
     }
 }
