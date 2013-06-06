@@ -501,7 +501,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
     {
         parent::init();
 
-        // Tell the system where to return to after a survey has been taken
-        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+        // Tell the system where to return to after a survey has been taken, make sure to remove (auto)search parameters from the url
+        $request   = $this->getRequest();
+        $allParams = $request->getParams();
+        $allowed   = array_flip(array($request->getModuleKey(), $request->getControllerKey(), $request->getActionKey()));
+        $urlParams = array_intersect_key($allParams, $allowed);
+        $this->loader->getCurrentUser()->setSurveyReturn($urlParams);
     }
 }
