@@ -156,6 +156,26 @@ class Gems_User_PasswordChecker extends MUtil_Registry_TargetAbstract
                     $len));
         }
     }
+    
+    /**
+     * Test the password for maximum age (in days).
+     *
+     * @param mixed $parameter
+     * @param string $password
+     */
+    protected function maxAge($parameter, $password)
+    {
+        $age = intval($parameter);
+        
+        if (is_null($password)) {
+            // We return the description of this rule
+            $this->_addError(sprintf($this->translate->_('should be changed at least every %d days'), $age));
+        } elseif ($age > 0 && !$this->user->isPasswordResetRequired() && $this->user->getPasswordAge() > $age) {
+            // Skip this if we already should change the password
+            $this->_addError(sprintf($this->translate->_('has not been changed the last %d days and should be changed'), $age));
+            $this->user->setPasswordResetRequired();
+        }
+    }
 
     /**
      * Test the password for minimum length.

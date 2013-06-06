@@ -242,13 +242,14 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
             $data['gup_password'] = null;
         } else {
             $data['gup_password'] = $this->hashPassword($password);
-        }
+        }        
+        $data['gup_last_pwd_change'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
         $model = new MUtil_Model_TableModel('gems__user_passwords');
         Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
 
         $model->save($data);
-
+        
         return $this;
     }
 }

@@ -490,3 +490,7 @@ ALTER TABLE gems__surveys ADD gsu_agenda_result varchar(20) CHARACTER SET 'utf8'
 
 -- PATCH: Track code
 ALTER TABLE gems__tracks ADD gtr_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gtr_track_info;
+
+-- PATCH: Add last changed date for passwords, default to last changed date on update (= date patch executed)
+ALTER TABLE gems__user_passwords ADD gup_last_pwd_change TIMESTAMP NOT NULL DEFAULT 0 AFTER gup_reset_required;
+UPDATE gems__user_passwords SET gup_last_pwd_change = gup_changed;

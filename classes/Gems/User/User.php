@@ -828,6 +828,23 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         return $result;
     }
+    
+    /**
+     * Return the number of days since last change of password
+     * 
+     * @return int
+     */
+    public function getPasswordAge()
+    {
+        $date = $this->_getVar('user_password_last_changed');
+        if (MUtil_Date::isDate($date, Zend_Date::ISO_8601)) {
+            $date = new MUtil_Date($date, Zend_Date::ISO_8601);
+            MUtil_Echo::track($date->toString(), $date->diffDays());
+            return abs($date->diffDays());
+        } else {
+            return 0;
+        }        
+    }
 
     /**
      * Return a password reset key
@@ -1420,6 +1437,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $this->definition->setPassword($this, $password);
         $this->setPasswordResetRequired(false);
+        $this->refresh();   // force refresh
         return $this;
     }
 
