@@ -83,11 +83,12 @@ class Gems_User_StaffUserDefinition extends Gems_User_DbUserDefinitionAbstract
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
                    'user_resetkey_valid' => 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
-                   'user_password_last_changed' => 'gup_last_pwd_change'
+                   'user_password_last_changed' => 'COALESCE(gems__user_passwords.gup_last_pwd_change, gems__user_passwords.gup_changed)'
                    ))
                ->where('ggp_group_active = 1')
                ->where('gsf_active = 1')
                ->where('gul_can_login = 1')
+               ->where('gul_user_class = ?', 'StaffUser')
                ->where('gul_login = ?')
                ->where('gul_id_organization = ?')
                ->limit(1);
