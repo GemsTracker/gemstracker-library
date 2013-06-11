@@ -385,7 +385,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
-            
+
             $tkPages[$trType]->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
@@ -886,7 +886,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     {
 
         $this->setBranchVisible(array());
-        $activeItem = reset($this->_findPath($this->escort->request));
+        $activeItems = $this->_findPath($this->escort->request);
+        $activeItem  = reset($activeItems);
         if ($activeItem instanceof Gems_Menu_SubMenuItem) {
             $activeItem->set('class', 'active');
         }
