@@ -143,7 +143,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
         
         $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
-        $element->setLabel('Toggle');
+        $element->setLabel($this->_('Toggle'));
         $bridge->addElement($element);
     }
 

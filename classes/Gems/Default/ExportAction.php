@@ -240,7 +240,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $elements[] = $element;
 
         $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
-        $element->setLabel('Toggle');
+        $element->setLabel($this->_('Toggle'));
         $elements[] = $element;
 
         $element = new Zend_Form_Element_Select('type');

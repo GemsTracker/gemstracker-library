@@ -58,6 +58,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $this->addElement($this->createMessageIdElement());
         if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
             $this->addElement($this->createOrganizationSet());
+            $this->addElement($this->createOrganizationToggle());
         }
         $this->addElement($this->createSubjectElement());
         $this->addElement($this->createBodyElement());
@@ -101,6 +102,15 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
         $options['label'] = $this->escort->_('Organizations');
 
         return new Zend_Form_Element_MultiCheckbox('gmt_organizations', $options);
+    }
+    
+    protected function createOrganizationToggle()
+    {
+        $this->activateJQuery();
+        $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gmt_organizations]'));
+        $element->setLabel($this->escort->_('Toggle'));
+        
+        return $element;
     }
 
     protected function createSaveButton()
