@@ -84,9 +84,7 @@ class Gems_Task_Db_CreateNewTables extends Gems_Task_TaskAbstract
         $this->escort = GemsEscort::getInstance();
 
         //Load the dbaModel
-        $paths = $this->escort->getDatabasePaths();
-        $model = new Gems_Model_DbaModel($this->db, array_values($paths));
-        $model->setLocations(array_keys($paths));
+        $model = new Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }

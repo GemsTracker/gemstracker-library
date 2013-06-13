@@ -108,6 +108,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
      * @var Gems_Tracker_RespondentTrack
      */
     protected $respTrack;
@@ -542,6 +548,42 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                             // Chunk of text that is too long
                             if ($len = $this->_getResultFieldLength()) {
                                 $values['gto_result'] = substr($values['gto_result'], 0, $len);
+                            }
+                        }
+                    }
+
+                    if ($this->project->hasResponseDatabase()) {
+                        $db = $this->project->getResponseDatabase();
+
+                        $rValues = array(
+                            'gdr_id_token'   => $this->_tokenId,
+                            'gdr_changed'    => new MUtil_Db_Expr_CurrentTimestamp(),
+                            'gdr_changed_by' => $userId,
+                            'gdr_created'    => new MUtil_Db_Expr_CurrentTimestamp(),
+                            'gdr_created_by' => $userId,
+                        );
+                        $responses = $this->getRawAnswers();
+                        unset($responses['token'], $responses['id'], $responses['lastpage'],
+                                $responses['startlanguage'], $responses['submitdate'], $responses['startdate'],
+                                $responses['datestamp']);
+                        foreach ($responses as $fieldName => $response) {
+                            $rValues['gdr_answer_id'] = $fieldName;
+                            $rValues['gdr_response']  = $response;
+
+                            try {
+                                $db->insert('gemsdata__responses', $rValues);
+                            } catch (Zend_Db_Statement_Exception $e) {
+                                $where = $db->quoteInto('gdr_id_token = ? AND ', $rValues['gdr_id_token']) .
+                                        $db->quoteInto('gdr_answer_id', $fieldName);
+
+                                $db->update(
+                                        'gemsdata__responses',
+                                        array(
+                                            'gdr_response'   => $response,
+                                            'gdr_changed'    => $rValues['gdr_changed'],
+                                            'gdr_changed_by' => $rValues['gdr_changed_by'],
+                                            ),
+                                        $where);
                             }
                         }
                     }

@@ -47,6 +47,13 @@
 class Gems_Project_ProjectSettings extends ArrayObject
 {
     /**
+     * The db adapter for the responses
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $_responsesDb;
+
+    /**
      * The default session time out for this project in seconds.
      *
      * Can be overruled in sesssion.idleTimeout
@@ -517,6 +524,46 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * The response database with a table with one row for each token answer.
+     *
+     * @return Zend_Db_Adapter_Abstract
+     */
+    public function getResponseDatabase()
+    {
+        if ((!$this->_responsesDb) && $this->hasResponseDatabase()) {
+            $adapter = $this['responses']['adapter'];
+
+            if (isset($this['responses'], $this['responses']['params'])) {
+                $options = $this['responses']['params'];
+
+                if (! isset(
+                        $options['charset'],
+                        $options['host'],
+                        $options['dbname'],
+                        $options['username'],
+                        $options['password']
+                        )) {
+
+                    $db = Zend_Registry::get('db');
+
+                    if ($db instanceof Zend_Db_Adapter_Abstract) {
+                        $options = $options + $db->getConfig();
+                    }
+                }
+                $this->_responsesDb = Zend_Db::factory($adapter, $options);
+            } else {
+                $db = Zend_Registry::get('db');
+
+                if ($db instanceof Zend_Db_Adapter_Abstract) {
+                    $this->_responsesDb = $db;
+                }
+            }
+        }
+
+        return $this->_responsesDb;
+    }
+
+    /**
      * Timeout for sessions in seconds.
      *
      * @return int
@@ -648,6 +695,16 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function hasInitialPassword()
     {
         return isset($this['password'], $this['password']['initialPassword']);
+    }
+
+    /**
+     * True when a response database with a table with one row for each token answer should exist.
+     *
+     * @return boolean
+     */
+    public function hasResponseDatabase()
+    {
+        return (boolean) isset($this['responses'], $this['responses']['adapter']) && $this['responses']['adapter'];
     }
 
     /**

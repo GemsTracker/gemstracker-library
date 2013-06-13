@@ -76,21 +76,9 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         }
     }
 
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
-     */
-    public function createDataTable($tableName, $caption)
+    public function createDataTable($tableName, $caption, Zend_Db_Adapter_Abstract $db)
     {
-        $select = new Zend_Db_Select($this->db);
+        $select = $db->select();
         $select->from($tableName);
 
         $paginator = Zend_Paginator::factory($select);
@@ -123,9 +111,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     {
         $moreDetails = ! in_array($action, array('run', 'deleted'));
 
-        $paths = $this->escort->getDatabasePaths();
-        $model = new Gems_Model_DbaModel($this->db, array_values($paths));
-        $model->setLocations(array_keys($paths));
+        $model = new Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
@@ -175,14 +161,14 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
                 $sql = 'SELECT COUNT(*) FROM ' . $data['name'];
 
-                if ($count = $this->db->fetchOne($sql)) {
+                if ($count = $data['db']->fetchOne($sql)) {
 
                     $this->addMessage(sprintf($this->_('There are %d rows in the table.'), $count));
 
                     $this->html->h3(sprintf($this->_('Drop table with %d rows'), $count));
                     $question = $this->_('Are you really sure?');
 
-                    $this->html[] = $this->createDataTable($data['name'], $question);
+                    $this->html[] = $this->createDataTable($data['name'], $question, $data['db']);
                     $pInfo = $this->html->pInfo($question, ' ');
                     $pInfo->actionLink(array('confirmed' => 2), $this->_('Yes'));
                     $pInfo->actionLink(array('action' => 'show'), $this->_('No'));
@@ -195,7 +181,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $sql = 'DROP ' . $data['type'] . ' ' . $data['name'];
 
             try {
-                $stmt = $this->db->query($sql);
+                $stmt = $data['db']->query($sql);
                 $this->addMessage(sprintf($this->_('%1$s %2$s dropped'), $data['name'], $this->_(strtolower($data['type']))));
                 $this->_cleanCache();
 
@@ -223,7 +209,10 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         }
 
         try {
-            $table = new Zend_DB_Table($id);
+            $table = new Zend_DB_Table(array(
+                Zend_Db_Table_Abstract::NAME => $id,
+                Zend_Db_Table_Abstract::ADAPTER => $tData['db'],
+                ));
 
             $data = MUtil_Lazy::repeat($table->info('metadata'));
 
@@ -595,7 +584,10 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         } else {
 
             $this->html->h3(sprintf($this->_('The data in table %s'), $data['name']));
-            $this->html[] = $this->createDataTable($data['name'], sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']));
+            $this->html[] = $this->createDataTable(
+                    $data['name'],
+                    sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']),
+                    $data['db']);
             $this->html[] = $this->createMenuLinks();
         }
     }

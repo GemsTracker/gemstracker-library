@@ -1347,18 +1347,28 @@ class GemsEscort extends MUtil_Application_Escort
         return $id ? $id : 0;
     }
 
+    /**
+     * Return the directories where the Database Administrator Model (DbaModel)
+     * should look for sql creation files.
+     *
+     * @return array directory => name | Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
+     */
     public function getDatabasePaths()
     {
         $path = APPLICATION_PATH . '/configs/db';
         if (file_exists($path)) {
-            $paths[GEMS_PROJECT_NAME] = $path;
+            $paths[$path] = GEMS_PROJECT_NAME;
         }
 
         if ($this instanceof Gems_Project_Log_LogRespondentAccessInterface) {
-            $paths['gems_log'] = GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access';
+            $paths[GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access'] = 'gems_log';
         }
 
-        $paths['gems'] = GEMS_LIBRARY_DIR . '/configs/db';
+        $paths[GEMS_LIBRARY_DIR . '/configs/db'] = 'gems';
+
+        if ($this->project->hasResponseDatabase()) {
+            $paths[GEMS_LIBRARY_DIR . '/configs/db_response_data'] = $this->project->getResponseDatabase();
+        }
 
         return $paths;
     }

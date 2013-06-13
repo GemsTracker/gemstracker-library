@@ -28,4 +28,5 @@ CREATE TABLE IF NOT EXISTS `gems__sources` (
   UNIQUE KEY `gso_ls_url` (`gso_ls_url`)
 )
 ENGINE=InnoDB
+AUTO_INCREMENT = 20
 DEFAULT CHARSET=utf8;

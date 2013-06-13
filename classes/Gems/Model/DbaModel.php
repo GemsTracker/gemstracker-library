@@ -55,27 +55,50 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
     const STATE_DEFINED = 2;
     const STATE_UNKNOWN = 3;
 
-    protected $db;
+    /**
+     * The sort for the current load.
+     *
+     * @var array fieldname => SORT_ASC | SORT_DESC
+     */
+    private $_sorts;
+
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $defaultDb;
+
+    /**
+     *
+     * @var array 'path' => directory, 'db' => Zend_Db_Adapter_Abstract, 'name' => name
+     */
     protected $directories;
+
+    /**
+     * The encoding used to read files
+     * @var string
+     */
     protected $file_encoding;
-    protected $locations;
-    protected $mainDirectory;
+
     /**
      * @var Zend_Translate_Adapter
      */
     protected $translate;
 
-    private $_sorts;
-
-    public function __construct(Zend_Db_Adapter_Abstract $db, $mainDirectory, $directory_2 = null)
+    /**
+     *
+     * @param Zend_Db_Adapter_Abstract $db
+     * @param array $directories directory => name | Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
+     */
+    public function __construct(Zend_Db_Adapter_Abstract $db, array $directories)
     {
-        parent::__construct($mainDirectory);
+        parent::__construct('DbaModel');
 
-        $this->mainDirectory = $mainDirectory;
-        $this->directories   = MUtil_Ra::args(func_get_args(), 1);
-        $this->setLocations();
+        $this->defaultDb = $db;
 
-        $this->db = $db;
+        foreach ($directories as $path => $value) {
+            $this->addDirectory($path, $value);
+        }
 
         //Grab translate object from the Escort
         $this->translate = GemsEscort::getInstance()->translate;
@@ -109,7 +132,11 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
      */
     private function _($messageId, $locale = null)
     {
-        return $this->translate->_($messageId, $locale);
+        if ($this->translate) {
+            return $this->translate->_($messageId, $locale);
+        }
+
+        return $messageId;
     }
 
     private function _getGroupName($name)
@@ -168,15 +195,20 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
 
     private function _loadAllData()
     {
-        $tables = $this->db->listTables();
+        $tables = array();
+        foreach (array_reverse($this->directories) as $pathData) {
+            $tables = $tables + $pathData['db']->listTables();
+        }
         if ($tables) { // Can be empty
             $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
         }
 
         $data  = array();
 
-        foreach (array_reverse($this->directories) as $i => $mainDirectory) {
-            $location = $this->locations[$i];
+        foreach (array_reverse($this->directories) as $i => $pathData) {
+            $mainDirectory = $pathData['path'];
+            $location      = $pathData['name'];
+            $db            = $pathData['db'];
 
             if (is_dir($mainDirectory)) {
                 foreach (new DirectoryIterator($mainDirectory) as $directory) {
@@ -222,6 +254,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
                                     'script'      => $fileContent,
                                     'lastChanged' => $file->getMTime(),
                                     'location'    => $location,
+                                    'db'          => $db,
                                     );
                             }
                         }
@@ -333,6 +366,48 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         return $data;
     }
 
+    /**
+     * Add a directory with definitions to list of directories
+     *
+     * @param string $path
+     * @param mixed name | Zend_Db_Adaptor_Abstract | array(['path' =>], ['name' =>, |'db' =>,])
+     * @return \Gems_Model_DbaModel
+     */
+    public function addDirectory($path, $value)
+    {
+        if (is_array($value)) {
+            $pathData = $value;
+
+        } elseif ($value instanceof Zend_Db_Adapter_Abstract) {
+            $pathData['db'] = $value;
+
+        } else {
+            $pathData['name'] = $value;
+        }
+
+        if (! isset($pathData['path'])) {
+            $pathData['path'] = $path;
+        }
+        if (! isset($pathData['db'])) {
+            $pathData['db'] = $this->defaultDb;
+        }
+        if (! isset($pathData['name'])) {
+            $config = $pathData['db']->getConfig();
+            $pathData['name'] = $config['dbname'];
+        }
+
+        $this->directories[] = $pathData;
+
+        return $this;
+    }
+
+    /**
+     * Sort function for sorting array on defined sort order
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
     public function cmp(array $a, array $b)
     {
         foreach ($this->_sorts as $key => $direction) {
@@ -424,7 +499,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
             foreach ($queries as $query) {
                 $sql = (string) $query;
                 try {
-                    $stmt = $this->db->query($sql);
+                    $stmt = $data['db']->query($sql);
                     if ($rows = $stmt->rowCount()) {
                         if ($includeResultSets && ($data = $stmt->fetchAll())) {
                             $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $i, $qCount);
@@ -453,28 +528,15 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         // TODO: Save of data
     }
 
+    /**
+     * Set the text encoding of the db definition files
+     *
+     * @param string $encoding
+     * @return \Gems_Model_DbaModel (continuation pattern)
+     */
     public function setFileEncoding($encoding)
     {
         $this->file_encoding = $encoding;
-
-        return $this;
-    }
-
-    public function setLocations($main = null, $loc1 = null)
-    {
-        $args = MUtil_Ra::args(func_get_args());
-
-        $i = 1;
-        foreach ($this->directories as $key => $dir) {
-            if (isset($args[$key])) {
-                $locations[$key] = $args[$key];
-            } else {
-                $locations[$key] = '# ' . $i;
-            }
-            $i++;
-        }
-
-        $this->locations = array_reverse($locations);
 
         return $this;
     }
