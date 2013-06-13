@@ -175,17 +175,25 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
     {
         $select = $this->getUserSelect($login_name, $organization);
 
-        $result = $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+        try {
+            $result = $this->db->fetchRow($select, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+        } catch (Zend_Db_Statement_Exception $e) {
+
+            // Yeah ugly. Can be removed when all projects have been oatched to 1.6.2
+            $sql = $select->__toString();
+            $sql = str_replace('gup_last_pwd_change', 'gup_changed', $sql);
+
+            // Next try
+            $result = $this->db->fetchRow($sql, array($login_name, $organization), Zend_Db::FETCH_ASSOC);
+        }
+
 
         /*
          * Handle the case that we have a login record, but no matching userdata (ie. user is inactive)
          * if you want some kind of auto-register you should change this
          */
         if ($result == false) {
-            $result = array(
-                'user_active'          => false,
-                'user_role'            => 'nologin',
-            );
+            $result = Gems_User_NoLoginDefinition::getNoLoginDataFor($login_name, $organization);
         }
 
         return $result;
@@ -242,14 +250,14 @@ abstract class Gems_User_DbUserDefinitionAbstract extends Gems_User_UserDefiniti
             $data['gup_password'] = null;
         } else {
             $data['gup_password'] = $this->hashPassword($password);
-        }        
+        }
         $data['gup_last_pwd_change'] = new Zend_Db_Expr('CURRENT_TIMESTAMP');
 
         $model = new MUtil_Model_TableModel('gems__user_passwords');
         Gems_Model::setChangeFieldsByPrefix($model, 'gup', $user->getUserId());
 
         $model->save($data);
-        
+
         return $this;
     }
 }

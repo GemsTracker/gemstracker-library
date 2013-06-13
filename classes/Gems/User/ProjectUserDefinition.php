@@ -71,7 +71,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
     }
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Returns the data for a user object. It may be empty if the user is unknown.
      *
      * @param string $login_name
      * @param int $organization
@@ -80,7 +80,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
     public function getUserData($login_name, $organization)
     {
         $orgs = null;
-        
+
         try {
             $orgs = $this->db->fetchPairs("SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active = 1 ORDER BY gor_name");
             natsort($orgs);

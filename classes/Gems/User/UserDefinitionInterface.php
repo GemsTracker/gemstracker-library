@@ -92,7 +92,7 @@ interface Gems_User_UserDefinitionInterface
     public function getResetKeyDurationInHours();
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Returns the data for a user object. It may be empty if the user is unknown.
      *
      * @param string $login_name
      * @param int $organization

@@ -59,13 +59,13 @@ class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
     }
 
     /**
-     * Returns a user object, that may be empty if the user is unknown.
+     * Returns the data for a no login user object.
      *
      * @param string $login_name
      * @param int $organization
      * @return array Of data to fill the user with.
      */
-    public function getUserData($login_name, $organization)
+    public static function getNoLoginDataFor($login_name, $organization)
     {
         return array(
             'user_login'       => $login_name,
@@ -74,6 +74,18 @@ class Gems_User_NoLoginDefinition extends Gems_User_UserDefinitionAbstract
             'user_active'      => false,
             'user_role'        => 'nologin',
             );
+    }
+
+    /**
+     * Returns the data for a user object. It may be empty if the user is unknown.
+     *
+     * @param string $login_name
+     * @param int $organization
+     * @return array Of data to fill the user with.
+     */
+    public function getUserData($login_name, $organization)
+    {
+        return self::getNoLoginDataFor($login_name, $organization);
     }
 
     /**
