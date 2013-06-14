@@ -64,7 +64,17 @@ class Gems_Util_DatabasePatcher
                 $this->patch_files[] = $file;
 
             } elseif ($paths) {
-                foreach ($paths as $location => $path) {
+                foreach ($paths as $path => $pathData) {
+                    if (is_array($pathData)) {
+                        $location = $pathData['name'];
+
+                    } elseif ($pathData instanceof Zend_Db_Adapter_Abstract) {
+                        $config   = $pathData->getConfig();
+                        $location = $config['dbname'];
+
+                    } else {
+                        $location = $pathData;
+                    }
                     if (file_exists($path . '/' . $file)) {
                         $this->patch_files[] = $path . '/' . $file;
 
