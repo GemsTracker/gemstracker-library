@@ -47,6 +47,16 @@
 abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterParameters = array(
+        'columns'     => 'getBrowseColumns',
+        'extraFilter' => array('grc_success' => 1),
+        );
+
+    /**
      * The parameters used for the create and edit actions.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -78,6 +88,13 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      * @var mixed String or array of snippets name
      */
     public $exportSnippets = array('RespondentDetailsSnippet');
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'RespondentSearchSnippet');
 
     /**
      *

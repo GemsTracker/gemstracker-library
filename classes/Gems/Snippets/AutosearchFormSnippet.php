@@ -263,7 +263,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
         $elements = $this->getAutoSearchElements($data);
 
         if ($elements) {
-            $form = $this->createForm(array('name' => 'autosubmit')); // Assign a name so autosubmit will only work on this form (when there are others)
+            // Assign a name so autosubmit will only work on this form (when there are others)
+            $form = $this->createForm(array('name' => 'autosubmit'));
             $form->setHtml('div');
 
             $div = $form->getHtml();
@@ -275,10 +276,22 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
             foreach ($elements as $element) {
                 if ($element instanceof Zend_Form_Element) {
+                    $appendLabel = false;
                     if ($element->getLabel()) {
-                        $span->label($element);
+                        $labelDecor = $element->getDecorator('Label');
+
+                        if ($labelDecor) {
+                            $appendLabel = Zend_Form_Decorator_Abstract::APPEND === $labelDecor->getPlacement();
+
+                            if (! $appendLabel) {
+                                $span->label($element);
+                            }
+                        }
                     }
                     $span->input($element);
+                    if ($appendLabel) {
+                        $span->label($element);
+                    }
                     // TODO: Elementen automatisch toevoegen in MUtil_Form
                     $form->addElement($element);
                 } elseif (null === $element) {
