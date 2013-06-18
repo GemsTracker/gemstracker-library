@@ -47,8 +47,11 @@ class Gems_View_Helper_Excel extends Zend_View_Helper_Abstract
         try {
             //disable de ZFDebug class indien nodig.
             Zend_Controller_Front::getInstance()->unregisterPlugin('ZFDebug_Controller_Plugin_Debug');
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+        }
+
         $this->view->layout()->setLayout('excel');
+
         if ($rowset instanceof Gems_FormattedData) {
             $formatted = $rowset->getFormatted();
             $rowset->setFormatted(false);

@@ -613,6 +613,7 @@ class GemsEscort extends MUtil_Application_Escort
     protected function _initView()
     {
         $this->bootstrap('project');
+
         // Initialize view
         $view = new Zend_View();
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
@@ -1664,9 +1665,18 @@ class GemsEscort extends MUtil_Application_Escort
      *
      * return @void
      */
-    public function prepareController() {
+    public function prepareController()
+    {
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $this->layoutSwitch();
+        }
+
+        if (MUtil_Console::isConsole()) {
+            /* @var $layout Zend_Layout */
+            $layout = $this->view->layout();
+
+            $layout->setLayoutPath(GEMS_LIBRARY_DIR . "/layouts/scripts");
+            $layout->setLayout('cli');
         }
     }
 
@@ -1834,7 +1844,6 @@ class GemsEscort extends MUtil_Application_Escort
 
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
-
                 // When logged in
                 if ($this->session->user_id) {
                     $this->setError(
@@ -1844,10 +1853,24 @@ class GemsEscort extends MUtil_Application_Escort
                         );
 
                 } else { // No longer logged in
-                    // Throw an exception + HTTP 401 when an autofilter is called
+
+                    if (MUtil_Console::isConsole()) {
+                        $this->setError(
+                                'Illegal request.',
+                                401,
+                                sprintf('Controller "%s" action "%s" is not accessible.',
+                                        $request->getControllerName(),
+                                        $request->getActionName())
+                                );
+                        return;
+                    }
+
                     if ($request->getActionName() == 'autofilter') {
+                        // Throw an exception + HTTP 401 when an autofilter is called
                         throw new Gems_Exception("Session expired", 401);
-                    } elseif ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
+                        return;
+                    }
+                    if ($menuItem = $this->menu->findFirst(array('allowed' => true, 'visible' => true))) {
                         // Do not store previous request & show message when the intended action is logoff
                         if (! ($request->getControllerName() == 'index' && $request->getActionName() == 'logoff')) {
                             $this->addMessage($this->_('You are no longer logged in.'));
@@ -1861,6 +1884,7 @@ class GemsEscort extends MUtil_Application_Escort
 
                         $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                         $redirector->gotoRoute($menuItem->toRouteUrl($request));
+
                     } else {
                         $this->setError(
                             $this->_('You are no longer logged in.'),

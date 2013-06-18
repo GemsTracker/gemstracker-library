@@ -128,7 +128,6 @@ class Gems_Default_CronAction extends Gems_Controller_Action
     public function indexAction()
     {
         $this->initHtml();
-
         if ($this->util->getCronJobLock()->isLocked()) {
             $this->html->append($this->_('Cron jobs turned off.'));
         } else {

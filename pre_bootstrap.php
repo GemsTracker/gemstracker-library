@@ -28,12 +28,13 @@
  */
 
 /**
- * This files contains general project code that loads the
- * Zend_Application - and does whatever else has to be done.
+ * This files contains general project code that set constants and initializes
+ * PHP for use with Zend / Gemstracker. Next the autoloader and Zend_Application
+ * are created and the bootstrap is started.
  *
  * @author Matijs de Jong <mjong@magnafacta.nl>
  * @since 1.0
- * @version 1.1
+ * @version $Id$
  * @package Gems
  * @subpackage Project
  */
