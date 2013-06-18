@@ -53,7 +53,7 @@ class MUtil_Console
      */
     public static function isConsole()
     {
-        return PHP_SAPI == 'cli';
+        return !Zend_Session::$_unitTestEnabled && (PHP_SAPI == 'cli');
     }
 
     /**
