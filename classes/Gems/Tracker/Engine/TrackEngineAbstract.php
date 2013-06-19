@@ -541,7 +541,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Returns an associative array of the fields in this track
+     * Returns an array of the fields in this track
+     * key / value are id / code
      *
      * @return string[]
      */
@@ -552,7 +553,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $fields = array();
 
         foreach ($this->_trackFields as $field) {
-            $fields[$field['gtf_id_field']] = $field['gtf_field_name'];
+            $fields[$field['gtf_id_field']] = $field['gtf_field_code'];
         }
 
         return $fields;

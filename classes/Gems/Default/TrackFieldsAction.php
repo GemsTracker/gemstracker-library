@@ -112,8 +112,8 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
         $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
         $model->set('gtf_id_order', 'label', $this->_('Order'));
         $model->set('gtf_field_name', 'label', $this->_('Name'));
+        $model->set('gtf_field_code', 'label', $this->_('Code Name'));
         if ($detailed) {
-            $model->set('gtf_field_code', 'label', $this->_('Code Name'));
             $model->set('gtf_field_description', 'label', $this->_('Description'));
         }
         $model->set('gtf_field_values', 'label', $this->_('Values'));

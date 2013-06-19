@@ -761,6 +761,34 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_updateTrack($values, $userId);
     }
+    
+    /**
+     * Update one or more values for this track's fielddata.
+     * 
+     * Return the complete set of fielddata
+     * 
+     * @param array $data
+     * @return array
+     */
+    public function setFieldData($data)
+    {
+        $engine    = $this->getTrackEngine();
+        $fieldMap  = $engine->getFields();        
+        $fieldData = array();
+        
+        foreach ($data as $code => $value)
+        {
+            if ($index = array_search($code, $fieldMap)) {
+                $fieldData[$index] = $value;
+            }
+        }
+        $changeCount = $engine->setFieldsData($this->_respTrackId, $fieldData);
+        if ($changeCount>0) {
+            $this->_ensureFieldData(true);  // force reload
+        }
+        
+        return $this->_fieldData;
+    }
 
     /**
      * Set the reception code for this respondent track and make sure the
