@@ -285,6 +285,23 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Shortcut function to create the import container.
+     *
+     * @param string $label Label for the container
+     * @return Gems_Menu_MenuAbstract The new contact page
+     */
+    public function addImportContainer($label)
+    {
+        $import = $this->addContainer($label);
+
+        // EXPORT TO HTML
+        $page = $import->addPage($this->_('File'), 'pr.file-import', 'file-import', 'index');
+        $page->addButtonOnly($this->_('Auto import'), 'pr.file-import.auto', 'file-import', 'auto');
+
+        return $import;
+    }
+
+    /**
      * Add a Mail menu tree to the menu
      *
      * @param string $label

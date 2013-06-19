@@ -232,18 +232,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     }
 
     /**
-     * Method retained to maintain BC - {@see Gems_Menu::addHiddenPrivilege}
-     *
-     * @deprecated
-     * @param string $privilege
-     * @return Gems_Menu
-     */
-    public function addHiddenPrivilige($privilege)
-    {
-        return $this->addHiddenPrivilege($privilege);
-    }
-
-    /**
      * Use this to add a privilege that is not associated with a menu item.
      *
      * @param string $privilege
@@ -254,6 +242,18 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->_hiddenPrivileges[$privilege] = sprintf($this->_('Stand-alone privilege: %s'), $privilege);
 
         return $this;
+    }
+
+    /**
+     * Method retained to maintain BC - {@see Gems_Menu::addHiddenPrivilege}
+     *
+     * @deprecated
+     * @param string $privilege
+     * @return Gems_Menu
+     */
+    public function addHiddenPrivilige($privilege)
+    {
+        return $this->addHiddenPrivilege($privilege);
     }
 
     public function addLogonOffToken()
@@ -670,6 +670,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         // EXPORT
         $this->addExportContainer($this->_('Export'));
+
+        // IMPORT
+        $this->addImportContainer($this->_('Import'));
 
         // OTHER ITEMS
         $this->addLogonOffToken();

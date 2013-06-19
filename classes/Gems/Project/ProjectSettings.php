@@ -300,6 +300,28 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Get the specified role for the console user from the project setttings.
+     *
+     * If the role is not defined (or does not exist) running GemsTracker in
+     * console mode requires the users login name, organization and password to
+     * be specified on the command line.
+     *
+     * @return string
+     */
+    public function getConsoleRole()
+    {
+        if ($this->offsetExists('console')) {
+            $cons = $this->offsetGet('console');
+
+            if (isset($cons['role'])) {
+                return $cons['role'];
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Returns an (optional) default organization from the project settings
      *
      * @return int Organization number or -1 when not set
@@ -705,6 +727,32 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function hasResponseDatabase()
     {
         return (boolean) isset($this['responses'], $this['responses']['adapter']) && $this['responses']['adapter'];
+    }
+
+    /**
+     * Is running GemsTracker from the console allowed
+     *
+     * If allowed you can call index.php from the command line.
+     * Use -h as a parameter to get more info, e.g:
+     * <code>
+     * php.exe -f index.php -- -f
+     * </code>
+     * The -- is needed because otherwise the command is interpreted
+     * as php.exe -h.
+     *
+     * @return string
+     */
+    public function isConsoleAllowed()
+    {
+        if ($this->offsetExists('console')) {
+            $cons = $this->offsetGet('console');
+
+            if (isset($cons['allow'])) {
+                return (boolean) $cons['allow'];
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -36,7 +36,7 @@
  */
 
 /**
- * The user defined in the project.ini by admin.user and admin.pwd.
+ * The user used when GemsTracker is called form the console
  *
  * @package    Gems
  * @subpackage User
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
+class Gems_User_ConsoleUserDefinition extends Gems_User_UserDefinitionAbstract
 {
     /**
      *
@@ -66,8 +66,7 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
      */
     public function getAuthAdapter(Gems_User_User $user, $password)
     {
-        $adapter = new Gems_Auth_Adapter_Callback(array($this->project, 'checkSuperAdminPassword'), $user->getLoginName(), array($password));
-        return $adapter;
+        return (boolean) $this->project->getConsoleRole();
     }
 
     /**
@@ -96,10 +95,10 @@ class Gems_User_ProjectUserDefinition extends Gems_User_UserDefinitionAbstract
             'user_login'             => $login_name,
             'user_name'              => $login_name,
             'user_group'             => 800,
-            'user_role'              => 'master',
+            'user_role'              => $this->project->getConsoleRole(),
             'user_style'             => 'gems',
             'user_base_org_id'       => $organization,
-            'user_allowed_ip_ranges' => $this->project->getSuperAdminIPRanges(),
+            'user_allowed_ip_ranges' => null,
             'user_blockable'         => false,
             '__allowedOrgs'          => $orgs
             );

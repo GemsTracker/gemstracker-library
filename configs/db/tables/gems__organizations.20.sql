@@ -10,6 +10,8 @@ CREATE TABLE if not exists gems__organizations (
         gor_url_base         varchar(1270) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gor_task             varchar(50)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
+        gor_provider_id      varchar(10)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+
         -- A commy separated list of organization numbers that can look at respondents in this organization
         gor_accessible_by    text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 

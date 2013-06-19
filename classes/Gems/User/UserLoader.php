@@ -49,6 +49,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     /**
      * User class constants
      */
+    const USER_CONSOLE    = 'ConsoleUser';
     const USER_NOLOGIN    = 'NoLogin';
     const USER_OLD_STAFF  = 'OldStaffUser';
     const USER_PROJECT    = 'ProjectUser';
@@ -112,12 +113,6 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
-
-    /**
-     *
-     * @var Zend_Controller_Request_Abstract
-     */
-    protected $request;
 
     /**
      *
@@ -306,10 +301,39 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 }
 
                 self::$currentUser = $this->_loadClass('User', true, array($this->session, $this->_getClass($defName)));
+
             } else {
-                self::$currentUser = $this->getUser(null, null);
+                if (MUtil_Console::isConsole()) {
+                    if (! $this->project->isConsoleAllowed()) {
+                        echo "Accessing " . GEMS_PROJECT_NAME . " from the command line is not allowed.\n";
+                        exit;
+                    }
+
+
+                    $request = Zend_Controller_Front::getInstance()->getRequest();
+
+                    if (($request instanceof MUtil_Controller_Request_Cli) && $request->hasUserLogin()) {
+                        $user = $this->getUser($request->getUserName(), $request->getUserOrganization());
+
+                        $authResult = $user->authenticate($request->getUserPassword());
+                        if (! $authResult->isValid()) {
+                            echo "Invalid user login data.\n";
+                            echo implode("\n", $authResult->getMessages());
+                            exit;
+                        }
+                        self::$currentUser = $user;
+
+                    } elseif ($this->project->getConsoleRole()) {
+                        // MUtil_Echo::track($this->request->getUserName(), $this->request->getUserOrganization());
+                        self::$currentUser = $this->loadUser(self::USER_CONSOLE, 0, '(system)');
+                    }
+
+                }
+                if (! self::$currentUser) {
+                    self::$currentUser = $this->getUser(null, null);
+                }
                 self::$currentUser->setAsCurrentUser();
-            }
+           }
         }
 
         return self::$currentUser;

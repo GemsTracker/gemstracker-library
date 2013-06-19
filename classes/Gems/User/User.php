@@ -440,12 +440,18 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         //In unit test REMOTE_ADDR is not available and will return null
         $request = Zend_Controller_Front::getInstance()->getRequest();
+
+        // E.g. command line user
+        if (! $request instanceof Zend_Controller_Request_Http) {
+            return true;
+        }
+
         $remoteIp = $request->getServer('REMOTE_ADDR');
         if ($this->util->isAllowedIP($remoteIp, $this->getAllowedIPRanges())) {
             return true;
-        } else {
-            return $this->translate->_('You are not allowed to login from this location.');
         }
+
+        return $this->translate->_('You are not allowed to login from this location.');
     }
 
     /**
@@ -459,20 +465,25 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      */
     protected function authorizeOrgIp()
     {
-        //In unit test REMOTE_ADDR is not available and will return null
-        $request = Zend_Controller_Front::getInstance()->getRequest();
-        $remoteIp = $request->getServer('REMOTE_ADDR');
-
         //special case: project user should have no restriction
         if ($this->project->getSuperAdminName() == $this->getLoginName()) {
             return true;
         }
 
+        //In unit test REMOTE_ADDR is not available and will return null
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+
+        // E.g. command line user
+        if (! $request instanceof Zend_Controller_Request_Http) {
+            return true;
+        }
+
+        $remoteIp = $request->getServer('REMOTE_ADDR');
         if ($this->util->isAllowedIP($remoteIp, $this->getBaseOrganization()->getAllowedIpRanges())) {
             return true;
-        } else {
-            return $this->translate->_('You are not allowed to login from this location.');
         }
+
+        return $this->translate->_('You are not allowed to login from this location.');
     }
 
     /**
@@ -828,10 +839,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
 
         return $result;
     }
-    
+
     /**
      * Return the number of days since last change of password
-     * 
+     *
      * @return int
      */
     public function getPasswordAge()
@@ -843,7 +854,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
             return abs($date->diffDays());
         } else {
             return 0;
-        }        
+        }
     }
 
     /**

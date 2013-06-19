@@ -1856,7 +1856,7 @@ class GemsEscort extends MUtil_Application_Escort
 
                     if (MUtil_Console::isConsole()) {
                         $this->setError(
-                                'Illegal request.',
+                                'No access to page.',
                                 401,
                                 sprintf('Controller "%s" action "%s" is not accessible.',
                                         $request->getControllerName(),

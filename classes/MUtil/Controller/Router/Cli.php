@@ -48,6 +48,27 @@
 class MUtil_Controller_Router_Cli extends Zend_Controller_Router_Abstract
 {
     /**
+     *
+     * @param mixed $object
+     * @return string
+     */
+    protected function _expandMessage($object)
+    {
+        $string = str_replace(
+                " [ options ]\n",
+                " [ options ] controller [action [name=value [...]]]\n",
+                $object->getUsageMessage());
+
+        return $string . "
+
+controller (string)  The name-of-the-controllor with dashes not CamelCase.
+action (string)      The name-of-the-action with dashes not CamelCase,
+                     the action defaults to 'index' if not specified.
+name=value (string)  Zero or more name=value parameter pairs, without the
+                     = sign the value defaults to an empty string.";
+    }
+
+    /**
      * Generates a URL path that can be used in URL creation, redirection, etc.
      *
      * May be passed user params to override ones from URI, Request or even defaults.
@@ -86,28 +107,70 @@ class MUtil_Controller_Router_Cli extends Zend_Controller_Router_Abstract
      * @throws Zend_Controller_Router_Exception
      * @return Zend_Controller_Request_Abstract|boolean
      */
-   public function route(Zend_Controller_Request_Abstract $dispatcher)
+    public function route(Zend_Controller_Request_Abstract $request)
     {
-        $getopt = new Zend_Console_Getopt(array());
+        $options = array(
+            'help|h'   => 'Show this help',
+            'org|o=i'  => 'The user organization number',
+            'pwd|p=s'  => 'User password',
+            'user|u=s' => 'The user name',
+        );
+
+        $getopt = new Zend_Console_Getopt($options);
+
+        try {
+            $getopt->parse();
+        } catch (Zend_Console_Getopt_Exception $e) {
+            echo $this->_expandMessage($e);
+            exit;
+        }
+
+        if ($getopt->getOption('h')) {
+            // $getopt->s
+            echo $this->_expandMessage($getopt);
+            exit;
+        }
+
+        if ($request instanceof MUtil_Controller_Request_Cli) {
+            $request->setUserLogin(
+                    $getopt->getOption('u'),
+                    $getopt->getOption('o'),
+                    $getopt->getOption('p')
+                    );
+        }
+
         $arguments = $getopt->getRemainingArgs();
         if ($arguments)
         {
-            $command = array_shift($arguments);
-
-            $action  = array_shift($arguments);
+            $controller = array_shift($arguments);
+            $action     = array_shift($arguments);
 
             if (! $action) {
                 $action = 'index';
             }
-            if (! preg_match ('~\W~', $command))
+            if (preg_match('/^\w+(-\w+)*$/', $controller) && preg_match('/^\w+(-\w+)*$/', $action))
             {
-                $dispatcher->setControllerName ($command);
-                $dispatcher->setActionName($action);
-                $dispatcher->setParams($arguments);
-                return $dispatcher;
+                $request->setControllerName($controller);
+                $request->setActionName($action);
+
+                $params[$request->getControllerKey()] = $controller;
+                $params[$request->getActionKey()]     = $action;
+
+                foreach ($arguments as $arg) {
+                    if (MUtil_String::contains($arg, '=')) {
+                        list($name, $value) = explode('=', $arg, 2);
+                    } else {
+                        $name  = $arg;
+                        $value = '';
+                    }
+                    $params[$name] = $value;
+                }
+
+                $request->setParams($params);
+                return $request;
             }
 
-            echo "Invalid command.\n", exit;
+            echo "Invalid command: $command/$action.\n", exit;
 
         }
 

@@ -127,6 +127,8 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
         $model->set('gor_location', 'label', $this->_('Location'), 'size', 25);
         $model->set('gor_url', 'label', $this->_('Url'), 'size', 50);
         $model->set('gor_task', 'label', $this->_('Task'), 'size', 25);
+        $model->set('gor_provider_id', 'label', $this->_('Healtcare provider id'),
+                'description', $this->_('The Interorganizational id for import and export.'));
         $model->set('gor_contact_name', 'label', $this->_('Contact name'), 'size', 25);
         $model->set('gor_contact_email', 'label', $this->_('Contact email'), 'size', 50, 'validator', 'SimpleEmail');
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {

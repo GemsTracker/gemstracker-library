@@ -494,3 +494,10 @@ ALTER TABLE gems__tracks ADD gtr_code varchar(64)  CHARACTER SET 'utf8' COLLATE 
 -- PATCH: Add last changed date for passwords, default to last changed date on update (= date patch executed)
 ALTER TABLE gems__user_passwords ADD gup_last_pwd_change TIMESTAMP NOT NULL DEFAULT 0 AFTER gup_reset_required;
 UPDATE gems__user_passwords SET gup_last_pwd_change = gup_changed;
+
+-- PATCH: Organizational provider id
+ALTER TABLE gems__organizations ADD
+    gor_provider_id varchar(10) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gor_task;
+
+-- PATCH: Import rights
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.file-import,pr.file-import.auto') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.file-import%';
