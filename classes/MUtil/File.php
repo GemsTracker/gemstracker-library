@@ -27,73 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    Gems
- * @subpackage Default
+ * @package    MUtil
+ * @subpackage File
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: FileImportAction.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $id: File.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
- * @package    Gems
- * @subpackage Default
+ * @package    MUtil
+ * @subpackage File
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.1
+ * @since      Class available since MUtil version 1.2
  */
-class Gems_Default_FileImportAction extends Gems_Controller_Action
+class MUtil_File
 {
     /**
-     * @var Gems_Menu
+     * Returns an array containing all the files (not directories) in a
+     * recursive directory listing from $dir.
+     *
+     * @param string $dir
+     * @return array
      */
-    public $menu;
-
-    /**
-     * Set to true in child class for automatic creation of $this->html.
-     *
-     * To initiate the use of $this->html from the code call $this->initHtml()
-     *
-     * Overrules $useRawOutput.
-     *
-     * @see $useRawOutput
-     * @var boolean $useHtmlView
-     */
-    public $useHtmlView = true;
-
-    public function autoAction()
+    public static function getFilesRecursive($dir)
     {
-        $filename = $this->_getParam('file');
-        $this->html->div('Auto for: ' . $this->loader->getCurrentUser()->getLoginName() . ' file ' . $filename);
+        $results = array();
 
-        if (!file_exists($filename)) {
-            $file = GEMS_ROOT_DIR . '/' . $filename;
-
-            if (file_exists($file)) {
-                $filename = $file;
-            }
-
-        }
-        $files = MUtil_File::getFilesRecursive($filename);
-
-        $this->html->ul($files);
-    }
-
-    public function indexAction()
-    {
-        // print_r($this->_request->getParams());
-        $menuList = $this->menu->getMenuList();
-
-        foreach ($this->menu->getCurrentChildren() as $child) {
-            if ($child instanceof Gems_Menu_SubMenuItem) {
-                $chAction = $child->get('action');
-                $chContr  = $child->get('controller');
-                $menuList->addByController($chContr, $chAction);
+        if (is_dir($dir)) {
+            foreach (scandir($dir) as $file) {
+                $path = $dir . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($path)) {
+                    if (('.' !== $file) && ('..' !== $file)) {
+                        $results = array_merge($results, self::getFilesRecursive($path));
+                    }
+                } else {
+                    $results[] = $path;
+                }
             }
         }
 
-        $this->html->div($menuList);
+        return $results;
     }
 }
