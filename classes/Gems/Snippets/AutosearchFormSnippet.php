@@ -60,6 +60,12 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      *
+     * @var Gems_Menu
+     */
+    protected $menu;
+
+    /**
+     *
      * @var MUtil_Model_ModelAbstract
      */
     protected $model;
@@ -274,6 +280,10 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
             $elements[] = $this->getAutoSearchSubmit();
 
+            if ($reset = $this->getAutoSearchReset()) {
+                $elements[] = $reset;
+            }
+
             foreach ($elements as $element) {
                 if ($element instanceof Zend_Form_Element) {
                     $appendLabel = false;
@@ -327,9 +337,26 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Creates a submit button
+     * Creates a reset button for the search form
      *
      * @param MUtil_Form $form
+     * @return Zend_Form_Element_Submit
+     */
+    protected function getAutoSearchReset()
+    {
+        if ($menuItem = $this->menu->getCurrent()) {
+            $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
+
+            $element = new MUtil_Form_Element_Html('reset');
+            $element->setValue($link);
+
+            return $element;
+        }
+    }
+
+    /**
+     * Creates a submit button
+     *
      * @return Zend_Form_Element_Submit
      */
     protected function getAutoSearchSubmit()

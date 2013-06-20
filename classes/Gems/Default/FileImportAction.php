@@ -78,7 +78,16 @@ class Gems_Default_FileImportAction extends Gems_Controller_Action
         }
         $files = MUtil_File::getFilesRecursive($filename);
 
-        $this->html->ul($files);
+        foreach ($files as $filename) {
+           $model = new MUtil_Model_TabbedTextModel($filename);
+           $data = $model->load();
+           // MUtil_Echo::track($data);
+           $table = MUtil_Html_TableElement::createArray($data, $filename, true);
+           $table->class = 'browser';
+           $this->html->append($table);
+        }
+
+        // $this->html->ul($files);
     }
 
     public function indexAction()

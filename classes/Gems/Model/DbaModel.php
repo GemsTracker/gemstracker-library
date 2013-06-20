@@ -30,7 +30,7 @@
  * @package    Gems
  * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 201 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
@@ -47,20 +47,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
+class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
 {
     const DEFAULT_ORDER = 1000;
 
     const STATE_CREATED = 1;
     const STATE_DEFINED = 2;
     const STATE_UNKNOWN = 3;
-
-    /**
-     * The sort for the current load.
-     *
-     * @var array fieldname => SORT_ASC | SORT_DESC
-     */
-    private $_sorts;
 
     /**
      *
@@ -172,28 +165,12 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
     }
 
     /**
-     * Returns a nested array containing the items requested.
+     * An ArrayModel assumes that (usually) all data needs to be loaded before any load
+     * action, this is done using the iterator returned by this function.
      *
-     * @param array $filter Filter array, num keys contain fixed expresions, text keys are equal or one of filters
-     * @param array $sort Sort array field name => sort type
-     * @return array Nested array or false
+     * @return Traversable Return an iterator over or an array of all the rows in this object
      */
-    protected function _load(array $filter, array $sort)
-    {
-        $data = $this->_loadAllData();
-
-        if ($filter) {
-            $data = $this->_filterData($data, $filter);
-        }
-
-        if ($sort) {
-            $data = $this->_sortData($data, $sort);
-        }
-
-        return $data;
-    }
-
-    private function _loadAllData()
+    protected function _loadAllTraversable()
     {
         $tables = array();
         foreach (array_reverse($this->directories) as $pathData) {
@@ -234,7 +211,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
                                 }
 
                                 $fileContent = file_get_contents($file->getPathname());
-                                if ($this->file_encoding) {
+                                if ($this->file_encoding && ($this->file_encoding !== mb_internal_encoding())) {
                                     $fileContent = mb_convert_encoding($fileContent, mb_internal_encoding(), $this->file_encoding);
                                 }
 
@@ -283,89 +260,6 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         return $data;
     }
 
-    private function _applyFiltersToRow(array $row, array $filters, $logicalAnd)
-    {
-        foreach ($filters as $name => $filter) {
-            if (is_numeric($name)) {
-                $value = $row;
-            } else {
-                $value = isset($row[$name]) ? $row[$name] : null;
-            }
-
-            if (is_callable($filter)) {
-                $result = call_user_func($filter, $value);
-            } elseif (is_array($filter)) {
-                $result = $this->_applyFilter($value, $filter, ! $logicalAnd);
-            } else {
-                $result = $value === $filter;
-                // MUtil_Echo::r($value . '===' . $filter . '=' . $result);
-            }
-
-            // if ($logicalAnd xor $result) {
-            if (! $result) {
-                return $result;
-            }
-        }
-
-        // If $logicalAnd is true:
-        //   => all filters must have triggered true to arrive here
-        //   => the result is true,
-        // If $logicalAnd is false:
-        //   => all filters must have triggered false to arrive here
-        //   => the result is false.
-        return $logicalAnd;
-    }
-
-    private function _filterData(array $data, array $filters)
-    {
-        $filteredData = array();
-
-        foreach ($data as $key => $row) {
-            if ($this->_applyFiltersToRow($row, $filters, true)) {
-                // print_r($row);
-                $filteredData[$key] = $row;
-            }
-        }
-
-        return $filteredData;
-    }
-
-    private function _sortData(array $data, $sorts)
-    {
-        $this->_sorts = array();
-
-        foreach ($sorts as $key => $order) {
-            if (is_numeric($key) || is_string($order)) {
-                if (strtoupper(substr($order,  -5)) == ' DESC') {
-                    $order     = substr($order,  0,  -5);
-                    $direction = SORT_DESC;
-                } else {
-                    if (strtoupper(substr($order,  -4)) == ' ASC') {
-                        $order = substr($order,  0,  -4);
-                    }
-                    $direction = SORT_ASC;
-                }
-                $this->_sorts[$order] = $direction;
-
-            } else {
-                switch ($order) {
-                    case SORT_DESC:
-                        $this->_sorts[$key] = SORT_DESC;
-                        break;
-
-                    case SORT_ASC:
-                    default:
-                        $this->_sorts[$key] = SORT_ASC;
-                        break;
-                }
-            }
-        }
-
-        usort($data, array($this, 'cmp'));
-
-        return $data;
-    }
-
     /**
      * Add a directory with definitions to list of directories
      *
@@ -401,73 +295,17 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         return $this;
     }
 
-    /**
-     * Sort function for sorting array on defined sort order
-     *
-     * @param array $a
-     * @param array $b
-     * @return int
-     */
-    public function cmp(array $a, array $b)
-    {
-        foreach ($this->_sorts as $key => $direction) {
-            if ($a[$key] !== $b[$key]) {
-                // MUtil_Echo::r($key . ': [' . $direction . ']' . $a[$key] . '-' . $b[$key]);
-                if (SORT_ASC == $direction) {
-                    return $a[$key] > $b[$key] ? 1 : -1;
-                } else {
-                    return $a[$key] > $b[$key] ? -1 : 1;
-                }
-            }
-        }
-
-        return 0;
-    }
-
-    public function delete($filter = true)
-    {
-        // TODO: implement
-    }
-
     public function getFileEncoding()
     {
         return $this->file_encoding;
     }
 
-    public function getTextSearchFilter($searchText)
-    {
-        $filter = array();
-
-        if ($searchText) {
-            $fields = array();
-            foreach ($this->getItemNames() as $name) {
-                // TODO: multiOptions integratie
-                if ($this->get($name, 'label') && (! $this->get($name, 'multiOptions'))) {
-                    $fields[] = $name;
-                }
-            }
-
-            if ($fields) {
-                foreach ($this->getTextSearches($searchText) as $searchOn) {
-                    $filterItem = new MUtil_Ra_Filter_Contains($searchOn, $fields);
-                    $filter[] = array($filterItem, 'filter');
-                }
-            }
-        }
-
-        return $filter;
-    }
-
-    public function hasNew()
-    {
-        return false;
-    }
-
-    public function hasTextSearchFilter()
-    {
-        return true;
-    }
-
+    /**
+     * Quick filter alias function for loading  a single table
+     *
+     * @param string $tableName
+     * @return array
+     */
     public function loadTable($tableName)
     {
         return $this->loadFirst(array('name' => $tableName), false);
@@ -521,11 +359,6 @@ class Gems_Model_DbaModel extends MUtil_Model_ModelAbstract
         }
 
         return $results;
-    }
-
-    public function save(array $newValues, array $filter = null)
-    {
-        // TODO: Save of data
     }
 
     /**

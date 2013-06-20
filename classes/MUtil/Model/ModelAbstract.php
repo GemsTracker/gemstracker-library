@@ -998,6 +998,14 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this->hasMeta('sort');
     }
 
+    /**
+     * True when the model supports general text filtering on all
+     * labelled fields.
+     *
+     * This must be implemented by each sub model on it's own.
+     *
+     * @return boolean
+     */
     public function hasTextSearchFilter()
     {
         return false;
@@ -1326,7 +1334,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Set the value to be an alias of another field
-     * 
+     *
      * @param string $name
      * @param string $aliasOf
      * @return \MUtil_Model_ModelAbstract

@@ -545,6 +545,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
                 $elements[] = $this->getAutoSearchSubmit($model, $form);
 
+                if ($reset = $this->getAutoSearchReset()) {
+                    $elements[] = $reset;
+                }
+
                 foreach ($elements as $element) {
                     if ($element instanceof Zend_Form_Element) {
                         if ($element->getLabel()) {
@@ -581,6 +585,23 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     protected function getAutoSearchHref()
     {
         return MUtil_Html::attrib('href', array('action' => 'autofilter', 'RouteReset' => true));
+    }
+
+    /**
+     * Creates a reset button for the search form
+     *
+     * @return Zend_Form_Element_Submit
+     */
+    protected function getAutoSearchReset()
+    {
+        if ($menuItem = $this->menu->getCurrent()) {
+            $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
+
+            $element = new MUtil_Form_Element_Html('reset');
+            $element->setValue($link);
+
+            return $element;
+        }
     }
 
     protected function getAutoSearchSubmit(MUtil_Model_ModelAbstract $model, MUtil_Form $form)
