@@ -890,9 +890,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $this->setBranchVisible(array());
         $activeItems = $this->_findPath($this->escort->request);
-        $activeItem  = reset($activeItems);
-        if ($activeItem instanceof Gems_Menu_SubMenuItem) {
-            $activeItem->set('class', 'active');
+        foreach ($activeItems as $activeItem) {
+            if ($activeItem instanceof Gems_Menu_SubMenuItem) {
+                $activeItem->set('class', 'active');
+            }
         }
 
         $parameterSources[] = $this->escort->request;
