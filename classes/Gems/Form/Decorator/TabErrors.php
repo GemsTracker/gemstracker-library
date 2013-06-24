@@ -94,11 +94,11 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
      * @return string
      */
     protected function _recurseForm(Zend_Form $form)
-    {
+ {
         $subFormsWithErrors = array();
         $subFormMessages = array();
         $tabId = 0;
-        
+
         foreach ($form->getSubForms() as $subForm) {
             if ($subForm instanceof Gems_Form_TabSubForm) {
                 // See if any of the subformelements has an error message
@@ -106,51 +106,49 @@ class Gems_Form_Decorator_TabErrors extends Zend_Form_Decorator_Abstract
                     $elementMessages = $subFormElement->getMessages();
                     if (count($elementMessages)) {
                         $subFormsWithErrors[$tabId] = $subForm->getAttrib('title'); // Save subform title
-                        $subForm->setAttrib('jQueryParams', array('class'=>'taberror'));    // Add css class to the subform
+                        $subForm->setAttrib('jQueryParams', array('class' => 'taberror'));    // Add css class to the subform
                         $form->selectTab($tabId);   // Select the tab, this way the last tab with error is always selected
                         break;  // don't check other elements
-                        
                     }
                 }
 
                 // Preserve subform level custom messages if we have an error
                 if (array_key_exists($tabId, $subFormsWithErrors)) {
-                     $subFormMessages[$tabId] = $subForm->getCustomMessages();
+                    $subFormMessages[$tabId] = $subForm->getCustomMessages();
                 }
                 $tabId++;
             }
+        }
 
-            // If we found at least one error, and 'verbose' is true
-            if ($this->getVerbose() && (!empty($subFormsWithErrors) || $form->isErrors()) )  {
-                // First show form level custom error messages (the elements show their own errors)
-                $formMessage = $form->getCustomMessages();
-                if(!empty($formMessage)) {
-                    foreach($formMessage as $message)
-                    {
-                        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage($message);
-                    }
-                }
-
-                // Now browse through the tabs with errors
-                foreach ($subFormsWithErrors as $tabIdx => $tabName)
+        // If we found at least one error, and 'verbose' is true
+        if ($this->getVerbose() && (!empty($subFormsWithErrors) || $form->isErrors())) {
+            // First show form level custom error messages (the elements show their own errors)
+            $formMessage = $form->getCustomMessages();
+            if (!empty($formMessage)) {
+                foreach ($formMessage as $message)
                 {
-                    // If more then one tab, show in which tab we found the errors
-                    if ($tabId > 1) {
-                        $translator = Zend_Registry::get('Zend_Translate');
-                        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($translator->_('Error in tab "%s"'), $tabName));
-                    }
+                    Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage($message);
+                }
+            }
 
-                    // If we have them, show the tab custom error messages
-                    foreach ($subFormMessages[$tabIdx] as $subFormMessage)
-                    {                        
-                        foreach ($subFormMessage as $message)
-                        {
-                            Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage("--> " . $message);
-                        }                        
-                    }
+            // Now browse through the tabs with errors
+            foreach ($subFormsWithErrors as $tabIdx => $tabName)
+            {
+                // If more then one tab, show in which tab we found the errors
+                if ($tabId > 1) {
+                    $translator = Zend_Registry::get('Zend_Translate');
+                    Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($translator->_('Error in tab "%s"'), $tabName));
                 }
 
+                // If we have them, show the tab custom error messages
+                foreach ($subFormMessages[$tabIdx] as $subFormMessage)
+                {
+                    foreach ($subFormMessage as $message)
+                    {
+                        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage("--> " . $message);
+                    }
+                }
             }
         }
-    }
+    }    
 }
