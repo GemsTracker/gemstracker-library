@@ -116,7 +116,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
      */
     public function current()
     {
-        return call_user_func($this->_mapFunction, $this->_file->current());
+        return call_user_func($this->_mapFunction, trim($this->_file->current(), "\r\n"));
     }
 
     /**
@@ -182,7 +182,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
             }
 
             $this->_file      = new SplFileObject($this->_filename, 'r');
-            $this->_firstline = $this->_file->current();
+            $this->_firstline = trim($this->_file->current(), "\r\n");
         } else {
             $this->_file->rewind();
         }

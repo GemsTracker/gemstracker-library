@@ -354,6 +354,15 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->add($other);
     }
 
+    /**
+     * Add a button only action to the current subMenuItem
+     *
+     * @param string $label         The label to display for the menu item
+     * @param string $privilege     The privilege for the item
+     * @param string $action        The name of the action
+     * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addActionButton($label, $privilege = null, $action = 'index', array $other = array())
     {
         $other['button_only'] = true;
@@ -361,6 +370,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->addAction($label, $privilege, $action, $other);
     }
 
+    /**
+     * Add invisible autofilet action to the current subMenuItem
+     *
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addAutofilterAction()
     {
         return $this->addAction(null, $this->get('privilege'), 'autofilter');
@@ -369,8 +383,8 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
     /**
      * Add an "Create new" action to the current subMenuItem
      *
-     * @param string $privilege     The privilege for the item
-     * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @param string $privilege The privilege for the item, defaults to parent + .create when not specified
+     * @param array  $other     Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
      * @return Gems_Menu_SubMenuItem
      */
     public function addCreateAction($privilege = null, array $other = array())
@@ -389,6 +403,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->addAction($label, $privilege, 'create', $other);
     }
 
+    /**
+     * Add a standard delete action to the current menu item
+     *
+     * @param string $privilege A privilege name, defaults to parent + .delete when not specified
+     * @param array $other      Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubmenuItem
+     */
     public function addDeleteAction($privilege = null, array $other = array())
     {
         if (isset($other['label'])) {
@@ -408,6 +429,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $menu;
     }
 
+    /**
+     * Add a standard edit action to the current menu item
+     *
+     * @param string $privilege A privilege name, defaults to parent + .edit when not specified
+     * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubmenuItem
+     */
     public function addEditAction($privilege = null, array $other = array())
     {
         if (isset($other['label'])) {
@@ -427,6 +455,11 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $menu;
     }
 
+    /**
+     * Add a standard edit action to the current menu item
+     *
+     * @return Gems_Menu_SubmenuItem
+     */
     public function addExcelAction()
     {
         $options = array(
@@ -459,6 +492,27 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * Add a standard import action to the current menu item
+     *
+     * @param string $privilege A privilege name, defaults to parent + .import  when not specified
+     * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubmenuItem
+     */
+    public function addImportAction($privilege = null, array $other = array())
+    {
+        if (isset($other['label'])) {
+            $label = $other['label'];
+            unset($other['label']);
+        } else {
+            $label = $this->_('Import');
+        }
+
+        $menu = $this->addAction($label, $privilege, 'import', $other);
+
+        return $menu;
     }
 
     /**
@@ -542,6 +596,13 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this->addPage($label, $privilege, $controller, $action, $other);
     }
 
+    /**
+     * Add a standard show action to the current menu item
+     *
+     * @param string $privilege A privilege name, defaults to parent + .show when not specified
+     * @param array $other Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubmenuItem
+     */
     public function addShowAction($privilege = null, array $other = array())
     {
         if (isset($other['label'])) {

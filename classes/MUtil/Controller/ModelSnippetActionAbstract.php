@@ -188,6 +188,28 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $editParameters = array();
 
     /**
+     * The parameters used for the import action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $importParameters = array(
+        'defaultImportTranslator' => 'getDefaultImportTranslator',
+        'importTranslators'       => 'getImportTranslators',
+    );
+
+    /**
+     * The snippets used for the import action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $importSnippets = 'ModelImportSnippet';
+
+    /**
      * The parameters used for the index action minus those in autofilter.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -301,6 +323,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     * Apply this source to the target.
+     *
+     * @param MUtil_Registry_TargetInterface $target
+     * @return boolean True if $target is OK with loaded requests
+     */
+    public function applySource(MUtil_Registry_TargetInterface $target)
+    {
+        return $this->getSnippetLoader()->getSource()->applySource($target);
+    }
+
+
+    /**
      * The automatically filtered result
      *
      * @param $resetMvc When true only the filtered resulsts
@@ -392,6 +426,29 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     * Name of the default import translator
+     *
+     * @return string
+     */
+    public function getDefaultImportTranslator()
+    {
+        return 'default';
+    }
+
+    /**
+     * Get the possible translators for the import snippet.
+     *
+     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     */
+    public function getImportTranslators()
+    {
+        $trs = new MUtil_Model_Translator_StraightTranslator($this->_('Simple import'));
+        $this->applySource($trs);
+
+        return array('default' => $trs);
+    }
+
+    /**
      * Returns the model for the current $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -418,6 +475,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         }
 
         return $this->_model;
+    }
+
+    /**
+     * Generic model based import action
+     */
+    public function importAction()
+    {
+        if ($this->importSnippets) {
+            $params = $this->_processParameters($this->importParameters);
+
+            $this->addSnippets($this->importSnippets, $params);
+        }
     }
 
     /**

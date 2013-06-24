@@ -315,6 +315,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
+        $page->addImportAction();
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);;
         $page->addShowAction()
                 ->setNamedParameters($params)

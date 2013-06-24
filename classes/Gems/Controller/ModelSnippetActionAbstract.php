@@ -62,6 +62,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         );
 
     /**
+     * Gems only parameters used for the import action. Can be overruled
+     * by setting $this->inmportParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_importExtraParameters = array(
+        'formatBoxClass' => 'timeResult rightFloat',
+        );
+
+    /**
      * The snippets used for the autofilter action.
      *
      * @var mixed String or array of snippets name
@@ -410,6 +420,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public function getTopic($count = 1)
     {
         return $this->plural('item', 'items', $count);
+    }
+
+    /**
+     * Generic model based import action
+     */
+    public function importAction()
+    {
+        $this->importParameters = $this->importParameters + $this->_importExtraParameters;
+
+        parent::importAction();
     }
 
     /**

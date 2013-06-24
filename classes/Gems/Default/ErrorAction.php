@@ -87,6 +87,9 @@ class Gems_Default_ErrorAction  extends Zend_Controller_Action
             if ($info) {
                 echo $info . "\n\n";
             }
+            if ($exception->getPrevious()) {
+                echo $exception->getPrevious()->getMessage() . "\n";
+            }
             echo $exception->getTraceAsString();
 
         } else {

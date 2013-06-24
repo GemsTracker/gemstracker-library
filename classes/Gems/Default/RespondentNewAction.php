@@ -154,6 +154,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         switch ($action) {
             case 'create':
             case 'edit':
+            case 'import':
                 return $model->applyEditSettings();
 
             default:
@@ -317,6 +318,19 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         if ($item) {
             return $item->toHRefAttribute($request);
         }
+    }
+
+    /**
+     * Get the possible translators for the import snippet.
+     *
+     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     */
+    public function getImportTranslators()
+    {
+        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Simple import'), $this->db);
+        $this->applySource($trs);
+
+        return array('default' => $trs);
     }
 
     /**
