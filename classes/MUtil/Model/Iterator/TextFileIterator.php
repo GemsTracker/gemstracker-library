@@ -36,7 +36,7 @@
  */
 
 /**
- *
+ * Iterate line by line through a file, with a separate output for the first header line
  *
  * @package    MUtil
  * @subpackage Model
