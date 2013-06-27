@@ -332,11 +332,16 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
 
         // Make sure the target form is set (unless overruled bu child class)
         $this->getTargetForm();
-        echo count($data) . "\n";
 
         foreach($data as $key => $row) {
-            if (! $row) {
-                // Do not bother with empty data
+            if ($row instanceof Traversable) {
+                $row = iterator_to_array($row);
+
+                // print_r($row);
+            }
+
+            if (! (is_array($row) && $row)) {
+                // Do not bother with non array data
                 continue;
             }
 
@@ -364,7 +369,6 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                 $results[$key] = $row;
             }
         }
-        echo count($results) . "\n";
         return $results;
     }
 

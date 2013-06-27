@@ -236,9 +236,20 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
             exit();
         }
 
-        $sourceModel = new MUtil_Model_TabbedTextModel($file);
+        $targetModel = $this->getModel();
+        $trans->setTargetModel($targetModel);
+
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        if ('txt' === $ext) {
+            $sourceModel = new MUtil_Model_TabbedTextModel($file);
+        } elseif ('xml' === $ext) {
+            // echo $targetModel->getName() . "\n";
+            $sourceModel = new MUtil_Model_XmlModel($file);
+        } else {
+            echo "Unsupported file extension. Import not possible.\n";
+        }
+
         $trans->setSourceModel($sourceModel);
-        $trans->setTargetModel($this->getModel());
 
         $data = $sourceModel->load();
         $data = $trans->translateImport($data);
