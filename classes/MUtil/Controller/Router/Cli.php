@@ -174,6 +174,8 @@ name=value (string)  Zero or more name=value parameter pairs, without the
 
         }
 
-        echo "No command given.\n", exit;
+        echo "No command given.\n\n";
+        
+        echo $this->_expandMessage($getopt), exit;
     }
 }
