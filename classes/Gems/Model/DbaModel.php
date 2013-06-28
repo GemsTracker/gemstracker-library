@@ -326,6 +326,9 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     public function runScript(array $data, $includeResultSets = false)
     {
         $results = array();
+        if (! isset($data['db'])) {
+            $data['db'] = $this->defaultDb;
+        }
         if ($data['script']) {
             $queries = MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
             $qCount  = count($queries);

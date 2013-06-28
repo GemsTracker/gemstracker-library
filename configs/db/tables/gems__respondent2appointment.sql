@@ -33,8 +33,8 @@ CREATE TABLE if not exists gems__respondent2appointment (
     gr2a_created_by        bigint unsigned not null,
 
     PRIMARY KEY (gr2a_id_appointment),
-    INDEX (gr2a_id_user, gr2a_id_organization),
-    INDEX (gr2a_appointment)
+    INDEX (gr2a_id_user, gr2a_id_organization)
+    -- ,INDEX (gr2a_appointment)
 )
 ENGINE=InnoDB
 auto_increment = 2000000
