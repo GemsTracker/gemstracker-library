@@ -731,11 +731,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $result[] = $field;
             }
         }
+        // MUtil_Echo::track($result);
         return $result;
-
-        // asort($this->_model_order);
-        // $order = array_keys($this->_model_order);
-        // return $order + array_diff(array_keys($this->_model), $order);
     }
 
     public function getItemsUsed()
