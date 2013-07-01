@@ -179,6 +179,8 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
             $this->addColumn(new Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
 
+        $this->set('gsu_id_primary_group', 'default', 800);
+
         $this->useTokenAsKey();
     }
 
