@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Transparent LESS compiling for all headlink files with .less extension
  *
  * @package    Gems
@@ -43,7 +43,7 @@ include_once 'Lessphp/lessc.inc.php';
  * Using http://leafo.net/lessphp/ this helper compiles http://lesscss.org/ to a css file.
  * Compiling takes some time, so it will only run when the input file is newer than
  * the output file or when the output file doesn't exist.
- * 
+ *
  * Append ?compilecss to the url to force it to create new css.
  *
  * @package    Gems
@@ -57,7 +57,7 @@ class Gems_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
     public function itemToString(\stdClass $item)
     {
         $attributes = (array) $item;
-        
+
         if (isset($attributes['type']) && $attributes['type'] == 'text/css') {
             // This is a stylesheet, consider extension and compile .less to .css
             if (substr($attributes['href'],-5) == '.less') {
@@ -86,7 +86,7 @@ class Gems_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
                     }
                 } catch (Exception $exc) {
                     // If we have an error, present it if not in production
-                    if (APPLICATION_ENV !== 'production') {
+                    if ((APPLICATION_ENV !== 'production') || (APPLICATION_ENV !== 'acceptance')) {
                         MUtil_Echo::pre($exc->getMessage());
                     }
                 }
@@ -95,7 +95,7 @@ class Gems_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
                 $item->href = substr($attributes['href'], 0, -4) . 'css';
             }
         }
-        
+
         return parent::itemToString($item);
     }
 }

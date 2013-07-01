@@ -70,7 +70,7 @@ class MUtil_Model_XmlModel extends MUtil_Model_ArrayModelAbstract
      *
      * @param string $fileName
      */
-    public function __construct($fileName, $xpath = '/*/*')
+    public function __construct($fileName, $xpath = null)
     {
         parent::__construct($fileName);
 

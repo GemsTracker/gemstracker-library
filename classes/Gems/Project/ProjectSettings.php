@@ -208,7 +208,8 @@ class Gems_Project_ProjectSettings extends ArrayObject
         }
 
         $superPassword = $this->getSuperAdminPassword();
-        if ((APPLICATION_ENV === 'production') && $this->getSuperAdminName() && $superPassword) {
+        if (('production' === APPLICATION_ENV || 'acceptance' === APPLICATION_ENV) &&
+                $this->getSuperAdminName() && $superPassword) {
             if (strlen($superPassword) < $this->minimumSuperPasswordLength) {
                 $error = sprintf("Project setting 'admin.pwd' is shorter than %d characters. That is not allowed.", $this->minimumSuperPasswordLength);
                 throw new Gems_Exception_Coding($error);
