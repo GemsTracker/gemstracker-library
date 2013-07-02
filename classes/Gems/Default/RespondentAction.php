@@ -202,11 +202,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public function afterSave(array $data, $isNew)
     {
-        if ($isNew) {
-            // Tell the organization it has at least one user
-            $org = $this->loader->getOrganization($data['gr2o_id_organization']);
-            $org->setHasRespondents($data['grs_id_user']);
-        }
         $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
         return true;
     }
