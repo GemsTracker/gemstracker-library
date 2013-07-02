@@ -70,7 +70,7 @@ class MUtil_Model_XmlModel extends MUtil_Model_ArrayModelAbstract
      *
      * @param string $fileName
      */
-    public function __construct($fileName, $xpath = null)
+    public function __construct($fileName, $xpath = '/*')
     {
         parent::__construct($fileName);
 
@@ -86,6 +86,7 @@ class MUtil_Model_XmlModel extends MUtil_Model_ArrayModelAbstract
      */
     protected function _loadAllTraversable()
     {
-        return $this->_xml;
+        return $this->_xml->getElementIterator()
+                ->setMapFunction(array('MUtil_XmlRa', 'toArray'));
     }
 }

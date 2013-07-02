@@ -158,7 +158,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     public function filterBasic(&$value, $key)
     {
-        if ($this->nullValue === strtoupper($value)) {
+        if (is_string($value) && ($this->nullValue === strtoupper($value))) {
             $value = null;
             return;
         }

@@ -263,9 +263,17 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
         $fields = array_combine($fields, $fields);
 
         if (is_array($data)) {
-            echo implode("\t", array_intersect(array_keys(reset($data)), $fields)) . "\n";
+            $row = reset($data);
+            if (is_array($row)) {
+                echo implode("\t", array_intersect(array_keys(reset($data)), $fields)) . "\n";
+            }
             foreach ($data as $row) {
-                echo implode("\t", array_intersect_key($row, $fields)) . "\n";
+                if (is_array($row)) {
+                    echo implode("\t", array_intersect_key($row, $fields)) . "\n";
+                } else {
+                    echo $row . "\n";
+                }
+
             }
         } else {
             echo "No output data.\n";

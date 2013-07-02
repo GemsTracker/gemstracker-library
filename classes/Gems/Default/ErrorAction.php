@@ -72,9 +72,10 @@ class Gems_Default_ErrorAction  extends Zend_Controller_Action
                     $info         = $exception->getInfo();
                     break;
                 }
+                // Intentional fall through
 
             default:
-                // application error
+                $message = $exception->getMessage();
                 break;
         }
 
@@ -87,9 +88,13 @@ class Gems_Default_ErrorAction  extends Zend_Controller_Action
             if ($info) {
                 echo $info . "\n\n";
             }
-            if ($exception->getPrevious()) {
-                echo $exception->getPrevious()->getMessage() . "\n";
+
+            $next = $exception->getPrevious();
+            while ($next) {
+                echo '  ' . $next->getMessage() . "\n";
+                $next = $next->getPrevious();
             }
+
             echo $exception->getTraceAsString();
 
         } else {
