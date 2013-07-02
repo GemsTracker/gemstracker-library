@@ -256,21 +256,25 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
 
         if ($trans->hasErrors()) {
             echo implode("\n", $trans->getErrors()) . "\n";
-            exit();
+            // exit();
         }
 
         $fields = $trans->getTargetModel()->getItemNames();
         $fields = array_combine($fields, $fields);
 
-        echo implode("\t", array_intersect(array_keys(reset($data)), $fields)) . "\n";
-        foreach ($data as $row) {
-            echo implode("\t", array_intersect_key($row, $fields)) . "\n";
+        if (is_array($data)) {
+            echo implode("\t", array_intersect(array_keys(reset($data)), $fields)) . "\n";
+            foreach ($data as $row) {
+                echo implode("\t", array_intersect_key($row, $fields)) . "\n";
+            }
+        } else {
+            echo "No output data.\n";
         }
         // print_r($data);
 
         // echo count($this->getModel()->saveAll($data)) . "\n";
         // echo $this->getModel()->getChanged() . "\n";
-
+        echo MUtil_Console::removeHtml(MUtil_Echo::out());
         exit();
     }
 }

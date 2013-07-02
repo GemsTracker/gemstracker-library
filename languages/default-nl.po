@@ -5302,7 +5302,7 @@ msgstr "Rij %s"
 #: classes/MUtil/Model/ModelTranslatorAbstract.php:193
 #, php-format
 msgid " field %s"
-msgstr " velden %s"
+msgstr " veld %s"
 
 #: classes/MUtil/Model/ModelTranslatorAbstract.php:195
 msgid ": "

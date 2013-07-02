@@ -37,7 +37,7 @@
 
 /**
  * Unique database validation with provision for the value not being changed
- * 
+ *
  * @package    MUtil
  * @subpackage Validate
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -176,6 +176,9 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
                 if ($excludes) {
                     $this->_exclude .= ' AND ';
                 }
+            } else {
+                // Clear cached query
+                $this->_exclude = '';
             }
             if ($excludes) {
                 $this->_exclude .= 'NOT (' . implode(' AND ', $excludes) . ')';
@@ -183,6 +186,9 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
         } else {
             $this->_exclude = null;
         }
+        // Clear cached query
+        $this->_select = null;
+
         // MUtil_Echo::track($this->_exclude, $this->_checkFields, $this->_keyFields, $context, $_POST);
 
         return parent::isValid($value, $context);

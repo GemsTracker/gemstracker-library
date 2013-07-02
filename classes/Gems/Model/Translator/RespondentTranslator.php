@@ -52,6 +52,12 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
      */
     protected $db;
 
+    /**
+     *
+     *
+     * @var array
+     */
+    protected $orgTranslations;
 
     /**
      *
@@ -62,6 +68,18 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
         parent::__construct($description);
 
         $this->db = $db;
+
+        $this->orgTranslations = $this->db->fetchPairs('
+            SELECT gor_provider_id, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_provider_id IS NOT NULL
+                ORDER BY gor_provider_id');
+
+        $this->orgTranslations = $this->orgTranslations + $this->db->fetchPairs('
+            SELECT gor_code, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_code IS NOT NULL
+                ORDER BY gor_id_organization');
     }
 
     /**
@@ -77,6 +95,11 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
 
         if (! $row) {
             return false;
+        }
+
+        // Get the real organization from the provider_id or code if it exists
+        if (isset($row['gr2o_id_organization'], $this->orgTranslations[$row['gr2o_id_organization']])) {
+            $row['gr2o_id_organization'] = $this->orgTranslations[$row['gr2o_id_organization']];
         }
 
         if (! isset($row['grs_id_user'])) {
@@ -125,7 +148,8 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
             }
 
             if ($id) {
-                $row['grs_id_user'] = $id;
+                $row['grs_id_user']  = $id;
+                $row['gr2o_id_user'] = $id;
             }
         }
 

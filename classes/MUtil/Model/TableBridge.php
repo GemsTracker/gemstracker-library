@@ -260,13 +260,21 @@ class MUtil_Model_TableBridge extends MUtil_Model_TableBridgeAbstract
         return $this->table;
     }
 
-    public function itemIf($if, $item)
+    /**
+     * Add an item based of a lazy if
+     *
+     * @param mixed $if
+     * @param mixed $item
+     * @param mixed $else
+     * @return array
+     */
+    public function itemIf($if, $item, $else = null)
     {
         if (is_string($if)) {
             $if = $this->$if;
         }
 
-        return array(MUtil_Lazy::iff($if, $item), $item);
+        return array(MUtil_Lazy::iff($if, $item, $else), $item);
     }
 
     public function setBaseUrl(array $url)
