@@ -42,7 +42,7 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.2
+ * @since      Class available since MUtil version 1.3
  */
 class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
 {
@@ -62,6 +62,12 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
 
     /**
      *
+     * @var MUtil_Model_ModelAbstract
+     */
+    protected $importModel;
+
+    /**
+     *
      * @var array of MUtil_Model_ModelTranslatorInterface objects
      */
     protected $importTranslators;
@@ -73,13 +79,54 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
     protected $model;
 
     /**
+     *
+     * @var MUtil_Model_ModelAbstract
+     */
+    protected $targetModel;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if ($this->model instanceof MUtil_Model_ModelAbstract) {
+            if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
+                $this->targetModel = $this->model;
+            }
+        }
+
+        // Cleanup any references to model to avoid confusion
+        $this->model = null;
+    }
+
+    /**
      * Creates the model
      *
      * @return MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
-        return $this->model;
+        if (! $this->importModel instanceof MUtil_Model_ModelAbstract) {
+            // $model = new MUtil_Model_TableModel
+            $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
+
+            $model->set('trans', 'label', $this->_('Translator'),
+                    'multiOptions', $this->getTranslatorDescriptions(),
+                    'required', true,
+                    'size', min(count($this->importTranslators) + 1, 6));
+
+            $model->set('file', 'label', $this->_('Import file'),
+                    'elementClass', 'File');
+
+            $this->importModel = $model;
+        }
+
+        return $this->importModel;
     }
 
     /**
@@ -104,7 +151,7 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
             $trans = $this->importTranslators[$this->formData['trans']];
 
             if ($trans instanceof MUtil_Model_ModelTranslatorInterface) {
-                $trans->setTargetModel($this->getModel());
+                $trans->setTargetModel($this->targetModel);
                 $fieldInfo = $trans->getImportFields();
 
                 $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import format'), true);
@@ -236,7 +283,7 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
             exit();
         }
 
-        $targetModel = $this->getModel();
+        $targetModel = $this->targetModel;
         $trans->setTargetModel($targetModel);
 
         $ext = pathinfo($file, PATHINFO_EXTENSION);
@@ -280,8 +327,8 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
         }
         // print_r($data);
 
-        // echo count($this->getModel()->saveAll($data)) . "\n";
-        // echo $this->getModel()->getChanged() . "\n";
+        // echo count($targetModel->saveAll($data)) . "\n";
+        // echo $targetModel->getChanged() . "\n";
         echo MUtil_Console::removeHtml(MUtil_Echo::out());
         exit();
     }
