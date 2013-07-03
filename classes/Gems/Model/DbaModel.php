@@ -56,6 +56,14 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     const STATE_UNKNOWN = 3;
 
     /**
+     * When set to true in a subclass, then the model should be able to
+     * save itself.
+     *
+     * @var boolean
+     */
+    protected $_saveable = true;
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
