@@ -510,6 +510,10 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             $label = $this->_('Import');
         }
 
+        if (null === $privilege) {
+            $privilege = $this->get('privilege') . '.import';
+        }
+
         $menu = $this->addAction($label, $privilege, 'import', $other);
 
         return $menu;

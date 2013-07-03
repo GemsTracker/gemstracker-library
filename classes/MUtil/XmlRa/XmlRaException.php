@@ -44,10 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class MUtil_XmlRa_XmlRaException extends Exception
+class MUtil_XmlRa_XmlRaException extends Zend_Exception
 {
-    function __construct($message, $code = 0)
-    {
-        parent::__construct("XmlRa Exception:\n\n" . $message, $code);
-    }
+    // Interface marking function
 }

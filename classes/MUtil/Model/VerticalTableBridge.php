@@ -221,13 +221,21 @@ class MUtil_Model_VerticalTableBridge extends MUtil_Model_TableBridgeAbstract
         return $this->table;
     }
 
-    public function itemIf($if, $item)
+    /**
+     * Add an item based of a lazy if
+     *
+     * @param mixed $if
+     * @param mixed $item
+     * @param mixed $else
+     * @return array
+     */
+    public function itemIf($if, $item, $else = null)
     {
         if (is_string($if)) {
             $if = $this->$if;
         }
 
-        return MUtil_Lazy::iff($if, $item);
+        return MUtil_Lazy::iff($if, $item, $else);
     }
 
     public function setColumnCount($count)

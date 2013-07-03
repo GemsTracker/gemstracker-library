@@ -103,19 +103,6 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     public $loader;
 
     /**
-     * The snippets used for the show action
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $showSnippets = array(
-        'Generic_ContentTitleSnippet',
-        'RespondentDetailsSnippet',
-    	'AddTracksSnippet',
-        'RespondentTokenTabsSnippet',
-        'RespondentTokenSnippet',
-    );
-
-    /**
      * The parameters used for the show action
      *
      * When the value is a function name of that object, then that functions is executed
@@ -130,6 +117,19 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         'forOtherOrgs'   => 'getOtherOrgs',
         'onclick'        => 'getEditLink',
         'respondentData' => 'getRespondentData',
+    );
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'RespondentDetailsSnippet',
+    	'AddTracksSnippet',
+        'RespondentTokenTabsSnippet',
+        'RespondentTokenSnippet',
     );
 
     /**

@@ -482,6 +482,16 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         // return ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents()));
         return $this->user->hasPrivilege('pr.respondent.multiorg');
     }
+    
+    public function save(array $newValues, array $filter = null, array $saveTables = null) {
+        if (isset($newValues['gr2o_id_organization']) && isset($newValues['grs_id_user'])) {
+            // Tell the organization it has at least one user
+            $org = $this->loader->getOrganization($newValues['gr2o_id_organization']);
+            $org->setHasRespondents($newValues['grs_id_user']);
+        }
+            
+        return parent::save($newValues, $filter, $saveTables);
+    }
 
     /**
      * Return a hashed version of the input value.

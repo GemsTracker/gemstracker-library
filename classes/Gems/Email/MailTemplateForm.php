@@ -103,13 +103,13 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
 
         return new Zend_Form_Element_MultiCheckbox('gmt_organizations', $options);
     }
-    
+
     protected function createOrganizationToggle()
     {
         $this->activateJQuery();
         $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gmt_organizations]'));
         $element->setLabel($this->escort->_('Toggle'));
-        
+
         return $element;
     }
 
@@ -153,7 +153,7 @@ class Gems_Email_MailTemplateForm extends Gems_Email_EmailFormAbstract
                 $tokenData = $model->loadFirst(false, $sort);
                 if (! $tokenData) {
                     //No tokens, just add an empty array and hope we get no notices later
-                    $tokenData = array();
+                    $tokenData = $model->loadNew();
                 }
             }
 

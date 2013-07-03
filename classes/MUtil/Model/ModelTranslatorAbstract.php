@@ -150,18 +150,42 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
-     * Translate textual null values to actual PHP nulls
+     * Translate textual null values to actual PHP nulls and trim any whitespace
      *
      * @param mixed $value
+     * @param scalar $key The array key, optionally a model key as well
      * @return mixed
      */
-    public function filterNull($value)
+    public function filterBasic(&$value, $key)
     {
-        if ($this->nullValue === strtoupper($value)) {
-            return null;
+        if (is_string($value) && ($this->nullValue === strtoupper($value))) {
+            $value = null;
+            return;
         }
 
-        return $value;
+        if ($this->_targetModel instanceof MUtil_Model_ModelAbstract) {
+            if ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATE)) {
+                $format = 'YYYY-MM-DD';
+            } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATETIME)) {
+                $format = Zend_Date::ISO_8601;
+            } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_TIME)) {
+                $format = Zend_Date::TIMES;
+            } else {
+                $format = false;
+            }
+
+            if ($format && MUtil_Date::isDate($value, $format)) {
+                $value = new MUtil_Date($value, $format);
+                return;
+            }
+        }
+
+        if (is_string($value)) {
+            $value = trim($value);
+            return;
+        }
+
+        return;
     }
 
     /**
@@ -381,9 +405,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     protected function translateRowValues($row, $key)
     {
-        if ($this->nullValue) {
-            $row = array_map(array($this, 'filterNull'), $row);
-        }
+        array_walk($row, array($this, 'filterBasic'));
 
         return $row;
     }
@@ -400,6 +422,20 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         // Clean up lingering values
         $this->targetForm->clearErrorMessages()
                 ->populate(array());
+
+        /* Not needed, but leave in place just in case
+        // Make sure the copy keys are set (for e.g. validators)
+        if ($this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
+            $keys = $this->_targetModel->getKeys();
+
+            foreach ($keys as $name) {
+                $copy = $this->_targetModel->getKeyCopyName($name);
+
+                if ($this->_targetModel->has($copy)) {
+                    $row[$copy] = $row[$name];
+                }
+            }
+        } // */
 
         if (! $this->targetForm->isValid($row)) {
             $messages = $this->targetForm->getMessages(null, true);

@@ -243,7 +243,15 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
 
     abstract public function getTable();
 
-    abstract public function itemIf($if, $item);
+    /**
+     * Add an item based of a lazy if
+     *
+     * @param mixed $if
+     * @param mixed $item
+     * @param mixed $else
+     * @return array
+     */
+    abstract public function itemIf($if, $item, $else = null);
 
     /**
      * Set the model to use in the tablebridge

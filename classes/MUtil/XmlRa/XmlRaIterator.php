@@ -62,6 +62,26 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     private $_currentNode;
 
     /**
+     * Function for filtering the output results.
+     *
+     * Signature must be: function(mixed $value) where $value is
+     * a MUtil_XmlRa::_returnValue output and returns a boolean.
+     *
+     * @var callable
+     */
+    private $_filterFunction;
+
+    /**
+     * Function for transforming the outpur result.
+     *
+     * Signature must be: function(mixed $value) where $value is
+     * a MUtil_XmlRa::_returnValue output.
+     *
+     * @var callable
+     */
+    private $_mapFunction;
+
+    /**
      * The start, i.e. parent xml item
      *
      * @var MUtil_XmlRa
@@ -93,6 +113,9 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      */
     public function current()
     {
+        if ($this->_mapFunction) {
+            return call_user_func($this->_mapFunction, $this->_currentNode);
+        }
         return $this->_currentNode;
     }
 
@@ -121,6 +144,11 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
             $this->_currentNode = null;
         }
 
+        if ($this->_currentNode && $this->_filterFunction) {
+            if (!call_user_func($this->_filterFunction, $this->_currentNode)) {
+                $this->next();
+            }
+        }
     }
 
     /**
@@ -132,6 +160,37 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
     {
         $this->_currentCount = -1;
         $this->next();
+    }
+
+    /**
+     * Set function for filtering the output results.
+     *
+     * Signature must be: function(mixed $value) where $value is
+     * a MUtil_XmlRa::_returnValue output and returns a boolean.
+     *
+     *
+     * @param callable $function function()
+     * @return \MUtil_XmlRa_XmlRaIterator (continuation pattern)
+     */
+    public function setFilterFunction($function)
+    {
+        $this->_filterFunction = $function;
+        return $this;
+    }
+
+    /**
+     * Set function for transforming the outpur result.
+     *
+     * Signature must be: function(mixed $value) where $value is
+     * a MUtil_XmlRa::_returnValue output.
+     *
+     * @param callable $function function()
+     * @return \MUtil_XmlRa_XmlRaIterator (continuation pattern)
+     */
+    public function setMapFunction($function)
+    {
+        $this->_mapFunction = $function;
+        return $this;
     }
 
     /**
