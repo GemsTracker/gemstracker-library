@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -390,6 +389,42 @@ class MUtil_Ra
             }
         }
         return $results;
+    }
+
+    /**
+     * Search through nested array for the first row
+     * that contains the whole $keys array.
+     *
+     * @param array $data A nested array
+     * @param array $keys index => value
+     * @return mixed Key from data if found or null otherwise
+     */
+    public static function findKeys(array $data, array $keys)
+    {
+        if (count($keys) == 1) {
+            $value = reset($keys);
+            $key   = key($keys);
+            foreach ($data as $index => $row) {
+                if (isset($row[$key]) && ($row[$key] == $value)) {
+                    return $index;
+                }
+            }
+        } else {
+            foreach ($data as $index => $row) {
+                $found = true;
+                foreach ($keys as $key => $value) {
+                    if ((!isset($row[$key])) || ($row[$key] !== $value)) {
+                        $found = false;
+                        break;
+                    }
+                }
+                if ($found) {
+                    return $index;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
