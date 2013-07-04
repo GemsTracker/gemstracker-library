@@ -280,8 +280,16 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent number'),
                 'tab', $translator->_('Identification'));
 
+        $this->setIfExists('grs_initials_name',  'label', $translator->_('Initials'));
         $this->setIfExists('grs_first_name',  'label', $translator->_('First name'));
+        $this->setIfExists('grs_surname_prefix', 'label', $translator->_('Surname prefix'),
+                'description', $translator->_('de, ibn, Le, Mac, von, etc...'));
+
         $this->setIfExists('grs_last_name',   'label', $translator->_('Last name'));
+
+        $this->setIfExists('grs_partner_surname_prefix', 'label', $translator->_('Partner surname prefix'),
+                'description', $translator->_('de, ibn, Le, Mac, von, etc...'));
+        $this->setIfExists('grs_partner_last_name',   'label', $translator->_('Partner last name'));
 
         $this->setIfExists('grs_gender',
                 'label', $translator->_('Gender'),
@@ -313,6 +321,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_phone_1',     'label', $translator->_('Phone'));
         $this->setIfExists('grs_phone_2',     'label', $translator->_('Phone 2'));
         $this->setIfExists('grs_phone_3',     'label', $translator->_('Phone 3'));
+        $this->setIfExists('grs_phone_4',     'label', $translator->_('Phone 4'));
 
         $this->setIfExists('grs_iso_lang',    'label', $translator->_('Language'),
                 'multiOptions', $localized->getLanguages(),
@@ -382,6 +391,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_first_name', 'filter', $ucfirst);
         $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
+        $this->setIfExists('grs_partner_last_name',  'filter', new Zend_Filter_Callback('ucfirst'));
 
         $this->setIfExists('grs_gender',
                 'elementClass', 'Radio',
@@ -408,6 +418,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_phone_1', 'size', 15);
         $this->setIfExists('grs_phone_2', 'size', 15);
         $this->setIfExists('grs_phone_3', 'size', 15);
+        $this->setIfExists('grs_phone_4', 'size', 15);
 
         $this->setIfExists('gr2o_opened', 'elementClass', 'Exhibitor');
 
@@ -482,14 +493,14 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         // return ($this->user->hasPrivilege('pr.respondent.multiorg') && (! $this->user->getCurrentOrganization()->canHaveRespondents()));
         return $this->user->hasPrivilege('pr.respondent.multiorg');
     }
-    
+
     public function save(array $newValues, array $filter = null, array $saveTables = null) {
         if (isset($newValues['gr2o_id_organization']) && isset($newValues['grs_id_user'])) {
             // Tell the organization it has at least one user
             $org = $this->loader->getOrganization($newValues['gr2o_id_organization']);
             $org->setHasRespondents($newValues['grs_id_user']);
         }
-            
+
         return parent::save($newValues, $filter, $saveTables);
     }
 

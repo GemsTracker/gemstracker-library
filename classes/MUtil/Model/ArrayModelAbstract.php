@@ -352,10 +352,15 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
     {
         if ($this->_saveable) {
 
-            $data = iterator_to_array($this->_loadAllTraversable());
+            $data = $this->_loadAllTraversable();
+            if ($data instanceof Traversable) {
+                $data = iterator_to_array($this->_loadAllTraversable());
+            }
 
             if ($keys === $this->getKeys()) {
                 $search = array();
+                $newValues = $newValues + $filter;
+
                 foreach ($keys as $key) {
                     if (isset($newValues[$key])) {
                         $search[$key] = $newValues[$key];
