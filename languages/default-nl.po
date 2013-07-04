@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-01 14:01+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:307
@@ -3532,7 +3532,7 @@ msgstr ""
 msgid ""
 "Updates the survey of unanswered tokens when the round survey was changed."
 msgstr ""
-"Werkt de vragenlijst bij als die verandert is en het kenmerk nog niet "
+"Werkt de vragenlijst bij als die veranderd is en het kenmerk nog niet "
 "beantwoord is."
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:110
@@ -4360,7 +4360,7 @@ msgstr "%2$d kenmerken zijn aangepast vanwege %1$d ronde voltooiingen."
 #, php-format
 msgid "%d token out of %d tokens changed."
 msgid_plural "%d tokens out of %d tokens changed."
-msgstr[0] "%d van %d kenmerken verandert."
+msgstr[0] "%d van %d kenmerken veranderd."
 msgstr[1] "%d van %d kenmerken verandert."
 
 #: classes/Gems/Task/Tracker/SourceSyncSurveys.php:56
