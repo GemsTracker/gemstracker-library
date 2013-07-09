@@ -22,6 +22,7 @@ CREATE TABLE if not exists gems__respondent2appointment (
     gr2a_attended_by       varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
     gr2a_referred_by       varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
     gr2a_activity          varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
+    gr2a_procedures        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
     gr2a_location          varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
     gr2a_subject           varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
@@ -33,6 +34,7 @@ CREATE TABLE if not exists gems__respondent2appointment (
     gr2a_created_by        bigint unsigned not null,
 
     PRIMARY KEY (gr2a_id_appointment),
+    INDEX (gr2a_id_in_source, gr2a_id_organization),
     INDEX (gr2a_id_user, gr2a_id_organization)
     -- ,INDEX (gr2a_appointment)
 )

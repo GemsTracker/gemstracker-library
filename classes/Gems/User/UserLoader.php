@@ -66,9 +66,8 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public $allowLoginOnOtherOrganization = false;
 
-
     /**
-     * When true a user is allowed to login withut specifying an organization
+     * When true a user is allowed to login without specifying an organization
      * See GetUserClassSelect for the possible options
      * but be aware that duplicate accounts could lead to problems. To avoid
      * problems you can always use the organization switch AFTER login.
