@@ -123,7 +123,9 @@ class MUtil_Model_FormBridge
             $element = $this->form->getElement($name);
         }
         $this->_applyFilters($name, $element);
-        $this->_applyValidators($name, $element);
+        if (! $element instanceof Zend_Form_Element_Hidden) {
+            $this->_applyValidators($name, $element);
+        }
 
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 

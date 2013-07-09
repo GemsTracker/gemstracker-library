@@ -66,39 +66,6 @@ class MUtil_Model_Translator_StraightTranslator extends MUtil_Model_ModelTransla
     }
 
     /**
-     * Get information on the required input format.
-     *
-     * @return array of nested field_name => array(field_name, label, maxlength, type)
-     * @throws MUtil_Model_ModelException
-     */
-    public function getImportFields()
-    {
-        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            throw new MUtil_Model_ModelException(sprintf('Called %s without a set target model.', __FUNCTION__));
-        }
-
-        $fieldLabels = $this->getFieldsTranslations();
-        $fieldList   = array();
-
-        foreach ($fieldLabels as $name => $targetName) {
-            $field = $this->_targetModel->get($name, 'type', 'maxlength', 'label', 'required');
-            $field = $field + array(
-                'input_name' => $name,
-                'output_name' => $targetName,
-                'type' => MUtil_Model::TYPE_STRING,
-                'label' => $targetName,
-                'maxlength' => null,
-                'required' => false);
-
-            ksort($field);
-
-            $fieldList[$name] = $field;
-        }
-
-        return $fieldList;
-    }
-
-    /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName

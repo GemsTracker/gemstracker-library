@@ -144,8 +144,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                 'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),
                 'extension', 'pdf',
                 'filename', $data['gsu_id_survey'],
-                'required', false)
-               ->addValidator(new MUtil_Validate_Pdf());
+                'required', false);
+        // ->addValidator(new MUtil_Validate_Pdf());
 
         $bridge->addExhibitor(  'track_count', 'label', $this->_('Usage'), 'value', $data['track_count']);
 

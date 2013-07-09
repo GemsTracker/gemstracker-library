@@ -132,14 +132,14 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * The form Id used for the save button
      *
-     * If empty save button is added
+     * If empty save button is not added
      *
      * @var string
      */
     protected $saveButtonId = 'save_button';
 
     /**
-     * The save button label (default is translated 'Save'
+     * The save button label (default is translated 'Save')
      *
      * @var string
      */
@@ -180,13 +180,13 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
 
         $bridge   = array_shift($args);
         $elements = MUtil_Ra::flatten($args);
+        $model    = $this->getModel();
 
         //Remove the elements from the _items variable
         $this->_items = array_diff($this->_items, $elements);
 
         //And add them to the bridge
         foreach($elements as $name) {
-            $model = $this->getModel();
             if ($label = $model->get($name, 'label')) {
                 $bridge->add($name);
             } else {

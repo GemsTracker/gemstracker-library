@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
+class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
      * Array key of the default import translator
@@ -54,7 +54,7 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
     protected $defaultImportTranslator;
 
     /**
-     * Class used
+     * Class for import fields table
      *
      * @var string
      */
@@ -83,6 +83,60 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
      * @var MUtil_Model_ModelAbstract
      */
     protected $targetModel;
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @param int $step The current step
+     */
+    protected function addStepElementsFor(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $step)
+    {
+        $element = new MUtil_Form_Element_Html('step_header');
+        $element->h1(sprintf($this->_('Data import, step %d of %d.'), $step, $this->getStepCount()));
+
+        $bridge->addElement($element);
+
+        switch ($step) {
+            case 0:
+            case 1:
+                $this->addStep1($bridge, $model);
+                break;
+
+            case 2:
+                $this->addStep2($bridge, $model);
+                break;
+
+            default:
+        }
+    }
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep1(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        $this->addItems($bridge, 'trans', 'mode');
+    }
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep2(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        if (isset($this->formData['mode']) && ('file' == $this->formData['mode'])) {
+            $this->addItems($bridge, 'file');
+        } else {
+            $this->addItems($bridge, 'content');
+        }
+    }
 
     /**
      * Called after the check that all required registry values
@@ -115,13 +169,26 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
             // $model = new MUtil_Model_TableModel
             $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
-            $model->set('trans', 'label', $this->_('Translator'),
+            $model->set('trans', 'label', $this->_('Choose a translator'),
                     'multiOptions', $this->getTranslatorDescriptions(),
                     'required', true,
-                    'size', min(count($this->importTranslators) + 1, 6));
+                    'elementClass', 'Radio',
+                    'separator', ' ');
+
+            $model->set('mode', 'label', $this->_('Choose work mode'),
+                    'multiOptions', array(
+                        'file'     => $this->_('Upload a file'),
+                        'textarea' => $this->_('Copy and paste into a text field'),
+                    ),
+                    'required', true,
+                    'elementClass', 'Radio',
+                    'separator', ' ');
 
             $model->set('file', 'label', $this->_('Import file'),
                     'elementClass', 'File');
+
+            $model->set('content', 'label', $this->_('Import text'),
+                    'elementClass', 'Textarea');
 
             $this->importModel = $model;
         }
@@ -139,31 +206,32 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        parent::getHtmlOutput($view);
+        $form = parent::getHtmlOutput($view);
 
-        $seq = new MUtil_Html_Sequence();
+        if (1 == $this->currentStep) {
 
-        $seq->h1($this->_('Import data'));
+            $fieldInfo = $this->getTranslatorTable();
 
-        if (isset($this->formData['trans'], $this->importTranslators[$this->formData['trans']])
-                && $this->formData['trans']) {
+            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import fields'), true);
+            $table->appendAttrib('class', $this->formatBoxClass);
 
-            $trans = $this->importTranslators[$this->formData['trans']];
+            $element = new MUtil_Form_Element_Html('transtable');
+            $element->setValue($table);
 
-            if ($trans instanceof MUtil_Model_ModelTranslatorInterface) {
-                $trans->setTargetModel($this->targetModel);
-                $fieldInfo = $trans->getImportFields();
-
-                $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import format'), true);
-                $table->appendAttrib('class', $this->formatBoxClass);
-
-                $seq->append($table);
-            }
+            $this->_form->addElement($element);
         }
 
-        $seq->append($this->_form);
+        return $form;
+    }
 
-        return $seq;
+    /**
+     * The number of steps in this form
+     *
+     * @return int
+     */
+    protected function getStepCount()
+    {
+        return 5;
     }
 
     /**
@@ -181,6 +249,100 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
         }
 
         return $results;
+    }
+
+    /**
+     * Get the descriptions of the translators
+     *
+     * @return array key -> description
+     */
+    protected function getTranslatorTable()
+    {
+        $results = array_fill_keys($this->targetModel->getItemsOrdered(), array());
+        $minimal = array(); // Array for making sure all fields are there
+
+        foreach ($this->importTranslators as $transKey => $translator) {
+
+            if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+
+                $translator->setTargetModel($this->targetModel);
+                $transName    = $translator->getDescription();
+                $translations = $translator->getFieldsTranslations();
+
+                $minimal[$transName] = $this->_(' ');
+
+                foreach ($translations as $source => $target) {
+                    // Skip numeric fields
+                    if (! is_int($source)) {
+                        $results[$target][$transName] = $source;
+                    }
+                }
+            }
+        }
+
+        $output = array();
+        foreach ($results as $name => $resultRow) {
+
+            if ($resultRow) {
+                if ($this->targetModel->has($name, 'label')) {
+                    $label = $this->targetModel->get($name, 'label');
+                } else {
+                    $label = $name;
+                }
+
+                // $field = $this->_targetModel->get($name, 'type', 'maxlength', 'label', 'required');
+                switch ($this->targetModel->get($name, 'type')) {
+                    case MUtil_Model::TYPE_NOVALUE:
+                        unset($results[$name]);
+                        continue;;
+
+                    case MUtil_Model::TYPE_NUMERIC:
+                        $maxlength = $this->targetModel->get($name, 'maxlength');
+                        if ($maxlength) {
+                            $decimals = $this->targetModel->get($name, 'decimals');
+                            if ($decimals) {
+                                $type = sprintf($this->_('A number of length %d, with a precision of %d digits after the period.'), $maxlength, $decimals);
+                            } else {
+                                $type = sprintf($this->_('A whole number of length %d.'), $maxlength);
+                            }
+                        } else {
+                            $type = $this->_('A numeric value');
+                        }
+                        break;
+
+                    case MUtil_Model::TYPE_DATE:
+                        $type = $this->_('Date value using ISO 8601: yyyy-mm-dd');
+                        break;
+
+                    case MUtil_Model::TYPE_DATETIME:
+                        $type = $this->_('Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]');
+                        break;
+
+                    case MUtil_Model::TYPE_TIME:
+                        $type = $this->_('Time value using ISO 8601: hh:mm::ss[+-hh:mm]');
+                        break;
+
+                    default:
+                        $maxlength = $this->targetModel->get($name, 'maxlength');
+                        if ($maxlength) {
+                            $type = sprintf($this->_('Text, %d characters'), $maxlength);
+                        } else {
+                            $type = $this->_('Text');
+                        }
+                        break;
+
+                }
+                $required = $this->targetModel->get($name, 'required');
+
+                $resultRow[$this->_('Field')]    = $label;
+                $resultRow[$this->_('Content')]  = $type;
+                $resultRow[$this->_('Required')] = $required ? $this->_('Yes') : ' ';
+
+                $output[$name] = $resultRow + $minimal;
+            }
+        }
+
+        return $output;
     }
 
     /**
@@ -205,34 +367,6 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
     }
 
     /**
-     * Makes sure there is a form.
-     */
-    protected function loadForm()
-    {
-        if (! $this->_form) {
-            $this->_form = $this->createForm();
-
-            $element = new Zend_Form_Element_Select('trans');
-            $element->setLabel($this->_('Translator'))
-                    ->setMultiOptions($this->getTranslatorDescriptions())
-                    ->setAttrib('size', min(count($this->importTranslators) + 1, 6));
-            $this->_form->addElement($element);
-
-            $element = new Zend_Form_Element_File('file');
-            $element->setLabel($this->_('Import file'));
-            $this->_form->addElement($element);
-
-            $element = new Zend_Form_Element_Textarea('input');
-            $element->setLabel($this->_('Text import'))
-                    ->setAttrib('cols', 80)
-                    ->setAttrib('rows', 20);
-            $this->_form->addElement($element);
-
-            $this->saveLabel = $this->_('Check import');
-        }
-    }
-
-    /**
      * Hook that loads the form data from $_POST or the model
      *
      * Or from whatever other source you specify here.
@@ -245,6 +379,7 @@ class ModelImportSnippet extends MUtil_Snippets_ModelFormSnippetAbstract
             // Assume that if formData is set it is the correct formData
             if (! $this->formData)  {
                 $this->formData['trans'] = $this->defaultImportTranslator;
+                $this->formData['mode']  = 'file';
             }
         }
     }

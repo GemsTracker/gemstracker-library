@@ -68,7 +68,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var array Mixed key => value array for snippet initialization
      */
     private $_importExtraParameters = array(
-        'formatBoxClass' => 'timeResult rightFloat',
+        'formatBoxClass' => 'browser',
         );
 
     /**
