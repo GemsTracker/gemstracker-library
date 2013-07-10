@@ -327,7 +327,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     public function getImportTranslators()
     {
-        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Simple import'), $this->db);
+        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
         $this->applySource($trs);
 
         return array('default' => $trs);

@@ -125,6 +125,15 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     protected $nextButtonId = 'next_button';
 
     /**
+     * Should next be disabled even when there is a next item
+     *
+     * If empty button is not added
+     *
+     * @var string
+     */
+    protected $nextDisabled = false;
+
+    /**
      * The next button label (default is translated 'Next')
      *
      * @var string
@@ -168,7 +177,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         if ($button && ($button instanceof Zend_Form_Element)) {
             $buttonId = $button->getName();
 
-        } elseif ($this->saveButtonId) {
+        } elseif ($buttonId) {
             //If not already there, add a save button
             $button = $this->_form->getElement($buttonId);
 
@@ -182,20 +191,13 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
                     $button->setAttrib('class', $this->buttonClass);
                 }
 
+                // Make sure no DD / DT parts are on display
                 $button->setDecorators(array('Tooltip', 'ViewHelper'));
             }
         }
-        if (! $this->_form->getElement($buttonId)) {
-            $group = $this->_form->getDisplayGroup('buttons');
-            if (! $group) {
-                $this->_form->addDisplayGroup(array($button), 'buttons');
 
-                $group = $this->_form->getDisplayGroup('buttons');
-                $group->setDecorators(array('FormElements'));
-
-            } else {
-                $group->addElement($button);
-            }
+        if (!$this->_form->getElement($buttonId)) {
+            $this->_form->addElement($button);
         }
     }
 
@@ -211,8 +213,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $element->setValue('&nbsp;');
         $element->setDecorators(array('ViewHelper'));
 
-        $group = $this->_form->getDisplayGroup('buttons');
-        $group->addElement($element);
+        $this->_form->addElement($element);
 
         $this->addCancelButton();
         $this->addFinishButton();
@@ -260,7 +261,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $class = $last ? 'Zend_Form_Element_Submit' : 'MUtil_Form_Element_FakeSubmit';
 
         $this->_addButton($this->_finishButton, $this->finishButtonId, $this->finishLabel, $this->_('Finish'), $class);
-        if (! $last) {
+        if ($this->nextDisabled || !$last) {
             $this->_finishButton->setAttrib('disabled', 'disabled');
         } else {
             $this->_finishButton->setAttrib('disabled', null);
@@ -276,7 +277,8 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $class = !$last ? 'Zend_Form_Element_Submit' : 'MUtil_Form_Element_FakeSubmit';
 
         $this->_addButton($this->_nextButton, $this->nextButtonId, $this->nextLabel, $this->_("Next >"), $class);
-        if ($last) {
+
+        if ($last || $this->nextDisabled) {
             $this->_nextButton->setAttrib('disabled', 'disabled');
         } else {
             $this->_nextButton->setAttrib('disabled', null);
@@ -350,7 +352,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * @param int $step The current step
      * @return Zend_Form
      */
-    protected function getModelFormFor($step)
+    protected function getFormFor($step)
     {
         $model    = $this->getModel();
         $baseform = $this->createForm();
@@ -378,11 +380,18 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      */
     protected function loadFormFor($step)
     {
+        $this->currentStep                    = $step;
+        $this->formData[$this->stepFieldName] = $step;
+
         if (! isset($this->_forms[$step])) {
-            $this->_forms[$step] = $this->getModelFormFor($step);
+            $this->nextDisabled = false;
+            $this->_forms[$step] = $this->getFormFor($step);
         }
         $this->_form = $this->_forms[$step];
+
         $this->addButtons();
+
+        $this->populateForm();
     }
 
     /**
@@ -399,32 +408,23 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         $this->loadFormData();
         if (isset($this->formData[$this->stepFieldName])) {
             $this->currentStep = $this->formData[$this->stepFieldName];
-        } else {
-            $this->formData[$this->stepFieldName] = $this->currentStep;
         }
 
         // Make sure there is a $this->_form
         $this->loadFormFor($this->currentStep);
 
         if ($this->request->isPost()) {
-            //First populate the form, otherwise the buttons will never be 'checked'!
-            $this->populateForm();
-
+            // MUtil_Echo::track($this->formData);
             if ($this->_previousButton && $this->_previousButton->isChecked()) {
-                $this->currentStep = $this->currentStep - 1;
-                $this->loadFormFor($this->currentStep);
-                $this->formData[$this->stepFieldName] = $this->currentStep;
-                $this->populateForm();
+                $this->loadFormFor($this->currentStep - 1);
 
             } else {
                 if ($this->validateForm()) {
+                    // Repopulation is needed after validation (WHY!!)
+                    //  $this->populateForm();
 
-                    // if ($this->_nextButton && $this->_nextButton->isChecked()) {
-                    if ($this->_nextButton && isset($this->formData[$this->nextButtonId]) && $this->formData[$this->nextButtonId]) {
-                        $this->currentStep = $this->currentStep + 1;
-                        $this->loadFormFor($this->currentStep);
-                        $this->formData[$this->stepFieldName] = $this->currentStep;
-                        $this->populateForm();
+                    if ($this->_nextButton && $this->_nextButton->isChecked()) {
+                        $this->loadFormFor($this->currentStep + 1);
 
                     } else  {
                         /*

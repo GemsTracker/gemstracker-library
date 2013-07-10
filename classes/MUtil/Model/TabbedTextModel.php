@@ -100,7 +100,7 @@ class MUtil_Model_TabbedTextModel extends MUtil_Model_ArrayModelAbstract
         $iterator = new MUtil_Model_Iterator_TextFileIterator($this->_fileName, array($this, 'mapLine'));
 
         // First line contains field names
-        $this->_fieldMap = $this->_processLine($iterator->getFirstLine());
+        $this->_fieldMap = $this->_processLine(MUtil_Encoding::removeBOM($iterator->getFirstLine()));
 
         // Store the positions in the model
         foreach ($this->_fieldMap as $pos => $name) {
