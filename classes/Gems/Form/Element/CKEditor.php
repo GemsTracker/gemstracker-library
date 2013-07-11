@@ -42,7 +42,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
     public function init() {
         // If basepath not set, try a default
         if (empty($this->basePath)) {
-            $this->setBasePath(GEMS_WEB_DIR . '/ckeditor');
+            $this->setBasePath(GEMS_WEB_DIR . '/gems/ckeditor');
         }
     }
             
