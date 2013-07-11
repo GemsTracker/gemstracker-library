@@ -36,7 +36,9 @@
  */
 
 /**
+ * Generic wizard snippet.
  *
+ * All the elements in the model are hidden except those set by addFormElementsFor()
  *
  * @package    MUtil
  * @subpackage Snippets
@@ -162,6 +164,13 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * @var string
      */
     protected $stepFieldName = 'current_step';
+
+    /**
+     * When set getTopic() uses this function instead of plural on this.
+     *
+     * @var callable
+     */
+    protected $topicCallable;
 
     /**
      * Default button creation function.
@@ -346,6 +355,30 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     }
 
     /**
+     * Perform some actions on the form, right before it is displayed but already populated
+     *
+     * Here we add the table display to the form.
+     *
+     * @return Zend_Form
+     */
+    protected function beforeDisplay()
+    {
+        $this->beforeDisplayFor($this->currentStep);
+    }
+
+    /**
+     * Overrule this function for any activities you want to take place
+     * before the actual form is displayed.
+     *
+     * This means the form has been validated, step buttons where processed
+     * and the current form will be the one displayed.
+     *
+     * @param int $step The current step
+     */
+    protected function beforeDisplayFor($step)
+    { }
+
+    /**
      * Creates from the model a Zend_Form using createForm and adds elements
      * using addFormElements().
      *
@@ -372,6 +405,21 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * @return int
      */
     abstract protected function getStepCount();
+
+    /**
+     * Helper function to allow generalized statements about the items in the target model to specific item names.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+         if (is_callable($this->topicCallable)) {
+            return call_user_func($this->topicCallable, $count);
+        } else {
+              return $this->plural('item', 'items', $count);
+        }
+    }
 
     /**
      * Makes sure there is a form.
@@ -415,7 +463,10 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
 
         if ($this->request->isPost()) {
             // MUtil_Echo::track($this->formData);
-            if ($this->_previousButton && $this->_previousButton->isChecked()) {
+            if ($this->_cancelButton && $this->_cancelButton->isChecked()) {
+                $this->setAfterSaveRoute();
+
+            } elseif ($this->_previousButton && $this->_previousButton->isChecked()) {
                 $this->loadFormFor($this->currentStep - 1);
 
             } else {
@@ -435,12 +486,11 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
                          */
                         $this->formData = $this->_form->getValues();
 
-                        MUtil_Echo::track($this->request->getPost(), $this->_nextButton->isChecked());
                         // Save
-                        // $this->saveData();
+                        $this->saveData();
 
                         // Reroute (always, override function otherwise)
-                        // $this->setAfterSaveRoute();
+                        $this->setAfterSaveRoute();
                     }
                 } else {
                     $this->onInValid();

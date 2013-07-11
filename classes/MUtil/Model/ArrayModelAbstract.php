@@ -351,7 +351,6 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
     public function save(array $newValues, array $filter = null)
     {
         if ($this->_saveable) {
-
             $data = $this->_loadAllTraversable();
             if ($data instanceof Traversable) {
                 $data = iterator_to_array($this->_loadAllTraversable());

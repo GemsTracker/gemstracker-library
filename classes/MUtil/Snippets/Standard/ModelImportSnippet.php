@@ -36,7 +36,10 @@
  */
 
 /**
+ * generic import wizard.
  *
+ * Set the targetModel (directly or through $this->model) and the
+ * importTranslators and it should work.
  *
  * @package    MUtil
  * @subpackage Snippets
@@ -47,11 +50,25 @@
 class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
+     * Nested array, caching the output of loadImportData()
+     *
+     * @var array
+     */
+    private $_data;
+
+    /**
      * Contains the errors generated so far
      *
      * @var array
      */
     private $_errors = array();
+
+    /**
+     * Marker for communicating a succesfull save of the data
+     *
+     * @var boolean
+     */
+    private $_saved = false;
 
     /**
      *
@@ -103,6 +120,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
     protected $importModel;
 
     /**
+     * Required, an array of one or more translators
      *
      * @var array of MUtil_Model_ModelTranslatorInterface objects
      */
@@ -141,6 +159,8 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 
     /**
      * Model to save import into
+     *
+     * Required, can be set by passing a model to $this->model
      *
      * @var MUtil_Model_ModelAbstract
      */
@@ -241,7 +261,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
      */
     protected function addStep4(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $data = $this->getImportData();
+        $this->loadImportData();
 
         if ($this->_errors) {
             $this->displayErrors($bridge);
@@ -251,7 +271,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             $this->displayErrors($bridge, $this->_('Import valid, import possible.'));
 
             $element    = new MUtil_Form_Element_Html('importdisplay');
-            $repeater   = new MUtil_Lazy_Repeatable($data);
+            $repeater   = new MUtil_Lazy_Repeatable($this->_data);
             $table      = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
             $translator = $this->getImportTranslator();
 
@@ -262,6 +282,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             $element->setValue($table);
             $bridge->addElement($element);
         }
+        // $this->_form->addV
     }
 
     /**
@@ -317,6 +338,45 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 
         // Cleanup any references to model to avoid confusion
         $this->model = null;
+    }
+
+    /**
+     * Overrule this function for any activities you want to take place
+     * before the actual form is displayed.
+     *
+     * This means the form has been validated, step buttons where processed
+     * and the current form will be the one displayed.
+     *
+     * @param int $step The current step
+     */
+    protected function beforeDisplayFor($step)
+    {
+        switch ($step) {
+        case 1:
+            $fieldInfo = $this->getTranslatorTable();
+            break;
+
+        case 2:
+        case 3:
+        case 4:
+            if (isset($this->formData['trans']) && $this->formData['trans']) {
+                $fieldInfo = $this->getTranslatorTable($this->formData['trans']);
+                break;
+            }
+
+        default:
+            $fieldInfo = null;
+        }
+
+        if ($fieldInfo) {
+            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import fields'), true);
+            $table->appendAttrib('class', $this->formatBoxClass);
+
+            $element = new MUtil_Form_Element_Html('transtable');
+            $element->setValue($table);
+
+            $this->_form->addElement($element);
+        }
     }
 
     /**
@@ -403,32 +463,6 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
     }
 
     /**
-     * Try to import the data
-     *
-     * @return array or false on some errors
-     */
-    protected function getImportData()
-    {
-        $translator = $this->getImportTranslator();
-
-        if (! ($translator && $this->loadSourceModel())) {
-            return false;
-        }
-
-        $translator->setTargetModel($this->targetModel);
-        $translator->setSourceModel($this->sourceModel);
-
-        $data = $this->sourceModel->load();
-        $data = $translator->translateImport($data);
-
-        if ($translator->hasErrors()) {
-            $this->_errors = array_merge($this->_errors, $translator->getErrors());
-        }
-
-        return $data;
-    }
-
-    /**
      * Try to get the current translator
      *
      * @return MUtil_Model_ModelTranslatorInterface or false if none is current
@@ -451,46 +485,6 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
         }
 
         return $this->importTranslators[$this->formData['trans']];
-    }
-
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(Zend_View_Abstract $view)
-    {
-        $form = parent::getHtmlOutput($view);
-
-        switch ($this->currentStep) {
-        case 1:
-            $fieldInfo = $this->getTranslatorTable();
-            break;
-
-        case 2:
-            if (isset($this->formData['trans']) && $this->formData['trans']) {
-                $fieldInfo = $this->getTranslatorTable($this->formData['trans']);
-                break;
-            }
-
-        default:
-            $fieldInfo = null;
-        }
-
-        if ($fieldInfo) {
-            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import fields'), true);
-            $table->appendAttrib('class', $this->formatBoxClass);
-
-            $element = new MUtil_Form_Element_Html('transtable');
-            $element->setValue($table);
-
-            $this->_form->addElement($element);
-        }
-
-        return $form;
     }
 
     /**
@@ -670,6 +664,19 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
     }
 
     /**
+     * Is the import OK
+     *
+     * @return boolean
+     */
+    public function isImportOk()
+    {
+        $this->loadImportData();
+        MUtil_Echo::track('passed validator: ' . count($this->_errors));
+
+        return !$this->_errors;
+    }
+
+    /**
      * Hook that loads the form data from $_POST or the model
      *
      * Or from whatever other source you specify here.
@@ -691,6 +698,38 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             $this->formData['mode'] = 'file';
         }
         $this->fileMode = 'file' === $this->formData['mode'];
+    }
+
+    /**
+     * Try to import the data.
+     *
+     * Will set $this->_errors on failure.
+     *
+     * @return array or false on some errors
+     */
+    protected function loadImportData()
+    {
+        if (! $this->_data) {
+            $translator = $this->getImportTranslator();
+
+            if (! ($translator && $this->loadSourceModel())) {
+                return false;
+            }
+
+            $translator->setTargetModel($this->targetModel);
+            $translator->setSourceModel($this->sourceModel);
+
+            $data = $this->sourceModel->load();
+            $data = $translator->translateImport($data);
+
+            if ($translator->hasErrors()) {
+                $this->_errors = array_merge($this->_errors, $translator->getErrors());
+            }
+
+            $this->_data = $data;
+        }
+
+        return $this->_data;
     }
 
     /**
@@ -841,5 +880,77 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
         // echo $targetModel->getChanged() . "\n";
         echo MUtil_Console::removeHtml(MUtil_Echo::out());
         exit();
+    }
+
+    /**
+     * Hook containing the actual save code.
+     *
+     * Call's afterSave() for user interaction.
+     *
+     * @see afterSave()
+     */
+    protected function saveData()
+    {
+        $this->loadImportData();
+
+        if (! $this->_errors) {
+            // Signal file copy
+            $this->_saved = true;
+
+            $this->targetModel->saveAll($this->_data);
+
+            $changed = $this->targetModel->getChanged();
+
+            $this->addMessage(sprintf($this->_('Imported %d %s'), $changed, $this->getTopic($changed)));
+        }
+    }
+
+    /**
+     * Set what to do when the form is 'finished'.
+     *
+     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     */
+    protected function setAfterSaveRoute()
+    {
+        if (isset($this->formData['localfile']) && file_exists($this->formData['localfile'])) {
+            $moveTo = false;
+
+            if ((4 == $this->currentStep) && $this->longtermFilename) {
+                $this->loadImportData();
+                if ($this->_errors && $this->failureDirectory ) {
+                    MUtil_File::ensureDir($this->failureDirectory);
+                    $moveTo = $this->failureDirectory . DIRECTORY_SEPARATOR . $this->longtermFilename;
+
+                } elseif ($this->_saved && $this->successDirectory) {
+                    MUtil_File::ensureDir($this->successDirectory);
+                    $moveTo = $this->successDirectory . DIRECTORY_SEPARATOR . $this->longtermFilename;
+                }
+            }
+
+            if ($moveTo) {
+                // Make sure the extension is added
+                if (isset($this->formData['extension']) && $this->formData['extension']) {
+                    if (!MUtil_String::endsWith($moveTo, '.' . $this->formData['extension'])) {
+                        $moveTo = $moveTo . '.' . $this->formData['extension'];
+                    }
+                }
+                // Copy to long term storage location
+                if (! copy($this->formData['localfile'], $moveTo)) {
+                    $error = error_get_last();
+                    if (isset($error['message'])) {
+                        throw new Zend_Exception($error['message']);
+                    } else {
+                        throw new Zend_Exception(sprintf(
+                                $this->_('Copy from %s to %s failed.'),
+                                $this->formData['localfile'],
+                                $moveTo
+                                ));
+                    }
+                }
+            }
+            @unlink($this->formData['localfile']);
+        }
+
+        return parent::setAfterSaveRoute();
     }
 }

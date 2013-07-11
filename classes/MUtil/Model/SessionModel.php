@@ -47,6 +47,14 @@
 class MUtil_Model_SessionModel extends MUtil_Model_ArrayModelAbstract
 {
     /**
+     * When set to true in a subclass, then the model should be able to
+     * save itself.
+     *
+     * @var boolean
+     */
+    protected $_saveable = true;
+
+    /**
      * The namespace where the nested data is stored in array()
      *
      * @var Zend_Session_Namespace
