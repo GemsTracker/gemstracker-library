@@ -167,7 +167,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['required'] = $this->model->get($name, 'required');
         $options['label']    = $this->escort->_('Message');
 
-        return new Zend_Form_Element_Textarea($name, $options);
+        return new Gems_Form_Element_CKEditor($name, $options);
     }
 
     protected function createEmailElement($name, $label, $required = false, $multi = false)
