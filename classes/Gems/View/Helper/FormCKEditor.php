@@ -20,8 +20,10 @@ class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
         }
 
         include_once $this->basePath . '/ckeditor.php'; // Now make sure the CKEditor class can be loaded
-
-        $CKEditor = new CKEditor();
+        
+        // Now set the location to the js/css
+        $baseUrl = $this->view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath();
+        $CKEditor = new CKEditor($baseUrl . '/gems/ckeditor/');
         $CKEditor->returnOutput = true; // We capture the output
 
         $output = $this->formTextarea($name, $value, $attribs); // Get regular textarea output
