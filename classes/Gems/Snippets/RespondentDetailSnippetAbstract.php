@@ -159,7 +159,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
     {
         $unknown = $this->util->getDefaultConsent();
 
-        // Value is translated by now if in bridge 
+        // Value is translated by now if in bridge
         if (($consent == $unknown) || ($consent == $this->_($unknown))) {
 
             $msg = $this->_('Please settle the informed consent form for this respondent.');
@@ -181,6 +181,8 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
                 $this->addMessage($msg);
             }
         }
+
+        return $consent;
     }
 
     /**
