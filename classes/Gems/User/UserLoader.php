@@ -47,6 +47,11 @@
 class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
 {
     /**
+     * The user id used for the project user
+     */
+    const SYSTEM_USER_ID = 1;
+
+    /**
      * User class constants
      */
     const USER_CONSOLE    = 'ConsoleUser';

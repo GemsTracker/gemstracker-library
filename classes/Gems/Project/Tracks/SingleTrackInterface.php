@@ -56,5 +56,10 @@ include_once('Gems/Project/Tracks/TracksOnlyInterface.php');
  */
 interface Gems_Project_Tracks_SingleTrackInterface extends Gems_Project_Tracks_TracksOnlyInterface
 {
+    /**
+     * Return the "single" track id
+     *
+     * @return int
+     */
     public function getTrackId();
 }

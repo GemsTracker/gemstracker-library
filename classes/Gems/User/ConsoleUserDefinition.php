@@ -91,7 +91,7 @@ class Gems_User_ConsoleUserDefinition extends Gems_User_UserDefinitionAbstract
         }
 
         return array(
-            'user_id'                => 1,
+            'user_id'                => Gems_User_UserLoader::SYSTEM_USER_ID,
             'user_login'             => $login_name,
             'user_name'              => $login_name,
             'user_group'             => 800,

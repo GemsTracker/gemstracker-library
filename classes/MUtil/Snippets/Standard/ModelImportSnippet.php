@@ -197,7 +197,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 
             if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
                 $element = new MUtil_Form_Element_Html('trans_header');
-                $element->append($this->_('Choosen translator: '));
+                $element->append($this->_('Choosen translation definition: '));
                 $element->strong($translator->getDescription());
                 $element->setDecorators(array('Tooltip', 'ViewHelper'));
                 $bridge->addElement($element);
@@ -268,7 +268,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 
             $this->nextDisabled = true;
         } else {
-            $this->displayErrors($bridge, $this->_('Import valid, import possible.'));
+            $this->displayErrors($bridge, $this->_('Import data valid. Click Finish for actual import.'));
 
             $element    = new MUtil_Form_Element_Html('importdisplay');
             $repeater   = new MUtil_Lazy_Repeatable($this->_data);
@@ -369,7 +369,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
         }
 
         if ($fieldInfo) {
-            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import fields'), true);
+            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
             $table->appendAttrib('class', $this->formatBoxClass);
 
             $element = new MUtil_Form_Element_Html('transtable');
@@ -390,7 +390,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             // $model = new MUtil_Model_TableModel
             $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
-            $model->set('trans', 'label', $this->_('Choose a translator'),
+            $model->set('trans', 'label', $this->_('Choose a translation definition'),
                     'multiOptions', $this->getTranslatorDescriptions(),
                     'required', true,
                     'elementClass', 'Radio',
@@ -470,17 +470,17 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
     protected function getImportTranslator()
     {
         if (! (isset($this->formData['trans']) && $this->formData['trans'])) {
-            $this->_errors[] = $this->_('No translator specified');
+            $this->_errors[] = $this->_('No translation definition specified');
             return false;
         }
 
         if (! isset($this->importTranslators[$this->formData['trans']])) {
-            $this->_errors[] = sprintf($this->_('Translator %s does not exist.'), $this->formData['trans']);
+            $this->_errors[] = sprintf($this->_('Translation definition %s does not exist.'), $this->formData['trans']);
             return false;
         }
 
         if (! $this->importTranslators[$this->formData['trans']] instanceof MUtil_Model_ModelTranslatorInterface) {
-            $this->_errors[] = sprintf($this->_('Translator error in %s translator.'), $this->formData['trans']);
+            $this->_errors[] = sprintf($this->_('%s is not a valid translation definition.'), $this->formData['trans']);
             return false;
         }
 
@@ -761,7 +761,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
                         }
                     } else {
                         $this->_errors[] = sprintf(
-                                $this->_("File element is not of wrong element type '%s'."),
+                                $this->_("File element is of wrong Zend element type '%s'."),
                                 get_class($fileElement)
                                 );
                     }

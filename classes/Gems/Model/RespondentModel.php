@@ -210,13 +210,40 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent nr'));
 
+        $nameExpr[]  = "COALESCE(grs_last_name, '-')";
+        $fieldList[] = 'grs_last_name';
+        if ($this->has('grs_partner_last_name')) {
+            if ($this->has('grs_partner_surname_prefix')) {
+                $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
+                $fieldList[] = 'grs_partner_surname_prefix';
+            }
+
+            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_last_name), '')";
+            $fieldList[] = 'grs_partner_last_name';
+        }
+        $nameExpr[] = "', '";
+
+        if ($this->has('grs_first_name')) {
+            if ($this->has('grs_initials_name')) {
+                $nameExpr[]  = "COALESCE(grs_first_name, grs_initials_name, '')";
+                $fieldList[] = 'grs_first_name';
+                $fieldList[] = 'grs_initials_name';
+            } else {
+                $nameExpr[]  = "COALESCE(grs_first_name, '')";
+                $fieldList[] = 'grs_first_name';
+            }
+        } elseif ($this->has('grs_initials_name')) {
+            $nameExpr[]  = "COALESCE(grs_initials_name, '')";
+            $fieldList[] = 'grs_initials_name';
+        }
+        if ($this->has('grs_surname_prefix')) {
+            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_surname_prefix), '')";
+            $fieldList[] = 'grs_surname_prefix';
+        }
         $this->set('name',
                 'label', $translator->_('Name'),
-                'column_expression', "CONCAT(
-                    COALESCE(CONCAT(grs_last_name, ', '), '-, '),
-                    COALESCE(CONCAT(grs_first_name, ' '), ''),
-                    COALESCE(grs_surname_prefix, ''))",
-                'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
+                'column_expression', "CONCAT(" . implode(', ', $nameExpr) . ")",
+                'fieldlist', $fieldList);
 
         $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
 
@@ -420,7 +447,11 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_phone_3', 'size', 15);
         $this->setIfExists('grs_phone_4', 'size', 15);
 
-        $this->setIfExists('gr2o_opened', 'elementClass', 'Exhibitor');
+        $this->setIfExists('gr2o_opened',     'elementClass', 'hidden'); // Has little use to show: is usually editor
+        $this->setIfExists('gr2o_changed',    'label', $translator->_('Changed on'), 'elementClass', 'Exhibitor');
+        $this->setIfExists('gr2o_changed_by', 'label', $translator->_('Changed by'),
+                'elementClass', 'Exhibitor',
+                'multiOptions', $this->util->getDbLookup()->getStaff());
 
         $this->setIfExists('gr2o_consent',
                 'default', $this->util->getDefaultConsent(),
@@ -428,6 +459,8 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'separator', '',
                 'description', $translator->_('Has the respondent signed the informed consent letter?'),
                 'required', true);
+
+        $this->setIfExists('name', 'elementClass', 'hidden');
 
         return $this;
     }

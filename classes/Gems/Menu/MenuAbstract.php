@@ -214,6 +214,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addShowAction();
         $page->addEditAction();
         $page->addDeleteAction();
+        $page->addImportAction();
 
         return $page;
     }
@@ -470,6 +471,7 @@ abstract class Gems_Menu_MenuAbstract
         $pages[] = $page->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
         $pages[] = $page->addDeleteAction();
         $pages[] = $page->addExcelAction();
+        $pages[] = $page->addImportAction();
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
             $filter = array_keys($this->escort->loader->getCurrentUser()->getAllowedOrganizations());
             foreach ($pages as $sub_page) {

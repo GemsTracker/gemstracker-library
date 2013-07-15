@@ -71,6 +71,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public $formatExcelData = true;
 
     /**
+     * The snippets used for the import action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $importSnippets = 'ModelImportSnippet';
+
+    /**
      *
      * @var Gems_Util_RequestCache
      */
@@ -688,6 +695,16 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     }
 
     /**
+     * Name of the default import translator
+     *
+     * @return string
+     */
+    public function getDefaultImportTranslator()
+    {
+        return 'default';
+    }
+
+    /**
      * Returns the default search values for this class instance.
      *
      * Used to specify the filter when no values have been entered by the user.
@@ -733,6 +750,68 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         } else {
             return array($emptyMsg);
         }
+    }
+
+    /**
+     * The directory where the file should be stored when the import failed
+     *
+     * @return string
+     */
+    public function getImportFailureDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/import_failed/' . $this->_request->getControllerName();
+    }
+
+    /**
+     * The file name to use for final storage, minus the extension
+     *
+     * @return string
+     */
+    public function getImportLongtermFileName()
+    {
+        $user  = $this->loader->getCurrentUser();
+        $orgId = $user->getCurrentOrganization()->getCode() ?: $user->getCurrentOrganizationId();
+        $date  = new MUtil_Date();
+
+        $name[] = $this->_request->getControllerName();
+        $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
+        $name[] = $user->getLoginName();
+        $name[] = $orgId;
+
+        return implode('.', $name);
+    }
+
+    /**
+     * The directory where the file should be stored when the import succeeded
+     *
+     * @return string
+     */
+    public function getImportSuccessDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/imported/' . $this->_request->getControllerName();
+    }
+
+    /**
+     * The file name to use for temporary storage
+     *
+     * @return string
+     */
+    public function getImportTempDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/importing';
+    }
+
+    /**
+     * Get the possible translators for the import snippet.
+     *
+     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     */
+    public function getImportTranslators()
+    {
+        $trs = new MUtil_Model_Translator_StraightTranslator($this->_('Direct import'));
+        $this->loader->applySource($trs);
+
+        return array('default' => $trs);
     }
 
     /**
@@ -792,6 +871,24 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $table->class = 'displayer';
 
         return $table;
+    }
+
+    /**
+     * Generic model based import action
+     */
+    public function importAction()
+    {
+        $params['defaultImportTranslator'] = $this->getDefaultImportTranslator();
+        $params['failureDirectory']        = $this->getImportFailureDirectory();
+        $params['formatBoxClass']          = 'browser';
+        $params['longtermFilename']        = $this->getImportLongtermFileName();
+        $params['model']                   = $this->getModel();
+        $params['request']                 = $this->getRequest();
+        $params['successDirectory']        = $this->getImportSuccessDirectory();
+        $params['tempDirectory']           = $this->getImportTempDirectory();
+        $params['importTranslators']       = $this->getImportTranslators();
+
+        $this->addSnippets($this->importSnippets, $params);
     }
 
     public function indexAction()

@@ -94,6 +94,25 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
     protected $respondentData;
 
     /**
+     * Show a warning if informed consent has not been set
+     *
+     * @var boolean
+     */
+    protected $showConsentWarning = true;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     *
+     * @var Zend_View
+     */
+    protected $view;
+
+    /**
      *
      * @param MUtil_Model_VerticalTableBridge $bridge
      * @return void
@@ -129,6 +148,40 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
      * @return void
      */
     abstract protected function addTableCells(MUtil_Model_VerticalTableBridge $bridge);
+
+    /**
+     * Check if we have the 'Unknown' consent, and present a warning. The project default consent is
+     * normally 'Unknown' but this can be overruled in project.ini so checking for default is not right
+     *
+     * @param string $consent
+     */
+    public function checkConsent($consent)
+    {
+        $unknown = $this->util->getDefaultConsent();
+
+        // Value is translated by now if in bridge 
+        if (($consent == $unknown) || ($consent == $this->_($unknown))) {
+
+            $msg = $this->_('Please settle the informed consent form for this respondent.');
+
+            if ($this->view instanceof Zend_View) {
+                $url[$this->request->getControllerKey()] = 'respondent';
+                $url[$this->request->getActionKey()]     = 'edit';
+                $url[MUtil_Model::REQUEST_ID1]           = $this->request->getParam(MUtil_Model::REQUEST_ID1);
+                $url[MUtil_Model::REQUEST_ID2]           = $this->request->getParam(MUtil_Model::REQUEST_ID2);
+
+                $urlString = $this->view->url($url) . '#tabContainer-frag-3';
+
+                $this->addMessage(
+                        MUtil_Html::create()
+                            ->a($urlString, $msg)
+                            ->render($this->view)
+                        );
+            } else {
+                $this->addMessage($msg);
+            }
+        }
+    }
 
     /**
      * Returns the caption for this table
@@ -187,6 +240,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
         if ($this->model) {
             $this->model->setIfExists('grs_email', 'itemDisplay', 'MUtil_Html_AElement::ifmail');
             $this->model->setIfExists('gr2o_comments', 'rowspan', 2);
+
+            if ($this->showConsentWarning && $this->model->has('gr2o_consent')) {
+                $this->model->set('gr2o_consent', 'formatFunction', array($this, 'checkConsent'));
+            }
 
             if (! $this->repeater) {
                 if (! $this->respondentData) {

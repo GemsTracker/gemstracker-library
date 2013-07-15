@@ -408,7 +408,13 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
                     ORDER BY gsf_last_name, gsf_first_name, gsf_surname_prefix";
 
         $results = $this->db->fetchPairs($select);
+
+        $results = $results + array(
+            Gems_User_UserLoader::SYSTEM_USER_ID => $this->translate->_('&laquo;system&raquo;'),
+        );
+
         $this->cache->save($results, $cacheId, array('staff'));
+
         return $results;
     }
 

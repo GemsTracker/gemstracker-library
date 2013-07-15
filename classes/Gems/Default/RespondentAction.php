@@ -410,6 +410,19 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     }
 
     /**
+     * Get the possible translators for the import snippet.
+     *
+     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     */
+    public function getImportTranslators()
+    {
+        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
+        $this->applySource($trs);
+
+        return array('default' => $trs);
+    }
+
+    /**
      * Returns the currently used organization
      *
      * @param int $default Optional default value
@@ -490,13 +503,14 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
 
-    protected function openedRespondent($patientId, $orgId = null, $userId = null)
+    protected function openedRespondent($patientId, $orgId, $userId)
     {
         if ($patientId) {
             $where['gr2o_patient_nr = ?']      = $patientId;
-            $where['gr2o_id_organization = ?'] = $orgId ? $orgId : $this->escort->getCurrentOrganization();
+            $where['gr2o_id_organization = ?'] = $orgId;
+
             $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $this->session->user_id;
+            $values['gr2o_opened_by']          = $userId;
 
             $this->db->update('gems__respondent2org', $values, $where);
         }
@@ -506,28 +520,25 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public function showAction()
     {
+        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
+        $user      = $this->loader->getCurrentUser();
+        $userId    = $user->getUserId();
+
+        // Updated gr20_opened
+        $this->openedRespondent($patientId, $orgId, $userId);
+
+        // Check for completed tokens
+        $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
+
         $model = $this->getModel();
         $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
 
         if (! isset($data['grs_id_user'])) {
             $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
             $this->_reroute(array('action' => 'index'));
-        }
-
-        // Log
-        $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
-
-        // Check for completed tokens
-        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id, $data['gr2o_id_organization'])) {
-            //As data might have changed due to token events... reload
-            $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
-        }
-
-        //Check if we have the 'Unknown' consent, and present a warning. The project default consent is
-        //normally 'Unknown' but this can be overruled in project.ini so checking for default is not right
-        if ($data['gr2o_consent'] == 'Unknown') {
-            $url = $this->view->url(array('controller' => 'respondent', 'action' => 'edit', 'id' => $data['gr2o_patient_nr'])) . '#tabContainer-frag-3';
-            $this->addMessage(MUtil_Html::create()->a($url, $this->_('Please settle the informed consent form for this respondent.')));
+            return;
         }
 
         $params['model']   = $model;
@@ -538,6 +549,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
         }
         $params['respondentData'] = $data;
+
         $this->addSnippets($this->showSnippets, $params);
     }
 }
