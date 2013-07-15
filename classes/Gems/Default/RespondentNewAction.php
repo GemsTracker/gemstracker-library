@@ -290,14 +290,14 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
-            $columns[] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
+            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
         } else {
             $model->addFilter(array('gr2o_id_organization' => $user->getCurrentOrganizationId()));
-            $columns[] = array('gr2o_patient_nr', $br, 'gr2o_opened');
+            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_opened');
         }
-        $columns[] = array('name',            $br, 'grs_email');
-        $columns[] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
-        $columns[] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
+        $columns[20] = array('name',            $br, 'grs_email');
+        $columns[30] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
+        $columns[40] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
 
         return $columns;
     }

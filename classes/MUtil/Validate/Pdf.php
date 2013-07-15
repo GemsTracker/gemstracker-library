@@ -50,7 +50,7 @@ class MUtil_Validate_Pdf extends Zend_Validate_Abstract
      * @var array Message templates
      */
     protected $_messageTemplates = array(
-        self::ERROR_INVALID_VERSION => 'Unsupported PDF version %value% - only versions 1.0 - 1.4 are supported.'
+        self::ERROR_INVALID_VERSION => 'Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this problem.'
     );
 
     /**
@@ -66,15 +66,13 @@ class MUtil_Validate_Pdf extends Zend_Validate_Abstract
      */
     public function isValid($value, $context = array())
     {
-        $objFactory = Zend_Pdf_ElementFactory::createFactory(1);
-        $parser = new Zend_Pdf_Parser($value, $objFactory, true);
-        $version = $parser->getPDFVersion();
-
-        if (version_compare($version, '1.4', '>')) {
-            $this->_error(self::ERROR_INVALID_VERSION, $version);
+        // Only fail when file really can't be loaded.
+        try {
+            Zend_Pdf::load($value);
+            return true;
+        } catch (Zend_Pdf_Exception $e) {
+            $this->_error(self::ERROR_INVALID_VERSION, $e->getMessage());
             return false;
         }
-
-        return true;
     }
 }

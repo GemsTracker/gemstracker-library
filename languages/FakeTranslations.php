@@ -73,7 +73,7 @@ _("Must be the same as %fieldDescription%.");
 _("'%value%' is not a phone number (e.g. +12 (0)34-567 890).");
 
 // MUtil_Validate_Pdf
-_('Unsupported PDF version %value% - only versions 1.0 - 1.4 are supported.');
+_('Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this problem.');
 
 // MUtil_Validate_Require
 _("To set '%description%' you have to set '%fieldDescription%'.");
