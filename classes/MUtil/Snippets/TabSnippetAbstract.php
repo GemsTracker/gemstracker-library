@@ -81,6 +81,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
     protected $displaySingleTab = false;
 
     /**
+     * Default href parameter values
      *
      * @var array
      */

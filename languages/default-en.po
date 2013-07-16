@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-15 20:03+0100\n"
+"POT-Creation-Date: 2013-07-16 19:36+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -318,7 +318,7 @@ msgstr "Change password"
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:188
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:197
 #: snippets/BrowseSingleSurveyTokenSnippet.php:164
-#: snippets/TrackTokenOverviewSnippet.php:132
+#: snippets/TrackTokenOverviewSnippet.php:144
 #: snippets/Organization/OrganizationEditSnippet.php:89
 #: snippets/Track/Token/ShowAllOpenSnippet.php:88
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:110
@@ -339,7 +339,7 @@ msgstr "Scan Responses"
 #: classes/Gems/Export/RespondentExport.php:292
 #: classes/Gems/Export/RespondentExport.php:304
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:484
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:728
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:732
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:218
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:149
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:146
@@ -925,7 +925,7 @@ msgstr[1] "tracks"
 #: classes/Gems/Default/TrackFieldsAction.php:117
 #: classes/Gems/Default/UpgradeAction.php:176
 #: classes/Gems/Export/RespondentExport.php:293
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:734
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:738
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:216
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:150
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:147
@@ -936,7 +936,7 @@ msgstr "Description"
 #: classes/Gems/Default/ConsentAction.php:70
 #: classes/Gems/Default/DatabaseAction.php:125
 #: classes/Gems/Default/TrackFieldsAction.php:113
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:733
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:737
 msgid "Order"
 msgstr "Order"
 
@@ -1401,7 +1401,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 #: classes/Gems/Default/SurveyAction.php:201
 #: classes/Gems/Email/OneMailForm.php:57
 #: classes/Gems/Export/RespondentExport.php:210
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:731
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:735
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:217
 #: snippets/TrackSurveyOverviewSnippet.php:111
 msgid "Survey"
@@ -1453,7 +1453,7 @@ msgstr "Role"
 #: classes/Gems/Default/SourceAction.php:101
 #: classes/Gems/Default/SurveyMaintenanceAction.php:452
 #: classes/Gems/Default/SurveyMaintenanceAction.php:508
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:737
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:741
 #: classes/Gems/Tracker/Model/TrackModel.php:102
 #: classes/Gems/Util/TrackData.php:163
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:70
@@ -1718,7 +1718,7 @@ msgid "Log:"
 msgstr "Log:"
 
 #: classes/Gems/Default/LogMaintenanceAction.php:72
-#: snippets/RespondentTokenTabsSnippet.php:69
+#: snippets/RespondentTokenTabsSnippet.php:94
 msgid "All"
 msgstr "All"
 
@@ -2872,7 +2872,7 @@ msgstr "Answered"
 #: classes/Gems/Default/TokenPlanAction.php:297
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:129
 #: classes/Gems/Tracker/Token.php:1123
-#: snippets/RespondentTokenTabsSnippet.php:68
+#: snippets/RespondentTokenTabsSnippet.php:93
 msgid "Missed"
 msgstr "Missed"
 
@@ -3093,7 +3093,7 @@ msgid "After completion"
 msgstr "After completion"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:474
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:736
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:740
 msgid "Answer display"
 msgstr "Answer display"
 
@@ -3244,7 +3244,7 @@ msgstr "(all staff)"
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:122
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:82
 #: snippets/BrowseSingleSurveyTokenSnippet.php:144
-#: snippets/TrackTokenOverviewSnippet.php:98
+#: snippets/TrackTokenOverviewSnippet.php:110
 msgid "+"
 msgstr "+"
 
@@ -3366,7 +3366,8 @@ msgstr "Enter the particulars concerning the assignment to this patient."
 
 #: classes/Gems/Default/TrackActionAbstract.php:222
 #: classes/Gems/Export/RespondentExport.php:295
-#: classes/Gems/Snippets/RespondentTokenSnippet.php:137
+#: classes/Gems/Snippets/RespondentTokenSnippet.php:138
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:101
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:209
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:151
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:149
@@ -4250,10 +4251,11 @@ msgstr "Patient data retrieved from %s."
 msgid "Show active"
 msgstr "Show active"
 
-#: classes/Gems/Snippets/RespondentTokenSnippet.php:142
+#: classes/Gems/Snippets/RespondentTokenSnippet.php:144
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:204
 #: snippets/BrowseSingleSurveyTokenSnippet.php:138
-#: snippets/TrackTokenOverviewSnippet.php:115
+#: snippets/TrackTokenOverviewSnippet.php:127
 msgid "Score"
 msgstr "Score"
 
@@ -4287,6 +4289,10 @@ msgstr "Unknown respondent %s"
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:69
 msgid "(select a track)"
 msgstr "(select a track)"
+
+#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:242
+msgid "&laquo;empty&raquo;"
+msgstr "&laquo;empty&raquo;"
 
 #: classes/Gems/Snippets/Tracker/TokenStatusLegenda.php:72
 msgid "Legend"
@@ -4334,14 +4340,14 @@ msgstr "Checked %d tokens."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:64
 #: classes/Gems/Tracker/ChangeTracker.php:81
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:407
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:411
 #, php-format
 msgid "%2$d token date changes in %1$d tracks."
 msgstr "%2$d token date changes in %1$d tracks."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:67
 #: classes/Gems/Tracker/ChangeTracker.php:64
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:410
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:414
 #, php-format
 msgid "Checked %d tracks."
 msgstr "Checked %d tracks."
@@ -4367,19 +4373,19 @@ msgstr[0] "Check %s source"
 msgstr[1] "Check %s sources"
 
 #: classes/Gems/Tracker/ChangeTracker.php:84
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:393
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:397
 #, php-format
 msgid "Round changes propagated to %d tokens."
 msgstr "Round changes propagated to %d tokens."
 
 #: classes/Gems/Tracker/ChangeTracker.php:87
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:397
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:401
 #, php-format
 msgid "%d tokens deleted by round changes."
 msgstr "%d tokens deleted by round changes."
 
 #: classes/Gems/Tracker/ChangeTracker.php:90
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:401
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:405
 #, php-format
 msgid "%d tokens created to by round changes."
 msgstr "%d tokens created to by round changes."
@@ -4505,33 +4511,33 @@ msgstr "Use a standard token date."
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:422
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:426
 #, php-format
 msgid "%s track engines cannot be converted to %s track engines."
 msgstr "%s track engines cannot be converted to %s track engines."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:683
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:687
 #, php-format
 msgid "%d: %s - %s"
 msgstr "%d: %s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:686
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:689
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:690
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:693
 #, php-format
 msgid "%d: %s"
 msgstr "%d: %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:692
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:696
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:760
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:732
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:736
 msgid "Icon"
 msgstr "Icon"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:735
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:739
 msgid "After change"
 msgstr "After change"
 
@@ -5700,19 +5706,19 @@ msgstr "No surveys"
 msgid "No tracks"
 msgstr "No tracks"
 
-#: snippets/RespondentTokenTabsSnippet.php:65
+#: snippets/RespondentTokenTabsSnippet.php:90
 msgid "Default"
 msgstr "Default"
 
-#: snippets/RespondentTokenTabsSnippet.php:65
+#: snippets/RespondentTokenTabsSnippet.php:90
 msgid "To do 2 weeks ahead and done"
 msgstr "To do 2 weeks ahead and done"
 
-#: snippets/RespondentTokenTabsSnippet.php:66
+#: snippets/RespondentTokenTabsSnippet.php:91
 msgid "To do"
 msgstr "To do"
 
-#: snippets/RespondentTokenTabsSnippet.php:67
+#: snippets/RespondentTokenTabsSnippet.php:92
 msgid "Done"
 msgstr "Done"
 

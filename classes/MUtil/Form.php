@@ -336,6 +336,22 @@ class MUtil_Form extends Zend_Form
     }
 
     /**
+     * Filter a name to only allow valid variable characters
+     *
+     * @param  string $value
+     * @param  bool $allowBrackets
+     * @return string
+     */
+    public static function normalizeName($value, $allowBrackets = false)
+    {
+        $charset = '^a-zA-Z0-9_\x7f-\xff';
+        if ($allowBrackets) {
+            $charset .= '\[\]';
+        }
+        return preg_replace('/[' . $charset . ']/', '', (string) $value);
+    }
+
+    /**
      * Indicate whether or not translation should be disabled
      *
      * Added cascading to elements

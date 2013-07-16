@@ -57,6 +57,18 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
      *
      * @var array
      */
+    protected $_fixedFilter = array(
+        'gro_active' => 1,
+        'gsu_active' => 1,
+    );
+
+    /**
+     * Set a fixed model sort.
+     *
+     * Leading _ means not overwritten by sources.
+     *
+     * @var array
+     */
     protected $_fixedSort = array(
             'gto_round_order' => SORT_ASC,
             'gto_created'     => SORT_ASC
