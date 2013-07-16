@@ -417,7 +417,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     public function getImportTranslators()
     {
         $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
-        $this->applySource($trs);
+        $this->loader->applySource($trs);
 
         return array('default' => $trs);
     }
