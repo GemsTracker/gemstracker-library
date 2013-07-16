@@ -178,6 +178,24 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
     abstract protected function _loadAllTraversable();
 
     /**
+     * When $this->_saveable is true a child class should either override the
+     * delete() and save() functions of this class or override _saveAllTraversable().
+     *
+     * In the latter case this class will use _loadAllTraversable() and remove / add the
+     * data to the data in the delete() / save() functions and pass that data on to this
+     * function.
+     *
+     * @param array $data An array containing all the data that should be in this object
+     * @return void
+     */
+    protected function _saveAllTraversable(array $data)
+    {
+        throw new MUtil_Model_ModelException(
+                sprintf('Function "%s" should be overriden for class "%s".', __FUNCTION__, __CLASS__)
+                );
+    }
+
+    /**
      * Sorts the output
      *
      * @param array $data
@@ -333,7 +351,39 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
     public function save(array $newValues, array $filter = null)
     {
         if ($this->_saveable) {
-            // TODO: implement
+            $data = $this->_loadAllTraversable();
+            if ($data instanceof Traversable) {
+                $data = iterator_to_array($this->_loadAllTraversable());
+            }
+
+            if ($keys === $this->getKeys()) {
+                $search = array();
+                $newValues = $newValues + $filter;
+
+                foreach ($keys as $key) {
+                    if (isset($newValues[$key])) {
+                        $search[$key] = $newValues[$key];
+                    } else {
+                        // Crude but hey
+                        throw new MUtil_Model_ModelException(sprintf('Key value "%s" missing when saving data.', $key));
+                    }
+                }
+
+                $rowId = MUtil_Ra::findKeys($data, $search);
+
+                if ($rowId) {
+                    // Overwrite to new values
+                    $data[$rowId] = $newValues + $data[$rowId];
+                } else {
+                    $data[] = $newValues;
+                }
+
+
+            } else {
+                $data[] = $newValues;
+            }
+
+            $this->_saveAllTraversable($data);
         } else {
             throw new MUtil_Model_ModelException(sprintf('Save not implemented for model "%s".', $this->getName()));
         }

@@ -134,7 +134,6 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
         if ($this->project->offsetExists('concentRejected')) {
             throw new Gems_Exception_Coding('project.ini setting was changed from "concentRejected" to "consentRejected", please update your project.ini');
-            return $this->project->concentRejected;
         }
 
         return 'do not use';

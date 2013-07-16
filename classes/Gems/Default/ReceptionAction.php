@@ -88,21 +88,21 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('Only active codes can be selected.'));
-        $model->set('grc_for_respondents',   'label', $this->_('For respondents'),
+        $model->set('grc_for_respondents',   'label', $this->_('Respondents'),
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a respondent.'));
-        $model->set('grc_for_tracks',        'label', $this->_('For tracks'),
+        $model->set('grc_for_tracks',        'label', $this->_('Tracks'),
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a track.'));
-        $model->set('grc_for_surveys',       'label', $this->_('For surveys'),
+        $model->set('grc_for_surveys',       'label', $this->_('Surveys'),
             'multiOptions', $rcLib->getSurveyApplicationValues(),
             'description', $this->_('This reception code can be assigned to a survey.'));
         $model->set('grc_redo_survey',       'label', $this->_('Redo survey'),
             'multiOptions', $rcLib->getRedoValues(),
             'description', $this->_('Redo a survey on this reception code.'));
-        $model->set('grc_overwrite_answers', 'label', $this->_('Overwrite ansers'),
+        $model->set('grc_overwrite_answers', 'label', $this->_('Overwrite existing consents'),
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('Remove the consent from already answered surveys.'));

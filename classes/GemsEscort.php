@@ -303,8 +303,14 @@ class GemsEscort extends MUtil_Application_Escort
         try {
             $writer = new Zend_Log_Writer_Stream($logPath . '/errors.log');
         } catch (Exception $exc) {
-            $this->bootstrap(array('locale', 'translate'));
-            die(sprintf($this->translate->_('Path %s not writable'), $logPath));
+            try {
+                // Try to solve the problem, otherwise fail heroically
+                MUtil_File::ensureDir($logPath);
+                $writer = new Zend_Log_Writer_Stream($logPath . '/errors.log');
+            } catch (Exception $exc) {
+                $this->bootstrap(array('locale', 'translate'));
+                die(sprintf($this->translate->_('Path %s not writable'), $logPath));
+            }
         }
 
         $filter = new Zend_Log_Filter_Priority($this->project->getLogLevel());

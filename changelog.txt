@@ -2,6 +2,7 @@ Important changes from 1.6 => 1.6.1
 ============================================================
 Added support for ODK Collect by adding OpenRosa support
 Export data now operates in batch mode, allowing bigger exports and combining spss files in one download
+Import is possible for most data screens, though respondent import is the only one tested thoroughly.
 
 Important changes from 1.5.7 => 1.6
 ============================================================

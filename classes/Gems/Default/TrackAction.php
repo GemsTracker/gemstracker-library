@@ -446,7 +446,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 'trackId', $respTrack->getTrackId(),
                 'userId', $this->session->user_id);
     }
-    
+
     public function exportTrackAction()
     {
         $request = $this->getRequest();
@@ -456,12 +456,12 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             unset($menuData['gto_id_token']);   // To fix menu
             $this->setMenuParameters($menuData);
         }
-        
+
         $this->html->h2(sprintf($this->_('%s track for respondent nr %s: %s'),
             $data['gtr_track_name'],
             $this->_getParam(MUtil_Model::REQUEST_ID1),
             $this->getRespondentName($data)));
-        
+
         if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
             $links = parent::createMenuLinks(10);
             $table = parent::getShowTable();
@@ -489,16 +489,16 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
             if ($links) {
                 $this->html->buttonDiv($links);
-            }               
+            }
 
         }
-        
+
         $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
         $patNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
         $orgId = $this->_getParam(MUtil_Model::REQUEST_ID2);
         $export = $this->loader->getRespondentExport($this);
         $export->trackFilter = array(array('resptrackid'=>(int) $respTrackId));
-        
+
         $form = $export->getForm();
         $div = $this->html->div(array('id' => 'mainform'));
         $div[] = $form;
@@ -507,7 +507,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         if ($request->isPost()) {
             $export->render(array(array('gr2o_id_organization'=>$orgId, 'gr2o_patient_nr'=>$patNr)), $this->getRequest()->getParam('group'), $this->getRequest()->getParam('format'));
-        }        
+        }
     }
 
     public function getTopic($count = 1)
@@ -609,6 +609,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             $this->setMenuParameters($data);
 
             $model = $this->createTrackModel(false, 'index');
+            $model->addFilter(array(
+                'gtr_active' => 1,
+                'gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP',
+            ));
 
             // MUtil_Model::$verbose = true;
 

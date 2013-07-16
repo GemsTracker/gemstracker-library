@@ -442,7 +442,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      */
     public function getImportTranslators()
     {
-        $trs = new MUtil_Model_Translator_StraightTranslator($this->_('Simple import'));
+        $trs = new MUtil_Model_Translator_StraightTranslator($this->_('Direct import'));
         $this->applySource($trs);
 
         return array('default' => $trs);

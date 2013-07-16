@@ -65,10 +65,14 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * Gems only parameters used for the import action. Can be overruled
      * by setting $this->inmportParameters
      *
-     * @var array Mixed key => value array for snippet initialization
+     * @var array Mixed key => value array for snippet initializPdfation
      */
     private $_importExtraParameters = array(
-        'formatBoxClass' => 'timeResult rightFloat',
+        'failureDirectory' => 'getImportFailureDirectory',
+        'formatBoxClass'   => 'browser',
+        'longtermFilename' => 'getImportLongtermFileName',
+        'successDirectory' => 'getImportSuccessDirectory',
+        'tempDirectory'    => 'getImportTempDirectory',
         );
 
     /**
@@ -104,6 +108,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var boolean
      */
     public $formatExcelData = true;
+
+    /**
+     *
+     * @var Gems_Loader
+     */
+    public $loader;
 
     /**
      *
@@ -341,6 +351,55 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * The directory where the file should be stored when the import failed
+     *
+     * @return string
+     */
+    public function getImportFailureDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/import_failed/' . $this->_request->getControllerName();
+    }
+
+    /**
+     * The file name to use for final storage, minus the extension
+     *
+     * @return string
+     */
+    public function getImportLongtermFileName()
+    {
+        $user  = $this->loader->getCurrentUser();
+        $orgId = $user->getCurrentOrganization()->getCode() ?: $user->getCurrentOrganizationId();
+        $date  = new MUtil_Date();
+
+        $name[] = $this->_request->getControllerName();
+        $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
+        $name[] = $user->getLoginName();
+        $name[] = $orgId;
+
+        return implode('.', $name);
+    }
+
+    /**
+     * The directory where the file should be stored when the import succeeded
+     *
+     * @return string
+     */
+    public function getImportSuccessDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/imported/' . $this->_request->getControllerName();
+    }
+
+    /**
+     * The file name to use for temporary storage
+     *
+     * @return string
+     */
+    public function getImportTempDirectory()
+    {
+        return GEMS_ROOT_DIR . '/var/importing';
+    }
+
+    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
@@ -427,6 +486,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function importAction()
     {
+        $this->_importExtraParameters['topicCallable'] = array($this, 'getTopic');
+        
         $this->importParameters = $this->importParameters + $this->_importExtraParameters;
 
         parent::importAction();

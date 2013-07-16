@@ -196,6 +196,8 @@ class Gems_Snippets_RespondentTokenSnippet extends Gems_Snippets_TokenModelSnipp
 
         $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
+        $filter['gro_active']  = 1;
+        $filter['gsu_active']  = 1;
 
         $reqFilter = $this->request->getParam('filter');
         switch ($reqFilter) {

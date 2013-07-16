@@ -273,7 +273,13 @@ class MUtil_Encoding
         return str_replace(array_keys(self::$brokenUtf8ToUtf8), array_values(self::$brokenUtf8ToUtf8), $text);
     }
 
-    static function removeBOM($str = "")
+    /**
+     * Remove the UTF Byte Order Mark - if it is there
+     *
+     * @param string $str
+     * @return string
+     */
+    public static function removeBOM($str = "")
     {
         if (substr($str, 0, 3) == pack("CCC", 0xef, 0xbb, 0xbf)) {
             $str = substr($str, 3);

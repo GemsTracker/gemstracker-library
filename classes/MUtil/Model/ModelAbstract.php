@@ -1208,6 +1208,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if (null === $key) {
             if (isset($this->_model[$name])) {
                 unset($this->_model[$name]);
+                unset($this->_model_order[$name]);
             }
         } elseif (isset($this->_model[$name][$key])) {
             unset($this->_model[$name][$key]);

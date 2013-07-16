@@ -60,11 +60,8 @@ class Gems_Model_RespondentNlModel extends Gems_Model_RespondentModel
 
         $translator = $this->translate->getAdapter();
 
-        $this->setIfExists('grs_surname_prefix',
-                'label', $translator->_('Surname prefix'),
-                'description', $translator->_('de, van der, \'t, etc...'),
-                'order', $this->getOrder('grs_first_name') + 1
-                );
+        $this->setIfExists('grs_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
+        $this->setIfExists('grs_partner_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
 
         return $this;
     }

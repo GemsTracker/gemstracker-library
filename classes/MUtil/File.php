@@ -47,6 +47,25 @@
 class MUtil_File
 {
     /**
+     * Ensure the directory does really exist or throw an exception othewise
+     *
+     * @param string $dir The path of the directory
+     * @param int $mode Unix file mask mode, ignored on Windows
+     * @return string the directory
+     * @throws Zend_Exception
+     */
+    public static function ensureDir($dir, $mode = 0777)
+    {
+        if (! is_dir($dir)) {
+            if (! @mkdir($dir, $mode, true)) {
+                throw new Zend_Exception(sprintf("Could not create '%s' directory: %s", $dir, error_get_last()));
+            }
+        }
+
+        return $dir;
+    }
+
+    /**
      * Returns an array containing all the files (not directories) in a
      * recursive directory listing from $dir.
      *
@@ -71,5 +90,36 @@ class MUtil_File
         }
 
         return $results;
+    }
+
+    /**
+     * Creates a temporary filename in the directory but first cleans
+     * up any files older than $keepFor in that directory.
+     *
+     * When no directory is used sys_get_temp_dir() is used and no cleanup is performed.
+     *
+     * @param string $dir The directory for the files
+     * @param string $prefix Optional prefix
+     * @param int $keepFor The number of second a file is kept, use 0 for always
+     * @return string
+     */
+    public static function getTemporaryIn($dir = null, $prefix = null, $keepFor = 86400)
+    {
+        if (null === $dir) {
+            return tempnam(sys_get_temp_dir(), $prefix);
+        }
+
+        self::ensureDir($dir);
+
+        if ($keepFor) {
+            // Clean up old temporaries
+            foreach (glob($dir . '/*', GLOB_NOSORT) as $filename) {
+                if ((!is_dir($filename)) && (filemtime($filename) + $keepFor < time())) {
+                    @unlink($filename);
+                }
+            }
+        }
+
+        return tempnam($dir, $prefix);
     }
 }

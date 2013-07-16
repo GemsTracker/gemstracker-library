@@ -56,6 +56,14 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     const STATE_UNKNOWN = 3;
 
     /**
+     * When set to true in a subclass, then the model should be able to
+     * save itself.
+     *
+     * @var boolean
+     */
+    protected $_saveable = true;
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
@@ -258,6 +266,22 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                 );
         }
         return $data;
+    }
+
+    /**
+     * When $this->_saveable is true a child class should either override the
+     * delete() and save() functions of this class or override _saveAllTraversable().
+     *
+     * In the latter case this class will use _loadAllTraversable() and remove / add the
+     * data to the data in the delete() / save() functions and pass that data on to this
+     * function.
+     *
+     * @param array $data An array containing all the data that should be in this object
+     * @return void
+     */
+    protected function _saveAllTraversable(array $data)
+    {
+        // Do nothing, the changes are reflected in the file system
     }
 
     /**

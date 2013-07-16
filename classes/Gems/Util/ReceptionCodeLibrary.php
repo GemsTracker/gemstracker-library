@@ -121,8 +121,8 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
         if (! $data) {
             $data = array(
                 self::APPLY_NOT  => $this->translate->_('No'),
-                self::APPLY_DO   => $this->translate->_('Yes (individual surveys only)'),
-                self::APPLY_STOP => $this->translate->_('Stop (per respondent or track only)'));
+                self::APPLY_DO   => $this->translate->_('Yes (to individual tokens)'),
+                self::APPLY_STOP => $this->translate->_('Stop (to uncompleted tokens)'));
         }
 
         return $data;

@@ -54,6 +54,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
         'extraFilter' => array('grc_success' => 1),
+        'extraSort'   => array('gr2o_opened' => SORT_DESC),
         );
 
     /**
@@ -289,14 +290,14 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
-            $columns[] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
+            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
         } else {
             $model->addFilter(array('gr2o_id_organization' => $user->getCurrentOrganizationId()));
-            $columns[] = array('gr2o_patient_nr', $br, 'gr2o_opened');
+            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_opened');
         }
-        $columns[] = array('name',            $br, 'grs_email');
-        $columns[] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
-        $columns[] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
+        $columns[20] = array('name',            $br, 'grs_email');
+        $columns[30] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
+        $columns[40] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
 
         return $columns;
     }
@@ -327,7 +328,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     public function getImportTranslators()
     {
-        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Simple import'), $this->db);
+        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
         $this->applySource($trs);
 
         return array('default' => $trs);
@@ -383,25 +384,28 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     public function getRespondentData()
     {
-        $model = $this->getModel();
-        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
+        $user      = $this->loader->getCurrentUser();
+        $userId    = $user->getUserId();
 
-        if (! isset($data['grs_id_user'])) {
-            $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));
-            $this->_reroute(array('action' => 'index'), true);
-            return array();
+        // Updated gr20_opened
+        if ($patientNr) {
+            $where['gr2o_patient_nr = ?']      = $patientNr;
+            $where['gr2o_id_organization = ?'] = $orgId;
+            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gr2o_opened_by']          = $userId;
+
+            $this->db->update('gems__respondent2org', $values, $where);
         }
 
-        // Log
-        $this->openedRespondent($data['gr2o_patient_nr'], $data['gr2o_id_organization'], $data['grs_id_user']);
 
         // Check for completed tokens
-        if ($this->loader->getTracker()->processCompletedTokens($data['grs_id_user'], $this->session->user_id, $data['gr2o_id_organization'])) {
-            //As data might have changed due to token events... reload
-            $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
-        }
+        $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
 
-        return $data;
+        $model = $this->getModel();
+        return $model->applyRequest($this->getRequest(), true)->loadFirst();
     }
 
     /**
@@ -431,6 +435,21 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     }
 
     /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Tell the system where to return to after a survey has been taken
+        $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
+    }
+
+    /**
      * Log the respondent opening
      *
      * @param string $patientId
@@ -438,13 +457,15 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      * @param int $userId
      * @return \Gems_Default_RespondentNewAction
      */
-    protected function openedRespondent($patientId, $orgId = null, $userId = null)
+    protected function openedRespondent($patientId, $orgId)
     {
         if ($patientId) {
+            $user      = $this->loader->getCurrentUser();
+
             $where['gr2o_patient_nr = ?']      = $patientId;
-            $where['gr2o_id_organization = ?'] = $orgId ? $orgId : $this->escort->getCurrentOrganization();
+            $where['gr2o_id_organization = ?'] = $orgId;
             $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $this->session->user_id;
+            $values['gr2o_opened_by']          = $user->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);
         }

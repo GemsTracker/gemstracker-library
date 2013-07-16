@@ -71,14 +71,6 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     public function getFieldsTranslations();
 
     /**
-     * Get information on the required input format.
-     *
-     * @return array of nested field_name => array(field_name, label, maxlength, type)
-     * @throws MUtil_Model_ModelException
-     */
-    public function getImportFields();
-
-    /**
      * Get the source model, where the data is coming from.
      *
      * @return MUtil_Model_ModelAbstract $sourceModel The source of the data

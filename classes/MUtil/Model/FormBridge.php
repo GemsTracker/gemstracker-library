@@ -89,7 +89,7 @@ class MUtil_Model_FormBridge
         self::DISPLAY_OPTIONS    => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex', 'value', 'showLabels', 'labelplacement'),
         self::EXHIBIT_OPTIONS    => array('formatFunction'),
         self::FAKESUBMIT_OPTIONS => array('label', 'tabindex', 'disabled'),
-        self::FILE_OPTIONS       => array('accept', 'count', 'destination', 'valueDisabled'),
+        self::FILE_OPTIONS       => array('accept', 'count', 'destination', 'extension', 'filename', 'valueDisabled'),
         self::GROUP_OPTIONS      => array('elements', 'legend', 'separator'),
         self::JQUERY_OPTIONS     => array('jQueryParams'),
         self::MULTI_OPTIONS      => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
@@ -123,7 +123,9 @@ class MUtil_Model_FormBridge
             $element = $this->form->getElement($name);
         }
         $this->_applyFilters($name, $element);
-        $this->_applyValidators($name, $element);
+        if (! $element instanceof Zend_Form_Element_Hidden) {
+            $this->_applyValidators($name, $element);
+        }
 
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 
@@ -458,13 +460,13 @@ class MUtil_Model_FormBridge
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
 
+        $options = $this->_mergeOptions($name, $options,
+            self::DISPLAY_OPTIONS, self::FILE_OPTIONS, self::TEXT_OPTIONS);
+
         $filename  = $this->_moveOption('filename',  $options);
         $count     = $this->_moveOption('count',     $options);
         $size      = $this->_moveOption('size',      $options);
         $extension = $this->_moveOption('extension', $options);
-
-        $options = $this->_mergeOptions($name, $options,
-            self::DISPLAY_OPTIONS, self::FILE_OPTIONS, self::TEXT_OPTIONS);
 
         $element = new Zend_Form_Element_File($name, $options);
 
@@ -473,7 +475,7 @@ class MUtil_Model_FormBridge
             // When
             // 1) an extension filter was defined,
             // 2) it concerns a single extension and
-            // 3) $filenane does not have an extension
+            // 3) $filename does not have an extension
             // then add the extension to the name.
             if ($extension &&
                 (false === strpos($extension, ',')) &&

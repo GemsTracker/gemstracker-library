@@ -167,7 +167,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
         $options['required'] = $this->model->get($name, 'required');
         $options['label']    = $this->escort->_('Message');
 
-        return new Zend_Form_Element_Textarea($name, $options);
+        return new Gems_Form_Element_CKEditor($name, $options);
     }
 
     protected function createEmailElement($name, $label, $required = false, $multi = false)
@@ -362,7 +362,7 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
 
     public static function displayMailText($text)
     {
-        return MUtil_Html::create()->pre(wordwrap($text, 100), array('class' => 'mailpreview'));
+        return MUtil_Html::create()->pre($text, array('class' => 'mailpreview'));
     }
 
     public function getMessages()
