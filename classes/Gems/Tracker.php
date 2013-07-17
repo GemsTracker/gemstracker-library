@@ -235,7 +235,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      *
-     * @param int $patientId    The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
+     * @param int $respondentId    The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
      * @param int $organizationId
      * @param int $trackId
      * @param int $userId    Id of the user who takes the action (for logging)
@@ -243,7 +243,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      * @param array $trackFieldsData
      * @return Gems_Tracker_RespondentTrack The newly created track
      */
-    public function createRespondentTrack($patientId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
+    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
     {
         $trackEngine = $this->getTrackEngine($trackId);
 
@@ -256,7 +256,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             // The start date has to exist.
             $respTrackData['gr2t_start_date'] = new MUtil_Date();
         }
-        $respTrackData['gr2t_id_user']         = $patientId;
+        $respTrackData['gr2t_id_user']         = $respondentId;
         $respTrackData['gr2t_id_organization'] = $organizationId;
 
         // Process track fields.
@@ -371,10 +371,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function getRespondentTracks($userId, $organizationId, $order = array('gr2t_start_date'))
     {
-        /*$sql    = "SELECT *
-                    FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
-                    WHERE gr2t_id_user = ? AND gr2t_id_organization = ?";
-         */
         $select = $this->db->select()
                 ->from('gems__respondent2track')
                 ->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')

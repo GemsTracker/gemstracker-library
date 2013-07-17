@@ -47,6 +47,18 @@
 class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
 {
     /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var MUtil_Model_ModelAbstract
+     */
+    protected $model;
+
+    /**
      * Returns a text element for autosearch. Can be overruled.
      *
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
@@ -59,11 +71,23 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
     {
         $elements = parent::getAutoSearchElements($data);
 
-        $element = new Zend_Form_Element_Checkbox('grc_success');
-        $element->setLabel($this->_('Show active'));
-        $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
+        $user = $this->loader->getCurrentUser();
+        if ($user->hasRole('admin')) {
+            $element = new Zend_Form_Element_Checkbox('grc_success');
+            $element->setLabel($this->_('Show active'));
+            $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
 
-        $elements[] = $element;
+            $elements[] = $element;
+        }
+
+        if ($this->model->isMultiOrganization()) {
+            $options = $user->getRespondentOrganizations();
+
+            $elements[] = $this->_createSelectElement(
+                    MUtil_Model::REQUEST_ID2,
+                    $options, $this->_('(all organizations)')
+                    );
+        }
 
         return $elements;
     }
@@ -76,7 +100,12 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
         $data = parent::getSearchData();
 
         if (! isset($data['grc_success'])) {
-            $data['grc_success'] = 1;
+            // Add request to cache as otherwise later searches (using autofilter) will miss
+            // this value
+            $cacheData = $this->requestCache->getProgramParams() + array('grc_success' => 1);
+            $this->requestCache->setProgramParams($cacheData);
+
+            $data['grc_success'] = $cacheData['grc_success'];
         }
 
         return $data;

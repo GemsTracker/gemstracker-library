@@ -58,7 +58,7 @@ class Gems_Model_RespondentNlModel extends Gems_Model_RespondentModel
     {
         parent::applyDetailSettings($locale);
 
-        $translator = $this->translate->getAdapter();
+        $translator = $this->getTranslateAdapter();
 
         $this->setIfExists('grs_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
         $this->setIfExists('grs_partner_surname_prefix', 'description', $translator->_('de, van der, \'t, etc...'));
@@ -75,7 +75,7 @@ class Gems_Model_RespondentNlModel extends Gems_Model_RespondentModel
     public function applyEditSettings($locale = null)
     {
         parent::applyEditSettings($locale);
-        $translator = $this->translate->getAdapter();
+        $translator = $this->getTranslateAdapter();
 
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
             self::setDutchSsn($this, $translator);

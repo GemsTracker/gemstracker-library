@@ -53,7 +53,6 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
-        'extraFilter' => array('grc_success' => 1),
         'extraSort'   => array('gr2o_opened' => SORT_DESC),
         );
 
@@ -188,34 +187,23 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $form->addElement($save);
 
         if ($request->isPost()) {
-            $data = $_POST + $data;
-            if ($form->isValid($data )) {
+            $oldCode = $data['gr2o_reception_code'];
+            $data    = $_POST + $data;
 
-                $code = $this->util->getReceptionCode($data['gr2o_reception_code']);
+            if ($form->isValid($data )) {
+                $code = $model->setReceptionCode(
+                        $data['gr2o_patient_nr'],
+                        $data['gr2o_id_organization'],
+                        $data['gr2o_reception_code'],
+                        $data['gr2o_id_user'],
+                        $oldCode
+                        );
 
                 // Is the respondent really removed
                 if (! $code->isSuccess()) {
-                    $userId = $this->loader->getCurrentUser()->getUserId();
-
-                    // Cascade to tracks
-                    // the responsiblilty to handle it correctly is on the sub objects now.
-                    $tracks = $this->loader->getTracker()->getRespondentTracks($data['gr2o_id_user'], $data['gr2o_id_organization']);
-                    foreach ($tracks as $track) {
-                        $track->setReceptionCode($code, null, $userId);
-                    }
 
                     // Perform actual save, but not simple stop codes.
                     if ($code->isForRespondents()) {
-                        $values['gr2o_reception_code'] = $data['gr2o_reception_code'];
-                        $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
-                        $values['gr2o_changed_by']     = $userId;
-
-                        $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
-                        $where = $this->db->quoteInto($where, $data['gr2o_id_user'], null, 1);
-                        $where = $this->db->quoteInto($where, $data['gr2o_id_organization'], null, 1);
-
-                        $this->db->update('gems__respondent2org', $values, $where);
-
                         $this->addMessage($this->_('Respondent deleted.'));
                         $this->_reroute(array('action' => 'index'), true);
                     } else {
@@ -390,7 +378,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $user      = $this->loader->getCurrentUser();
         $userId    = $user->getUserId();
 
-        // Updated gr20_opened
+        // Update gr20_opened
         if ($patientNr) {
             $where['gr2o_patient_nr = ?']      = $patientNr;
             $where['gr2o_id_organization = ?'] = $orgId;

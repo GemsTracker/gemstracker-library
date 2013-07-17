@@ -287,6 +287,11 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         return $changed;
     }
 
+    /**
+     * The database adapter used by the model.
+     *
+     * @return Zend_Db_Adapter_Abstract
+     */
     public function getAdapter()
     {
         return $this->_select->getAdapter();
