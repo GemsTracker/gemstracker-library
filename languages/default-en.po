@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-16 19:36+0100\n"
+"POT-Creation-Date: 2013-07-17 20:06+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -255,7 +255,7 @@ msgstr "Groups"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:214
 #: classes/Gems/Default/TrackMaintenanceAction.php:139
 #: classes/Gems/Email/MailTemplateForm.php:102
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:143
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:146
 msgid "Organizations"
 msgstr "Organizations"
 
@@ -391,7 +391,7 @@ msgstr "Delete"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:591
 #: classes/Gems/Menu/MenuAbstract.php:442
 #: classes/Gems/Menu/MenuAbstract.php:507
-#: classes/Gems/Tracker/Model/TrackModel.php:100
+#: classes/Gems/Tracker/Model/TrackModel.php:102
 msgid "Surveys"
 msgstr "Surveys"
 
@@ -419,8 +419,8 @@ msgstr "Export archive"
 #: classes/Gems/Menu.php:650 classes/Gems/Default/GroupAction.php:122
 #: classes/Gems/Default/OrganizationAction.php:156
 #: classes/Gems/Default/ReceptionAction.php:91
-#: classes/Gems/Default/RespondentAction.php:473
-#: classes/Gems/Default/RespondentNewAction.php:344
+#: classes/Gems/Default/RespondentAction.php:465
+#: classes/Gems/Default/RespondentNewAction.php:332
 msgid "Respondents"
 msgstr "Patients"
 
@@ -532,7 +532,7 @@ msgstr "Last name"
 #: classes/Gems/Default/TrackMaintenanceAction.php:320
 #: classes/Gems/Model/RespondentModel.php:244
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:60
-#: classes/Gems/Tracker/Model/TrackModel.php:98
+#: classes/Gems/Tracker/Model/TrackModel.php:99
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:69
 msgid "Name"
 msgstr "Name"
@@ -675,8 +675,8 @@ msgid "No %s found."
 msgstr "No %s found."
 
 #: classes/Gems/Controller/BrowseEditAction.php:811
-#: classes/Gems/Default/RespondentAction.php:419
-#: classes/Gems/Default/RespondentNewAction.php:331
+#: classes/Gems/Default/RespondentAction.php:411
+#: classes/Gems/Default/RespondentNewAction.php:319
 #: classes/MUtil/Controller/ModelSnippetActionAbstract.php:445
 msgid "Direct import"
 msgstr "Direct import"
@@ -723,9 +723,9 @@ msgid "No"
 msgstr "No"
 
 #: classes/Gems/Controller/BrowseEditAction.php:994
-#: classes/Gems/Default/RespondentAction.php:243
-#: classes/Gems/Default/RespondentAction.php:337
-#: classes/Gems/Default/RespondentAction.php:539
+#: classes/Gems/Default/RespondentAction.php:246
+#: classes/Gems/Default/RespondentAction.php:329
+#: classes/Gems/Default/RespondentAction.php:531
 #: classes/Gems/Default/TrackAction.php:624
 #, php-format
 msgid "Unknown %s requested"
@@ -755,8 +755,8 @@ msgid "No changes to save."
 msgstr "No changes to save."
 
 #: classes/Gems/Controller/BrowseEditAction.php:1073
-#: classes/Gems/Default/RespondentAction.php:305
-#: classes/Gems/Default/RespondentNewAction.php:230
+#: classes/Gems/Default/RespondentAction.php:297
+#: classes/Gems/Default/RespondentNewAction.php:218
 msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
@@ -908,7 +908,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/ProjectTracksAction.php:85
 #: classes/Gems/Default/TrackAction.php:518
 #: classes/Gems/Default/TrackMaintenanceAction.php:402
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:198
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:201
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:187
 msgid "track"
 msgid_plural "tracks"
@@ -1415,7 +1415,7 @@ msgstr "%s records found."
 #: classes/Gems/Default/ExportAction.php:243
 #: classes/Gems/Email/MailTemplateForm.php:111
 #: classes/Gems/Snippets/Survey/Display/FullAnswerToggleSnippet.php:70
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:146
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:149
 msgid "Toggle"
 msgstr "Toggle"
 
@@ -1454,7 +1454,7 @@ msgstr "Role"
 #: classes/Gems/Default/SurveyMaintenanceAction.php:452
 #: classes/Gems/Default/SurveyMaintenanceAction.php:508
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:741
-#: classes/Gems/Tracker/Model/TrackModel.php:102
+#: classes/Gems/Tracker/Model/TrackModel.php:104
 #: classes/Gems/Util/TrackData.php:163
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:70
 msgid "Active"
@@ -1940,9 +1940,10 @@ msgid "Email servers"
 msgstr "Email servers"
 
 #: classes/Gems/Default/MailTemplateAction.php:76
-#: classes/Gems/Default/RespondentAction.php:384
+#: classes/Gems/Default/RespondentAction.php:376
 #: classes/Gems/Default/StaffAction.php:342
 #: classes/Gems/Default/StaffAction.php:416
+#: classes/Gems/Snippets/RespondentSearchSnippet.php:88
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:105
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:75
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:75
@@ -2102,13 +2103,13 @@ msgstr "Checked organizations see this organizations patients."
 
 #: classes/Gems/Default/OrganizationAction.php:174
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
-#: classes/Gems/Tracker/Model/TrackModel.php:106
+#: classes/Gems/Tracker/Model/TrackModel.php:113
 msgid "Code name"
 msgstr "Code name"
 
 #: classes/Gems/Default/OrganizationAction.php:174
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
-#: classes/Gems/Tracker/Model/TrackModel.php:106
+#: classes/Gems/Tracker/Model/TrackModel.php:115
 msgid "Only for programmers."
 msgstr "Only for programmers."
 
@@ -2307,7 +2308,7 @@ msgstr "By"
 #: classes/Gems/Email/EmailFormAbstract.php:251
 #: classes/Gems/Email/MailTemplateForm.php:82
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:114
-#: classes/Gems/Tracker/Model/TrackModel.php:103
+#: classes/Gems/Tracker/Model/TrackModel.php:106
 msgid "From"
 msgstr "From"
 
@@ -2485,8 +2486,8 @@ msgstr "Comments"
 msgid "Treatment"
 msgstr "Treatment"
 
-#: classes/Gems/Default/RespondentAction.php:255
-#: classes/Gems/Default/RespondentNewAction.php:180
+#: classes/Gems/Default/RespondentAction.php:258
+#: classes/Gems/Default/RespondentNewAction.php:179
 #: classes/Gems/Default/TrackAction.php:132
 #: classes/Gems/Default/TrackAction.php:548
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:214
@@ -2495,35 +2496,35 @@ msgstr "Treatment"
 msgid "Rejection code"
 msgstr "Rejection code"
 
-#: classes/Gems/Default/RespondentAction.php:262
-#: classes/Gems/Default/RespondentNewAction.php:187
+#: classes/Gems/Default/RespondentAction.php:265
+#: classes/Gems/Default/RespondentNewAction.php:186
 msgid "Delete respondent"
 msgstr "Delete patient"
 
-#: classes/Gems/Default/RespondentAction.php:294
-#: classes/Gems/Default/RespondentNewAction.php:219
+#: classes/Gems/Default/RespondentAction.php:286
+#: classes/Gems/Default/RespondentNewAction.php:207
 msgid "Respondent deleted."
 msgstr "Patient deleted"
 
-#: classes/Gems/Default/RespondentAction.php:298
-#: classes/Gems/Default/RespondentNewAction.php:223
+#: classes/Gems/Default/RespondentAction.php:290
+#: classes/Gems/Default/RespondentNewAction.php:211
 msgid "Respondent tracks stopped."
 msgstr "Patient tracks stopped."
 
-#: classes/Gems/Default/RespondentAction.php:302
-#: classes/Gems/Default/RespondentNewAction.php:227
+#: classes/Gems/Default/RespondentAction.php:294
+#: classes/Gems/Default/RespondentNewAction.php:215
 #: classes/Gems/Default/TrackAction.php:408
 msgid "Choose a reception code to delete."
 msgstr "Choose a reception code to delete."
 
-#: classes/Gems/Default/RespondentAction.php:354
+#: classes/Gems/Default/RespondentAction.php:346
 #: classes/Gems/Default/RespondentExportAction.php:63
-#: classes/Gems/Default/RespondentNewAction.php:257
+#: classes/Gems/Default/RespondentNewAction.php:245
 msgid "Export respondent archive"
 msgstr "Export patient archive"
 
-#: classes/Gems/Default/RespondentAction.php:468
-#: classes/Gems/Default/RespondentNewAction.php:419
+#: classes/Gems/Default/RespondentAction.php:460
+#: classes/Gems/Default/RespondentNewAction.php:407
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patient"
@@ -2821,7 +2822,7 @@ msgstr ""
 "User with id %s already exists but is deleted, do you want to reactivate the "
 "account?"
 
-#: classes/Gems/Default/StaffAction.php:334 classes/Gems/User/User.php:1240
+#: classes/Gems/Default/StaffAction.php:334 classes/Gems/User/User.php:1254
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
 msgid "Username"
 msgstr "Username"
@@ -3088,7 +3089,7 @@ msgid "Before answering"
 msgstr "Before answering"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:473
-#: classes/Gems/Tracker/Model/TrackModel.php:110
+#: classes/Gems/Tracker/Model/TrackModel.php:125
 msgid "After completion"
 msgstr "After completion"
 
@@ -4247,7 +4248,7 @@ msgstr "Known patient."
 msgid "Respondent data retrieved from %s."
 msgstr "Patient data retrieved from %s."
 
-#: classes/Gems/Snippets/RespondentSearchSnippet.php:63
+#: classes/Gems/Snippets/RespondentSearchSnippet.php:77
 msgid "Show active"
 msgstr "Show active"
 
@@ -4558,13 +4559,17 @@ msgstr "Duration in seconds"
 msgid "Assigned to"
 msgstr "Assigned to"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:99
+#: classes/Gems/Tracker/Model/TrackModel.php:100
 msgid "Track Engine"
 msgstr "Track Engine"
 
-#: classes/Gems/Tracker/Model/TrackModel.php:104
+#: classes/Gems/Tracker/Model/TrackModel.php:109
 msgid "Use until"
 msgstr "Use until"
+
+#: classes/Gems/Tracker/Model/TrackModel.php:121
+msgid "Before (re)calculation"
+msgstr "Before (re)calculation"
 
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:161
 #: snippets/SurveyQuestionsSnippet.php:128
@@ -4608,8 +4613,8 @@ msgstr "Print"
 msgid "Add new round"
 msgstr "Add new round"
 
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:208
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:244
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:211
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:247
 msgid "Add new track"
 msgstr "Add new track"
 
@@ -4963,21 +4968,21 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1219
+#: classes/Gems/User/User.php:1233
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1235
+#: classes/Gems/User/User.php:1249
 #: classes/Gems/User/Form/ChangePasswordForm.php:170
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
 
-#: classes/Gems/User/User.php:1320
+#: classes/Gems/User/User.php:1334
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1348
+#: classes/Gems/User/User.php:1362
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 
@@ -5049,15 +5054,25 @@ msgstr "Request reset"
 msgid "User not found or no e-mail address known or user cannot be reset."
 msgstr "User not found or no e-mail address known or user cannot be reset."
 
-#: classes/Gems/Util/DbLookup.php:413
+#: classes/Gems/Util/DbLookup.php:372
+#, php-format
+msgid "Respondent id %s not found."
+msgstr "Patient id %s not found."
+
+#: classes/Gems/Util/DbLookup.php:375
+#, php-format
+msgid "With the organization nr %d."
+msgstr "With the organization nr %d."
+
+#: classes/Gems/Util/DbLookup.php:424
 msgid "&laquo;system&raquo;"
 msgstr "&laquo;system&raquo;"
 
-#: classes/Gems/Util/DbLookup.php:463
+#: classes/Gems/Util/DbLookup.php:474
 msgid "inactive"
 msgstr "inactive"
 
-#: classes/Gems/Util/DbLookup.php:464
+#: classes/Gems/Util/DbLookup.php:475
 msgid "source inactive"
 msgstr "source inactive"
 
