@@ -527,7 +527,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $userId    = $user->getUserId();
 
         // Updated gr20_opened
-        $this->openedRespondent($patientId, $orgId, $userId);
+        $this->openedRespondent($patientNr, $orgId, $userId);
 
         // Check for completed tokens
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
