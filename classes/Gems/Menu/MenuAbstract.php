@@ -571,25 +571,23 @@ abstract class Gems_Menu_MenuAbstract
 
             foreach ($this->_subItems as $item) {
 
-                if ($item->get('visible', true)) {
-                    $allowed = $item->get('allowed', true);
+                $allowed = $item->get('allowed', true);
 
-                    if ($allowed && ($privilege = $item->get('privilege'))) {
-                        $allowed = $acl->isAllowed($userRole, null, $privilege);
-                    }
+                if ($allowed && ($privilege = $item->get('privilege'))) {
+                    $allowed = $acl->isAllowed($userRole, null, $privilege);
+                }
 
-                    if ($allowed) {
-                        $item->applyAcl($acl, $userRole);
-                        $anyVisible = true;
-                    } else {
-                        // As an item can be invisible but allowed,
-                        // but not disallowed but visible we need to
-                        // set both.
-                        $item->set('allowed', false);
-                        $item->set('visible', false);
-                        $item->setForChildren('allowed', false);
-                        $item->setForChildren('visible', false);
-                    }
+                if ($allowed) {
+                    $item->applyAcl($acl, $userRole);
+                    $anyVisible = true;
+                } else {
+                    // As an item can be invisible but allowed,
+                    // but not disallowed but visible we need to
+                    // set both.
+                    $item->set('allowed', false);
+                    $item->set('visible', false);
+                    $item->setForChildren('allowed', false);
+                    $item->setForChildren('visible', false);
                 }
             }
 
