@@ -178,7 +178,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
-    
+
     /**
      * Returns the OpenRosaFormModel
      *
@@ -309,7 +309,8 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $model->setSaveWhenNew($created_field);
 
         if (! $userid) {
-            $userid = GemsEscort::getInstance()->session->user_id;
+            $userid = GemsEscort::getInstance()->loader->getCurrentUser()->getUserId();
+
             if (! $userid) {
                 $userid = 1;
             }

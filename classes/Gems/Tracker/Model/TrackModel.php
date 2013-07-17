@@ -92,23 +92,38 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     public function applyFormatting($detailed = false)
     {
         $translated = $this->util->getTranslated();
+        $translator = $this->getTranslateAdapter();
 
         $this->resetOrder();
 
-        $this->set('gtr_track_name',    'label', $this->translate->_('Name'));
-        $this->set('gtr_track_class',   'label', $this->translate->_('Track Engine'), 'multiOptions', $this->tracker->getTrackEngineList($detailed));
-        $this->set('gtr_survey_rounds', 'label', $this->translate->_('Surveys'));
-       
-        $this->set('gtr_active',        'label', $this->translate->_('Active'), 'multiOptions', $translated->getYesNo());
-        $this->set('gtr_date_start',    'label', $this->translate->_('From'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDate);
-        $this->set('gtr_date_until',    'label', $this->translate->_('Use until'), 'dateFormat', $translated->dateFormatString, 'formatFunction', $translated->formatDateForever);
-        
-        $this->setIfExists('gtr_code',  'label', $this->translate->_('Code name'), 'size', 10, 'description', $this->translate->_('Only for programmers.'));
+        $this->set('gtr_track_name',    'label', $translator->_('Name'));
+        $this->set('gtr_track_class',   'label', $translator->_('Track Engine'),
+                'multiOptions', $this->tracker->getTrackEngineList($detailed));
+        $this->set('gtr_survey_rounds', 'label', $translator->_('Surveys'));
+
+        $this->set('gtr_active',        'label', $translator->_('Active'),
+                'multiOptions', $translated->getYesNo());
+        $this->set('gtr_date_start',    'label', $translator->_('From'),
+                'dateFormat', $translated->dateFormatString,
+                'formatFunction', $translated->formatDate);
+        $this->set('gtr_date_until',    'label', $translator->_('Use until'),
+                'dateFormat', $translated->dateFormatString,
+                'formatFunction', $translated->formatDateForever);
+
+        $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
+                'size', 10,
+                'description', $translator->_('Only for programmers.'));
 
         if ($detailed) {
+            $events = $this->loader->getEvents();
+
+            $this->setIfExists('gtr_calculation_event',
+                'label', $translator->_('Before (re)calculation'),
+                'multiOptions', $events->listTrackCalculationEvents());
+
             $this->setIfExists('gtr_completed_event',
-                'label', $this->translate->_('After completion'),
-                'multiOptions', $this->loader->getEvents()->listTrackCompletionEvents());
+                'label', $translator->_('After completion'),
+                'multiOptions', $events->listTrackCompletionEvents());
         }
 
         return $this;
@@ -123,6 +138,33 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     public function checkRegistryRequestsAnswers()
     {
         return $this->tracker && $this->translate && $this->util;
+    }
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @param int $trackId
+     * @return Gems_Event_TrackCalculationEventInterface | null
+     */
+    public function getTrackCalculationEvent($trackId)
+    {
+        static $trackData = array();
+
+        if (array_key_exists($trackId, $trackData)) {
+            $track = $trackData[$trackId];
+        } else {
+            if ($track = $this->loadFirst(array('gtr_id_track' => $trackId))) {
+                $trackData[$trackId] = $track;
+            } else {
+                $track = array();
+            }
+        }
+
+        if (array_key_exists('gtr_calculation_event', $track)) {
+            if (!empty($track['gtr_calculation_event'])) {
+                return $this->loader->getEvents()->loadTrackCalculationEvent($track['gtr_calculation_event']);
+            }
+        }
     }
 
     /**
@@ -150,5 +192,24 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
                 return $this->loader->getEvents()->loadTrackCompletionEvent($track['gtr_completed_event']);
             }
         }
+    }
+
+    /**
+     * Returns a translate adaptor
+     *
+     * @return Zend_Translate_Adapter
+     */
+    protected function getTranslateAdapter()
+    {
+        if ($this->translate instanceof Zend_Translate)
+        {
+            return $this->translate->getAdapter();
+        }
+
+        if (! $this->translate instanceof Zend_Translate_Adapter) {
+            $this->translate = new MUtil_Translate_Adapter_Potemkin();
+        }
+
+        return $this->translate;
     }
 }

@@ -338,6 +338,9 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function checkTrackTokens($userId, Gems_Tracker_Token $fromToken = null)
     {
+        // Execute any defined functions
+        $count = $this->handleTrackCalculation($userId);
+
         // Update token completion count.
         $this->_checkTrackCount($userId);
 
@@ -345,11 +348,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
-            return $engine->checkTokensFrom($this, $fromToken, $userId);
+            return $count + $engine->checkTokensFrom($this, $fromToken, $userId);
         } elseif ($this->_checkStart) {
-            return $engine->checkTokensFrom($this, $this->_checkStart, $userId);
+            return $count + $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {
-            return $engine->checkTokensFromStart($this, $userId);
+            return $count + $engine->checkTokensFromStart($this, $userId);
         }
     }
 
@@ -395,7 +398,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_activeTokens[$roundId];
     }
-    
+
     /**
      *
      * @return string Internal code of the track
@@ -403,16 +406,16 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getCode()
     {
         static $track = false;
-        
+
         if (!$track) {
             $track = $this->tracker->getTrackModel()->loadFirst(array('gtr_id_track'=>$this->_respTrackData['gr2t_id_track']));
         }
-        
+
         if (is_array($track)) {
             return $track['gtr_code'];
         } else {
             return false;
-        }        
+        }
     }
 
     /**
@@ -696,12 +699,33 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Find out if there are track calculation events and delegate to the event if needed
+     *
+     * @param int $userId
+     */
+    public function handleTrackCalculation($userId)
+            {
+        // Process any events
+        $trackModel = $this->tracker->getTrackModel();
+
+        //to be backward compatible, first check if the engine has a
+        if (is_callable(array($trackModel, 'getTrackCalculationEvent'))) {
+            if ($event = $trackModel->getTrackCalculationEvent($this->getTrackId())) {
+                return $event->processTrackCalculation($this, $userId);
+            }
+        }
+
+        return 0;
+    }
+
+    /**
      * Find out if there are track completion events and delegate to the event if needed
      *
      * @param array $values The values changed before entering this event
      * @param int $userId
      */
-    public function handleTrackCompletion(&$values, $userId) {
+    public function handleTrackCompletion(&$values, $userId)
+                {
         // Process any events
         $trackModel = $this->tracker->getTrackModel();
 
@@ -761,21 +785,21 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_updateTrack($values, $userId);
     }
-    
+
     /**
      * Update one or more values for this track's fielddata.
-     * 
+     *
      * Return the complete set of fielddata
-     * 
+     *
      * @param array $data
      * @return array
      */
     public function setFieldData($data)
     {
         $engine    = $this->getTrackEngine();
-        $fieldMap  = $engine->getFields();        
+        $fieldMap  = $engine->getFields();
         $fieldData = array();
-        
+
         foreach ($data as $code => $value)
         {
             if ($index = array_search($code, $fieldMap)) {
@@ -786,7 +810,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         if ($changeCount>0) {
             $this->_ensureFieldData(true);  // force reload
         }
-        
+
         return $this->_fieldData;
     }
 

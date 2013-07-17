@@ -76,7 +76,7 @@ class Gems_Snippets_RespondentFormSnippet extends Gems_Snippets_ModelFormSnippet
 
         if ($this->request->isPost()) {
             if ((! $this->_saveButton) || (! $this->_saveButton->isChecked())) {
-                if ($this->formData['grs_ssn'])  {
+                if (isset($this->formData['grs_ssn']) && $this->formData['grs_ssn'])  {
                     $filter = array(
                         'grs_ssn' => $this->formData['grs_ssn'],
                         'gr2o_id_organization' => true, // Make sure all organisations are checked in RespModel

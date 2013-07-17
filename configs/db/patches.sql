@@ -501,3 +501,7 @@ ALTER TABLE gems__organizations ADD
 
 -- PATCH: Import rights
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.file-import,pr.file-import.auto') WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.file-import%';
+
+-- PATCH: Track calculation event
+ALTER TABLE gems__tracks
+    ADD gtr_calculation_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;

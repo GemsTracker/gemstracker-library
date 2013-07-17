@@ -612,14 +612,19 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    public function save(array $newValues, array $filter = null, array $saveTables = null) {
-        if (isset($newValues['gr2o_id_organization']) && isset($newValues['grs_id_user'])) {
+    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    {
+        $result = parent::save($newValues, $filter, $saveTables);
+
+        if (isset($result['gr2o_id_organization']) && isset($result['grs_id_user'])) {
             // Tell the organization it has at least one user
-            $org = $this->loader->getOrganization($newValues['gr2o_id_organization']);
-            $org->setHasRespondents($newValues['grs_id_user']);
+            $org = $this->loader->getOrganization($result['gr2o_id_organization']);
+            if ($org) {
+                $org->setHasRespondents($this->loader->getCurrentUser()->getUserId());
+            }
         }
 
-        return parent::save($newValues, $filter, $saveTables);
+        return $result;
     }
 
     /**
