@@ -56,16 +56,6 @@ class MUtil_Model_Translator_StraightTranslator extends MUtil_Model_ModelTransla
     }
 
     /**
-     *
-     * @param array $data
-     * @return boolean
-     */
-    public function checkImport(array &$data)
-    {
-        return parent::checkImport($data);
-    }
-
-    /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName

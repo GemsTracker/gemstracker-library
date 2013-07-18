@@ -649,14 +649,19 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      *
      * @param string $patientId   Can be empty if $respondentId is passed
      * @param int $organizationId
-     * @param string $newCode
+     * @param string $newCode     String or Gems_Util_ReceptionCode
      * @param int $respondentId   Pass when at hand, is looked up otherwise
-     * @param string $oldCode     Pass when at hand, is looked up otherwise
+     * @param string $oldCode     Pass when at hand as tring or Gems_Util_ReceptionCode, is looked up otherwise
      * @return Gems_Util_ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
     {
-        $code       = $this->util->getReceptionCode($newCode);
+        if ($newCode instanceof Gems_Util_ReceptionCode) {
+            $code    = $newCode;
+            $newCode = $code->getCode();
+        } else {
+            $code    = $this->util->getReceptionCode($newCode);
+        }
         $translator = $this->getTranslateAdapter();
         $userId     = $this->loader->getCurrentUser()->getUserId();
 
@@ -664,6 +669,9 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         if ($code->isForRespondents()) {
             if (null === $oldCode) {
                 $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
+            }
+            if ($oldCode instanceof Gems_Util_ReceptionCode) {
+                $oldCode = $oldCode->getCode();
             }
 
             // If the code wasn't set already

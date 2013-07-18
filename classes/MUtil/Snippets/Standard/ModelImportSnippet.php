@@ -47,6 +47,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
+// class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
@@ -235,6 +236,8 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             $this->displayHeader($bridge, $this->_('Upload successful!'));
             $this->displayErrors($bridge, $this->_('Check the input visually.'));
 
+            // MUtil_Echo::track($this->sourceModel->load());
+            
             $element  = new MUtil_Form_Element_Html('importdisplay');
             $repeater = $this->sourceModel->loadRepeatable();
             $table    = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
@@ -407,10 +410,14 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 
             $model->set('file', 'label', $this->_('Import file'),
                     'count',        1,
-                    'destination',  $this->tempDirectory,
                     'elementClass', 'File',
                     'extension',    'txt,xml',
                     'required',     true);
+
+            if ($this->tempDirectory) {
+                MUtil_File::ensureDir($this->tempDirectory);
+                $model->set('file', 'destination',  $this->tempDirectory);
+            }
 
             // Storage for local copy of the file, kept through process
             $model->set('localfile');

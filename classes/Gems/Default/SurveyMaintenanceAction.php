@@ -131,13 +131,13 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
 
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
         $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
-        $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
+        // $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
         $bridge->addText(       'gsu_duration');
         $bridge->addExhibitor(  'calc_duration', 'label', $this->_('Duration calculated'), 'value', $this->calculateDuration(isset($data['gsu_id_survey']) ? $data['gsu_id_survey'] : null));
         $bridge->addText(       'gsu_code');
-        $bridge->addSelect(     'gsu_beforeanswering_event');
-        $bridge->addSelect(     'gsu_completed_event');
-        $bridge->addSelect(     'gsu_display_event');
+        $bridge->add(           'gsu_beforeanswering_event');
+        $bridge->add(           'gsu_completed_event');
+        $bridge->add(           'gsu_display_event');
 
         $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
                 'accept', 'application/pdf',
@@ -469,9 +469,24 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         }
         $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
         if ($detailed) {
-            $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
-            $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
-            $model->set('gsu_display_event',         'label', $this->_('Answer display'),   'multiOptions', $events->listSurveyDisplayEvents());
+            $options = $events->listSurveyBeforeAnsweringEvents();
+            if ($options) {
+                $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
+            $options = $events->listSurveyCompletionEvents();
+            if ($options) {
+                $model->set('gsu_completed_event', 'label', $this->_('After completion'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
+            $options = $events->listSurveyDisplayEvents();
+            if ($options) {
+                $model->set('gsu_display_event', 'label', $this->_('Answer display'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
         }
 
         $model->setCreate(false);
