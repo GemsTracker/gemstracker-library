@@ -117,13 +117,19 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
         if ($detailed) {
             $events = $this->loader->getEvents();
 
-            $this->setIfExists('gtr_calculation_event',
-                'label', $translator->_('Before (re)calculation'),
-                'multiOptions', $events->listTrackCalculationEvents());
+            $list = $events->listTrackCalculationEvents();
+            if (count($list) > 1) {
+                $this->setIfExists('gtr_calculation_event',
+                    'label', $translator->_('Before (re)calculation'),
+                    'multiOptions', $list);
+            }
 
-            $this->setIfExists('gtr_completed_event',
-                'label', $translator->_('After completion'),
-                'multiOptions', $events->listTrackCompletionEvents());
+            $list = $events->listTrackCompletionEvents();
+            if (count($list) > 1) {
+                $this->setIfExists('gtr_completed_event',
+                    'label', $translator->_('After completion'),
+                    'multiOptions', $list);
+            }
         }
 
         return $this;

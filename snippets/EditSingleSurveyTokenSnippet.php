@@ -47,6 +47,29 @@
 class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract
 {
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Add the elements for the track fields
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     */
+    protected function _addFieldsElements(MUtil_Model_FormBridge $bridge)
+    {
+        if ($this->trackEngine) {
+            $elements = $this->trackEngine->getFieldsElements();
+
+            foreach ($elements as $element) {
+                $element->setBelongsTo(self::TRACKFIELDS_ID);
+                $bridge->addElement($element);
+            }
+        }
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -87,20 +110,64 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         $bridge->addExhibitor('gsu_survey_name');
         $bridge->addExhibitor('ggp_name');
 
-        /*
-        $bridge->addSelect('to_existing_track', 'label', $this->_('Existing track'), 'multiOptions',
-                $this->util->getR);
-         * 
-         */
+        //$this->_addFieldsElements($bridge);
+        //*
+        if ($this->createData && isset($this->formData['gr2t_id_user'], $this->formData['gr2o_id_organization'])) {
+            $tracks = $this->loader->getTracker()->getRespondentTracks($this->formData['gr2t_id_user'], $this->formData['gr2o_id_organization']);
+            if (count($tracks)) {
+                $onclick = new MUtil_Html_OnClickArrayAttribute();
+                $onclick->addSumbit();
 
-        if ($this->trackEngine) {
-            $elements = $this->trackEngine->getFieldsElements();
+                $bridge->addRadio('to_track_or_so', 'label', $this->_('Add'),
+                        'multiOptions', array(
+                            '0' => $this->_('To existing track'),
+                            '1' => $this->_('As standalone track'),
+                        ),
+                        'onclick', $onclick->get(),
+                        'required', true,
+                        'separator', ' ');
 
-            foreach ($elements as $element) {
-                $element->setBelongsTo(self::TRACKFIELDS_ID);
-                $bridge->addElement($element);
+                if (! isset($this->formData['to_track_or_so'])) {
+                    $this->formData['to_track_or_so'] = 0;
+                }
+
+                if ($this->formData['to_track_or_so']) {
+                    $this->_addFieldsElements($bridge);
+
+                    // Keep the value
+                    $bridge->addHidden('to_existing_track');
+
+                } else {
+                    $results = $this->util->getTranslated()->getEmptyDropdownArray();
+                    foreach ($tracks as $track) {
+                       if ($track instanceof Gems_Tracker_RespondentTrack) {
+                           $info = $track->getFieldsInfo();
+                           if ($info) {
+                               $info = sprintf($this->_(' [%s]'), $info);
+                           }
+                           $results[$track->getRespondentTrackId()] = $track->getTrackEngine()->getName() . $info;
+                       }
+                    }
+                    $bridge->addSelect('to_existing_track', 'label', $this->_('Existing track'),
+                            'multiOptions', $results,
+                            'required', true);
+
+                    // Keep the values
+                    foreach ($this->trackEngine->getFieldsElements() as $element) {
+                        if ($element instanceof Zend_Form_Element) {
+                            $hidden = new Zend_Form_Element_Hidden($element->getName());
+                            $hidden->setBelongsTo(self::TRACKFIELDS_ID);
+                            $bridge->addElement($hidden);
+                        }
+                    }
+                }
+            } else {
+                $this->_addFieldsElements($bridge);
             }
+        } else {
+            $this->_addFieldsElements($bridge);
         }
+        // */
 
         // Token
         if ($this->token && $this->token->isCompleted()) {

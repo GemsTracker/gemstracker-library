@@ -25,16 +25,13 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * File description of Gems_Tracker_Model_StandardTokenModel
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.4
- * @version 1.4
- * @package Gems
+ * @package    Gems
  * @subpackage Tracker
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -43,9 +40,11 @@
  *
  * @see Gems_Tracker_Engine_SingleSurveyEngine
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
+ * @package    Gems
  * @subpackage Tracker
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
  */
 class Gems_Tracker_Model_SingleSurveyTokenModel extends Gems_Tracker_Model_StandardTokenModel
 {

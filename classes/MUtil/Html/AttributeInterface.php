@@ -62,9 +62,21 @@ interface MUtil_Html_AttributeInterface extends MUtil_Html_HtmlInterface
      */
     public function __toString();
 
+    /**
+     * Add to the attribute
+     *
+     * @param mixed $value
+     * @return \MUtil_Html_AttributeInterface (continuation pattern)
+     */
     public function add($value);
+
+    /**
+     * Get the scalar value of this attribute.
+     *
+     * @return string | int | null
+     */
     public function get();
-    
+
     /**
      * Returns the attribute name
      *
@@ -74,5 +86,10 @@ interface MUtil_Html_AttributeInterface extends MUtil_Html_HtmlInterface
 
     // inherited: public function render(Zend_View_Abstract $view);
 
+    /**
+     * Set the value of this attribute.
+     *
+     * @return \MUtil_Html_AttributeInterface (continuation pattern)
+     */
     public function set($value);
 }
