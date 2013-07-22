@@ -66,6 +66,12 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
     public $browse = false;
 
     /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -99,6 +105,8 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
         $bridge->addSortable('gto_changed');
         $bridge->addSortable('assigned_by', $this->_('Assigned by'));
+
+
         $project = GemsEscort::getInstance()->project;
 
         // If we are allowed to see the result of the survey, show them
@@ -123,5 +131,51 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
         }
 
         $this->addTokenLinks($bridge);
+    }
+
+    /**
+     * The place to check if the data set in the snippet is valid
+     * to generate the snippet.
+     *
+     * When invalid data should result in an error, you can throw it
+     * here but you can also perform the check in the
+     * checkRegistryRequestsAnswers() function from the
+     * {@see MUtil_Registry_TargetInterface}.
+     *
+     * @return boolean
+     */
+    public function hasHtmlOutput()
+    {
+        if ($this->menu) {
+            if ($default = $this->project->getDefaultTrackId()) {
+
+                $track = $this->loader->getTracker()->getTrackEngine($default);
+                
+                if ($track->isUserCreatable()) {
+                    $list = $this->menu->getMenuList()
+                            ->addByController('track', 'create',
+                                    sprintf($this->_('Add %s track to this respondent'), $track->getTrackName())
+                                    )
+                            ->addParameterSources(
+                                    array(
+                                        Gems_Model::TRACK_ID   => $default,
+                                        'gtr_id_track'         => $default,
+                                        'gtr_track_type'       => $track->getTrackType(),
+                                        'track_can_be_created' => 1,
+                                        ),
+                                    $this->request
+                                    );
+                    $this->onEmpty = $list->getActionLink('track', 'create');
+                }
+            }
+            if (! $this->onEmpty) {
+                $list = $this->menu->getMenuList()
+                        ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
+                        ->addParameterSources($this->request);
+                $this->onEmpty = $list->getActionLink('track', 'show-track');
+            }
+        }
+
+        return $this->respondentData && $this->request && parent::hasHtmlOutput();
     }
 }

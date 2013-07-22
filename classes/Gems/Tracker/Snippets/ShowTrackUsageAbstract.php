@@ -257,7 +257,7 @@ abstract class Gems_Tracker_Snippets_ShowTrackUsageAbstract extends Gems_Snippet
 
         // MUtil_Echo::track($this->trackId, $this->patientId, $this->organizationId, $this->respondentTrackId);
 
-        return parent::hasHtmlOutput();
+        return $this->getModel()->loadFirst() && parent::hasHtmlOutput();
     }
 
     /**

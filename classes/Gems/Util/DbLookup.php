@@ -466,7 +466,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         $result = $this->db->fetchAll($select);
-
+        
         if ($result) {
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom

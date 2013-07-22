@@ -147,60 +147,6 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     }
 
     /**
-     * Get the TrackCompletedEvent for the given trackId
-     *
-     * @param int $trackId
-     * @return Gems_Event_TrackCalculationEventInterface | null
-     */
-    public function getTrackCalculationEvent($trackId)
-    {
-        static $trackData = array();
-
-        if (array_key_exists($trackId, $trackData)) {
-            $track = $trackData[$trackId];
-        } else {
-            if ($track = $this->loadFirst(array('gtr_id_track' => $trackId))) {
-                $trackData[$trackId] = $track;
-            } else {
-                $track = array();
-            }
-        }
-
-        if (array_key_exists('gtr_calculation_event', $track)) {
-            if (!empty($track['gtr_calculation_event'])) {
-                return $this->loader->getEvents()->loadTrackCalculationEvent($track['gtr_calculation_event']);
-            }
-        }
-    }
-
-    /**
-     * Get the TrackCompletedEvent for the given trackId
-     *
-     * @param int $trackId
-     * @return Gems_Event_TrackCompletedEventInterface|null
-     */
-    public function getTrackCompletionEvent($trackId)
-    {
-        static $trackData = array();
-
-        if (array_key_exists($trackId, $trackData)) {
-            $track = $trackData[$trackId];
-        } else {
-            if ($track = $this->loadFirst(array('gtr_id_track' => $trackId))) {
-                $trackData[$trackId] = $track;
-            } else {
-                $track = array();
-            }
-        }
-
-        if (array_key_exists('gtr_completed_event', $track)) {
-            if (!empty($track['gtr_completed_event'])) {
-                return $this->loader->getEvents()->loadTrackCompletionEvent($track['gtr_completed_event']);
-            }
-        }
-    }
-
-    /**
      * Returns a translate adaptor
      *
      * @return Zend_Translate_Adapter

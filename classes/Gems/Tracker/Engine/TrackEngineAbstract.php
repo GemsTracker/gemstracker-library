@@ -794,6 +794,30 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCalculationEventInterface | null
+     */
+    public function getTrackCalculationEvent()
+    {
+        if (isset($this->_trackData['gtr_calculation_event']) && $this->_trackData['gtr_calculation_event']) {
+            return $this->events->loadTrackCalculationEvent($this->_trackData['gtr_calculation_event']);
+        }
+    }
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCompletedEventInterface|null
+     */
+    public function getTrackCompletionEvent()
+    {
+        if (isset($this->_trackData['gtr_completed_event']) && $this->_trackData['gtr_completed_event']) {
+            return $this->events->loadTrackCompletionEvent($this->_trackData['gtr_completed_event']);
+        }
+    }
+
+    /**
      *
      * @return int The track id
      */

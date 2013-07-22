@@ -203,7 +203,7 @@ class Gems_Snippets_RespondentTokenSnippet extends Gems_Snippets_TokenModelSnipp
         }
 
         $model->addFilter($filter);
-        
+
         // MUtil_Echo::track($model->getFilter());
 
         $this->processSortOnly($model);

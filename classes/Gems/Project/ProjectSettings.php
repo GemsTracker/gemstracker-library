@@ -340,6 +340,17 @@ class Gems_Project_ProjectSettings extends ArrayObject
         return -1;
     }
 
+    /**
+     * Returns an (optional) default track id from the project settings
+     *
+     * Usually used in by single track project
+     *
+     * @return int Organization number or -1 when not set
+     */
+    public function getDefaultTrackId()
+    {
+        return $this->offsetExists('trackId') ? $this->offsetGet('trackId') : null;
+    }
 
     /**
      * Returns the public description of this project.

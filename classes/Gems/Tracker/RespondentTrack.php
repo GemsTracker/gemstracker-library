@@ -704,15 +704,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * @param int $userId
      */
     public function handleTrackCalculation($userId)
-            {
+    {
         // Process any events
-        $trackModel = $this->tracker->getTrackModel();
+        $trackEngine = $this->getTrackEngine();
 
-        //to be backward compatible, first check if the engine has a
-        if (is_callable(array($trackModel, 'getTrackCalculationEvent'))) {
-            if ($event = $trackModel->getTrackCalculationEvent($this->getTrackId())) {
-                return $event->processTrackCalculation($this, $userId);
-            }
+        if ($event = $trackEngine->getTrackCalculationEvent()) {
+            return $event->processTrackCalculation($this, $userId);
         }
 
         return 0;
@@ -725,15 +722,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * @param int $userId
      */
     public function handleTrackCompletion(&$values, $userId)
-                {
+    {
         // Process any events
-        $trackModel = $this->tracker->getTrackModel();
+        $trackEngine = $this->getTrackEngine();
 
-        //to be backward compatible, first check if the engine has a
-        if (is_callable(array($trackModel, 'getTrackCompletionEvent'))) {
-            if ($event = $trackModel->getTrackCompletionEvent($this->getTrackId())) {
-                $event->processTrackCompletion($this, $values, $userId);
-            }
+        if ($event = $trackEngine->getTrackCompletionEvent()) {
+            $event->processTrackCompletion($this, $values, $userId);
         }
     }
 

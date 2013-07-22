@@ -157,6 +157,18 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the code for an unknwon user consent
+     *
+     * This is de consent description from gems__consents, not the consentCODE
+     *
+     * @return string
+     */
+    public function getConsentUnknown()
+    {
+        return 'Unknown';
+    }
+
+    /**
      * Returns the cron job lock
      *
      * @return Gems_Util_LockFile
