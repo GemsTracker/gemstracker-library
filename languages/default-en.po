@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-22 14:13+0100\n"
+"POT-Creation-Date: 2013-07-22 17:40+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -699,7 +699,7 @@ msgstr "Are you sure?"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:143
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:147
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:166
-#: classes/Gems/Util/Translated.php:269
+#: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:192
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:124
@@ -718,7 +718,7 @@ msgstr "Yes"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:167
 #: classes/Gems/Util/ReceptionCodeLibrary.php:99
 #: classes/Gems/Util/ReceptionCodeLibrary.php:123
-#: classes/Gems/Util/Translated.php:269
+#: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:194
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:125
 msgid "No"
@@ -3371,7 +3371,7 @@ msgstr "Enter the particulars concerning the assignment to this patient."
 #: classes/Gems/Default/TrackActionAbstract.php:222
 #: classes/Gems/Export/RespondentExport.php:295
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:138
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:101
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:209
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:151
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:149
@@ -4256,7 +4256,7 @@ msgid "Show active"
 msgstr "Show active"
 
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:144
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:115
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:204
 #: snippets/BrowseSingleSurveyTokenSnippet.php:138
 #: snippets/TrackTokenOverviewSnippet.php:127
@@ -4297,6 +4297,15 @@ msgstr "(select a track)"
 #: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:242
 msgid "&laquo;empty&raquo;"
 msgstr "&laquo;empty&raquo;"
+
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:157
+#, php-format
+msgid "Add %s track to this respondent"
+msgstr "Add %s track to this patient"
+
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:173
+msgid "Add a track to this respondent"
+msgstr "Add a track to this patient"
 
 #: classes/Gems/Snippets/Tracker/TokenStatusLegenda.php:72
 msgid "Legend"
@@ -4806,12 +4815,12 @@ msgid "Decrease"
 msgstr "Decrease"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:157
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Female"
 msgstr "Female"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:158
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Male"
 msgstr "Male"
 
@@ -5159,88 +5168,88 @@ msgstr "n/a"
 msgid "never"
 msgstr "never"
 
-#: classes/Gems/Util/Translated.php:148
+#: classes/Gems/Util/Translated.php:150
 msgid "2 days ago"
 msgstr "2 days ago"
 
-#: classes/Gems/Util/Translated.php:151
+#: classes/Gems/Util/Translated.php:153
 msgid "Yesterday"
 msgstr "Yesterday"
 
-#: classes/Gems/Util/Translated.php:154
+#: classes/Gems/Util/Translated.php:156
 msgid "Today"
 msgstr "Today"
 
-#: classes/Gems/Util/Translated.php:157
+#: classes/Gems/Util/Translated.php:159
 msgid "Tomorrow"
 msgstr "Tomorrow"
 
-#: classes/Gems/Util/Translated.php:160
+#: classes/Gems/Util/Translated.php:162
 msgid "Over 2 days"
 msgstr "Over 2 days"
 
-#: classes/Gems/Util/Translated.php:165
+#: classes/Gems/Util/Translated.php:167
 #, php-format
 msgid "Over %d days"
 msgstr "Over %d days"
 
-#: classes/Gems/Util/Translated.php:167
+#: classes/Gems/Util/Translated.php:169
 #, php-format
 msgid "%d days ago"
 msgstr "%d days ago"
 
-#: classes/Gems/Util/Translated.php:192
+#: classes/Gems/Util/Translated.php:194
 #, php-format
 msgid "%d days %d:%s:%s"
 msgstr "%d days %d:%s:%s"
 
-#: classes/Gems/Util/Translated.php:194
+#: classes/Gems/Util/Translated.php:196
 #, php-format
 msgid "%d:%s:%s"
 msgstr "%d:%s:%s"
 
-#: classes/Gems/Util/Translated.php:196
+#: classes/Gems/Util/Translated.php:198
 #, php-format
 msgid "%d:%s"
 msgstr "%d:%s"
 
-#: classes/Gems/Util/Translated.php:208
+#: classes/Gems/Util/Translated.php:210
 msgid "Send multiple mails per respondent, one for each checked token."
 msgstr "Send multiple mails per patient, one for each checked token."
 
-#: classes/Gems/Util/Translated.php:209
+#: classes/Gems/Util/Translated.php:211
 msgid "Send one mail per respondent, mark all checked tokens as send."
 msgstr "Send one mail per patient, mark all checked tokens as send."
 
-#: classes/Gems/Util/Translated.php:210
+#: classes/Gems/Util/Translated.php:212
 msgid "Send one mail per respondent, mark only mailed tokens as send."
 msgstr "Send one mail per patient, mark only mailed tokens as send."
 
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Unknown"
 msgstr "Unknown"
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mr."
 msgstr "Mr."
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mrs."
 msgstr "Mrs."
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mr./mrs."
 msgstr "Mr./Mrs."
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mr."
 msgstr "Mr."
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mrs."
 msgstr "Mrs."
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mr./Mrs."
 msgstr "Mr./Mrs."
 

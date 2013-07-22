@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-22 14:14+0100\n"
+"POT-Creation-Date: 2013-07-22 17:41+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -699,7 +699,7 @@ msgstr "Weet u het zeker?"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:143
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:147
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:166
-#: classes/Gems/Util/Translated.php:269
+#: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:192
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:124
@@ -718,7 +718,7 @@ msgstr "Ja"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:167
 #: classes/Gems/Util/ReceptionCodeLibrary.php:99
 #: classes/Gems/Util/ReceptionCodeLibrary.php:123
-#: classes/Gems/Util/Translated.php:269
+#: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:194
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:125
 msgid "No"
@@ -3390,7 +3390,7 @@ msgstr "Beschrijf de redenen om dit aan deze patiënt toe te wijzen."
 #: classes/Gems/Default/TrackActionAbstract.php:222
 #: classes/Gems/Export/RespondentExport.php:295
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:138
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:101
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:209
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:151
 #: classes/Gems/Tracker/Snippets/ShowTrackUsageAbstract.php:149
@@ -4284,7 +4284,7 @@ msgid "Show active"
 msgstr "Toon actieve"
 
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:144
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:115
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:204
 #: snippets/BrowseSingleSurveyTokenSnippet.php:138
 #: snippets/TrackTokenOverviewSnippet.php:127
@@ -4325,6 +4325,15 @@ msgstr "(selecteer een traject)"
 #: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:242
 msgid "&laquo;empty&raquo;"
 msgstr "&laquo;leeg&raquo;"
+
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:157
+#, php-format
+msgid "Add %s track to this respondent"
+msgstr "%s traject toewijzen aan deze patiënt"
+
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:173
+msgid "Add a track to this respondent"
+msgstr "Traject toewijzen aan deze patiënt"
 
 #: classes/Gems/Snippets/Tracker/TokenStatusLegenda.php:72
 msgid "Legend"
@@ -4844,12 +4853,12 @@ msgid "Decrease"
 msgstr "Afnemend"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:157
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Female"
 msgstr "Vrouw"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:158
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Male"
 msgstr "Man"
 
@@ -5204,91 +5213,91 @@ msgstr "n.v.t."
 msgid "never"
 msgstr "nooit"
 
-#: classes/Gems/Util/Translated.php:148
+#: classes/Gems/Util/Translated.php:150
 msgid "2 days ago"
 msgstr "Eergisteren"
 
-#: classes/Gems/Util/Translated.php:151
+#: classes/Gems/Util/Translated.php:153
 msgid "Yesterday"
 msgstr "Gisteren"
 
-#: classes/Gems/Util/Translated.php:154
+#: classes/Gems/Util/Translated.php:156
 msgid "Today"
 msgstr "Vandaag"
 
-#: classes/Gems/Util/Translated.php:157
+#: classes/Gems/Util/Translated.php:159
 msgid "Tomorrow"
 msgstr "Morgen"
 
-#: classes/Gems/Util/Translated.php:160
+#: classes/Gems/Util/Translated.php:162
 msgid "Over 2 days"
 msgstr "Overmorgen"
 
-#: classes/Gems/Util/Translated.php:165
+#: classes/Gems/Util/Translated.php:167
 #, php-format
 msgid "Over %d days"
 msgstr "Over %d dagen"
 
-#: classes/Gems/Util/Translated.php:167
+#: classes/Gems/Util/Translated.php:169
 #, php-format
 msgid "%d days ago"
 msgstr "%d dagen terug"
 
-#: classes/Gems/Util/Translated.php:192
+#: classes/Gems/Util/Translated.php:194
 #, php-format
 msgid "%d days %d:%s:%s"
 msgstr "%d dagen %d:%s:%s"
 
-#: classes/Gems/Util/Translated.php:194
+#: classes/Gems/Util/Translated.php:196
 #, php-format
 msgid "%d:%s:%s"
 msgstr "%d:%s:%s"
 
-#: classes/Gems/Util/Translated.php:196
+#: classes/Gems/Util/Translated.php:198
 #, php-format
 msgid "%d:%s"
 msgstr "%d:%s"
 
-#: classes/Gems/Util/Translated.php:208
+#: classes/Gems/Util/Translated.php:210
 msgid "Send multiple mails per respondent, one for each checked token."
 msgstr "Verstuur meerdere emails per patiënt, één per gekozen kenmerk."
 
-#: classes/Gems/Util/Translated.php:209
+#: classes/Gems/Util/Translated.php:211
 msgid "Send one mail per respondent, mark all checked tokens as send."
 msgstr ""
 "Verstuur één email per patiënt, zet alle gekozen kenmerken op verzonden."
 
-#: classes/Gems/Util/Translated.php:210
+#: classes/Gems/Util/Translated.php:212
 msgid "Send one mail per respondent, mark only mailed tokens as send."
 msgstr ""
 "Verstuur één email per patiënt, zet alleen de verzonden kenmerken op "
 "verzonden."
 
-#: classes/Gems/Util/Translated.php:235
+#: classes/Gems/Util/Translated.php:237
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mr."
 msgstr "meneer"
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mrs."
 msgstr "mevrouw"
 
-#: classes/Gems/Util/Translated.php:248
+#: classes/Gems/Util/Translated.php:250
 msgid "mr./mrs."
 msgstr "heer/mevrouw"
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mr."
 msgstr "De heer"
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mrs."
 msgstr "Mevrouw"
 
-#: classes/Gems/Util/Translated.php:261
+#: classes/Gems/Util/Translated.php:263
 msgid "Mr./Mrs."
 msgstr "De heer/Mevrouw"
 
@@ -5920,7 +5929,7 @@ msgstr "Op dit moment hebben wij geen verdere vragen."
 
 #: snippets/Track/Token/RedirectUntilGoodbyeSnippet.php:98
 msgid "We appreciate your cooperation very much."
-msgstr "Wij waarderen uw medewerking enorm."
+msgstr "Wij waarderen uw medewerking."
 
 #: snippets/Track/Token/ShowAllOpenSnippet.php:89
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:111
