@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-22 17:41+0100\n"
+"POT-Creation-Date: 2013-07-23 17:34+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -351,8 +351,8 @@ msgstr "Traject"
 #: classes/Gems/Menu.php:346 classes/Gems/Menu.php:371
 #: classes/Gems/Menu.php:419
 #: classes/Gems/Default/TrackMaintenanceAction.php:460
-#: snippets/AddTracksSnippet.php:241
-#: snippets/EditSingleSurveyTokenSnippet.php:121
+#: snippets/AddTracksSnippet.php:244
+#: snippets/EditSingleSurveyTokenSnippet.php:125
 msgid "Add"
 msgstr "Voeg toe"
 
@@ -369,7 +369,7 @@ msgstr "Preview"
 #: classes/Gems/Default/ReceptionAction.php:95
 #: classes/Gems/Default/TrackMaintenanceAction.php:407
 #: classes/Gems/Menu/MenuAbstract.php:435
-#: classes/Gems/Menu/MenuAbstract.php:520 snippets/AddTracksSnippet.php:238
+#: classes/Gems/Menu/MenuAbstract.php:520 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -716,8 +716,8 @@ msgstr "Ja"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:144
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:148
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:167
-#: classes/Gems/Util/ReceptionCodeLibrary.php:99
-#: classes/Gems/Util/ReceptionCodeLibrary.php:123
+#: classes/Gems/Util/ReceptionCodeLibrary.php:110
+#: classes/Gems/Util/ReceptionCodeLibrary.php:144
 #: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:194
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:125
@@ -2419,13 +2419,13 @@ msgstr[0] "Ontvangst code"
 msgstr[1] "Ontvangst code"
 
 #: classes/Gems/Default/RespondentAction.php:127
-#: classes/Gems/Model/RespondentNlModel.php:122
+#: classes/Gems/Model/RespondentNlModel.php:116
 #, php-format
 msgid "Random Example BSN: %s"
 msgstr "Willekeurig voorbeeld BSN: %s"
 
 #: classes/Gems/Default/RespondentAction.php:129
-#: classes/Gems/Model/RespondentNlModel.php:124
+#: classes/Gems/Model/RespondentNlModel.php:118
 msgid "Enter a 9-digit SSN number."
 msgstr "Voer een BSN nummer van 9 cijfers in."
 
@@ -2558,7 +2558,7 @@ msgstr ""
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:145
 #: snippets/DeleteTrackTokenSnippet.php:195
-#: snippets/EditSingleSurveyTokenSnippet.php:207
+#: snippets/EditSingleSurveyTokenSnippet.php:210
 #: snippets/EditTrackSnippet.php:110 snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowSingleSurveyTokenSnippet.php:140
 #: snippets/ShowTrackTokenSnippet.php:146
@@ -2962,7 +2962,7 @@ msgstr "Toewijzingen van deze vragenlijst aan %s: %s"
 #: classes/Gems/Default/SurveyAction.php:175
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:144
-#: snippets/EditSingleSurveyTokenSnippet.php:206
+#: snippets/EditSingleSurveyTokenSnippet.php:209
 #: snippets/ShowSingleSurveyTokenSnippet.php:139
 msgid "Show surveys"
 msgstr "Toon vragenlijsten"
@@ -4121,7 +4121,7 @@ msgstr "Veranderd door"
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
 
-#: classes/Gems/Model/RespondentNlModel.php:139
+#: classes/Gems/Model/RespondentNlModel.php:133
 msgid "E.g.: 0000 AA"
 msgstr "Voorbeeld: 0000 AA"
 
@@ -5133,19 +5133,19 @@ msgstr "inactief"
 msgid "source inactive"
 msgstr "bron inactief"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:100
+#: classes/Gems/Util/ReceptionCodeLibrary.php:111
 msgid "Yes (forget answers)"
 msgstr "Ja (vergeet antwoorden)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:101
+#: classes/Gems/Util/ReceptionCodeLibrary.php:112
 msgid "Yes (keep answers)"
 msgstr "Ja (met behoud van antwoorden)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:124
+#: classes/Gems/Util/ReceptionCodeLibrary.php:145
 msgid "Yes (to individual tokens)"
 msgstr "Ja (voor zelfstandige kenmerken)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:125
+#: classes/Gems/Util/ReceptionCodeLibrary.php:146
 msgid "Stop (to uncompleted tokens)"
 msgstr "Stop (voor niet ingevulde kenmerken)"
 
@@ -5693,19 +5693,19 @@ msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
 
-#: snippets/AddTracksSnippet.php:208
+#: snippets/AddTracksSnippet.php:209
 msgid "info"
 msgstr "info"
 
-#: snippets/AddTracksSnippet.php:215
+#: snippets/AddTracksSnippet.php:218
 msgid "None available"
 msgstr "Niet beschikbaar"
 
-#: snippets/AddTracksSnippet.php:232
+#: snippets/AddTracksSnippet.php:235
 msgid "by Respondents"
 msgstr "voor Patiënten"
 
-#: snippets/AddTracksSnippet.php:235
+#: snippets/AddTracksSnippet.php:238
 msgid "by Staff"
 msgstr "voor Medewerkers"
 
@@ -5757,27 +5757,36 @@ msgstr[1] "%d kenmerken aangepast door herberekening."
 msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
-#: snippets/EditSingleSurveyTokenSnippet.php:123
+#: snippets/EditSingleSurveyTokenSnippet.php:127
 msgid "To existing track"
 msgstr "Aan een bestaand traject"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:124
+#: snippets/EditSingleSurveyTokenSnippet.php:128
 msgid "As standalone track"
 msgstr "Als traject met één vragenlijst"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:146
+#: snippets/EditSingleSurveyTokenSnippet.php:142
 #, php-format
 msgid " [%s]"
 msgstr " [%s]"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:151
+#: snippets/EditSingleSurveyTokenSnippet.php:149
 msgid "Existing track"
 msgstr "Bestaand traject"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:205
+#: snippets/EditSingleSurveyTokenSnippet.php:208
 #: snippets/ShowSingleSurveyTokenSnippet.php:153
 msgid "Show survey"
 msgstr "Toon vragenlijst"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:278
+msgid "Extra survey"
+msgstr "Extra vragenlijst"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:299
+#, php-format
+msgid "Token moved to %s track %d."
+msgstr "Kenmerk verplaatst naar %s traject %d."
 
 #: snippets/EditTrackTokenSnippet.php:129
 msgid "Recalculate track"

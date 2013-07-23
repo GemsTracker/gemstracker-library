@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-22 17:40+0100\n"
+"POT-Creation-Date: 2013-07-23 17:34+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -351,8 +351,8 @@ msgstr "Track"
 #: classes/Gems/Menu.php:346 classes/Gems/Menu.php:371
 #: classes/Gems/Menu.php:419
 #: classes/Gems/Default/TrackMaintenanceAction.php:460
-#: snippets/AddTracksSnippet.php:241
-#: snippets/EditSingleSurveyTokenSnippet.php:121
+#: snippets/AddTracksSnippet.php:244
+#: snippets/EditSingleSurveyTokenSnippet.php:125
 msgid "Add"
 msgstr "Add"
 
@@ -369,7 +369,7 @@ msgstr "Preview"
 #: classes/Gems/Default/ReceptionAction.php:95
 #: classes/Gems/Default/TrackMaintenanceAction.php:407
 #: classes/Gems/Menu/MenuAbstract.php:435
-#: classes/Gems/Menu/MenuAbstract.php:520 snippets/AddTracksSnippet.php:238
+#: classes/Gems/Menu/MenuAbstract.php:520 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -716,8 +716,8 @@ msgstr "Yes"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:144
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:148
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:167
-#: classes/Gems/Util/ReceptionCodeLibrary.php:99
-#: classes/Gems/Util/ReceptionCodeLibrary.php:123
+#: classes/Gems/Util/ReceptionCodeLibrary.php:110
+#: classes/Gems/Util/ReceptionCodeLibrary.php:144
 #: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:194
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:125
@@ -2410,13 +2410,13 @@ msgstr[0] "reception code"
 msgstr[1] "reception codes"
 
 #: classes/Gems/Default/RespondentAction.php:127
-#: classes/Gems/Model/RespondentNlModel.php:122
+#: classes/Gems/Model/RespondentNlModel.php:116
 #, php-format
 msgid "Random Example BSN: %s"
 msgstr "Random Example BSN: %s"
 
 #: classes/Gems/Default/RespondentAction.php:129
-#: classes/Gems/Model/RespondentNlModel.php:124
+#: classes/Gems/Model/RespondentNlModel.php:118
 msgid "Enter a 9-digit SSN number."
 msgstr "Enter a 9-digit BSN number."
 
@@ -2547,7 +2547,7 @@ msgstr "Separate multiple patients with a comma (,) or whitespace"
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:145
 #: snippets/DeleteTrackTokenSnippet.php:195
-#: snippets/EditSingleSurveyTokenSnippet.php:207
+#: snippets/EditSingleSurveyTokenSnippet.php:210
 #: snippets/EditTrackSnippet.php:110 snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowSingleSurveyTokenSnippet.php:140
 #: snippets/ShowTrackTokenSnippet.php:146
@@ -2946,7 +2946,7 @@ msgstr "Assignments of this survey to %s: %s"
 #: classes/Gems/Default/SurveyAction.php:175
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:144
-#: snippets/EditSingleSurveyTokenSnippet.php:206
+#: snippets/EditSingleSurveyTokenSnippet.php:209
 #: snippets/ShowSingleSurveyTokenSnippet.php:139
 msgid "Show surveys"
 msgstr "Show surveys"
@@ -4093,7 +4093,7 @@ msgstr "Changed by"
 msgid "de, van der, 't, etc..."
 msgstr "de, van der, 't, etc..."
 
-#: classes/Gems/Model/RespondentNlModel.php:139
+#: classes/Gems/Model/RespondentNlModel.php:133
 msgid "E.g.: 0000 AA"
 msgstr "E.g.: 0000 AA"
 
@@ -5088,19 +5088,19 @@ msgstr "inactive"
 msgid "source inactive"
 msgstr "source inactive"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:100
+#: classes/Gems/Util/ReceptionCodeLibrary.php:111
 msgid "Yes (forget answers)"
 msgstr "Yes (forget answers)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:101
+#: classes/Gems/Util/ReceptionCodeLibrary.php:112
 msgid "Yes (keep answers)"
 msgstr "Yes (keep answers)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:124
+#: classes/Gems/Util/ReceptionCodeLibrary.php:145
 msgid "Yes (to individual tokens)"
 msgstr "Yes (to individual tokens)"
 
-#: classes/Gems/Util/ReceptionCodeLibrary.php:125
+#: classes/Gems/Util/ReceptionCodeLibrary.php:146
 msgid "Stop (to uncompleted tokens)"
 msgstr "Stop (to uncompleted tokens)"
 
@@ -5635,19 +5635,19 @@ msgstr "Invalid type given. String, integer or float expected"
 msgid "One or more IPs are illegal."
 msgstr "One or more IPs are illegal."
 
-#: snippets/AddTracksSnippet.php:208
+#: snippets/AddTracksSnippet.php:209
 msgid "info"
 msgstr "info"
 
-#: snippets/AddTracksSnippet.php:215
+#: snippets/AddTracksSnippet.php:218
 msgid "None available"
 msgstr "None available"
 
-#: snippets/AddTracksSnippet.php:232
+#: snippets/AddTracksSnippet.php:235
 msgid "by Respondents"
 msgstr "by Patients"
 
-#: snippets/AddTracksSnippet.php:235
+#: snippets/AddTracksSnippet.php:238
 msgid "by Staff"
 msgstr "by Staff"
 
@@ -5699,27 +5699,36 @@ msgstr[1] "%d tokens changed by recalculation."
 msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
-#: snippets/EditSingleSurveyTokenSnippet.php:123
+#: snippets/EditSingleSurveyTokenSnippet.php:127
 msgid "To existing track"
 msgstr "To existing track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:124
+#: snippets/EditSingleSurveyTokenSnippet.php:128
 msgid "As standalone track"
 msgstr "As standalone track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:146
+#: snippets/EditSingleSurveyTokenSnippet.php:142
 #, php-format
 msgid " [%s]"
 msgstr " [%s]"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:151
+#: snippets/EditSingleSurveyTokenSnippet.php:149
 msgid "Existing track"
 msgstr "Existing track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:205
+#: snippets/EditSingleSurveyTokenSnippet.php:208
 #: snippets/ShowSingleSurveyTokenSnippet.php:153
 msgid "Show survey"
 msgstr "Show survey"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:278
+msgid "Extra survey"
+msgstr "Extra survey"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:299
+#, php-format
+msgid "Token moved to %s track %d."
+msgstr "Token moved to %s track %d."
 
 #: snippets/EditTrackTokenSnippet.php:129
 msgid "Recalculate track"
