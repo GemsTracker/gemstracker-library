@@ -135,7 +135,8 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                     $results = $this->util->getTranslated()->getEmptyDropdownArray();
                     foreach ($tracks as $track) {
                         if ($track instanceof Gems_Tracker_RespondentTrack) {
-                            if ($track->getRespondentTrackId() !== $this->respondentTrackId) {
+                            if (($track->getTrackEngine()->getTrackType() !== 'S') &&
+                                    $track->getReceptionCode()->isSuccess()) {
                                 $info = $track->getFieldsInfo();
                                 if ($info) {
                                     $info = sprintf($this->_(' [%s]'), $info);

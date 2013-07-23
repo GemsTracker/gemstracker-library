@@ -4,6 +4,8 @@ Added support for ODK Collect by adding OpenRosa support
 Export data now operates in batch mode, allowing bigger exports and combining spss files in one download
 Import is possible for most data screens, though respondent import is the only one tested thoroughly.
 New snippet for continuous survey ask-ing with thank you message at the end.
+Stand alone surveys can now be appended to existing tracks
+Project can customize whether the tokens of shared patient are also shared among organizations (default is no)
 
 Important changes from 1.5.7 => 1.6
 ============================================================
