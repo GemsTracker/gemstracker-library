@@ -81,6 +81,17 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns the string version of the OK code
+     *
+     * @return string
+     */
+    public function getOKString()
+    {
+        return GemsEscort::RECEPTION_OK;
+    }
+
+
+    /**
      * Return the field values for the redo code.
      *
      * <ul><li>0: do not redo</li>
@@ -102,6 +113,16 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
         }
 
         return $data;
+    }
+
+    /**
+     * Returns the string version of the Stop code
+     *
+     * @return string
+     */
+    public function getStopString()
+    {
+        return 'stop';
     }
 
     /**
