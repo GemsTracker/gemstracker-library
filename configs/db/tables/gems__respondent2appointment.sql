@@ -6,14 +6,15 @@ CREATE TABLE if not exists gems__respondent2appointment (
 
     gr2a_id_in_source      varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
-    gr2a_type              varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'A',
+    gr2a_code              varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'A',
     -- one off A => Ambulatory, E => Emergency, F => Field, H => Home, I => Inpatient, S => Short stay, V => Virtual
     -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
-    gr2a_active            boolean not null default 1,
-    -- gr2a_status            varchar(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
+    -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
+    -- one of  PRMS Scheduled, ARQ requested but no date, EVN has occurred
+    gr2a_status            varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
     -- replaced by active
-    -- one off A => Aborted, S => Scheduled / compled / trevies
+    -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
     -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
     gr2a_admission_time    datetime not null,
