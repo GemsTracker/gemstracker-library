@@ -76,6 +76,34 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     protected $_targetModel;
 
     /**
+     * Date import format
+     *
+     * @var string
+     */
+    public $dateFormat = 'YYYY-MM-DD';
+
+   /**
+    * Optional locale for date interpreations
+    *
+    * @var Zend_Locale or string to create locale
+    */
+    public $dateLocale;
+
+    /**
+     * Datetime import format
+     *
+     * @var string
+     */
+    public $datetimeFormat = Zend_Date::ISO_8601;
+
+    /**
+     * Time import format
+     *
+     * @var string
+     */
+    public $timeFormat = Zend_Date::TIMES;
+
+    /**
      * The string value used for NULL values
      *
      * @var string Uppercase string
@@ -165,17 +193,21 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
 
         if ($this->_targetModel instanceof MUtil_Model_ModelAbstract) {
             if ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATE)) {
-                $format = 'YYYY-MM-DD';
+                $format = $this->dateFormat;
             } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATETIME)) {
-                $format = Zend_Date::ISO_8601;
+                $format = $this->datetimeFormat;
             } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_TIME)) {
-                $format = Zend_Date::TIMES;
+                $format = $this->timeFormat ;
             } else {
                 $format = false;
             }
 
-            if ($format && MUtil_Date::isDate($value, $format)) {
-                $value = new MUtil_Date($value, $format);
+            if ($this->dateLocale && is_string($this->dateLocale)) {
+                $this->dateLocale = new Zend_Locale($this->dateLocale);
+            }
+
+            if ($format && MUtil_Date::isDate($value, $format, $this->dateLocale)) {
+                $value = new MUtil_Date($value, $format, $this->dateLocale);
                 return;
             }
         }

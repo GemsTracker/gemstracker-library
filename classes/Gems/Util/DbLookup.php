@@ -352,17 +352,28 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     /**
      * Find the respondent id corresponding to this patientNr / Orgid combo
      *
-     * @param string $patientNr
-     * @param int $orgid
+     * @param string $patientId
+     * @param int $organizationId
      * @return int A respondent id or null
+     * @throws Gems_Exception When the respondent does not exist
      */
-    public function getRespondentId($patientNr, $orgid)
+    public function getRespondentId($patientId, $organizationId)
     {
-        $result = $this->db->fetchOne("SELECT gr2o_id_user FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?", array($patientNr, $orgid));
+        $result = $this->db->fetchOne(
+                "SELECT gr2o_id_user FROM gems__respondent2org WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?",
+                array($patientId, $organizationId)
+                );
 
         if ($result !== false) {
             return $result;
         }
+
+        throw new Gems_Exception(
+                sprintf($translator->_('Respondent id %s not found.'), $patientId),
+                200,
+                null,
+                sprintf($translator->_('With the organization nr %d.'), $organizationId)
+                );
     }
 
     /**
@@ -455,7 +466,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         $result = $this->db->fetchAll($select);
-
+        
         if ($result) {
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom

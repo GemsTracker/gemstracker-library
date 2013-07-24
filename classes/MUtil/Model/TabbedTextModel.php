@@ -135,8 +135,14 @@ class MUtil_Model_TabbedTextModel extends MUtil_Model_ArrayModelAbstract
     {
         $fields = $this->_processLine($line);
 
+        $fieldCount = count($fields);
+        $mapCount   = count($this->_fieldMap);
         if (count($fields) === count($this->_fieldMap)) {
             return array_combine($this->_fieldMap, $fields);
+        } elseif ($fieldCount > $mapCount) {
+            return array_combine($this->_fieldMap, array_slice($fields, 0, $mapCount));
+        } elseif ($fieldCount) {
+            return array_combine($this->_fieldMap, $fields + array_fill($fieldCount, $mapCount - $fieldCount, null));
         }
 
         return false;

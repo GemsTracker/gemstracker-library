@@ -37,7 +37,7 @@
 
 /**
  * Adds basic single survey token editing snippet parameter processing and checking.
- * 
+ *
  * This class supplies the model and adjusts the basic load & save functions.
  *
  * @package    Gems

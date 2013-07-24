@@ -233,6 +233,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         return $model;
     }
 
+    /**
+     * Adjusted delete action
+     */
     public function deleteAction()
     {
         $model   = $this->getModel();
@@ -263,34 +266,23 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $form->addElement($save);
 
         if ($request->isPost()) {
-            $data = $_POST + $data;
-            if ($form->isValid($data )) {
+            $oldCode = $data['gr2o_reception_code'];
+            $data    = $_POST + $data;
 
-                $code = $this->util->getReceptionCode($data['gr2o_reception_code']);
+            if ($form->isValid($data )) {
+                $code = $model->setReceptionCode(
+                        $data['gr2o_patient_nr'],
+                        $data['gr2o_id_organization'],
+                        $data['gr2o_reception_code'],
+                        $data['gr2o_id_user'],
+                        $oldCode
+                        );
 
                 // Is the respondent really removed
                 if (! $code->isSuccess()) {
-                    $userId = $this->loader->getCurrentUser()->getUserId();
-
-                    // Cascade to tracks
-                    // the responsiblilty to handle it correctly is on the sub objects now.
-                    $tracks = $this->loader->getTracker()->getRespondentTracks($data['gr2o_id_user'], $data['gr2o_id_organization']);
-                    foreach ($tracks as $track) {
-                        $track->setReceptionCode($code, null, $userId);
-                    }
 
                     // Perform actual save, but not simple stop codes.
                     if ($code->isForRespondents()) {
-                        $values['gr2o_reception_code'] = $data['gr2o_reception_code'];
-                        $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
-                        $values['gr2o_changed_by']     = $userId;
-
-                        $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
-                        $where = $this->db->quoteInto($where, $data['gr2o_id_user'], null, 1);
-                        $where = $this->db->quoteInto($where, $data['gr2o_id_organization'], null, 1);
-
-                        $this->db->update('gems__respondent2org', $values, $where);
-
                         $this->addMessage($this->_('Respondent deleted.'));
                         $this->_reroute(array('action' => 'index'), true);
                     } else {
@@ -417,7 +409,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     public function getImportTranslators()
     {
         $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
-        $this->applySource($trs);
+        $this->loader->applySource($trs);
 
         return array('default' => $trs);
     }
@@ -527,7 +519,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $userId    = $user->getUserId();
 
         // Updated gr20_opened
-        $this->openedRespondent($patientId, $orgId, $userId);
+        $this->openedRespondent($patientNr, $orgId, $userId);
 
         // Check for completed tokens
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);

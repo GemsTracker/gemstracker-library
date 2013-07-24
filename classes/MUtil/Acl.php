@@ -105,7 +105,7 @@ class MUtil_Acl extends Zend_Acl
      *
      * @param string $role
      * @param array $parents
-     * @return array
+     * @return array With identical keys and values roleId => roleId
      */
     public function getRoleAndParents($role, $parents = array()) {
         $results = $parents;

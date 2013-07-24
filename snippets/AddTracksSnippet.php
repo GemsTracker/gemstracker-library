@@ -191,8 +191,9 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
 
         $div = MUtil_Html::create()->div(array('class' => 'toolbox'));
 
+        $menuIndex  = $this->menu->findController($trackController, 'index');
+
         if ($tracks) {
-            $menuIndex  = $this->menu->findController($trackController, 'index');
             $menuView   = $this->menu->findController($trackController, 'view');
             $menuCreate = $this->menu->findController($trackController, 'create');
 
@@ -210,7 +211,9 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                     $data->value,
                     array('class' => 'add'));
         } else {
-            $div->span($trackTypeDescription, array('class' => 'toolanchor disabled'));
+            $div->a($menuIndex->toHRefAttribute($this->request),
+                    $trackTypeDescription,
+                    array('class' => 'toolanchor disabled'));
 
             $div->ul($this->_('None available'), array('class' => 'disabled'));
         }

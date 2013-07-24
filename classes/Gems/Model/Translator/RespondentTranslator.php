@@ -154,7 +154,7 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
         }
 
         if (!isset($row['grs_email'])) {
-            // $row['calc_email'] = 1;
+            $row['calc_email'] = 1;
         }
 
         if (isset($row['grs_gender']) && $row['grs_gender']) {
@@ -170,10 +170,6 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
             }
 
             $row['grs_gender'] = $gender;
-        }
-
-        if (isset($row['grs_birthday']) && $row['grs_birthday'] && (! $row['grs_birthday'] instanceof Zend_Date)) {
-            $row['grs_birthday'] = new MUtil_Date($row['grs_birthday']);
         }
 
         return $row;

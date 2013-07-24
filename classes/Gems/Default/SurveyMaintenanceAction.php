@@ -102,8 +102,8 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $standAlone   = $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface;
         $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
                 $survey->getQuestionList($this->locale->getLanguage());
-        $dateFields   = $this->util->getTranslated()->getEmptyDropdownArray() +
-                $survey->getDatesList($this->locale->getLanguage());
+        // $dateFields   = $this->util->getTranslated()->getEmptyDropdownArray() +
+        //        $survey->getDatesList($this->locale->getLanguage());
         $surveyNotOK  = $data['gsu_surveyor_active'] ? null : 'disabled';
 
         // Forced data changes
@@ -130,14 +130,18 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
                 ->addValidator( new MUtil_Validate_Require($model->get('gsu_active', 'label'), 'gsu_id_primary_group', $model->get('gsu_id_primary_group', 'label')));
 
         $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
-        $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
-        $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
+        if (count($surveyFields) > 1) {
+            $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
+        }
+        // if (count($dateFields) > 1) {
+        //     $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
+        // }
         $bridge->addText(       'gsu_duration');
         $bridge->addExhibitor(  'calc_duration', 'label', $this->_('Duration calculated'), 'value', $this->calculateDuration(isset($data['gsu_id_survey']) ? $data['gsu_id_survey'] : null));
         $bridge->addText(       'gsu_code');
-        $bridge->addSelect(     'gsu_beforeanswering_event');
-        $bridge->addSelect(     'gsu_completed_event');
-        $bridge->addSelect(     'gsu_display_event');
+        $bridge->add(           'gsu_beforeanswering_event');
+        $bridge->add(           'gsu_completed_event');
+        $bridge->add(           'gsu_display_event');
 
         $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
                 'accept', 'application/pdf',
@@ -461,17 +465,31 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         $model->set('gsu_id_primary_group',   'label', $this->_('Group'), 'multiOptions', $this->util->getDbLookup()->getGroups());
 
         if ($detailed) {
-            $events = $this->loader->getEvents();
-
             $model->set('gsu_result_field',          'label', $this->_('Result field'));
             $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
         }
         $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
         if ($detailed) {
-            $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'), 'multiOptions', $events->listSurveyBeforeAnsweringEvents());
-            $model->set('gsu_completed_event',       'label', $this->_('After completion'), 'multiOptions', $events->listSurveyCompletionEvents());
-            $model->set('gsu_display_event',         'label', $this->_('Answer display'),   'multiOptions', $events->listSurveyDisplayEvents());
+            $events  = $this->loader->getEvents();
+            $options = $events->listSurveyBeforeAnsweringEvents();
+            if (count($options) > 1) {
+                $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
+            $options = $events->listSurveyCompletionEvents();
+            if (count($options) > 1) {
+                $model->set('gsu_completed_event', 'label', $this->_('After completion'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
+            $options = $events->listSurveyDisplayEvents();
+            if (count($options) > 1) {
+                $model->set('gsu_display_event', 'label', $this->_('Answer display'),
+                        'multiOptions', $options,
+                        'elementClass', 'Select');
+            }
         }
 
         $model->setCreate(false);

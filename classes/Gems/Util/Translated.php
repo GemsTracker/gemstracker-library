@@ -138,6 +138,8 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
             $dateTime = clone $dateTimeValue;
         } elseif (MUtil_Date::isDate($dateTimeValue, Zend_Date::ISO_8601)) {
             $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
+        } elseif (MUtil_Date::isDate($dateTimeValue, 'YYYY-MM-DD')) {
+            $dateTime = new MUtil_Date($dateTimeValue, 'YYYY-MM-DD');
         } else {
             return null;
         }

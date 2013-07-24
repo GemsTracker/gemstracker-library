@@ -157,7 +157,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
      */
     public function checkConsent($consent)
     {
-        $unknown = $this->util->getDefaultConsent();
+        $unknown = $this->util->getConsentUnknown();
 
         // Value is translated by now if in bridge
         if (($consent == $unknown) || ($consent == $this->_($unknown))) {
@@ -170,7 +170,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
                 $url[MUtil_Model::REQUEST_ID1]           = $this->request->getParam(MUtil_Model::REQUEST_ID1);
                 $url[MUtil_Model::REQUEST_ID2]           = $this->request->getParam(MUtil_Model::REQUEST_ID2);
 
-                $urlString = $this->view->url($url) . '#tabContainer-frag-3';
+                $urlString = $this->view->url($url) . '#tabContainer-frag-4';
 
                 $this->addMessage(
                         MUtil_Html::create()

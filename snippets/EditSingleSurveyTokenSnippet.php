@@ -47,6 +47,29 @@
 class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract
 {
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Add the elements for the track fields
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     */
+    protected function _addFieldsElements(MUtil_Model_FormBridge $bridge)
+    {
+        if ($this->trackEngine) {
+            $elements = $this->trackEngine->getFieldsElements();
+
+            foreach ($elements as $element) {
+                $element->setBelongsTo(self::TRACKFIELDS_ID);
+                $bridge->addElement($element);
+            }
+        }
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -87,20 +110,67 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         $bridge->addExhibitor('gsu_survey_name');
         $bridge->addExhibitor('ggp_name');
 
-        /*
-        $bridge->addSelect('to_existing_track', 'label', $this->_('Existing track'), 'multiOptions',
-                $this->util->getR);
-         * 
-         */
+        //$this->_addFieldsElements($bridge);
+        //*
+        if (isset($this->formData['gr2t_id_user'], $this->formData['gr2t_id_organization'])) {
+            $tracks = $this->loader->getTracker()->getRespondentTracks($this->formData['gr2t_id_user'], $this->formData['gr2t_id_organization']);
 
-        if ($this->trackEngine) {
-            $elements = $this->trackEngine->getFieldsElements();
+            if (count($tracks)) {
+                if (! isset($this->formData['add_to_track'])) {
+                    $this->formData['add_to_track'] = $this->createData ? 1 : 0;
+                }
 
-            foreach ($elements as $element) {
-                $element->setBelongsTo(self::TRACKFIELDS_ID);
-                $bridge->addElement($element);
+                $onclick = new MUtil_Html_OnClickArrayAttribute();
+                $onclick->addSumbit();
+                $bridge->addRadio('add_to_track', 'label', $this->_('Add'),
+                        'multiOptions', array(
+                            '1' => $this->_('To existing track'),
+                            '0' => $this->_('As standalone track'),
+                        ),
+                        'onclick', $onclick->get(),
+                        'required', true,
+                        'separator', ' ');
+
+                if ($this->formData['add_to_track']) {
+                    $results = $this->util->getTranslated()->getEmptyDropdownArray();
+                    foreach ($tracks as $track) {
+                        if ($track instanceof Gems_Tracker_RespondentTrack) {
+                            if (($track->getTrackEngine()->getTrackType() !== 'S') &&
+                                    $track->getReceptionCode()->isSuccess()) {
+                                $info = $track->getFieldsInfo();
+                                if ($info) {
+                                    $info = sprintf($this->_(' [%s]'), $info);
+                                }
+                                $results[$track->getRespondentTrackId()] = $track->getTrackEngine()->getTrackName() .
+                                        $info;
+                           }
+                       }
+                    }
+                    $bridge->addSelect('to_existing_track', 'label', $this->_('Existing track'),
+                            'multiOptions', $results,
+                            'required', true);
+
+                    // Keep the values, so add hidden
+                    foreach ($this->trackEngine->getFieldsElements() as $element) {
+                        if ($element instanceof Zend_Form_Element) {
+                            $hidden = new Zend_Form_Element_Hidden($element->getName());
+                            $hidden->setBelongsTo(self::TRACKFIELDS_ID);
+                            $bridge->addElement($hidden);
+                        }
+                    }
+                } else {
+                    $this->_addFieldsElements($bridge);
+
+                    // Keep the value
+                    $bridge->addHidden('to_existing_track');
+                }
+            } else {
+                $this->_addFieldsElements($bridge);
             }
+        } else {
+            $this->_addFieldsElements($bridge);
         }
+        // */
 
         // Token
         if ($this->token && $this->token->isCompleted()) {
@@ -179,24 +249,85 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
      */
     protected function saveData()
     {
-        if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
-            // concatenate user input (gtf_field fields)
-            // before the data is saved (the fields them
-            $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
-        }
+        $model = $this->getModel();
 
-        // Perform the save
-        $model          = $this->getModel();
-        $this->formData = $model->save($this->formData);
-        $changed        = $model->getChanged();
+        if (isset($this->formData['add_to_track']) && $this->formData['add_to_track']) {
 
-        if ($this->createData) {
-            $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
-            $this->tokenId           = $this->formData['gto_id_token'];
-        }
+            if (! isset($this->formData['to_existing_track'])) {
+                throw new Gems_Exception_Coding('Add to track called without existing track.');
+            }
 
-        if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
-            $this->trackEngine->setFieldsData($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
+            $tracker    = $this->loader->getTracker();
+            $respTrack  = $tracker->getRespondentTrack($this->formData['to_existing_track']);
+            $userId     = $this->loader->getCurrentUser()->getUserId();
+            $tokenData  = array();
+            $copyFields = array('gto_id_round', 'gto_valid_from', 'gto_valid_until', 'gto_comment');
+
+            foreach ($copyFields as $name) {
+                if (array_key_exists($name, $this->formData)) {
+                    if ($model->hasOnSave($name)) {
+                        $tokenData[$name] = $model->getOnSave($this->formData[$name], $this->createData, $name, $this->formData);
+                    } else {
+                        $tokenData[$name] = $this->formData[$name];
+                    }
+                } else {
+                    $tokenData[$name] = null;
+                }
+            }
+            $tokenData['gto_round_order']       = $respTrack->getLastToken()->getRoundOrder() + 10;
+            $tokenData['gto_round_description'] = $this->_('Extra survey');
+
+            if ($this->createData) {
+                $surveyId = $this->formData['gto_id_survey'];
+
+                $this->token   = $respTrack->addSurveyToTrack($surveyId, $tokenData, $userId);
+                $this->tokenId = $this->token->getTokenId();
+
+            } else {
+                if (! $this->token) {
+                    $this->token = $tracker->getToken($this->tokenId);
+                }
+                $oldTrack = $this->token->getRespondentTrack();
+
+                // Save into the new track
+                $respTrack->addTokenToTrack($this->token, $tokenData, $userId);
+
+                // Should return empty array as the token is no longer in the
+                // track
+                if (! $oldTrack->getTokens(true)) {
+                    $comment = sprintf(
+                            $this->_('Token moved to %s track %d.'),
+                            $respTrack->getTrackEngine()->getTrackName(),
+                            $respTrack->getRespondentTrackId()
+                            ) . "\n\n" . $oldTrack->getComment();
+
+                    $code = $this->util->getReceptionCodeLibrary()->getStopString();
+
+                    $oldTrack->setReceptionCode($code, $comment, $userId);
+                }
+            }
+
+            $changed = 1;
+
+        } else {
+            if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
+                // concatenate user input (gtf_field fields)
+                // before the data is saved (the fields them
+                $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
+            }
+
+            // Perform the save
+            $this->formData = $model->save($this->formData);
+            $changed        = $model->getChanged();
+
+            if ($this->createData) {
+                $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
+                $this->tokenId           = $this->formData['gto_id_token'];
+            }
+
+            if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
+                $this->trackEngine->setFieldsData($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
+            }
         }
 
         // Communicate with the user
@@ -213,6 +344,9 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction, MUtil_Model::REQUEST_ID => $this->tokenId);
+        }
+        if (isset($this->formData['add_to_track']) && $this->formData['add_to_track']) {
+            $this->afterSaveRouteUrl[$this->request->getControllerKey()] = 'track';
         }
 
         return $this;

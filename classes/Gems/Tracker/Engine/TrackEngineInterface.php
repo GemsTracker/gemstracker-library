@@ -194,7 +194,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array Of snippet names
      */
     public function getRoundAnswerSnippets(Gems_Tracker_Token $token);
-    
+
     /**
      * Return the Round Changed event name for this round
      *
@@ -257,6 +257,20 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getTokenShowSnippetNames(Gems_Tracker_Token $token);
 
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCalculationEventInterface | null
+     */
+    public function getTrackCalculationEvent();
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCompletedEventInterface|null
+     */
+    public function getTrackCompletionEvent();
+    
     /**
      * An array of snippet names for creating a track.
      *

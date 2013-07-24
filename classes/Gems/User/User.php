@@ -925,9 +925,9 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Returns the current user role.
+     * Returns the current user roles.
      *
-     * @return string
+     * @return array With identical keys and values roleId => roleId
      */
     public function getRoles()
     {
@@ -1023,7 +1023,8 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Return true if this user has a role that is accessible by the current user
+     * Return true if this user has a role that is accessible by the current user,
+     * i.e. is the current user allowed to change this specific user
      *
      * @return boolean
      */
@@ -1080,6 +1081,19 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function hasPrivilege($privilege)
     {
         return (! $this->acl) || $this->acl->isAllowed($this->getRole(), null, $privilege);
+    }
+
+    /**
+     * Return true if this user has this role
+     *
+     * @param string $role
+     * @return boolean
+     */
+    public function hasRole($role)
+    {
+        $roles = $this->getRoles();
+
+        return (isset($roles[$role]));
     }
 
     /**

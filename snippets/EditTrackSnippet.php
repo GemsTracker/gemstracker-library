@@ -140,6 +140,7 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
 
             // Create the actual tokens!!!!
             $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);
+            $refresh = true;  
 
         } elseif (! (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed'])) {
             // Check if startdate has changed

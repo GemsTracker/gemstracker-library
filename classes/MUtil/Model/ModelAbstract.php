@@ -312,6 +312,17 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Merges this filter with the default filter.
+     *
+     * Filters having field names as key should intersect with any previously set values set on
+     * the same field.
+     *
+     * Filters with with a numerical index are just added to the filter.
+     *
+     * @param array $filter
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function addFilter(array $value)
     {
         if ($old = $this->getFilter()) {
@@ -321,7 +332,36 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 MUtil_Echo::r(array_merge($value, $old), 'Merged filter');
             }
 
-            $this->setFilter(array_merge($value, $old));
+            foreach ($value as $key => $filter) {
+                if (is_integer($key)) {
+                    // Integer key filters are just added as is,
+                    // unless they already exist
+                    if (!in_array($filter, $old)) {
+                        $old[] = $filter;
+                    }
+                } else {
+                    if (isset($old[$key]) && $old[$key]) {
+                        if ($filter !== $old[$key]) {
+                            // Filter exists and is different.
+                            //
+                            // Since we ADD to the filter, i.e. restricting the existing
+                            // return set.
+                            if (! is_array($old[$key])) {
+                                $old[$key] = array($old[$key]);
+                            }
+                            if (! is_array($filter)) {
+                                $filter = array($filter);
+                            }
+                            // When the intersection is empty, when the values collided and the result is never true
+                            $old[$key] = array_intersect($old[$key], $filter);
+                        }
+                    } else {
+                        // Just add new filter
+                        $old[$key] = $filter;
+                    }
+                }
+            }
+            $this->setFilter($old);
         } else {
             $this->setFilter($value);
         }
@@ -1396,11 +1436,46 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Sets a default filter to be used when no filter was passed to a load() or loadX() function.
+     *
+     * Standard filters are arrays containing field names as key and a single value or an array
+     * of values and load only those rows that have the same value or is that are contained in
+     * the value arrays.
+     *
+     * Filters with with a numerical index should be child model specific filters. E.g. database
+     * based models may allow SQL expressions while array based models may use callable functions
+     * with the whole row as the parameter value.
+     *
+     * @param array $filter
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setFilter(array $filter)
     {
         return $this->setMeta('filter', $filter);
     }
 
+    /**
+     * Similar to set, but sets only when the $mame already exists in the model.
+     *
+     * This is usefull when not every instance of the model will have these fields, but
+     * they might exist in many instances.
+     *
+     * Example:
+     * <code>
+     * $this->setIfExists('field_x', 'save', true) ;
+     * $this->setIfExists('field_x', array('save' => true)) ;
+     * </code>
+     * Both set the attribute 'save' to true for 'field_x'.
+     *
+     * @param string $name        The fieldname
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2        Optional second key when $arrayOrKey1 is a string
+     * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
+     *                            an unlimited number of $key values pairs can be given.
+     * @return boolean True when the $name exists in this model.
+     */
     public function setIfExists($name, $arrayOrKey1, $value1 = null, $key2 = null, $value2 = null)
     {
         if ($this->has($name)) {
@@ -1453,6 +1528,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Set a model level variable named $key to $value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
+     */
     public function setMeta($key, $value)
     {
         $this->_model_meta[$key] = $value;

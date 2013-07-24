@@ -197,7 +197,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     {
         $dbLookup   = $this->util->getDbLookup();
         $translated = $this->util->getTranslated();
-        $translator = $this->translate->getAdapter();
+        $translator = $this->getTranslateAdapter();
 
         $this->resetOrder();
 
@@ -279,7 +279,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $dbLookup   = $this->util->getDbLookup();
         $localized  = $this->util->getLocalized();
         $translated = $this->util->getTranslated();
-        $translator = $this->translate->getAdapter();
+        $translator = $this->getTranslateAdapter();
 
         $this->resetOrder();
         if ($this->has('gr2o_id_organization')) {
@@ -378,7 +378,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->copyKeys(); // The user can edit the keys.
 
         $translated = $this->util->getTranslated();
-        $translator = $this->translate->getAdapter();
+        $translator = $this->getTranslateAdapter();
         $ucfirst    = new Zend_Filter_Callback('ucfirst');
 
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
@@ -491,6 +491,69 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         return $this;
     }
 
+    /**
+     * Count the number of tracks the respondent has for this organization
+     *
+     * @param string $patientId   Can be empty if $respondentId is passed
+     * @param int $organizationId When null looks at all organizations
+     * @param int $respondentId   Pass when at hand, is looked up otherwise
+     * @param boolean $active     When true only tracks with a success code are returned
+     * @return boolean
+     */
+    public function countTracks($patientId, $organizationId, $respondentId = null, $active = false)
+    {
+        $db = $this->getAdapter();
+        $select = $db->select();
+        $select->from('gems__respondent2track', array('COALESCE(COUNT(*), 0)'));
+
+        if (null === $respondentId) {
+            $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $organizationId);
+        }
+
+        $select->where('gr2t_id_user = ?', $respondentId);
+
+        if (null !== $organizationId) {
+            $select->where('gr2t_id_organization = ?', $organizationId);
+        }
+
+        if ($active) {
+            $select->joinInner('gems__reception_codes', 'gr2t_reception_code = grc_id_reception_code')
+                    ->where('grc_success = 1');
+        }
+
+        return $db->fetchOne($select);
+    }
+
+    /**
+     * Get the current reception code for a respondent
+     *
+     * @param string $patientId Can be empty if $respondentId is passed
+     * @param int $organizationId
+     * @param int $respondentId   Pass when at hand, is looked up otherwise
+     * @return string The current reception code
+     */
+    public function getReceptionCode($patientId, $organizationId, $respondentId = null)
+    {
+        $db     = $this->getAdapter();
+        $select = $db->select();
+        $select->from('gems__respondent2org', array('gr2o_reception_code'));
+
+        if ($patientId) {
+            $select->where('gr2o_patient_nr = ?', $patientId);
+        } else {
+            $select->where('gr2o_id_user = ?', $respondentId);
+        }
+
+        $select->where('gr2o_id_organization = ?', $organizationId);
+
+        return $db->fetchOne($select);
+    }
+
+    /**
+     * Create a database model for retrieving the respondent tracks
+     *
+     * @return \Gems_Model_JoinModel A NEW JoinModel, not a continuation pattern return
+     */
     public function getRespondentTracksModel()
     {
         $model = new Gems_Model_JoinModel('surveys', 'gems__respondent2track');
@@ -498,6 +561,20 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $model->addTable('gems__respondent2org', array('gr2t_id_user' => 'gr2o_id_user'));
 
         return $model;
+    }
+
+    /**
+     * Has the respondent tracks
+     *
+     * @param string $patientId   Can be empty if $respondentId is passed
+     * @param int $organizationId When null looks at all organizations
+     * @param int $respondentId   Pass when at hand, is looked up otherwise
+     * @param boolean $active     When true we look only for tracks with a success code
+     * @return boolean
+     */
+    public function hasTracks($patientId, $organizationId, $respondentId = null, $active = false)
+    {
+        return (boolean) $this->countTracks($patientId, $organizationId, $respondentId, $active);
     }
 
     /**
@@ -527,14 +604,27 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         return $this->user->hasPrivilege('pr.respondent.multiorg');
     }
 
-    public function save(array $newValues, array $filter = null, array $saveTables = null) {
-        if (isset($newValues['gr2o_id_organization']) && isset($newValues['grs_id_user'])) {
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    public function save(array $newValues, array $filter = null, array $saveTables = null)
+    {
+        $result = parent::save($newValues, $filter, $saveTables);
+
+        if (isset($result['gr2o_id_organization']) && isset($result['grs_id_user'])) {
             // Tell the organization it has at least one user
-            $org = $this->loader->getOrganization($newValues['gr2o_id_organization']);
-            $org->setHasRespondents($newValues['grs_id_user']);
+            $org = $this->loader->getOrganization($result['gr2o_id_organization']);
+            if ($org) {
+                $org->setHasRespondents($this->loader->getCurrentUser()->getUserId());
+            }
         }
 
-        return parent::save($newValues, $filter, $saveTables);
+        return $result;
     }
 
     /**
@@ -551,6 +641,75 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         if ($value) {
             return $this->project->getValueHash($value, $this->hashAlgorithm);
         }
+    }
+
+    /**
+     * Set the reception code for a respondent and cascade non-success codes to the
+     * tracks / surveys.
+     *
+     * @param string $patientId   Can be empty if $respondentId is passed
+     * @param int $organizationId
+     * @param string $newCode     String or Gems_Util_ReceptionCode
+     * @param int $respondentId   Pass when at hand, is looked up otherwise
+     * @param string $oldCode     Pass when at hand as tring or Gems_Util_ReceptionCode, is looked up otherwise
+     * @return Gems_Util_ReceptionCode The new code reception code object for further processing
+     */
+    public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
+    {
+        if ($newCode instanceof Gems_Util_ReceptionCode) {
+            $code    = $newCode;
+            $newCode = $code->getCode();
+        } else {
+            $code    = $this->util->getReceptionCode($newCode);
+        }
+        $translator = $this->getTranslateAdapter();
+        $userId     = $this->loader->getCurrentUser()->getUserId();
+
+        // Perform actual save, but not for simple stop codes.
+        if ($code->isForRespondents()) {
+            if (null === $oldCode) {
+                $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
+            }
+            if ($oldCode instanceof Gems_Util_ReceptionCode) {
+                $oldCode = $oldCode->getCode();
+            }
+
+            // If the code wasn't set already
+            if ($oldCode !== $newCode) {
+                $values['gr2o_reception_code'] = $newCode;
+                $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gr2o_changed_by']     = $userId;
+
+                if ($patientId) {
+                    // Update though primamry key is prefered
+                    $where = 'gr2o_patient_nr = ? AND gr2o_id_organization = ?';
+                    $where = $this->db->quoteInto($where, $patientId, null, 1);
+                } else {
+                    $where = 'gr2o_id_user = ? AND gr2o_id_organization = ?';
+                    $where = $this->db->quoteInto($where, $respondentId, null, 1);
+                }
+                $where = $this->db->quoteInto($where, $organizationId, null, 1);
+
+                $this->db->update('gems__respondent2org', $values, $where);
+            }
+        }
+
+        // Is the respondent really removed
+        if (! $code->isSuccess()) {
+            // Only check for $respondentId when it is really needed
+            if (null === $respondentId) {
+                $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $organizationId);
+            }
+
+            // Cascade to tracks
+            // the responsiblilty to handle it correctly is on the sub objects now.
+            $tracks = $this->loader->getTracker()->getRespondentTracks($respondentId, $organizationId);
+            foreach ($tracks as $track) {
+                $track->setReceptionCode($code, null, $userId);
+            }
+        }
+
+        return $code;
     }
 
     /**

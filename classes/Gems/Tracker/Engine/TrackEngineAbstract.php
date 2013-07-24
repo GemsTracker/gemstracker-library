@@ -352,7 +352,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     gto_id_track != $qTrackId OR
                     gto_id_survey != CASE WHEN gto_start_time IS NULL AND grc_success = 1 THEN gro_id_survey ELSE gto_id_survey END OR
                     gto_round_order != gro_id_order OR
-                    gto_round_description != gro_round_description
+                    (gto_round_order IS NULL AND gro_id_order IS NOT NULL) OR
+                    (gto_round_order IS NOT NULL AND gro_id_order IS NULL) OR
+                    gto_round_description != gro_round_description OR
+                    (gto_round_description IS NULL AND gro_round_description IS NOT NULL) OR
+                    (gto_round_description IS NOT NULL AND gro_round_description IS NULL)
                 ) AND
                 gto_id_respondent_track = ?";
 
@@ -732,8 +736,15 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $model->set('gro_icon_file',         'label', $this->_('Icon'));
         $model->set('gro_id_order',          'label', $this->_('Order'),          'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
         $model->set('gro_round_description', 'label', $this->_('Description'),    'size', '30'); //, 'minlength', 4, 'required', true);
-        $model->set('gro_changed_event',     'label', $this->_('After change'),   'multiOptions', $this->events->listRoundChangedEvents());
-        $model->set('gro_display_event',     'label', $this->_('Answer display'), 'multiOptions', $this->events->listSurveyDisplayEvents());
+
+        $list = $this->events->listRoundChangedEvents();
+        if (count($list) > 1) {
+            $model->set('gro_changed_event',     'label', $this->_('After change'),   'multiOptions', $list);
+        }
+        $list = $this->events->listSurveyDisplayEvents();
+        if (count($list) > 1) {
+            $model->set('gro_display_event',     'label', $this->_('Answer display'), 'multiOptions', $list);
+        }
         $model->set('gro_active',            'label', $this->_('Active'),         'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
 
         $model->addColumn(
@@ -780,6 +791,30 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     public function getTokenModel()
     {
         return $this->tracker->getTokenModel();
+    }
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCalculationEventInterface | null
+     */
+    public function getTrackCalculationEvent()
+    {
+        if (isset($this->_trackData['gtr_calculation_event']) && $this->_trackData['gtr_calculation_event']) {
+            return $this->events->loadTrackCalculationEvent($this->_trackData['gtr_calculation_event']);
+        }
+    }
+
+    /**
+     * Get the TrackCompletedEvent for the given trackId
+     *
+     * @return Gems_Event_TrackCompletedEventInterface|null
+     */
+    public function getTrackCompletionEvent()
+    {
+        if (isset($this->_trackData['gtr_completed_event']) && $this->_trackData['gtr_completed_event']) {
+            return $this->events->loadTrackCompletionEvent($this->_trackData['gtr_completed_event']);
+        }
     }
 
     /**

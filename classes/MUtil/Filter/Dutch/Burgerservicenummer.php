@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 201e, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,35 +26,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Event
- * @copyright  Copyright (c) 2011 Erasmus MC
+ *
+ * @package    MUtil
+ * @subpackage Filter
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $id: Burgerservicenummer.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Track completed event interface
+ * Check the value and make sure there are enough zero's
  *
- * Run on completion of an event
- *
- * @package    Gems
- * @subpackage Event
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @package    MUtil
+ * @subpackage Filter
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.1
+ * @since      Class available since MUtil version 1.3
  */
-interface Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterface
+class MUtil_Filter_Dutch_Burgerservicenummer extends Zend_Filter_Digits
 {
     /**
-     * Process the data and do what must be done
+     * Returns the result of filtering $value
      *
-     * Storing the changed $values is handled by the calling function.
-     *
-     * @param Gems_Tracker_RespondentTrack $track Gems repsondent track object
-     * @param array $values The values to update the track with, before they were saved
-     * @param int   $userId The current userId
-     * @return void
+     * @param  mixed $value
+     * @throws Zend_Filter_Exception If filtering $value is impossible
+     * @return mixed
      */
-    public function processTrackCompletion(Gems_Tracker_RespondentTrack $track, &$values, $userId);
+    public function filter($value)
+    {
+        $value = parent::filter($value);
+
+        return str_pad($value, 9, '0', STR_PAD_LEFT);
+    }
 }

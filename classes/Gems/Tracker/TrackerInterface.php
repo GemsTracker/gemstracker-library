@@ -80,15 +80,15 @@ interface Gems_Tracker_TrackerInterface
     /**
      * Create a new track for a patient
      *
-     * @param int $patientId    The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
+     * @param int $respondentId   The real patientId (grs_id_user), not the patientnr (gr2o_patient_nr)
      * @param int $organizationId
      * @param int $trackId
-     * @param int $userId    Id of the user who takes the action (for logging)
+     * @param int $userId         Id of the user who takes the action (for logging)
      * @param mixed $respTrackData Optional array containing field values or the start date.
      * @param array $trackFieldsData
      * @return Gems_Tracker_RespondentTrack The newly created track
      */
-    public function createRespondentTrack($patientId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
+    public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
 
     /**
      * Creates a new token with a new random token Id
@@ -130,18 +130,18 @@ interface Gems_Tracker_TrackerInterface
      * @return Gems_Tracker_RespondentTrack
      */
     public function getRespondentTrack($respTrackData);
-    
+
     /**
      * Get all tracks for a respondent
-     * 
+     *
      * Specify the optional $order to sort other than on start date
-     * 
-     * @param int $userId
+     *
+     * @param int $respondentId
      * @param int $organizationId
      * @param mixed $order The column(s) and direction to order by
      * @return array of Gems_Tracker_RespondentTrack
      */
-    public function getRespondentTracks($userId, $organizationId, $order = array('gr2t_start_date'));
+    public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'));
 
     /**
      * Load project specific model or general Gems model otherwise

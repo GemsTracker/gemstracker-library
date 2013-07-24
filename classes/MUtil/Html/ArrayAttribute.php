@@ -152,7 +152,14 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return $this;
     }
 
-    public function add($keyOrValue, $valueIfKey = null)
+    /**
+     * Add to the attribute
+     *
+     * @param mixed $keyOrValue The key if a second parameter is specified, otherwise a value
+     * @param mixed $valueIfKey Optional, the value if a key is specified
+     * @return \MUtil_Html_ArrayAttribute (continuation pattern)
+     */
+     public function add($keyOrValue, $valueIfKey = null)
     {
         // Key is specified first, but when no key it is the value.
         if (null == $valueIfKey) {
@@ -179,6 +186,11 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return count($this->_values);
     }
 
+    /**
+     * Get the scalar value of this attribute.
+     *
+     * @return string | int | null
+     */
     public function get()
     {
         $results = array();
@@ -248,7 +260,14 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         unset($this->_values[$offset]);
     }
 
-    public function set($keyOrValue, $valueIfKey = null)
+    /**
+     * Set the values of this attribute.
+     *
+     * @param mixed $keyOrValue The key if a second parameter is specified, otherwise a value
+     * @param mixed $valueIfKey Optional, the value if a key is specified
+     * @return \MUtil_Html_ArrayAttribute (continuation pattern)
+     */
+   public function set($keyOrValue, $valueIfKey = null)
     {
         if ($this->_values) {
             $this->_values = array();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -17,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -25,35 +26,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Event
+ *
+ * @package    MUtil
+ * @subpackage Db
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: CurrentTimestamp.php$
  */
 
 /**
- * Track completed event interface
+ * Standard current date expression
  *
- * Run on completion of an event
- *
- * @package    Gems
- * @subpackage Event
+ * @package    MUtil
+ * @subpackage Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.1
+ * @since      Class available since version 1.3
  */
-interface Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterface
+class MUtil_Db_Expr_CurrentDate extends Zend_Db_Expr
 {
     /**
-     * Process the data and do what must be done
-     *
-     * Storing the changed $values is handled by the calling function.
-     *
-     * @param Gems_Tracker_RespondentTrack $track Gems repsondent track object
-     * @param array $values The values to update the track with, before they were saved
-     * @param int   $userId The current userId
-     * @return void
+     * Instantiate teh current timestamp expression.
      */
-    public function processTrackCompletion(Gems_Tracker_RespondentTrack $track, &$values, $userId);
+    public function __construct()
+    {
+        parent::__construct('CURRENT_DATE');
+    }
 }

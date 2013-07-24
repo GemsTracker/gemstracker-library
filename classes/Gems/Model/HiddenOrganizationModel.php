@@ -175,4 +175,23 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 
         return $href;
     }
+
+    /**
+     * Returns a translate adaptor
+     *
+     * @return Zend_Translate_Adapter
+     */
+    protected function getTranslateAdapter()
+    {
+        if ($this->translate instanceof Zend_Translate)
+        {
+            return $this->translate->getAdapter();
+        }
+
+        if (! $this->translate instanceof Zend_Translate_Adapter) {
+            $this->translate = new MUtil_Translate_Adapter_Potemkin();
+        }
+
+        return $this->translate;
+    }
 }

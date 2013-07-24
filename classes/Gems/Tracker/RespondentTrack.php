@@ -274,27 +274,58 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * @param type $surveyData
      * @return Gems_Tracker_Token
      */
-    public function addSurveyToTrack($surveyId, $surveyData, $userId) {
-        if ('T' == $this->getTrackEngine()->getTrackType()) {
-            //Do something to get a token and add it
-            $tokenLibrary = $this->tracker->getTokenLibrary();
+    public function addSurveyToTrack($surveyId, $surveyData, $userId)
+    {
+        //Do something to get a token and add it
+        $tokenLibrary = $this->tracker->getTokenLibrary();
 
-            //Now make sure the data to add is correct:
-            $surveyData['gto_id_respondent_track']=$this->_respTrackId;
-            $surveyData['gto_id_organization']=$this->_respTrackData['gr2t_id_organization'];
-            $surveyData['gto_id_track']=$this->_respTrackData['gr2t_id_track'];
-            $surveyData['gto_id_respondent']=$this->_respTrackData['gr2t_id_user'];
-            $surveyData['gto_id_survey']=$surveyId;
+        //Now make sure the data to add is correct:
+        $surveyData['gto_id_respondent_track'] = $this->_respTrackId;
+        $surveyData['gto_id_organization']     = $this->_respTrackData['gr2t_id_organization'];
+        $surveyData['gto_id_track']            = $this->_respTrackData['gr2t_id_track'];
+        $surveyData['gto_id_respondent']       = $this->_respTrackData['gr2t_id_user'];
+        $surveyData['gto_id_survey']           = $surveyId;
 
-            $tokenId = $tokenLibrary->createToken($surveyData, $userId);
+        $tokenId = $tokenLibrary->createToken($surveyData, $userId);
 
-            //Now refresh the track to include the survey we just added (easiest way as order may change)
-            $this->getTokens(true);
-        } else {
-            throw new Gems_Exception_Coding('Engine ' . $this->getTrackEngine()->getName() . ' can not add surveys.');
-        }
+        //Now refresh the track to include the survey we just added (easiest way as order may change)
+        $this->getTokens(true);
+
+        // Update the track counter
+        $this->_checkTrackCount($userId);
 
         return $this->_tokens[$tokenId];
+    }
+
+    /**
+     * Add a one-off survey to the existing track.
+     *
+     * @param type $surveyId    the gsu_id of the survey to add
+     * @param type $surveyData
+     * @return Gems_Tracker_Token
+     */
+    public function addTokenToTrack(Gems_Tracker_Token $token, $tokenData, $userId)
+    {
+        //Now make sure the data to add is correct:
+        $tokenData['gto_id_respondent_track'] = $this->_respTrackId;
+        $tokenData['gto_id_organization']     = $this->_respTrackData['gr2t_id_organization'];
+        $tokenData['gto_id_track']            = $this->_respTrackData['gr2t_id_track'];
+        $tokenData['gto_id_respondent']       = $this->_respTrackData['gr2t_id_user'];
+        $tokenData['gto_changed']             = new MUtil_Db_Expr_CurrentTimestamp();
+        $tokenData['gto_changed_by']          = $userId;
+
+        $where = $this->db->quoteInto('gto_id_token = ?', $token->getTokenId());
+        $this->db->update('gems__tokens', $tokenData, $where);
+
+        $token->refresh();
+
+        //Now refresh the track to include the survey we just added (easiest way as order may change)
+        $this->getTokens(true);
+
+        // Update the track counter
+        $this->_checkTrackCount($userId);
+
+        return $token;
     }
 
     /**
@@ -338,6 +369,9 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function checkTrackTokens($userId, Gems_Tracker_Token $fromToken = null)
     {
+        // Execute any defined functions
+        $count = $this->handleTrackCalculation($userId);
+
         // Update token completion count.
         $this->_checkTrackCount($userId);
 
@@ -345,11 +379,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
-            return $engine->checkTokensFrom($this, $fromToken, $userId);
+            return $count + $engine->checkTokensFrom($this, $fromToken, $userId);
         } elseif ($this->_checkStart) {
-            return $engine->checkTokensFrom($this, $this->_checkStart, $userId);
+            return $count + $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {
-            return $engine->checkTokensFromStart($this, $userId);
+            return $count + $engine->checkTokensFromStart($this, $userId);
         }
     }
 
@@ -395,7 +429,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_activeTokens[$roundId];
     }
-    
+
     /**
      *
      * @return string Internal code of the track
@@ -403,16 +437,29 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getCode()
     {
         static $track = false;
-        
+
         if (!$track) {
             $track = $this->tracker->getTrackModel()->loadFirst(array('gtr_id_track'=>$this->_respTrackData['gr2t_id_track']));
         }
-        
+
         if (is_array($track)) {
             return $track['gtr_code'];
         } else {
             return false;
-        }        
+        }
+    }
+
+    /**
+     *
+     * @return string Comment field
+     */
+    public function getComment()
+    {
+        if (isset($this->_respTrackData['gr2t_comment'])) {
+            return $this->_respTrackData['gr2t_comment'];
+        }
+
+        return null;
     }
 
     /**
@@ -507,6 +554,20 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         }
 
         return $this->_firstToken;
+    }
+
+    /**
+     * Returns the first token in this track
+     *
+     * @return Gems_Tracker_Token
+     */
+    public function getLastToken()
+    {
+        if (! $this->_tokens) {
+            //No cache yet, but we might need all tokens later
+            $this->getTokens();
+        }
+        return end($this->_tokens);
     }
 
     /**
@@ -696,20 +757,35 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Find out if there are track calculation events and delegate to the event if needed
+     *
+     * @param int $userId
+     */
+    public function handleTrackCalculation($userId)
+    {
+        // Process any events
+        $trackEngine = $this->getTrackEngine();
+
+        if ($event = $trackEngine->getTrackCalculationEvent()) {
+            return $event->processTrackCalculation($this, $userId);
+        }
+
+        return 0;
+    }
+
+    /**
      * Find out if there are track completion events and delegate to the event if needed
      *
      * @param array $values The values changed before entering this event
      * @param int $userId
      */
-    public function handleTrackCompletion(&$values, $userId) {
+    public function handleTrackCompletion(&$values, $userId)
+    {
         // Process any events
-        $trackModel = $this->tracker->getTrackModel();
+        $trackEngine = $this->getTrackEngine();
 
-        //to be backward compatible, first check if the engine has a
-        if (is_callable(array($trackModel, 'getTrackCompletionEvent'))) {
-            if ($event = $trackModel->getTrackCompletionEvent($this->getTrackId())) {
-                $event->processTrackCompletion($this, $values, $userId);
-            }
+        if ($event = $trackEngine->getTrackCompletionEvent()) {
+            $event->processTrackCompletion($this, $values, $userId);
         }
     }
 
@@ -761,21 +837,21 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_updateTrack($values, $userId);
     }
-    
+
     /**
      * Update one or more values for this track's fielddata.
-     * 
+     *
      * Return the complete set of fielddata
-     * 
+     *
      * @param array $data
      * @return array
      */
     public function setFieldData($data)
     {
         $engine    = $this->getTrackEngine();
-        $fieldMap  = $engine->getFields();        
+        $fieldMap  = $engine->getFields();
         $fieldData = array();
-        
+
         foreach ($data as $code => $value)
         {
             if ($index = array_search($code, $fieldMap)) {
@@ -786,7 +862,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         if ($changeCount>0) {
             $this->_ensureFieldData(true);  // force reload
         }
-        
+
         return $this->_fieldData;
     }
 
