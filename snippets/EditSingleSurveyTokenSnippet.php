@@ -113,7 +113,8 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         //$this->_addFieldsElements($bridge);
         //*
         if (isset($this->formData['gr2t_id_user'], $this->formData['gr2t_id_organization'])) {
-            $tracks = $this->loader->getTracker()->getRespondentTracks($this->formData['gr2t_id_user'], $this->formData['gr2t_id_organization']);
+            // Sort descending so current tracks are on top of the list
+            $tracks = $this->loader->getTracker()->getRespondentTracks($this->formData['gr2t_id_user'], $this->formData['gr2t_id_organization'], array('gr2t_start_date DESC'));
 
             if (count($tracks)) {
                 if (! isset($this->formData['add_to_track'])) {
@@ -141,7 +142,8 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                                 if ($info) {
                                     $info = sprintf($this->_(' [%s]'), $info);
                                 }
-                                $results[$track->getRespondentTrackId()] = $track->getTrackEngine()->getTrackName() .
+                                $date = $track->getStartDate()->get('dd-MM-yyyy');      // @@TODO: How to get the project dateformat if not default?
+                                $results[$track->getRespondentTrackId()] = $date . ' ' . $track->getTrackEngine()->getTrackName() .
                                         $info;
                            }
                        }
