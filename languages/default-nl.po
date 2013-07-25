@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-23 17:34+0100\n"
+"POT-Creation-Date: 2013-07-25 10:34+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:312
@@ -193,7 +193,7 @@ msgid "Database"
 msgstr "Database"
 
 #: classes/Gems/Menu.php:182
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:642
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
 msgid "Content"
 msgstr "Inhoud"
 
@@ -701,7 +701,7 @@ msgstr "Weet u het zeker?"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:166
 #: classes/Gems/Util/Translated.php:271
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:192
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:644
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:124
 msgid "Yes"
 msgstr "Ja"
@@ -2062,7 +2062,7 @@ msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:154
-#: classes/Gems/User/Form/LoginForm.php:151
+#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
 msgid "Login"
 msgstr "Inloggen"
 
@@ -3479,7 +3479,7 @@ msgstr "Waarden"
 
 #: classes/Gems/Default/TrackFieldsAction.php:121
 #: classes/Gems/Default/TrackMaintenanceAction.php:323
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:644
 msgid "Required"
 msgstr "Verplicht"
 
@@ -3722,7 +3722,7 @@ msgid "Subject:"
 msgstr "Onderwerp:"
 
 #: classes/Gems/Email/EmailFormAbstract.php:474
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:641
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:642
 msgid "Field"
 msgstr "Veld"
 
@@ -3985,6 +3985,7 @@ msgid "Clean cache"
 msgstr "Cache opruimen"
 
 #: classes/Gems/Menu/MenuAbstract.php:471
+#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Wijzig wachtwoord"
 
@@ -4760,8 +4761,8 @@ msgid "Corrected anonymization for survey '%s'"
 msgstr "Anonimizatie gecorrigeerd van vragenlijst '%s'"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:468
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:631
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:634
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:632
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:635
 msgid ", "
 msgstr ", "
 
@@ -5402,152 +5403,152 @@ msgstr "Klaar"
 msgid "Choosen translation definition: "
 msgstr "Gekozen vertaalmethode: "
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:236
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:237
 msgid "Upload successful!"
 msgstr "Upload geslaagd!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:237
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:238
 msgid "Check the input visually."
 msgstr "Controleer de import visueel."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:252
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:253
 msgid "Upload error!"
 msgstr "Upload fout!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:274
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:275
 msgid "Import data valid. Click Finish for actual import."
 msgstr ""
 "Te importeren gegevens zijn in order. Klik op Klaar voor feitelijke import."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:302
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:303
 #, php-format
 msgid "Data import. Step %d of %d."
 msgstr "Bulk import gegevens. Stap %d van %d."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:375
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:376
 msgid "Import field definitions"
 msgstr "Veld definities voor import"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:396
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:397
 msgid "Choose a translation definition"
 msgstr "Kies een vertaalmethode"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:402
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:403
 msgid "Choose work mode"
 msgstr "Kies werkwijze"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:404
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:405
 msgid "Upload a file"
 msgstr "Upload een bestand"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:405
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:406
 msgid "Copy and paste into a text field"
 msgstr "Kopiëren en plakken in een groot tekst veld"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:411
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:412
 msgid "Import file"
 msgstr "Import bestand"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:426
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:427
 msgid "Import text - user header line - separate fields using tabs"
 msgstr "Importeer tekst - gebruik de kopregel en scheidt velden middels tabs"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:427
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:428
 msgid "Empty fields remove any existing values. Add a field only when used."
 msgstr ""
 "Lege velden verwijderen eventuele waardes die al aanwezig zijn. Importeer "
 "een veld daarom alleen als het in gebruik is."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:480
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:481
 msgid "No translation definition specified"
 msgstr "Geen vertaalmethode opgegeven"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:485
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:486
 #, php-format
 msgid "Translation definition %s does not exist."
 msgstr "Vertaalmethode %s bestaat niet."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:490
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:491
 #, php-format
 msgid "%s is not a valid translation definition."
 msgstr "%s is geen geldig vertaalmethode."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:594
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:595
 #, php-format
 msgid "A number of length %d, with a precision of %d digits after the period."
 msgstr "Een getal van %d teken, waarvan %d echter de comma."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:596
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:597
 #, php-format
 msgid "A whole number of length %d."
 msgstr "Een heel getal van %d tekens."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:599
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:600
 msgid "A numeric value"
 msgstr "Een getals waarde"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:604
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:605
 msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Een datum volgens ISO 8601: yyyy-mm-dd"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:608
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:609
 msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 msgstr ""
 "Een datum + tijd waarde volgens ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:612
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:613
 msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 msgstr "Een tijd volgens ISO 8601: hh:mm::ss[+-hh:mm]"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:619
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:620
 #, php-format
 msgid "Text, %d character"
 msgid_plural "Text, %d characters"
 msgstr[0] "Tekst, %d teken"
 msgstr[1] "Tekst, %d tekens"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:623
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:624
 msgid "Text"
 msgstr "Tekst"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:631
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:632
 msgid "; one of: "
 msgstr "; één van: "
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:633
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:634
 msgid "; e.g. one of: "
 msgstr "; één van bijvoorbeeld: "
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:635
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:636
 msgid ", ..."
 msgstr ", ..."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:765
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:766
 #, php-format
 msgid "Error retrieving file '%s'."
 msgstr "Fout tijdens het lezen van bestand '%s'."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:771
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:772
 #, php-format
 msgid "File element is of wrong Zend element type '%s'."
 msgstr "File element heeft het verkeerd Zend element type '%s'."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:781
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:782
 msgid "No content passed for import."
 msgstr "Import inhoud ontbreekt."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:796
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:797
 #, php-format
 msgid "Unsupported file extension: %s. Import not possible."
 msgstr ""
 "De bestandstype %s wordt niet ondersteunt. Importeren is niet mogelijk."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:911
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:912
 #, php-format
 msgid "Imported %d %s"
 msgstr "%d %s geïmporteerd"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:951
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:952
 #, php-format
 msgid "Copy from %s to %s failed."
 msgstr "Kopiëren van %s naar %s mislukt."
@@ -5692,6 +5693,11 @@ msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 #: languages/FakeTranslations.php:94
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
+
+#: languages/FakeTranslations.php:97
+#, php-format
+msgid "Only %extension% files are accepted."
+msgstr "Alleen bestanden met de extensie  %extension% zijn toegestaan."
 
 #: snippets/AddTracksSnippet.php:209
 msgid "info"

@@ -492,8 +492,11 @@ class MUtil_Model_FormBridge
         }
         if ($extension) {
             $element->addValidator('Extension', false, $extension);
+            // Now set a custom validation message telling what extensions are allowed
+            $validator = $element->getValidator('Extension');
+            $validator->setMessage('Only %extension% files are accepted.', Zend_Validate_File_Extension::FALSE_EXTENSION);
         }
-
+        
         return $this->_addToForm($name, $element);
     }
 
