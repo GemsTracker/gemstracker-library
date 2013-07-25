@@ -214,6 +214,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             if ((!(isset($this->formData['content']) && $this->formData['content'])) &&
                     ($translator instanceof MUtil_Model_ModelTranslatorInterface)) {
 
+                $translator->setTargetModel($this->targetModel);
                 $fields = array_filter(array_keys($translator->getFieldsTranslations()), 'is_string');
 
                 $this->formData['content'] = implode("\t", $fields) . "\n" .
