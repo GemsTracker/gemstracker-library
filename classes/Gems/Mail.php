@@ -55,6 +55,14 @@ class Gems_Mail extends MUtil_Mail
      */
     public $escort = null;
     
+    /**
+     * Mail character set
+     * 
+     * For Gems we use utf-8 as default instead op iso-8859-1
+     * @var string
+     */
+    protected $_charset = 'utf-8';
+    
     protected static $mailServers = array();
     
     public function __construct($charset = null) {
