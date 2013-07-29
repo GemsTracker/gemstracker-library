@@ -65,7 +65,14 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
     public function afterSave(array $data, $isNew)
     {
         // Reload the current user data
-        $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization']);
+        if ($this->loader->getCurrentUser()->getLoginName() === $data['gsf_login']) {
+            $this->loader->getUserLoader()->unsetCurrentUser();
+            $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization'])->setAsCurrentUser();
+            
+            // If locale has changed, set it in a cookie
+            Gems_Cookies::setLocale($data['gsf_iso_lang'], GemsEscort::getInstance()->basepath);
+            $this->_reroute();      // Force refresh
+        }
     }
 
     /**
