@@ -50,6 +50,8 @@
 class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Procrastinator
 {
     /**
+     * Fixed addition to url's required for links, i.e. htte
+     * /pulse part in http://localhost/pulse/respondent/index
      *
      * @var array
      */
@@ -63,26 +65,95 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     protected $_defaultDisabledContent = array('class' => 'disabled');
     protected $_defaultEnabledContent  = array();
 
+    /**
+     * The number of items per page
+     *
+     * @var int
+     */
     protected $_itemCount;
+
+    /**
+     * The default number of items per page
+     *
+     * @var int
+     */
     protected $_itemCountDefault = 10;
+
+    /**
+     * The request parameter / cookie name containing number of items per page
+     *
+     * @var string
+     */
     protected $_itemCountParam   = 'items';
+
+    /**
+     * The default decrease / increase steps in the number of items per page
+     *
+     * @var int
+     */
     protected $_itemCountValues  = array(5, 10, 15, 20, 50, 100, 200, 500, 1000, 2000);
 
+    /**
+     * Lazy instance of this object
+     *
+     * @var MUtil_Lazy_ObjectWrap
+     */
     protected $_lazy;
 
+    /**
+     * Returns the current page collection.
+     *
+     * @return array
+     */
     protected $_pages;
+
+    /**
+     * The core paginator.
+     *
+     * @var Zend_Paginator
+     */
     protected $_paginator;
 
+    /**
+     *
+     * @var Zend_Controller_Request_Abstract
+     */
     protected $_request;
 
+    /**
+     * One of 'all', 'elastic', 'jumping', 'sliding' or whatever the current
+     * possible scolling styles are for the Zend Framework version in use.
+     *
+     * @var string
+     */
     protected $_scrollingStyle = 'sliding';
 
+    /**
+     * Extra array with special types for subclasses.
+     *
+     * When an object of one of the key types is used, then use
+     * the class method defined as the value.
+     *
+     * @var array
+     */
     protected $_specialTypes = array(
         'Zend_Controller_Request_Abstract' => 'setRequest',
         'Zend_Paginator'                   => 'setPaginator',
+        'Zend_View'                        => 'setView',
         );
 
+    /**
+     * Lazy call to the _pages parameter
+     *
+     * @var MUtil_Lazy_ObjectWrap
+     */
     public $pages;
+
+    /**
+     * Lazy call to the _paginator parameter.
+     *
+     * @var MUtil_Lazy_ObjectWrap
+     */
     public $paginator;
 
     protected function _applyDefaults($condition, array $args)
@@ -117,7 +188,15 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
                 $this->_paginator->setCurrentPageNumber($this->getCurrentPage());
             }
             if ($force || $this->_itemCount || $this->_request) {
-                $this->_paginator->setItemCountPerPage($this->getItemCount());
+                if (! $this->_itemCount) {
+                    $this->getItemCount();
+                }
+                // Recently found trick, can save a complicated database query
+                $adapter = $this->_paginator->getAdapter();
+                if ($adapter instanceof MUtil_Paginator_Adapter_PrefetchInterface) {
+                    $adapter->getItems($this->_currentPage, $this->_itemCount);
+                }
+                $this->_paginator->setItemCountPerPage($this->_itemCount);
             }
         }
     }
@@ -301,6 +380,12 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $this->_itemCountParam;
     }
 
+    /**
+     * Returns the page collection.
+     *
+     * @param  string $scrollingStyle Scrolling style
+     * @return array
+     */
     public function getPages($scrollingStyle = null)
     {
         if (null === $scrollingStyle) {
@@ -372,6 +457,23 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $this->createPageLink($this->pages->next, $this->pages->next, $args);
     }
 
+    /**
+     * Returns a sequence of frist, previous, range, next and last conditional links.
+     *
+     * The condition is them being valid links, otherwise they are returned as span
+     * elements.
+     *
+     * Note: This sequence is not added automatically to this object, you will have to
+     * position it manually.
+     *
+     * @param string $first Label for goto first page link
+     * @param string $previous Label for goto previous page link
+     * @param string $next Label for goto next page link
+     * @param string $last Label for goto last page link
+     * @param string $glue In between links glue
+     * @param mixed $args MUtil_Ra::args extra arguments applied to all links
+     * @return MUtil_Html_Sequence
+     */
     public function pageLinks($first = '<<', $previous = '<', $next = '>', $last = '>>', $glue = ' ', $args = null)
     {
         $argDefaults = array('first' => '<<', 'previous' => '<', 'next' => '>', 'last' => '>>', 'glue' => ' ');
@@ -480,6 +582,11 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $this;
     }
 
+    /**
+     *
+     * @param Zend_Paginator $paginator
+     * @return \MUtil_Html_PagePanel (continuation pattern)
+     */
     public function setPaginator(Zend_Paginator $paginator)
     {
         $this->_paginator = $paginator;
@@ -496,7 +603,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
      * Set the Request object
      *
      * @param Zend_Controller_Request_Abstract $request
-     * @return Zend_Controller_Action
+     * @return \MUtil_Html_PagePanel (continuation pattern)
      */
     public function setRequest(Zend_Controller_Request_Abstract $request)
     {
@@ -516,7 +623,7 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
      * Set the View object
      *
      * @param  Zend_View_Interface $view
-     * @return Zend_View_Helper_Abstract
+     * @return \MUtil_Html_PagePanel (continuation pattern)
      */
     public function setView(Zend_View_Interface $view)
     {
@@ -527,6 +634,11 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return parent::setView($view);
     }
 
+    /**
+     * Returns a lazy instance of item. Do NOT use MUtil_Lazy::L() in this function!!!
+     *
+     * @return MUtil_Lazy_LazyInterface
+     */
     public function toLazy()
     {
         if (! $this->_lazy) {

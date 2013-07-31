@@ -542,7 +542,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Disable tyhe onload settings. This is sometimes needed for speed/
+     * Disable the onload settings. This is sometimes needed for speed/
      *
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */

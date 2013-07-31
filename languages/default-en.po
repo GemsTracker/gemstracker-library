@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-25 10:48+0100\n"
+"POT-Creation-Date: 2013-07-31 15:26+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:312
@@ -298,11 +298,11 @@ msgstr "Lost password"
 msgid "Your account"
 msgstr "Your account"
 
-#: classes/Gems/Menu.php:264 classes/Gems/Default/OptionAction.php:153
+#: classes/Gems/Menu.php:264 classes/Gems/Default/OptionAction.php:160
 msgid "Activity overview"
 msgstr "Activity overview"
 
-#: classes/Gems/Menu.php:265 classes/Gems/Default/OptionAction.php:78
+#: classes/Gems/Menu.php:265 classes/Gems/Default/OptionAction.php:85
 msgid "Change password"
 msgstr "Change password"
 
@@ -352,7 +352,7 @@ msgstr "Track"
 #: classes/Gems/Menu.php:419
 #: classes/Gems/Default/TrackMaintenanceAction.php:460
 #: snippets/AddTracksSnippet.php:244
-#: snippets/EditSingleSurveyTokenSnippet.php:125
+#: snippets/EditSingleSurveyTokenSnippet.php:126
 msgid "Add"
 msgstr "Add"
 
@@ -490,32 +490,32 @@ msgstr "Opened"
 msgid "Consent"
 msgstr "Consent"
 
-#: classes/Gems/Model.php:235 classes/Gems/Default/OptionAction.php:130
+#: classes/Gems/Model.php:235 classes/Gems/Default/OptionAction.php:137
 #: classes/Gems/Default/StaffAction.php:337
 #: classes/Gems/Model/RespondentModel.php:248
 #: classes/Gems/Model/RespondentModel.php:334
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: classes/Gems/Model.php:240 classes/Gems/Default/OptionAction.php:134
+#: classes/Gems/Model.php:240 classes/Gems/Default/OptionAction.php:141
 #: classes/Gems/Default/StaffAction.php:350
 #: classes/Gems/Model/RespondentModel.php:322
 msgid "Gender"
 msgstr "Gender"
 
-#: classes/Gems/Model.php:241 classes/Gems/Default/OptionAction.php:131
+#: classes/Gems/Model.php:241 classes/Gems/Default/OptionAction.php:138
 #: classes/Gems/Default/StaffAction.php:192
 #: classes/Gems/Model/RespondentModel.php:311
 msgid "First name"
 msgstr "First name"
 
-#: classes/Gems/Model.php:242 classes/Gems/Default/OptionAction.php:132
+#: classes/Gems/Model.php:242 classes/Gems/Default/OptionAction.php:139
 #: classes/Gems/Default/StaffAction.php:194
 #: classes/Gems/Model/RespondentModel.php:312
 msgid "Surname prefix"
 msgstr "Surname prefix"
 
-#: classes/Gems/Model.php:243 classes/Gems/Default/OptionAction.php:133
+#: classes/Gems/Model.php:243 classes/Gems/Default/OptionAction.php:140
 #: classes/Gems/Default/StaffAction.php:195
 #: classes/Gems/Model/RespondentModel.php:315
 msgid "Last name"
@@ -808,7 +808,7 @@ msgid "Showing %s"
 msgstr "Showing %s"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:481
-#: classes/Gems/Default/OptionAction.php:181
+#: classes/Gems/Default/OptionAction.php:188
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:341
 #: classes/MUtil/Snippets/WizardFormSnippetAbstract.php:420
 msgid "item"
@@ -1571,7 +1571,7 @@ msgstr ""
 "We sent you an e-mail with a reset link. Click on the link in the e-mail."
 
 #: classes/Gems/Default/IndexAction.php:436
-#: classes/Gems/Default/OptionAction.php:94
+#: classes/Gems/Default/OptionAction.php:101
 #: classes/Gems/Default/StaffAction.php:528
 msgid "New password is active."
 msgstr "New password is active."
@@ -1705,7 +1705,7 @@ msgid "Respondent"
 msgstr "Patient"
 
 #: classes/Gems/Default/LogAction.php:202
-#: classes/Gems/Default/OptionAction.php:175
+#: classes/Gems/Default/OptionAction.php:182
 #: classes/Gems/User/RadiusUserDefinition.php:163
 msgid "IP address"
 msgstr "IP address"
@@ -1966,15 +1966,15 @@ msgstr "Email templates"
 msgid "Responses"
 msgstr "Responses"
 
-#: classes/Gems/Default/OptionAction.php:81
+#: classes/Gems/Default/OptionAction.php:88
 msgid "You are not allowed to change your password."
 msgstr "You are not allowed to change your password."
 
-#: classes/Gems/Default/OptionAction.php:129
+#: classes/Gems/Default/OptionAction.php:136
 msgid "Login Name"
 msgstr "Login Name"
 
-#: classes/Gems/Default/OptionAction.php:136
+#: classes/Gems/Default/OptionAction.php:143
 #: classes/Gems/Default/OrganizationAction.php:149
 #: classes/Gems/Default/RespondentAction.php:197
 #: classes/Gems/Default/StaffAction.php:359
@@ -1982,12 +1982,12 @@ msgstr "Login Name"
 msgid "Language"
 msgstr "Language"
 
-#: classes/Gems/Default/OptionAction.php:146
+#: classes/Gems/Default/OptionAction.php:153
 #, php-format
 msgid "Options"
 msgstr "Options"
 
-#: classes/Gems/Default/OptionAction.php:155
+#: classes/Gems/Default/OptionAction.php:162
 msgid ""
 "This overview provides information about the last login activity on your "
 "account."
@@ -1995,11 +1995,11 @@ msgstr ""
 "This overview provides information about the last login activity on your "
 "account."
 
-#: classes/Gems/Default/OptionAction.php:175
+#: classes/Gems/Default/OptionAction.php:182
 msgid "Date / time"
 msgstr "Date / time"
 
-#: classes/Gems/Default/OptionAction.php:186
+#: classes/Gems/Default/OptionAction.php:193
 msgid "Item"
 msgstr "Item"
 
@@ -2054,7 +2054,7 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:154
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Login"
 
@@ -2547,7 +2547,7 @@ msgstr "Separate multiple patients with a comma (,) or whitespace"
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:145
 #: snippets/DeleteTrackTokenSnippet.php:195
-#: snippets/EditSingleSurveyTokenSnippet.php:210
+#: snippets/EditSingleSurveyTokenSnippet.php:224
 #: snippets/EditTrackSnippet.php:110 snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowSingleSurveyTokenSnippet.php:140
 #: snippets/ShowTrackTokenSnippet.php:146
@@ -2946,7 +2946,7 @@ msgstr "Assignments of this survey to %s: %s"
 #: classes/Gems/Default/SurveyAction.php:175
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:144
-#: snippets/EditSingleSurveyTokenSnippet.php:209
+#: snippets/EditSingleSurveyTokenSnippet.php:223
 #: snippets/ShowSingleSurveyTokenSnippet.php:139
 msgid "Show surveys"
 msgstr "Show surveys"
@@ -3957,7 +3957,6 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:471
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -5705,33 +5704,38 @@ msgstr[1] "%d tokens changed by recalculation."
 msgid "Lists choices changed."
 msgstr "Lists choices changed."
 
-#: snippets/EditSingleSurveyTokenSnippet.php:127
+#: snippets/EditSingleSurveyTokenSnippet.php:128
 msgid "To existing track"
 msgstr "To existing track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:128
+#: snippets/EditSingleSurveyTokenSnippet.php:129
 msgid "As standalone track"
 msgstr "As standalone track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:142
+#: snippets/EditSingleSurveyTokenSnippet.php:148
 #, php-format
-msgid " [%s]"
-msgstr " [%s]"
+msgid "%s [start date: %s, %s]"
+msgstr "%s [start date: %s, %s]"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:149
+#: snippets/EditSingleSurveyTokenSnippet.php:155
+#, php-format
+msgid "%s [start date: %s]"
+msgstr "%s [start date: %s]"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:163
 msgid "Existing track"
 msgstr "Existing track"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:208
+#: snippets/EditSingleSurveyTokenSnippet.php:222
 #: snippets/ShowSingleSurveyTokenSnippet.php:153
 msgid "Show survey"
 msgstr "Show survey"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:278
+#: snippets/EditSingleSurveyTokenSnippet.php:292
 msgid "Extra survey"
 msgstr "Extra survey"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:299
+#: snippets/EditSingleSurveyTokenSnippet.php:313
 #, php-format
 msgid "Token moved to %s track %d."
 msgstr "Token moved to %s track %d."
@@ -5954,6 +5958,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid " [%s]"
+#~ msgstr " [%s]"
 
 #~ msgid "Import valid, import possible."
 #~ msgstr "Import valid, import possible."

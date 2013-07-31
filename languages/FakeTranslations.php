@@ -95,7 +95,7 @@ _("One or more IPs are illegal.");
 
 // Zend_Validate_File_Extension but altered in FormBridge
 _("Only %extension% files are accepted.");
-// Zend_Validate_EmailAddress replaced by MUtil_Validate_SimpleEmail
+
 /*
 _("Invalid type given, value should be a string");
 _("'%value%' is no valid email address in the basic format local-part@hostname");

@@ -44,7 +44,7 @@
 interface MUtil_Lazy_Procrastinator
 {
     /**
-     * Returns a lazy instance of item. Do NOT use MYtil_Lazy::L() in this function!!!
+     * Returns a lazy instance of item. Do NOT use MUtil_Lazy::L() in this function!!!
      *
      * @return MUtil_Lazy_LazyInterface
      */

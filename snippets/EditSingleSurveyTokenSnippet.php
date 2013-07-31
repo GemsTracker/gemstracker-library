@@ -133,18 +133,30 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                         'separator', ' ');
 
                 if ($this->formData['add_to_track']) {
-                    $results = $this->util->getTranslated()->getEmptyDropdownArray();
+                    $translated = $this->util->getTranslated();
+                    $results    = $translated->getEmptyDropdownArray();
+
                     foreach ($tracks as $track) {
                         if ($track instanceof Gems_Tracker_RespondentTrack) {
                             if (($track->getTrackEngine()->getTrackType() !== 'S') &&
                                     $track->getReceptionCode()->isSuccess()) {
+
+                                $date = $translated->formatDateUnknown($track->getStartDate());
                                 $info = $track->getFieldsInfo();
                                 if ($info) {
-                                    $info = sprintf($this->_(' [%s]'), $info);
+                                    $results[$track->getRespondentTrackId()] = sprintf(
+                                            $this->_('%s [start date: %s, %s]'),
+                                            $track->getTrackEngine()->getTrackName(),
+                                            $date,
+                                            $info
+                                            );
+                                } else {
+                                    $results[$track->getRespondentTrackId()] = sprintf(
+                                            $this->_('%s [start date: %s]'),
+                                            $track->getTrackEngine()->getTrackName(),
+                                            $date
+                                            );
                                 }
-                                $date = $track->getStartDate()->get('dd-MM-yyyy');      // @@TODO: How to get the project dateformat if not default?
-                                $results[$track->getRespondentTrackId()] = $date . ' ' . $track->getTrackEngine()->getTrackName() .
-                                        $info;
                            }
                        }
                     }
