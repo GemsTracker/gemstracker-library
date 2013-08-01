@@ -364,7 +364,12 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
             foreach ($queries as $query) {
                 $sql = (string) $query;
                 try {
-                    $stmt = $data['db']->query($sql);
+                    if (isset($data['db'])) {
+                        $db = $data['db'];
+                    } else {
+                        $db = $this->defaultDb;
+                    }
+                    $stmt = $db->query($sql);
                     if ($rows = $stmt->rowCount()) {
                         if ($includeResultSets && ($data = $stmt->fetchAll())) {
                             $results[] = sprintf($this->_('%d record(s) returned as result set %d in step %d of %d.'), $rows, $resultSet, $i, $qCount);
