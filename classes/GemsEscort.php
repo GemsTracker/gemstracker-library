@@ -628,6 +628,7 @@ class GemsEscort extends MUtil_Application_Escort
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
+        $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
 
         // Add it to the ViewRenderer
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
