@@ -101,7 +101,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                 if (empty($value))  {
                     $height = 10;
                 }
-                $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar', 'style' => 'height: 100%;'));
+                $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
                 $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
                 $info = $html->div($token->getCompletionTime(), array('class'=>'info'));
                 $info[] = $html->br();
@@ -129,7 +129,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
     public function getHtmlOutput(\Zend_View_Abstract $view) {             
         $view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');            
 
-        $htmlDiv   = MUtil_Html::create()->div();
+        $htmlDiv   = MUtil_Html::create()->div(' ', array('class'=>'barchartcontainer'));
         
         if ($this->showHeaders) {
             if (isset($this->token)) {
