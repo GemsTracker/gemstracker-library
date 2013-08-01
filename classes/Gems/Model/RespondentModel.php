@@ -66,6 +66,12 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     const SSN_OPEN = 4;
 
     /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
      * Determines the algorithm used to hash the social security number
      *
      * Can be changed is derived classes, set to null to use old md5() method
