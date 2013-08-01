@@ -64,7 +64,10 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     protected $_specialTypes;
 
     /**
-     * The default special types that are always valid for children of this class.
+     * Extra array with special types for subclasses.
+     *
+     * When an object of one of the key types is used, then use
+     * the class method defined as the value.
      *
      * @var array
      */
@@ -116,6 +119,12 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         }
     }
 
+    /**
+     * Return a sequence with the items concatened without spaces or breajs
+     *
+     * @param mixed $args_array MUtil_Ra::args input
+     * @return \self
+     */
     public static function createSequence($args_array = null)
     {
         // BUG FIX: this function used to be called sequence() just
@@ -134,6 +143,12 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         return $seq;
     }
 
+    /**
+     * Return a sequence with the items separated by spaces
+     *
+     * @param mixed $args_array MUtil_Ra::args input
+     * @return \self
+     */
     public static function createSpaced($args_array = null)
     {
         // BUG FIX: this function used to be called spaced() just
@@ -184,6 +199,14 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         }
     }
 
+    /**
+     * Set the item in the sequence, unless a set{Index} function
+     * exists or the new value is an instance of a special type.
+     *
+     * @param mixed $index scalar
+     * @param mixed $newval
+     * @return void
+     */
     public function offsetSet($index, $newval)
     {
         if ($index && (! is_numeric($index))) {
@@ -206,7 +229,8 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
             }
         }
 
-        return parent::offsetSet($index, $newval);
+        parent::offsetSet($index, $newval);
+        return;
     }
 
     /**
@@ -242,7 +266,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
      * Set the View object
      *
      * @param  Zend_View_Interface $view
-     * @return Zend_View_Helper_Abstract
+     * @return \MUtil_Html_Sequence (continuation pattern)
      */
     public function setView(Zend_View_Interface $view)
     {

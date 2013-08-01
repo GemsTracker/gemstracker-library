@@ -39,6 +39,8 @@
  * This class wraps around a select as a paginator, while allowing model->onload
  * functions to apply.
  *
+ * It also implements some extra fancy functions to speed up the result retrieval on MySQL databases.
+ *
  * @see MUtil_Model_DatabaseModelAbstract
  *
  * @package    MUtil
@@ -50,10 +52,44 @@
 class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interface
 {
     /**
+     * Store for count
+     *
+     * @var int
+     */
+    protected $_count;
+
+    /**
+     * Last item count
+     *
+     * @var int
+     */
+    protected $_lastItemCount = null;
+
+    /**
+     * Last offset
+     *
+     * @var int
+     */
+    protected $_lastItems = null;
+
+    /**
+     * Last offset
+     *
+     * @var int
+     */
+    protected $_lastOffset = null;
+
+    /**
      *
      * @var MUtil_Model_DatabaseModelAbstract
      */
     protected $_model;
+
+    /**
+     *
+     * @var Zend_Db_Select
+     */
+    protected $_select;
 
     /**
      *
@@ -68,6 +104,7 @@ class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interfa
      */
     public function __construct(Zend_Db_Select $select, MUtil_Model_DatabaseModelAbstract $model)
     {
+        $this->_select = $select;
         $this->_selectAdapter = new Zend_Paginator_Adapter_DbSelect($select);
         $this->_model = $model;
     }
@@ -79,7 +116,11 @@ class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interfa
      */
     public function count()
     {
-        return $this->_selectAdapter->count();
+        if (null === $this->_count) {
+            $this->_count = $this->_selectAdapter->count();
+        }
+
+        return $this->_count;
     }
 
     /**
@@ -91,14 +132,42 @@ class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interfa
      */
     public function getItems($offset, $itemCountPerPage)
     {
-        $items = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
-
-        // MUtil_Echo::track($items);
-        if (is_array($items)) {
-            $items = $this->_model->processAfterLoad($items);
+        if (1 === $offset) {
+            $offset = 0;
         }
-        // MUtil_Echo::track($items);
 
-        return $items;
+        if (($this->_lastOffset === $offset) && ($this->_lastItemCount === $itemCountPerPage)) {
+            return $this->_lastItems;
+        }
+        $this->_lastOffset    = $offset;
+        $this->_lastItemCount = $itemCountPerPage;
+
+        // Optimization: by using the MySQL feature SQL_CALC_FOUND_ROWS
+        // we can get the count and the results in a single query.
+        $db = $this->_select->getAdapter();
+        if ($db instanceof Zend_Db_Adapter_Mysqli) {
+
+            $this->_select->limit($itemCountPerPage, $offset);
+            $sql = $this->_select->__toString();
+
+            if (MUtil_String::startsWith($sql, 'select ', true)) {
+                $sql = 'SELECT SQL_CALC_FOUND_ROWS ' . substr($sql, 7);
+            }
+
+            $this->_lastItems = $db->fetchAll($sql);
+
+            $this->_count = $db->fetchOne('SELECT FOUND_ROWS()');
+
+        } else {
+            $this->_lastItems = $this->_selectAdapter->getItems($offset, $itemCountPerPage);
+        }
+
+        // MUtil_Echo::track($this->_lastItems);
+        if (is_array($this->_lastItems)) {
+            $this->_lastItems = $this->_model->processAfterLoad($this->_lastItems);
+        }
+        // MUtil_Echo::track($this->_lastItems);
+
+        return $this->_lastItems;
     }
 }

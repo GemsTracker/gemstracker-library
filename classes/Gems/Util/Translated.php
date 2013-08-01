@@ -175,7 +175,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns the time in seconds as aq display string
+     * Returns the time in seconds as a display string
      *
      * @param int $dateTimeValue
      * @return string

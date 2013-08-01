@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-25 10:34+0100\n"
+"POT-Creation-Date: 2013-07-31 15:26+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,11 +14,10 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:312
-#, php-format
 msgid "Path %s not writable"
 msgstr "Path %s niet schrijfbaar"
 
@@ -298,11 +297,11 @@ msgstr "Wachtwoord vergeten"
 msgid "Your account"
 msgstr "Uw account"
 
-#: classes/Gems/Menu.php:264 classes/Gems/Default/OptionAction.php:153
+#: classes/Gems/Menu.php:264 classes/Gems/Default/OptionAction.php:160
 msgid "Activity overview"
 msgstr "Activiteiten overzicht"
 
-#: classes/Gems/Menu.php:265 classes/Gems/Default/OptionAction.php:78
+#: classes/Gems/Menu.php:265 classes/Gems/Default/OptionAction.php:85
 msgid "Change password"
 msgstr "Uw wachtwoord"
 
@@ -352,7 +351,7 @@ msgstr "Traject"
 #: classes/Gems/Menu.php:419
 #: classes/Gems/Default/TrackMaintenanceAction.php:460
 #: snippets/AddTracksSnippet.php:244
-#: snippets/EditSingleSurveyTokenSnippet.php:125
+#: snippets/EditSingleSurveyTokenSnippet.php:126
 msgid "Add"
 msgstr "Voeg toe"
 
@@ -490,32 +489,32 @@ msgstr "Bekeken op"
 msgid "Consent"
 msgstr "Toestemming"
 
-#: classes/Gems/Model.php:235 classes/Gems/Default/OptionAction.php:130
+#: classes/Gems/Model.php:235 classes/Gems/Default/OptionAction.php:137
 #: classes/Gems/Default/StaffAction.php:337
 #: classes/Gems/Model/RespondentModel.php:248
 #: classes/Gems/Model/RespondentModel.php:334
 msgid "E-Mail"
 msgstr "Email"
 
-#: classes/Gems/Model.php:240 classes/Gems/Default/OptionAction.php:134
+#: classes/Gems/Model.php:240 classes/Gems/Default/OptionAction.php:141
 #: classes/Gems/Default/StaffAction.php:350
 #: classes/Gems/Model/RespondentModel.php:322
 msgid "Gender"
 msgstr "Geslacht"
 
-#: classes/Gems/Model.php:241 classes/Gems/Default/OptionAction.php:131
+#: classes/Gems/Model.php:241 classes/Gems/Default/OptionAction.php:138
 #: classes/Gems/Default/StaffAction.php:192
 #: classes/Gems/Model/RespondentModel.php:311
 msgid "First name"
 msgstr "Voornaam"
 
-#: classes/Gems/Model.php:242 classes/Gems/Default/OptionAction.php:132
+#: classes/Gems/Model.php:242 classes/Gems/Default/OptionAction.php:139
 #: classes/Gems/Default/StaffAction.php:194
 #: classes/Gems/Model/RespondentModel.php:312
 msgid "Surname prefix"
 msgstr "Tussenvoegsel"
 
-#: classes/Gems/Model.php:243 classes/Gems/Default/OptionAction.php:133
+#: classes/Gems/Model.php:243 classes/Gems/Default/OptionAction.php:140
 #: classes/Gems/Default/StaffAction.php:195
 #: classes/Gems/Model/RespondentModel.php:315
 msgid "Last name"
@@ -808,7 +807,7 @@ msgid "Showing %s"
 msgstr "Toon %s"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:481
-#: classes/Gems/Default/OptionAction.php:181
+#: classes/Gems/Default/OptionAction.php:188
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:341
 #: classes/MUtil/Snippets/WizardFormSnippetAbstract.php:420
 msgid "item"
@@ -1577,7 +1576,7 @@ msgstr ""
 "We hebben u een email met reset link gestuurd. Klik op de link in de email."
 
 #: classes/Gems/Default/IndexAction.php:436
-#: classes/Gems/Default/OptionAction.php:94
+#: classes/Gems/Default/OptionAction.php:101
 #: classes/Gems/Default/StaffAction.php:528
 msgid "New password is active."
 msgstr "Nieuwe wachtwoord geactiveerd."
@@ -1711,7 +1710,7 @@ msgid "Respondent"
 msgstr "Patiënt"
 
 #: classes/Gems/Default/LogAction.php:202
-#: classes/Gems/Default/OptionAction.php:175
+#: classes/Gems/Default/OptionAction.php:182
 #: classes/Gems/User/RadiusUserDefinition.php:163
 msgid "IP address"
 msgstr "IP adres"
@@ -1973,15 +1972,15 @@ msgstr "Email sjabloon"
 msgid "Responses"
 msgstr "Antwoorden"
 
-#: classes/Gems/Default/OptionAction.php:81
+#: classes/Gems/Default/OptionAction.php:88
 msgid "You are not allowed to change your password."
 msgstr "U mag uw wachtwoord niet wijzigen."
 
-#: classes/Gems/Default/OptionAction.php:129
+#: classes/Gems/Default/OptionAction.php:136
 msgid "Login Name"
 msgstr "Login Naam"
 
-#: classes/Gems/Default/OptionAction.php:136
+#: classes/Gems/Default/OptionAction.php:143
 #: classes/Gems/Default/OrganizationAction.php:149
 #: classes/Gems/Default/RespondentAction.php:197
 #: classes/Gems/Default/StaffAction.php:359
@@ -1989,12 +1988,12 @@ msgstr "Login Naam"
 msgid "Language"
 msgstr "Taal"
 
-#: classes/Gems/Default/OptionAction.php:146
+#: classes/Gems/Default/OptionAction.php:153
 #, php-format
 msgid "Options"
 msgstr "Instellingen"
 
-#: classes/Gems/Default/OptionAction.php:155
+#: classes/Gems/Default/OptionAction.php:162
 msgid ""
 "This overview provides information about the last login activity on your "
 "account."
@@ -2002,11 +2001,11 @@ msgstr ""
 "Dit overzicht geeft informatie over de recente inlog activiteit op uw "
 "account."
 
-#: classes/Gems/Default/OptionAction.php:175
+#: classes/Gems/Default/OptionAction.php:182
 msgid "Date / time"
 msgstr "Datum / tijd"
 
-#: classes/Gems/Default/OptionAction.php:186
+#: classes/Gems/Default/OptionAction.php:193
 msgid "Item"
 msgstr "Item"
 
@@ -2062,7 +2061,7 @@ msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:154
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Inloggen"
 
@@ -2558,7 +2557,7 @@ msgstr ""
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:145
 #: snippets/DeleteTrackTokenSnippet.php:195
-#: snippets/EditSingleSurveyTokenSnippet.php:210
+#: snippets/EditSingleSurveyTokenSnippet.php:224
 #: snippets/EditTrackSnippet.php:110 snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowSingleSurveyTokenSnippet.php:140
 #: snippets/ShowTrackTokenSnippet.php:146
@@ -2962,7 +2961,7 @@ msgstr "Toewijzingen van deze vragenlijst aan %s: %s"
 #: classes/Gems/Default/SurveyAction.php:175
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:144
-#: snippets/EditSingleSurveyTokenSnippet.php:209
+#: snippets/EditSingleSurveyTokenSnippet.php:223
 #: snippets/ShowSingleSurveyTokenSnippet.php:139
 msgid "Show surveys"
 msgstr "Toon vragenlijsten"
@@ -3985,7 +3984,6 @@ msgid "Clean cache"
 msgstr "Cache opruimen"
 
 #: classes/Gems/Menu/MenuAbstract.php:471
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Wijzig wachtwoord"
 
@@ -5697,7 +5695,7 @@ msgstr "Een of meer IP adressen zijn incorrect."
 #: languages/FakeTranslations.php:97
 #, php-format
 msgid "Only %extension% files are accepted."
-msgstr "Alleen bestanden met de extensie  %extension% zijn toegestaan."
+msgstr "Alleen bestanden van het %extension% formaat zijn toegestaan."
 
 #: snippets/AddTracksSnippet.php:209
 msgid "info"
@@ -5763,33 +5761,38 @@ msgstr[1] "%d kenmerken aangepast door herberekening."
 msgid "Lists choices changed."
 msgstr "Keuzelijst is veranderd."
 
-#: snippets/EditSingleSurveyTokenSnippet.php:127
+#: snippets/EditSingleSurveyTokenSnippet.php:128
 msgid "To existing track"
 msgstr "Aan een bestaand traject"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:128
+#: snippets/EditSingleSurveyTokenSnippet.php:129
 msgid "As standalone track"
 msgstr "Als traject met één vragenlijst"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:142
+#: snippets/EditSingleSurveyTokenSnippet.php:148
 #, php-format
-msgid " [%s]"
-msgstr " [%s]"
+msgid "%s [start date: %s, %s]"
+msgstr "%s [startdatum: %s, %s]"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:149
+#: snippets/EditSingleSurveyTokenSnippet.php:155
+#, php-format
+msgid "%s [start date: %s]"
+msgstr "%s [startdatum: %s]"
+
+#: snippets/EditSingleSurveyTokenSnippet.php:163
 msgid "Existing track"
 msgstr "Bestaand traject"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:208
+#: snippets/EditSingleSurveyTokenSnippet.php:222
 #: snippets/ShowSingleSurveyTokenSnippet.php:153
 msgid "Show survey"
 msgstr "Toon vragenlijst"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:278
+#: snippets/EditSingleSurveyTokenSnippet.php:292
 msgid "Extra survey"
 msgstr "Extra vragenlijst"
 
-#: snippets/EditSingleSurveyTokenSnippet.php:299
+#: snippets/EditSingleSurveyTokenSnippet.php:313
 #, php-format
 msgid "Token moved to %s track %d."
 msgstr "Kenmerk verplaatst naar %s traject %d."
@@ -6014,6 +6017,9 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid " [%s]"
+#~ msgstr " [%s]"
 
 #~ msgid "Simple import"
 #~ msgstr "Eenvoudige import"
