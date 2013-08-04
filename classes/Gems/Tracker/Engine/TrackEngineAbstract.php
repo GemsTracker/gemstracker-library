@@ -457,6 +457,44 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Returns an array of the fields in this track
+     * key / value are id / code
+     *
+     * @return array filedid => fieldcode
+     */
+    public function getFieldNames()
+    {
+        $this->_ensureTrackFields();
+
+        $fields = array();
+
+        foreach ($this->_trackFields as $field) {
+            $fields[$field['gtf_id_field']] = $field['gtf_field_name'];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Returns an array of the fields in this track
+     * key / value are id / code
+     *
+     * @return array filedid => fieldcode
+     */
+    public function getFields()
+    {
+        $this->_ensureTrackFields();
+
+        $fields = array();
+
+        foreach ($this->_trackFields as $field) {
+            $fields[$field['gtf_id_field']] = $field['gtf_field_code'];
+        }
+
+        return $fields;
+    }
+
+    /**
      * Returns the field data for the respondent track id.
      *
      * @param int $respTrackId Gems respondent track id or null when new
@@ -542,25 +580,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         }
 
         return $elements;
-    }
-
-    /**
-     * Returns an array of the fields in this track
-     * key / value are id / code
-     *
-     * @return string[]
-     */
-    public function getFields()
-    {
-        $this->_ensureTrackFields();
-
-        $fields = array();
-
-        foreach ($this->_trackFields as $field) {
-            $fields[$field['gtf_id_field']] = $field['gtf_field_code'];
-        }
-
-        return $fields;
     }
 
     /**
