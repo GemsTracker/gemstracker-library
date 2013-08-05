@@ -120,7 +120,17 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
         $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $types);
         $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         if ($detailed) {
-            $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+            $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());        
+            if ($action == 'create') {
+                // Set the default round order
+                $new_order = $this->db->fetchOne(
+                        "SELECT MAX(gtf_id_order) FROM gems__track_fields WHERE gtf_id_track = ?",
+                        $this->_getParam(MUtil_Model::REQUEST_ID));
+
+                if ($new_order) {
+                    $model->set('gtf_id_order', 'default', $new_order + 10);
+                }
+            }
         }
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
