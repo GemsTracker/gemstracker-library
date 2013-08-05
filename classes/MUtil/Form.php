@@ -305,9 +305,9 @@ class MUtil_Form extends Zend_Form
                 $this->setDisableTranslator($disableTranslateValidators);
             }
         }
-
+        
         $valid = parent::isValid($data);
-
+        
         if (isset($oldTranslations)) {
             $this->setDisableTranslator($oldTranslations);
         }
@@ -365,8 +365,17 @@ class MUtil_Form extends Zend_Form
         if ($flag !== $this->translatorIsDisabled()) {
             parent::setDisableTranslator($flag);
 
+            // Propagate to elements
             foreach ($this as $element) {
                 $element->setDisableTranslator($flag);
+            }
+            
+            // And propagate to displaygroup elements
+            foreach($this->getDisplayGroups() as $displayGroup)
+            {
+                foreach($displayGroup->getElements() as $element) {
+                    $element->setDisableTranslator($flag);    
+                }
             }
         }
 
