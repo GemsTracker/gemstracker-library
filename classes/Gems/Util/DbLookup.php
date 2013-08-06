@@ -369,10 +369,10 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         throw new Gems_Exception(
-                sprintf($translator->_('Respondent id %s not found.'), $patientId),
+                sprintf($this->translate->_('Respondent id %s not found.'), $patientId),
                 200,
                 null,
-                sprintf($translator->_('With the organization nr %d.'), $organizationId)
+                sprintf($this->translate->_('With the organization nr %d.'), $organizationId)
                 );
     }
 
@@ -466,7 +466,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
 
         $result = $this->db->fetchAll($select);
-        
+
         if ($result) {
             // And transform to have inactive surveys in gems and source in a
             // different group at the bottom
