@@ -509,8 +509,20 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 $this->_ensureTrackFields();
 
                 foreach ($results as $field => $result) {
-                    if ($this->_trackFields[$field]['gtf_field_type'] == 'multiselect') {
-                        $results[$field] = explode(self::FIELD_SEP, $result);
+                    switch ($this->_trackFields[$field]['gtf_field_type']) {
+                        case 'multiselect':
+                            $results[$field] = explode(self::FIELD_SEP, $result);
+                            break;
+                        
+                        case 'date':
+                            if (empty($result)) {
+                                $results[$field] = null;
+                            } else {
+                                $results[$field] = new MUtil_Date($result, Zend_Date::ISO_8601);
+                            }
+
+                        default:
+                            break;
                     }
                 }
                 return $results;
@@ -885,7 +897,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function setFieldsData($respTrackId, array $data)
     {
-        $elements  = null;
+        $element  = null;
         $newValues = array();
 
         // MUtil_Echo::track($data);
@@ -899,16 +911,19 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
             // Do the hard work for storing dates
             if (isset($this->_trackFields[$id]['gtf_field_type']) && ('date' == $this->_trackFields[$id]['gtf_field_type'])) {
-                if (! $elements) {
-                    $elements = $this->getFieldsElements();
+                if (! $element) {
+                    // Initialize a date element once, so we know about dateformats
+                    $options = array();
+                    MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+
+                    $element = new Gems_JQuery_Form_Element_DatePicker('tmp_element', $options);
+                    $element->setStorageFormat('yyyy-MM-dd');
                 }
-                if (isset($elements[$id])) {
-                    $elem = $elements[$id];
-                    if ($elem instanceof MUtil_JQuery_Form_Element_DatePicker) {
-                        // I do not like regenerating elements either, but this
-                        // is the only place where we KNOW this information for sure.
-                        $value = MUtil_Date::format($value, $elem->getStorageFormat(), $elem->getDateFormat());
-                    }
+                
+                if (!empty($value)) {
+                    $value = MUtil_Date::format($value, $element->getStorageFormat(), $element->getDateFormat());
+                } else {
+                    $value = null;
                 }
             }
 
