@@ -53,9 +53,10 @@ class MUtil_View_Helper_FormSelectHtml extends Zend_View_Helper_FormSelect
      * @param string $label Options Label
      * @param array  $selected The option value(s) to mark as 'selected'
      * @param array|bool $disable Whether the select is disabled, or individual options are
+     * @param array $optionClasses The classes to associate with each option value
      * @return string Option Tag XHTML
      */
-    protected function _build($value, $label, $selected, $disable)
+    protected function _build($value, $label, $selected, $disable, $optionClasses = array())
     {
         if (is_bool($disable)) {
             $disable = array();
