@@ -55,8 +55,13 @@ class MUtil_Filter_Dutch_Burgerservicenummer extends Zend_Filter_Digits
      */
     public function filter($value)
     {
-        $value = parent::filter($value);
+        $newValue = parent::filter($value);
 
-        return str_pad($value, 9, '0', STR_PAD_LEFT);
+        if (intval($newValue)) {
+            return str_pad($value, 9, '0', STR_PAD_LEFT);
+        }
+
+        // Return as is when e.g. ********* or nothing
+        return $value;
     }
 }
