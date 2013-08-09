@@ -74,15 +74,22 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
      * @var Gems_Tracker_Token
      */       
     public $token;
-    
+       
     public function getChart()
     {
         $token = $this->token;
         $data = $this->data;
         
+        $questions = $token->getSurvey()->getQuestionList($this->loader->getCurrentUser()->getLocale());
+        
+        $question = isset($questions[$this->question_code]) ? $questions[$this->question_code] : $this->question_code;
+        
         $html = MUtil_Html::create();
         $wrapper = $html->div(null, array('class'=>'barchart-wrapper'));
-        $wrapper->div($token->getSurveyName(), array('class'=>'header'));
+        $wrapper->div('', array('class'=>'header'))
+                ->append($token->getSurveyName())
+                ->append($html->br())
+                ->append($html->i($question));
         $chart = $wrapper->div(null, array('class'=>'barchart'));
        
         $range = $this->max - $this->min;
@@ -98,9 +105,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             if (array_key_exists($this->question_code, $answers)) {
                 $value = $answers[$this->question_code];
                 $height  = ($value - $this->min) / $range * 100;
-                if (empty($value))  {
-                    $height = 10;
-                }
+                $height = max(min($height, 100),10);    // Add some limits
                 $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
                 $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
                 $info = $html->div($token->getCompletionTime(), array('class'=>'info'));
