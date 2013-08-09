@@ -582,12 +582,16 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $this->html->buttonDiv($this->createMenuLinks(1));
 
         } else {
-
+            if (isset($data['db'])) {
+                $db = $data['db'];
+            } else {
+                $db = $this->db;
+            }
             $this->html->h3(sprintf($this->_('The data in table %s'), $data['name']));
             $this->html[] = $this->createDataTable(
                     $data['name'],
                     sprintf($this->_('Contents of %s %s'), $this->_($data['type']), $data['name']),
-                    $data['db']);
+                    $db);
             $this->html[] = $this->createMenuLinks();
         }
     }
