@@ -261,6 +261,11 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
         $this->html->raw($php->getInfo());
     }
 
+    public function phpErrorsAction()
+    {
+        $this->_showText($this->_('Logged PHP errors'), ini_get('error_log'), $this->_('Empty PHP errorfile'));
+    }
+
     public function projectAction()
     {
         //Clone the object, we don't want to modify the original

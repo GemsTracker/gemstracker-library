@@ -396,6 +396,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, 'pr.project-information', 'project-information');
         $page->addAction($this->_('Errors'),     null, 'errors');
         $page->addAction($this->_('PHP'),        null, 'php');
+        $page->addAction($this->_('PHP Errors'), null, 'php-errors');
         $page->addAction($this->_('Project'),    null, 'project');
         $page->addAction($this->_('Session'),    null, 'session');
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance', 'project-information', 'maintenance');

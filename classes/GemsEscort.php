@@ -92,6 +92,13 @@ class GemsEscort extends MUtil_Application_Escort
     private $_startFirebird;
 
     /**
+     * Set to true for html 5 projects
+     *
+     * @var boolean
+     */
+    public $useHtml5 = false;
+
+    /**
      * The menu variable
      *
      * @var Gems_Menu
@@ -624,11 +631,16 @@ class GemsEscort extends MUtil_Application_Escort
         $view = new Zend_View();
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
-        $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
         $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
+
+        if ($this->useHtml5) {
+            $view->doctype(Zend_View_Helper_Doctype::XHTML5);
+        } else {
+            $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
+        }
 
         // Add it to the ViewRenderer
         $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
@@ -728,9 +740,19 @@ class GemsEscort extends MUtil_Application_Escort
             $path = $this->menu->getActivePath($this->request);
             $last = array_pop($path);
 
-            // Only display when there is a path of more than one step
+            // Only display when there is a path of more than one step or always is on
             if ($path || (isset($args['always']) && $args['always'])) {
-                $div = MUtil_Html::create()->div($args + array('id' => 'crumbs'));
+                // Never needed from now on
+                unset($args['always']);
+
+                if (isset($args['tag'])) {
+                    $tag = $args['tag'];
+                    unset($args['tag']);
+                } else {
+                    $tag = 'div';
+                }
+
+                $div = MUtil_Html::create($tag, $args + array('id' => 'crumbs'));
                 $content = $div->seq();
                 $content->setGlue(MUtil_Html::raw($this->_(' > ')));
 

@@ -164,7 +164,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         // PROJECT LEVEL
         $cont = $setup->addProjectInfoPage($this->_('Project setup'));
-        //UPGRADES CONTROLLER
+
+        // UPGRADES CONTROLLER
         $page = $cont->addPage($this->_('Upgrade'), 'pr.upgrade', 'upgrade', 'index');
         $page->addPage(sprintf($this->_('Changelog %s'), 'GemsTracker'), 'pr.upgrade', 'project-information', 'changeloggt');
         $page->addPage(sprintf($this->_('Changelog %s'), $this->escort->project->getName()), 'pr.upgrade', 'project-information', 'changelog');

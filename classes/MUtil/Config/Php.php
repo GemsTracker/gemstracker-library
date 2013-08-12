@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,7 +29,7 @@
  */
 
 /**
- * 
+ *
  * @author Matijs de Jong
  * @package    MUtil
  * @subpackage Config
@@ -39,7 +39,7 @@
  */
 
 /**
- * 
+ *
  * @author Matijs de Jong
  * @package    MUtil
  * @subpackage Config
@@ -56,8 +56,9 @@ class MUtil_Config_Php
         phpinfo($what); // INFO_GENERAL & INFO_CONFIGURATION & INFO_MODULES & INFO_ENVIRONMENT & INFO_VARIABLES);
         $info = ob_get_clean();
 
-        $this->infoStyle = self::getTag($info, 'style');
-        $this->infoHtml  = self::getTag($info, 'body');
+        $this->infoStyle = trim(self::getTag($info, 'style'));
+        $this->infoStyle = str_replace(array("body", "\n", ", "), array("div.php-info", "\ndiv.php-info ", ", div.php-info "), $this->infoStyle);
+        $this->infoHtml  = '<div class="php-info">' . self::getTag($info, 'body') . '</div>';
         if ($cleanXHtml) {
             $this->infoHtml  = str_replace(
                 array('<font ', '</font>', ' border="0" '),
@@ -85,7 +86,7 @@ class MUtil_Config_Php
         if ($includetag) {
             return substr($html, $p, strpos($html, '</'.$tag.'>', $p) - $p + strlen($tag) + 3);
         } else {
-            $p += 2 + strlen($tag);
+            $p = strpos($html, '>', $p) + 1;
             return substr($html, $p, strpos($html, '</'.$tag.'>', $p) - $p);
         }
     }

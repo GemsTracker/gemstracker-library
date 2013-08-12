@@ -129,8 +129,10 @@ class MUtil_Html_Creator
         'table'             => 'MUtil_Html_TableElement::table',
         'tbody'             => 'MUtil_Html_TBodyElement::tbody',
         'tfoot'             => 'MUtil_Html_TBodyElement::tfoot',
+        'th'                => 'MUtil_Html_TdElement::th',
         'thead'             => 'MUtil_Html_TBodyElement::thead',
         'tr'                => 'MUtil_Html_TrElement::tr',
+        'td'                => 'MUtil_Html_TdElement::td',
         'ul'                => 'MUtil_Html_ListElement::ul',
     );
 

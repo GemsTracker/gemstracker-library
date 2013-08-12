@@ -404,6 +404,19 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Get the directory to use as the root for automatic import
+     *
+     * @return string
+     */
+    public function getFileImportRoot()
+    {
+        if ($this->offsetExists('fileImportRoot')) {
+            return $this->offsetGet('fileImportRoot');
+        }
+        return GEMS_ROOT_DIR . '\var\auto_import';
+    }
+
+    /**
      * Returns the forum url
      *
      * @return string

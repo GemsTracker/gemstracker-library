@@ -240,7 +240,7 @@ class MUtil_Model_TableBridge extends MUtil_Model_TableBridgeAbstract
             if ($this->has_multi_refs) {
                 foreach ($this->table[MUtil_Html_TableElement::TBODY] as $row) {
                     if ($row instanceof MUtil_Html_TrElement) {
-                        $row->onclick = '// Dummy for CSS';
+                        $row->onclick = "{// Dummy for CSS\n}";
                     }
                     foreach ($row as $cell) {
                         if (! isset($cell->onclick)) {
