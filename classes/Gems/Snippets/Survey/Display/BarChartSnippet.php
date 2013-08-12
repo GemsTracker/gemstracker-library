@@ -91,6 +91,14 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                 ->append($html->br())
                 ->append($html->i($question));
         $chart = $wrapper->div(null, array('class'=>'barchart'));
+        
+        // the legend, only for printing since it is a hover for screen
+        $legend = $html->div('', array('class'=>'legend'));
+        $legendrow = $html->div('', array('class'=>'legendrow header'));
+        $legendrow[] = $html->div($this->_('Date'), array('class'=> 'date'));
+        $legendrow[] = $html->div($this->_('Round'), array('class'=> 'round', 'renderClosingTag'=>true));
+        $legendrow[] = $html->div($this->_('Value'), array('class'=> 'value', 'renderClosingTag'=>true));
+        $legend[] = $legendrow;
        
         $range = $this->max - $this->min;
 
@@ -103,24 +111,35 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             
             $answers = $token->getRawAnswers();
             if (array_key_exists($this->question_code, $answers)) {
-                $value = $answers[$this->question_code];
+                $value = (float) $answers[$this->question_code];        // Cast to number
                 $height  = ($value - $this->min) / $range * 100;
                 $height = max(min($height, 100),10);    // Add some limits
                 $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
                 $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
-                $info = $html->div($token->getCompletionTime(), array('class'=>'info'));
+                $date = $token->getCompletionTime()->get('dd-MM-yyyy HH:mm');
+                $info = $html->div($date, array('class'=>'info'));
+                $info[] = $html->br();
+                $info[] = $answers[$this->question_code];   // The raw answer
                 $info[] = $html->br();
                 $info[] = $token->getRoundDescription();
+                $legendrow = $html->div('', array('class'=>'legendrow'));
+                $legendrow[] = $html->div($date, array('class'=> 'date', 'renderClosingTag'=>true));
+                $legendrow[] = $html->div($token->getRoundDescription(), array('class'=> 'round', 'renderClosingTag'=>true));
+                $legendrow[] = $html->div($answers[$this->question_code], array('class'=> 'value', 'renderClosingTag'=>true));
+                $legend[] = $legendrow;
                 if (empty($value))  {
                     $value = 'N/A';
                 }
-                $valueBar[] = $html->div($value, array('class'=>'value'));                    
+                // Link the value to the answer view in a new window (not the bar to avoid usability issues on touch devices)
+                $valueBar[] = $html->a(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId()), array('target'=>'_blank'), $html->div($value, array('class'=>'value')));
                 $valueBar[] = $info;
+                
                 $chart[] = $valueBar;
                 
                 $col ++;
             }
         }
+        $wrapper[] = $legend;
         
         return $wrapper;
     }
