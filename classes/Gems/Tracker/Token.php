@@ -574,16 +574,20 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                                 $db->insert('gemsdata__responses', $rValues);
                             } catch (Zend_Db_Statement_Exception $e) {
                                 $where = $db->quoteInto('gdr_id_token = ? AND ', $rValues['gdr_id_token']) .
-                                        $db->quoteInto('gdr_answer_id', $fieldName);
+                                        $db->quoteInto('gdr_answer_id = ?', $fieldName);
 
-                                $db->update(
-                                        'gemsdata__responses',
-                                        array(
-                                            'gdr_response'   => $response,
-                                            'gdr_changed'    => $rValues['gdr_changed'],
-                                            'gdr_changed_by' => $rValues['gdr_changed_by'],
-                                            ),
-                                        $where);
+                                try {
+                                    $db->update(
+                                            'gemsdata__responses',
+                                            array(
+                                                'gdr_response'   => $response,
+                                                'gdr_changed'    => $rValues['gdr_changed'],
+                                                'gdr_changed_by' => $rValues['gdr_changed_by'],
+                                                ),
+                                            $where);
+                                } catch (Zend_Db_Statement_Exception $e) {
+                                    error_log($e->getMessage());
+                                }
                             }
                         }
                     }

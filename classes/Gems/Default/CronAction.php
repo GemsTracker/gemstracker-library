@@ -188,6 +188,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                         $mailer->setTokens(MUtil_Ra::column('gto_id_token', $tokensData));
                         $mailer->process($tokensData);
                     }
+                    $tokensData = null;
                 }
             }
         }
