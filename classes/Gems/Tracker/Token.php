@@ -586,7 +586,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                                                 ),
                                             $where);
                                 } catch (Zend_Db_Statement_Exception $e) {
-                                    error_log($e->getMessage())
+                                    error_log($e->getMessage());
                                 }
                             }
                         }
