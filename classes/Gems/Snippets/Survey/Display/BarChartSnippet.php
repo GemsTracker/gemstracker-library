@@ -70,6 +70,27 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
     public $request;
     
     /**
+     * Array of rulers, defaults to each 10% a ruler
+     * 
+     * percentage (0-100)
+     * value      (between min/max)
+     * class       positive/negative for green/red color
+     * 
+     * @var array
+     */
+    public $rulers = array(
+        array('percentage' => 10),
+        array('percentage' => 20),
+        array('percentage' => 30),
+        array('percentage' => 40),
+        array('percentage' => 50),
+        array('percentage' => 60),
+        array('percentage' => 70),
+        array('percentage' => 80),
+        array('percentage' => 90)
+    );
+    
+    /**
      *
      * @var Gems_Tracker_Token
      */       
@@ -106,13 +127,28 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         $maxcols = 5;
         $chart[] = $html->div($this->max, array('class'=>'max'));
         $chart[] = $html->div($this->min, array('class'=>'min'));
+        
+        foreach ($this->rulers as $ruler)
+        {
+            $defaults = array('value'=>0, 'class'=>'');
+            $ruler = $ruler + $defaults;
+            if (!isset($ruler['percentage'])) {
+                $position = 100 - $this->getPercentage($ruler['value']);
+            } else {
+                $position = 100 - $ruler['percentage'];
+            }
+            $position = min(100,max(0,$position));
+                
+            $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
+        }
+        
         foreach ($data as $row) {
             $token = $this->loader->getTracker()->getToken($row);
             
             $answers = $token->getRawAnswers();
             if (array_key_exists($this->question_code, $answers)) {
                 $value = (float) $answers[$this->question_code];        // Cast to number
-                $height  = ($value - $this->min) / $range * 100;
+                $height = $this->getPercentage($value);
                 $height = max(min($height, 100),10);    // Add some limits
                 $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
                 $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
@@ -205,5 +241,18 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             $firstRow = reset($data);
             $this->token = $this->loader->getTracker()->getToken($firstRow);
         }
+    }
+    
+    /**
+     * Return the percentage in the range between min and max for this chart
+     * 
+     * @param number $value
+     * @return float
+     */
+    private function getPercentage($value)
+    {
+        $percentage = ($value - $this->min) / ($this->max - $this->min) * 100;
+        
+        return $percentage;
     }
 }
