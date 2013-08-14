@@ -92,6 +92,22 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
     }
 
     /**
+     * Add a cancel bubble command
+     *
+     * @param boolean $cancelBubble
+     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     */
+    public function addConfirm($question)
+    {
+        $this->add(array(
+            "if (!confirm('",
+            MUtil_Lazy::call('addslashes', $question),
+            "')) {event.cancelBubble = true; return false;}"
+            ));
+        return $this;
+    }
+
+    /**
      * Add single code line
      *
      * @param mixed $line

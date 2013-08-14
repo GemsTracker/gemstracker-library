@@ -42,49 +42,16 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.1
+ * @since      Class available since version 1.6.2
  */
-class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
+class Gems_Default_ImportedFailuresAction extends Gems_Default_FileActionAbstract
 {
-    /**
-     *
-     * @var Gems_Project_ProjectSettings
-     */
-    public $project;
-
     /**
      * Should the action look recursively through the files
      *
      * @var boolean
      */
     public $recursive = true;
-
-    public function autoAction()
-    {
-        $filename = $this->_getParam('file');
-        $this->html->div('Auto for: ' . $this->loader->getCurrentUser()->getLoginName() . ' file ' . $filename);
-
-        if (!file_exists($filename)) {
-            $file = GEMS_ROOT_DIR . '/' . $filename;
-
-            if (file_exists($file)) {
-                $filename = $file;
-            }
-
-        }
-        $files = MUtil_File::getFilesRecursive($filename);
-
-        foreach ($files as $filename) {
-           $model = new MUtil_Model_TabbedTextModel($filename);
-           $data = $model->load();
-           // MUtil_Echo::track($data);
-           $table = MUtil_Html_TableElement::createArray($data, $filename, true);
-           $table->class = 'browser';
-           $this->html->append($table);
-        }
-
-        // $this->html->ul($files);
-    }
 
     /**
      * Helper function to get the title for the index action.
@@ -93,7 +60,7 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
      */
     public function getIndexTitle()
     {
-        return $this->_('Files ready for import');
+        return $this->_('Files failed at import');
     }
 
     /**
@@ -105,6 +72,6 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
      */
     public function getPath($detailed, $action)
     {
-        return $this->project->getFileImportRoot();
+        return GEMS_ROOT_DIR . '/var/import_failed';
     }
 }

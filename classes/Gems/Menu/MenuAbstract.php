@@ -286,6 +286,30 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a file upload/download page to the menu
+     *
+     * @param string $label         The label to display for the menu item, null for access without display
+     * @param string $privilege     The privilege for the item, null is always, 'pr.islogin' must be logged in, 'pr.nologin' only when not logged in.
+     * @param string $controller    What controller to use
+     * @param string $action        The name of the action
+     * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addFilePage($label, $privilege, $controller, array $other = array())
+    {
+        $page = $this->addPage($label, $privilege, $controller, 'index', $other);
+        $page->addAutofilterAction();
+        // $page->addCreateAction();
+        // $page->addExcelAction();
+        $page->addShowAction();
+        $page->addEditAction();
+        $page->addDeleteAction();
+        $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download');
+
+        return $page;
+    }
+
+    /**
      * Shortcut function to create the import container.
      *
      * @param string $label Label for the container
@@ -296,8 +320,11 @@ abstract class Gems_Menu_MenuAbstract
         $import = $this->addContainer($label);
 
         // EXPORT TO HTML
-        $page = $import->addPage($this->_('File'), 'pr.file-import', 'file-import', 'index');
+        $page = $import->addFilePage($this->_('Importable'), 'pr.file-import', 'file-import');
         $page->addButtonOnly($this->_('Auto import'), 'pr.file-import.auto', 'file-import', 'auto');
+
+        $page = $import->addFilePage($this->_('Imported files'), 'pr.file-import', 'imported-files');
+        $page = $import->addFilePage($this->_('Imported failures'), 'pr.file-import', 'imported-failures');
 
         return $import;
     }
