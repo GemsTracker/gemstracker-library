@@ -140,8 +140,63 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
             if (unlink($fileData['fullpath'])) {
                 $count = $ocunt + 1;
             } elseif (file_exists($fileData['fullpath'])) {
-                throw new MUtil_Model_ModelException(sprintf('Unable to delete %s.', $fileData['fullpath']));
+                $error = error_get_last();
+                if (isset($error['message'])) {
+                    throw new MUtil_Model_ModelException(
+                            sprintf('Unable to delete %s: %s', $fileData['fullpath'], $error['message'])
+                            );
+                } else {
+                    throw new MUtil_Model_ModelException(sprintf('Unable to delete %s.', $fileData['fullpath']));
+                }
             }
         }
+    }
+
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    public function save(array $newValues, array $filter = null)
+    {
+        $filename = false;
+        if ($this->recursive) {
+            if (isset($newValues['relpath'])) {
+                $filename = $newValues['relpath'];
+            }
+        }
+
+        if (!$filename && isset($newValues['filename'])) {
+            $filename = $newValues['filename'];
+        }
+
+        if (! $filename) {
+            throw new MUtil_Model_ModelException('Cannot save file: no filename known');
+        }
+
+        $filename = trim($filename, '\\/');
+
+        if ($this->dir) {
+            $filename = $this->dir . DIRECTORY_SEPARATOR . $filename;
+        }
+
+        $content = isset($newValues['content']) ? $newValues['content'] : '';
+
+        if (false === file_put_contents($filename, $content) || (!file_exists($filename))) {
+            $error = error_get_last();
+            if (isset($error['message'])) {
+                throw new MUtil_Model_ModelException(
+                        sprintf('Unable to save %s: %s', $filename, $error['message'])
+                        );
+            } else {
+                throw new MUtil_Model_ModelException(sprintf('Unable to save %s.', $filename));
+            }
+        }
+        $this->setChanged(1);
+
+        return $newValues;
     }
 }

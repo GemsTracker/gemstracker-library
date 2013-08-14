@@ -87,22 +87,29 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
                 );
 
         if ($this->recursive) {
-            $model->set('relpath',  'label', $this->_('File (local)'));
+            $model->set('relpath',  'label', $this->_('File (local)'),
+                    'size', 40,
+                    'validator' //, new Zend_Validate_Regex('/[:?*%|"<>]{0,0}/')
+                    );
+            $model->set('filename', 'elementClass', 'Exhibitor');
         }
         if ($detailed || (! $this->recursive)) {
-            $model->set('filename',  'label', $this->_('Filename'));
+            $model->set('filename',  'label', $this->_('Filename'), 'size', 30);
         }
         if ($detailed) {
-            $model->set('path',      'label', $this->_('Path'));
-            $model->set('fullpath',  'label', $this->_('Full name'));
-            $model->set('extension', 'label', $this->_('Type'));
+            $model->set('path',      'label', $this->_('Path'), 'elementClass', 'Exhibitor');
+            $model->set('fullpath',  'label', $this->_('Full name'), 'elementClass', 'Exhibitor');
+            $model->set('extension', 'label', $this->_('Type'), 'elementClass', 'Exhibitor');
             $model->set('content',   'label', $this->_('Content'),
-                    'formatFunction', array(MUtil_Html::create(), 'pre'));
+                    'formatFunction', array(MUtil_Html::create(), 'pre'),
+                    'elementClass', 'TextArea');
         }
         $model->set('size',      'label', $this->_('Size'),
-                'formatFunction', array('MUtil_File', 'getByteSized'));
+                'formatFunction', array('MUtil_File', 'getByteSized'),
+                'elementClass', 'Exhibitor');
         $model->set('changed',   'label', $this->_('Changed on'),
-                'dateFormat', $this->util->getTranslated()->dateTimeFormatString);
+                'dateFormat', $this->util->getTranslated()->dateTimeFormatString,
+                'elementClass', 'Exhibitor');
 
         return $model;
     }
