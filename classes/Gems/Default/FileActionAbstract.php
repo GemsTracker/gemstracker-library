@@ -54,7 +54,7 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**
-     * The regex mask for filenames
+     * The regex mask for filenames, use of backslashes for directory seperator required
      *
      * @var string Regular expression
      */
@@ -149,7 +149,7 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     }
 
     /**
-     * Return the mask to use for the file
+     * Return the mask to use for the relpath of the file, use of backslashes for directory seperator required
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.

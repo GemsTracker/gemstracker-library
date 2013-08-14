@@ -47,6 +47,13 @@
 class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
 {
     /**
+     * Optional preg expression for relative filename, use of backslashes for directory seperator required
+     *
+     * @var string
+     */
+    protected $mask;
+
+    /**
      * The starting path
      *
      * @var string
@@ -57,13 +64,19 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
      *
      * @param Iterator $iterator
      * @param string $startPath
+     * * @param string $mask Preg expression for relative filename, use of backslashes for directory seperator required
      */
-    public function __construct(Iterator $iterator, $startPath = '')
+    public function __construct(Iterator $iterator, $startPath = '', $mask = false)
     {
         parent::__construct($iterator);
 
-        $this->startPath = realpath($startPath) . DIRECTORY_SEPARATOR;
+        $this->startPath = realpath($startPath);
+        if ($this->startPath) {
+            $this->startPath = $this->startPath . DIRECTORY_SEPARATOR;
+        }
         // MUtil_Echo::track($startPath, $this->startPath);
+
+        $this->mask = $mask;
     }
 
     /**
@@ -78,7 +91,22 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
         if (! $file instanceof SplFileInfo) {
             return false;
         }
-        return $file->isFile() && $file->isReadable();
+
+        if (!$file->isFile() || !$file->isReadable()) {
+            return false;
+        }
+
+        if ($this->mask) {
+            // The relative file name uses the windows directory seperator convention as this
+            // does not screw up the use of this value as a parameter
+            $rel = str_replace('/', '\\', MUtil_String::stripStringLeft($file->getRealPath(), $this->startPath));
+
+            if (!preg_match($this->mask, $rel)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -97,12 +125,23 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
 
         $real = $file->getRealPath();
 
+        // The relative file name uses the windows directory seperator convention as this
+        // does not screw up the use of this value as a parameter
+        $rel = str_replace('/', '\\', MUtil_String::stripStringLeft($real, $this->startPath));
+
+        // Function was first implemented in PHP 5.3.6
+        if (method_exists($file, 'getExtension')) {
+            $extension = $file->getExtension();
+        } else {
+            $extension = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
+        }
+
         return array(
             'fullpath'  => $real,
-            'relpath'   => MUtil_String::stripStringLeft($real, $this->startPath),
+            'relpath'   => $rel,
             'path'      => $file->getPath(),
             'filename'  => $file->getFilename(),
-            'extension' => $file->getExtension(),
+            'extension' => $extension,
             'content'   => MUtil_Lazy::call('file_get_contents', $real),
             'size'      => $file->getSize(),
             'changed'   => new MUtil_Date($file->getMTime()),

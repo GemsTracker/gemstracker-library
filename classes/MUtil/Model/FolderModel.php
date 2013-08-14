@@ -55,7 +55,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
 
 
     /**
-     * Regex filename mask
+     * Regex filename mask, use of backslashes for directory seperator required
      *
      * @var string
      */
@@ -71,7 +71,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
     /**
      *
      * @param string $dir
-     * @param string $pregMask An optional regex file mask
+     * @param string $pregMask An optional regex file mask, use of backslashes for directory seperator required
      * @param boolean $recursive When true the directory is searched recursively
      */
     public function __construct($dir, $mask = null, $recursive = false)
@@ -87,13 +87,15 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
         $this->set('fullpath',     'type', MUtil_Model::TYPE_STRING);
         $this->set('path',         'type', MUtil_Model::TYPE_STRING);
         $this->set('filename',     'type', MUtil_Model::TYPE_STRING);
+        // relpath is the relative file name and uses the windows directory seperator convention as this
+        // does not screw up the use of this value as a parameter
         $this->set('relpath',      'type', MUtil_Model::TYPE_STRING);
         $this->set('extension',    'type', MUtil_Model::TYPE_STRING);
         $this->set('content',      'type', MUtil_Model::TYPE_STRING);
         $this->set('size',         'type', MUtil_Model::TYPE_NUMERIC);
         $this->set('changed',      'type', MUtil_Model::TYPE_DATETIME);
 
-        $this->setKeys(array('fullpath'));
+        $this->setKeys(array('relpath'));
     }
 
     /**
@@ -118,7 +120,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
             $dirIter = new DirectoryIterator($this->dir, FilesystemIterator::CURRENT_AS_FILEINFO);
         }
 
-        $modelIter = new MUtil_Model_Iterator_FolderModelIterator($dirIter, $this->dir);
+        $modelIter = new MUtil_Model_Iterator_FolderModelIterator($dirIter, $this->dir, $this->mask);
 
         return $modelIter;
     }
@@ -138,7 +140,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
             if (unlink($fileData['fullpath'])) {
                 $count = $ocunt + 1;
             } elseif (file_exists($fileData['fullpath'])) {
-                throw new MUtil_Model_ModelException(sprintf('YUnable to delete %s.', $fileData['fullpath']));
+                throw new MUtil_Model_ModelException(sprintf('Unable to delete %s.', $fileData['fullpath']));
             }
         }
     }
