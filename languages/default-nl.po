@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-14 17:51+0100\n"
+"POT-Creation-Date: 2013-08-15 18:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -192,7 +192,7 @@ msgstr "Uitvoeren tot hier"
 msgid "Database"
 msgstr "Database"
 
-#: classes/Gems/Menu.php:183 classes/Gems/Default/FileActionAbstract.php:99
+#: classes/Gems/Menu.php:183 classes/Gems/Default/FileActionAbstract.php:97
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
 msgid "Content"
 msgstr "Inhoud"
@@ -1111,7 +1111,7 @@ msgid "No rows in %s."
 msgstr "Geen gegevens in %s."
 
 #: classes/Gems/Default/DatabaseAction.php:120
-#: classes/Gems/Default/FileActionAbstract.php:98
+#: classes/Gems/Default/FileActionAbstract.php:96
 #: classes/Gems/Default/TrackFieldsAction.php:122
 #: classes/Gems/Default/TrackMaintenanceAction.php:322
 msgid "Type"
@@ -1443,48 +1443,43 @@ msgstr "Exporteer antwoorden op vragenlijsten"
 msgid "Back"
 msgstr "Terug"
 
-#: classes/Gems/Default/FileActionAbstract.php:90
+#: classes/Gems/Default/FileActionAbstract.php:83
 msgid "File (local)"
 msgstr "Bestand (relatief)"
 
-#: classes/Gems/Default/FileActionAbstract.php:93
+#: classes/Gems/Default/FileActionAbstract.php:91
 msgid "Filename"
 msgstr "Bestandsnaam"
 
-#: classes/Gems/Default/FileActionAbstract.php:96
+#: classes/Gems/Default/FileActionAbstract.php:94
 msgid "Path"
 msgstr "Pad"
 
-#: classes/Gems/Default/FileActionAbstract.php:97
+#: classes/Gems/Default/FileActionAbstract.php:95
 msgid "Full name"
 msgstr "Vollledige bestandsnaam"
 
-#: classes/Gems/Default/FileActionAbstract.php:102
+#: classes/Gems/Default/FileActionAbstract.php:101
 msgid "Size"
 msgstr "Grootte"
 
-#: classes/Gems/Default/FileActionAbstract.php:148
+#: classes/Gems/Default/FileActionAbstract.php:149
 #, php-format
 msgid "Edit file %s"
 msgstr "Bewerk het bestand %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:176
-#, php-format
-msgid "The directory '%s' does not exist!"
-msgstr "De folder %s bestaat niet!"
-
-#: classes/Gems/Default/FileActionAbstract.php:204
+#: classes/Gems/Default/FileActionAbstract.php:210
 #, php-format
 msgid "Showing file %s"
 msgstr "Het bestand %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:215
+#: classes/Gems/Default/FileActionAbstract.php:221
 msgid "file"
 msgid_plural "files"
 msgstr[0] "bestand"
 msgstr[1] "bestanden"
 
-#: classes/Gems/Default/FileImportAction.php:96
+#: classes/Gems/Default/FileImportAction.php:103
 msgid "Files ready for import"
 msgstr "Bestanden die klaarstaan om te importeren"
 
@@ -1803,7 +1798,7 @@ msgstr "Sjabloon"
 
 #: classes/Gems/Default/MailJobAction.php:79
 msgid "By staff member"
-msgstr "Door medewerke"
+msgstr "Door medewerker"
 
 #: classes/Gems/Default/MailJobAction.php:81
 msgid "Used for logging and possibly from address."
@@ -3997,7 +3992,7 @@ msgstr "Automatisch importeren"
 
 #: classes/Gems/Menu/MenuAbstract.php:326
 msgid "Imported files"
-msgstr "Geïmporteerde bestanden"
+msgstr "Geïmporteerd"
 
 #: classes/Gems/Menu/MenuAbstract.php:327
 msgid "Imported failures"
@@ -5121,7 +5116,7 @@ msgstr[1] ""
 "Uw account is tijdelijk geblokkeerd. U kunt over %d minuten opnieuw inloggen."
 
 #: classes/Gems/User/User.php:454 classes/Gems/User/User.php:486
-#: languages/FakeTranslations.php:47
+#: languages/FakeTranslations.php:46
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
@@ -5158,7 +5153,7 @@ msgstr "Nieuw wachtwoord"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:249
 #: classes/Gems/User/Form/ChangePasswordForm.php:300
-#: languages/FakeTranslations.php:70
+#: languages/FakeTranslations.php:75
 msgid "Must be the same as %fieldDescription%."
 msgstr "Moet identiek zijn aan %fieldDescription%."
 
@@ -5650,10 +5645,10 @@ msgstr ""
 msgid "Imported %d %s"
 msgstr "%d %s geïmporteerd"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:952
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:948
 #, php-format
-msgid "Copy from %s to %s failed."
-msgstr "Kopiëren van %s naar %s mislukt."
+msgid "Copy from %s to %s failed: %s."
+msgstr "Kopiëren van %s naar %s mislukt: %s."
 
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:67
 msgid "FormID"
@@ -5685,76 +5680,84 @@ msgstr "Kond de formulierdefinitie van formulier %s niet inlezen"
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Antwoord is voor een andere formId: %s <-> %s"
 
-#: languages/FakeTranslations.php:40
+#: languages/FakeTranslations.php:39
 msgid "Value is required and can't be empty"
 msgstr "Verplicht veld mag niet leeg zijn"
 
-#: languages/FakeTranslations.php:41 languages/FakeTranslations.php:82
+#: languages/FakeTranslations.php:40 languages/FakeTranslations.php:87
 msgid "Invalid type given, value should be string, integer or float"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
-#: languages/FakeTranslations.php:45
+#: languages/FakeTranslations.php:44
 msgid "Installation not complete! Login is not yet possible!"
 msgstr "Installatie niet afgerond! Inloggen is nog niet mogelijk!"
 
-#: languages/FakeTranslations.php:46
+#: languages/FakeTranslations.php:45
 #, php-format
 msgid "Your account is temporarily blocked, please wait %s minutes"
 msgstr ""
 "Uw account is tijdelijk geblokkeerd. U kunt opnieuw inloggen over %s minuten."
 
-#: languages/FakeTranslations.php:50
+#: languages/FakeTranslations.php:49
 #, php-format
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Datum moet later vallen dan '%dateAfter%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:51
+#: languages/FakeTranslations.php:50
 msgid "Should be empty if valid from date is not set."
 msgstr "Moet leeg zijn als 'afname op' niet is ingevuld."
 
-#: languages/FakeTranslations.php:54
+#: languages/FakeTranslations.php:53
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Datum moet vallen voor '%dateBefore%' of er gelijk aan zijn."
 
-#: languages/FakeTranslations.php:57
+#: languages/FakeTranslations.php:56
 msgid "%value% is not a valid date."
 msgstr "%value% is geen geldige datum."
 
-#: languages/FakeTranslations.php:60
+#: languages/FakeTranslations.php:59
 msgid "No record matching %value% was found."
 msgstr "Geen gegevens gevonden die overeenkomen met %value%."
 
-#: languages/FakeTranslations.php:61
+#: languages/FakeTranslations.php:60
 msgid "A duplicate record matching '%value%' was found."
 msgstr "De waarde '%value%' is al in gebruik."
 
-#: languages/FakeTranslations.php:64
+#: languages/FakeTranslations.php:63
+msgid "Only relative paths are allowed"
+msgstr "Alleen relatieve padnamen zijn toegestaan"
+
+#: languages/FakeTranslations.php:66
+msgid "'%pattern%' characters are forbidden in a path"
+msgstr "De tekens '%pattern%' zijn niet toegestaan in een padnaam"
+
+#: languages/FakeTranslations.php:69
 msgid "This is not a valid %testDescription%."
 msgstr "%testDescription% is niet geldig."
 
-#: languages/FakeTranslations.php:65
+#: languages/FakeTranslations.php:70
 msgid "A %testDescription% cannot contain letters."
 msgstr "Een %testDescription% mag geen letters bevatten."
 
-#: languages/FakeTranslations.php:66
+#: languages/FakeTranslations.php:71
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is te lang voor een %testDescription%. Die moet %length% cijfers "
 "lang zijn."
 
-#: languages/FakeTranslations.php:67
+#: languages/FakeTranslations.php:72
 msgid ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is te kort voor een %testDescription%. Die moet %length% cijfers "
 "lang zijn."
 
-#: languages/FakeTranslations.php:73
+#: languages/FakeTranslations.php:78
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is geen telefoonnummer (zoals: +12 (0)34-567 890)."
 
-#: languages/FakeTranslations.php:76
+#: languages/FakeTranslations.php:81
 msgid ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
@@ -5762,17 +5765,17 @@ msgstr ""
 "Deze PDF een versie wordt niet ondersteund: %value% Gebruik PDF versies "
 "1.0-1.4 op dit probleem te voorkomen."
 
-#: languages/FakeTranslations.php:79
+#: languages/FakeTranslations.php:84
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr ""
 " '%fieldDescription%' moet ingevoerd worden om '%description%' te kunnen "
 "kiezen."
 
-#: languages/FakeTranslations.php:83
+#: languages/FakeTranslations.php:88
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is niet een email address (zoals naam@ergens.nl)."
 
-#: languages/FakeTranslations.php:86
+#: languages/FakeTranslations.php:91
 msgid ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
@@ -5780,23 +5783,23 @@ msgstr ""
 "'%value%' is niet een verzameling email adressen (zoals naam@ergens.nl, "
 "niemand@nergens.net)."
 
-#: languages/FakeTranslations.php:89
+#: languages/FakeTranslations.php:94
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' mag alleen cijfers bevatten"
 
-#: languages/FakeTranslations.php:90
+#: languages/FakeTranslations.php:95
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is leeg"
 
-#: languages/FakeTranslations.php:91
+#: languages/FakeTranslations.php:96
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Ongeldige invoer, geef een tekst of een nummer op"
 
-#: languages/FakeTranslations.php:94
+#: languages/FakeTranslations.php:99
 msgid "One or more IPs are illegal."
 msgstr "Een of meer IP adressen zijn incorrect."
 
-#: languages/FakeTranslations.php:97
+#: languages/FakeTranslations.php:102
 #, php-format
 msgid "Only %extension% files are accepted."
 msgstr "Alleen bestanden van het %extension% formaat zijn toegestaan."
@@ -6121,6 +6124,9 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "The directory '%s' does not exist!"
+#~ msgstr "De folder %s bestaat niet!"
 
 #, fuzzy
 #~ msgid "Delete file %s?"

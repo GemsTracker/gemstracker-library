@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-14 17:51+0100\n"
+"POT-Creation-Date: 2013-08-15 18:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -192,7 +192,7 @@ msgstr "Execute to here"
 msgid "Database"
 msgstr "Database"
 
-#: classes/Gems/Menu.php:183 classes/Gems/Default/FileActionAbstract.php:99
+#: classes/Gems/Menu.php:183 classes/Gems/Default/FileActionAbstract.php:97
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:643
 msgid "Content"
 msgstr "Content"
@@ -1110,7 +1110,7 @@ msgid "No rows in %s."
 msgstr "No rows in %s."
 
 #: classes/Gems/Default/DatabaseAction.php:120
-#: classes/Gems/Default/FileActionAbstract.php:98
+#: classes/Gems/Default/FileActionAbstract.php:96
 #: classes/Gems/Default/TrackFieldsAction.php:122
 #: classes/Gems/Default/TrackMaintenanceAction.php:322
 msgid "Type"
@@ -1440,48 +1440,43 @@ msgstr "Export survey answers"
 msgid "Back"
 msgstr "Back"
 
-#: classes/Gems/Default/FileActionAbstract.php:90
+#: classes/Gems/Default/FileActionAbstract.php:83
 msgid "File (local)"
 msgstr "File (local)"
 
-#: classes/Gems/Default/FileActionAbstract.php:93
+#: classes/Gems/Default/FileActionAbstract.php:91
 msgid "Filename"
 msgstr "Filename"
 
-#: classes/Gems/Default/FileActionAbstract.php:96
+#: classes/Gems/Default/FileActionAbstract.php:94
 msgid "Path"
 msgstr "Path"
 
-#: classes/Gems/Default/FileActionAbstract.php:97
+#: classes/Gems/Default/FileActionAbstract.php:95
 msgid "Full name"
 msgstr "Full name"
 
-#: classes/Gems/Default/FileActionAbstract.php:102
+#: classes/Gems/Default/FileActionAbstract.php:101
 msgid "Size"
 msgstr "Size"
 
-#: classes/Gems/Default/FileActionAbstract.php:148
+#: classes/Gems/Default/FileActionAbstract.php:149
 #, php-format
 msgid "Edit file %s"
 msgstr "Edit file %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:176
-#, php-format
-msgid "The directory '%s' does not exist!"
-msgstr "The directory '%s' does not exist!"
-
-#: classes/Gems/Default/FileActionAbstract.php:204
+#: classes/Gems/Default/FileActionAbstract.php:210
 #, php-format
 msgid "Showing file %s"
 msgstr "Showing file %s"
 
-#: classes/Gems/Default/FileActionAbstract.php:215
+#: classes/Gems/Default/FileActionAbstract.php:221
 msgid "file"
 msgid_plural "files"
 msgstr[0] "file"
 msgstr[1] "files"
 
-#: classes/Gems/Default/FileImportAction.php:96
+#: classes/Gems/Default/FileImportAction.php:103
 msgid "Files ready for import"
 msgstr "Files ready for import"
 
@@ -5079,7 +5074,7 @@ msgstr[0] "Your account is temporarily blocked, please wait a minute."
 msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 
 #: classes/Gems/User/User.php:454 classes/Gems/User/User.php:486
-#: languages/FakeTranslations.php:47
+#: languages/FakeTranslations.php:46
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
@@ -5116,7 +5111,7 @@ msgstr "New password"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:249
 #: classes/Gems/User/Form/ChangePasswordForm.php:300
-#: languages/FakeTranslations.php:70
+#: languages/FakeTranslations.php:75
 msgid "Must be the same as %fieldDescription%."
 msgstr "Must be the same as %fieldDescription%."
 
@@ -5597,10 +5592,10 @@ msgstr "Unsupported file extension: %s. Import not possible."
 msgid "Imported %d %s"
 msgstr "Imported %d %s"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:952
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:948
 #, php-format
-msgid "Copy from %s to %s failed."
-msgstr "Copy from %s to %s failed."
+msgid "Copy from %s to %s failed: %s."
+msgstr "Copy from %s to %s failed: %s."
 
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:67
 msgid "FormID"
@@ -5632,73 +5627,81 @@ msgstr "Could not read form definition for form %s"
 msgid "Response is for a different formId: %s <-> %s"
 msgstr "Response is for a different formId: %s <-> %s"
 
-#: languages/FakeTranslations.php:40
+#: languages/FakeTranslations.php:39
 msgid "Value is required and can't be empty"
 msgstr "Value is required and can't be empty"
 
-#: languages/FakeTranslations.php:41 languages/FakeTranslations.php:82
+#: languages/FakeTranslations.php:40 languages/FakeTranslations.php:87
 msgid "Invalid type given, value should be string, integer or float"
 msgstr "Invalid type given, value should be string, integer or float"
 
-#: languages/FakeTranslations.php:45
+#: languages/FakeTranslations.php:44
 msgid "Installation not complete! Login is not yet possible!"
 msgstr "Installation not complete! Login is not yet possible!"
 
-#: languages/FakeTranslations.php:46
+#: languages/FakeTranslations.php:45
 #, php-format
 msgid "Your account is temporarily blocked, please wait %s minutes"
 msgstr "Your account is temporarily blocked, please wait %s minutes"
 
-#: languages/FakeTranslations.php:50
+#: languages/FakeTranslations.php:49
 #, php-format
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Date should be '%dateAfter%' or later."
 
-#: languages/FakeTranslations.php:51
+#: languages/FakeTranslations.php:50
 msgid "Should be empty if valid from date is not set."
 msgstr "Should be empty if valid from date is not set."
 
-#: languages/FakeTranslations.php:54
+#: languages/FakeTranslations.php:53
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Date should be '%dateBefore%' or earlier."
 
-#: languages/FakeTranslations.php:57
+#: languages/FakeTranslations.php:56
 msgid "%value% is not a valid date."
 msgstr "%value% is not a valid date."
 
-#: languages/FakeTranslations.php:60
+#: languages/FakeTranslations.php:59
 msgid "No record matching %value% was found."
 msgstr "No record matching %value% was found."
 
-#: languages/FakeTranslations.php:61
+#: languages/FakeTranslations.php:60
 msgid "A duplicate record matching '%value%' was found."
 msgstr "A duplicate record matching '%value%' was found."
 
-#: languages/FakeTranslations.php:64
+#: languages/FakeTranslations.php:63
+msgid "Only relative paths are allowed"
+msgstr "Only relative paths are allowed"
+
+#: languages/FakeTranslations.php:66
+msgid "'%pattern%' characters are forbidden in a path"
+msgstr "'%pattern%' characters are forbidden in a path"
+
+#: languages/FakeTranslations.php:69
 msgid "This is not a valid %testDescription%."
 msgstr "This is not a valid %testDescription%."
 
-#: languages/FakeTranslations.php:65
+#: languages/FakeTranslations.php:70
 msgid "A %testDescription% cannot contain letters."
 msgstr "A %testDescription% cannot contain letters."
 
-#: languages/FakeTranslations.php:66
+#: languages/FakeTranslations.php:71
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too long for a %testDescription%. Should be %length% digits."
 
-#: languages/FakeTranslations.php:67
+#: languages/FakeTranslations.php:72
 msgid ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 
-#: languages/FakeTranslations.php:73
+#: languages/FakeTranslations.php:78
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 
-#: languages/FakeTranslations.php:76
+#: languages/FakeTranslations.php:81
 msgid ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
@@ -5706,15 +5709,15 @@ msgstr ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
 
-#: languages/FakeTranslations.php:79
+#: languages/FakeTranslations.php:84
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr "To set '%description%' you have to set '%fieldDescription%'."
 
-#: languages/FakeTranslations.php:83
+#: languages/FakeTranslations.php:88
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is not an email address (e.g. name@somewhere.com)."
 
-#: languages/FakeTranslations.php:86
+#: languages/FakeTranslations.php:91
 msgid ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
@@ -5722,23 +5725,23 @@ msgstr ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
 
-#: languages/FakeTranslations.php:89
+#: languages/FakeTranslations.php:94
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' must contain only digits"
 
-#: languages/FakeTranslations.php:90
+#: languages/FakeTranslations.php:95
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is an empty string"
 
-#: languages/FakeTranslations.php:91
+#: languages/FakeTranslations.php:96
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Invalid type given. String, integer or float expected"
 
-#: languages/FakeTranslations.php:94
+#: languages/FakeTranslations.php:99
 msgid "One or more IPs are illegal."
 msgstr "One or more IPs are illegal."
 
-#: languages/FakeTranslations.php:97
+#: languages/FakeTranslations.php:102
 #, php-format
 msgid "Only %extension% files are accepted."
 msgstr "Only %extension% files are accepted."
@@ -6061,6 +6064,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "The directory '%s' does not exist!"
+#~ msgstr "The directory '%s' does not exist!"
 
 #~ msgid "Inhoud"
 #~ msgstr "Inhoud"
