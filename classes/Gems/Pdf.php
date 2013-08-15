@@ -53,11 +53,11 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     protected $db;
 
     /**
-     * 
+     *
      * @var string
      */
     protected $_pdfExportCommand = "";
-    
+
     protected $pageFont      = Zend_Pdf_Font::FONT_COURIER;
     protected $pageFontSize  = 12;
     protected $pageX         = 10;
@@ -86,7 +86,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
             $this->_pdfExportCommand = $this->project->export['pdfExportCommand'];
         }
     }
-    
+
     protected function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
     {
         $token = strtoupper($tokenId);
@@ -139,7 +139,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     protected function echoPdf(Zend_Pdf $pdf, $filename, $download = false, $exit = true)
     {
         $content = $pdf->render();
-        
+
         $this->echoPdfContent($content, $filename, $download);
 
         if ($exit) {
@@ -147,7 +147,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
             exit;
         }
     }
-    
+
     public function echoPdfContent($content, $filename, $download = false)
     {
         // MUtil_Echo::track($filename);
@@ -300,8 +300,8 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
     protected function throwLastError($msg)
     {
-        if ($last = error_get_last()) {
-            $msg .= sprintf($this->translate->_(' The error message is: %s'), $last['message']);
+        if ($last = MUtil_Error::getLastPhpErrorMessage()) {
+            $msg .= sprintf($this->translate->_(' The error message is: %s'), $last);
         }
         throw new Gems_Exception_Coding($msg);
     }
@@ -323,7 +323,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         if (!file_exists($tempInputFilename)) {
             throw new Exception("Unable to create temporary file '{$tempInputFilename}'");
         }
-        
+
         $command = sprintf($this->_pdfExportCommand, escapeshellarg($tempInputFilename),
             escapeshellarg($tempOutputFilename));
 
@@ -343,7 +343,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
 
         return $pdfContents;
     }
-    
+
     /**
      * @return boolean
      */

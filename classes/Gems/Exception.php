@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -28,19 +29,22 @@
  *
  * Gems Base Exception class
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.1
- * @version 1.1
- * @package Gems
+ * @package    Gems
  * @subpackage Exception
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2012 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: FileActionAbstract.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  * Gems Base Exception class
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
+ * @package    Gems
  * @subpackage Exception
+ * @copyright  Copyright (c) 2012 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.1
  */
 class Gems_Exception extends Zend_Exception
 {

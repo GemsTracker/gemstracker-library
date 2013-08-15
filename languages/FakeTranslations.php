@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -59,6 +58,12 @@ _('%value% is not a valid date.');
 // MUtil_Validate_Db_UniqueValue
 _('No record matching %value% was found.');
 _('A duplicate record matching \'%value%\' was found.');
+
+// MUtil_Validate_File_IsRelativePath
+_('Only relative paths are allowed');
+
+// MUtil_Validate_File_Path
+_("'%pattern%' characters are forbidden in a path");
 
 // MUtil_Validate_ElevenTest
 _("This is not a valid %testDescription%.");

@@ -47,11 +47,11 @@
 class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
 {
     /**
-     * The regex mask for filenames, use of backslashes for directory seperator required
+     * The regex mask for filenames, use of / slashes for directory seperator required
      *
      * @var string Regular expression
      */
-    public $mask = '/^.*\\.(txt|xml)$/';
+    public $mask = '#^.*\\.(txt|xml)$#';
 
     /**
      *

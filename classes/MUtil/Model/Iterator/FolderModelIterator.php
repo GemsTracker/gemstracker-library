@@ -64,7 +64,7 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
      *
      * @param Iterator $iterator
      * @param string $startPath
-     * * @param string $mask Preg expression for relative filename, use of backslashes for directory seperator required
+     * @param string $mask Preg expression for relative filename, use of / slashes for directory seperator required
      */
     public function __construct(Iterator $iterator, $startPath = '', $mask = false)
     {
@@ -97,9 +97,7 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
         }
 
         if ($this->mask) {
-            // The relative file name uses the windows directory seperator convention as this
-            // does not screw up the use of this value as a parameter
-            $rel = str_replace('/', '\\', MUtil_String::stripStringLeft($file->getRealPath(), $this->startPath));
+            $rel = str_replace('\\', '//', MUtil_String::stripStringLeft($file->getRealPath(), $this->startPath));
 
             if (!preg_match($this->mask, $rel)) {
                 return false;
@@ -123,11 +121,11 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
             return null;
         }
 
-        $real = $file->getRealPath();
+        $real = MUtil_File::cleanupSlashes($file->getRealPath());
 
         // The relative file name uses the windows directory seperator convention as this
         // does not screw up the use of this value as a parameter
-        $rel = str_replace('/', '\\', MUtil_String::stripStringLeft($real, $this->startPath));
+        $rel = MUtil_File::cleanupSlashes(MUtil_String::stripStringLeft($real, $this->startPath));
 
         // Function was first implemented in PHP 5.3.6
         if (method_exists($file, 'getExtension')) {
@@ -139,7 +137,8 @@ class MUtil_Model_Iterator_FolderModelIterator extends FilterIterator
         return array(
             'fullpath'  => $real,
             'relpath'   => $rel,
-            'path'      => $file->getPath(),
+            'urlpath'   => str_replace(array('\\', '/'), '|', $rel),
+            'path'      => MUtil_File::cleanupSlashes($file->getPath()),
             'filename'  => $file->getFilename(),
             'extension' => $extension,
             'content'   => MUtil_Lazy::call('file_get_contents', $real),

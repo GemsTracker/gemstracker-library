@@ -238,7 +238,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
             $this->displayErrors($bridge, $this->_('Check the input visually.'));
 
             // MUtil_Echo::track($this->sourceModel->load());
-            
+
             $element  = new MUtil_Form_Element_Html('importdisplay');
             $repeater = $this->sourceModel->loadRepeatable();
             $table    = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
@@ -944,16 +944,12 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
                 }
                 // Copy to long term storage location
                 if (! copy($this->formData['localfile'], $moveTo)) {
-                    $error = error_get_last();
-                    if (isset($error['message'])) {
-                        throw new Zend_Exception($error['message']);
-                    } else {
-                        throw new Zend_Exception(sprintf(
-                                $this->_('Copy from %s to %s failed.'),
-                                $this->formData['localfile'],
-                                $moveTo
-                                ));
-                    }
+                    throw new MUtil_Model_ModelException(sprintf(
+                            $this->_('Copy from %s to %s failed: %s.'),
+                            $this->formData['localfile'],
+                            $moveTo,
+                            MUtil_Error::getLastPhpErrorMessage('reason unknown')
+                            ));
                 }
             }
             @unlink($this->formData['localfile']);

@@ -54,13 +54,6 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**
-     * The regex mask for filenames, use of backslashes for directory seperator required
-     *
-     * @var string Regular expression
-     */
-    public $mask;
-
-    /**
      * Should the action look recursively through the files
      *
      * @var boolean
@@ -88,13 +81,14 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
 
         if ($this->recursive) {
             $model->set('relpath',  'label', $this->_('File (local)'),
+                    'maxlength', 255,
                     'size', 40,
-                    'validator' //, new Zend_Validate_Regex('/[:?*%|"<>]{0,0}/')
+                    'validators', array('File_Path', 'File_IsRelativePath')
                     );
             $model->set('filename', 'elementClass', 'Exhibitor');
         }
         if ($detailed || (! $this->recursive)) {
-            $model->set('filename',  'label', $this->_('Filename'), 'size', 30);
+            $model->set('filename',  'label', $this->_('Filename'), 'size', 30, 'maxlength', 255);
         }
         if ($detailed) {
             $model->set('path',      'label', $this->_('Path'), 'elementClass', 'Exhibitor');
@@ -156,7 +150,7 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     }
 
     /**
-     * Return the mask to use for the relpath of the file, use of backslashes for directory seperator required
+     * Return the mask to use for the relpath of the file, use of / slashes for directory seperator required
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
@@ -180,13 +174,18 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
         $dir = $this->getPath(false, 'index');
 
         if (! is_dir($dir)) {
-            $text = sprintf($this->_("The directory '%s' does not exist!"), $dir);
+            try {
+                MUtil_File::ensureDir($dir);
 
-            if (! $warned) {
-                $warned = true;
-                $this->addMessage($text);
+            } catch (Zend_Exception $e) {
+                $text = $e->getMessage();
+
+                if (! $warned) {
+                    $warned = true;
+                    $this->addMessage($text);
+                }
+                return $text;
             }
-            return $text;
         }
 
         return parent::getOnEmptyText();

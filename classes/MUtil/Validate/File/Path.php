@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -26,57 +26,57 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    MUtil
- * @subpackage Validate
- * @author Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @version $Id$
- */
-
-/**
- * Validate that a Pdf can be loaded by Zend_Pdf
  *
  * @package    MUtil
  * @subpackage Validate
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: RelativePath.php$
+ */
+
+/**
+ * Validates only that a string is a valid path
+ *
+ * @package    MUtil
+ * @subpackage Validate
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Validate_Pdf extends Zend_Validate_Abstract
+class MUtil_Validate_File_Path extends MUtil_Validate_Regexclude
 {
     /**
-     * Error constants
-     */
-    const ERROR_INVALID_VERSION = 'invalidVersion';
-
-    /**
-     * @var array Message templates
+     * @var array
      */
     protected $_messageTemplates = array(
-        self::ERROR_INVALID_VERSION => 'Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this problem.'
+        self::INVALID   => "Invalid type given. String, integer or float expected",
+        self::MATCH     => "'%pattern%' characters are forbidden in a path",
+        self::ERROROUS  => "There was an internal error while using the pattern '%pattern%'",
     );
 
     /**
-     * Returns true if and only if $value meets the validation requirements
+     * Regular expression pattern: a good filename should not contain these characters
      *
-     * If $value fails validation, then this method returns false, and
-     * getMessages() will return an array of messages that explain why the
-     * validation failed.
-     *
-     * @param  mixed $value
-     * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @var string
      */
-    public function isValid($value, $context = array())
+    protected $_pattern = '#[:?*|"<>]#';
+
+     /**
+     * Defined by Zend_Validate_Interface
+     *
+     * Returns true if and only if $value matches against the pattern option
+     *
+     * @param  string $value
+     * @return boolean
+     */
+    public function isValid($value)
     {
-        // Only fail when file really can't be loaded.
-        try {
-            Zend_Pdf::load($value);
-            return true;
-        } catch (Zend_Pdf_Exception $e) {
-            $this->_error(self::ERROR_INVALID_VERSION, $e->getMessage());
-            return false;
+        // Remove leading disk letter and colon
+        if (preg_match('/^[a-zA-Z]:/', $value)) {
+            $value = substr($value, 2);
         }
+
+        return parent::isValid($value);
     }
 }

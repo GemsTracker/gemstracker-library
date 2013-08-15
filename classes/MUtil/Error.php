@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -26,57 +26,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    MUtil
- * @subpackage Validate
- * @author Michiel Rook <michiel@touchdownconsulting.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Error
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version $Id$
+ * @version    $Id: Error.php$
  */
 
 /**
- * Validate that a Pdf can be loaded by Zend_Pdf
+ * Generic functions for error handling
  *
  * @package    MUtil
- * @subpackage Validate
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Error
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Validate_Pdf extends Zend_Validate_Abstract
+class MUtil_Error
 {
     /**
-     * Error constants
-     */
-    const ERROR_INVALID_VERSION = 'invalidVersion';
-
-    /**
-     * @var array Message templates
-     */
-    protected $_messageTemplates = array(
-        self::ERROR_INVALID_VERSION => 'Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this problem.'
-    );
-
-    /**
-     * Returns true if and only if $value meets the validation requirements
+     * Get the string message
      *
-     * If $value fails validation, then this method returns false, and
-     * getMessages() will return an array of messages that explain why the
-     * validation failed.
-     *
-     * @param  mixed $value
-     * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @param string $defaultMessage Optional default message
+     * @return string
      */
-    public function isValid($value, $context = array())
+    public static function getLastPhpErrorMessage($defaultMessage = null)
     {
-        // Only fail when file really can't be loaded.
-        try {
-            Zend_Pdf::load($value);
-            return true;
-        } catch (Zend_Pdf_Exception $e) {
-            $this->_error(self::ERROR_INVALID_VERSION, $e->getMessage());
-            return false;
+        $err = error_get_last();
+
+        if (isset($err['message'])) {
+            $needle = '>]:';
+            $p      = strpos($err['message'], $needle);
+            if (false === $p) {
+                $err = $err['message'];
+            } else {
+                $err = trim(substr($err['message'], $p + strlen($needle)));
+            }
+
+            if ('No error' !== $err) {
+                return $err;
+            }
         }
+
+        return $defaultMessage;
     }
 }

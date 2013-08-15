@@ -47,6 +47,17 @@
 class MUtil_File
 {
     /**
+     * Make sure the slashes point the way of the underlying server only
+     *
+     * @param string $filename
+     * @return string
+     */
+    public static function cleanupSlashes($filename)
+    {
+        return str_replace('\\' === DIRECTORY_SEPARATOR ? '/' : '\\', DIRECTORY_SEPARATOR, $filename);
+    }
+
+    /**
      * Ensure the directory does really exist or throw an exception othewise
      *
      * @param string $dir The path of the directory
@@ -56,9 +67,16 @@ class MUtil_File
      */
     public static function ensureDir($dir, $mode = 0777)
     {
+        // Clean up directory name
+        $dir = self::cleanupSlashes($dir);
+
         if (! is_dir($dir)) {
             if (! @mkdir($dir, $mode, true)) {
-                throw new Zend_Exception(sprintf("Could not create '%s' directory: %s", $dir, error_get_last()));
+                throw new Zend_Exception(sprintf(
+                        "Could not create '%s' directory: %s.",
+                        $dir,
+                        MUtil_Error::getLastPhpErrorMessage('reason unknown')
+                        ));
             }
         }
 
