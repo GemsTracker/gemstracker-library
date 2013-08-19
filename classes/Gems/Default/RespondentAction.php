@@ -46,6 +46,8 @@
  */
 abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
 {
+    public $deleteSnippets = array('RespondentDetailsSnippet');
+
     public $exportSnippets = array('RespondentDetailsSnippet');
 
     public $filterStandard = array('grc_success' => 1);
@@ -314,7 +316,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $params['onclick'] = $params['onclick']->toHRefAttribute($this->getRequest());
         }
         $params['respondentData'] = $data;
-        $this->addSnippet(reset($this->showSnippets), $params);
+        $this->addSnippet($this->deleteSnippets, $params);
 
         $this->html[] = $form;
     }
@@ -526,7 +528,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         $model = $this->getModel();
         $model->applyRequest($this->getRequest(), true);
-        
+
         $data = $model->loadFirst();
 
         if (! isset($data['grs_id_user'])) {
