@@ -525,7 +525,9 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
 
         $model = $this->getModel();
-        $data  = $model->applyRequest($this->getRequest(), true)->loadFirst();
+        $model->applyRequest($this->getRequest(), true);
+        
+        $data = $model->loadFirst();
 
         if (! isset($data['grs_id_user'])) {
             $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));

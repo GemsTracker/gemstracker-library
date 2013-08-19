@@ -153,16 +153,24 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
      * Check if we have the 'Unknown' consent, and present a warning. The project default consent is
      * normally 'Unknown' but this can be overruled in project.ini so checking for default is not right
      *
+     * @static boolean $warned We need only one warning in case of multiple consents
      * @param string $consent
      */
     public function checkConsent($consent)
     {
+        static $warned;
+        
+        if ($warned) {
+            return $consent;
+        }
+
         $unknown = $this->util->getConsentUnknown();
 
         // Value is translated by now if in bridge
         if (($consent == $unknown) || ($consent == $this->_($unknown))) {
 
-            $msg = $this->_('Please settle the informed consent form for this respondent.');
+            $warned = true;
+            $msg    = $this->_('Please settle the informed consent form for this respondent.');
 
             if ($this->view instanceof Zend_View) {
                 $url[$this->request->getControllerKey()] = 'respondent';

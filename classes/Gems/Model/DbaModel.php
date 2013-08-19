@@ -182,8 +182,10 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     {
         $tables = array();
         foreach (array_reverse($this->directories) as $pathData) {
-            $tables = $tables + $pathData['db']->listTables();
+            $tables = array_merge($tables, $pathData['db']->listTables());
         }
+        $tables = array_unique($tables);
+        
         if ($tables) { // Can be empty
             $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
         }

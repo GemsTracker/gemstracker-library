@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-15 18:23+0100\n"
+"POT-Creation-Date: 2013-08-19 11:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -5111,7 +5111,7 @@ msgstr "New password"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:249
 #: classes/Gems/User/Form/ChangePasswordForm.php:300
-#: languages/FakeTranslations.php:75
+#: languages/FakeTranslations.php:78
 msgid "Must be the same as %fieldDescription%."
 msgstr "Must be the same as %fieldDescription%."
 
@@ -5631,7 +5631,7 @@ msgstr "Response is for a different formId: %s <-> %s"
 msgid "Value is required and can't be empty"
 msgstr "Value is required and can't be empty"
 
-#: languages/FakeTranslations.php:40 languages/FakeTranslations.php:87
+#: languages/FakeTranslations.php:40 languages/FakeTranslations.php:90
 msgid "Invalid type given, value should be string, integer or float"
 msgstr "Invalid type given, value should be string, integer or float"
 
@@ -5645,63 +5645,67 @@ msgid "Your account is temporarily blocked, please wait %s minutes"
 msgstr "Your account is temporarily blocked, please wait %s minutes"
 
 #: languages/FakeTranslations.php:49
+msgid "Either '%description%' or '%fieldDescription%' must be entered."
+msgstr "Either '%description%' or '%fieldDescription%' must be entered."
+
+#: languages/FakeTranslations.php:52
 #, php-format
 msgid "Date should be '%dateAfter%' or later."
 msgstr "Date should be '%dateAfter%' or later."
 
-#: languages/FakeTranslations.php:50
+#: languages/FakeTranslations.php:53
 msgid "Should be empty if valid from date is not set."
 msgstr "Should be empty if valid from date is not set."
 
-#: languages/FakeTranslations.php:53
+#: languages/FakeTranslations.php:56
 #, php-format
 msgid "Date should be '%dateBefore%' or earlier."
 msgstr "Date should be '%dateBefore%' or earlier."
 
-#: languages/FakeTranslations.php:56
+#: languages/FakeTranslations.php:59
 msgid "%value% is not a valid date."
 msgstr "%value% is not a valid date."
 
-#: languages/FakeTranslations.php:59
+#: languages/FakeTranslations.php:62
 msgid "No record matching %value% was found."
 msgstr "No record matching %value% was found."
 
-#: languages/FakeTranslations.php:60
+#: languages/FakeTranslations.php:63
 msgid "A duplicate record matching '%value%' was found."
 msgstr "A duplicate record matching '%value%' was found."
 
-#: languages/FakeTranslations.php:63
+#: languages/FakeTranslations.php:66
 msgid "Only relative paths are allowed"
 msgstr "Only relative paths are allowed"
 
-#: languages/FakeTranslations.php:66
+#: languages/FakeTranslations.php:69
 msgid "'%pattern%' characters are forbidden in a path"
 msgstr "'%pattern%' characters are forbidden in a path"
 
-#: languages/FakeTranslations.php:69
+#: languages/FakeTranslations.php:72
 msgid "This is not a valid %testDescription%."
 msgstr "This is not a valid %testDescription%."
 
-#: languages/FakeTranslations.php:70
+#: languages/FakeTranslations.php:73
 msgid "A %testDescription% cannot contain letters."
 msgstr "A %testDescription% cannot contain letters."
 
-#: languages/FakeTranslations.php:71
+#: languages/FakeTranslations.php:74
 msgid "%value% is too long for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too long for a %testDescription%. Should be %length% digits."
 
-#: languages/FakeTranslations.php:72
+#: languages/FakeTranslations.php:75
 msgid ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 msgstr ""
 "%value% is too short for a %testDescription%. Should be %length% digits."
 
-#: languages/FakeTranslations.php:78
+#: languages/FakeTranslations.php:81
 msgid "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 msgstr "'%value%' is not a phone number (e.g. +12 (0)34-567 890)."
 
-#: languages/FakeTranslations.php:81
+#: languages/FakeTranslations.php:84
 msgid ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
@@ -5709,15 +5713,15 @@ msgstr ""
 "Unsupported PDF version: %value% Use PDF versions 1.0 - 1.4 to avoid this "
 "problem."
 
-#: languages/FakeTranslations.php:84
+#: languages/FakeTranslations.php:87
 msgid "To set '%description%' you have to set '%fieldDescription%'."
 msgstr "To set '%description%' you have to set '%fieldDescription%'."
 
-#: languages/FakeTranslations.php:88
+#: languages/FakeTranslations.php:91
 msgid "'%value%' is not an email address (e.g. name@somewhere.com)."
 msgstr "'%value%' is not an email address (e.g. name@somewhere.com)."
 
-#: languages/FakeTranslations.php:91
+#: languages/FakeTranslations.php:94
 msgid ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
@@ -5725,23 +5729,23 @@ msgstr ""
 "'%value%' is not a series of email addresses (e.g. name@somewhere.com, "
 "nobody@nowhere.org)."
 
-#: languages/FakeTranslations.php:94
+#: languages/FakeTranslations.php:97
 msgid "'%value%' must contain only digits"
 msgstr "'%value%' must contain only digits"
 
-#: languages/FakeTranslations.php:95
+#: languages/FakeTranslations.php:98
 msgid "'%value%' is an empty string"
 msgstr "'%value%' is an empty string"
 
-#: languages/FakeTranslations.php:96
+#: languages/FakeTranslations.php:99
 msgid "Invalid type given. String, integer or float expected"
 msgstr "Invalid type given. String, integer or float expected"
 
-#: languages/FakeTranslations.php:99
+#: languages/FakeTranslations.php:102
 msgid "One or more IPs are illegal."
 msgstr "One or more IPs are illegal."
 
-#: languages/FakeTranslations.php:102
+#: languages/FakeTranslations.php:105
 #, php-format
 msgid "Only %extension% files are accepted."
 msgstr "Only %extension% files are accepted."
@@ -6521,9 +6525,6 @@ msgstr[1] ""
 
 #~ msgid "Hand dominance"
 #~ msgstr "Hand dominance"
-
-#~ msgid "Either '%description%' or '%fieldDescription%' must be entered."
-#~ msgstr "Either '%description%' or '%fieldDescription%' must be entered."
 
 #~ msgid "'%value%' is not a Diakonessenhuis patientnumber of 7 digits."
 #~ msgstr "'%value%' is not a Diakonessenhuis patientnumber of 7 digits."

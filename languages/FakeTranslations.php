@@ -45,6 +45,9 @@ _('Installation not complete! Login is not yet possible!');
 _('Your account is temporarily blocked, please wait %s minutes');
 _('You are not allowed to login from this location.');
 
+// Gems_Validate_OneOf
+_("Either '%description%' or '%fieldDescription%' must be entered.");
+
 // MUtil_Validate_Date_DateAfter
 _("Date should be '%dateAfter%' or later.");
 _("Should be empty if valid from date is not set.");

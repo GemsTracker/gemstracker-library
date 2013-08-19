@@ -361,6 +361,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'tab', $translator->_('Settings'));
 
         $this->setIfExists('gr2o_consent',    'label', $translator->_('Consent'),
+                'description', $translator->_('Has the respondent signed the informed consent letter?'),
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
@@ -463,7 +464,6 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'default', $this->util->getDefaultConsent(),
                 'elementClass', 'Radio',
                 'separator', '',
-                'description', $translator->_('Has the respondent signed the informed consent letter?'),
                 'required', true);
 
         $this->setIfExists('name', 'elementClass', 'hidden');
