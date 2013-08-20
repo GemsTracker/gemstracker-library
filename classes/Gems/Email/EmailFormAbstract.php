@@ -468,8 +468,18 @@ abstract class Gems_Email_EmailFormAbstract extends Gems_Form
                 }
             }
         }
+        $mailBody = $this->getElement('gmt_body');
+        $tokenMailFields = $this->mailer->getTokenMailFields();
+        
+        if ($mailBody instanceof Gems_Form_Element_CKEditor) {
+            $mailBody->config['availablefields'] = $tokenMailFields;
+            $mailBody->config['availablefieldsLabel'] = $this->escort->_('Fields');
 
-        $mailRepeater = new MUtil_Lazy_RepeatableByKeyValue($this->mailer->getTokenMailFields());
+            $mailBody->config['extraPlugins'] .= ',availablefields';
+            $mailBody->config['toolbar'][] = array('availablefields');
+        }
+
+        $mailRepeater = new MUtil_Lazy_RepeatableByKeyValue($tokenMailFields);
         $mailHtml     = new MUtil_Html_TableElement($mailRepeater);
         $mailHtml->addColumn($mailRepeater->key, $this->escort->_('Field'));
         $mailHtml->addColumn($mailRepeater->value, $this->escort->_('Value'));
