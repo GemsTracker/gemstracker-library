@@ -54,6 +54,13 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**
+     * The regex mask for filenames, use of / slashes for directory seperator required
+     *
+     * @var string Regular expression
+     */
+    protected $mask;
+
+    /**
      * Should the action look recursively through the files
      *
      * @var boolean

@@ -51,7 +51,7 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
      *
      * @var string Regular expression
      */
-    public $mask = '#^.*\\.(txt|xml)$#';
+    public $mask = '#^.*[.](txt|xml)$#';
 
     /**
      *
