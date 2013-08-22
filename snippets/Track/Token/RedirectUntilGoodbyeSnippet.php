@@ -101,11 +101,13 @@ class Track_Token_RedirectUntilGoodbyeSnippet extends Gems_Tracker_Snippets_Show
             $html->pInfo()->raw(MUtil_Markup::render($this->_($sig), 'Bbcode', 'Html'));
         }
 
+        /*
         $html->br();
 
         $href = array($this->request->getActionKey() => 'index', MUtil_Model::REQUEST_ID => null);
         $buttonDiv = $html->buttonDiv(array('class' => 'centerAlign'));
         $buttonDiv->actionLink($href, $this->_('OK'));
+        // */
 
         return $html;
     }
