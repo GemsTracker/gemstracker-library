@@ -54,8 +54,8 @@ ALTER TABLE `gems__log_useractions` ADD `glua_remote_ip` VARCHAR(64) CHARACTER S
 
 -- GEMS VERSION: 53
 -- PATCH: Add indexes to useractions
-ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_organization` )
-ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_action` )
-ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_by` )
-ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_to` )
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_organization` );
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_action` );
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_by` );
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_to` );
 ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_created` );
