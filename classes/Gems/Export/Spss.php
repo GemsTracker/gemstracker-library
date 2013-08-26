@@ -62,6 +62,17 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
      * @var int
      */
     public $defaultNumericSize = 5;
+    
+    /**
+     * Add a BOM to the open file, unfortunately SPSS needs this to work with UTF-8 data
+     * 
+     * @param resource $f the file handle
+     */
+    protected function addBom($f)
+    {
+         $bom = pack("CCC", 0xef, 0xbb, 0xbf);
+         fwrite($f, $bom);
+    }
 
     public function getDefaults()
     {
@@ -171,8 +182,10 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
         
         // Now create syntax and data file
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', 'w');
+        $this->addBom($f);
         fclose($f);
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', 'w');
+        $this->addBom($f);
         fclose($f);        
 
         // Add as many steps as needed
