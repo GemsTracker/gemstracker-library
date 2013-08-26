@@ -1087,7 +1087,7 @@ class GemsEscort extends MUtil_Application_Escort
     {
         $user = $this->getLoader()->getCurrentUser();
         if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
-            if (count($orgs) > 1) {
+            if (count($orgs) > 1 && $user->hasPrivilege('pr.organization-switch')) {
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
