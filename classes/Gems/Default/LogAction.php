@@ -117,7 +117,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $elements[] = $this->_('Staff:');
         $sql = "SELECT glua_by, CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
-             . "JOIN gems__staff ON glua_by = gsf_id_user";
+             . "JOIN gems__staff ON glua_by = gsf_id_user GROUP BY glua_by";
         /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
             $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
         }*/
@@ -127,7 +127,7 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         $elements[] = $this->_('Patient:');
         $sql = "SELECT glua_to, CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS name "
              . "FROM gems__log_useractions "
-             . "JOIN gems__respondents ON glua_to = grs_id_user";
+             . "JOIN gems__respondents ON glua_to = grs_id_user GROUP BY glua_to";
         /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
             $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
         }*/

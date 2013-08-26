@@ -51,3 +51,11 @@ DROP TABLE  gems__log_staff2respondents
 -- GEMS VERSION: 36
 -- PATCH: Add IP address column
 ALTER TABLE `gems__log_useractions` ADD `glua_remote_ip` VARCHAR(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL AFTER `glua_role`;
+
+-- GEMS VERSION: 53
+-- PATCH: Add indexes to useractions
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_organization` )
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_action` )
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_by` )
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_to` )
+ALTER TABLE  `gems__log_useractions` ADD INDEX (  `glua_created` );

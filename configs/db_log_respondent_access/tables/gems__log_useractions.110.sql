@@ -12,7 +12,12 @@ CREATE TABLE if not exists gems__log_useractions (
 
       glua_created      timestamp not null default current_timestamp,
 
-      PRIMARY KEY (glua_id_action)
+      PRIMARY KEY (glua_id_action),
+      KEY `glua_organization` (`glua_organization`),
+      KEY `glua_action` (`glua_action`),
+      KEY `glua_by` (`glua_by`),
+      KEY `glua_to` (`glua_to`),
+      KEY `glua_created` (`glua_created`)
    )
    ENGINE=InnoDB
    auto_increment = 100000
