@@ -332,7 +332,6 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
      *
      * @param string $label         The label to display for the menu item
      * @param string $privilege     The privilege for the item
-     * @param string $controller    What controller to use
      * @param string $action        The name of the action
      * @param array  $other         Array of extra options for this item, e.g. 'visible', 'allowed', 'class', 'icon', 'target', 'type', 'button_only'
      * @return Gems_Menu_SubMenuItem
