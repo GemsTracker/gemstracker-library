@@ -78,17 +78,14 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
      * 
      * @var array
      */
-    public $rulers = array(
-        array('percentage' => 10),
-        array('percentage' => 20),
-        array('percentage' => 30),
-        array('percentage' => 40),
-        array('percentage' => 50),
-        array('percentage' => 60),
-        array('percentage' => 70),
-        array('percentage' => 80),
-        array('percentage' => 90)
-    );
+    public $rulers = array();
+    
+    /**
+     * Show gridlines every 10%
+     * 
+     * @var boolean
+     */
+    public $grid = true;
     
     /**
      *
@@ -128,7 +125,23 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         $chart[] = $html->div($this->max, array('class'=>'max'));
         $chart[] = $html->div($this->min, array('class'=>'min'));
         
-        foreach ($this->rulers as $ruler)
+        if ($this->grid) {
+            $rulers = array_merge(
+            array(
+                array('percentage' => 10),
+                array('percentage' => 20),
+                array('percentage' => 30),
+                array('percentage' => 40),
+                array('percentage' => 50),
+                array('percentage' => 60),
+                array('percentage' => 70),
+                array('percentage' => 80),
+                array('percentage' => 90)
+            ), 
+            $this->rulers
+            );
+        }
+        foreach ($rulers as $ruler)
         {
             $defaults = array('value'=>0, 'class'=>'');
             $ruler = $ruler + $defaults;
@@ -137,9 +150,11 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             } else {
                 $position = 100 - $ruler['percentage'];
             }
-            $position = min(100,max(0,$position));
-                
-            $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
+            
+            // Only draw rulers that are in the visible range
+            if ($position >= 0 && $position <= 100) {
+                $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
+            }
         }
         
         foreach ($data as $row) {
