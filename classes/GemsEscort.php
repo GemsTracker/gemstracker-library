@@ -1091,13 +1091,18 @@ class GemsEscort extends MUtil_Application_Escort
                 // Organization switcher
                 $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
-                $params     = $this->request->getQuery();   //Use only get params, not post
+                $params     = $this->request->getparams();
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
                 unset($params[Gems_Util_RequestCache::RESET_PARAM]);
+                if ($this->request instanceof Zend_Controller_Request_Http) {
+                    // Use only get params, not post as it is an url
+                    $params = array_diff_key($params, $this->request->getPost());
+                }
+
                 $currentUri = $this->view->url($params, null, true);
                 // MUtil_Echo::track($currentUri, $this->request->getParams());
 
-                $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, true);
+                $url = $this->view->url(array('controller' => 'organization', 'action' => 'change-ui'), null, false);
 
                 $formDiv = $orgSwitch->form(array('method' => 'get', 'action' => $url))->div();
                 $formDiv->input(
