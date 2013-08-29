@@ -1560,7 +1560,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         {
             $dbResponse[$response['gdr_answer_id']] = $response;
         }
-
+        
         $inserts = array();
         foreach ($responses as $fieldName => $response) {
             $rValues['gdr_answer_id'] = $fieldName;
@@ -1593,7 +1593,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                 $inserts[] = $rValues;
             }
         }
-        
+
         if (count($inserts)>0) {
             try {
                 $fields = array();
@@ -1609,11 +1609,11 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                         if ($value instanceof Zend_Db_Expr) {
                             $value = $value->__toString();
                         }
-                        $val[] = $value;
+                        $vals[] = $db->quote($value);
                     }
                     $sql .= '(' . implode(', ', $vals) . '),';
                 }
-                $sql = substr($sql,-1) . ';';
+                $sql = substr($sql, 0, -1) . ';';
                 $db->query($sql);
             } catch (Zend_Db_Statement_Exception $e) {
                 error_log($e->getMessage());
