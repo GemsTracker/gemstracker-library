@@ -12,7 +12,7 @@ CREATE TABLE if not exists gemsdata__responses (
         gdr_created_by bigint unsigned not null,
 
         PRIMARY KEY (gdr_id_response),
-        INDEX (gdr_id_token, gdr_answer_id)
+        UNIQUE KEY (gdr_id_token, gdr_answer_id)
     )
     ENGINE=InnoDB
     AUTO_INCREMENT = 100000000

@@ -566,28 +566,73 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                         unset($responses['token'], $responses['id'], $responses['lastpage'],
                                 $responses['startlanguage'], $responses['submitdate'], $responses['startdate'],
                                 $responses['datestamp']);
+
+                        // first read current responses to differentiate between insert and update
+                        $responseSelect = $db->select()->from('gemsdata__responses')
+                                ->where('gdr_id_token = ?', $this->_tokenId);
+                        $currentResponses = $responseSelect->query()->fetchAll();
+
+                        $dbResponse = array();
+                        foreach($currentResponses as $response)
+                        {
+                            $dbResponse[$response['gdr_answer_id']] = $response;
+                        }
+
+                        $inserts = array();
                         foreach ($responses as $fieldName => $response) {
                             $rValues['gdr_answer_id'] = $fieldName;
+                            if (is_array($response)) {
+                                $response = join('|', $response);
+                            }
                             $rValues['gdr_response']  = $response;
 
-                            try {
-                                $db->insert('gemsdata__responses', $rValues);
-                            } catch (Zend_Db_Statement_Exception $e) {
-                                $where = $db->quoteInto('gdr_id_token = ? AND ', $rValues['gdr_id_token']) .
-                                        $db->quoteInto('gdr_answer_id = ?', $fieldName);
+                            if (array_key_exists($fieldName, $dbResponse)) {    // Already exists, do update
+                                // But only if value changed
+                                if ($dbResponse[$fieldName]['gdr_response'] != $response) {
+                                    $where = $db->quoteInto('gdr_id_token = ? AND ', $rValues['gdr_id_token']) .
+                                            $db->quoteInto('gdr_answer_id = ?', $fieldName);
 
-                                try {
-                                    $db->update(
-                                            'gemsdata__responses',
-                                            array(
-                                                'gdr_response'   => $response,
-                                                'gdr_changed'    => $rValues['gdr_changed'],
-                                                'gdr_changed_by' => $rValues['gdr_changed_by'],
-                                                ),
-                                            $where);
-                                } catch (Zend_Db_Statement_Exception $e) {
-                                    error_log($e->getMessage());
+                                    try {
+                                        $db->update(
+                                                'gemsdata__responses',
+                                                array(
+                                                    'gdr_response'   => $response,
+                                                    'gdr_changed'    => $rValues['gdr_changed'],
+                                                    'gdr_changed_by' => $rValues['gdr_changed_by'],
+                                                    ),
+                                                $where);
+                                    } catch (Zend_Db_Statement_Exception $e) {
+                                        error_log($e->getMessage());
+                                    }
                                 }
+                            } else {
+                                // We add the inserts together in one statement to improve speed
+                                $inserts[] = $rValues;
+                            }
+                        }
+                        if (count($inserts)>0) {
+                            try {
+                                $fields = array();
+                                foreach ($inserts[0] as $fieldName => $value)
+                                {
+                                    $fields[] .= $db->quoteIdentifier($fieldName);
+                                }
+                                $sql = 'INSERT INTO gemsdata__responses (' . implode(', ', $fields) . ') VALUES ';
+                                foreach($inserts as $insert) {
+                                    $vals = array();
+                                    foreach($insert as $field => $value)
+                                    {
+                                        if ($value instanceof Zend_Db_Expr) {
+                                            $value = $value->__toString();
+                                        }
+                                        $val[] = $value;
+                                    }
+                                    $sql .= '(' . implode(', ', $vals) . '),';
+                                }
+                                $sql = substr($sql,-1) . ';';
+                                $db->query($sql);
+                            } catch (Zend_Db_Statement_Exception $e) {
+                                error_log($e->getMessage());
                             }
                         }
                     }
