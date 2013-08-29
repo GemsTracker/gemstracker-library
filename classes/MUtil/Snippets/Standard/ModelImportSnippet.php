@@ -48,7 +48,7 @@
  * @since      Class available since MUtil version 1.3
  */
 // class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
-class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
+class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
      * Nested array, caching the output of loadImportData()
@@ -679,7 +679,7 @@ class ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
     public function isImportOk()
     {
         $this->loadImportData();
-        MUtil_Echo::track('passed validator: ' . count($this->_errors));
+        // MUtil_Echo::track('passed validator: ' . count($this->_errors));
 
         return !$this->_errors;
     }

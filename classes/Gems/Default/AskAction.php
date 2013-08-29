@@ -200,7 +200,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                         strtoupper($this->tokenId)
                         ));
             }
-            $this->_forward('index');
+            $this->forward('index');
             return;
         }
 
@@ -253,7 +253,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
             ));
 
         if ($request->isPost() && $form->isValid($request->getParams())) {
-            $this->_forward('forward');
+            $this->forward('forward');
             return;
         }
 
@@ -268,7 +268,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     {
         if (! $this->_initToken()) {
             // In all other cases: the action that generates meaningfull warnings and is reachable for everyone
-            $this->_forward('forward');
+            $this->forward('forward');
             return;
         }
 
@@ -289,7 +289,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         $user = $this->loader->getCurrentUser();
 
         if (! $user->isActive()) {
-            $this->_forward('forward');
+            $this->forward('forward');
             return;
         }
 
@@ -314,7 +314,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      */
     public function takeAction()
     {
-        $this->_forward('to-survey');
+        $this->forward('to-survey');
     }
 
     /**
@@ -322,7 +322,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
      */
     public function tokenAction()
     {
-        $this->_forward('index');
+        $this->forward('index');
     }
 
     /**
@@ -332,7 +332,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
     {
         if (! $this->_initToken()) {
             // Default option
-            $this->_forward('index');
+            $this->forward('index');
         }
 
         $language = $this->locale->getLanguage();
@@ -362,7 +362,7 @@ class Gems_Default_AskAction extends Gems_Controller_Action
                     ));
 
             // Default option
-            $this->_forward('index');
+            $this->forward('index');
         }
     }
 }

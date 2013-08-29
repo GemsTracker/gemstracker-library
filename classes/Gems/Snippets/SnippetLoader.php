@@ -67,13 +67,15 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
     {
         parent::__construct($source, $dirs);
 
+        $this->addPrefixPath('MUtil_Snippets_Standard', GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard');
+        
         $noPrefixDirs = array(
             GEMS_LIBRARY_DIR . '/classes/MUtil/Snippets/Standard',
             GEMS_LIBRARY_DIR . '/snippets',
             GEMS_ROOT_DIR . '/application/snippets',
         );
         $this->_loader->addPrefixPath('', $noPrefixDirs, false);
-        // $this->_loader->addFallBackPath(); // Enable to allow full class name specification 
+        // $this->_loader->addFallBackPath(); // Enable to allow full class name specification
     }
 
     /**
