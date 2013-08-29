@@ -54,6 +54,13 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**
+     * The snippets used for the import action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $importSnippets = 'Import_FileImportSnippet';
+
+    /**
      * The regex mask for filenames, use of / slashes for directory seperator required
      *
      * @var string Regular expression

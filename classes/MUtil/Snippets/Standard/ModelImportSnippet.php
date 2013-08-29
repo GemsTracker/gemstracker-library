@@ -116,6 +116,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     /**
      *
+     * @var MUtil_Model_Importer
+     */
+    private $importer;
+
+    /**
+     *
      * @var MUtil_Model_ModelAbstract
      */
     protected $importModel;
@@ -334,10 +340,21 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     {
         parent::afterRegistry();
 
-        if ($this->model instanceof MUtil_Model_ModelAbstract) {
-            if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
+        if (! $this->importer instanceof MUtil_Model_Importer) {
+            $this->importer = new MUtil_Model_Importer();
+
+            $source = new MUtil_Registry_Source(get_object_vars($this));
+            $source->applySource($this->importer);
+        }
+
+        if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
+            if ($this->model instanceof MUtil_Model_ModelAbstract) {
                 $this->targetModel = $this->model;
             }
+        }
+
+        if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
+            $this->importer->setTargetModel($this->targetModel);
         }
 
         // Cleanup any references to model to avoid confusion
@@ -810,6 +827,21 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     {
         $messages = array();
 
+        /*
+        try {
+            $this->importer->setSourceFile($this->request->getParam('file'));
+            $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
+        } catch (Exception $e) {
+            $messages[] = $e->getMessage();
+            $messages[] = null;
+            $messages[] = "Controller usage instruction:";
+            $messages[] = "Required parameter: file = filename to import";
+            $messages[] = sprintf(
+                    "Optional parameter: trans = [%s] defaults %s",
+                    implode('|', array_keys($this->importTranslators)),
+                    $this->defaultImportTranslator
+                    );
+        } // */
         $file = $this->request->getParam('file');
         if (! $file) {
             $messages[] = "Missing required parameter: file = filename to import";
@@ -828,6 +860,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         } elseif ($messages) {
             $messages[] = "Parameter trans defaults to " . $this->defaultImportTranslator .
                     " and can be one of: " . implode(', ', array_keys($this->importTranslators));
+        }
+
+        if ($messages) {
+            echo implode("\n", $messages);
+            exit();
         }
 
         $trans = $this->importTranslators[$transName];
