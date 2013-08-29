@@ -1606,10 +1606,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                     $vals = array();
                     foreach($insert as $field => $value)
                     {
-                        if ($value instanceof Zend_Db_Expr) {
-                            $value = $value->__toString();
-                        }
-                        $vals[] = $db->quote($value);
+                        $vals[] = $db->quote($value);   // Takes care of converting Zend_Db_Expression
                     }
                     $sql .= '(' . implode(', ', $vals) . '),';
                 }
