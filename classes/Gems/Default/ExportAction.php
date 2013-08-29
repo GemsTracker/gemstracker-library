@@ -64,6 +64,12 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
     /**
      *
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
+
+    /**
+     *
      * @var Gems_Util_RequestCache
      */
     public $requestCache;
@@ -109,6 +115,10 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
                 $filter['respondentid'] = $idArray;
             }
+        }
+
+        if ($this->project->hasResponseDatabase()) {
+            $this->ResponseDatabaseFilter($data, $filter);
         }
 
         if (isset($data['tid'])) {
@@ -218,6 +228,10 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
         $elements[] = $element;
+
+        if ($this->project->hasResponseDatabase()) {
+            $this->ResponseDatabaseForm($form, $data, $elements);
+        }
 
         //Add a field to the form showing the record count. If this is too slow for large recordsets
         //then remove it or make it more efficient
@@ -448,5 +462,84 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $form->populate($data);
         }
         return $form;
+    }
+
+    protected function ResponseDatabaseFilter($data, &$filter) {
+        if (isset($data['filter_answer']) && !empty($data['filter_answer']) && isset($data['filter_value']) && $data['filter_value'] !== '') {
+            $select = $this->db->select()
+                    ->from('gemsdata__responses', array(''))
+                    ->join('gems__tokens', 'gto_id_token = gdr_id_token', array(''))
+                    ->where('gdr_answer_id = ?', $data['filter_answer']);
+
+            if (is_array($data['filter_value'])) {
+                $select->where('gdr_response IN (?)', $data['filter_value']);
+            } else {
+                $select->where('gdr_response = ?', $data['filter_value']);
+            }
+
+            $select->distinct()
+                   ->columns('gto_id_respondent', 'gems__tokens');
+
+            $result = $select->query()->fetchAll(Zend_Db::FETCH_COLUMN);
+
+            if (!empty($result)) {
+                $filter['respondentid'] = $result;
+            } else {
+                $filter['respondentid'] = -1;
+            }
+        }
+    }
+
+    protected function ResponseDatabaseForm($form, &$data, &$elements) {
+        // A little hack to get the form to align nice... at least for my layout. Do we actually use the small max-with that is currently set?
+        $this->view->HeadStyle()->appendStyle('.tab-displaygroup input, .tab-displaygroup select { max-width: 39em; }');
+        if (isset($data['tid']) && !empty($data['tid'])) {           
+            // If we have a responsedatabase and a track id, try something cool ;-)
+            $responseDb = $this->project->getResponseDatabase();
+            if ($this->db == $responseDb) {
+                // We are in the same database, now put that to use by allowing to filter respondents based on an answer in any survey
+                $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
+                $allSurveys = $empty + $this->util->getDbLookup()->getSurveysForExport();
+                
+                $element = new Zend_Form_Element_Select('filter_sid');
+                $element->setLabel($this->_('Survey'))
+                        ->setMultiOptions($allSurveys);
+
+                $groupElements = array($element);
+
+                if (isset($data['filter_sid']) && !empty($data['filter_sid'])) {
+                    $filterSurvey    = $this->loader->getTracker()->getSurvey($data['filter_sid']);
+                    $filterQuestions = $empty + $filterSurvey->getQuestionList($this->locale->getLanguage());
+
+                    $element = new Zend_Form_Element_Select('filter_answer');
+                    $element->setLabel($this->_('Question'))
+                            ->setMultiOptions($filterQuestions);
+                    $groupElements[] = $element;
+                }
+
+                if (isset($filterSurvey) && isset($data['filter_answer']) && !empty($data['filter_answer'])) {
+                    $questionInfo = $filterSurvey->getQuestionInformation($this->locale->getLanguage());
+
+                    if (array_key_exists($data['filter_answer'], $questionInfo)) {
+                        $questionInfo = $questionInfo[$data['filter_answer']];
+                    } else {
+                        $questionInfo = array();
+                    }
+
+                    if (array_key_exists('answers', $questionInfo) && is_array($questionInfo['answers']) && count($questionInfo['answers']) > 1) {
+                        $element = new Zend_Form_Element_Multiselect('filter_value');
+                        $element->setMultiOptions($empty + $questionInfo['answers']);
+                        $element->setAttrib('size', count($questionInfo['answers']) + 1);
+                    } else {
+                        $element = new Zend_Form_Element_Text('filter_value');
+                    }
+                    $element->setLabel($this->_('Value'));
+                    $groupElements[] = $element;
+                }
+
+                $form->addDisplayGroup($groupElements, 'filter', array('showLabels'  => true, 'Description' => $this->_('Filter')));
+                array_shift($elements);
+            }
+        }
     }
 }
