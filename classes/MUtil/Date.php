@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -26,24 +25,23 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Date
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $id: Date.php $
  */
 
 /**
- * File description of TokenValidator
+ * Extends Zend_Date with extra date math and Utility functions
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * @package    MUtil
  * @subpackage Date
- */
-
-/**
- * Extends Zend_Date with extra date math functions
- *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package MUtil
- * @subpackage Date
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
 class MUtil_Date extends Zend_Date
 {
@@ -97,6 +95,71 @@ class MUtil_Date extends Zend_Date
         $val2 = (intval($date->get(Zend_Date::YEAR, $locale)) * 12) + intval($date->get(Zend_Date::MONTH, $locale));
 
         return $val1 - $val2;
+    }
+
+    /**
+     * Returns the difference between this date and the given $date
+     *
+     * It will always round to the biggest period, so 8 days ago will result in 1 week ago
+     * while 13 days ago will result in 2 weeks ago.
+     *
+     * @param Zend_Date $date
+     * @param Zend_Translate $translate
+     * @return string
+     */
+    public function diffReadable(Zend_Date $date, Zend_Translate $translate)
+    {
+        $difference = $date->getUnixTimeStamp() - $this->getUnixTimestamp();
+
+        //second, minute, hour, day, week, month, year, decade
+        $lengths = array("60", "60", "24", "7", "4.34", "12", "10");
+
+        if ($difference > 0) { // this was in the past
+            $ending = $translate->_("%s ago");
+        } else { // this was in the future
+            $difference = -$difference;
+            $ending = $translate->_("%s to go");
+        }
+
+        for ($j = 0; $j < 7 && $difference >= $lengths[$j]; $j++) {
+            $difference /= $lengths[$j];
+        }
+
+        $difference = round($difference);
+
+        switch ($j) {
+            case 0:
+                $period = $translate->plural('second', 'seconds', $difference);
+                break;
+            case 1:
+                $period = $translate->plural('minute', 'minutes', $difference);
+                break;
+            case 2:
+                $period = $translate->plural('hour', 'hours', $difference);
+                break;
+            case 3:
+                $period = $translate->plural('day', 'days', $difference);
+                break;
+            case 4:
+                $period = $translate->plural('week', 'weeks', $difference);
+                break;
+            case 5:
+                $period = $translate->plural('month', 'months', $difference);
+                break;
+            case 6:
+                $period = $translate->plural('year', 'years', $difference);
+                break;
+            case 7:
+                $period = $translate->plural('decade', 'decades', $difference);
+                break;
+
+            default:
+                break;
+        }
+        $time = "$difference $period";
+        $text = sprintf($ending, $time);
+
+        return $text;
     }
 
     /**
@@ -165,101 +228,106 @@ class MUtil_Date extends Zend_Date
         return $val1 - $val2;
     }
 
+    /**
+     * helper function ot format any date value
+     *
+     * @param mixed $date ZendDate or somthing that can be turned into a date
+     * @param string $outFormat Format string
+     * @param string $inFormat Optional formated of the date string
+     * @param mixed $localeOut Optional locale for format
+     * @return string
+     */
     public static function format($date, $outFormat, $inFormat = null, $localeOut = null)
     {
         if (! $date) {
             return null;
         }
 
-        if (! $date instanceof self) {
+        if (! $date instanceof Zend_Date) {
             $date = new self($date, $inFormat);
         }
 
         return $date->toString($outFormat, null, $localeOut);
     }
 
+    /**
+     * Return the day of year of this date as an integer
+     *
+     * @param mixed $locale optional
+     * @return int
+     */
     public function intDayOfYear($locale = null)
     {
         return intval($this->get(Zend_Date::DAY_OF_YEAR, $locale));
     }
 
+    /**
+     * Return the month of this date as an integer
+     *
+     * @param mixed $locale optional
+     * @return int
+     */
     public function intMonth($locale = null)
     {
         return intval($this->get(Zend_Date::MONTH, $locale));
     }
 
+    /**
+     * Return the week of this date as an integer
+     *
+     * @param mixed $locale optional
+     * @return int
+     */
     public function intWeek($locale = null)
     {
         return intval($this->get(Zend_Date::WEEK, $locale));
     }
 
+    /**
+     * Return the year of this date as an integer
+     *
+     * @param mixed $locale optional
+     * @return int
+     */
     public function intYear($locale = null)
     {
         return intval($this->get(Zend_Date::YEAR, $locale));
     }
 
     /**
-     * Returns the difference between this date and the given $date
+     * Returns if the given date or datepart is earlier or equal
+     * For example:
+     * 15.May.2000 <-> 13.June.1999 will return true for day, year and date, but not for month
      *
-     * It will always round to the biggest period, so 8 days ago will result in 1 week ago
-     * while 13 days ago will result in 2 weeks ago.
-     *
-     * @param Zend_Date $date
-     * @param Zend_Translate $translate
-     * @return string
+     * @param  string|integer|array|Zend_Date  $date    Date or datepart to compare with
+     * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
+     * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @return boolean
+     * @throws Zend_Date_Exception
      */
-    public function diffReadable(Zend_Date $date, Zend_Translate $translate)
+    public function isEarlierOrEqual($date, $part = null, $locale = null)
     {
-        $difference = $date->getUnixTimeStamp() - $this->getUnixTimestamp();
+        $result = $this->compare($date, $part, $locale);
 
-        //second, minute, hour, day, week, month, year, decade
-        $lengths = array("60", "60", "24", "7", "4.34", "12", "10");
+        return ($result !== 1);
+    }
 
-        if ($difference > 0) { // this was in the past
-            $ending = $translate->_("%s ago");
-        } else { // this was in the future
-            $difference = -$difference;
-            $ending = $translate->_("%s to go");
-        }
+    /**
+     * Returns if the given date or datepart is later or equal
+     * For example:
+     * 15.May.2000 <-> 13.June.1999 will return true for month but false for day, year and date
+     * Returns if the given date is later
+     *
+     * @param  string|integer|array|Zend_Date  $date    Date or datepart to compare with
+     * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
+     * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @return boolean
+     * @throws Zend_Date_Exception
+     */
+    public function isLaterOrEqual($date, $part = null, $locale = null)
+    {
+        $result = $this->compare($date, $part, $locale);
 
-        for ($j = 0; $j < 7 && $difference >= $lengths[$j]; $j++) {
-            $difference /= $lengths[$j];
-        }
-
-        $difference = round($difference);
-
-        switch ($j) {
-            case 0:
-                $period = $translate->plural('second', 'seconds', $difference);
-                break;
-            case 1:
-                $period = $translate->plural('minute', 'minutes', $difference);
-                break;
-            case 2:
-                $period = $translate->plural('hour', 'hours', $difference);
-                break;
-            case 3:
-                $period = $translate->plural('day', 'days', $difference);
-                break;
-            case 4:
-                $period = $translate->plural('week', 'weeks', $difference);
-                break;
-            case 5:
-                $period = $translate->plural('month', 'months', $difference);
-                break;
-            case 6:
-                $period = $translate->plural('year', 'years', $difference);
-                break;
-            case 7:
-                $period = $translate->plural('decade', 'decades', $difference);
-                break;
-
-            default:
-                break;
-        }
-        $time = "$difference $period";
-        $text = sprintf($ending, $time);
-
-        return $text;
+        return ($result !== -1);
     }
 }
