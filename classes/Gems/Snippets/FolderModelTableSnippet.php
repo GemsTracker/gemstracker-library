@@ -168,7 +168,7 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
         }
 
         $href  = $menuItem->toHRefAttribute($this->request, $bridge);
-        $title = array(strtolower($menuItem->get('label')), ' ', $bridge->relpath);
+        $title = array(strtolower($menuItem->get('label')), $bridge->relpath);
         $img  = MUtil_Html::create('img', array(
             'src'   => $icon,
             'alt'   => $title,
@@ -302,14 +302,14 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
                 ));
 
         return array(
-            'nav_up_blue.png'     => array(
+            'process.png'  => array(
                 $this->findMenuItem($this->request->getControllerName(), 'import'),
                 $onImport,
                 ),
-            'arrow_down_blue.png' => $this->findMenuItem($this->request->getControllerName(), 'download'),
-            'eye.png'             => $this->findMenuItem($this->request->getControllerName(), 'show'),
-            'edit.png'            => $this->findMenuItem($this->request->getControllerName(), 'edit'),
-            'delete.png'          => array(
+            'download.png' => $this->findMenuItem($this->request->getControllerName(), 'download'),
+            'eye.png'      => $this->findMenuItem($this->request->getControllerName(), 'show'),
+            'edit.png'     => $this->findMenuItem($this->request->getControllerName(), 'edit'),
+            'delete.png'   => array(
                 $this->findMenuItem($this->request->getControllerName(), 'delete'),
                 $onDelete,
                 ),

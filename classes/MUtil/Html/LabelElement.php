@@ -122,7 +122,7 @@ class MUtil_Html_LabelElement extends MUtil_Html_HtmlElement
 
                 // Only a label when a label decorator exists, but we do not use that decorator
                 if ($value->getDecorator('Label')) {
-                    $class = $this->class ? MUtil::renderAny($this->class) . ' ' : '';
+                    $class = $this->class ? MUtil_Html::renderAny($this->class) . ' ' : '';
                     if ($value->isRequired()) {
                         $class .= $this->getRequiredClass();
                         $this->_currentContent[$key] = array($this->getRequiredPrefix(), $value->getLabel(), $this->getRequiredPostfix());

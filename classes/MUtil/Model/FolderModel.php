@@ -137,7 +137,7 @@ class MUtil_Model_FolderModel extends MUtil_Model_ArrayModelAbstract
         $count = 0;
         foreach ($deleteable as $fileData) {
             if (unlink($fileData['fullpath'])) {
-                $count = $ocunt + 1;
+                $count = $count + 1;
             } elseif (file_exists($fileData['fullpath'])) {
                 throw new MUtil_Model_ModelException(sprintf(
                         'Unable to delete %s: %s',

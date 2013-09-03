@@ -170,7 +170,7 @@ name=value (string)  Zero or more name=value parameter pairs, without the
                 return $request;
             }
 
-            echo "Invalid command: $command/$action.\n", exit;
+            echo "Invalid command: $controller/$action.\n", exit;
 
         }
 

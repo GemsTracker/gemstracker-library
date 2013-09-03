@@ -456,7 +456,7 @@ class MUtil_XmlRa implements IteratorAggregate, ArrayAccess, Countable
             $n = $this->_rootNode;
         } elseif ($this->_isForName()) {
             $n = $this->_getFirstElement();
-        } elseif (size($this->_nodes)) {
+        } elseif (count($this->_nodes)) {
             $n = $this->_nodes[0];
         } else {
             throw new MUtil_XmlRa_XmlRaException('No parent node available to append to.');

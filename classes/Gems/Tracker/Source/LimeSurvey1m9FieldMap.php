@@ -600,6 +600,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     public function applyToModel(MUtil_Model_ModelAbstract $model)
     {
         $map    = $this->_getMap();
+        $oldfld = null;
         $parent = null;
 
         foreach ($map as $name => $field) {
@@ -673,6 +674,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     public function getQuestionInformation()
     {
         $map    = $this->_getMap();
+        $oldfld = null;
         $result = array();
 
         foreach ($map as $name => $field) {

@@ -163,11 +163,14 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
      */
     protected function _loadCache()
     {
+    	$cacheArray = null;
+    	$include    = null;
+    	
         include $this->_cacheFile;
 
         // if (isset($cacheArray, $fileArray, $include) && (get_include_path() != $include)) {
         if (isset($cacheArray, $include) && (get_include_path() != $include)) {
-            $this->_cacheClassArray = $classArray;
+            $this->_cacheClassArray = $cacheArray;
             // $this->_cacheFileArray  = $fileArray;
             $this->_cacheLoadTime = filemtime($this->_cacheFile);
         }
@@ -424,7 +427,7 @@ class MUtil_Loader_CachedLoader implements Zend_Loader_Autoloader_Interface
                 return true;
             }
 
-            throw new Zend_Exception("The file '$file' does not contain the class '$class'.");
+            throw new Zend_Exception("The file '$file' does not contain the class '$className'.");
         }
 
         if (! isset($this->_cacheClassArray[$className])) {

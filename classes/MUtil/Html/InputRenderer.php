@@ -183,7 +183,7 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
             return self::inputForm($element);
         }
 
-        if ($element instanceof Zend_DisplayGroup) {
+        if ($element instanceof Zend_Form_DisplayGroup) {
             return self::inputDisplayGroup($element);
         }
 

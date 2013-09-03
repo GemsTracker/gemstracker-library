@@ -423,7 +423,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function convertTo($conversionTargetClass)
     {
-        throw new Gems_Exception_Coding(springf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
+        throw new Gems_Exception_Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
     }
 
     /**

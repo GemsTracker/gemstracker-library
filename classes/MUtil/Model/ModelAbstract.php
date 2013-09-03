@@ -964,8 +964,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function getTransformers()
     {
-        $this->_transformers[] = $transformer;
-        return $this;
+        return $this->_transformers;
     }
 
     /**
@@ -1180,6 +1179,18 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         return $empties;
+    }
+
+    /**
+     * Returns a Traversable spewing out arrays containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return Traversable
+     */
+    public function loadIterator($filter = true, $sort = true)
+    {
+        return new ArrayIterator($this->load($filter, $sort));
     }
 
     /**

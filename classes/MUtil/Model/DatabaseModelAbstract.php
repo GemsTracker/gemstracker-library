@@ -916,6 +916,21 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
     }
 
     /**
+     * Returns a Traversable spewing out arrays containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return Traversable
+     */
+    public function loadIterator($filter = true, $sort = true)
+    {
+        return new MUtil_Db_Iterator_SelectIterator($this->_createSelect(
+                $this->_checkFilterUsed($filter),
+                $this->_checkSortUsed($sort)
+                ));
+    }
+
+    /**
      * Creates new items - in memory only.
      *
      * @param int $count When null a single new item is return, otherwise a nested array with $count new items

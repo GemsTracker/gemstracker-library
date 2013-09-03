@@ -424,7 +424,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         if (! $data['script']) {
             $this->addMessage($this->_('This database object has no script. You cannot execute it.'));
 
-            $repeater = $model->loadRepeatable($filter);
+            $repeater = $model->loadRepeatable();
             $table    = $this->getShowTable();
             $table->setRepeater($repeater);
 

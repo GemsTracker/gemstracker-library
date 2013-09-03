@@ -314,8 +314,8 @@ class MUtil_Encoding
     {
         $encodingLabel = self::normalizeEncoding($encodingLabel);
         if ($encodingLabel == 'UTF-8')
-            return Encoding::toUTF8($text);
+            return MUtil_Encoding::toUTF8($text);
         if ($encodingLabel == 'ISO-8859-1')
-            return Encoding::toLatin1($text);
+            return MUtil_Encoding::toLatin1($text);
     }
 }

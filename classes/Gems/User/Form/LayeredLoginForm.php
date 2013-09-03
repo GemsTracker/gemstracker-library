@@ -158,7 +158,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
                 $element->setMultiOptions($childOrgs);
 
                 if ($this->organizationMaxLines > 1) {
-                    $element->setAttrib('size', min(count($orgs) + 1, $this->organizationMaxLines));
+                    $element->setAttrib('size', min(count($childOrgs) + 1, $this->organizationMaxLines));
                 }
                 $this->addElement($element);
                 $element->setValue($orgId);

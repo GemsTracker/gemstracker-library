@@ -71,7 +71,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
      * @param array $row A row of data
      * @param array $filters An array of filter statements
      * @param boolean $logicalAnd When true this is an AND filter, otherwise OR (switches at each array nesting level)
-     * @return type
+     * @return boolean
      */
     protected function _applyFiltersToRow(array $row, array $filters, $logicalAnd)
     {
@@ -129,11 +129,16 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
      *
      * @param Traversable $data
      * @param array $filters
-     * @return array
+     * @return Traversable
      */
     protected function _filterData($data, array $filters)
     {
-        $filteredData = array();
+        if ($data instanceof IteratorAggregate) {
+            $data = $data->getIterator();
+        }
+        if ($data instanceof Iterator) {
+            return new MUtil_Model_Iterator_ArrayModelFilterIterator($data, $this, $filters);
+        }
 
         foreach ($data as $key => $row) {
             if ($this->_applyFiltersToRow($row, $filters, true)) {
@@ -158,7 +163,9 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
 
         if ($filter) {
             $data = $this->_filterData($data, $filter);
-        } elseif (! is_array($data)) {
+        }
+
+        if (! is_array($data)) {
             $data = iterator_to_array($data);
         }
 
@@ -236,6 +243,18 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
         usort($data, array($this, 'sortCmp'));
 
         return $data;
+    }
+
+    /**
+     * Returns true if the passed row passed through the filter
+     *
+     * @param array $row A row of data
+     * @param array $filters An array of filter statements
+     * @return boolean
+     */
+    public function applyFiltersToRow(array $row, array $filters)
+    {
+        return $this->_applyFiltersToRow($row, $filters, true);
     }
 
     /**
@@ -341,6 +360,28 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
     }
 
     /**
+     * Returns a Traversable spewing out arrays containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return Traversable
+     */
+    public function loadIterator($filter = true, $sort = true)
+    {
+        $data = $this->_loadAllTraversable();
+
+        if ($data && $filter) {
+            $data = $this->_filterData($data, $filter);
+        }
+
+        if ($this->_checkSortUsed($sort)) {
+            throw new MUtil_Model_ModelException("You cannot sort an array iterator.");
+        }
+
+        return $data;
+    }
+
+    /**
      * Save a single model item.
      *
      * @param array $newValues The values to store for a single model item.
@@ -356,7 +397,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
                 $data = iterator_to_array($this->_loadAllTraversable());
             }
 
-            if ($keys === $this->getKeys()) {
+            if ($keys = $this->getKeys()) {
                 $search = array();
                 $newValues = $newValues + $filter;
 

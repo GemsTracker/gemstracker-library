@@ -186,7 +186,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             $data['gr2t_track_info'] = trim(implode(' ', MUtil_Ra::flatten($data['gtf_field'])));
         }
 
-        $data['gr2t_track_info'] = trim($info);
+        $data['gr2t_track_info'] = trim($data['gr2t_track_info']);
 
         return true;
     }
