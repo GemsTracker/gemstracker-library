@@ -47,6 +47,15 @@
 class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 {
     /**
+     * The final directory for when the data could not be imported.
+     *
+     * If empty the file is thrown away after a failure.
+     *
+     * @var string
+     */
+    public $failureDirectory;
+
+    /**
      * The translator to use
      *
      * @var MUtil_Model_ModelTranslatorInterface
@@ -61,11 +70,29 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected $importTranslators;
 
     /**
+     * The filename minus the extension for long term storage.
+     *
+     * If empty the file is not renamed and may overwrite an existing file.
+     *
+     * @var string
+     */
+    protected $longtermFilename;
+
+    /**
      * Model to read import
      *
      * @var MUtil_Model_ModelAbstract
      */
     protected $sourceModel;
+
+    /**
+     * The final directory when the data was successfully imported.
+     *
+     * If empty the file is thrown away after the import.
+     *
+     * @var string
+     */
+    public $successDirectory;
 
     /**
      * Model to save import into
@@ -77,6 +104,53 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected $targetModel;
 
     /**
+     * Clear the final directory for when the data could not be imported.
+     *
+     * The file is thrown away after a failure.
+     *
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function clearFailureDirectory()
+    {
+        return $this->setFailureDirectory();
+    }
+
+    /**
+     * Clears the filename for long term storage. The file is not renamed and
+     * may overwrite an existing file.
+     *
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function clearLongtermFilename()
+    {
+        return $this->setLongtermFilename();
+    }
+
+    /**
+     * Clear the directory for when the data was successfully imported.
+     *
+     * The the file is thrown away after the import.
+     *
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function clearSuccessDirectory($directory = null)
+    {
+        return $this->setSuccessDirectory();
+    }
+
+    /**
+     * Get the final directory for when the data could not be imported.
+     *
+     * If empty the file is thrown away after the failure.
+     *
+     * @return string String or null when there is no failure storage
+     */
+    public function getFailureDirectory()
+    {
+        return $this->failureDirectory;
+    }
+
+    /**
      * Get the current translator, if set
      *
      * @return MUtil_Model_ModelTranslatorInterface or null
@@ -84,6 +158,18 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected function getImportTranslator()
     {
         return $this->importTranslator;
+    }
+
+    /**
+     * Get the filename minus the extension for long term storage.
+     *
+     * If empty the file is not renamed and may overwrite an existing file.
+     *
+     * @return string String or null when there is no renaming
+     */
+    public function getLongtermFilename()
+    {
+        return $this->longtermFilename;
     }
 
     /**
@@ -97,6 +183,18 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * The final directory when the data was successfully imported.
+     *
+     * If empty the file is thrown away after the import.
+     *
+     * @return string String or null when there is no long term storage
+     */
+    public function getSuccessDirectory()
+    {
+        return $this->successDirectory;
+    }
+
+    /**
      * Get the target model for the imported data
      *
      * @return MUtil_Model_ModelAbstract
@@ -104,6 +202,20 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     public function getTargetModel()
     {
         return $this->targetModel;
+    }
+
+    /**
+     * The final directory for when the data could not be imported.
+     *
+     * If empty the file is thrown away after the failure.
+     *
+     * $param string $directory String or null when there is no failure storage
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function setFailureDirectory($directory = null)
+    {
+        $this->failureDirectory = $directory;
+        return $this;
     }
 
     /**
@@ -135,6 +247,20 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             }
         }
         $this->importTranslator = $translator;
+        return $this;
+    }
+
+    /**
+     * The filename minus the extension for long term storage.
+     *
+     * If empty the file is not renamed and may overwrite an existing file.
+     *
+     * $param string $filenameWithoutExtension String or null when the file is not renamed
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function setLongtermFilename($filenameWithoutExtension = null)
+    {
+        $this->longtermFilename = $filenameWithoutExtension;
         return $this;
     }
 
@@ -210,6 +336,20 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         $model = new MUtil_Model_NestedArrayModel('manual input', $content, $fieldSplit, $lineSplit);
         $this->setSourceModel($model);
 
+        return $this;
+    }
+
+    /**
+     * The final directory when the data was successfully imported.
+     *
+     * If empty the file is thrown away after the import.
+     *
+     * $param string $directory String or null when there is no long term storage
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function setSuccessDirectory($directory = null)
+    {
+        $this->successDirectory = $directory;
         return $this;
     }
 

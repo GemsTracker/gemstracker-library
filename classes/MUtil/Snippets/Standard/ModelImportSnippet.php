@@ -47,7 +47,6 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-// class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
@@ -831,17 +830,31 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         try {
             $this->importer->setSourceFile($this->request->getParam('file'));
             $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
+
         } catch (Exception $e) {
+            $messages[] = "IMPORT ERROR!";
             $messages[] = $e->getMessage();
             $messages[] = null;
-            $messages[] = "Controller usage instruction:";
-            $messages[] = "Required parameter: file = filename to import";
             $messages[] = sprintf(
-                    "Optional parameter: trans = [%s] defaults %s",
+                    "Usage instruction: %s %s file=filename [trans=[%s]]",
+                    $this->request->getControllerName(),
+                    $this->request->getActionName(),
+                    implode('|', array_keys($this->importTranslators))
+                    );
+            $messages[] = sprintf(
+                    "\tRequired parameter: file = filename to import, absolute or relative to %s",
+                    getcwd()
+                    );
+            $messages[] = sprintf(
+                    "\tOptional parameter: trans = [%s] default is %s",
                     implode('|', array_keys($this->importTranslators)),
                     $this->defaultImportTranslator
                     );
-        } // */
+            echo implode("\n", $messages) . "\n";
+            exit();
+        }
+        exit();
+        // */
         $file = $this->request->getParam('file');
         if (! $file) {
             $messages[] = "Missing required parameter: file = filename to import";

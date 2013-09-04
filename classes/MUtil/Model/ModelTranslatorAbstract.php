@@ -370,10 +370,11 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      *
      * This code does not validate the individual inputs, but does check the ovrall structure of the input
      *
-     * @param array $data a nested data set as loaded from the source model
+     * @param Traversable $data a nested data set as loaded from the source model
      * @return mixed Nested row array or false when errors occurred
      */
     public function translateImport(array $data)
+    // public function translateImport(Traversable $data)
     {
         // Clear errors
         $this->_errors = array();
@@ -435,7 +436,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */
-    protected function translateRowValues($row, $key)
+    protected function translateRowValues(array $row, $key)
     {
         array_walk($row, array($this, 'filterBasic'));
 
@@ -449,7 +450,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */
-    protected function validateRowValues($row, $key)
+    protected function validateRowValues(array $row, $key)
     {
         // Clean up lingering values
         $this->targetForm->clearErrorMessages()

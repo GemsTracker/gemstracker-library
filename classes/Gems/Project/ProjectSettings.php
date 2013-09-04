@@ -439,6 +439,20 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Array with the imports settings or empty
+     *
+     * @return array
+     * /
+    public function getImports()
+    {
+        if (isset($this['import'])) {
+            return $this['import'];
+        }
+
+        return array();
+    }
+
+    /**
      * Returns the initial password specified for users - if any.
      *
      * @return String

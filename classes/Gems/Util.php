@@ -67,6 +67,12 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var Gems_Util_ImportFiler
+     * /
+    protected $importFiler;
+
+    /**
+     *
      * @var Gems_Util_Localized
      */
     protected $localized;
@@ -231,6 +237,15 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
     public function getImageUri($imageFile)
     {
         return $this->basepath->getBasePath() . '/' . $this->project->imagedir . '/' . $imageFile;
+    }
+
+    /**
+     *
+     * @return Gems_Util_ImportFiler
+     * /
+    public function getImportFiler()
+    {
+        return $this->_getClass('importFiler');
     }
 
     /**
