@@ -587,23 +587,25 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
          * Set the end_of_survey uri *
          *****************************/
 
-        $newUrl = $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
+        if (!MUtil_Console::isConsole()) {
+            $newUrl = $this->util->getCurrentURI('ask/return/' . MUtil_Model::REQUEST_ID . '/{TOKEN}');
 
-        // Make sure the url is set correctly in surveyor.
-        if ($currentUrl != $newUrl) {
+            // Make sure the url is set correctly in surveyor.
+            if ($currentUrl != $newUrl) {
 
-            //$where = $lsDb->quoteInto('surveyls_survey_id = ? AND ', $sourceSurveyId) .
-            //    $lsDb->quoteInto('surveyls_language = ?', $language);
+                //$where = $lsDb->quoteInto('surveyls_survey_id = ? AND ', $sourceSurveyId) .
+                //    $lsDb->quoteInto('surveyls_language = ?', $language);
 
-            $lsDb->update($lsSurvLang,
-                array('surveyls_url' => $newUrl),
-                array(
-                    'surveyls_survey_id = ?' => $sourceSurveyId,
-                    'surveyls_language = ?' =>  $language
-                    ));
+                $lsDb->update($lsSurvLang,
+                    array('surveyls_url' => $newUrl),
+                    array(
+                        'surveyls_survey_id = ?' => $sourceSurveyId,
+                        'surveyls_language = ?' =>  $language
+                        ));
 
-            if (Gems_Tracker::$verbose) {
-                MUtil_Echo::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
+                if (Gems_Tracker::$verbose) {
+                    MUtil_Echo::r("From $currentUrl\n to $newUrl", "Changed return url for $language version of $surveyId.");
+                }
             }
         }
 

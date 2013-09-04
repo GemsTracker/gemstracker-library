@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -54,7 +54,17 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
     public function direct(MUtil_Batch_BatchAbstract $batch, $title)
     {
 
-        if ($batch->run($this->getRequest())) {
+        if (MUtil_Console::isConsole()) {
+            $batch->runContinuous();
+            
+            echo implode("\n", $batch->getMessages(true)) . "\n";
+
+            if ($echo = MUtil_Echo::out()) {
+                echo "\n\n================================================================\nECHO OUTPUT:\n\n";
+                echo MUtil_Console::removeHtml($echo);
+            }
+            exit;
+        } elseif ($batch->run($this->getRequest())) {
             exit;
         } else {
             $controller = $this->getActionController();

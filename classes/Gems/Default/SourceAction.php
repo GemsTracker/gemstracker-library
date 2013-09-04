@@ -128,7 +128,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Check all token attributes for a single source
+     * Check token attributes for a single source
      */
     public function attributesAction()
     {
@@ -140,9 +140,24 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
 
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title);
 
         $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in the source.'));
+        $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
+    }
+
+    /**
+     * Check all token attributes for all sources
+     */
+    public function attributesAllAction()
+    {
+        $batch = $this->loader->getTracker()->refreshTokenAttributes('sourceCheckAll');
+
+        $title = $this->_('Refreshing token attributes for all sources.');
+
+        $this->_helper->batchRunner($batch, $title);
+
+        $this->html->pInfo($this->_('Refreshes the attributes for a token as stored in on of the sources.'));
         $this->html->pInfo($this->_('Run this code when the number of attributes has changed or when you suspect the attributes have been corrupted somehow.'));
     }
 
@@ -158,7 +173,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $title = sprintf($this->_('Checking survey results for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title);
 
         self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in this source.'));
     }
@@ -171,7 +186,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $batch = $this->loader->getTracker()->recalculateTokens('surveyCheckAll', $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Checking survey results for all sources.');
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title);
 
         self::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens in all sources.'));
     }
@@ -273,7 +288,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
 
         $title = sprintf($this->_('Synchronize the %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title);
 
         $this->addSynchronizationInformation();
     }
@@ -287,7 +302,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $batch = $this->loader->getTracker()->synchronizeSources(null, $this->loader->getCurrentUser()->getUserId());
 
         $title = $this->_('Synchronize all sources.');
-        $this->_helper->BatchRunner($batch, $title);
+        $this->_helper->batchRunner($batch, $title);
 
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
 

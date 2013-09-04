@@ -404,7 +404,11 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         // Does the current adapter accord with the method?
         if ($this->progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
-            if ($this->isPull()) {
+            if (MUtil_Console::isConsole()) {
+                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_Console) {
+                    $this->progressBarAdapter = null;
+                }
+            } elseif ($this->isPull()) {
                 if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPull) {
                     $this->progressBarAdapter = null;
                 }
@@ -419,7 +423,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
         // Create when needed
         if ($this->progressBarAdapter === null) {
-            if ($this->isPull()) {
+            if (MUtil_Console::isConsole()) {
+                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_Console());
+            } elseif ($this->isPull()) {
                 $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
             } else {
                 $this->setProgressBarAdapter(new MUtil_ProgressBar_Adapter_JsPush());
@@ -562,6 +568,19 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             return false;
         }
 
+        if (MUtil_Console::isConsole()) {
+            $bar = $this->getProgressBar();
+            $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
+            while ($this->step()) {
+                if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
+                    // Communicate progress
+                    $bar->update($this->getProgressPercentage(), $this->getLastMessage());
+                }
+            }
+            $this->_session->finished  = true;
+            $bar->finish();
+            return false;
+        }
         // Check for run url
         if ($request->getParam($this->progressParameterName) === $this->progressParameterRunValue) {
             $bar = $this->getProgressBar();
@@ -605,6 +624,31 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         while ($this->step());
 
         return $this->_session->processed;
+    }
+
+    /**
+     * Run the code and report back.
+     *
+     * @return void
+     */
+    public function runContinuous()
+    {
+        // Is there something to run?
+        if ($this->isFinished() || (! $this->isLoaded())) {
+            return false;
+        }
+
+        $bar = $this->getProgressBar();
+        $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
+        while ($this->step()) {
+            if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
+                // Communicate progress
+                $bar->update($this->getProgressPercentage(), $this->getLastMessage());
+            }
+        }
+        $this->_session->finished  = true;
+        $bar->update($this->getProgressPercentage(), $this->getLastMessage());
+        $bar->finish();
     }
 
     /**

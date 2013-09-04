@@ -305,6 +305,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return reset($data);
     }
 
+    /**
+     * Tell the model one more item has changed
+     * 
+     * @param int $add
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
     protected function addChanged($add = 1)
     {
         $this->_changedCount += $add;

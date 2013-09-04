@@ -505,3 +505,8 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.file-import,
 -- PATCH: Track calculation event
 ALTER TABLE gems__tracks
     ADD gtr_calculation_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_track_class;
+
+-- GEMS VERSION: 53
+-- PATCH: Check all attribute rights
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.source.check-attributes-all')
+    WHERE grl_privileges LIKE '%pr.source.check-attributes%' AND grl_privileges NOT LIKE '%pr.source.check-attributes-all%';

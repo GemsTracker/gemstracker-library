@@ -525,12 +525,17 @@ abstract class Gems_Menu_MenuAbstract
 
         // SURVEY SOURCES CONTROLLER
         $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
-        $page->addAction($this->_('Check status'), null, 'ping')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check status'), null, 'ping')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')
+                ->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
+        $page->addAction($this->_('Check all attributes'), 'pr.source.check-attributes-all', 'attributes-all');
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
@@ -540,7 +545,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
-        $page->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')->addParameters(MUtil_Model::REQUEST_ID);
+        $page->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
+                ->addParameters(MUtil_Model::REQUEST_ID);
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
 
         $page->addAutofilterAction();
@@ -551,21 +557,29 @@ abstract class Gems_Menu_MenuAbstract
                 ->setModelParameters(1);
 
         // Fields
-        $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
         $fpage->addAutofilterAction();
-        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
-        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
-        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
-        $fpage->addDeleteAction('pr.track-maintenance.delete')->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addCreateAction('pr.track-maintenance.create')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addShowAction()
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
+        $fpage->addEditAction('pr.track-maintenance.edit')
+                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+        $fpage->addDeleteAction('pr.track-maintenance.delete')
+                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
 
         // Standard tracks
         $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
                 ->setParameterFilter('gtr_track_type', 'T');
         $fpage->addAutofilterAction();
-        $fpage->addCreateAction('pr.track-maintenance.create')->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage->addShowAction()->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
-        $fpage->addEditAction('pr.track-maintenance.edit')->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
+        $fpage->addCreateAction('pr.track-maintenance.create')
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
+        $fpage->addShowAction()
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
+        $fpage->addEditAction('pr.track-maintenance.edit')
+                ->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
         $fpage->addDeleteAction('pr.track-maintenance.delete')
                 ->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track')
                 ->setParameterFilter('gtr_track_type', 'T');
