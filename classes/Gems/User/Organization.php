@@ -242,6 +242,11 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         $result['organization_url']        = $this->_get('gor_url');
         $result['organization_welcome']    = $this->getWelcome();
 
+        if ((APPLICATION_ENV === 'production') &&
+                preg_match('#^http(s)?://localhost#', $result['organization_login_url'])) {
+            throw new Gems_Exception("Use of 'localhost' as url not permitted on production system.");
+        }
+
         return $result;
     }
 

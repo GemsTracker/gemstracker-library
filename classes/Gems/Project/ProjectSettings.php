@@ -323,6 +323,20 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * The site url during command line actions
+     *
+     * @return string
+     */
+    public function getConsoleUrl()
+    {
+        if ($this->offsetExists('console') && isset($this->console['url'])) {
+            return trim($this->console['url']);
+        }
+
+        return 'localhost';
+    }
+
+    /**
      * Returns an (optional) default organization from the project settings
      *
      * @return int Organization number or -1 when not set

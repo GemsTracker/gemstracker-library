@@ -199,7 +199,7 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
             $uri = MUtil_Https::on() ? 'https' : 'http';
 
             $uri .= '://';
-            $uri .= isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'localhost';
+            $uri .= isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $this->project->getConsoleUrl();
             $uri .= $this->basepath->getBasePath();
         }
         if ($subpath && ($subpath[0] != '/')) {
