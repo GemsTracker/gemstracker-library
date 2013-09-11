@@ -101,6 +101,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     private $_session;
 
     /**
+     *
+     * @var Zend_Session_Namespace
+     */
+    private $_tasks;
+
+    /**
      * When true the progressbar should start immediately. When false the user has to perform an action.
      *
      * @var boolean
@@ -172,6 +178,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
     /**
      *
+     * @var string
+     */
+    protected $taskDir;
+
+    /**
+     *
      * @param string $id A unique name identifying this batch
      */
     public function __construct($id = null)
@@ -223,6 +235,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $this->_session = new Zend_Session_Namespace(get_class($this) . '_' . $id);
 
+        $this->_tasks = $this->_session;
+
         if (! isset($this->_session->commands)) {
             $this->reset();
         }
@@ -239,7 +253,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $params = array_slice(func_get_args(), 1);
 
-        $this->_session->commands[] = $this->_checkParams($method, $params);
+        $this->_tasks->commands[] = $this->_checkParams($method, $params);
+        $this->_session->count = $this->_session->count + 1;
 
         return $this;
     }
@@ -283,7 +298,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function count()
     {
-        return count($this->_session->commands) + $this->_session->processed;
+        return $this->_session->count;
     }
 
     /**
@@ -294,7 +309,6 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function getCounter($name)
     {
-        // MUtil_Echo::track($this->_session->counters);
         if (isset($this->_session->counters[$name])) {
             return $this->_session->counters[$name];
         }
@@ -447,7 +461,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function getProgressPercentage()
     {
-        return round($this->_session->processed / (count($this->_session->commands) + $this->_session->processed) * 100, 2);
+        return round($this->_session->processed / $this->_session->count * 100, 2);
     }
 
     /**
@@ -496,6 +510,30 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * The directory to store the task file
+     *
+     * @return string
+     */
+    public function getTaskDir()
+    {
+        if (! $this->taskDir) {
+            $tmp = getenv('TMP');
+            if (! $tmp) {
+                $tmp = getenv('TEMP');
+                if (! $tmp) {
+                    $tmp = '/tmp';
+                }
+            }
+
+            $this->setTaskDir($tmp);
+
+            MUtil_Echo::track($this->taskDir);
+        }
+
+        return $this->taskDir;
+    }
+
+    /**
      * Return true after commands all have been ran.
      *
      * @return boolean
@@ -512,7 +550,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function isLoaded()
     {
-        return $this->_session->commands || $this->_session->processed;
+        return $this->_session->count || $this->_session->processed;
     }
 
     /**
@@ -542,7 +580,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function reset()
     {
-        $this->_session->commands  = array();
+        $this->_tasks->commands    = array();
         $this->_session->counters  = array();
         $this->_session->count     = 0;
         $this->_session->finished  = false;
@@ -601,7 +639,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                     }
                 }
             }
-            if (! $this->_session->commands) {
+            if (! $this->_tasks->commands) {
                 $this->_session->finished  = true;
                 $bar->finish();
             }
@@ -798,7 +836,23 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $params = array_slice(func_get_args(), 2);
 
-        $this->_session->commands[$id] = $this->_checkParams($method, $params);
+        $this->_tasks->commands[$id] = $this->_checkParams($method, $params);
+        $this->_session->count = count($this->_tasks->commands);
+
+        return $this;
+    }
+
+    /**
+     * The location to store the tasks
+     *
+     * @param string $taskDir
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setTaskDir($taskDir)
+    {
+        $this->taskDir = $taskDir;
+
+        MUtil_File::ensureDir($taskDir);
 
         return $this;
     }
@@ -810,8 +864,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     protected function step()
     {
-        if (isset($this->_session->commands) && $this->_session->commands) {
-            $command = array_shift($this->_session->commands);
+        if (isset($this->_tasks->commands) && $this->_tasks->commands) {
+            $command = array_shift($this->_tasks->commands);
             $this->_session->processed++;
 
             try {
