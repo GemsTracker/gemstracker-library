@@ -241,20 +241,19 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return Gems_Task_TaskAbstract
-     */
-    public function getTask($name) {
-        return $this->_loadClass('Task_' . ucfirst($name), true);
-    }
-
-    /**
-     *
      * @param type $id
+     * @param MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
      * @return Gems_Task_TaskRunnerBatch
      */
-    public function getTaskRunnerBatch($id)
+    public function getTaskRunnerBatch($id, MUtil_Batch_Stack_Stackinterface $stack = null)
     {
-        $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array($id));
+        if ((null == $stack) &&
+                isset($this->_containers[0]->cache) &&
+                $this->_containers[0]->cache instanceof Zend_Cache_Core) {
+
+            $stack = new MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
+        }
+        $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array_filter(array($id, $stack)));
 
         if ($taskBatch instanceof MUtil_Task_TaskBatch) {
             $taskBatch->setSource($this);

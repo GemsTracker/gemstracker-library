@@ -128,16 +128,11 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     private static $_idStack = array();
 
     /**
+     * Session for storage of output results
      *
      * @var Zend_Session_Namespace
      */
     private $_session;
-
-    /**
-     *
-     * @var Zend_Session_Namespace
-     */
-    private $_tasks;
 
     /**
      * When true the progressbar should start immediately. When false the user has to perform an action.
@@ -210,58 +205,36 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public $progressParameterRunValue = 'run';
 
     /**
+     * The command stack
      *
-     * @var string
-     * /
-    protected $taskDir;
+     * @var MUtil_Batch_Stack_Stackinterface
+     */
+    protected $stack;
 
     /**
      *
      * @param string $id A unique name identifying this batch
+     * @param MUtil_Batch_Stack_Stackinterface $stack Optional different stack than session stack
      */
-    public function __construct($id = null)
+    public function __construct($id, MUtil_Batch_Stack_Stackinterface $stack = null)
     {
-        if (null === $id) {
-            $id = 'batchId' . (1 + count(self::$_idStack));
+        if (isset(self::$_idStack[$id])) {
+            throw new MUtil_Batch_BatchException("Duplicate batch id created: $id");
         }
-        foreach (self::$_idStack as $existingId) {
-            if ($existingId == $id) {
-                throw new MUtil_Batch_BatchException("Duplicate batch id created: $id");
-            }
-        }
+        self::$_idStack[$id] = $id;
 
-        self::$_idStack[] = $id;
         $this->_id = $id;
+
+        if (null === $stack) {
+            $stack = new MUtil_Batch_Stack_SessionStack($id);
+        }
+        $this->stack = $stack;
 
         $this->_initSession($id);
 
         if (MUtil_Console::isConsole()) {
             $this->method = self::CONS;
         }
-    }
-
-    /**
-     * Checks parameters and returns a command array.
-     *
-     * @param string $method
-     * @param array $params
-     * @return array A command array
-     */
-    private function _checkParams($method, array $params)
-    {
-        if (! method_exists($this, $method)) {
-            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
-        }
-        if (! MUtil_Ra::isScalar($params)) {
-            throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
-        }
-
-        $command['method']     = $method;
-        $command['parameters'] = $params;
-
-        // MUtil_Echo::track($command);
-
-        return $command;
     }
 
     /**
@@ -297,9 +270,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $this->_session = new Zend_Session_Namespace(get_class($this) . '_' . $id);
 
-        $this->_tasks = $this->_session;
-
-        if (! isset($this->_session->commands)) {
+        if (! isset($this->_session->processed)) {
             $this->reset();
         }
     }
@@ -314,10 +285,15 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     protected function addStep($method, $param1 = null)
     {
+        if (! method_exists($this, $method)) {
+            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+        }
+
         $params = array_slice(func_get_args(), 1);
 
-        $this->_tasks->commands[] = $this->_checkParams($method, $params);
-        $this->_session->count = $this->_session->count + 1;
+        if ($this->stack->addStep($method, $params)) {
+            $this->_session->count = $this->_session->count + 1;
+        }
 
         return $this;
     }
@@ -487,7 +463,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function getProgressBar()
     {
         if (! $this->progressBar instanceof Zend_ProgressBar) {
-            $this->setProgressBar(new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100, $this->_session->getNamespace() . '_pb'));
+            $this->setProgressBar(
+                    new Zend_ProgressBar($this->getProgressBarAdapter(), 0, 100, $this->_session->getNamespace() . '_pb')
+                    );
         }
         return $this->progressBar;
     }
@@ -577,33 +555,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function getStartButton($args_array = 'Start')
     {
         $args = MUtil_Ra::args(func_get_args());
-        $args['onclick'] = 'if (! this.disabled) {' . $this->getFunctionPrefix() . 'Start();} this.disabled = true; event.cancelBubble=true;';
+        $args['onclick'] = 'if (! this.disabled) {' . $this->getFunctionPrefix() .
+                'Start();} this.disabled = true; event.cancelBubble=true;';
 
         return new MUtil_Html_HtmlElement('button', $args);
-    }
-
-    /**
-     * The directory to store the task file
-     *
-     * @return string
-     * /
-    public function getTaskDir()
-    {
-        if (! $this->taskDir) {
-            $tmp = getenv('TMP');
-            if (! $tmp) {
-                $tmp = getenv('TEMP');
-                if (! $tmp) {
-                    $tmp = '/tmp';
-                }
-            }
-
-            $this->setTaskDir($tmp);
-
-            MUtil_Echo::track($this->taskDir);
-        }
-
-        return $this->taskDir;
     }
 
     /**
@@ -663,12 +618,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function reset()
     {
-        $this->_tasks->commands    = array();
-        $this->_session->counters  = array();
         $this->_session->count     = 0;
+        $this->_session->counters  = array();
         $this->_session->finished  = false;
         $this->_session->messages  = array();
         $this->_session->processed = 0;
+
+        $this->stack->reset();
 
         return $this;
     }
@@ -895,36 +851,24 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
-     * Add an execution step to the command stack.
+     * Add/set an execution step to the command stack. Named to prevent double addition.
      *
      * @param string $method Name of a method of this object
      * @param mixed $id A unique id to prevent double adding of something to do
      * @param mixed $param1 Scalar or array with scalars, as many parameters as needed allowed
-     * @return MUtil_Batch_BatchAbstract
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
      */
     protected function setStep($method, $id, $param1 = null)
     {
+        if (! method_exists($this, $method)) {
+            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+        }
+
         $params = array_slice(func_get_args(), 2);
 
-        if (! isset($this->_tasks->commands[$id])) {
+        if ($this->stack->setStep($method, $id, $params)) {
             $this->_session->count = $this->_session->count + 1;
         }
-        $this->_tasks->commands[$id] = $this->_checkParams($method, $params);
-
-        return $this;
-    }
-
-    /**
-     * The location to store the tasks
-     *
-     * @param string $taskDir
-     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
-     * /
-    public function setTaskDir($taskDir)
-    {
-        $this->taskDir = $taskDir;
-
-        MUtil_File::ensureDir($taskDir);
 
         return $this;
     }
@@ -936,18 +880,17 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     protected function step()
     {
-        if (isset($this->_tasks->commands) && $this->_tasks->commands) {
-            $command = array_shift($this->_tasks->commands);
-            $this->_session->processed++;
+        if ($this->stack->hasNext()) {
+            $this->_session->processed = $this->_session->processed + 1;
 
             try {
-                call_user_func_array(array($this, $command['method']), $command['parameters']);
+                $this->stack->runNext($this);
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
                 $this->addMessage('While calling:' . $command['method'] . '(' . implode(',', MUtil_Ra::flatten($command['parameters'])) . ')');
                 $this->addMessage($e->getMessage());
 
-                //MUtil_Echo::r($e);
+                //MUtil_Echo::track($e);
             }
             return true;
         } else {
