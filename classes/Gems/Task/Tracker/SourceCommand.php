@@ -41,17 +41,29 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.3
  */
-class Gems_Task_Tracker_SourceCommand extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_SourceCommand extends MUtil_Task_TaskAbstract
 {
+    /**
+     * @var Gems_Loader
+     */
+    public $loader;
+
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($sourceId = null, $command = null)
     {
+        $batch  = $this->getBatch();
         $params = array_slice(func_get_args(), 2);
         $source = $this->loader->getTracker()->getSource($sourceId);
-        $source->setBatch($this->_batch);
+        $source->setBatch($batch);
 
         if ($messages = call_user_func_array(array($source, $command), $params)) {
             foreach ($messages as $message) {
-                $this->_batch->addMessage($command . ': ' . $message);
+                $batch->addMessage($command . ': ' . $message);
             }
         }
     }

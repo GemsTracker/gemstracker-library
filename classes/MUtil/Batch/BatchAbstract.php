@@ -39,9 +39,22 @@
  * The Batch package is for the sequential processing of commands which may
  * take to long to execute in a single request.
  *
- * To use this package just sub class this class, write methods that run
- * the code to be execute and then write the code that add's those functions
- * to be executed.
+ * The abstract batch handles the command stack, keeping track of batch specific
+ * counters and messages and the communication to the end user including display
+ * of any messages set during execution and reporting back execution errors
+ * occured during a run, e.g. when an job throws an exception during execution.
+ *
+ * The prefereed method to use this object is to write multiple small jobs using
+ * MUtil_Task_TaskInterface and then use MUtil_Task_TaskBatch to execute these
+ * commands.
+ *
+ * Global objects in the Task will be loaded automatically when they implement the
+ * MUtil_Registry_TargetInterface (the same as happens for with this object). All
+ * other parameters for the task should be scalar.
+ *
+ * The other option use this package by creating a sub class of this class and write
+ * the methods that run the code to be executed (and then write the code that adds
+ * those functions to be executed).
  *
  * Each step in the sequence consists of a method name of the child object
  * and any number of scalar variables and array's containing scalar variables.
@@ -53,18 +66,38 @@
  * However, as this package needs more state info than available in Zend_Queue
  * we would need an extra extension for that.
  *
+ * @see MUtil_Task_TaskBatch
+ * @see MUtil_Registry_TargetInterface
  * @see MUtil_Batch_WaitBatch
  *
  * @package    MUtil
  * @subpackage Batch
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since version 1.2
  */
 abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract implements Countable
 {
+    /**
+     * Constant for using console method = run batch in one long run from the console
+     */
+    const CONS = 'Cons';
+
+    /**
+     * Constant for using push method = run batch by short separate ajax calls from the browser
+     */
     const PULL = 'Pull';
+
+    /**
+     * Constant for using push method = run batch one long run in an iframe receiving javescript commands
+     */
     const PUSH = 'Push';
+
+    /**
+     *
+     * @var float The timer for _checkReport()
+     */
+    private $_checkReportStart = null;
 
     /**
      * Name to prefix the functions, to avoid naming clashes.
@@ -179,7 +212,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     /**
      *
      * @var string
-     */
+     * /
     protected $taskDir;
 
     /**
@@ -196,10 +229,15 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 throw new MUtil_Batch_BatchException("Duplicate batch id created: $id");
             }
         }
+
         self::$_idStack[] = $id;
         $this->_id = $id;
 
         $this->_initSession($id);
+
+        if (MUtil_Console::isConsole()) {
+            $this->method = self::CONS;
+        }
     }
 
     /**
@@ -227,6 +265,30 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Check if the aplication should report back to the user
+     *
+     * @return boolean True when application should report to the user
+     */
+    private function _checkReport()
+    {
+        if (1 === $this->_session->processed) {
+            return true;
+        }
+
+        if (null === $this->_checkReportStart) {
+            $this->_checkReportStart = microtime(true) + ($this->minimalStepDurationMs / 1000);
+            return false;
+        }
+
+        if (microtime(true) > $this->_checkReportStart) {
+            $this->_checkReportStart = null;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Initialize persistent storage
      *
      * @param string $name The id of this batch
@@ -246,8 +308,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * Add an execution step to the command stack.
      *
      * @param string $method Name of a method of this object
-     * @param mixed $param1 Scalar or array with scalars, as many parameters as needed allowed
-     * @return MUtil_Batch_BatchAbstract
+     * @param mixed $param1 Optional scalar or array with scalars, as many parameters as needed allowed
+     * @param mixed $param2 ...
+     * @return \MUtil_Task_TaskBatch (continuation pattern)
      */
     protected function addStep($method, $param1 = null)
     {
@@ -265,7 +328,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @param string $text A message to the user
      * @return MUtil_Batch_BatchAbstract (continuation pattern)
      */
-    protected function addMessage($text)
+    public function addMessage($text)
     {
         $this->_session->messages[] = $text;
         $this->_lastMessage = $text;
@@ -280,7 +343,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @param integer $add
      * @return integer
      */
-    protected function addToCounter($name, $add = 1)
+    public function addToCounter($name, $add = 1)
     {
         if (! isset($this->_session->counters[$name])) {
             $this->_session->counters[$name] = 0;
@@ -335,9 +398,29 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         return (string) $this->_functionPrefix;
     }
 
-    protected function getLastMessage()
+    /**
+     * Returns the lat message set for feedback to the user.
+     * @return string
+     */
+    public function getLastMessage()
     {
         return $this->_lastMessage;
+    }
+
+    /**
+     * Get a message from the message stack with a specific id.
+     *
+     * @param scalar $id
+     * @param string $default A default message
+     * @return string
+     */
+    public function getMessage($id, $default = null)
+    {
+        if (array_key_exists($id, $this->_session->messages)) {
+            return $this->_session->messages[$id];
+        } else {
+            return $default;
+        }
     }
 
     /**
@@ -416,34 +499,24 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function getProgressBarAdapter()
     {
-        // Does the current adapter accord with the method?
-        if ($this->progressBarAdapter instanceof Zend_ProgressBar_Adapter) {
-            if (MUtil_Console::isConsole()) {
+        // Create the current adapter when it does not exist or does not accord with the method.
+        switch ($this->method) {
+            case self::CONS:
                 if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_Console) {
-                    $this->progressBarAdapter = null;
+                    $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_Console());
                 }
-            } elseif ($this->isPull()) {
-                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPull) {
-                    $this->progressBarAdapter = null;
-                }
-            } else {
-                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPush) {
-                    $this->progressBarAdapter = null;
-                }
-            }
-        } else {
-            $this->progressBarAdapter = null;
-        }
+                break;
 
-        // Create when needed
-        if ($this->progressBarAdapter === null) {
-            if (MUtil_Console::isConsole()) {
-                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_Console());
-            } elseif ($this->isPull()) {
-                $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
-            } else {
-                $this->setProgressBarAdapter(new MUtil_ProgressBar_Adapter_JsPush());
-            }
+            case self::PULL:
+                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPull) {
+                    $this->setProgressBarAdapter(new Zend_ProgressBar_Adapter_JsPull());
+                }
+                break;
+
+            default:
+                if (! $this->progressBarAdapter instanceof Zend_ProgressBar_Adapter_JsPush) {
+                    $this->setProgressBarAdapter(new MUtil_ProgressBar_Adapter_JsPush());
+                }
         }
 
         // Check for extra padding
@@ -513,7 +586,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * The directory to store the task file
      *
      * @return string
-     */
+     * /
     public function getTaskDir()
     {
         if (! $this->taskDir) {
@@ -531,6 +604,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         }
 
         return $this->taskDir;
+    }
+
+    /**
+     * Return true if running in console mode.
+     *
+     * @return boolean
+     */
+    public function isConsole()
+    {
+        return self::CONS === $this->method;
     }
 
     /**
@@ -597,52 +680,34 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * page should not be displayed.
      *
      * @param Zend_Controller_Request_Abstract $request
-     * @return boolean
+     * @return boolean True when something ran
      */
     public function run(Zend_Controller_Request_Abstract $request)
     {
-        // Is there something to run?
-        if ($this->isFinished() || (! $this->isLoaded())) {
-            return false;
-        }
-
-        if (MUtil_Console::isConsole()) {
-            $bar = $this->getProgressBar();
-            $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
-            while ($this->step()) {
-                if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
-                    // Communicate progress
-                    $bar->update($this->getProgressPercentage(), $this->getLastMessage());
-                }
-            }
-            $this->_session->finished  = true;
-            $bar->finish();
-            return false;
-        }
         // Check for run url
         if ($request->getParam($this->progressParameterName) === $this->progressParameterRunValue) {
-            $bar = $this->getProgressBar();
+            if ($this->isPush()) {
+                return $this->runContinuous();
+            }
 
-            $isPull    = $this->isPull();
-            $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
-            // error_log('Rep: ' . $reportRun);
+            // Is there something to run?
+            if ($this->isFinished() || (! $this->isLoaded())) {
+                return false;
+            }
+
+            $bar = $this->getProgressBar();
             while ($this->step()) {
                 // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
-                if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
+                if ($this->_checkReport()) {
                     // Communicate progress
                     $bar->update($this->getProgressPercentage(), $this->getLastMessage());
-
-                    // INFO: When using PULL $bar->update() should exit the program,
-                    // but just let us make sure.
-                    if ($isPull) {
-                        return true;
-                    }
+                    return true;
                 }
             }
-            if (! $this->_tasks->commands) {
-                $this->_session->finished  = true;
-                $bar->finish();
-            }
+
+            // Only reached when at end of commands
+            $this->_session->finished  = true;
+            $bar->finish();
 
             // There is progressBar output
             return true;
@@ -665,9 +730,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
-     * Run the code and report back.
+     * Run the whole batch at once, while still communicating with a progress bar.
      *
-     * @return void
+     * @return boolean True when something ran
      */
     public function runContinuous()
     {
@@ -676,10 +741,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             return false;
         }
 
+        // [Try to] remove the maxumum execution time for this session
+        @ini_set("max_execution_time", 0);
+
         $bar = $this->getProgressBar();
-        $reportRun = microtime(true) + ($this->minimalStepDurationMs / 1000);
         while ($this->step()) {
-            if ($this->_session->processed == 1 || microtime(true) > $reportRun) {
+            if ($this->_checkReport()) {
                 // Communicate progress
                 $bar->update($this->getProgressPercentage(), $this->getLastMessage());
             }
@@ -687,6 +754,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $this->_session->finished  = true;
         $bar->update($this->getProgressPercentage(), $this->getLastMessage());
         $bar->finish();
+
+        return true;
     }
 
     /**
@@ -711,7 +780,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @param string $text A message to the user
      * @return MUtil_Batch_BatchAbstract (continuation pattern)
      */
-    protected function setMessage($id, $text)
+    public function setMessage($id, $text)
     {
         $this->_session->messages[$id] = $text;
         $this->_lastMessage = $text;
@@ -784,6 +853,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function setMethodPush($extraPaddingKb = null)
     {
         $this->setMethod(self::PUSH);
+
         if ((null !== $extraPaddingKb) && is_numeric($extraPaddingKb)) {
             $this->extraPushPaddingKb = $extraPaddingKb;
         }
@@ -836,8 +906,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $params = array_slice(func_get_args(), 2);
 
+        if (! isset($this->_tasks->commands[$id])) {
+            $this->_session->count = $this->_session->count + 1;
+        }
         $this->_tasks->commands[$id] = $this->_checkParams($method, $params);
-        $this->_session->count = count($this->_tasks->commands);
 
         return $this;
     }
@@ -847,7 +919,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      *
      * @param string $taskDir
      * @return \MUtil_Batch_BatchAbstract (continuation pattern)
-     */
+     * /
     public function setTaskDir($taskDir)
     {
         $this->taskDir = $taskDir;

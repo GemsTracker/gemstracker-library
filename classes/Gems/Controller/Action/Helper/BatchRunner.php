@@ -54,9 +54,9 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
     public function direct(MUtil_Batch_BatchAbstract $batch, $title)
     {
 
-        if (MUtil_Console::isConsole()) {
+        if ($batch->isConsole()) {
             $batch->runContinuous();
-            
+
             echo implode("\n", $batch->getMessages(true)) . "\n";
 
             if ($echo = MUtil_Echo::out()) {

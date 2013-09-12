@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -17,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -25,55 +26,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Task_Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ *
+ * @package    MUtil
+ * @subpackage Task
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: TaskInterface.php$
  */
 
 /**
- * Executes the syncSurveys method for a given sourceId
+ * The interface for a Task object. Task objects split large jobs into a number
+ * of serializeable small jobs that are stored in the session or elsewhere
+ * and that can be executed one job at a time split over multiple runs.
  *
- * @package    Gems
- * @subpackage Task_Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @package    MUtil
+ * @subpackage Task
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.2
+ * @since      Class available since MUtil version 1.3
  */
-class Gems_Task_Tracker_SourceSyncSurveys extends MUtil_Task_TaskAbstract
+interface MUtil_Task_TaskInterface
 {
-    /**
-     * @var Gems_Loader
-     */
-    public $loader;
-
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($id = null, $userId = null)
-    {
-        $batch  = $this->getBatch();
-        $source = $this->loader->getTracker()->getSource($id);
-        $source->setBatch($batch);
+    public function execute();
 
-        if (is_null($userId)) {
-            $userId = $this->loader->getCurrentUser()->getUserId();
-        }
-
-        $surveyCount = $batch->addToCounter('sourceSyncSources');
-        $batch->setMessage('sourceSyncSources', sprintf(
-                $this->plural('Check %s source', 'Check %s sources', $surveyCount),
-                $surveyCount
-                ));
-
-        if ($messages = $source->synchronizeSurveys($userId)) {
-            foreach ($messages as $message) {
-                $batch->addMessage($message);
-            }
-        }
-    }
+    /**
+     * Sets the batch this task belongs to
+     *
+     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * task. It allows the task to communicate with the batch queue.
+     *
+     * @param MUtil_Task_TaskBatch $batch
+     * @return MUtil_Task_TaskInterface (continuation pattern)
+     */
+    public function setBatch(MUtil_Task_TaskBatch $batch);
 }

@@ -46,19 +46,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Task_Tracker_CheckTrackRounds extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_CheckTrackRounds extends MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Tracker
+     * @var Gems_Loader
      */
-    public $tracker;
+    public $loader;
 
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($respTrackData = null, $userId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $respTrack     = $this->tracker->getRespondentTrack($respTrackData);
-        $engine        = $respTrack->getTrackEngine();
+        $batch     = $this->getBatch();
+        $tracker   = $this->loader->getTracker();
+        $respTrack = $tracker->getRespondentTrack($respTrackData);
+        $engine    = $respTrack->getTrackEngine();
 
-        $engine->checkRoundsFor($respTrack, $userId, $this->_batch);
+        $engine->checkRoundsFor($respTrack, $userId, $batch);
     }
 }

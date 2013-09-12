@@ -38,27 +38,10 @@
  *
  * @package    Gems
  * @subpackage Task
+ * @deprecated since version 1.6.2, moved to MUtil
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-interface Gems_Task_TaskInterface
-{
-    /**
-     * Should handle execution of the task, taking as much (optional) parameters as needed
-     *
-     * The parameters should be optional and failing to provide them should be handled by
-     * the task
-     */
-    public function execute();
-
-    /**
-     * Sets the batch this task belongs to
-     *
-     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
-     * task. It allows the task to communicate with the batch queue.
-     *
-     * @param Gems_Task_TaskRunnerBatch $batch
-     */
-    public function setBatch(Gems_Task_TaskRunnerBatch $batch);
-}
+interface Gems_Task_TaskInterface extends MUtil_Task_TaskInterface
+{ }

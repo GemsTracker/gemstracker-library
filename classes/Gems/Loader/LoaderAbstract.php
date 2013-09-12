@@ -97,13 +97,10 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
     {
         parent::__construct($container);
 
-        $this->_dirs = $dirs;
-
         if ($this->cascade) {
-            foreach ($dirs as $prefix => $path) {
-                $newdirs[$prefix . '_' . $this->cascade] = $path . '/' . strtr($this->cascade, '_', '/');
-            }
-            $this->_dirs = array ('' =>'') +  $newdirs; // Quick fix for fallback path
+            $this->_dirs = $this->_cascadedDirs($dirs, $this->cascade, true);
+        } else {
+            $this->_dirs = $dirs;
         }
 
         $this->_loader = new MUtil_Loader_PluginLoader($this->_dirs);
@@ -121,6 +118,35 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         }
 
         throw new Gems_Exception_Coding("Unknown property '$name' requested.");
+    }
+
+    /**
+     * Add a subdirectory / sub name to a list of class load paths
+     *
+     * @param array $dirs prefix => path
+     * @param string $cascade The sub directories to cascade to
+     * @param boolean $fullClassnameFallback Allows full class name specification instead of just plugin name part
+     * @return array prefix => path
+     */
+    protected function _cascadedDirs(array $dirs, $cascade, $fullClassnameFallback = true)
+    {
+        // Allow the use of the full class name instead of just the plugin part of the
+        // name during load.
+        if ($fullClassnameFallback) {
+            $newdirs = array('' =>'');
+        } else {
+            $newdirs = array();
+        }
+
+        $cascadePath = '/' . strtr($cascade, '_', '/');
+        $cascadeCls  = '_' . $cascade;
+        foreach ($dirs as $prefix => $path) {
+            // Do not cascade a full classname fallback
+            if ($prefix) {
+                $newdirs[$prefix . $cascadeCls] = $path . $cascadePath;
+            }
+        }
+        return $newdirs;
     }
 
     /**
@@ -183,7 +209,15 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
         return $obj;
     }
-    
+
+    /**
+     * Add prefixed paths to the registry of paths
+     *
+     * @param string $prefix
+     * @param mixed $paths String or an array of strings
+     * @param boolean $prepend Put path at the beginning of the stack (has no effect when prefix / dir already set)
+     * @return Gems_Loader_LoaderAbstract (continuation pattern)
+     */
     public function addPrefixPath($prefix, $path, $prepend = true) {
         if ($this->cascade) {
             $newPrefix = $prefix . '_' . $this->cascade;
@@ -192,7 +226,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
             $newPrefix = $prefix;
             $newPath = $path;
         }
-        
+
         if ($prepend) {
             $this->_dirs = array($newPrefix => $newPath) + $this->_dirs;
         } else {
@@ -204,5 +238,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
         if (MUtil_Registry_Source::$verbose) {
             MUtil_Echo::r($this->_dirs, '$this->_dirs in ' . get_class($this) . '->' . __FUNCTION__ . '():');
         }
+
+        return $this;
     }
 }

@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -42,32 +42,38 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_ProcessTokenCompletion extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_ProcessTokenCompletion extends MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Tracker
+     * @var Gems_Loader
      */
-    public $tracker;
+    public $loader;
 
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($tokenData = null, $userId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $token = $this->tracker->getToken($tokenData);
+        $batch   = $this->getBatch();
+        $tracker = $this->loader->getTracker();
+        $token   = $tracker->getToken($tokenData);
 
         if ($token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
 
             if ($result = $respTrack->handleRoundCompletion($token, $userId)) {
-                $this->_batch->addToCounter('roundCompletionCauses');
-                $this->_batch->addToCounter('roundCompletionChanges', $result);
+                $a = $batch->addToCounter('roundCompletionCauses');
+                $b = $batch->addToCounter('roundCompletionChanges', $result);
+                $batch->setMessage('roundCompletionChanges',
+                        sprintf($this->_('%d token round completion events caused changed to %d tokens.'), $a, $b)
+                        );
             }
 
             $trackId = $respTrack->getRespondentTrackId();
-            $this->_batch->setTask('Tracker_CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
-        }
-
-        if ($this->_batch->getCounter('roundCompletionChanges')) {
-            $this->_batch->setMessage('roundCompletionChanges', sprintf($this->translate->_('%d token round completion events caused changed to %d tokens.'), $this->_batch->getCounter('roundCompletionCauses'), $this->_batch->getCounter('roundCompletionChanges')));
+            $batch->setTask('Tracker_CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
         }
     }
 }

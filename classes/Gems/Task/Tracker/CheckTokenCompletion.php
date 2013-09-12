@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage TaskTracker
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -39,45 +39,56 @@
  * when needed.
  *
  * @package    Gems
- * @subpackage Task_Tracker
+ * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_CheckTokenCompletion extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_CheckTokenCompletion extends MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Tracker
+     * @var Gems_Loader
      */
-    public $tracker;
+    public $loader;
 
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($tokenData = null, $userId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $this->_batch->addToCounter('checkedTokens');
-        $token = $this->tracker->getToken($tokenData);
+        $batch   = $this->getBatch();
+        $tracker = $this->loader->getTracker();
+
+        $batch->addToCounter('checkedTokens');
+        $token = $tracker->getToken($tokenData);
 
         if ($result = $token->checkTokenCompletion($userId)) {
             if ($result & Gems_Tracker_Token::COMPLETION_DATACHANGE) {
-                $this->_batch->addToCounter('resultDataChanges');
+                $i = $batch->addToCounter('resultDataChanges');
+                $batch->setMessage('resultDataChanges', sprintf(
+                        $this->_('Results and timing changed for %d tokens.'),
+                        $i
+                        ));
             }
             if ($result & Gems_Tracker_Token::COMPLETION_EVENTCHANGE) {
-                $this->_batch->addToCounter('surveyCompletionChanges');
+                $i = $batch->addToCounter('surveyCompletionChanges');
+                $batch->setMessage('surveyCompletionChanges', sprintf(
+                        $this->_('Answers changed by survey completion event for %d tokens.'),
+                        $i
+                        ));
             }
         }
 
         if ($token->isCompleted()) {
-            $this->_batch->setTask('Tracker_ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
+            $batch->setTask('Tracker_ProcessTokenCompletion', 'tokproc-' . $token->getTokenId(), $tokenData, $userId);
         }
 
-        if ($this->_batch->getCounter('surveyCompletionChanges')) {
-            $this->_batch->setMessage('surveyCompletionChanges', sprintf($this->translate->_('Answers changed by survey completion event for %d tokens.'), $this->_batch->getCounter('surveyCompletionChanges')));
-        }
-
-        if ($this->_batch->getCounter('resultDataChanges')) {
-            $this->_batch->setMessage('resultDataChanges', sprintf($this->translate->_('Results and timing changed for %d tokens.'), $this->_batch->getCounter('resultDataChanges')));
-        }
-
-        $this->_batch->setMessage('checkedTokens', sprintf($this->translate->_('Checked %d tokens.'), $this->_batch->getCounter('checkedTokens')));
+        $batch->setMessage('checkedTokens', sprintf(
+                $this->_('Checked %d tokens.'),
+                $batch->getCounter('checkedTokens')
+                ));
     }
 }

@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -42,28 +42,35 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_CheckTrackTokens extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_CheckTrackTokens extends MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Tracker
+     * @var Gems_Loader
      */
-    public $tracker;
+    public $loader;
 
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($respTrackData = null, $userId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $respTrack = $this->tracker->getRespondentTrack($respTrackData);
-        $this->_batch->addToCounter('checkedRespondentTracks');
+        $batch     = $this->getBatch();
+        $tracker   = $this->loader->getTracker();
+        $respTrack = $tracker->getRespondentTrack($respTrackData);
+
+        $i = $batch->addToCounter('checkedRespondentTracks');
 
         if ($result = $respTrack->checkTrackTokens($userId)) {
-            $this->_batch->addToCounter('tokenDateCauses');
-            $this->_batch->addToCounter('tokenDateChanges', $result);
+            $a = $batch->addToCounter('tokenDateCauses');
+            $b = $batch->addToCounter('tokenDateChanges', $result);
+            $batch->setMessage('tokenDateChanges',
+                    sprintf($this->_('%2$d token date changes in %1$d tracks.'), $a, $b)
+                    );
         }
 
-        if ($this->_batch->getCounter('tokenDateChanges')) {
-                $this->_batch->setMessage('tokenDateChanges', sprintf($this->translate->_('%2$d token date changes in %1$d tracks.'), $this->_batch->getCounter('tokenDateCauses'), $this->_batch->getCounter('tokenDateChanges')));
-        }
-
-        $this->_batch->setMessage('checkedRespondentTracks', sprintf($this->translate->_('Checked %d tracks.'), $this->_batch->getCounter('checkedRespondentTracks')));
+        $batch->setMessage('checkedRespondentTracks', sprintf($this->_('Checked %d tracks.'), $i));
     }
 }

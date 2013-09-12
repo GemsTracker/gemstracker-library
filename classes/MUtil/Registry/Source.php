@@ -25,14 +25,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
- * @subpackage Registry
+ *
+ * 
+ * @package    MUtil
+ * @subpackage Task
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: Soruce.php$
  */
 
 /**
@@ -43,9 +43,11 @@
  *
  * @see MUtil_Registry_TargetInterface
  *
- * @author Matijs de Jong
- * @package MUtil
+ * @package    MUtil
  * @subpackage Registry
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.1
  */
 class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
 {

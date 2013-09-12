@@ -254,7 +254,14 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      */
     public function getTaskRunnerBatch($id)
     {
-        return $this->_loadClass('Task_TaskRunnerBatch', true, array($id));
+        $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array($id));
+
+        if ($taskBatch instanceof MUtil_Task_TaskBatch) {
+            $taskBatch->setSource($this);
+            $taskBatch->setTaskLoaderPrefixDirectories($this->_cascadedDirs($this->_dirs, 'Task'));
+        }
+
+        return $taskBatch;
     }
 
     /**

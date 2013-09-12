@@ -42,28 +42,39 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.2
  */
-class Gems_Task_Tracker_RefreshTokenAttributes extends Gems_Task_TaskAbstract
+class Gems_Task_Tracker_RefreshTokenAttributes extends MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Tracker
+     * @var Gems_Loader
      */
-    public $tracker;
+    public $loader;
 
+    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
     public function execute($tokenId = null)
     {
-        $this->tracker = $this->loader->getTracker();
-        $token = $this->tracker->getToken($tokenId);
+        $batch   = $this->getBatch();
+        $tracker = $this->loader->getTracker();
+        $token   = $tracker->getToken($tokenId);
 
-        $checked = $this->_batch->addToCounter('ta-checkedTokens');
+        $checked = $batch->addToCounter('ta-checkedTokens');
         if ($token->inSource()) {
             $survey = $token->getSurvey();
             if ($survey->copyTokenToSource($token, '')) {
-                $this->_batch->addToCounter('ta-changedTokens');
+                $batch->addToCounter('ta-changedTokens');
             }
         }
 
-        $cTokens = $this->_batch->getCounter('ta-changedTokens');
+        $cTokens = $batch->getCounter('ta-changedTokens');
 
-        $this->_batch->setMessage('ta-check', sprintf($this->translate->plural('%d token out of %d tokens changed.', '%d tokens out of %d tokens changed.', $cTokens), $cTokens, $checked));
+        $batch->setMessage('ta-check', sprintf(
+                $this->plural('%d token out of %d tokens changed.', '%d tokens out of %d tokens changed.', $cTokens),
+                $cTokens,
+                $checked
+                ));
     }
 }
