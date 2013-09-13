@@ -60,6 +60,7 @@ defined('GEMS_PROJECT_NAME_UC') || define('GEMS_PROJECT_NAME_UC', ucfirst(GEMS_P
 set_include_path(
     APPLICATION_PATH . '/classes' . PATH_SEPARATOR .
     GEMS_LIBRARY_DIR . '/classes' . PATH_SEPARATOR .
+    (defined('ZEND_LIBRARY_DIR') ? ZEND_LIBRARY_DIR . PATH_SEPARATOR : '') .
     get_include_path()
     );
 
