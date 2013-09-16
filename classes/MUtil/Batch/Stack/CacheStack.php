@@ -36,7 +36,9 @@
  */
 
 /**
- *
+ * A command stack that uses the cache system to store the data. The advantage over
+ * a session is that each sets of commands is stored in a separate file. meaning
+ * it does not lead to excessive session file sizes.
  *
  * @package    MUtil
  * @subpackage Batch
@@ -86,7 +88,7 @@ class MUtil_Batch_Stack_CacheStack extends MUtil_Batch_Stack_StackAbstract
     {
         // MUtil_Echo::track(count($this->_commands));
         if ($this->_commands) {
-            $this->_cache->save($this->_commands, $this->_cacheId, array('batch', 'sess_' . session_id()), null);
+            $this->_cache->save($this->_commands, $this->_cacheId, array('batch', 'sess_' . session_id()));
         } else {
             $this->_cache->remove($this->_cacheId);
         }

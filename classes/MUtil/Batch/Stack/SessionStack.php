@@ -36,7 +36,8 @@
  */
 
 /**
- *
+ * A default command stack that uses the session ot store the commands to
+ * execute.
  *
  * @package    MUtil
  * @subpackage Batch

@@ -769,7 +769,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     public function processCompletedTokens($respondentId, $userId = null, $orgId = null)
     {
         $userId = $this->_checkUserId($userId);
-        $tokenSelect = $this->getTokenSelect();
+        $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
         $tokenSelect->onlyActive()
                     ->forRespondent($respondentId)
                     ->andSurveys(array())
@@ -786,7 +786,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             //Process one row at a time to prevent out of memory errors for really big resultsets
             while ($tokenData  = $statement->fetch()) {
                 $tokenId = $tokenData['gto_id_token'];
-                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenData, $userId);
+                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
                 $batch->addToCounter('tokens');
             }
         }

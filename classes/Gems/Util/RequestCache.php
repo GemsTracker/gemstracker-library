@@ -184,7 +184,10 @@ class Gems_Util_RequestCache extends Gems_Registry_TargetAbstract
             $menu    = $this->getMenu();
             $request = $this->getRequest();
 
-            $programParams = array_diff($request->getParams(), $this->getRequestKey());
+            $programParams = $request->getParams();
+            foreach ($this->getRequestKey() as $key => $value) {
+                unset($programParams[$key]);
+            }
 
             if (isset($programParams[self::RESET_PARAM]) && $programParams[self::RESET_PARAM]) {
                 unset($this->session->requestCache[$this->_storageKey]);

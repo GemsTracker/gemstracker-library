@@ -61,12 +61,14 @@
  *
  * See MUtil_Batch_WaitBatch for example usage.
  *
- * A nice future extension would be to separate the storage engine used so we
+ * The storage engine used for the commands is separated from this object so we
  * could use e.g. Zend_Queue as an alternative for storing the command stack.
- * However, as this package needs more state info than available in Zend_Queue
- * we would need an extra extension for that.
+ * Currently MUtil_Batch_Stack_SessionStack is used by default.
+ * MUtil_Batch_Stack_CachStack can be used as well and has the advantage of
+ * storing all data in a separate file.
  *
  * @see MUtil_Task_TaskBatch
+ * @see MUtil_Batch_Stack_StackInterface
  * @see MUtil_Registry_TargetInterface
  * @see MUtil_Batch_WaitBatch
  *
