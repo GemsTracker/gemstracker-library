@@ -155,6 +155,18 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public $extraPushPaddingKb = 0;
 
     /**
+     * The number of bytes to pad for the first push communication in Kilobytes. If zero
+     * $extraPushPaddingKb is used.
+     *
+     * This is needed as many servers need extra output passing to avoid buffering.
+     *
+     * Also this allows you to keep the server buffer high while using this JsPush.
+     *
+     * @var int
+     */
+    public $initialPushPaddingKb = 0;
+
+    /**
      * The mode to use for the panel: PUSH or PULL
      *
      * @var string
@@ -198,6 +210,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @var string
      */
     public $progressParameterReportValue = 'report';
+
+    /**
+     * The value required for the progress panel to restart
+     *
+     * The value isn't used in itself, but having an empty value screws up the url
+     * interpretation.
+     *
+     * @var string
+     */
+    public $progressParameterRestartValue = 'restart';
 
     /**
      * The value required for the progress panel to start running
@@ -264,6 +286,26 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Signal an loop item has to be run again.
+     */
+    protected function _extraRun()
+    {
+        $this->_session->count = $this->_session->count + 1;
+        $this->_session->processed = $this->_session->processed + 1;
+    }
+
+    /**
+     * Helper function to complete the progressbar.
+     */
+    protected function _finishBar()
+    {
+        $this->_session->finished  = true;
+
+        $bar = $this->getProgressBar();
+        $bar->finish();
+    }
+
+    /**
      * Initialize persistent storage
      *
      * @param string $name The id of this batch
@@ -275,6 +317,14 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         if (! isset($this->_session->processed)) {
             $this->reset();
         }
+    }
+
+    /**
+     * Helper function to update the progressbar.
+     */
+    protected function _updateBar()
+    {
+        $this->getProgressBar()->update($this->getProgressPercentage(), $this->getLastMessage());
     }
 
     /**
@@ -501,7 +551,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
         // Check for extra padding
         if ($this->progressBarAdapter instanceof MUtil_ProgressBar_Adapter_JsPush) {
-            $this->progressBarAdapter->extraPaddingKb = $this->extraPushPaddingKb;
+            $this->progressBarAdapter->initialPaddingKb = $this->initialPushPaddingKb;
+            $this->progressBarAdapter->extraPaddingKb   = $this->extraPushPaddingKb;
         }
 
         return $this->progressBarAdapter;
@@ -528,7 +579,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $args = MUtil_Ra::args(func_get_args());
         $args['onclick'] = new MUtil_Html_OnClickArrayAttribute(
             new MUtil_Html_Raw('if (! this.disabled) {location.href = "'),
-            new MUtil_Html_HrefArrayAttribute(array($this->progressParameterName => null)),
+            new MUtil_Html_HrefArrayAttribute(
+                    array($this->progressParameterName => $this->progressParameterRestartValue)
+                    ),
             new MUtil_Html_Raw('";} this.disabled = true; event.cancelBubble=true;'));
 
         return new MUtil_Html_HtmlElement('button', $args);
@@ -543,7 +596,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public function getRestartLink($args_array = 'Restart')
     {
         $args = MUtil_Ra::args(func_get_args());
-        $args['href'] = array($this->progressParameterName => null);
+        $args['href'] = array($this->progressParameterName => $this->progressParameterRestartValue);
 
         return new MUtil_Html_AElement($args);
     }
@@ -653,19 +706,17 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 return false;
             }
 
-            $bar = $this->getProgressBar();
             while ($this->step()) {
                 // error_log('Cur: ' . microtime(true) . ' report is '. (microtime(true) > $reportRun ? 'true' : 'false'));
                 if ($this->_checkReport()) {
                     // Communicate progress
-                    $bar->update($this->getProgressPercentage(), $this->getLastMessage());
+                    $this->_updateBar();
                     return true;
                 }
             }
 
             // Only reached when at end of commands
-            $this->_session->finished  = true;
-            $bar->finish();
+            $this->_finishBar();
 
             // There is progressBar output
             return true;
@@ -701,17 +752,15 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
         // [Try to] remove the maxumum execution time for this session
         @ini_set("max_execution_time", 0);
+        @set_time_limit(0);
 
-        $bar = $this->getProgressBar();
         while ($this->step()) {
             if ($this->_checkReport()) {
                 // Communicate progress
-                $bar->update($this->getProgressPercentage(), $this->getLastMessage());
+                $this->_updateBar();
             }
         }
-        $this->_session->finished  = true;
-        $bar->update($this->getProgressPercentage(), $this->getLastMessage());
-        $bar->finish();
+        $this->_finishBar();
 
         return true;
     }

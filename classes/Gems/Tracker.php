@@ -821,6 +821,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $where = implode(' ', $tokenSelect->getSelect()->getPart(Zend_Db_Select::WHERE));
 
         $batch = $this->loader->getTaskRunnerBatch($batch_id);
+
         //Now set the step duration
         $batch->minimalStepDurationMs = 3000;
 

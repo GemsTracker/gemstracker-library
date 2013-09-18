@@ -58,7 +58,19 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Task_TaskBatch
      *
      * @var int
      */
-    public $extraPushPaddingKb = 4;
+    // public $extraPushPaddingKb = 0;
+
+     /**
+     * The number of bytes to pad for the first push communication in Kilobytes. If zero
+     * $extraPushPaddingKb is used.
+     *
+     * This is needed as many servers need extra output passing to avoid buffering.
+     *
+     * Also this allows you to keep the server buffer high while using this JsPush.
+     *
+     * @var int
+     */
+    // public $initialPushPaddingKb = 0;
 
     /**
      *
