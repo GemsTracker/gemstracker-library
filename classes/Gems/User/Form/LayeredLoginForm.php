@@ -98,6 +98,33 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
         return $organizations;
     }
+    
+    /**
+     * Returns the organization id that should currently be used for this form.
+     *
+     * @return int Returns the current organization id, if any
+     */
+    public function getCurrentOrganizationId()
+    {
+        $userLoader = $this->loader->getUserLoader();
+
+        // Url determines organization first.
+        if ($orgId = $userLoader->getOrganizationIdByUrl()) {
+            $this->_organizationFromUrl = true;
+            $userLoader->getCurrentUser()->setCurrentOrganization($orgId);
+            return $orgId;
+        }
+
+        $request = $this->getRequest();
+        if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
+            return $orgId;
+        }
+        
+        $orgs = array_keys($this->getChildOrganisations($this->getCurrentTopOrganizationId()));
+        $firstId = reset($orgs);
+
+        return $firstId;
+    }
 
     /**
      * Returns the top organization id that should currently be used for this form.
@@ -119,7 +146,9 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
             Gems_Cookies::set('gems_toporganization', $orgId);
             return $orgId;
         } else {
-            return Gems_Cookies::get($this->getRequest(), 'gems_toporganization', ' ');
+            $orgs = array_keys($this->getTopOrganisations());
+            $firstId = reset($orgs);
+            return Gems_Cookies::get($this->getRequest(), 'gems_toporganization', $firstId);
         }
     }
 
