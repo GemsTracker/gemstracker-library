@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Iterator_TextFileIterator implements Iterator
+class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
 {
     /**
      * The current value
@@ -71,6 +71,13 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
      * @var string
      */
     protected $_filename;
+
+    /**
+     * The position of the current item in the file
+     *
+     * @var int
+     */
+    protected $_filepos;
 
     /**
      * The function that maps the string to the output values
@@ -116,6 +123,9 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
      */
     public function current()
     {
+        if (! $this->_file instanceof SplFileObject) {
+            $this->rewind();
+        }
         return call_user_func($this->_mapFunction, trim($this->_file->current(), "\r\n"));
     }
 
@@ -150,12 +160,17 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
      */
     public function next()
     {
+        if (! $this->_file instanceof SplFileObject) {
+            $this->rewind();
+        }
+
         if (! $this->_valid) {
             return;
         }
 
         $this->_file->next();
         $this->_position++;
+        $this->_filepos = $this->_file->ftell();
 
         if (! ($this->_file->valid() && $this->_file->current())) {
             // $this->_current = false;
@@ -178,7 +193,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
         if (! $this->_file instanceof SplFileObject) {
             if (! file_exists($this->_filename)) {
                 $this->_valid = false;
-                return false;
+                return;
             }
 
             $this->_file      = new SplFileObject($this->_filename, 'r');
@@ -190,6 +205,44 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator
 
         // Go to the first line after the header
         $this->_position = -1;
+        $this->next();
+    }
+
+    /**
+     * Return the string representation of the object.
+     *
+     * @return string
+     */
+    public function serialize()
+    {
+        $data = array(
+            'filename' => $this->_filename,
+            'filepos'  => $this->_filepos,
+            'mapper'   => $this->_mapFunction,
+            'position' => $this->_position,
+            'valid'    => $this->_valid,
+        );
+
+        return Zend_Serializer::getDefaultAdapter()->serialize($data);
+    }
+
+    /**
+     * Called during unserialization of the object.
+     *
+     * @param string $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $data = Zend_Serializer::getDefaultAdapter()->unserialize($serialized);
+
+        $this->_filename    = $data['filename'];
+        $this->_mapFunction = $data['mapper'];
+
+        $this->rewind();
+
+        $this->_position = $data['position'] - 1;
+        $this->_valid    = $data['valid'];
+        $this->_file->fseek($data['filepos'], SEEK_SET);
         $this->next();
     }
 

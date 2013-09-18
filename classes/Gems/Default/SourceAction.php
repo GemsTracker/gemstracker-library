@@ -264,6 +264,31 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         return $this->_('Survey Sources');
     }
 
+    /*
+    public function indexAction()
+    {
+        $ses = new Zend_Session_Namespace('tmp');
+
+        // unset($ses->iter);
+        if (isset($ses->iter)) {
+            $iter = $ses->iter;
+        } else {
+            $model = new MUtil_Model_TabbedTextModel('D:\\Dev\\ErasmusMC\\depar\\uploads\\asz\\respondent.txt');
+            $iter = $model->loadIterator();
+        }
+        $iter->rewind();
+        if ($iter->valid()) {
+            MUtil_Echo::track($iter->key(), $iter->current());
+            $iter->next();
+            $ses->iter = $iter;
+        } else {
+            MUtil_Echo::track('Reached end of file');
+            unset($ses->iter);
+        }
+
+        parent::indexAction();
+    } // */
+
     public function pingAction()
     {
         $source = $this->getSourceById();
