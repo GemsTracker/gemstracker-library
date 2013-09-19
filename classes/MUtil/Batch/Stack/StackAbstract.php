@@ -56,13 +56,6 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     abstract protected function _addCommand(array $command, $id = null);
 
     /**
-     * Get the next command from the stack
-     *
-     * @return array $command Same as the array set in _addComman()
-     */
-    abstract protected function _getNextCommand();
-
-    /**
      * Add an execution step to the command stack.
      *
      * @param string $method Name of a method of the batch object
@@ -79,6 +72,21 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     }
 
     /**
+     * Return the next command
+     *
+     * @return array()
+     */
+    // public function getNext();
+
+    /**
+     * Run the next command
+     *
+     * @param mixed $batch Should be MUtil_Batch_BatchAbstract but could be changed in implementations
+     * @return void
+     */
+    // public function gotoNext($batch);
+
+    /**
      * Return true when there still exist unexecuted commands
      *
      * @return boolean
@@ -91,28 +99,6 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
      * @return \MUtil_Batch_Stack_Stackinterface (continuation pattern)
      */
     // public function reset()
-
-    /**
-     * Run the next command
-     *
-     * @param mixed $batch Should be MUtil_Batch_BatchAbstract but could be changed in implementations
-     * @return void
-     */
-    public function runNext($batch)
-    {
-        $command = $this->_getNextCommand();
-
-        if (! isset($command[0], $command[1])) {
-            throw new MUtil_Batch_BatchException("Invalid batch command: '$command'.");
-        }
-        list($method, $params) = $command;
-
-        if (! method_exists($batch, $method)) {
-            throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
-        }
-
-        call_user_func_array(array($batch, $method), $params);
-    }
 
     /**
      * Add/set an execution step to the command stack. Named to prevent double addition.

@@ -220,6 +220,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      *
      * @param int $seconds
      * @param string $message
+     * @return boolean true when the task has completed, otherwise task is rerun.
      */
     protected function waitFor($seconds, $message)
     {
@@ -233,6 +234,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
             }
         }
         $this->addMessage($message);
+        return true;
     }
 
     /**
@@ -240,6 +242,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
      *
      * @param int $microsSeconds
      * @param string $message
+     * @return boolean true when the task has completed, otherwise task is rerun.
      */
     protected function waitForMs($microsSeconds, $message)
     {
@@ -254,5 +257,7 @@ class MUtil_Batch_WaitBatch extends MUtil_Batch_BatchAbstract
         }
 
         $this->addMessage($message);
+
+        return true;
     }
 }

@@ -83,6 +83,16 @@ abstract class MUtil_Task_TaskAbstract extends MUtil_Translate_TranslateableAbst
     }
 
     /**
+     * Return true when the task has finished.
+     *
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return true;
+    }
+
+    /**
      * Sets the batch this task belongs to
      *
      * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the

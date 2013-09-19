@@ -36,7 +36,7 @@
  */
 
 /**
- *
+ * Interface for external storage of stack
  *
  * @package    MUtil
  * @subpackage Batch
@@ -63,19 +63,25 @@ interface MUtil_Batch_Stack_Stackinterface
     public function hasNext();
 
     /**
+     * Return the next command
+     *
+     * @return array 0 => command, 1 => params
+     */
+    public function getNext();
+
+    /**
+     * Run the next command
+     *
+     * @return void
+     */
+    public function gotoNext();
+
+    /**
      * Reset the stack
      *
      * @return \MUtil_Batch_Stack_Stackinterface (continuation pattern)
      */
     public function reset();
-
-    /**
-     * Run the next command
-     *
-     * @param mixed $batch Should be MUtil_Batch_BatchAbstract but could be changed in implementations
-     * @return void
-     */
-    public function runNext($batch);
 
     /**
      * Add/set an execution step to the command stack. Named to prevent double addition.

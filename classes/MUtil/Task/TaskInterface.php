@@ -57,6 +57,13 @@ interface MUtil_Task_TaskInterface
     public function execute();
 
     /**
+     * Return true when the task has finished.
+     *
+     * @return boolean
+     */
+    public function isFinished();
+
+    /**
      * Sets the batch this task belongs to
      *
      * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the

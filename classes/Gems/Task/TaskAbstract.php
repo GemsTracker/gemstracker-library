@@ -63,6 +63,27 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
     public $translate;
 
     /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
+     *
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     */
+    public function execute()
+    {
+
+    }
+
+    /**
+     * Return true when the task has finished.
+     *
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return true;
+    }
+
+    /**
      * Sets the batch this task belongs to
      *
      * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
@@ -73,16 +94,5 @@ abstract class Gems_Task_TaskAbstract extends MUtil_Registry_TargetAbstract impl
     public function setBatch(MUtil_Task_TaskBatch $batch)
     {
         $this->_batch = $batch;
-    }
-
-    /**
-     * Should handle execution of the task, taking as much (optional) parameters as needed
-     *
-     * The parameters should be optional and failing to provide them should be handled by
-     * the task
-     */
-    public function execute()
-    {
-
     }
 }

@@ -133,6 +133,7 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      *
      * @param string $task Class name of task
      * @param array $params Parameters used in the call to execute
+     * @return boolean true when the task has completed, otherwise task is rerun.
      * @throws Gems_Exception
      */
     public function runTask($task, array $params = array())
@@ -145,9 +146,31 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
         if ($taskObject instanceof MUtil_Task_TaskInterface) {
             $taskObject->setBatch($this);
             call_user_func_array(array($taskObject, 'execute'), $params);
+
+            return $taskObject->isFinished();
         } else {
             throw new Gems_Exception(sprintf('ERROR: Task by name %s not found', $task));
         }
+    }
+
+    /**
+     * Store a variable in the session store.
+     *
+     * @param string $name Name of the variable
+     * @param mixed $variable Something that can be serialized
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setSessionVariable($name, $variable)
+    {
+        $exists = $this->getSessionVariables();
+
+        parent::setSessionVariable($name, $variable);
+
+        if ($this->source && (! $exists)) {
+            $this->source->addRegistryContainer($this->getSessionVariables(), 'source');
+        }
+
+        return $this;
     }
 
     /**
@@ -159,6 +182,15 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     public function setSource(MUtil_Registry_SourceInterface $source)
     {
         $this->source = $source;
+
+        $session = $this->getSessionVariables();
+        if ($session) {
+            $this->source->addRegistryContainer($session, 'source');
+        }
+        if ($this->variables) {
+            $this->source->addRegistryContainer($this->variables, 'variables');
+        }
+
         return $this;
     }
 
@@ -199,6 +231,28 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
     public function setTaskLoaderPrefixDirectories(array $dirs)
     {
         $this->taskLoaderDirs = $dirs;
+        return $this;
+    }
+
+    /**
+     * Store a variable in the general store.
+     *
+     * These variables have to be reset for every run of the batch.
+     *
+     * @param string $name Name of the variable
+     * @param mixed $variable Something that can be serialized
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setVariable($name, $variable)
+    {
+        $notExists = null == $this->variables;
+
+        parent::setVariable($name, $variable);
+
+        if ($this->source && $notExists) {
+            $this->source->addRegistryContainer($this->getSessionVariables(), 'variables');
+        }
+
         return $this;
     }
 }

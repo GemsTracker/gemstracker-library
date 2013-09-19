@@ -115,13 +115,23 @@ class MUtil_Batch_Stack_CacheStack extends MUtil_Batch_Stack_StackAbstract
     }
 
     /**
-     * Get the next command from the stack
+     * Return the next command
      *
-     * @return array $command Same as the array set in _addCommand()
+     * @return array 0 => command, 1 => params
      */
-    protected function _getNextCommand()
+    public function getNext()
     {
-        return array_shift($this->_commands);
+        return reset($this->_commands);
+    }
+
+    /**
+     * Run the next command
+     *
+     * @return void
+     */
+    public function gotoNext()
+    {
+        array_shift($this->_commands);
     }
 
     /**

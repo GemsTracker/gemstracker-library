@@ -308,7 +308,7 @@ interface Gems_Tracker_TrackerInterface
      *
      * @param int $sourceId A source identifier
      * @param int $userId Id of the user who takes the action (for logging)
-     * @return Gems_Tracker_Batch_SynchronizeSourcesBatch A batch to process the synchronization
+     * @return Gems_Task_TaskRunnerBatchs A batch to process the synchronization
      */
     public function synchronizeSources($sourceId = null, $userId = null);
 

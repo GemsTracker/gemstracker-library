@@ -42,7 +42,7 @@
  * The abstract batch handles the command stack, keeping track of batch specific
  * counters and messages and the communication to the end user including display
  * of any messages set during execution and reporting back execution errors
- * occured during a run, e.g. when an job throws an exception during execution.
+ * occured during a run, e.g. when a job throws an exception during execution.
  *
  * The prefereed method to use this object is to write multiple small jobs using
  * MUtil_Task_TaskInterface and then use MUtil_Task_TaskBatch to execute these
@@ -54,7 +54,8 @@
  *
  * The other option use this package by creating a sub class of this class and write
  * the methods that run the code to be executed (and then write the code that adds
- * those functions to be executed).
+ * those functions to be executed). The functions need to return a true value
+ * when they completed successfully, otherwise they will be repeated until they do.
  *
  * Each step in the sequence consists of a method name of the child object
  * and any number of scalar variables and array's containing scalar variables.
@@ -234,6 +235,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      * @var MUtil_Batch_Stack_Stackinterface
      */
     protected $stack;
+
+    /**
+     * The place to store new variables for the source
+     *
+     * @var ArrayObject
+     */
+    protected $variables;
 
     /**
      *
@@ -602,6 +610,33 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Return a variable from the session store.
+     *
+     * @param string $name Name of the variable
+     * @return mixed (continuation pattern)
+     */
+    public function getSessionVariable($name)
+    {
+        if (isset($this->_session->source, $this->_session->source[$name])) {
+            return $this->_session->source[$name];
+        }
+        return null;
+    }
+
+    /**
+     * Return the variables from the session store.
+     *
+     * @return ArrayObject or null
+     */
+    protected function getSessionVariables()
+    {
+        if (isset($this->_session->source)) {
+            return $this->_session->source;
+        }
+        return null;
+    }
+
+    /**
      * Returns a button that can be clicked to start the progress bar.
      *
      * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with
@@ -614,6 +649,42 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 'Start();} this.disabled = true; event.cancelBubble=true;';
 
         return new MUtil_Html_HtmlElement('button', $args);
+    }
+
+    /**
+     * Return a variable from the general store or from the session store if it exist there.
+     *
+     * @param string $name Name of the variable
+     * @return mixed (continuation pattern)
+     */
+    public function getVariable($name)
+    {
+        if (isset($this->variables[$name])) {
+            return $this->variables[$name];
+        }
+        return $this->getSessionVariable($name);
+    }
+
+    /**
+     * Return whether a session variable exists in the session store.
+     *
+     * @param string $name Name of the variable
+     * @return boolean
+     */
+    public function hasSessionVariable($name)
+    {
+        return isset($this->_session->source, $this->_session->source[$name]);
+    }
+
+    /**
+     * Return whether a variable exists the general store or in the session store.
+     *
+     * @param string $name Name of the variable
+     * @return boolean
+     */
+    public function hasVariable($name)
+    {
+        return isset($this->variables[$name]) || $this->hasSessionVariable($name);
     }
 
     /**
@@ -902,6 +973,23 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Store a variable in the session store.
+     *
+     * @param string $name Name of the variable
+     * @param mixed $variable Something that can be serialized
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setSessionVariable($name, $variable)
+    {
+        if (! isset($this->_session->source)) {
+            $this->_session->source = new ArrayObject();
+        }
+
+        $this->_session->source[$name] = $variable;
+        return $this;
+    }
+
+    /**
      * Add/set an execution step to the command stack. Named to prevent double addition.
      *
      * @param string $method Name of a method of this object
@@ -925,6 +1013,25 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Store a variable in the general store.
+     *
+     * These variables have to be reset for every run of the batch.
+     *
+     * @param string $name Name of the variable
+     * @param mixed $variable Something that can be serialized
+     * @return \MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function setVariable($name, $variable)
+    {
+        if (null === $this->variables) {
+            $this->variables = new ArrayObject();
+        }
+
+        $this->variables[$name] = $variable;
+        return $this;
+    }
+
+    /**
      * Progress a single step on the command stack
      *
      * @return boolean
@@ -935,7 +1042,21 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             $this->_session->processed = $this->_session->processed + 1;
 
             try {
-                $this->stack->runNext($this);
+                $command = $this->stack->getNext();
+                if (! isset($command[0], $command[1])) {
+                    throw new MUtil_Batch_BatchException("Invalid batch command: '$command'.");
+                }
+                list($method, $params) = $command;
+
+                if (! method_exists($this, $method)) {
+                    throw new MUtil_Batch_BatchException("Invalid batch method: '$method'.");
+                }
+
+                if (call_user_func_array(array($this, $method), $params)) {
+                    $this->stack->gotoNext();
+                } else {
+                    $this->_session->count = $this->_session->count + 1;
+                }
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
                 $this->addMessage('While calling:' . $command['method'] . '(' . implode(',', MUtil_Ra::flatten($command['parameters'])) . ')');
