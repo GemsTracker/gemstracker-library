@@ -116,12 +116,27 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     public function setTargetModel(MUtil_Model_ModelAbstract $targetModel);
 
     /**
-     * Perform all the translations in the data set.
+     * Prepare for the import.
      *
-     * This code does not validate the individual inputs, but does check the ovrall structure of the input
-     *
-     * @param array $data a nested data set as loaded from the source model
-     * @return mixed Nested row array or false when errors occurred
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function translateImport(array $data);
+    public function startImport();
+    
+    /**
+     * Perform any translations necessary for the code to work
+     *
+     * @param mixed $row array or Traversable row
+     * @param scalar $key
+     * @return mixed Row array or false when errors occurred
+     */
+    public function translateRowValues($row, $key);
+
+    /**
+     * Validate the data against the target form
+     *
+     * @param array $row
+     * @param scalar $key
+     * @return mixed Row array or false when errors occurred
+     */
+    public function validateRowValues(array $row, $key);
 }

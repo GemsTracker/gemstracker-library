@@ -85,11 +85,11 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param array $row
+     * @param mixed $row array or Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */
-    protected function translateRowValues($row, $key)
+    public function translateRowValues($row, $key)
     {
         $row = parent::translateRowValues($row, $key);
 

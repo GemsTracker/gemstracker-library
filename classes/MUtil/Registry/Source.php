@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    MUtil
  * @subpackage Task
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -117,8 +117,11 @@ class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
         }
         if (is_array($container)) {
             $container = new ArrayObject($container);
+        }
+        if ($container instanceof ArrayObject) {
             $container->setFlags(ArrayObject::ARRAY_AS_PROPS);
         }
+
         // Always append in reverse order
         if (null === $name) {
             array_unshift($this->_containers, $container);

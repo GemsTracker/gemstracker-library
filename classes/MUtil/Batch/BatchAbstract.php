@@ -831,6 +831,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 $this->_updateBar();
             }
         }
+        $this->_updateBar();
         $this->_finishBar();
 
         return true;
@@ -1039,7 +1040,6 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     protected function step()
     {
         if ($this->stack->hasNext()) {
-            $this->_session->processed = $this->_session->processed + 1;
 
             try {
                 $command = $this->stack->getNext();
@@ -1057,11 +1057,14 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                 } else {
                     $this->_session->count = $this->_session->count + 1;
                 }
+                $this->_session->processed = $this->_session->processed + 1;
+
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
-                $this->addMessage('While calling:' . $command['method'] . '(' . implode(',', MUtil_Ra::flatten($command['parameters'])) . ')');
+                $this->addMessage('While calling:' . $command[0] . '(' . implode(',', MUtil_Ra::flatten($command[1])) . ')');
                 $this->addMessage($e->getMessage());
 
+                $this->stack->gotoNext();
                 //MUtil_Echo::track($e);
             }
             return true;

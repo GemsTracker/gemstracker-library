@@ -79,6 +79,13 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected $longtermFilename;
 
     /**
+     * Registry source
+     *
+     * @var MUtil_Registry_SourceInterface
+     */
+    protected $registrySource;
+
+    /**
      * Model to read import
      *
      * @var MUtil_Model_ModelAbstract
@@ -139,6 +146,43 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @param MUtil_Task_TaskBatch $batch Optional batch with different source etc..
+     * @return MUtil_Task_TaskBatch
+     */
+    public function getCheckImportBatch(MUtil_Task_TaskBatch $batch = null)
+    {
+        if (null === $batch) {
+            $batch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . $this->sourceModel->getName());
+            $this->registrySource->applySource($batch);
+            $batch->setSource($this->registrySource);
+        }
+
+        $importTranslator = $this->getImportTranslator();
+        $importTranslator->setTargetModel($this->getTargetModel());
+
+        // $batch->autoStart = true;
+        $batch->addTask('Import_StartImportTranslatorTask');
+        $batch->addTask('Import_ImportCheckTask');
+        $batch->setVariable('modelTranslator', $importTranslator);
+
+        $iter = $this->getSourceModel()->loadIterator();
+
+        if (($iter instanceof Iterator) && ($iter instanceof Serializable)) {
+            $batch->setSessionVariable('iterator', $iter);
+        } else {
+            $batch->setVariable('iterator', $iter);
+
+            if ($batch->isPull()) {
+                // Cannot pull when iterator is not serializable
+                $batch->setMethodPush();
+            }
+        }
+
+        return $batch;
+    }
+
+    /**
      * Get the final directory for when the data could not be imported.
      *
      * If empty the file is thrown away after the failure.
@@ -170,6 +214,16 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     public function getLongtermFilename()
     {
         return $this->longtermFilename;
+    }
+
+    /**
+     * Get the data source for items created this importer (if any)
+     *
+     * @return MUtil_Registry_SourceInterface
+     */
+    public function getRegistrySource()
+    {
+        return $this->registrySource;
     }
 
     /**
@@ -247,6 +301,18 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             }
         }
         $this->importTranslator = $translator;
+        return $this;
+    }
+
+    /**
+     * Set the data source for items created this importer
+     *
+     * @param MUtil_Registry_SourceInterface $source
+     * @return \MUtil_Model_Importer (continuation pattern)
+     */
+    public function setRegistrySource(MUtil_Registry_SourceInterface $source)
+    {
+        $this->registrySource = $source;
         return $this;
     }
 

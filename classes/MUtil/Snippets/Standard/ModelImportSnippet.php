@@ -344,6 +344,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
             $source = new MUtil_Registry_Source(get_object_vars($this));
             $source->applySource($this->importer);
+            $this->importer->setRegistrySource($source);
         }
 
         if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
@@ -831,6 +832,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->importer->setSourceFile($this->request->getParam('file'));
             $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
 
+            // MUtil_Registry_Source::$verbose = true;
+            $batch = $this->importer->getCheckImportBatch();
+            $batch->runContinuous();
+
+            if ($batch->getMessages(false)) {
+                echo implode("\n", $batch->getMessages()) . "\n";
+            }
+
+
         } catch (Exception $e) {
             $messages[] = "IMPORT ERROR!";
             $messages[] = $e->getMessage();
@@ -851,8 +861,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     $this->defaultImportTranslator
                     );
             echo implode("\n", $messages) . "\n";
-            exit();
         }
+        echo MUtil_Console::removeHtml(MUtil_Echo::out());
         exit();
         // */
         $file = $this->request->getParam('file');

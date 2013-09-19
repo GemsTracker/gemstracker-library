@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -26,51 +26,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Loader
+ *
+ * @package    MUtil
+ * @subpackage Task_Import
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: StartImportTranslatorTask.php$
  */
 
 /**
- * TargetLoaderAbstract is used for classes that chain from Gems_Loader but are
- * also a target themselves.
  *
- * As these classes may need setting of values this subclass implements the
- * checkRegistryRequestsAnswers() easy access to resources.
  *
- * @package    Gems
- * @subpackage Loader
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @package    MUtil
+ * @subpackage Task_Import
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.1
+ * @since      Class available since MUtil version 1.3
  */
-class Gems_Loader_TargetLoaderAbstract extends Gems_Loader_LoaderAbstract implements MUtil_Registry_TargetInterface
+class MUtil_Task_Import_StartImportTranslatorTask extends MUtil_Task_TaskAbstract
 {
     /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
      *
-     * @return void
+     * @var MUtil_Model_ModelTranslatorInterface
      */
-    public function afterRegistry()
-    { }
-
-    /**
-     * Allows the loader to set resources.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        $this->$name = $resource;
-
-        return true;
-    }
+    protected $modelTranslator;
 
     /**
      * Should be called after answering the request to allow the Target
@@ -80,34 +60,18 @@ class Gems_Loader_TargetLoaderAbstract extends Gems_Loader_LoaderAbstract implem
      */
     public function checkRegistryRequestsAnswers()
     {
-        return true;
+        return ($this->modelTranslator instanceof MUtil_Model_ModelTranslatorInterface) &&
+            parent::checkRegistryRequestsAnswers();
     }
 
     /**
-     * Filters the names that should not be requested.
+     * Should handle execution of the task, taking as much (optional) parameters as needed
      *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
      */
-    protected function filterRequestNames($name)
+    public function execute()
     {
-        return '_' !== $name[0];
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * Returns those object variables defined by the subclass but not at the level of this definition.
-     *
-     * Can be overruled.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        // Filter using the $this->filterRequestNames() callback
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
+        $this->modelTranslator->startImport();
     }
 }

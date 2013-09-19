@@ -134,13 +134,15 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      * @param string $task Class name of task
      * @param array $params Parameters used in the call to execute
      * @return boolean true when the task has completed, otherwise task is rerun.
-     * @throws Gems_Exception
+     * @throws MUtil_Batch_BatchException
      */
     public function runTask($task, array $params = array())
     {
         $taskObject = $this->getTaskLoader()->createClass($task);
         if ($taskObject instanceof MUtil_Registry_TargetInterface) {
-            $this->getSource()->applySource($taskObject);
+            if (!$this->getSource()->applySource($taskObject)) {
+                throw new MUtil_Batch_BatchException(sprintf('ERROR: Parameters failed to load for task %s.', $task));
+            }
         }
 
         if ($taskObject instanceof MUtil_Task_TaskInterface) {
@@ -148,8 +150,9 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
             call_user_func_array(array($taskObject, 'execute'), $params);
 
             return $taskObject->isFinished();
+
         } else {
-            throw new Gems_Exception(sprintf('ERROR: Task by name %s not found', $task));
+            throw new MUtil_Batch_BatchException(sprintf('ERROR: Task by name %s not found', $task));
         }
     }
 
@@ -245,12 +248,12 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function setVariable($name, $variable)
     {
-        $notExists = null == $this->variables;
+        $notExists = null === $this->variables;
 
         parent::setVariable($name, $variable);
 
         if ($this->source && $notExists) {
-            $this->source->addRegistryContainer($this->getSessionVariables(), 'variables');
+            $this->source->addRegistryContainer($this->variables, 'variables');
         }
 
         return $this;

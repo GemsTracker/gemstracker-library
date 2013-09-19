@@ -49,6 +49,15 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     implements MUtil_Model_ModelTranslatorInterface
 {
     /**
+     * Default values for the columns
+     *
+     * Set by startImport().
+     *
+     * @var array
+     */
+    private $_defaultValues = array();
+
+    /**
      * A description that enables users to choose the transformer they need.
      *
      * @var string
@@ -60,6 +69,35 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * @var array
      */
     protected $_errors = array();
+
+    /**
+     * Local copy of keys of getFieldsTranslation() for speedup.
+     *
+     * Set by startImport().
+     *
+     * @var array
+     */
+    private $_fieldKeys = array();
+
+    /**
+     * Local copy of getFieldsTranslation() for speedup.
+     *
+     * Set by startImport().
+     *
+     * @var array
+     */
+    private $_fieldMap = array();
+
+    /**
+     * Is mapping of fieldnames required.
+     *
+     * (Yes unless all names are the same, as in StraightTranslator.)
+     *
+     * Set by startImport().
+     *
+     * @var boolean
+     */
+    private $_mapRequired = null;
 
     /**
      * The source of the data
@@ -161,7 +199,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     protected function _makeTargetForm()
     {
-        $form   = $this->_createTargetForm();
+        $form = $this->_createTargetForm();
         $form->setTranslator($this->translate);
 
         $bridge = new MUtil_Model_FormBridge($this->_targetModel, $form);
@@ -175,6 +213,49 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         }
 
         return $form;
+    }
+
+    /**
+     * Default preparation for row import.
+     *
+     * @param mixed $row array or Traversable row
+     * @param scalar $key
+     * @return array or boolean
+     * @throws MUtil_Model_ModelException
+     */
+    protected function _prepareRow($row, $key)
+    {
+        if (null === $this->_mapRequired) {
+            throw new MUtil_Model_ModelException("Trying to transalte without call to startImport().");
+        }
+
+        if ($row instanceof Traversable) {
+            $row = iterator_to_array($row);
+        }
+
+        if (! (is_array($row) && $row)) {
+            // Do not bother with non array data
+            return false;
+        }
+
+        $rowMap = array_intersect($this->_fieldKeys, array_keys($row));
+        if (! $rowMap) {
+            $this->_errors[$key][] = $this->_("No field overlap between source and target");
+            return false;
+        }
+
+        if ($this->_mapRequired) {
+            // This does keep the original values. That is intentional.
+            foreach ($rowMap as $source) {
+                $row[$this->_fieldMap[$source]] = $row[$source];
+            }
+        }
+
+        if ($this->_defaultValues) {
+            $row = $row + $this->_defaultValues;
+        }
+
+        return $row;
     }
 
     /**
@@ -347,7 +428,8 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     public function setTargetModel(MUtil_Model_ModelAbstract $targetModel)
     {
-        $this->_targetModel = $targetModel;
+        $this->_targetModel    = $targetModel;
+
         return $this;
     }
 
@@ -366,59 +448,52 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
+     * Prepare for the import.
+     *
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function startImport()
+    {
+        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
+            throw new MUtil_Model_ModelException("Trying to start the import without target model.");
+        }
+
+        // Clear errors
+        $this->_errors = array();
+
+        $this->_fieldMap       = $this->getFieldsTranslations();
+        $this->_fieldKeys      = array_keys($this->_fieldMap);
+        $this->_mapRequired    = $this->_fieldKeys !== array_values($this->_fieldMap);
+        $this->_defaultValues  = array_intersect_key(
+                $this->_targetModel->getCol('default'),
+                array_flip($this->_fieldMap)
+                );
+
+        // Make sure the target form is set (unless overruled by child class)
+        $this->getTargetForm();
+
+        return $this;
+    }
+
+    /**
      * Perform all the translations in the data set.
      *
      * This code does not validate the individual inputs, but does check the ovrall structure of the input
      *
-     * @param Traversable $data a nested data set as loaded from the source model
+     * @param Traversable|array $data a nested data set as loaded from the source model
      * @return mixed Nested row array or false when errors occurred
      */
-    public function translateImport(array $data)
-    // public function translateImport(Traversable $data)
+    public function translateImport($data)
     {
-        // Clear errors
-        $this->_errors = array();
+        $this->startImport();
 
-        $defaults    = $this->_targetModel->getCol('default');
-        $fieldMap    = $this->getFieldsTranslations();
-        $fieldKeys   = array_keys($fieldMap);
-        $mapRequired = $fieldKeys !== array_values($fieldMap);
-        $results     = array();
+        $results = array();
 
-        $defaults = array_intersect_key($defaults, array_flip($fieldMap));
-
-        // Make sure the target form is set (unless overruled bu child class)
-        $this->getTargetForm();
-
-        foreach($data as $key => $row) {
-            if ($row instanceof Traversable) {
-                $row = iterator_to_array($row);
-
-                // print_r($row);
-            }
-
-            if (! (is_array($row) && $row)) {
-                // Do not bother with non array data
-                continue;
-            }
-
-            $rowMap = array_intersect($fieldKeys, array_keys($row));
-            if (! $rowMap) {
-                $this->_errors[$key][] = $this->_("No field overlap between source and target");
-                return false;
-            }
-
-            if ($mapRequired) {
-                // This does keep the original values. That is intentional.
-                foreach ($rowMap as $source) {
-                    $row[$fieldMap[$source]] = $row[$source];
-                }
-            }
-            $row = $row + $defaults;
+        foreach ($data as $key => $row) {
 
             $row = $this->translateRowValues($row, $key);
 
-            if ($row && $this->targetForm instanceof Zend_Form) {
+            if ($row) {
                 $row = $this->validateRowValues($row, $key);
             }
 
@@ -432,13 +507,17 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Perform any translations necessary for the code to work
      *
-     * @param array $row
+     * @param mixed $row array or Traversable row
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */
-    protected function translateRowValues(array $row, $key)
+    public function translateRowValues($row, $key)
     {
-        array_walk($row, array($this, 'filterBasic'));
+        $row = $this->_prepareRow($row, $key);
+
+        if ($row) {
+            array_walk($row, array($this, 'filterBasic'));
+        }
 
         return $row;
     }
@@ -450,8 +529,12 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * @param scalar $key
      * @return mixed Row array or false when errors occurred
      */
-    protected function validateRowValues(array $row, $key)
+    public function validateRowValues(array $row, $key)
     {
+        if (! $this->targetForm instanceof Zend_Form) {
+            return $row;
+        }
+
         // Clean up lingering values
         $this->targetForm->clearErrorMessages()
                 ->populate(array());

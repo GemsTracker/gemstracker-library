@@ -211,7 +211,6 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         $this->_current  = null;
 
         if (! ($this->_file->valid() && $this->_file->current())) {
-            // $this->_current = false;
             $this->_valid   = false;
             return;
         }

@@ -72,7 +72,7 @@ interface MUtil_Registry_TargetInterface
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
-     * @return boolean False if required are missing.
+     * @return boolean False if required values are missing.
      */
     public function checkRegistryRequestsAnswers();
 
