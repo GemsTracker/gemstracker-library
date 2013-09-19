@@ -273,10 +273,11 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         if (isset($ses->iter)) {
             $iter = $ses->iter;
         } else {
-            $model = new MUtil_Model_TabbedTextModel('D:\\Dev\\ErasmusMC\\depar\\uploads\\asz\\respondent.txt');
-            $iter = $model->loadIterator();
+            // $model = new MUtil_Model_TabbedTextModel('D:\\Dev\\ErasmusMC\\depar\\uploads\\asz\\respondent.txt');
+            $model = new MUtil_Model_TabbedTextModel('C:\\Dev\\depar\\uploads\\asz\\respondent.txt');
+            $iter  = $model->loadIterator();
         }
-        $iter->rewind();
+        // $iter->rewind();
         if ($iter->valid()) {
             MUtil_Echo::track($iter->key(), $iter->current());
             $iter->next();

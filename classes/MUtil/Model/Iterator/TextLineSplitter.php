@@ -32,11 +32,14 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TabbedTextModel.php$
+ * @version    $Id: TextLineSplitter.php$
  */
 
 /**
+ * Helper function to prevent having to use the whole model to serialize
+ * a TextFileIterator.
  *
+ * @see MUtil_Model_Iterator_TextFileIterator
  *
  * @package    MUtil
  * @subpackage Model
@@ -44,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_TabbedTextModel extends MUtil_Model_ArrayModelAbstract
+class MUtil_Model_Iterator_TextLineSplitter
 {
     /**
      * The content file encoding
@@ -54,57 +57,43 @@ class MUtil_Model_TabbedTextModel extends MUtil_Model_ArrayModelAbstract
     protected $_encoding;
 
     /**
-     * The name of the content file
+     * The regular expression for the split
      *
      * @var string
      */
-    protected $_fileName;
-
-    /**
-     * The regular expression for split
-     *
-     * @var string
-     */
-    protected $split = "\t";
+    protected $_split = "\t";
 
     /**
      *
-     * @param string $fileName Name fe the file
+     * @param string $split The regular expression for the split
      * @param string $encoding An encoding to use
      */
-    public function __construct($fileName, $encoding = null)
+    public function __construct($split, $encoding)
     {
-        parent::__construct($fileName);
-
-        $this->_fileName = $fileName;
-
-        if ($encoding && ($encoding !== mb_internal_encoding())) {
-            $this->_encoding = $encoding;
-        }
+        $this->_encoding = $encoding;
+        $this->_split    = $split;
     }
 
     /**
-     * An ArrayModel assumes that (usually) all data needs to be loaded before any load
-     * action, this is done using the iterator returned by this function.
+     * Splits the line
      *
-     * @return Traversable Return an iterator over or an array of all the rows in this object
+     * @param array $line
+     * @return array
      */
-    protected function _loadAllTraversable()
+    public function split($line)
     {
-        $splitObject = new MUtil_Model_Iterator_TextLineSplitter($this->split, $this->_encoding);
-        if ($this->_encoding) {
-            $splitFunc = array($splitObject, 'splitRecoded');
-        } else {
-            $splitFunc = array($splitObject, 'split');
-        }
+        return explode($this->_split, $line);
+    }
 
-        $iterator = new MUtil_Model_Iterator_TextFileIterator($this->_fileName, $splitFunc);
-
-        // Store the positions in the model
-        foreach ($iterator->getFieldMap() as $pos => $name) {
-            $this->set($name, 'read_position', $pos);
-        }
-
-        return $iterator;
+    /**
+     * Recodes and splits the line
+     *
+     * @param array $line
+     * @return array
+     */
+    public function splitRecoded($line)
+    {
+        $line = mb_convert_encoding($line, mb_internal_encoding(), $this->_encoding);
+        return explode($this->_split, $line);
     }
 }

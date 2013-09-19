@@ -136,6 +136,12 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
         if ($data instanceof IteratorAggregate) {
             $data = $data->getIterator();
         }
+
+        // If nothing to filter
+        if (! $filters) {
+            return $data;
+        }
+
         if ($data instanceof Iterator) {
             return new MUtil_Model_Iterator_ArrayModelFilterIterator($data, $this, $filters);
         }
@@ -371,7 +377,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
         $data = $this->_loadAllTraversable();
 
         if ($data && $filter) {
-            $data = $this->_filterData($data, $filter);
+            $data = $this->_filterData($data, $this->_checkFilterUsed($filter));
         }
 
         if ($this->_checkSortUsed($sort)) {

@@ -47,17 +47,22 @@
 class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
 {
     /**
-     * The current value
      *
      * @var array
      */
-    // protected $_current;
+    protected $_current;
 
     /**
      *
      * @var SplFileObject
      */
     protected $_file;
+
+    /**
+     *
+     * @var array
+     */
+    protected $_fieldMap;
 
     /**
      *
@@ -80,11 +85,11 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     protected $_filepos;
 
     /**
-     * The function that maps the string to the output values
+     * The function that splits the input string into an array
      *
      * @var callable
      */
-    protected $_mapFunction;
+    protected $_splitFunction;
 
     /**
      * The current position used for the key
@@ -104,15 +109,15 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      * Initiate this line by line file iterator
      *
      * @param string $filename
-     * @param callable $mapFunction function(string currentLine, string firstLine) => named row array
+     * @param callable $splitFunction function(string currentLine) => row array. Used on first line to get mapping
      */
-    public function __construct($filename, $mapFunction)
+    public function __construct($filename, $splitFunction)
     {
-        $this->_filename    = $filename;
-        $this->_mapFunction = $mapFunction;
+        $this->_filename      = $filename;
+        $this->_splitFunction = $splitFunction;
 
-        if (!is_callable($mapFunction)) {
-            throw new MUtil_Model_ModelException(__CLASS__ . " needs a callable mapFunction argument.");
+        if (!is_callable($splitFunction)) {
+            throw new MUtil_Model_ModelException(__CLASS__ . " needs a callable splitFunction argument.");
         }
     }
 
@@ -123,10 +128,42 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function current()
     {
+        if (null !== $this->_current) {
+            return $this->_current;
+        }
+
         if (! $this->_file instanceof SplFileObject) {
             $this->rewind();
         }
-        return call_user_func($this->_mapFunction, trim($this->_file->current(), "\r\n"));
+
+        $fields = call_user_func($this->_splitFunction, trim($this->_file->current(), "\r\n"));
+
+        $fieldCount = count($fields);
+        $mapCount   = count($this->_fieldMap);
+        if (count($fields) === count($this->_fieldMap)) {
+            return array_combine($this->_fieldMap, $fields);
+        } elseif ($fieldCount > $mapCount) {
+            return array_combine($this->_fieldMap, array_slice($fields, 0, $mapCount));
+        } elseif ($fieldCount) {
+            return array_combine($this->_fieldMap, $fields + array_fill($fieldCount, $mapCount - $fieldCount, null));
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the map array key value => field name to use
+     *
+     * This line can then be used to determined the mapping used by the mapping function.
+     *
+     * @return string Or boolean if file does not exist
+     */
+    public function getFieldMap()
+    {
+        if (! $this->_fieldMap) {
+            call_user_func($this->_splitFunction, $this->getFirstLine());
+        }
+        return $this->_fieldMap;
     }
 
     /**
@@ -169,16 +206,15 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         }
 
         $this->_file->next();
-        $this->_position++;
-        $this->_filepos = $this->_file->ftell();
+        $this->_position = $this->_position + 1;
+        $this->_filepos  = $this->_file->ftell();
+        $this->_current  = null;
 
         if (! ($this->_file->valid() && $this->_file->current())) {
             // $this->_current = false;
             $this->_valid   = false;
             return;
         }
-
-        // $this->_current = call_user_func($this->_mapFunction, $this->_file->current());
     }
 
     /**
@@ -197,11 +233,13 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             }
 
             $this->_file      = new SplFileObject($this->_filename, 'r');
-            $this->_firstline = trim($this->_file->current(), "\r\n");
+            $this->_firstline = trim(MUtil_Encoding::removeBOM($this->_file->current(), "\r\n"));
+            $this->_fieldMap  = call_user_func($this->_splitFunction, $this->getFirstLine());
         } else {
             $this->_file->rewind();
         }
-        $this->_valid = true;
+        $this->_current = null;
+        $this->_valid   = true;
 
         // Go to the first line after the header
         $this->_position = -1;
@@ -218,7 +256,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         $data = array(
             'filename' => $this->_filename,
             'filepos'  => $this->_filepos,
-            'mapper'   => $this->_mapFunction,
+            'splitter' => $this->_splitFunction,
             'position' => $this->_position,
             'valid'    => $this->_valid,
         );
@@ -235,8 +273,8 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     {
         $data = Zend_Serializer::getDefaultAdapter()->unserialize($serialized);
 
-        $this->_filename    = $data['filename'];
-        $this->_mapFunction = $data['mapper'];
+        $this->_filename      = $data['filename'];
+        $this->_splitFunction = $data['splitter'];
 
         $this->rewind();
 
