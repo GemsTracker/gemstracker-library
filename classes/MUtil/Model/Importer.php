@@ -158,12 +158,16 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             $batch->setSource($this->registrySource);
         }
 
-        $importTranslator = $this->getImportTranslator();
-        $importTranslator->setTargetModel($this->getTargetModel());
-
         // $batch->autoStart = true;
-        $batch->addTask('Import_StartImportTranslatorTask');
         $batch->addTask('Import_ImportCheckTask');
+        $batch->addTask('CheckCounterTask', 'import_errors', $this->_('Found %2$d import error(s). Import aborted.'));
+
+        $targetModel = $this->getTargetModel();
+        $batch->setVariable('targetModel', $targetModel);
+
+        $importTranslator = $this->getImportTranslator();
+        $importTranslator->setTargetModel($targetModel);
+        $importTranslator->startImport();
         $batch->setVariable('modelTranslator', $importTranslator);
 
         $iter = $this->getSourceModel()->loadIterator();

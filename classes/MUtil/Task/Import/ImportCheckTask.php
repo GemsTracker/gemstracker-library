@@ -47,6 +47,13 @@
 class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 {
     /**
+     * The number of import errors after which the check is aborted.
+     *
+     * @var int
+     */
+    protected $importErrorsAllowed = 10;
+
+    /**
      *
      * @var MUtil_Model_ModelTranslatorInterface
      */
@@ -73,21 +80,49 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
      */
     public function executeIteration($key, $current, array $params)
     {
+        $batch = $this->getBatch();
+
         $row = $this->modelTranslator->translateRowValues($current, $key);
 
         if ($row) {
             $row = $this->modelTranslator->validateRowValues($row, $key);
         }
+        $batch->addToCounter('import_checked');
 
-        if (! $row) {
-            $errors = $this->modelTranslator->getErrors();
-            if (isset($errors[$key])) {
-                foreach ((array) $errors[$key] as $error) {
-                    $this->getBatch()->addMessage($error);
-                }
+        $errors = $this->modelTranslator->getRowErrors($key);
+        foreach ($errors as $error) {
+            $batch->addToCounter('import_errors');
+            $batch->addMessage($error);
+        }
+
+        // MUtil_Echo::track($key, $row, $errors);
+
+        $errorCount = $batch->getCounter('import_errors');
+        $checked    = $batch->getCounter('import_checked');
+        $checkMsg   = sprintf($this->plural('%d record checked', '%d records checked', $checked), $checked);
+        if (0 === $errorCount) {
+            if ($row) {
+                // Do not report empty rows
+                $batch->addTask('Import_SaveToModel', $row);
+                $batch->setMessage('check_status', sprintf($this->_('%s, no problems found.'), $checkMsg));
             }
         } else {
-            // MUtil_Echo::track($row);
+            if ($errorCount >= $this->importErrorsAllowed) {
+                $batch->stopBatch(sprintf(
+                        $this->plural('%s, one import problem found. Import aborted.',
+                                '%s, %d import problems found. Import aborted.',
+                                $errorCount),
+                        $checkMsg,
+                        $errorCount));
+
+            } else {
+                $batch->setMessage('check_status', sprintf(
+                        $this->plural('%s, one import problem found, continuing check.',
+                                '%s, %d import problems found, continuing check.',
+                                $errorCount),
+                        $checkMsg,
+                        $errorCount));
+            }
         }
     }
 }

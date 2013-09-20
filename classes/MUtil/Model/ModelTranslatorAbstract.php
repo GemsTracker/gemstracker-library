@@ -313,8 +313,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
-     * Returns a description of the tranlator to enable users to choose
-     * the transformer the need.
+     * Returns a description of the translator errors.
      *
      * @return array of String messages
      */
@@ -322,8 +321,27 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     {
         $errorOutput = array();
         foreach ($this->_errors as $row => $rowErrors) {
+            $rowErrors = $this->getRowErrors($row);
+
+            if ($rowErrors) {
+                $errorOutput[] = $rowErrors;
+            }
+        }
+        return MUtil_Ra::flatten($errorOutput);
+    }
+
+    /**
+     * Returns a description of the translator errors for the row specified.
+     *
+     * @param mixed $row
+     * @return array of String messages
+     */
+    public function getRowErrors($row)
+    {
+        $errorOutput = array();
+        if (isset($this->_errors[$row])) {
             $start = sprintf($this->_('Row %s'), $row);
-            foreach ((array) $rowErrors as $field1 => $errors) {
+            foreach ((array) $this->_errors[$row] as $field1 => $errors) {
                 if (is_numeric($field1)) {
                     $middle = '';
                 } else {
@@ -560,7 +578,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
             } else {
                 $this->_errors[$key] = $messages;
             }
-            return false;
+            return $row;
         }
 
         $this->targetForm->populate($row);

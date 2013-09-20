@@ -825,9 +825,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     protected function processCli()
     {
-        $messages = array();
-
-        /*
         try {
             $this->importer->setSourceFile($this->request->getParam('file'));
             $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
@@ -839,7 +836,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             if ($batch->getMessages(false)) {
                 echo implode("\n", $batch->getMessages()) . "\n";
             }
-
+            if (! $batch->getCounter('import_errors')) {
+                echo sprintf("%d records imported, %d records changed.\n", $batch->getCounter('imported'), $batch->getCounter('changed'));
+            }
 
         } catch (Exception $e) {
             $messages[] = "IMPORT ERROR!";
@@ -862,90 +861,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     );
             echo implode("\n", $messages) . "\n";
         }
-        echo MUtil_Console::removeHtml(MUtil_Echo::out());
-        exit();
-        // */
-        $file = $this->request->getParam('file');
-        if (! $file) {
-            $messages[] = "Missing required parameter: file = filename to import";
-        } elseif (!file_exists($file)) {
-            if (file_exists(GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . $file)) {
-                $file = GEMS_ROOT_DIR . DIRECTORY_SEPARATOR . $file;
-            } else {
-                $messages[] = "Error in parameter file. '$file' does not exist";
-            }
-        }
-
-        $transName = $this->request->getParam('trans', $this->defaultImportTranslator);
-        if (! isset($this->importTranslators[$transName])) {
-            $messages[] = "Unknown value for parameter: trans. Should be one of: " .
-                    implode(', ', array_keys($this->importTranslators));
-        } elseif ($messages) {
-            $messages[] = "Parameter trans defaults to " . $this->defaultImportTranslator .
-                    " and can be one of: " . implode(', ', array_keys($this->importTranslators));
-        }
-
-        if ($messages) {
-            echo implode("\n", $messages);
-            exit();
-        }
-
-        $trans = $this->importTranslators[$transName];
-        if (! $trans instanceof MUtil_Model_ModelTranslatorInterface) {
-            $messages[] = "Programming error: Translator $trans does not result in a translator model.";
-        }
-
-        if ($messages) {
-            echo implode("\n", $messages);
-            exit();
-        }
-
-        $targetModel = $this->targetModel;
-        $trans->setTargetModel($targetModel);
-
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-        if ('txt' === $ext) {
-            $sourceModel = new MUtil_Model_TabbedTextModel($file);
-        } elseif ('xml' === $ext) {
-            // echo $targetModel->getName() . "\n";
-            $sourceModel = new MUtil_Model_XmlModel($file);
-        } else {
-            echo "Unsupported file extension. Import not possible.\n";
-        }
-
-        $trans->setSourceModel($sourceModel);
-
-        $data = $sourceModel->load();
-        $data = $trans->translateImport($data);
-
-        if ($trans->hasErrors()) {
-            echo implode("\n", $trans->getErrors()) . "\n";
-            // exit();
-        }
-
-        $fields = $trans->getTargetModel()->getItemNames();
-        $fields = array_combine($fields, $fields);
-
-        if (is_array($data)) {
-            $row = reset($data);
-            if (is_array($row)) {
-                echo implode("\t", array_intersect(array_keys(reset($data)), $fields)) . "\n";
-            }
-            foreach ($data as $row) {
-                if (is_array($row)) {
-                    echo implode("\t", array_intersect_key($row, $fields)) . "\n";
-                } else {
-                    echo $row . "\n";
-                }
-
-            }
-        } else {
-            echo "No output data.\n";
-        }
-        // print_r($data);
-
-        // echo count($targetModel->saveAll($data)) . "\n";
-        // echo $targetModel->getChanged() . "\n";
         echo MUtil_Console::removeHtml(MUtil_Echo::out());
         exit();
     }

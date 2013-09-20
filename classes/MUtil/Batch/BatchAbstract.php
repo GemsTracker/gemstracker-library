@@ -1062,14 +1062,24 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
                 $this->addMessage('While calling:' . $command[0] . '(' . implode(',', MUtil_Ra::flatten($command[1])) . ')');
-                $this->addMessage($e->getMessage());
+                $this->stopBatch($e->getMessage());
 
-                $this->stack->gotoNext();
                 //MUtil_Echo::track($e);
             }
             return true;
         } else {
             return false;
         }
+    }
+
+    public function stopBatch($message)
+    {
+        // Set to stopped
+        $this->_session->finished = true;
+
+        // Cleanup stack
+        $this->stack->reset();
+
+        $this->addMessage($message);
     }
 }

@@ -71,6 +71,14 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     public function getFieldsTranslations();
 
     /**
+     * Returns a description of the translator errors for the row specified.
+     *
+     * @param mixed $row
+     * @return array of String messages
+     */
+    public function getRowErrors($row);
+    
+    /**
      * Get the source model, where the data is coming from.
      *
      * @return MUtil_Model_ModelAbstract $sourceModel The source of the data
@@ -121,7 +129,7 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
     public function startImport();
-    
+
     /**
      * Perform any translations necessary for the code to work
      *

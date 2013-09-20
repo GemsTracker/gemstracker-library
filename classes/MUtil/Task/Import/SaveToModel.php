@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2013, Erasmus MC
+ * Copyright (c) 201e, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,29 +28,29 @@
  *
  *
  * @package    MUtil
- * @subpackage Task_Import
+ * @subpackage SaveToModel
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2013 Erasmus MC
+ * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $Id: StartImportTranslatorTask.php$
+ * @version    $id: SaveToModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Task_Import
+ * @subpackage SaveToModel
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_Import_StartImportTranslatorTask extends MUtil_Task_TaskAbstract
+class MUtil_Task_Import_SaveToModel extends MUtil_Task_TaskAbstract
 {
     /**
      *
-     * @var MUtil_Model_ModelTranslatorInterface
+     * @var MUtil_Model_ModelAbstract
      */
-    protected $modelTranslator;
+    protected $targetModel;
 
     /**
      * Should be called after answering the request to allow the Target
@@ -60,7 +60,7 @@ class MUtil_Task_Import_StartImportTranslatorTask extends MUtil_Task_TaskAbstrac
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->modelTranslator instanceof MUtil_Model_ModelTranslatorInterface) &&
+        return ($this->targetModel instanceof MUtil_Model_ModelAbstract) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -69,9 +69,17 @@ class MUtil_Task_Import_StartImportTranslatorTask extends MUtil_Task_TaskAbstrac
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
+     *
+     * @param array $row Row to save
      */
-    public function execute()
+    public function execute($row = null)
     {
-        $this->modelTranslator->startImport();
+        if ($row) {
+            $batch = $this->getBatch();
+            $batch->addToCounter('imported');
+
+            $this->targetModel->save($row);
+            $batch->addToCounter('changed', $this->targetModel->getChanged());
+        }
     }
 }
