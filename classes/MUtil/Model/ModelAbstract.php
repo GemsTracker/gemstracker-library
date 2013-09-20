@@ -307,7 +307,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Tell the model one more item has changed
-     * 
+     *
      * @param int $add
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
@@ -1220,7 +1220,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function loadRepeatable($filter = true, $sort = true)
     {
-        return MUtil_Lazy::repeat($this->load($filter, $sort));
+        return MUtil_Lazy::repeat($this->loadIterator($filter, $sort));
     }
 
 

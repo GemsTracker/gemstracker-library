@@ -95,6 +95,13 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     protected $cancelLabel = null;
 
     /**
+     * Shortfix to add class attribute
+     *
+     * @var string
+     */
+    protected $class = 'wizard';
+
+    /**
      * The current step, starting at 1.
      *
      * @var int
@@ -187,7 +194,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
             $buttonId = $button->getName();
 
         } elseif ($buttonId) {
-            //If not already there, add a save button
+            //If already there, get a reference button
             $button = $this->_form->getElement($buttonId);
 
             if (! $button) {
@@ -226,6 +233,14 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
 
         $this->addCancelButton();
         $this->addFinishButton();
+
+        $this->_form->addDisplayGroup(array(
+            $this->_previousButton,
+            $this->_nextButton,
+            $element,
+            $this->_cancelButton,
+            $this->_finishButton,
+            ), 'buttons')->removeDecorator('DtDdWrapper');
     }
 
     /**
@@ -389,6 +404,9 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     {
         $model    = $this->getModel();
         $baseform = $this->createForm();
+        $baseform->setHtml(new MUtil_Html_TableElement());
+        $baseform->setAttrib('class', $this->class);
+
         $bridge   = new MUtil_Model_FormBridge($model, $baseform);
 
         $this->_items = null;
@@ -396,7 +414,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
 
         $this->addFormElementsFor($bridge, $model, $step);
 
-        return $bridge->getForm();
+        return $baseform;
     }
 
     /**

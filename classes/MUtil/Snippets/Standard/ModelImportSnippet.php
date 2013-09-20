@@ -245,7 +245,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             // MUtil_Echo::track($this->sourceModel->load());
 
             $element  = new MUtil_Form_Element_Html('importdisplay');
-            $repeater = $this->sourceModel->loadRepeatable();
+            $repeater = MUtil_Lazy::repeat(new LimitIterator($this->sourceModel->loadIterator(), 0, 20));
             $table    = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
 
             foreach ($this->sourceModel->getItemsOrdered() as $name) {
@@ -683,7 +683,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         if ($this->request instanceof MUtil_Controller_Request_Cli) {
 
             $this->processCli();
-            return true;
+            return false;
         }
         return parent::hasHtmlOutput();
     }
@@ -766,6 +766,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     {
         try {
             if (isset($this->_forms[2])) {
+                // $this->importer->setSourceFile($filename)
                 $localFile = MUtil_File::getTemporaryIn($this->tempDirectory, $this->request->getControllerName() . '_');
 
                 if ($this->fileMode) {
@@ -861,8 +862,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     );
             echo implode("\n", $messages) . "\n";
         }
-        echo MUtil_Console::removeHtml(MUtil_Echo::out());
-        exit();
     }
 
     /**
