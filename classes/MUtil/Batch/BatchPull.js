@@ -1,4 +1,5 @@
 
+/*jslint browser: true, unparam: true */
 
 // Creating the widget
 jQuery.widget("ui.pullProgressPanel", {
@@ -6,13 +7,16 @@ jQuery.widget("ui.pullProgressPanel", {
     // default options
     options: {
         // finishUrl: the request url
+        // formId: an optional form id for post parameters
         // panelId: text id:,
         // runUrl: the request url
         // targetId: search for the element whose content is replaced
         timeout: 60000
     },
 
-    _init: function() {
+    _init: function () {
+        "use strict";
+
         this.progressTarget = jQuery(this.options.panelId);
         if (this.progressTarget.length) {
             this.textTarget = this.progressTarget.find(this.options.targetId);
@@ -29,10 +33,14 @@ jQuery.widget("ui.pullProgressPanel", {
     },
 
     complete: function (request, status) {
+        "use strict";
+
         this.request = null;
     },
 
     error: function (request, status, error) {
+        "use strict";
+
         // alert('Communication error: ' + status);
         this.progressTarget.after('<h3>Communication error</h3><p><strong>' + status + '</strong><br/>' + request.responseText + '</p>');
         // console.log(request);
@@ -40,19 +48,35 @@ jQuery.widget("ui.pullProgressPanel", {
 
     progressTarget: null,
 
-    start: function() {
-        if (this.request == null) {
+    start: function () {
+        "use strict";
+
+        var fd, form, self, verb;
+
+        if (null === this.request) {
             if (this.options.runUrl) {
-                var self = this;
+                fd   = null;
+                self = this;
+                verb = "GET";
+
+                if (this.options.formId) {
+                    form = jQuery("form#" + this.options.formId);
+                    if (form.size()) {
+                        fd   = form.serialize();
+                        verb = "POST";
+                    }
+                }
+
                 this.request = jQuery.ajax({
-                    url: this.options.runUrl,
-                    type: "GET",
+                    url:      this.options.runUrl,
+                    type:     verb,
                     dataType: "json",
-                    // data: postData,
-                    error: function(request, status, error) {self.error(request, status, error);},
-                    complete: function(request, status) {self.complete(request, status);},
-                    success: function(data, status, request) {self.success(data, status, request);}
-                    });
+                    processData: "GET" === verb,
+                    data:     fd,
+                    error:    function (request, status, error) {self.error(request, status, error); },
+                    complete: function (request, status) {self.complete(request, status); },
+                    success:  function (data, status, request) {self.success(data, status, request); }
+                });
             } else {
                 alert("No runUrl specified.");
             }
@@ -60,6 +84,10 @@ jQuery.widget("ui.pullProgressPanel", {
     },
 
     success: function (data, status, request) {
+        "use strict";
+
+        var form, text;
+
         // console.log(data);
         if (data.finished) {
             data.percent = 100;
@@ -78,7 +106,17 @@ jQuery.widget("ui.pullProgressPanel", {
         this.textTarget.html(text);
 
         if (data.finished) {
-            if (this.options.finishUrl.length > 0) {
+            if (this.options.formId) {
+                form = jQuery("form#" + this.options.formId);
+                if (form.size()) {
+                    if (this.options.finishUrl.length) {
+                        form.attr('action', this.options.finishUrl);
+                    }
+                    form.submit();
+                    return;
+                }
+            }
+            if (this.options.finishUrl.length) {
                 location.href = this.options.finishUrl;
             }
         } else {
@@ -92,10 +130,12 @@ jQuery.widget("ui.pullProgressPanel", {
     request: null
 });
 
-function FUNCTION_PREFIX_Start()
-{
+function FUNCTION_PREFIX_Start() {
+    "use strict";
+
     jQuery("{PANEL_ID}").pullProgressPanel({
         "finishUrl": "{URL_FINISH}",
+        "formId":    "{FORM_ID}",
         "panelId":   "{PANEL_ID}",
         "runUrl":    "{URL_START_RUN}",
         "targetId":  "{TEXT_ID}"

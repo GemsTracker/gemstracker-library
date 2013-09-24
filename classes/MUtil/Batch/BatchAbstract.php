@@ -103,6 +103,13 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     private $_checkReportStart = null;
 
     /**
+     * Optional form id, for using extra params from the form during batch execution.
+     *
+     * @var string
+     */
+    protected $_formId;
+
+    /**
      * Name to prefix the functions, to avoid naming clashes.
      *
      * @var string Default is the classname with an extra underscore
@@ -250,6 +257,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function __construct($id, MUtil_Batch_Stack_Stackinterface $stack = null)
     {
+        $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
+
         if (isset(self::$_idStack[$id])) {
             throw new MUtil_Batch_BatchException("Duplicate batch id created: $id");
         }
@@ -416,6 +425,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Get the optional form id, for using extra params from the form during batch execution.
+     *
+     * @return string
+     */
+    public function getFormId()
+    {
+        return $this->_formId;
+    }
+
+    /**
      * Returns the prefix used for the function names for the PUSH method to avoid naming clashes.
      *
      * Set automatically to get_class($this) . '_' $this->_id . '_', use different name
@@ -432,6 +451,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         }
 
         return (string) $this->_functionPrefix;
+    }
+
+    /**
+     * Return the batch id
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->_id;
     }
 
     /**
@@ -504,6 +533,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         // Set the fields, in case they where not set earlier
         $js->setDefault('__AUTOSTART__', $this->autoStart ? 'true' : 'false');
         $js->setDefault('{PANEL_ID}', '#' . $this->_id);
+        $js->setDefault('{FORM_ID}', $this->_formId);
         $js->setDefault('{TEXT_ID}', $panel->getDefaultChildTag() . '.' . $panel->progressTextClass);
         $js->setDefault('{URL_FINISH}', addcslashes($urlFinish, "/"));
         $js->setDefault('{URL_START_RUN}', addcslashes($urlRun, "/"));
@@ -573,7 +603,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function getProgressPercentage()
     {
-        return round($this->_session->processed / $this->_session->count * 100, 2);
+        return round($this->_session->processed / max($this->_session->count, 1) * 100, 2);
     }
 
     /**
@@ -835,6 +865,18 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $this->_finishBar();
 
         return true;
+    }
+
+    /**
+     * Set the optional form id, for using extra params from the form during batch execution.
+     *
+     * @param string $id
+     * @return MUtil_Html_ProgressPanel (continuation pattern)
+     */
+    public function setFormId($id)
+    {
+        $this->_formId = $id;
+        return $this;
     }
 
     /**

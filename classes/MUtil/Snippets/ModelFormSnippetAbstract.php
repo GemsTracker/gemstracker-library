@@ -178,7 +178,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
             throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
         }
 
-        $bridge   = array_shift($args);
+        array_shift($args); // Remove bridge
         $elements = MUtil_Ra::flatten($args);
         $model    = $this->getModel();
 

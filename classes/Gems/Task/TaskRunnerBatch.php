@@ -58,7 +58,7 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Task_TaskBatch
      *
      * @var int
      */
-    // public $extraPushPaddingKb = 0;
+    public $extraPushPaddingKb = 5;
 
      /**
      * The number of bytes to pad for the first push communication in Kilobytes. If zero
@@ -70,7 +70,7 @@ class Gems_Task_TaskRunnerBatch extends MUtil_Task_TaskBatch
      *
      * @var int
      */
-    // public $initialPushPaddingKb = 0;
+    public $initialPushPaddingKb = 10;
 
     /**
      *

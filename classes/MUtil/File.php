@@ -58,6 +58,27 @@ class MUtil_File
     }
 
     /**
+     * Creates a temporary empty file in the directory but first cleans
+     * up any files older than $keepFor in that directory.
+     *
+     * When no directory is used sys_get_temp_dir() is used and no cleanup is performed.
+     *
+     * @param string $dir The directory for the files
+     * @param string $prefix Optional prefix
+     * @param int $keepFor The number of second a file is kept, use 0 for always
+     * @return string The name of the temporary file
+     */
+    public static function createTemporaryIn($dir = null, $prefix = null, $keepFor = 86400)
+    {
+        $filename = self::getTemporaryIn($dir, $prefix, $keepFor);
+
+        file_put_contents($filename, '');
+
+        // MUtil_Echo::track($filename, file_exists($filename), filesize($filename));
+
+        return $filename;
+    }
+    /**
      * Ensure the directory does really exist or throw an exception othewise
      *
      * @param string $dir The path of the directory
@@ -132,7 +153,7 @@ class MUtil_File
      * @param string $dir The directory for the files
      * @param string $prefix Optional prefix
      * @param int $keepFor The number of second a file is kept, use 0 for always
-     * @return string
+     * @return string The name of the temporary file
      */
     public static function getTemporaryIn($dir = null, $prefix = null, $keepFor = 86400)
     {

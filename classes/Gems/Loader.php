@@ -247,11 +247,13 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      */
     public function getTaskRunnerBatch($id, MUtil_Batch_Stack_Stackinterface $stack = null)
     {
-        if ((null == $stack) &&
-                isset($this->_containers[0]->cache) &&
-                $this->_containers[0]->cache instanceof Zend_Cache_Core) {
+        if ((null == $stack) && isset($this->_containers[0]->cache)) {
+            $cache = $this->_containers[0]->cache;
 
-            $stack = new MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
+            // Make sure the cache is caching
+            if (($cache instanceof Zend_Cache_Core) && $cache->getOption('caching')) {
+                $stack = new MUtil_Batch_Stack_CacheStack($id, $this->_containers[0]->cache);
+            }
         }
         $taskBatch = $this->_loadClass('Task_TaskRunnerBatch', true, array_filter(array($id, $stack)));
 

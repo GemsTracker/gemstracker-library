@@ -240,7 +240,11 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
             $element,
             $this->_cancelButton,
             $this->_finishButton,
-            ), 'buttons')->removeDecorator('DtDdWrapper');
+            ), 'buttons');
+        
+        $group = $this->_form->getDisplayGroup('buttons');
+        $group->removeDecorator('DtDdWrapper');
+        $group->removeDecorator('HtmlTag');
     }
 
     /**
@@ -293,6 +297,37 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     }
 
     /**
+     * Add items in hidden form to the bridge, and remove them from the items array
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param string $element1
+     *
+     * @return void
+     */
+    protected function addItemsHidden(MUtil_Model_FormBridge $bridge, $element1)
+    {
+        $args = func_get_args();
+        if (count($args)<2) {
+            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
+        }
+
+        $bridge   = array_shift($args);
+        $elements = MUtil_Ra::flatten($args);
+        $form     = $bridge->getForm();
+
+        //Remove the elements from the _items variable
+        $this->_items = array_diff($this->_items, $elements);
+
+        // And add them to the bridge
+        foreach($elements as $name) {
+            // Do not use $bridge->addHidden as that adds validators and filters.
+            $element = new Zend_Form_Element_Hidden($name);
+
+            $bridge->addElement($element);
+        }
+    }
+
+    /**
      * Add the next button
      */
     protected function addNextButton()
@@ -337,37 +372,6 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * @param int $step The current step
      */
     abstract protected function addStepElementsFor(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $step);
-
-    /**
-     * Add items in hidden form to the bridge, and remove them from the items array
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param string $element1
-     *
-     * @return void
-     */
-    protected function addItemsHidden(MUtil_Model_FormBridge $bridge, $element1)
-    {
-        $args = func_get_args();
-        if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
-        }
-
-        $bridge   = array_shift($args);
-        $elements = MUtil_Ra::flatten($args);
-        $form     = $bridge->getForm();
-
-        //Remove the elements from the _items variable
-        $this->_items = array_diff($this->_items, $elements);
-
-        //And add them to the bridge
-        foreach($elements as $name) {
-            // Do not use $bridge->addHidden as that adds validators and filters.
-            $element = new Zend_Form_Element_Hidden($name);
-
-            $bridge->addElement($element);
-        }
-    }
 
     /**
      * Perform some actions on the form, right before it is displayed but already populated
@@ -504,11 +508,13 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
                          */
                         $this->formData = $this->_form->getValues();
 
-                        // Save
-                        $this->saveData();
+                        if ($this->_finishButton && $this->_finishButton->isChecked()) {
+                            // Save
+                            $this->saveData();
 
-                        // Reroute (always, override function otherwise)
-                        $this->setAfterSaveRoute();
+                            // Reroute (always, override function otherwise)
+                            $this->setAfterSaveRoute();
+                        }
                     }
                 } else {
                     $this->onInValid();
