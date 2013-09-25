@@ -165,13 +165,9 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function setSessionVariable($name, $variable)
     {
-        $exists = $this->getSessionVariables();
-
         parent::setSessionVariable($name, $variable);
 
-        if ($this->source && (! $exists)) {
-            $this->source->addRegistryContainer($this->getSessionVariables(), 'source');
-        }
+        $this->source->addRegistryContainer($this->getSessionVariables(), 'source');
 
         return $this;
     }
@@ -248,13 +244,9 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function setVariable($name, $variable)
     {
-        $notExists = null === $this->variables;
-
         parent::setVariable($name, $variable);
 
-        if ($this->source && $notExists) {
-            $this->source->addRegistryContainer($this->variables, 'variables');
-        }
+        $this->source->addRegistryContainer($this->variables, 'variables');
 
         return $this;
     }

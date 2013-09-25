@@ -47,6 +47,12 @@
 class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 {
     /**
+     *
+     * @var MUtil_Task_TaskBatch
+     */
+    private $_importBatch;
+
+    /**
      * The final directory for when the data could not be imported.
      *
      * If empty the file is thrown away after a failure.
@@ -147,20 +153,17 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 
     /**
      *
+     * @param string $idPart End part for batch id
      * @param MUtil_Task_TaskBatch $batch Optional batch with different source etc..
      * @return MUtil_Task_TaskBatch
      */
-    public function getCheckImportBatch(MUtil_Task_TaskBatch $batch = null)
+    protected function getBasicImportBatch($idPart, MUtil_Task_TaskBatch $batch = null)
     {
         if (null === $batch) {
-            $batch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . $this->sourceModel->getName());
+            $batch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
             $this->registrySource->applySource($batch);
             $batch->setSource($this->registrySource);
         }
-
-        // $batch->autoStart = true;
-        $batch->addTask('Import_ImportCheckTask');
-        $batch->addTask('CheckCounterTask', 'import_errors', $this->_('Found %2$d import error(s). Import aborted.'));
 
         $targetModel = $this->getTargetModel();
         $batch->setVariable('targetModel', $targetModel);
@@ -186,6 +189,42 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         return $batch;
     }
 
+
+    /**
+     *
+     * @param MUtil_Task_TaskBatch $batch Optional batch with different source etc..
+     * @return MUtil_Task_TaskBatch
+     */
+    public function getCheckAndImportBatch(MUtil_Task_TaskBatch $batch = null)
+    {
+        $batch = $this->getBasicImportBatch(__FUNCTION__, $batch);
+
+        if (! $batch->isLoaded()) {
+            $batch->addTask('Import_ImportCheckTask');
+            $batch->addTask('CheckCounterTask', 'import_errors', $this->_('Found %2$d import error(s). Import aborted.'));
+        }
+
+        return $batch;
+    }
+
+    /**
+     *
+     * @param MUtil_Task_TaskBatch $chechkBatch Optional check batch with different source etc..
+     * @param MUtil_Task_TaskBatch $importBatch Optional import batch with different source etc..
+     * @return MUtil_Task_TaskBatch
+     */
+    public function getCheckWithImportBatches(MUtil_Task_TaskBatch $checkBatch = null, MUtil_Task_TaskBatch $importBatch = null)
+    {
+        $batch = $this->getBasicImportBatch(__FUNCTION__, $checkBatch);
+
+        if (! $batch->isLoaded()) {
+            $batch->addTask('Import_ImportCheckTask');
+        }
+        $batch->setVariable('importBatch', $this->getImportOnlyBatch($importBatch));
+
+        return $batch;
+    }
+
     /**
      * Get the final directory for when the data could not be imported.
      *
@@ -203,9 +242,31 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
      *
      * @return MUtil_Model_ModelTranslatorInterface or null
      */
-    protected function getImportTranslator()
+    public function getImportTranslator()
     {
         return $this->importTranslator;
+    }
+
+    /**
+     *
+     * @param MUtil_Task_TaskBatch $batch Optional batch with different source etc..
+     * @return MUtil_Task_TaskBatch
+     */
+    public function getImportOnlyBatch(MUtil_Task_TaskBatch $batch = null)
+    {
+        if (! $this->_importBatch instanceof MUtil_Task_TaskBatch) {
+            $this->_importBatch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . basename($this->sourceModel->getName()) . '_' . __FUNCTION__);
+
+            $this->registrySource->applySource($this->_importBatch);
+            $this->_importBatch->setSource($this->registrySource);
+            $this->_importBatch->setVariable('targetModel', $this->getTargetModel());
+        }
+        // MUtil_Echo::track($this->_importBatch->count());
+
+        // Loading is done by getCheckOnlyBatch
+        // if (! $batch->isLoaded()) {
+
+        return $this->_importBatch;
     }
 
     /**
@@ -305,6 +366,10 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             }
         }
         $this->importTranslator = $translator;
+
+        if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
+            $this->importTranslator->setTargetModel($this->targetModel);
+        }
         return $this;
     }
 
@@ -393,23 +458,6 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
-     * Set the source model using a string as content, the first line contains the
-     * header for the field order in the rest of the data.
-     *
-     * @param string $content
-     * @param string $fieldSplit
-     * @param string $lineSplit
-     * @return \MUtil_Model_Importer (continuation pattern)
-     */
-    public function setSourceText($content, $fieldSplit = "\t", $lineSplit = "\n")
-    {
-        $model = new MUtil_Model_NestedArrayModel('manual input', $content, $fieldSplit, $lineSplit);
-        $this->setSourceModel($model);
-
-        return $this;
-    }
-
-    /**
      * The final directory when the data was successfully imported.
      *
      * If empty the file is thrown away after the import.
@@ -432,6 +480,11 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     public function setTargetModel(MUtil_Model_ModelAbstract $model)
     {
         $this->targetModel = $model;
+
+        if ($this->importTranslator instanceof MUtil_Model_ModelTranslatorInterface) {
+            $this->importTranslator->setTargetModel($model);
+        }
+
         return $this;
     }
 }

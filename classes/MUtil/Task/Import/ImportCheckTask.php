@@ -47,6 +47,19 @@
 class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 {
     /**
+     * When false, the task is not added (for when just checking)
+     *
+     * @var boolean
+     */
+    protected $addImport = true;
+
+    /**
+     *
+     * @var MUtil_Task_TaskBatch
+     */
+    protected $importBatch;
+
+    /**
      * The number of import errors after which the check is aborted.
      *
      * @var int
@@ -80,6 +93,12 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
      */
     public function executeIteration($key, $current, array $params)
     {
+        // MUtil_Echo::track($key, $current);
+        // Ignore empty rows.
+        if (! $current) {
+            return;
+        }
+
         $batch = $this->getBatch();
 
         $row = $this->modelTranslator->translateRowValues($current, $key);
@@ -89,6 +108,10 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
         }
         $batch->addToCounter('import_checked');
 
+        $errorCount = $batch->getCounter('import_errors');
+        $checked    = $batch->getCounter('import_checked');
+        $checkMsg   = sprintf($this->plural('%d record checked', '%d records checked', $checked), $checked);
+
         $errors = $this->modelTranslator->getRowErrors($key);
         foreach ($errors as $error) {
             $batch->addToCounter('import_errors');
@@ -97,13 +120,12 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 
         // MUtil_Echo::track($key, $row, $errors);
 
-        $errorCount = $batch->getCounter('import_errors');
-        $checked    = $batch->getCounter('import_checked');
-        $checkMsg   = sprintf($this->plural('%d record checked', '%d records checked', $checked), $checked);
         if (0 === $errorCount) {
             if ($row) {
                 // Do not report empty rows
-                $batch->addTask('Import_SaveToModel', $row);
+                if ($this->addImport && $this->importBatch) {
+                    $this->importBatch->setTask('Import_SaveToModel', 'import-' . $key, $row);
+                }
                 $batch->setMessage('check_status', sprintf($this->_('%s, no problems found.'), $checkMsg));
             }
         } else {
@@ -124,5 +146,25 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
                         $errorCount));
             }
         }
+    }
+
+    /**
+     * Sets the batch this task belongs to
+     *
+     * This method will be called from the Gems_Task_TaskRunnerBatch upon execution of the
+     * task. It allows the task to communicate with the batch queue.
+     *
+     * @param MUtil_Task_TaskBatch $batch
+     * @return MUtil_Task_TaskInterface (continuation pattern)
+     */
+    public function setBatch(MUtil_Task_TaskBatch $batch)
+    {
+        parent::setBatch($batch);
+
+        if (! $this->importBatch instanceof MUtil_Task_TaskBatch) {
+            $this->importBatch = $batch;
+        }
+
+        return $this;
     }
 }

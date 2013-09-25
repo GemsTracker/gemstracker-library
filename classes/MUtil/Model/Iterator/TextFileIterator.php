@@ -50,25 +50,20 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      *
      * @var array
      */
-    protected $_current;
+    protected $_fieldMap;
+
+    /**
+     * Count of the fieldmap
+     *
+     * @var int
+     */
+    protected $_fieldMapCount;
 
     /**
      *
      * @var SplFileObject
      */
-    protected $_file;
-
-    /**
-     *
-     * @var array
-     */
-    protected $_fieldMap;
-
-    /**
-     *
-     * @var string
-     */
-    protected $_firstline;
+    protected $_file = null;
 
     /**
      * The name of the content file
@@ -82,7 +77,14 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      *
      * @var int
      */
-    protected $_filepos;
+    protected $_filepos = null;
+
+    /**
+     * The current key value
+     *
+     * @var type
+     */
+    protected $_key = -1;
 
     /**
      * The function that splits the input string into an array
@@ -90,20 +92,6 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      * @var callable
      */
     protected $_splitFunction;
-
-    /**
-     * The current position used for the key
-     *
-     * @var type
-     */
-    protected $_position = -2;
-
-    /**
-     * Is the position is valid
-     *
-     * @var boolean
-     */
-    protected $_valid = false;
 
     /**
      * Initiate this line by line file iterator
@@ -122,33 +110,88 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     }
 
     /**
+     *
+     * @return boolean
+     */
+    private function _accept()
+    {
+        return (boolean) trim($this->_file->current(), "\r\n");
+    }
+
+    /**
+     * Open the file and optionally restore the position
+     *
+     * @return void
+     */
+    private function _openFile()
+    {
+        $this->_fieldMap      = array();
+        $this->_fieldMapCount = 0;
+
+        if (! file_exists($this->_filename)) {
+            return;
+        }
+
+        try {
+            $this->_file = new SplFileObject($this->_filename, 'r');
+            $firstline   = trim(MUtil_Encoding::removeBOM($this->_file->current(), "\r\n"));
+
+            if ($firstline) {
+                $this->_fieldMap = call_user_func($this->_splitFunction, $firstline);
+                $this->_fieldMapCount = count($this->_fieldMap);
+
+                // Check for fields, do not run when empty
+                if (0 === $this->_fieldMapCount) {
+                    $this->_file = false;
+                    return;
+                }
+            }
+
+            // Restore old file position if any
+            if (null !== $this->_filepos) {
+                $this->_file->fseek($this->_filepos, SEEK_SET);
+            }
+
+            // Always move to next, even if there was no first line
+            $this->next();
+
+        } catch (Exception $e) {
+            $this->_file = false;
+        }
+    }
+
+    /**
      * Return the current element
      *
-     * @return array
+     * @return array or false
      */
     public function current()
     {
-        if (null !== $this->_current) {
-            return $this->_current;
+        if (null === $this->_file) {
+            $this->_openFile();
         }
 
-        if (! $this->_file instanceof SplFileObject) {
-            $this->rewind();
+        if (! $this->_file && $this->_file->valid()) {
+            return false;
         }
 
-        $fields = call_user_func($this->_splitFunction, trim($this->_file->current(), "\r\n"));
-
+        $fields     = call_user_func($this->_splitFunction, trim($this->_file->current(), "\r\n"));
         $fieldCount = count($fields);
-        $mapCount   = count($this->_fieldMap);
-        if (count($fields) === count($this->_fieldMap)) {
-            return array_combine($this->_fieldMap, $fields);
-        } elseif ($fieldCount > $mapCount) {
-            return array_combine($this->_fieldMap, array_slice($fields, 0, $mapCount));
-        } elseif ($fieldCount) {
-            return array_combine($this->_fieldMap, $fields + array_fill($fieldCount, $mapCount - $fieldCount, null));
+
+        if (0 ===  $fieldCount) {
+            return false;
         }
 
-        return false;
+        if ($fieldCount > $this->_fieldMapCount) {
+            // Remove extra fields from the input
+            $fields = array_slice($fields, 0, $this->_fieldMapCount);
+
+        } elseif ($fieldCount < $this->_fieldMapCount) {
+            // Add extra nulls to the input
+            $fields = $fields + array_fill($fieldCount, $this->_fieldMapCount - $fieldCount, null);
+        }
+
+        return array_combine($this->_fieldMap, $fields);
     }
 
     /**
@@ -160,26 +203,11 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function getFieldMap()
     {
-        if (! $this->_fieldMap) {
-            call_user_func($this->_splitFunction, $this->getFirstLine());
+        if (null === $this->_file) {
+            $this->_openFile();
         }
+
         return $this->_fieldMap;
-    }
-
-    /**
-     * Opens or rewinds the file and returns the first line.
-     *
-     * This line can then be used to determined the mapping used by the mapping function.
-     *
-     * @return string Or boolean if file does not exist
-     */
-    public function getFirstLine()
-    {
-        if (! $this->_firstline) {
-            $this->rewind();
-        }
-
-        return $this->_firstline;
     }
 
     /**
@@ -189,7 +217,11 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function key()
     {
-        return $this->_position;
+        if (null === $this->_file) {
+            $this->_openFile();
+        }
+
+        return $this->_key;
     }
 
     /**
@@ -197,22 +229,19 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function next()
     {
-        if (! $this->_file instanceof SplFileObject) {
-            $this->rewind();
+        if (null === $this->_file) {
+            $this->_openFile();
         }
 
-        if (! $this->_valid) {
-            return;
-        }
-
-        $this->_file->next();
-        $this->_position = $this->_position + 1;
-        $this->_filepos  = $this->_file->ftell();
-        $this->_current  = null;
-
-        if (! ($this->_file->valid() && $this->_file->current())) {
-            $this->_valid   = false;
-            return;
+        if ($this->_file) {
+            $this->_key = $this->_key + 1;
+            while ($this->_file->valid()) {
+                $this->_file->next();
+                $this->_filepos = $this->_file->ftell();
+                if ($this->_accept()) {
+                    return;
+                }
+            }
         }
     }
 
@@ -221,28 +250,15 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function rewind()
     {
-        if (0 === $this->_position) {
-            // At the beginning read position
-            return;
-        }
-        if (! $this->_file instanceof SplFileObject) {
-            if (! file_exists($this->_filename)) {
-                $this->_valid = false;
-                return;
-            }
+        $this->_filepos = null;
+        $this->_key = -1;
 
-            $this->_file      = new SplFileObject($this->_filename, 'r');
-            $this->_firstline = trim(MUtil_Encoding::removeBOM($this->_file->current(), "\r\n"));
-            $this->_fieldMap  = call_user_func($this->_splitFunction, $this->getFirstLine());
-        } else {
+        if (null === $this->_file) {
+            $this->_openFile();
+        } elseif ($this->_file) {
             $this->_file->rewind();
+            $this->next();
         }
-        $this->_current = null;
-        $this->_valid   = true;
-
-        // Go to the first line after the header
-        $this->_position = -1;
-        $this->next();
     }
 
     /**
@@ -255,9 +271,8 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         $data = array(
             'filename' => $this->_filename,
             'filepos'  => $this->_filepos,
+            'key'      => $this->_key - 1,
             'splitter' => $this->_splitFunction,
-            'position' => $this->_position,
-            'valid'    => $this->_valid,
         );
 
         return Zend_Serializer::getDefaultAdapter()->serialize($data);
@@ -272,15 +287,18 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     {
         $data = Zend_Serializer::getDefaultAdapter()->unserialize($serialized);
 
+        // WARNING! WARNING! WARNING!
+        //
+        // Do not reopen the file in the unserialize statement
+        // 1 - the file gets locked
+        // 2 - if the file is deleted you cannot reopen your session.
+        //
+        // Normally this is not a problem, but when
+        $this->_file          = null;
         $this->_filename      = $data['filename'];
+        $this->_filepos       = $data['filepos'];
+        $this->_key           = $data['key'];
         $this->_splitFunction = $data['splitter'];
-
-        $this->rewind();
-
-        $this->_position = $data['position'] - 1;
-        $this->_valid    = $data['valid'];
-        $this->_file->fseek($data['filepos'], SEEK_SET);
-        $this->next();
     }
 
     /**
@@ -290,6 +308,10 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function valid()
     {
-        return $this->_valid;
+        if (null === $this->_file) {
+            $this->_openFile();
+        }
+
+        return $this->_file && $this->_file->valid();
     }
 }

@@ -180,6 +180,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     public $tempDirectory;
 
     /**
+     *
+     * @var Zend_View
+     */
+    public $view;
+
+    /**
      * Add the elements from the model to the bridge for the current step
      *
      * @param MUtil_Model_FormBridge $bridge
@@ -198,35 +204,64 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function addStep2(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        if (isset($this->importTranslators[$this->formData['trans']])) {
-            $translator = $this->importTranslators[$this->formData['trans']];
-
-            if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
-                $element = new MUtil_Form_Element_Html('trans_header');
-                $element->append($this->_('Choosen translation definition: '));
-                $element->strong($translator->getDescription());
-                $element->setDecorators(array('Tooltip', 'ViewHelper'));
-                $bridge->addElement($element);
-            }
-        } else {
-           $translator = null;
+        $translator = $this->importer->getImportTranslator();
+        if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+            $element = new MUtil_Form_Element_Html('trans_header');
+            $element->span($this->_('Choosen translation definition: '));
+            $element->strong($translator->getDescription());
+            $element->setDecorators(array('Tooltip', 'ViewHelper'));
+            $bridge->addElement($element);
         }
 
         if ($this->fileMode) {
             $this->addItems($bridge, 'file');
-        } else {
-            // Add a default content if empty
-            if ((!(isset($this->formData['content']) && $this->formData['content'])) &&
-                    ($translator instanceof MUtil_Model_ModelTranslatorInterface)) {
 
-                $translator->setTargetModel($this->targetModel);
-                $fields = array_filter(array_keys($translator->getFieldsTranslations()), 'is_string');
+            $element = $bridge->getForm()->getElement('file');
 
-                $this->formData['content'] = implode("\t", $fields) . "\n" .
-                    str_repeat("\t", count($fields) - 1) . "\n";
+            if ($element instanceof Zend_Form_Element_File) {
+                // Now add the rename filter, the localfile is known only once after loadFormData() has run
+                $element->addFilter(new Zend_Filter_File_Rename(array(
+                    'target'    => $this->formData['localfile'],
+                    'overwrite' => true
+                    )));
+
+                // Download the data (no test for post, step 2 is always a post)
+                if ($element->getFileName()) {
+                    // Now the filename is still set to the upload filename.
+                    $this->formData['extension'] = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
+
+                    if (!$element->receive()) {
+                        throw new MUtil_Model_ModelException(sprintf(
+                            $this->_("Error retrieving file '%s'."),
+                            $element->getFileName()
+                            ));
+                    }
+                }
             }
-
+        } else {
             $this->addItems($bridge, 'content');
+
+            $this->formData['extension'] = 'txt';
+            if (isset($this->formData['content']) && $this->formData['content']) {
+                file_put_contents($this->formData['localfile'], $this->formData['content']);
+            } else {
+                if (filesize($this->formData['localfile']) && ('txt' === $this->formData['extension'])) {
+                    $content = file_get_contents($this->formData['localfile']);
+                } else {
+                    $content = '';
+                }
+
+                if (!$content) {
+                    // Add a default content if empty
+                    $translator = $this->importer->getImportTranslator();
+                    $fields = array_filter(array_keys($translator->getFieldsTranslations()), 'is_string');
+
+                    $content = implode("\t", $fields) . "\n" .
+                        str_repeat("\t", count($fields) - 1) . "\n";
+
+                }
+                $this->formData['content'] = $content;
+            }
         }
     }
 
@@ -252,7 +287,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 $table->addColumn($repeater->$name, $name);
             }
 
-            $element->setValue($table);
+            // Extra div for CSS settings
+            $element->setValue(new MUtil_Html_HtmlElement('div', $table, array('class' => $this->formatBoxClass)));
             $bridge->addElement($element);
         } else {
             $this->displayHeader($bridge, $this->_('Upload error!'));
@@ -270,28 +306,88 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function addStep4(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->loadImportData();
+        $this->nextDisabled = true;
 
-        if ($this->_errors) {
-            $this->displayErrors($bridge);
+        if ($this->loadSourceModel()) {
+            $form  = $bridge->getForm();
+            $batch = $this->importer->getCheckWithImportBatches();
 
-            $this->nextDisabled = true;
-        } else {
-            $this->displayErrors($bridge, $this->_('Import data valid. Click Finish for actual import.'));
+            $batch->setFormId($form->getId());
+            $batch->autoStart = true;
 
-            $element    = new MUtil_Form_Element_Html('importdisplay');
-            $repeater   = new MUtil_Lazy_Repeatable($this->_data);
-            $table      = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
-            $translator = $this->getImportTranslator();
-
-            foreach ($translator->getFieldsTranslations() as $name) {
-                $table->addColumn($repeater->$name, $name);
+            // MUtil_Registry_Source::$verbose = true;
+            if ($batch->run($this->request)) {
+                exit;
             }
 
-            $element->setValue($table);
-            $bridge->addElement($element);
+            $element = new MUtil_Form_Element_Html($batch->getId());
+
+            if ($batch->isFinished()) {
+                $this->nextDisabled = $batch->getCounter('import_errors');
+                $batch->autoStart   = false;
+
+                $this->addMessage($batch->getMessages(true));
+                if ($this->nextDisabled) {
+                    $element->pInfo($this->_('Import errors found, import is not allowed.'));
+                } else {
+                    $element->pInfo($this->_('Check was successfull, import can start.'));
+                }
+
+            } else {
+                $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+
+            }
+            $form->activateJQuery();
+            $form->addElement($element);
         }
-        // $this->_form->addV
+    }
+
+    /**
+     * Add the elements from the model to the bridge for the current step
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addStep5(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        $this->nextDisabled = true;
+
+        if ($this->loadSourceModel()) {
+            $form  = $bridge->getForm();
+            $batch = $this->importer->getImportOnlyBatch();
+
+            $batch->setFormId($form->getId());
+            $batch->autoStart = true;
+
+            if ($batch->run($this->request)) {
+                exit;
+            }
+
+            $element = new MUtil_Form_Element_Html($batch->getId());
+
+            if ($batch->isFinished()) {
+                $this->nextDisabled = $batch->getCounter('import_errors');
+                $batch->autoStart   = false;
+
+                $imported = $batch->getCounter('imported');
+                $changed  = $batch->getCounter('changed');
+                $p = $element->pInfo();
+                $p[] = sprintf($this->plural('%d row imported.', '%d rows imported.', $imported), $imported);
+                $p[] = ' ';
+                $p[] = sprintf($this->plural('%d row changed.', '%d rows changed.', $changed), $changed);
+
+                $this->addMessage($batch->getMessages(true));
+
+            } else {
+                $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));
+
+            }
+            $form->activateJQuery();
+            $form->addElement($element);
+        }
+
+
+        return;
     }
 
     /**
@@ -322,8 +418,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 $this->addStep3($bridge, $model);
                 break;
 
-            default:
+            case 4:
                 $this->addStep4($bridge, $model);
+                break;
+
+            default:
+                $this->addStep5($bridge, $model);
                 break;
 
         }
@@ -346,16 +446,18 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $source->applySource($this->importer);
             $this->importer->setRegistrySource($source);
         }
-
         if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
             if ($this->model instanceof MUtil_Model_ModelAbstract) {
                 $this->targetModel = $this->model;
             }
         }
-
         if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
             $this->importer->setTargetModel($this->targetModel);
         }
+        if ($this->sourceModel instanceof MUtil_Model_ModelAbstract) {
+            $this->importer->setSourceModel($this->sourceModel);
+        }
+
 
         // Cleanup any references to model to avoid confusion
         $this->model = null;
@@ -380,6 +482,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         case 2:
         case 3:
         case 4:
+        case 5:
             if (isset($this->formData['trans']) && $this->formData['trans']) {
                 $fieldInfo = $this->getTranslatorTable($this->formData['trans']);
                 break;
@@ -519,7 +622,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function getStepCount()
     {
-        return 4;
+        return 5;
     }
 
     /**
@@ -689,6 +792,20 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     }
 
     /**
+     * Initialize the _items variable to hold all items from the model
+     */
+    protected function initItems()
+    {
+        parent::initItems();
+
+        // Remove content as big text slab will slow things down and storage is locally in file
+        $i = array_search('content', $this->_items);
+        if (false !== $i) {
+            unset($this->_items[$i]);
+        }
+    }
+
+    /**
      * Is the import OK
      *
      * @return boolean
@@ -711,10 +828,17 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         if ($this->request->isPost()) {
             $this->formData = $this->request->getPost() + $this->formData;
         } else {
-            // Assume that if formData is set it is the correct formData
+
+            // I assume that if formData is set it is the correct formData
             if (! $this->formData)  {
-                $this->formData['trans'] = $this->defaultImportTranslator;
-                $this->formData['mode']  = 'file';
+
+                // B.t.w. we do not use the model for the initial data
+                $this->formData['extension'] = 'txt';
+                $this->formData['localfile'] = MUtil_File::createTemporaryIn(
+                        $this->tempDirectory,
+                        $this->request->getControllerName() . '_'
+                        );
+                $this->formData['trans']     = $this->defaultImportTranslator;
             }
         }
 
@@ -723,6 +847,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->formData['mode'] = 'file';
         }
         $this->fileMode = 'file' === $this->formData['mode'];
+
+        // Set the translator
+        if (isset($this->formData['trans'], $this->importTranslators[$this->formData['trans']]) &&
+                $this->importTranslators[$this->formData['trans']] instanceof MUtil_Model_ModelTranslatorInterface) {
+
+            $this->importer->setImportTranslator($this->importTranslators[$this->formData['trans']]);
+        }
+
+        // MUtil_Echo::track($_POST, $_FILES, $this->formData);
     }
 
     /**
@@ -765,57 +898,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     protected function loadSourceModel()
     {
         try {
-            if (isset($this->_forms[2])) {
-                // $this->importer->setSourceFile($filename)
-                $localFile = MUtil_File::getTemporaryIn($this->tempDirectory, $this->request->getControllerName() . '_');
-
-                if ($this->fileMode) {
-                    $fileElement = $this->_forms[2]->getElement('file');
-                    if ($fileElement instanceof Zend_Form_Element_File) {
-
-                        // Now add the rename filter, we did not know the name earlier
-                        $fileElement->addFilter(
-                                new Zend_Filter_File_Rename(array('target' => $localFile, 'overwrite' => true))
-                                );
-                        $extension = pathinfo($fileElement->getFileName(), PATHINFO_EXTENSION);
-
-                        if (!$fileElement->receive()) {
-                            $this->_errors[] = sprintf(
-                                    $this->_("Error retrieving file '%s'."),
-                                    $fileElement->getFileName()
-                                    );
-                        }
-                    } else {
-                        $this->_errors[] = sprintf(
-                                $this->_("File element is of wrong Zend element type '%s'."),
-                                get_class($fileElement)
-                                );
-                    }
-                } else {
-                    if (isset($this->formData['content']) && $this->formData['content']) {
-                        $this->sourceModel = new MUtil_Model_NestedArrayModel('manual input', $this->formData['content']);
-                        $extension = 'txt'; // Default extension
-                        file_put_contents($localFile, $this->formData['content']);
-                    } else {
-                        $this->_errors[] = $this->_('No content passed for import.');
-                    }
-                }
-
-                $this->formData['extension'] = $extension;
-                $this->formData['localfile'] = $localFile;
-            }
-
-            if (! ($this->_errors || $this->sourceModel)) {
-                if ('txt' === $this->formData['extension']) {
-                    $this->sourceModel = new MUtil_Model_TabbedTextModel($this->formData['localfile']);
-                } elseif ('xml' === $this->formData['extension']) {
-                    $this->sourceModel = new MUtil_Model_XmlModel($this->formData['localfile']);
-                } else {
-                    $this->_errors[] = sprintf(
-                            $this->_("Unsupported file extension: %s. Import not possible."),
-                            $this->formData['extension']
-                            );
-                }
+            if (! $this->sourceModel) {
+                $this->importer->setSourceFile($this->formData['localfile'], $this->formData['extension']);
+                $this->sourceModel = $this->importer->getSourceModel();
             }
         } catch (Exception $e) {
             $this->_errors[] = $e->getMessage();
@@ -831,7 +916,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
 
             // MUtil_Registry_Source::$verbose = true;
-            $batch = $this->importer->getCheckImportBatch();
+            $batch = $this->importer->getCheckAndImportBatch();
+            $batch->setVariable('addImport', !$this->request->getParam('check', false));
             $batch->runContinuous();
 
             if ($batch->getMessages(false)) {
@@ -846,20 +932,21 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $messages[] = $e->getMessage();
             $messages[] = null;
             $messages[] = sprintf(
-                    "Usage instruction: %s %s file=filename [trans=[%s]]",
+                    "Usage instruction: %s %s file=filename [trans=[%s]] [check=1]",
                     $this->request->getControllerName(),
                     $this->request->getActionName(),
                     implode('|', array_keys($this->importTranslators))
                     );
             $messages[] = sprintf(
-                    "\tRequired parameter: file = filename to import, absolute or relative to %s",
+                    "\tRequired parameter: file=filename to import, absolute or relative to %s",
                     getcwd()
                     );
             $messages[] = sprintf(
-                    "\tOptional parameter: trans = [%s] default is %s",
+                    "\tOptional parameter: trans=[%s] default is %s",
                     implode('|', array_keys($this->importTranslators)),
                     $this->defaultImportTranslator
                     );
+            $messages[] = "\tOptional parameter: check=[0|1], 0=default, 1=check input only";
             echo implode("\n", $messages) . "\n";
         }
     }
