@@ -47,6 +47,20 @@
 class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 {
     /**
+     * The extension used for the import
+     *
+     * @var string
+     */
+    private $_extension;
+
+    /**
+     * The filename of the import file.
+     *
+     * @var string
+     */
+    private $_filename;
+
+    /**
      *
      * @var MUtil_Task_TaskBatch
      */
@@ -201,7 +215,27 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 
         if (! $batch->isLoaded()) {
             $batch->addTask('Import_ImportCheckTask');
+            if ($this->_filename) {
+                $batch->addTask(
+                        'File_MoveFileWhenTask',
+                        $this->_filename,
+                        $this->getFailureDirectory() . DIRECTORY_SEPARATOR .
+                            $this->getLongtermFilename() . '.' . $this->_extension,
+                        'import_errors',
+                        1);
+            }
             $batch->addTask('CheckCounterTask', 'import_errors', $this->_('Found %2$d import error(s). Import aborted.'));
+            if ($this->_filename) {
+                $batch->addTask(
+                        'AddTask', // AddTask task as when all is OK this task should be added
+                        'File_MoveFileWhenTask',
+                        $this->_filename,
+                        $this->getSuccessDirectory() . DIRECTORY_SEPARATOR .
+                            $this->getLongtermFilename() . '.' . $this->_extension,
+                        'import_errors',
+                        0,
+                        0);
+            }
         }
 
         return $batch;
@@ -255,17 +289,33 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     public function getImportOnlyBatch(MUtil_Task_TaskBatch $batch = null)
     {
         if (! $this->_importBatch instanceof MUtil_Task_TaskBatch) {
-            $this->_importBatch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . basename($this->sourceModel->getName()) . '_' . __FUNCTION__);
+            $batch = new MUtil_Task_TaskBatch(__CLASS__ . '_import_' .
+                    basename($this->sourceModel->getName()) . '_' . __FUNCTION__);
 
-            $this->registrySource->applySource($this->_importBatch);
-            $this->_importBatch->setSource($this->registrySource);
-            $this->_importBatch->setVariable('targetModel', $this->getTargetModel());
+            $this->registrySource->applySource($batch);
+            $batch->setSource($this->registrySource);
+            $batch->setVariable('targetModel', $this->getTargetModel());
+
+            $this->_importBatch = $batch;
+        } else {
+            $batch = $this->_importBatch;
         }
         // MUtil_Echo::track($this->_importBatch->count());
 
-        // Loading is done by getCheckOnlyBatch
-        // if (! $batch->isLoaded()) {
-
+        if (! $batch->isLoaded()) {
+            if ($this->_filename) {
+                $batch->addTask(
+                        'AddTask', // AddTask task as when all is OK this task should be added
+                        'File_MoveFileWhenTask',
+                        $this->_filename,
+                        $this->getSuccessDirectory() . DIRECTORY_SEPARATOR .
+                            $this->getLongtermFilename() . '.' . $this->_extension,
+                        'import_errors',
+                        0,
+                        0);
+            }
+            // Rest of loading is done by getCheckOnlyBatch, but when started, the above task must be added.
+        }
         return $this->_importBatch;
     }
 
@@ -439,6 +489,9 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
                         $extension
                         ));
         }
+
+        $this->_filename  = $filename;
+        $this->_extension = $extension;
 
         $this->setSourceModel($model);
 

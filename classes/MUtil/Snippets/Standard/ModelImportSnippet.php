@@ -366,17 +366,19 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $element = new MUtil_Form_Element_Html($batch->getId());
 
             if ($batch->isFinished()) {
-                $this->nextDisabled = $batch->getCounter('import_errors');
+               $this->nextDisabled = $batch->getCounter('import_errors');
                 $batch->autoStart   = false;
 
                 $imported = $batch->getCounter('imported');
                 $changed  = $batch->getCounter('changed');
-                $p = $element->pInfo();
-                $p[] = sprintf($this->plural('%d row imported.', '%d rows imported.', $imported), $imported);
-                $p[] = ' ';
-                $p[] = sprintf($this->plural('%d row changed.', '%d rows changed.', $changed), $changed);
+
+                $text = sprintf($this->plural('%d row imported.', '%d rows imported.', $imported), $imported) . ' ' .
+                        sprintf($this->plural('%d row changed.', '%d rows changed.', $changed), $changed);
 
                 $this->addMessage($batch->getMessages(true));
+                $this->addMessage($text);
+
+                $element->pInfo($text);
 
             } else {
                 $element->setValue($batch->getPanel($this->view, $batch->getProgressPercentage() . '%'));

@@ -129,23 +129,29 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
                 $batch->setMessage('check_status', sprintf($this->_('%s, no problems found.'), $checkMsg));
             }
         } else {
-            if ($errorCount >= $this->importErrorsAllowed) {
-                $batch->stopBatch(sprintf(
-                        $this->plural('%s, one import problem found. Import aborted.',
-                                '%s, %d import problems found. Import aborted.',
-                                $errorCount),
-                        $checkMsg,
-                        $errorCount));
-
-            } else {
-                $batch->setMessage('check_status', sprintf(
-                        $this->plural('%s, one import problem found, continuing check.',
-                                '%s, %d import problems found, continuing check.',
-                                $errorCount),
-                        $checkMsg,
-                        $errorCount));
-            }
+            $batch->setMessage('check_status', sprintf(
+                    $this->plural('%s, one import problem found, continuing check.',
+                            '%s, %d import problems found, continuing check.',
+                            $errorCount),
+                    $checkMsg,
+                    $errorCount));
         }
+    }
+
+
+    /**
+     * Return true when the task has finished.
+     *
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        // Stop iterator when to many errors
+        if ($this->getBatch()->getCounter('import_errors') >= $this->importErrorsAllowed) {
+            return true;
+        }
+
+        return parent::isFinished();
     }
 
     /**

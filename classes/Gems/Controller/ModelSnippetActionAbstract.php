@@ -373,10 +373,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
 
         $name[] = $this->_request->getControllerName();
         $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
-        $name[] = $user->getLoginName();
+        $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $user->getLoginName());
         $name[] = $orgId;
 
-        return implode('.', $name);
+        return implode('.', array_filter($name));
     }
 
     /**
@@ -487,7 +487,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public function importAction()
     {
         $this->_importExtraParameters['topicCallable'] = array($this, 'getTopic');
-        
+
         $this->importParameters = $this->importParameters + $this->_importExtraParameters;
 
         parent::importAction();

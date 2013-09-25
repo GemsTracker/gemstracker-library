@@ -171,7 +171,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             $this->_openFile();
         }
 
-        if (! $this->_file && $this->_file->valid()) {
+        if (! (($this->_file instanceof SplFileObject) && $this->_file->valid())) {
             return false;
         }
 
