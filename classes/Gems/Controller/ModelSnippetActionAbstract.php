@@ -68,10 +68,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var array Mixed key => value array for snippet initializPdfation
      */
     private $_importExtraParameters = array(
-        'failureDirectory' => 'getImportFailureDirectory',
         'formatBoxClass'   => 'browser',
-        'longtermFilename' => 'getImportLongtermFileName',
-        'successDirectory' => 'getImportSuccessDirectory',
+        'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
         );
 
@@ -282,6 +280,16 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
+     * Name of the default import translator
+     *
+     * @return string
+     */
+    public function getDefaultImportTranslator()
+    {
+        return $this->loader->getImportLoader()->getDefaultTranslator($this->getRequest()->getControllerName());
+    }
+
+    /**
      * Helper function to get the question for the delete action.
      *
      * @return $string
@@ -351,52 +359,36 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     }
 
     /**
-     * The directory where the file should be stored when the import failed
+     * Get an Importer object for this actions
      *
-     * @return string
+     * @return \MUtil_Model_Importer
      */
-    public function getImportFailureDirectory()
+    public function getImporter()
     {
-        return GEMS_ROOT_DIR . '/var/import_failed/' . $this->_request->getControllerName();
+        return $this->loader->getImportLoader()->getImporter(
+                $this->getRequest()->getControllerName(),
+                $this->getModel()
+                );
     }
 
     /**
-     * The file name to use for final storage, minus the extension
-     *
-     * @return string
-     */
-    public function getImportLongtermFileName()
-    {
-        $user  = $this->loader->getCurrentUser();
-        $orgId = $user->getCurrentOrganization()->getCode() ?: $user->getCurrentOrganizationId();
-        $date  = new MUtil_Date();
-
-        $name[] = $this->_request->getControllerName();
-        $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
-        $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $user->getLoginName());
-        $name[] = $orgId;
-
-        return implode('.', array_filter($name));
-    }
-
-    /**
-     * The directory where the file should be stored when the import succeeded
-     *
-     * @return string
-     */
-    public function getImportSuccessDirectory()
-    {
-        return GEMS_ROOT_DIR . '/var/imported/' . $this->_request->getControllerName();
-    }
-
-    /**
-     * The file name to use for temporary storage
+     * The directory to use for temporary storage
      *
      * @return string
      */
     public function getImportTempDirectory()
     {
-        return GEMS_ROOT_DIR . '/var/importing';
+        return $this->loader->getImportLoader()->getTempDirectory();
+    }
+
+    /**
+     * Get the possible translators for the import snippet.
+     *
+     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     */
+    public function getImportTranslators()
+    {
+        return $this->loader->getImportLoader()->getTranslators($this->getRequest()->getControllerName());
     }
 
     /**

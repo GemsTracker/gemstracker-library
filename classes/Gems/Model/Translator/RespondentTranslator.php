@@ -60,15 +60,15 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     protected $orgTranslations;
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * @param string $description A description that enables users to choose the transformer they need.
+     * @return void
      */
-    public function __construct($description = '', Zend_Db_Adapter_Abstract $db)
+    public function afterRegistry()
     {
-        parent::__construct($description);
-
-        $this->db = $db;
-
+        parent::afterRegistry();
+        
         $this->orgTranslations = $this->db->fetchPairs('
             SELECT gor_provider_id, gor_id_organization
                 FROM gems__organizations
@@ -80,6 +80,17 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
                 FROM gems__organizations
                 WHERE gor_code IS NOT NULL
                 ORDER BY gor_id_organization');
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return ($this->db instanceof Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
     }
 
     /**

@@ -234,4 +234,19 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     {
         return $this->plural('file', 'files', $count);
     }
+
+    /**
+     * Import the file
+     */
+    public function importAction()
+    {
+        $id    = $this->_getIdParam();
+        $model = $this->getModel();
+
+        $this->html[] = $id;
+
+        $data = $model->loadFirst(array('urlpath' => $id));
+
+        MUtil_Echo::track($data);
+    }
 }

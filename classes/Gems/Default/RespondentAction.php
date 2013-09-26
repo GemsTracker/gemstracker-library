@@ -404,19 +404,6 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     }
 
     /**
-     * Get the possible translators for the import snippet.
-     *
-     * @return array of MUtil_Model_ModelTranslatorInterface objects
-     */
-    public function getImportTranslators()
-    {
-        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
-        $this->loader->applySource($trs);
-
-        return array('default' => $trs);
-    }
-
-    /**
      * Returns the currently used organization
      *
      * @param int $default Optional default value

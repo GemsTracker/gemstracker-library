@@ -310,19 +310,6 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     }
 
     /**
-     * Get the possible translators for the import snippet.
-     *
-     * @return array of MUtil_Model_ModelTranslatorInterface objects
-     */
-    public function getImportTranslators()
-    {
-        $trs = new Gems_Model_Translator_RespondentTranslator($this->_('Direct import'), $this->db);
-        $this->applySource($trs);
-
-        return array('default' => $trs);
-    }
-
-    /**
      * Helper function to get the title for the index action.
      *
      * @return $string

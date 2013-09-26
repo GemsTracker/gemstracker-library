@@ -217,7 +217,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             $batch->addTask('Import_ImportCheckTask');
             if ($this->_filename) {
                 $batch->addTask(
-                        'File_MoveFileWhenTask',
+                        'File_CopyFileWhenTask',
                         $this->_filename,
                         $this->getFailureDirectory() . DIRECTORY_SEPARATOR .
                             $this->getLongtermFilename() . '.' . $this->_extension,
@@ -228,7 +228,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             if ($this->_filename) {
                 $batch->addTask(
                         'AddTask', // AddTask task as when all is OK this task should be added
-                        'File_MoveFileWhenTask',
+                        'File_CopyFileWhenTask',
                         $this->_filename,
                         $this->getSuccessDirectory() . DIRECTORY_SEPARATOR .
                             $this->getLongtermFilename() . '.' . $this->_extension,
@@ -306,7 +306,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             if ($this->_filename) {
                 $batch->addTask(
                         'AddTask', // AddTask task as when all is OK this task should be added
-                        'File_MoveFileWhenTask',
+                        'File_CopyFileWhenTask',
                         $this->_filename,
                         $this->getSuccessDirectory() . DIRECTORY_SEPARATOR .
                             $this->getLongtermFilename() . '.' . $this->_extension,

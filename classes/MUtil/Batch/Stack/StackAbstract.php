@@ -65,6 +65,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     public function addStep($method, array $params)
     {
         if (! MUtil_Ra::isScalar($params)) {
+            // MUtil_Echo::track($params);
             throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
         }
 
@@ -111,6 +112,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     public function setStep($method, $id, $params)
     {
         if (! MUtil_Ra::isScalar($params)) {
+            // MUtil_Echo::track($params);
             throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
         }
 

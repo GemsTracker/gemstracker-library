@@ -287,13 +287,6 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      */
     protected function getFileIcons(MUtil_Model_TableBridge $bridge)
     {
-        $onImport = new MUtil_Html_OnClickArrayAttribute();
-        $onImport->addConfirm(MUtil_Lazy::call(
-                'sprintf',
-                $this->_("Are you sure you want to import '%s'?"),
-                $bridge->relpath
-                ));
-
         $onDelete = new MUtil_Html_OnClickArrayAttribute();
         $onDelete->addConfirm(MUtil_Lazy::call(
                 'sprintf',
@@ -302,10 +295,7 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
                 ));
 
         return array(
-            'process.png'  => array(
-                $this->findMenuItem($this->request->getControllerName(), 'import'),
-                $onImport,
-                ),
+            'process.png'  => $this->findMenuItem($this->request->getControllerName(), 'import'),
             'download.png' => $this->findMenuItem($this->request->getControllerName(), 'download'),
             'eye.png'      => $this->findMenuItem($this->request->getControllerName(), 'show'),
             'edit.png'     => $this->findMenuItem($this->request->getControllerName(), 'edit'),

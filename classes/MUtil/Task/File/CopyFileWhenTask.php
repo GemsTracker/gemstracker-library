@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Task_File_MoveFileWhenTask extends MUtil_Task_TaskAbstract
+class MUtil_Task_File_CopyFileWhenTask extends MUtil_Task_TaskAbstract
 {
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -82,13 +82,10 @@ class MUtil_Task_File_MoveFileWhenTask extends MUtil_Task_TaskAbstract
         MUtil_File::ensureDir(dirname($destination));
 
         if (@copy($file, $destination)) {
-            $batch->addMessage(sprintf($this->_('Archived file as "%s".'), basename($destination)));
-            if (! @unlink($file)) {
-                $batch->addMessage(sprintf($this->_('Could not remove original file "%s".'), basename($file)));
-            }
+            $batch->addMessage(sprintf($this->_('Copied file to "%s".'), basename($destination)));
         } else {
             $batch->addMessage(sprintf(
-                    $this->_('Could not move "%s" to "%s".'),
+                    $this->_('Could not copy "%s" to "%s".'),
                     basename($file),
                     basename($destination)
                     ));

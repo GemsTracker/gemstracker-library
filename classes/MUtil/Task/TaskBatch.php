@@ -138,6 +138,8 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function runTask($task, array $params = array())
     {
+        // MUtil_Echo::track($task);
+        
         $taskObject = $this->getTaskLoader()->createClass($task);
         if ($taskObject instanceof MUtil_Registry_TargetInterface) {
             if (!$this->getSource()->applySource($taskObject)) {

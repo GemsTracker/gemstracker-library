@@ -50,13 +50,6 @@
 class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
-     * Nested array, caching the output of loadImportData()
-     *
-     * @var array
-     */
-    private $_data;
-
-    /**
      * Contains the errors generated so far
      *
      * @var array
@@ -95,6 +88,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      *
      * If empty the file is thrown away after the failure.
      *
+     * Used only when importer is not set
+     *
      * @var string
      */
     public $failureDirectory;
@@ -117,7 +112,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      *
      * @var MUtil_Model_Importer
      */
-    private $importer;
+    protected $importer;
 
     /**
      *
@@ -136,6 +131,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      * The filename minus the extension for long term storage.
      *
      * If empty the file is not kept.
+     *
+     * Used only when importer is not set
      *
      * @var string
      */
@@ -158,6 +155,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      * The final directory when the data was successfully imported.
      *
      * If empty the file is thrown away after the import.
+     *
+     * Used only when importer is not set
      *
      * @var string
      */
@@ -339,6 +338,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             }
             $form->activateJQuery();
             $form->addElement($element);
+        } else {
+            $this->displayHeader($bridge, $this->_('Check error!'));
+            $this->displayErrors($bridge);
+
+            $this->nextDisabled = true;
         }
     }
 
@@ -366,7 +370,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $element = new MUtil_Form_Element_Html($batch->getId());
 
             if ($batch->isFinished()) {
-               $this->nextDisabled = $batch->getCounter('import_errors');
+                $this->nextDisabled = $batch->getCounter('import_errors');
                 $batch->autoStart   = false;
 
                 $imported = $batch->getCounter('imported');
@@ -386,6 +390,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             }
             $form->activateJQuery();
             $form->addElement($element);
+        } else {
+            $this->displayHeader($bridge, $this->_('Import error!'));
+            $this->displayErrors($bridge);
+
+            $this->nextDisabled = true;
         }
 
 
@@ -808,19 +817,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     }
 
     /**
-     * Is the import OK
-     *
-     * @return boolean
-     */
-    public function isImportOk()
-    {
-        $this->loadImportData();
-        // MUtil_Echo::track('passed validator: ' . count($this->_errors));
-
-        return !$this->_errors;
-    }
-
-    /**
      * Hook that loads the form data from $_POST or the model
      *
      * Or from whatever other source you specify here.
@@ -858,38 +854,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         }
 
         // MUtil_Echo::track($_POST, $_FILES, $this->formData);
-    }
-
-    /**
-     * Try to import the data.
-     *
-     * Will set $this->_errors on failure.
-     *
-     * @return array or false on some errors
-     */
-    protected function loadImportData()
-    {
-        if (! $this->_data) {
-            $translator = $this->getImportTranslator();
-
-            if (! ($translator && $this->loadSourceModel())) {
-                return false;
-            }
-
-            $translator->setTargetModel($this->targetModel);
-            $translator->setSourceModel($this->sourceModel);
-
-            $data = $this->sourceModel->load();
-            $data = $translator->translateImport($data);
-
-            if ($translator->hasErrors()) {
-                $this->_errors = array_merge($this->_errors, $translator->getErrors());
-            }
-
-            $this->_data = $data;
-        }
-
-        return $this->_data;
     }
 
     /**
@@ -962,18 +926,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function saveData()
     {
-        $this->loadImportData();
-
-        if (! $this->_errors) {
-            // Signal file copy
-            $this->_saved = true;
-
-            $this->targetModel->saveAll($this->_data);
-
-            $changed = $this->targetModel->getChanged();
-
-            $this->addMessage(sprintf($this->_('Imported %d %s'), $changed, $this->getTopic($changed)));
-        }
+        // do nothing, save occurs in batch
     }
 
     /**
@@ -984,40 +937,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     protected function setAfterSaveRoute()
     {
         if (isset($this->formData['localfile']) && file_exists($this->formData['localfile'])) {
-            $moveTo = false;
-
-            if ((4 == $this->currentStep) && $this->longtermFilename) {
-                $this->loadImportData();
-                if ($this->_errors && $this->failureDirectory ) {
-                    MUtil_File::ensureDir($this->failureDirectory);
-                    $moveTo = $this->failureDirectory . DIRECTORY_SEPARATOR . $this->longtermFilename;
-
-                } elseif ($this->_saved && $this->successDirectory) {
-                    MUtil_File::ensureDir($this->successDirectory);
-                    $moveTo = $this->successDirectory . DIRECTORY_SEPARATOR . $this->longtermFilename;
-                }
-            }
-
-            if ($moveTo) {
-                // Make sure the extension is added
-                if (isset($this->formData['extension']) && $this->formData['extension']) {
-                    if (!MUtil_String::endsWith($moveTo, '.' . $this->formData['extension'])) {
-                        $moveTo = $moveTo . '.' . $this->formData['extension'];
-                    }
-                }
-                // Copy to long term storage location
-                if (! copy($this->formData['localfile'], $moveTo)) {
-                    throw new MUtil_Model_ModelException(sprintf(
-                            $this->_('Copy from %s to %s failed: %s.'),
-                            $this->formData['localfile'],
-                            $moveTo,
-                            MUtil_Error::getLastPhpErrorMessage('reason unknown')
-                            ));
-                }
-            }
+            // Now is a good moment to remove the temporary file
             @unlink($this->formData['localfile']);
         }
 
-        return parent::setAfterSaveRoute();
+        parent::setAfterSaveRoute();
     }
 }
