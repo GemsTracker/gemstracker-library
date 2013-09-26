@@ -68,6 +68,25 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     protected $translate;
 
     /**
+     * The model to use with a controller
+     *
+     * @param string $controller Name of controller (or other id)
+     * @return MUtil_Model_ModelAbstract or null when not found
+     */
+    protected function getControllerTargetModel($controller)
+    {
+        switch ($controller) {
+            case 'respondent':
+                $model = $this->loader->getModels()->getRespondentModel(true);
+                $model->applyEditSettings();
+                return $model;
+                
+            default:
+                return null;
+        }
+    }
+    
+    /**
      * Name of the default import translator
      *
      * @param string $controller Name of controller (or other id)
@@ -89,6 +108,45 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
         return GEMS_ROOT_DIR . '/var/import_failed/' . $controller;
     }
 
+    /**
+     *
+     * @param string $filename Name of file to import
+     * @return \Gems_Import_Importer or null
+     */
+    public function getFileImporter($filename)
+    {
+        $controller   = $this->getFilenameController($filename);
+        $defaultTrans = $this->getDefaultTranslator($controller);
+        $targetModel  = $this->getControllerTargetModel($controller);
+        $translators  = $this->getTranslators($controller);
+
+        if (! ($controller && $targetModel && isset($translators[$defaultTrans]))) {
+            return null;
+        }
+        
+        $importer = $this->getImporter($controller, $targetModel);
+        $importer->setImportTranslator($translators[$defaultTrans]);
+        $importer->setSourceFile($filename);
+        
+        return $importer;
+    }
+    
+    /**
+     * Get the controller that should be linked to the filename
+     * 
+     * @param string $filename Name of file to import
+     * @return string or false if none found.
+     */
+    protected function getFilenameController($filename)
+    {
+        $filename = strtolower(basename($filename));
+        if (preg_match('/^respondent/', $filename)) {
+            return 'respondent';
+        }
+        
+        return false;
+    }
+    
     /**
      *
      * @param string $controller Name of controller (or other id)

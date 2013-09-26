@@ -68,29 +68,29 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
 
     public function autoAction()
     {
-        $filename = $this->_getParam('file');
-        $this->html->div('Auto for: ' . $this->loader->getCurrentUser()->getLoginName() . ' file ' . $filename);
-
-        if (!file_exists($filename)) {
-            $file = GEMS_ROOT_DIR . '/' . $filename;
-
-            if (file_exists($file)) {
-                $filename = $file;
+        $importLoader = $this->loader->getImportLoader();
+        $files        = $this->getModel()->load(true, 'changed');
+        
+        $batch = $this->loader->getTaskRunnerBatch('auto-file-import');
+        
+        foreach ($files as $data) {
+            $importer = $importLoader->getFileImporter($data['fullpath']);
+            
+            if ($importer) {
+                $this->addMessage(sprintf($this->_('"%s" is go!'), $data['relpath']));
+                
+                // Batch is reset :((
+                $importer->getCheckAndImportBatch($batch);
+            } else {
+                $this->addMessage(sprintf($this->_('Automatic import not possible for file "%s".'), $data['relpath']));
             }
-
         }
-        $files = MUtil_File::getFilesRecursive($filename);
+        
+        $title = $this->_('Import the files.');
 
-        foreach ($files as $filename) {
-           $model = new MUtil_Model_TabbedTextModel($filename);
-           $data = $model->load();
-           // MUtil_Echo::track($data);
-           $table = MUtil_Html_TableElement::createArray($data, $filename, true);
-           $table->class = 'browser';
-           $this->html->append($table);
-        }
+        $this->_helper->batchRunner($batch, $title);
 
-        // $this->html->ul($files);
+        $this->html->pInfo($this->_('Checks the files for validity and then performs an import.'));
     }
 
     /**
