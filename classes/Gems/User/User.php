@@ -914,6 +914,32 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Get an array of OrgId's for filtering on all allowed organizations that can have
+     * respondents for the current logged in user
+     *
+     * @return array
+     */
+    public function getRespondentOrgFilter()
+    {
+        return array_keys($this->getRespondentOrganizations());
+    }
+
+    /**
+     * Get a where statement containing orgId's for combi field where statements on all
+     * allowed organizations that can have respondents for the current logged in user
+     *
+     * @param string $fieldName Field name separator
+     * @param string $sep Optional different value seperator
+     * @return string
+     */
+    public function getRespondentOrgWhere($fieldName, $sep = '|')
+    {
+        return "(INSTR($fieldName, '$sep" .
+                implode("$sep') > 0 OR INSTR($fieldName, '$sep", $this->getRespondentOrgFilter()) .
+                "$sep') > 0)";
+    }
+
+    /**
      * Returns the current user role.
      *
      * @return string

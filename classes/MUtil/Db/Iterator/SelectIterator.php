@@ -80,6 +80,15 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
         $this->_select = $select;
     }
 
+    protected function _initStatement()
+    {
+        // MUtil_Echo::track($this->_select->__toString());
+
+        $this->_i         = 0;
+        $this->_statement = $this->_select->query();
+        $this->_row       = $this->_statement->fetch();
+    }
+
     /**
      * Return the current element
      *
@@ -87,6 +96,9 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
      */
     public function current()
     {
+        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+            $this->_initStatement();
+        }
         return $this->_row;
     }
 
@@ -97,6 +109,9 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
      */
     public function key()
     {
+        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+            $this->_initStatement();
+        }
         return $this->_i;
     }
 
@@ -105,6 +120,9 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
      */
     public function next()
     {
+        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+            $this->_initStatement();
+        }
         $this->_row = $this->_statement->fetch();
         $this->_i   = $this->_i + 1;
     }
@@ -114,11 +132,7 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
      */
     public function rewind()
     {
-        $this->_i = -1;
-        $this->_statement = $this->_select->query();
-
-        // Go to first
-        $this->next();
+        $this->_initStatement();
     }
 
     /**
@@ -128,6 +142,9 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
      */
     public function valid()
     {
+        if (! $this->_statement instanceof Zend_Db_Statement_Interface) {
+            $this->_initStatement();
+        }
         return (boolean) $this->_row;
     }
 

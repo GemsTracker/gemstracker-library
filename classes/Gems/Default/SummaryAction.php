@@ -95,7 +95,7 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
     public function createModel($detailed, $action)
     {
         $select = $this->getSelect();
-        
+
         // MUtil_Model::$verbose = true;
         $model = new MUtil_Model_SelectModel($select, 'summary');
 
@@ -123,7 +123,11 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
                 'multiOptions', $this->util->getDbLookup()->getGroups());
 
         $data = $this->util->getRequestCache('index')->getProgramParams();
-        if (isset($data['gto_id_track']) &&$data['gto_id_track']) {
+        if (! (isset($data['gto_id_organization']) && $data['gto_id_organization'])) {
+            $model->addFilter(array('gto_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
+        }
+
+        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
             // Add the period filter
             if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
                 $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());

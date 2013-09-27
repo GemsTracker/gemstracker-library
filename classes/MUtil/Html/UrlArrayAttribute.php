@@ -96,7 +96,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             // $value = rawurlencode($value);
             if (is_numeric($key)) {
                 $url_string .= $value;
-            } else {
+            } elseif (strlen($value)) {
                 // Prevent double escaping by using rawurlencode() instead
                 // of urlencode() that is used by Zend_Controller_Router_Route
                 $url_parameters[$key] = rawurlencode($value);

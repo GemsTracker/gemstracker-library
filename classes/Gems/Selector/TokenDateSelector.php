@@ -28,7 +28,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Selector
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -38,7 +38,7 @@
 
 /**
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Selector
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -136,7 +136,7 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
      */
     protected function processSelect(Zend_Db_Select $select)
     {
-        $select->joinLeft('gems__rounds',          'gto_id_round = gro_id_round', array());
+        $select->joinLeft('gems__rounds',      'gto_id_round = gro_id_round', array());
         $select->join('gems__tracks',          'gto_id_track = gtr_id_track', array());
         $select->join('gems__surveys',         'gto_id_survey = gsu_id_survey', array());
         $select->join('gems__groups',          'gsu_id_primary_group = ggp_id_group', array());

@@ -1229,11 +1229,15 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @see MUtil_Model_SelectModelPaginator
      *
-     * @param array $data Nested array containing rows
+     * @param array $data Nested array containing rows or iterator
      * @return array Nested
      */
-    public function processAfterLoad(array $data)
+    public function processAfterLoad($data)
     {
+        if ($this->_transformers && ($data instanceof Traversable)) {
+            $data = iterator_to_array($data, true);
+        }
+
         foreach ($this->_transformers as $transformer) {
             $data = $transformer->transformLoad($this, $data);
         }

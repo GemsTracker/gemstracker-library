@@ -95,6 +95,9 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
         $filter = $this->util->getRequestCache('index')->getProgramParams();
+        if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
+            $model->addFilter(array('gr2t_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
+        }
         if (! (isset($filter['gr2t_id_track']) && $filter['gr2t_id_track'])) {
             $model->setFilter(array('1=0'));
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
@@ -115,7 +118,6 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         if (isset($filter['gsu_id_primary_group']) && $filter['gsu_id_primary_group']) {
             $select->where('gsu_id_primary_group = ?', $filter['gsu_id_primary_group']);
         }
-
         $data = $this->db->fetchAll($select);
 
         if (! $data) {

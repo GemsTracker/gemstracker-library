@@ -924,10 +924,17 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     public function loadIterator($filter = true, $sort = true)
     {
-        return new MUtil_Db_Iterator_SelectIterator($this->_createSelect(
+        $iter = new MUtil_Db_Iterator_SelectIterator($this->_createSelect(
                 $this->_checkFilterUsed($filter),
                 $this->_checkSortUsed($sort)
                 ));
+
+        if ($iter) {
+            $data = $this->processAfterLoad($iter);
+        }
+
+        return $data;
+
     }
 
     /**

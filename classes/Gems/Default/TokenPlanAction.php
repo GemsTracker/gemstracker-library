@@ -250,9 +250,22 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
     protected function getAutoSearchSelectElements()
     {
-        // intval() protects against any escaping tricks
-        $orgId = intval($this->_getParam('gto_id_organization', $this->escort->getCurrentOrganization()));
+        $user        = $this->loader->getCurrentUser();
+        $allowedOrgs = $user->getRespondentOrganizations();
+        $multiOrg    = count($allowedOrgs) > 1;
 
+        if ($multiOrg) {
+            // intval() protects against any escaping tricks
+            $orgId = intval($this->_getParam('gto_id_organization'));
+        } else {
+            $orgId = $user->getCurrentOrganizationId();
+        }
+        if ($orgId) {
+            $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
+        } else {
+            $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
+        }
+        
         $elements[] = $this->_('Select:');
         $elements[] = MUtil_Html::create('br');
 
@@ -268,7 +281,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0
+                        $orgWhere
                     ORDER BY gro_round_description";
         $elements[] = $this->_createSelectElement('gto_round_description', $sql, $this->_('(all rounds)'));
 
@@ -278,7 +291,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     WHERE gsu_active=1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0
+                        $orgWhere
                     ORDER BY gsu_survey_name";
         /* TODO: use this when we can update this list using ajax
         if (isset($data['gsu_id_primary_group'])) {
@@ -307,15 +320,17 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                         gro_active=1 AND
                         gtr_active=1 AND
                         gtr_track_type='T' AND
-                        INSTR(gtr_organizations, '|$orgId|') > 0
+                        $orgWhere
                     ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 
         // Select organisation
-        if (($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface)) {
-            $options = $this->loader->getCurrentUser()->getRespondentOrganizations();
-
-            $elements[] = $this->_createSelectElement('gto_id_organization', $options);
+        if ($multiOrg) {
+            $elements[] = $this->_createSelectElement(
+                    'gto_id_organization',
+                    $allowedOrgs,
+                    $this->_('(all organizations)')
+                    );
         }
 
         $sql = "SELECT DISTINCT gsf_id_user, CONCAT(
@@ -325,7 +340,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                         COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
                     ) AS gsf_name
                 FROM gems__staff INNER JOIN gems__respondent2track ON gsf_id_user = gr2t_created_by
-                WHERE gr2t_id_organization = $orgId AND
+                WHERE gr2t_id_organization " . ($orgId ? "= $orgId " : "IN (" . implode(", ", array_keys($allowedOrgs)) . ")") . " AND
                     gr2t_active = 1
                 ORDER BY 2";
         $elements[] = $this->_createSelectElement('gr2t_created_by', $sql, $this->_('(all staff)'));
@@ -343,7 +358,10 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             // MUtil_Echo::track($where);
             $filter[] = $where;
         }
-        $filter['gto_id_organization'] = isset($data['gto_id_organization']) ? $data['gto_id_organization'] : $this->escort->getCurrentOrganization(); // Is overruled when set in param
+
+        if (! isset($data['gto_id_organization'])) {
+            $filter['gto_id_organization'] = $this->loader->getCurrentUser()->getRespondentOrgFilter();
+        }
         $filter['gtr_active']  = 1;
         $filter['gsu_active']  = 1;
         $filter['grc_success'] = 1;
@@ -433,7 +451,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $filter[] = $this->db->quoteInto($date_field . ' <= '.  $date_filter, intval($data['period_end']));
         }
 
-        // MUtil_Echo::track
+        // MUtil_Echo::track($filter);
         return $filter;
     }
 
@@ -448,7 +466,6 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             'datefrom'            => $now->toString($inFormat),
             'dateused'            => '_gto_valid_from gto_valid_until',
             'dateuntil'           => $now->toString($inFormat),
-            'gto_id_organization' => $this->escort->getCurrentOrganization(),
             'main_filter'         => 'all',
         );
     }

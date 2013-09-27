@@ -29,7 +29,7 @@
  *
  *
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Selector
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -39,7 +39,7 @@
 
 /**
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Selector
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -329,7 +329,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         } else {
             $this->dateFactorChanges = array_fill_keys(array('D', 'W', 'M', 'Y'), 0);
         }
-        // M qUtil_Echo::track($requiredRows);
+        // MUtil_Echo::track($requiredRows);
         // MUtil_Echo::rs($start, $end, $where);
 
         $select = new Zend_Db_Select($this->db);
@@ -588,11 +588,16 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         // Empty cell for left column
         $bridge->tf();
 
+        $href = array(
+            self::DATE_FACTOR                   => $repeater->df_link,
+            Gems_Util_RequestCache::RESET_PARAM => null,
+            ) + $baseurl;
+
         // Repeating column
         $tf = $bridge->tf();
         $tf->class = array($this->dataCellClass, $columnClass);
         $tf->iflink($repeater->df_link->strlen(),
-            array('href' => array(self::DATE_FACTOR => $repeater->df_link) + $baseurl, $repeater->df_label, 'class' => 'browselink'),
+            array('href' => $href, $repeater->df_label, 'class' => 'browselink'),
             array($repeater->df_label, 'class' => 'browselink disabled'));
         $tf->setRepeater($repeater);
         $tf->setRepeatTags(true);
@@ -648,7 +653,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         }
         $th = $bridge->th();
         $th->class = array($this->dataCellClass, $columnClass);
-        $th->a(array(self::DATE_FACTOR => $repeater->date_factor) + $baseurl, $header);
+        $th->a(array(self::DATE_FACTOR => $repeater->date_factor, Gems_Util_RequestCache::RESET_PARAM => null) + $baseurl, $header);
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
 

@@ -106,8 +106,7 @@ class Gems_Default_OverviewPlanAction extends Gems_Default_TokenPlanAction
 
     public function getDefaultSearchData()
     {
-        return $this->getDateSelector()->getDefaultSearchData()
-                + array('gto_id_organization' => $this->escort->getCurrentOrganization());
+        return $this->getDateSelector()->getDefaultSearchData();
     }
 
     public function getTopic($count = 1)

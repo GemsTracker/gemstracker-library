@@ -69,11 +69,10 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
                 $this->_('(select a track)')
                 );
 
-        $elements[] = $this->_createSelectElement(
-                'gto_id_organization',
-                $this->loader->getCurrentUser()->getRespondentOrganizations(),
-                $this->_('(all organizations)')
-                );
+        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
+        if (count($orgs) > 1) {
+            $elements[] = $this->_createSelectElement('gto_id_organization', $orgs, $this->_('(all organizations)'));
+        }
 
         $elements[] = null;
 
