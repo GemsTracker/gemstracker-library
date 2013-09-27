@@ -72,6 +72,6 @@ class Gems_Default_ImportedFailuresAction extends Gems_Default_FileActionAbstrac
      */
     public function getPath($detailed, $action)
     {
-        return GEMS_ROOT_DIR . '/var/import_failed';
+        return $this->loader->getImportLoader()->getFailureDirectory();
     }
 }

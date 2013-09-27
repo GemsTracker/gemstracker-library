@@ -63,6 +63,12 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     protected $loader;
 
     /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
+
+    /**
      * @var Zend_Translate
      */
     protected $translate;
@@ -80,12 +86,12 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
                 $model = $this->loader->getModels()->getRespondentModel(true);
                 $model->applyEditSettings();
                 return $model;
-                
+
             default:
                 return null;
         }
     }
-    
+
     /**
      * Name of the default import translator
      *
@@ -103,9 +109,9 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * @param string $controller Name of controller (or other id)
      * @return string
      */
-    public function getFailureDirectory($controller)
+    public function getFailureDirectory($controller = null)
     {
-        return GEMS_ROOT_DIR . '/var/import_failed/' . $controller;
+        return rtrim(GEMS_ROOT_DIR . '/var/import_failed/' . $controller, '/');
     }
 
     /**
@@ -123,17 +129,37 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
         if (! ($controller && $targetModel && isset($translators[$defaultTrans]))) {
             return null;
         }
-        
+
         $importer = $this->getImporter($controller, $targetModel);
         $importer->setImportTranslator($translators[$defaultTrans]);
         $importer->setSourceFile($filename);
-        
+
         return $importer;
     }
-    
+
+    /**
+     * The regex mask for source filenames, use of / slashes for directory seperator required
+     *
+     * @return string
+     */
+    public function getFileImportMask()
+    {
+        return '#^.*[.](txt|xml)$#';
+    }
+
+    /**
+     * Get the directory to use as the root for automatic import
+     *
+     * @return string
+     */
+    public function getFileImportRoot()
+    {
+        return $this->project->getFileImportRoot();
+    }
+
     /**
      * Get the controller that should be linked to the filename
-     * 
+     *
      * @param string $filename Name of file to import
      * @return string or false if none found.
      */
@@ -143,10 +169,10 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
         if (preg_match('/^respondent/', $filename)) {
             return 'respondent';
         }
-        
+
         return false;
     }
-    
+
     /**
      *
      * @param string $controller Name of controller (or other id)
@@ -199,9 +225,9 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * @param string $controller Name of controller (or other id)
      * @return string
      */
-    public function getSuccessDirectory($controller)
+    public function getSuccessDirectory($controller = null)
     {
-        return GEMS_ROOT_DIR . '/var/imported/' . $controller;
+        return rtrim(GEMS_ROOT_DIR . '/var/imported/' . $controller, '/');
     }
 
     /**

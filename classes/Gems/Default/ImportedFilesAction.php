@@ -72,6 +72,6 @@ class Gems_Default_ImportedFilesAction extends Gems_Default_FileActionAbstract
      */
     public function getPath($detailed, $action)
     {
-        return GEMS_ROOT_DIR . '/var/imported';
+        return $this->loader->getImportLoader()->getSuccessDirectory();
     }
 }

@@ -1234,7 +1234,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function processAfterLoad($data)
     {
-        if ($this->_transformers && ($data instanceof Traversable)) {
+        if (($this->_transformers || $this->getMeta(self::LOAD_TRANSFORMER)) && ($data instanceof Traversable)) {
             $data = iterator_to_array($data, true);
         }
 

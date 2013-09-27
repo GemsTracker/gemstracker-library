@@ -47,45 +47,35 @@
 class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
 {
     /**
-     * The regex mask for filenames, use of / slashes for directory seperator required
-     *
-     * @var string Regular expression
-     */
-    public $mask = '#^.*[.](txt|xml)$#';
-
-    /**
-     *
-     * @var Gems_Project_ProjectSettings
-     */
-    public $project;
-
-    /**
      * Should the action look recursively through the files
      *
      * @var boolean
      */
     public $recursive = true;
 
+    /**
+     * Action for automaticaly loading all ready files
+     * /
     public function autoAction()
     {
         $importLoader = $this->loader->getImportLoader();
         $files        = $this->getModel()->load(true, 'changed');
-        
+
         $batch = $this->loader->getTaskRunnerBatch('auto-file-import');
-        
+
         foreach ($files as $data) {
             $importer = $importLoader->getFileImporter($data['fullpath']);
-            
+
             if ($importer) {
                 $this->addMessage(sprintf($this->_('"%s" is go!'), $data['relpath']));
-                
+
                 // Batch is reset :((
                 $importer->getCheckAndImportBatch($batch);
             } else {
                 $this->addMessage(sprintf($this->_('Automatic import not possible for file "%s".'), $data['relpath']));
             }
         }
-        
+
         $title = $this->_('Import the files.');
 
         $this->_helper->batchRunner($batch, $title);
@@ -104,6 +94,18 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
     }
 
     /**
+     * Return the mask to use for the relpath of the file, use of / slashes for directory seperator required
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return string or null
+     */
+    public function getMask($detailed, $action)
+    {
+        return $this->loader->getImportLoader()->getFileImportMask();
+    }
+
+    /**
      * Return the path of the directory
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
@@ -112,6 +114,6 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
      */
     public function getPath($detailed, $action)
     {
-        return $this->project->getFileImportRoot();
+        return $this->loader->getImportLoader()->getFileImportRoot();
     }
 }

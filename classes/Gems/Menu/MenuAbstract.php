@@ -322,7 +322,8 @@ abstract class Gems_Menu_MenuAbstract
         // EXPORT TO HTML
         $page = $import->addFilePage($this->_('Importable'), 'pr.file-import', 'file-import');
         $page->addButtonOnly($this->_('Auto import'), 'pr.file-import.auto', 'file-import', 'auto');
-        $page->addImportAction('pr.file-import.import', array('label' => $this->_('Import result')))->setModelParameters(1);
+        // $page->addImportAction('pr.file-import.import', array('label' => $this->_('Import result')))
+        //        ->setModelParameters(1);
 
         $page = $import->addFilePage($this->_('Imported files'), 'pr.file-import', 'imported-files');
         $page = $import->addFilePage($this->_('Imported failures'), 'pr.file-import', 'imported-failures');

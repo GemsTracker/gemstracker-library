@@ -242,30 +242,30 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
     {
         $id    = $this->_getIdParam();
         $model = $this->getModel();
-        
+
         $data = $model->loadFirst(array('urlpath' => $id));
-        
+
         if (! ($data && isset($data['fullpath']))) {
             $this->addMessage(sprintf($this->_('File "%s" not found on the server.'), $id));
-            return;                    
+            return;
         }
-        
+
         $importLoader = $this->loader->getImportLoader();
         $importer = $importLoader->getFileImporter($data['fullpath']);
 
         if (! $importer) {
             $this->addMessage(sprintf($this->_('Automatic import not possible for file "%s".'), $data['relpath']));
-            return;                    
+            return;
         }
-        
+
         $batch = $importer->getCheckAndImportBatch();
-        
+
         $title = $this->_('Import the file.');
 
         $this->_helper->batchRunner($batch, $title);
 
         $this->html->pInfo($this->_('Checks this file for validity and then performs an import.'));
-        
+
         // MUtil_Echo::track($data);
     }
 }
