@@ -129,6 +129,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
         $this->_fieldMapCount = 0;
 
         if (! file_exists($this->_filename)) {
+            $this->_file = false;
             return;
         }
 
@@ -257,6 +258,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             $this->_openFile();
         } elseif ($this->_file) {
             $this->_file->rewind();
+            $this->_file->current(); // Reading line is nexessary for correct loading of file.
             $this->next();
         }
     }
