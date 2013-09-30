@@ -277,7 +277,11 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             'splitter' => $this->_splitFunction,
         );
 
-        return Zend_Serializer::getDefaultAdapter()->serialize($data);
+        if (class_exists('Zend_Serializer')) {
+            return Zend_Serializer::getDefaultAdapter()->serialize($data);
+        } else {
+            return serialize($data);
+        }
     }
 
     /**
@@ -287,7 +291,15 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
      */
     public function unserialize($serialized)
     {
-        $data = Zend_Serializer::getDefaultAdapter()->unserialize($serialized);
+        if (class_exists('Zend_Serializer')) {
+            $data = Zend_Serializer::getDefaultAdapter()->unserialize($serialized);
+        } else {
+            $data = @unserialize($serialized);
+            if ($data === false) {
+                $lastErr = error_get_last();
+                throw new Zend_Exception($lastErr['message']);
+            }
+        }
 
         // WARNING! WARNING! WARNING!
         //
