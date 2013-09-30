@@ -129,10 +129,10 @@ class MUtil_Html_Creator
         'table'             => 'MUtil_Html_TableElement::table',
         'tbody'             => 'MUtil_Html_TBodyElement::tbody',
         'tfoot'             => 'MUtil_Html_TBodyElement::tfoot',
-        'th'                => 'MUtil_Html_TdElement::th',
+        'th'                => 'MUtil_Html_TdElement::createTh',
         'thead'             => 'MUtil_Html_TBodyElement::thead',
         'tr'                => 'MUtil_Html_TrElement::tr',
-        'td'                => 'MUtil_Html_TdElement::td',
+        'td'                => 'MUtil_Html_TdElement::createTd',
         'ul'                => 'MUtil_Html_ListElement::ul',
     );
 

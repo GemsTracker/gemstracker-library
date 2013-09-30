@@ -65,10 +65,10 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TrElement
      */
-    public static function th($arg_array = null)
+    public static function createTh($arg_array = null)
     {
         $args = func_get_args();
-        return new self(__FUNCTION__, $args);
+        return new self('th', $args);
     }
 
     /**
@@ -77,9 +77,9 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
      * @param mixed $arg_array Optional MUtil_Ra::args processed settings
      * @return MUtil_Html_TrElement
      */
-    public static function td($arg_array = null)
+    public static function createTd($arg_array = null)
     {
         $args = func_get_args();
-        return new self(__FUNCTION__, $args);
+        return new self('th', $args);
     }
 }

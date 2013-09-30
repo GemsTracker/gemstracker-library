@@ -66,7 +66,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     {
         if (! MUtil_Ra::isScalar($params)) {
             // MUtil_Echo::track($params);
-            throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
+            // throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
         }
 
         return $this->_addCommand(array($method, $params));
@@ -113,7 +113,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     {
         if (! MUtil_Ra::isScalar($params)) {
             // MUtil_Echo::track($params);
-            throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
+            // throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
         }
 
         return $this->_addCommand(array($method, $params), $id);
