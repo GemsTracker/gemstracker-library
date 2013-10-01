@@ -106,8 +106,6 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     {
         $tokens = MUtil_Ra::column('gto_id_token', $inputRows);
 
-        // MUtil_Echo::track($tokens);
-
         $answerRows = $this->source->getRawTokenAnswerRows(array('token' => $tokens), $this->survey->getSurveyId());
         $emptyRow   = array_fill_keys($this->getItemNames(), null);
         $resultRows = array();
@@ -145,6 +143,18 @@ class Gems_Tracker_SurveyModel extends Gems_Model_JoinModel
     {
         $result = $this->addAnswers(array(parent::loadFirst($filter, $sort)));
         return reset($result);
+    }
+
+    /**
+     * Returns a Traversable spewing out arrays containing the items requested.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @return Traversable
+     */
+    public function loadIterator($filter = true, $sort = true)
+    {
+        return $this->addAnswers(parent::loadIterator($filter, $sort));
     }
 
     /**
