@@ -80,6 +80,6 @@ class MUtil_Html_TdElement extends MUtil_Html_HtmlElement
     public static function createTd($arg_array = null)
     {
         $args = func_get_args();
-        return new self('th', $args);
+        return new self('td', $args);
     }
 }

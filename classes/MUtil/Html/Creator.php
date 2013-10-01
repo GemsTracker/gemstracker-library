@@ -128,11 +128,11 @@ class MUtil_Html_Creator
         'spaced'            => 'MUtil_Html_Sequence::createSpaced',     // A sequence can contain another sequence, so other function name used
         'table'             => 'MUtil_Html_TableElement::table',
         'tbody'             => 'MUtil_Html_TBodyElement::tbody',
+        'td'                => 'MUtil_Html_TdElement::createTd',
         'tfoot'             => 'MUtil_Html_TBodyElement::tfoot',
         'th'                => 'MUtil_Html_TdElement::createTh',
         'thead'             => 'MUtil_Html_TBodyElement::thead',
         'tr'                => 'MUtil_Html_TrElement::tr',
-        'td'                => 'MUtil_Html_TdElement::createTd',
         'ul'                => 'MUtil_Html_ListElement::ul',
     );
 
