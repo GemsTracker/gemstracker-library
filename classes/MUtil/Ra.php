@@ -530,6 +530,44 @@ class MUtil_Ra
     }
 
     /**
+     * Returns a sequential array of all non-scalar values in $value,
+     * recursing through any nested arrays.
+     *
+     * @param mixed $value
+     * @return array
+     */
+    public static function nonScalars($value)
+    {
+        $output = array();
+
+        self::nonScalarFinder($value, $output);
+
+        return $output;
+    }
+
+    /**
+     * Add's all the non-scaler values in $value to output/
+     *
+     * @param mixed $value
+     * @param array $output
+     * @return void $output is the real result
+     */
+    private static function nonScalarFinder($value, array &$output)
+    {
+        if (null === $value) {
+            return;
+        }
+
+        if (is_array($value)) {
+            foreach($value as $sub_value) {
+                self::nonScalarFinder($sub_value, $output);
+            }
+        } elseif (! is_scalar($value)) {
+            $output[] = $value;
+        }
+    }
+
+    /**
      * A function that transforms an array in the form key1, value1, key2, value2 into array(key1 => value1, key2 => value2).
      *
      * When the $args array contains only a single sub array, then this value is assumed to be the return value. This allows
