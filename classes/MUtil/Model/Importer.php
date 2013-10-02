@@ -83,13 +83,6 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected $importTranslator;
 
     /**
-     * Optional, an array of one or more translators
-     *
-     * @var array of name => MUtil_Model_ModelTranslatorInterface objects
-     */
-    protected $importTranslators;
-
-    /**
      * The filename minus the extension for long term storage.
      *
      * If empty the file is not renamed and may overwrite an existing file.
@@ -178,6 +171,8 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
             $this->registrySource->applySource($batch);
             $batch->setSource($this->registrySource);
         }
+
+        $batch->getStack()->registerAllowedClass('MUtil_Date');
 
         $targetModel = $this->getTargetModel();
         $batch->setVariable('targetModel', $targetModel);
@@ -390,31 +385,12 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     /**
      * Set the current translator
      *
-     * @param MUtil_Model_ModelTranslatorInterface|string $translator String must be one of $this->importtranslators
+     * @param MUtil_Model_ModelTranslatorInterface $translator
      * @return \MUtil_Model_Importer (continuation pattern)
      * @throws MUtil_Model_ModelTranslateException for string translators that do not exist
      */
-    public function setImportTranslator($translator)
+    public function setImportTranslator(MUtil_Model_ModelTranslatorInterface $translator)
     {
-        if (! $translator instanceof MUtil_Model_ModelTranslatorInterface) {
-            // Lookup in importTranslators
-            $transName = $translator;
-            if (! isset($this->importTranslators[$transName])) {
-                throw new MUtil_Model_ModelTranslateException(sprintf(
-                        $this->_("Unknown translator. Should be one of: %s"),
-                        implode($this->_(', '), array_keys($this->importTranslators))
-                    ));
-            }
-            $translator = $this->importTranslators[$transName];
-
-            // Extra check to be sure
-            if (! $translator instanceof MUtil_Model_ModelTranslatorInterface) {
-                throw new MUtil_Model_ModelTranslateException(sprintf(
-                        $this->_('Programming error: Translator %s does not result in a translator model.'),
-                        $transName
-                        ));
-            }
-        }
         $this->importTranslator = $translator;
 
         if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {

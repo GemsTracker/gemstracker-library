@@ -77,6 +77,14 @@ interface MUtil_Batch_Stack_Stackinterface
     public function gotoNext();
 
     /**
+     * Register a class as being allowed in the stack
+     *
+     * @param string $className
+     * @return \MUtil_Batch_Stack_StackInterface (continuation pattern)
+     */
+    public function registerAllowedClass($className);
+
+    /**
      * Reset the stack
      *
      * @return \MUtil_Batch_Stack_Stackinterface (continuation pattern)

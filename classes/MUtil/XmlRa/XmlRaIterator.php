@@ -113,6 +113,9 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      */
     public function current()
     {
+        if (-1 === $this->_currentCount) {
+            $this->next();
+        }
         if ($this->_mapFunction) {
             return call_user_func($this->_mapFunction, $this->_currentNode);
         }
@@ -126,6 +129,9 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      */
     public function key()
     {
+        if (-1 === $this->_currentCount) {
+            $this->next();
+        }
         return $this->_currentCount;
     }
 
@@ -200,6 +206,9 @@ class MUtil_XmlRa_XmlRaIterator implements Iterator
      */
     public function valid()
     {
+        if (-1 === $this->_currentCount) {
+            $this->next();
+        }
         return null !== $this->_currentNode;
     }
 }

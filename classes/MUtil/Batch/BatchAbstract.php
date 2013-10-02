@@ -667,6 +667,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Get the current stack
+     * 
+     * @return MUtil_Batch_Stack_Stackinterface
+     */
+    public function getStack()
+    {
+        return $this->stack;
+    }
+
+    /**
      * Returns a button that can be clicked to start the progress bar.
      *
      * @param mixed $arg_array MUtil_Ra::args() arguments to populate link with

@@ -47,6 +47,13 @@
 abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stackinterface
 {
     /**
+     * The classes allowed in the stack
+     *
+     * @var MUtil_Util_ClassList
+     */
+    protected $_allowedClasses;
+
+    /**
      * Add/set the command to the stack
      *
      * @param array $command
@@ -54,6 +61,38 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
      * @return boolean When true, increment the number of commands, otherwise the command existed
      */
     abstract protected function _addCommand(array $command, $id = null);
+
+    protected function _checkParams(array $params)
+    {
+        $checks = MUtil_Ra::nonScalars($params);
+        if ($this->_allowedClasses) {
+            $checks = MUtil_Ra::nonScalars($params);
+            foreach ($checks as $object) {
+                if (! $this->_allowedClasses->get($object)) {
+                    $name = get_class($object);
+                    throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
+                }
+            }
+
+        } elseif (! MUtil_Ra::isScalar($params)) {
+            $checks = MUtil_Ra::nonScalars($params);
+            $object = reset($checks);
+            $name   = get_class($object);
+            throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
+        }
+    }
+
+    /**
+     * Make sure the allowed class list exists
+     *
+     * @return void
+     */
+    protected function _ensureAllowedClassList()
+    {
+        if (! $this->_allowedClasses) {
+            $this->_allowedClasses = new MUtil_Util_ClassList();
+        }
+    }
 
     /**
      * Add an execution step to the command stack.
@@ -64,10 +103,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
      */
     public function addStep($method, array $params)
     {
-        if (! MUtil_Ra::isScalar($params)) {
-            // MUtil_Echo::track($params);
-            // throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
-        }
+        $this->_checkParams($params);
 
         return $this->_addCommand(array($method, $params));
     }
@@ -95,6 +131,25 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
     // public function hasNext()
 
     /**
+     * Register a class as being allowed in the stack
+     *
+     * @param string $className
+     * @return \MUtil_Batch_Stack_StackAbstract (continuation pattern)
+     */
+    public function registerAllowedClass($className)
+    {
+        if (! $this->_allowedClasses) {
+            $this->_ensureAllowedClassList();
+        }
+        if (is_object($className)) {
+            $className = get_class($className);
+        }
+        $this->_allowedClasses->set($className, true);
+
+        return $this;
+    }
+
+    /**
      * Reset the stack
      *
      * @return \MUtil_Batch_Stack_Stackinterface (continuation pattern)
@@ -111,10 +166,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
      */
     public function setStep($method, $id, $params)
     {
-        if (! MUtil_Ra::isScalar($params)) {
-            // MUtil_Echo::track($params);
-            // throw new MUtil_Batch_BatchException("Non scalar batch parameter for method: '$method'.");
-        }
+        $this->_checkParams($params);
 
         return $this->_addCommand(array($method, $params), $id);
     }

@@ -875,11 +875,27 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         return $this->sourceModel instanceof MUtil_Model_ModelAbstract;
     }
 
+    /**
+     * Code execution in batch mode
+     *
+     * @return void
+     */
     protected function processCli()
     {
         try {
+            // Lookup in importTranslators
+            $transName = $this->request->getParam('trans', $this->defaultImportTranslator);
+            if (! isset($this->importTranslators[$transName])) {
+                throw new MUtil_Model_ModelTranslateException(sprintf(
+                        $this->_("Unknown translator '%s'. Should be one of: %s"),
+                        $transName,
+                        implode($this->_(', '), array_keys($this->importTranslators))
+                    ));
+            }
+            $translator = $this->importTranslators[$transName];
+
             $this->importer->setSourceFile($this->request->getParam('file'));
-            $this->importer->setImportTranslator($this->request->getParam('trans', $this->defaultImportTranslator));
+            $this->importer->setImportTranslator($translator);
 
             // MUtil_Registry_Source::$verbose = true;
             $batch = $this->importer->getCheckAndImportBatch();

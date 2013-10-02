@@ -76,6 +76,12 @@ class MUtil_Model_XmlModel extends MUtil_Model_ArrayModelAbstract
 
         $this->_fileName = $fileName;
         $this->_xml = MUtil_XmlRa::loadFile($fileName, $xpath);
+
+        foreach($this->_loadAllTraversable() as $row) {
+            if (is_array($row)) {
+                $this->setMulti(array_keys($row));
+            }
+        }
     }
 
     /**
@@ -86,7 +92,8 @@ class MUtil_Model_XmlModel extends MUtil_Model_ArrayModelAbstract
      */
     protected function _loadAllTraversable()
     {
-        return $this->_xml->getElementIterator()
-                ->setMapFunction(array('MUtil_XmlRa', 'toArray'));
+        $iter = $this->_xml->getElementIterator();
+        $iter->setMapFunction(array('MUtil_XmlRa', 'toArray'));
+        return $iter;
     }
 }
