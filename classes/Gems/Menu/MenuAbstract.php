@@ -220,6 +220,20 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a Mail menu tree to the menu
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addAgendaSetupMenu($label)
+    {
+        $setup = $this->addContainer($label);
+
+        $setup->addBrowsePage($this->_('Locations'), 'pr.locations', 'location');
+    }
+
+    /**
      * Add a menu item that is never added to the navigation tree and only shows up as a button.
      *
      * @param string $label
