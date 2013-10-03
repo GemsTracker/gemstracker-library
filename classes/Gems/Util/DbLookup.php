@@ -260,6 +260,9 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
                 ->order('glo_name');
 
         if ($orgId) {
+            // Check only for active when with $orgId: those are usually used
+            // with editing, while the whole list is used for display.
+            $select->where('glo_active = 1');
             $select->where('glo_id_organization = ?', $orgId);
         }
 
