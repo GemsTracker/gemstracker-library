@@ -54,6 +54,13 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     protected $autofilterSnippets = 'Organization_OrganizationTableSnippet';
 
     /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('organization', 'organizations');
+
+    /**
      * The snippets used for the create and edit actions.
      *
      * @var mixed String or array of snippets name

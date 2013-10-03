@@ -135,11 +135,9 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
 
     public function afterSave($changed)
     {
-        $this->cache->clean('all', array('organization', 'organizations'));
+        parent::afterSave($changed);
 
         // Make sure any changes in the allowed list are reflected.
         $this->loader->getCurrentUser()->refreshAllowedOrganizations();
-
-        return parent::afterSave($changed);
     }
 }

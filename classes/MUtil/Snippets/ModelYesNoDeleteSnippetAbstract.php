@@ -169,7 +169,10 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     {
         // Default is just go to the index
         if ($this->deleteAction && ($this->request->getActionName() !== $this->deleteAction)) {
-            $this->afterSaveRouteUrl = array($this->request->getControllerKey() => $this->request->getControllerName(), $this->request->getActionKey() => $this->deleteAction);
+            $this->afterSaveRouteUrl = array(
+                $this->request->getControllerKey() => $this->request->getControllerName(),
+                $this->request->getActionKey() => $this->deleteAction,
+                );
         }
     }
 

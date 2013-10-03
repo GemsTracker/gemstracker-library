@@ -57,6 +57,19 @@
 abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
 {
     /**
+     *
+     * @var Zend_Cache_Core
+     */
+    protected $cache;
+
+    /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    protected $cacheTags;
+
+    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -181,6 +194,22 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
             $this->_form->resetContext();
         }
         parent::addSaveButton();
+    }
+
+    /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        parent::afterSave($changed);
+
+        if ($this->cacheTags && ($this->cache instanceof Zend_Cache_Core)) {
+            $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+        }
     }
 
     /**

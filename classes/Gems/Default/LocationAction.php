@@ -57,6 +57,13 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
         );
 
     /**
+     * Variable to set tags for cache cleanup after changes
+     *
+     * @var array
+     */
+    public $cacheTags = array('location', 'locations');
+
+    /**
      *
      * @var Gems_Util
      */
@@ -122,7 +129,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
 
 
         $model->setIfExists('glo_address_1',   'label', $this->_('Street'));
-        $model->setIfExists('glo_address_2',   'label', '&nbsp;');
+        $model->setIfExists('glo_address_2',   'label', ' ');
 
         $model->setIfExists('glo_zipcode',     'label', $this->_('Zipcode'),
                 'size', 7,
