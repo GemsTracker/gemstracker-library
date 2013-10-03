@@ -140,6 +140,13 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
         $model->setIfExists('glo_phone_3',     'label', $this->_('Phone 3'));
         $model->setIfExists('glo_phone_4',     'label', $this->_('Phone 4'));
 
+        $model->setIfExists('glo_active',      'label', $this->_('Active'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $this->util->getTranslated()->getYesNo()
+                );
+
+        $model->addColumn("CASE WHEN glo_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+
         return $model;
     }
 

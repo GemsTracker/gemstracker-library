@@ -114,6 +114,10 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        if ($model->has('row_class')) {
+            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
+        }
+
         if ($showMenuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }

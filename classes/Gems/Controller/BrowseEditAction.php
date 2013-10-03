@@ -202,6 +202,10 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        if ($model->has('row_class')) {
+            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
+        }
+
         // Add edit button if allowed, otherwise show, again if allowed
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));

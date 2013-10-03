@@ -22,6 +22,8 @@ CREATE TABLE if not exists gems__locations (
         -- glo_phone_3         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         -- glo_phone_4         varchar(25) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
+        glo_active          boolean not null default 1,
+
         glo_changed         timestamp not null default current_timestamp on update current_timestamp,
         glo_changed_by      bigint unsigned not null,
         glo_created         timestamp not null default '0000-00-00 00:00:00',

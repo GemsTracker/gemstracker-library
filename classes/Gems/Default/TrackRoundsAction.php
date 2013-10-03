@@ -54,27 +54,6 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     public $sortKey = array('gro_id_order' => SORT_ASC);
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
-     *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param MUtil_Model_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @return void
-     */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        parent::addBrowseTableColumns($bridge, $model);
-
-        $table = $bridge->getTable();
-        $rep   = $table->getRepeater();
-
-        foreach ($table->tbody() as $tr) {
-            $tr->appendAttrib('class', $bridge->row_class);
-        }
-    }
-
-    /**
      * Hook to perform action after a record (with changes) was saved
      *
      * As the data was already saved, it can NOT be changed anymore

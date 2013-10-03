@@ -95,6 +95,19 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
                 $bridge->addItem($name, $label);
             }
         }
+                    MUtil_Echo::track('hi');
+
+        if ($model->has('row_class')) {
+                    MUtil_Echo::track('hi');
+            // Make sure deactivated rounds are show as deleted
+            foreach ($bridge->getTable()->tbody() as $tr) {
+                foreach ($tr as $td) {
+                    if ('td' === $td->tagName) {
+                        $td->appendAttrib('class', $bridge->row_class);
+                    }
+                }
+            }
+        }
     }
 
     /**
