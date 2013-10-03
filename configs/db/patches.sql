@@ -510,3 +510,14 @@ ALTER TABLE gems__tracks
 -- PATCH: Check all attribute rights
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.source.check-attributes-all')
     WHERE grl_privileges LIKE '%pr.source.check-attributes%' AND grl_privileges NOT LIKE '%pr.source.check-attributes-all%';
+
+-- PATCH: Rights for agenda administration
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.locations,pr.locations.create,pr.locations.delete,pr.locations.edit')
+    WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.locations%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.agenda-activity,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit')
+    WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.agenda-activity%';

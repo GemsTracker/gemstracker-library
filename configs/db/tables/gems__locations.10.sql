@@ -5,7 +5,6 @@ CREATE TABLE if not exists gems__locations (
         glo_id_organization bigint unsigned not null references gems__organizations (gor_id_organization),
 
         glo_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-
         glo_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         glo_url             varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

@@ -44,5 +44,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class LocationController extends Gems_Default_LocationAction
+class AgendaActivityController extends Gems_Default_AgendaActivityAction
 { }

@@ -110,7 +110,7 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
 
         $errorCount = $batch->getCounter('import_errors');
         $checked    = $batch->getCounter('import_checked');
-        $checkMsg   = sprintf($this->plural('%d record checked', '%d records checked', $checked), $checked);
+        $checkMsg   = sprintf($this->plural('%d row checked', '%d rows checked', $checked), $checked);
 
         $errors = $this->modelTranslator->getRowErrors($key);
         foreach ($errors as $error) {

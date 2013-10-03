@@ -47,6 +47,12 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 {
     /**
      *
+     * @var Gems_Agenda
+     */
+    protected $agenda;
+
+    /**
+     *
      * @var Gems_Events
      */
     protected $events;
@@ -142,6 +148,15 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
+     * @return Gems_Agenda
+     */
+    public function getAgenda()
+    {
+        return $this->_getClass('agenda');
+    }
+
+    /**
+     *
      * @return Gems_User_User
      */
     public function getCurrentUser()
@@ -153,7 +168,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      *
-     * @return gems_Events
+     * @return Gems_Events
      */
     public function getEvents()
     {

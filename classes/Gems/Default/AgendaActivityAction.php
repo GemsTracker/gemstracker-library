@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id: LocationAction.php 203 2013-01-01t 12:51:32Z matijs $
+ * @version    $id: AgendaActivityAction.php 203 2013-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -53,7 +53,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      */
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('glo_name' => SORT_ASC),
+        'extraSort'   => array('gaa_name' => SORT_ASC),
         );
 
     /**
@@ -61,33 +61,13 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      *
      * @var array
      */
-    public $cacheTags = array('location', 'locations');
+    public $cacheTags = array('activity', 'activities');
 
     /**
      *
      * @var Gems_Util
      */
     public $util;
-
-    /**
-     * Set column usage to use for the browser.
-     *
-     * Must be an array of arrays containing the input for TableBridge->setMultisort()
-     *
-     * @return array or false
-     */
-    public function getBrowseColumns()
-    {
-        // Newline placeholder
-        $br = MUtil_Html::create('br');
-
-        $columns[10] = array('glo_name', $br, 'glo_id_organization');
-        $columns[20] = array('glo_url', $br, 'glo_url_route');
-        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
-        $columns[40] = array(MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_match_to');
-
-        return $columns;
-    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -102,62 +82,37 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      */
     protected function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__locations');
+        $translated = $this->util->getTranslated();
+        $model      = new MUtil_Model_TableModel('gems__agenda_activities');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
 
-        $model->setDeleteValues('glo_active', 0);
+        $model->setDeleteValues('gaa_active', 0);
 
-        $model->set('glo_name',                    'label', $this->_('Location'),
+        $model->set('gaa_name',                    'label', $this->_('Activity'),
                 'required', true
                 );
 
-        $model->setIfExists('glo_id_organization', 'label', $this->_('Organization'),
-                'multiOptions', $this->util->getDbLookup()->getOrganizations()
+        $model->setIfExists('gaa_id_organization', 'label', $this->_('Organization'),
+                'description', $this->_('Optional, an import match with an organization has priority over those without.'),
+                'multiOptions', $translated->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
                 );
 
-        $model->setIfExists('glo_match_to',        'label', $this->_('Import matches'),
+        $model->setIfExists('gaa_match_to',        'label', $this->_('Import matches'),
                 'description', $this->_("Split multiple import matches using '|'.")
                 );
 
-        $model->setIfExists('glo_code',        'label', $this->_('Code name'),
+        $model->setIfExists('gaa_code',        'label', $this->_('Code name'),
                 'size', 10,
                 'description', $this->_('Only for programmers.'));
 
-        $model->setIfExists('glo_url',         'label', $this->_('Location url'),
-                'description', $this->_('Complete url for location: http://www.domain.etc'),
-                'validator', 'Url');
-        $model->setIfExists('glo_url_route',   'label', $this->_('Location route url'),
-                'description', $this->_('Complete url for route to location: http://www.domain.etc'),
-                'validator', 'Url');
-
-
-        $model->setIfExists('glo_address_1',   'label', $this->_('Street'));
-        $model->setIfExists('glo_address_2',   'label', ' ');
-
-        $model->setIfExists('glo_zipcode',     'label', $this->_('Zipcode'),
-                'size', 7,
-                'description', $this->_('E.g.: 0000 AA'),
-                'filter', new Gems_Filter_DutchZipcode()
-                );
-
-        $model->setIfExists('glo_city',        'label', $this->_('City'));
-        $model->setIfExists('glo_region',      'label', $this->_('Region'));
-        $model->setIfExists('glo_iso_country', 'label', $this->_('Country'),
-                'multiOptions', $this->util->getLocalized()->getCountries());
-
-        $model->setIfExists('glo_phone_1',     'label', $this->_('Phone'));
-        $model->setIfExists('glo_phone_2',     'label', $this->_('Phone 2'));
-        $model->setIfExists('glo_phone_3',     'label', $this->_('Phone 3'));
-        $model->setIfExists('glo_phone_4',     'label', $this->_('Phone 4'));
-
-        $model->setIfExists('glo_active',      'label', $this->_('Active'),
+        $model->setIfExists('gaa_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $translated->getYesNo()
                 );
 
-        $model->addColumn("CASE WHEN glo_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+        $model->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         return $model;
     }
@@ -169,7 +124,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      */
     public function getIndexTitle()
     {
-        return $this->_('Locations');
+        return $this->_('Agenda activity');
     }
 
     /**
@@ -180,7 +135,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('location', 'locations', $count);
+        return $this->plural('activity', 'activities', $count);
     }
 
     /**
@@ -190,7 +145,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
     {
         parent::indexAction();
 
-        $this->html->pInfo($this->_('A location is a combination of a geographic location and an organization.
- Two organizations sharing a geographic location still need a location item for each organization.'));
+        $this->html->pInfo($this->_('An activity is a high level description about an appointment:
+e.g. consult, check-up, diet, operation, physiotherapy or other.'));
     }
 }

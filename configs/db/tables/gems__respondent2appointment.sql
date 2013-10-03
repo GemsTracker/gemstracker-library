@@ -13,7 +13,6 @@ CREATE TABLE if not exists gems__respondent2appointment (
     -- moodCode http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.4.14
     -- one of  PRMS Scheduled, ARQ requested but no date, EVN has occurred
     gr2a_status            varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'S',
-    -- replaced by active
     -- one off AB => Aborted, AC => active, CA => Cancelled, CO => completed
     -- see http://wiki.hl7.org/index.php?title=PA_Patient_Encounter
 
