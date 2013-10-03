@@ -103,12 +103,12 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      */
     public function matchActivity($name, $organizationId, $create = true)
     {
-        $cacheId    = __CLASS__ . '_' . __FUNCTION__;
-        $activities = $this->cache->load($cacheId);
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $matches = $this->cache->load($cacheId);
 
-        if (! $activities) {
-            $activities = array();
-            $select     = $this->db->select();
+        if (! $matches) {
+            $matches = array();
+            $select  = $this->db->select();
             $select->from('gems__agenda_activities', array('gaa_id_activity', 'gaa_match_to', 'gaa_id_organization'));
 
             $result = $this->db->fetchAll($select);
@@ -119,26 +119,25 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                     $key = $row['gaa_id_organization'];
                 }
                 foreach (explode('|', $row['gaa_match_to']) as $match) {
-                    $activities[$match][$key] = $row['gaa_id_activity'];
+                    $matches[$match][$key] = $row['gaa_id_activity'];
                 }
             }
-            $this->cache->save($activities, $cacheId, array('activities'));
+            $this->cache->save($matches, $cacheId, array('activities'));
         }
-        error_log(print_r($activities, true));
 
-        if (isset($activities[$name])) {
-            if (isset($activities[$name][$organizationId])) {
-                return $activities[$name][$organizationId];
+        if (isset($matches[$name])) {
+            if (isset($matches[$name][$organizationId])) {
+                return $matches[$name][$organizationId];
             }
-            if (isset($activities[$name]['null'])) {
-                return $activities[$name]['null'];
+            if (isset($matches[$name]['null'])) {
+                return $matches[$name]['null'];
             }
         }
 
         if (! $create) {
             return null;
         }
-        error_log($name);
+
         $model = new MUtil_Model_TableModel('gems__agenda_activities');
         Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
 
@@ -153,5 +152,65 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
 
         return $result['gaa_id_activity'];
+    }
+
+    /**
+     * Find a location for the name and organization.
+     *
+     * @param string $name The name to match against
+     * @param int $organizationId Organization id
+     * @param boolean $create Create a match when it does not exist
+     * @return array location
+     */
+    public function matchLocation($name, $organizationId, $create = true)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $matches = $this->cache->load($cacheId);
+
+        if (! $matches) {
+            $matches = array();
+            $select     = $this->db->select();
+            $select->from('gems__locations')
+                    ->order('glo_name');
+
+            $result = $this->db->fetchAll($select);
+            foreach ($result as $row) {
+                foreach (explode('|', $row['glo_match_to']) as $match) {
+                    $matches[$match][$row['glo_id_organization']] = $row;
+                }
+            }
+            $this->cache->save($matches, $cacheId, array('locations'));
+        }
+
+        if (isset($matches[$name])) {
+            if ($organizationId) {
+                if (isset($matches[$name][$organizationId])) {
+                    return $matches[$name][$organizationId];
+                }
+            } else {
+                // Return the first location among the organizations
+                return reset($matches[$name]);
+            }
+        }
+
+        if (! $create) {
+            return null;
+        }
+
+        $model = new MUtil_Model_TableModel('gems__locations');
+        Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+
+        $values = array(
+            'glo_name'            => $name,
+            'glo_id_organization' => $organizationId,
+            'glo_match_to'        => $name,
+            'glo_active'   => 1,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
+
+        return $result;
     }
 }
