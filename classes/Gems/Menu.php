@@ -273,7 +273,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
             // ALLOW ORGANIZATION CHANGE WITH PROPER RIGHTS
-            $this->addPage(null, 'pr.organization-switch', 'organization', 'change-ui');
+            $this->addPage(null, null, 'organization', 'change-ui');
         }
 
     }
