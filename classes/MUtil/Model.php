@@ -25,14 +25,28 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Model
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ * A model combines knowedge about a set of data with knowledge required to manipulate
+ * that set of data. I.e. it can store data about fields such as type, label, length,
+ * etc... and meta data about the object like the current query filter and sort order,
+ * with manipulation methods like save(), load(), loadNew() and delete().
+ *
+ * @see MUtil_Model_ModelAbstract
+ *
+ * @package    MUtil
  * @subpackage Model
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Model
 {
@@ -88,12 +102,45 @@ class MUtil_Model
      */
     const TEXT_FILTER = 'search';
 
-    const TYPE_NOVALUE = 0;
-    const TYPE_STRING = 1;
-    const TYPE_NUMERIC = 2;
-    const TYPE_DATE = 3;
-    const TYPE_DATETIME = 4;
-    const TYPE_TIME = 5;
+    /**
+     * Type identifiers for calculated fields
+     */
+    const TYPE_NOVALUE      = 0;
+
+    /**
+     * Type identifiers for string fields, default type
+     */
+    const TYPE_STRING       = 1;
+
+    /**
+     * Type identifiers for numeric fields
+     */
+    const TYPE_NUMERIC      = 2;
+
+    /**
+     * Type identifiers for date fields
+     */
+    const TYPE_DATE         = 3;
+
+    /**
+     * Type identifiers for date time fields
+     */
+    const TYPE_DATETIME     = 4;
+
+    /**
+     * Type identifiers for time fields
+     */
+    const TYPE_TIME         = 5;
+
+    /**
+     * Type identifiers for sub models that return one row per item
+     */
+    const TYPE_INLINE_MODEL = 6;
+
+    /**
+     * Type identifiers for sub models that can return multiple row per item
+     */
+    const TYPE_CHILD_MODEL  = 7;
 
     /**
      *

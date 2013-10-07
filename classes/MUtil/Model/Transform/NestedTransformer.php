@@ -32,20 +32,19 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: JoinTransformer.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $id: NestedTransformer.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Transform that can be used to join models to another model in possubly non-relational
- * ways.
+ * Transform that can be used to put nested submodels in a model
  *
  * @package    MUtil
  * @subpackage Model
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.2
+ * @since      Class available since MUtil version 1.6.2
  */
-class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransformerInterface
+class MUtil_Model_Transform_NestedTransformer implements MUtil_Model_ModelTransformerInterface
 {
     /**
      *
@@ -114,7 +113,7 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
      */
     public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
     {
-        // Make sure the join fields are in the result set/
+        // Make sure the join fields are in the result set
         foreach ($this->_joins as $joins) {
             foreach ($joins as $source => $target) {
                 if (!is_integer($source)) {
@@ -140,6 +139,9 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
         foreach ($this->_subModels as $sub) {
             foreach ($sort as $key => $value) {
                 if ($sub->has($key)) {
+                    // Make sure the filter is applied during load
+                    $sub->addSort(array($key => $value));
+
                     // Remove all sorts on columns from the submodel
                     unset($sort[$key]);
                 }
@@ -164,7 +166,7 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
         }
 
         foreach ($this->_subModels as $name => $sub) {
-            $this->transformSubModel($model, $sub, $data, $name);
+            $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name);
         }
         // MUtil_Echo::track($data);
 
@@ -177,64 +179,24 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
      * @param MUtil_Model_ModelAbstract $model
      * @param MUtil_Model_ModelAbstract $sub
      * @param array $data
+     * @param array $join
      * @param string $name
      */
-    protected function transformSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, $name)
+    protected function transformLoadSubModel
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name)
     {
-        if (1 === count($this->_joins[$name])) {
-            // Suimple implementation
-            $mkey = key($this->_joins[$name]);
-            $skey = reset($this->_joins[$name]);
+        foreach ($data as $key => $row) {
+            $filter = $sub->getFilter();;
 
-            $mfor = MUtil_Ra::column($mkey, $data);
-
-            // MUtil_Echo::track($mfor);
-
-            $sdata = $sub->load(array($skey => $mfor));
-            // MUtil_Echo::track($sdata);
-
-            if ($sdata) {
-                $skeys = array_flip(MUtil_Ra::column($skey, $sdata));
-                $empty = array_fill_keys(array_keys(reset($sdata)), null);
-
-                foreach ($data as &$mrow) {
-                    $mfind = $mrow[$mkey];
-
-                    if (isset($skeys[$mfind])) {
-                        $mrow += $sdata[$skeys[$mfind]];
-                    } else {
-                        $mrow += $empty;
-                    }
-                }
-            } else {
-                $empty = array_fill_keys($sub->getItemNames(), null);
-
-                foreach ($data as &$mrow) {
-                    $mrow += $empty;
+            foreach ($join as $parent => $child) {
+                if (isset($row[$parent])) {
+                    $filter[$child] = $row[$parent];
                 }
             }
-        } else {
-            // Multi column implementation
-            $empty = array_fill_keys($sub->getItemNames(), null);
-            foreach ($data as &$mrow) {
-                $filter = $sub->getFilter();
-                foreach ($this->_joins[$name] as $from => $to) {
-                    if (isset($mrow[$from])) {
-                        $filter[$to] = $mrow[$from];
-                    }
-                }
 
-                $sdata = $sub->loadFirst($filter);
+            $rows = $sub->load($filter);
 
-                if ($sdata) {
-                    $mrow += $sdata;
-                } else {
-                    $mrow += $empty;
-                }
-
-                // MUtil_Echo::track($sdata, $mrow);
-            }
+            $data[$key][$name] = $rows;
         }
     }
 }

@@ -80,7 +80,7 @@ interface MUtil_Model_ModelTransformerInterface
     public function transformSort(MUtil_Model_ModelAbstract $model, array $sort);
 
     /**
-     * The transform function performs the actual transformation of the data and is called after
+     * This transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
@@ -88,4 +88,15 @@ interface MUtil_Model_ModelTransformerInterface
      * @return array Nested array containing (optionally) transformed data
      */
     public function transformLoad(MUtil_Model_ModelAbstract $model, array $data);
+
+    /**
+     * This transform function performs the actual save of the data and is called after
+     * the saving of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    // public function transformAfterSave(MUtil_Model_ModelAbstract $model, array $row);
+
 }

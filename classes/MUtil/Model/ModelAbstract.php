@@ -59,13 +59,43 @@
  */
 abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 {
+    /**
+     * Identifier fro alias fields
+     */
     const ALIAS_OF  = 'alias_of';
+
+    /**
+     * Identifier for auto save fields
+     */
     const AUTO_SAVE = 'auto_save';
+
+    /**
+     * Identifier for the load transformers
+     */
     const LOAD_TRANSFORMER = 'load_transformer';
+
+    /**
+     * Identifier for the save transformers
+     */
     const SAVE_TRANSFORMER = 'save_transformer';
+
+    /**
+     * Identifier for save when test fields
+     */
     const SAVE_WHEN_TEST   = 'save_when_test';
 
+    /**
+     * Memory for add/get/setChanged
+     *
+     * @var int
+     */
     private $_changedCount = 0;
+
+    /**
+     * Array containing the names of the key fields of the model
+     *
+     * @var array int => name
+     */
     private $_keys;
 
     /**
@@ -185,6 +215,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $sort;
     }
 
+    /**
+     * Checks an entered sort command on sematic correctness
+     *
+     * @param mixed $sort A sort array or a single sort value
+     * @return array The filter to use
+     */
     protected function _checkSortValue($value)
     {
         if ($value) {
@@ -373,6 +409,47 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * Add a 'submodel' field to the model.
+     *
+     * Depending on the join you het either an inline join (one row per subitem)
+     * when the join is the full key of the submodel. An inline join add's the
+     * fields to each row in the model.
+     *
+     * Otherwise you get a nested join where a set of rows is placed in the $name field
+     * of each row of the parent model.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $joins The join fields for the sub model
+     * @param string $name Optional 'field' name, otherwise model name is used
+     * @return \MUtil_Model_ModelTransformerInterface The added transformer
+     */
+    public function addModel(MUtil_Model_ModelAbstract $model, array $joins, $name = null)
+    {
+        if (null === $name) {
+            $name = $model->getName();
+        }
+
+        $keys = $model->getKeys();
+
+        // If the joins is the whole primary key of the sub model, then this joins is inline
+        if (array_values($joins) === array_values($keys)) {
+
+            $type  = MUtil_Model::TYPE_INLINE_MODEL;
+            $trans = new MUtil_Model_Transform_JoinTransformer();
+
+        } else {
+            $type  = MUtil_Model::TYPE_CHILD_MODEL;
+            $trans = new MUtil_Model_Transform_NestedTransformer();
+        }
+        $trans->addModel($model, $joins);
+
+        $this->addTransformer($trans);
+        $this->set($name, 'type', $type);
+
+        return $trans;
     }
 
     /**
