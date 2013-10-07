@@ -106,6 +106,68 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      */
     protected $tabClass       = 'tab';
 
+
+    public function getCurrentTab()
+    {
+        $tabs = $this->getTabs();
+
+        // When empty, first is default
+        if (null === $this->defaultTab) {
+            reset($tabs);
+            $this->defaultTab = key($tabs);
+        }
+        if (null === $this->currentTab) {
+            $this->currentTab = $this->request->getParam($this->getParameterKey());
+
+            // Param can exist and be empty
+            if (! $this->currentTab) {
+                $this->currentTab = $this->defaultTab;
+            }
+        }
+
+        return $this->currentTab;
+    }
+
+    /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param Zend_View_Abstract $view Just in case it is needed here
+     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(Zend_View_Abstract $view)
+    {
+        $tabs = $this->getTabs();
+
+        if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
+            // Let loose
+            if (isset($parameters['baseurl']) && is_array($this->baseurl)) {
+                $this->href = $this->href + $this->baseurl;
+            }
+
+            // Set the correct parameters
+            $this->getCurrentTab();
+
+            $tabRow = MUtil_Html::create()->div();
+
+            foreach ($tabs as $tabId => $content) {
+
+                $div = $tabRow->div(array('class' => $this->tabClass));
+
+                $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+
+                if ($this->currentTab == $tabId) {
+                    $div->appendAttrib('class', $this->tabActiveClass);
+                }
+            }
+
+            return $tabRow;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Return optionally the single parameter key which should left out for the default value,
      * but is added for all other tabs.
@@ -144,55 +206,4 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      * @return array tabId => label
      */
     abstract protected function getTabs();
-
-    /**
-     * Create the snippets content
-     *
-     * This is a stub function either override getHtmlOutput() or override render()
-     *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
-     */
-    public function getHtmlOutput(Zend_View_Abstract $view)
-    {
-        $tabs = $this->getTabs();
-
-        if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
-            // Let loose
-            if (isset($parameters['baseurl']) && is_array($this->baseurl)) {
-                $this->href = $this->href + $this->baseurl;
-            }
-
-            // When empty, first is default
-            if (null === $this->defaultTab) {
-                reset($tabs);
-                $this->defaultTab = key($tabs);
-            }
-            if (null === $this->currentTab) {
-                $this->currentTab = $this->request->getParam($this->getParameterKey());
-
-                // Param can exist and be empty
-                if (! $this->currentTab) {
-                    $this->currentTab = $this->defaultTab;
-                }
-            }
-
-            $tabRow = MUtil_Html::create()->div();
-
-            foreach ($tabs as $tabId => $content) {
-
-                $div = $tabRow->div(array('class' => $this->tabClass));
-
-                $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
-
-                if ($this->currentTab == $tabId) {
-                    $div->appendAttrib('class', $this->tabActiveClass);
-                }
-            }
-
-            return $tabRow;
-        } else {
-            return null;
-        }
-    }
 }
