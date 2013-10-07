@@ -59,6 +59,11 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
      */
     protected $_separator = '&';
 
+    /**
+     * Specially treated types for a specific subclass
+     *
+     * @var array function name => class
+     */
     protected $_specialTypes = array('setRouter' => 'Zend_Controller_Router_Route');
 
     /**
@@ -87,6 +92,11 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         }
     }
 
+    /**
+     * Get the scalar value of this attribute.
+     *
+     * @return string | int | null
+     */
     public function get()
     {
         $url_string = '';
@@ -116,41 +126,55 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
         }
 
         // Only when no string is defined we assume this is a Zend MVC url
-        if ($url_parameters) {
+        //
+        // The array containing $url_parameters can be empty if all values
+        // are default or null values.
+        $request = $this->getRequest();
 
-            if (! $this->getRouteReset()) {
-                // Add the request parameters here as otherwise $router->assemble()
-                // will add the existing parameters without escaping.
-                $request = $this->getRequest();
+        // When the route is not reset, we add the request parameters here manually
+        // as otherwise $router->assemble() will add the existing parameters without
+        // escaping.
+        if (! $this->getRouteReset()) {
 
-                if ($request instanceof Zend_Controller_Request_Http) {
-                    $old = $request->getParamSources();
-                    $request->setParamSources(array('_GET'));
-                }
-                foreach ($request->getParams() as $key => $value) {
-                    if (!array_key_exists($key, $url_parameters)) {
-                        // E.g. Exceptions are stored as parameters
-                        // and posted arrays can be a problem as well
-                        if (is_scalar($value)) {
-                            $url_parameters[$key] = rawurlencode($value);
-                        }
-                    }
-                }
-                if ($request instanceof Zend_Controller_Request_Http) {
-                    $request->setParamSources($old);
-                }
+            if ($request instanceof Zend_Controller_Request_Http) {
+                // Make sure we don't get any POST's, but we do want the rest of the parameters
+                $old = $request->getParamSources();
+                $request->setParamSources(array('_GET'));
+                $params = $request->getParams();
+                $request->setParamSources($old);
+            } else {
+                $params = $request->getParams();
             }
 
-            // Make sure controllor, action, module are specified
-            $url_parameters = self::rerouteUrl($this->getRequest(), $url_parameters);
+            // Remove all (possibly empty) existing parameters from this object
+            $params = array_diff_key($params, $this->_values);
 
-            $router = $this->getRouter();
-            return $router->assemble($url_parameters, null, true, false);
+            foreach ($params as $key => $value) {
+                // E.g. Exceptions are stored as parameters
+                // and posted arrays can be a problem as well
+                if (is_scalar($value)) {
+                    $url_parameters[$key] = rawurlencode($value);
+                }
+            }
+        } else {
+            // Make sure controllor, action, module are specified
+            $url_parameters = self::rerouteUrl($request, $url_parameters);
         }
 
-        return null;
+        $router = $this->getRouter();
+        return $router->assemble($url_parameters, null, true, false);
     }
 
+    /**
+     * Function that allows subclasses to define their own
+     * mechanism for redering the key/value combination.
+     *
+     * E.g. key=value instead of just the value.
+     *
+     * @param scalar $key
+     * @param string $value Output escaped value
+     * @return string
+     */
     public function getKeyValue($key, $value)
     {
         return $key . '=' . $value;

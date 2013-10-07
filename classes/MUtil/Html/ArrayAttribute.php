@@ -53,7 +53,7 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
     implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
-     * String used to glue items together
+     * String used to glue array items together
      *
      * @var string
      */
@@ -76,8 +76,18 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         'setView'    => 'Zend_View',
         );
 
+    /**
+     * The actual values
+     *
+     * @var array
+     */
     protected $_values;
 
+    /**
+     *
+     * @param string $name The name of the attribute
+     * @param mixed $value
+     */
     public function __construct($name, $arg_array = null)
     {
         if ($this->_specialTypes) {
@@ -139,6 +149,13 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return true;
     }
 
+    /**
+     * Set the item in questions (with guard for special types)
+     *
+     * @param scalar $key
+     * @param mixed $value
+     * @return \MUtil_Html_ArrayAttribute (continuation pattern)
+     */
     protected function _setItem($key, $value)
     {
         if ($this->_notSpecialType($value, $key)) {
@@ -181,6 +198,11 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return $this;
     }
 
+    /**
+     * Countable implementation, the number of array items
+     *
+     * @return int
+     */
     public function count()
     {
         return count($this->_values);
@@ -221,31 +243,66 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return $value;
     }
 
+    /**
+     * Returns the base array. Overrule for attribute specific changes
+     *
+     * @return array
+     */
     protected function getArray()
     {
         return (array) $this->_values;
     }
 
+    /**
+     * IteratorAggregate implementation
+     *
+     * @return \ArrayIterator
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->_values);
     }
 
+    /**
+     * String used to glue items together
+     *
+     * @return string
+     */
     public function getSeparator()
     {
         return $this->_separator;
     }
 
+    /**
+     * Does the item exist in this object
+     *
+     * @param scalar $offset
+     * @return boolean
+     */
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->_values);
     }
 
+    /**
+     * Get the item from this object
+     *
+     * Generates notice if $offset does not exist
+     *
+     * @param scalar $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->_values[$offset];
     }
 
+    /**
+     * Set the value for this item
+     *
+     * @param scalar $offset
+     * @param mixed $value
+     */
     public function offsetSet($offset, $value)
     {
         if (null === $offset) {
@@ -255,6 +312,11 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         }
     }
 
+    /**
+     * Remove an item from this object
+     * 
+     * @param scalar $offset
+     */
     public function offsetUnset($offset)
     {
         unset($this->_values[$offset]);
@@ -276,6 +338,12 @@ class MUtil_Html_ArrayAttribute extends MUtil_Html_AttributeAbstract
         return $this->add($keyOrValue, $valueIfKey);
     }
 
+    /**
+     * Set the String used to glue items together
+     *
+     * @param string $separator
+     * @return \MUtil_Html_ArrayAttribute (continuation pattern)
+     */
     public function setSeparator($separator)
     {
         $this->_separator = separator;
