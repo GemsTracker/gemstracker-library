@@ -342,6 +342,16 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    abstract protected function _save(array $newValues, array $filter = null);
+
+    /**
      * Tell the model one more item has changed
      *
      * @param int $add
@@ -414,17 +424,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Add a 'submodel' field to the model.
      *
-     * Depending on the join you het either an inline join (one row per subitem)
-     * when the join is the full key of the submodel. An inline join add's the
-     * fields to each row in the model.
-     *
-     * Otherwise you get a nested join where a set of rows is placed in the $name field
+     * You get a nested join where a set of rows is placed in the $name field
      * of each row of the parent model.
      *
      * @param MUtil_Model_ModelAbstract $model
      * @param array $joins The join fields for the sub model
      * @param string $name Optional 'field' name, otherwise model name is used
-     * @return \MUtil_Model_ModelTransformerInterface The added transformer
+     * @return \MUtil_Model_Transform_NestedTransformer The added transformer
      */
     public function addModel(MUtil_Model_ModelAbstract $model, array $joins, $name = null)
     {
@@ -432,22 +438,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $name = $model->getName();
         }
 
-        $keys = $model->getKeys();
-
-        // If the joins is the whole primary key of the sub model, then this joins is inline
-        if (array_values($joins) === array_values($keys)) {
-
-            $type  = MUtil_Model::TYPE_INLINE_MODEL;
-            $trans = new MUtil_Model_Transform_JoinTransformer();
-
-        } else {
-            $type  = MUtil_Model::TYPE_CHILD_MODEL;
-            $trans = new MUtil_Model_Transform_NestedTransformer();
-        }
+        $trans = new MUtil_Model_Transform_NestedTransformer();
         $trans->addModel($model, $joins);
 
         $this->addTransformer($trans);
-        $this->set($name, 'type', $type);
+        $this->set($name, 'type', MUtil_Model::TYPE_CHILD_MODEL);
 
         return $trans;
     }
@@ -1328,6 +1323,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $data;
     }
 
+
+    /**
+     * Helper function that procesess the raw data after a load.
+     *
+     * @param array $row Row array containing saved (and maybe not saved data)
+     * @return array Nested
+     */
+    public function processAfterSave(array $row)
+    {
+        foreach ($this->_transformers as $transformer) {
+            $row = $transformer->transformRowAfterSave($this, $row);
+        }
+
+        return $row;
+    }
+
     /**
      * Remove one attribute for a field name in the model.
      *
@@ -1381,7 +1392,18 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * to decide on update versus insert.
      * @return array The values as they are after saving (they may change).
      */
-    abstract public function save(array $newValues, array $filter = null);
+    public function save(array $newValues, array $filter = null)
+    {
+        $resultValues = $this->_save($newValues, $filter);
+
+        $resultValues = $this->processAfterSave($resultValues);
+
+        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+            $resultValues = $this->_filterDataAfterLoad($resultValues, false);
+        }
+
+        return $resultValues;
+    }
 
     /**
      * Calls $this->save() multiple times for each element

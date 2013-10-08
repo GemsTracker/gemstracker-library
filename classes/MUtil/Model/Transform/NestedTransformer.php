@@ -174,6 +174,28 @@ class MUtil_Model_Transform_NestedTransformer implements MUtil_Model_ModelTransf
     }
 
     /**
+     * This transform function performs the actual save of the data and is called after
+     * the saving of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
+    {
+        if (! $row) {
+            return $row;
+        }
+
+        foreach ($this->_subModels as $name => $sub) {
+            $this->transformSaveSubModel($model, $sub, $row, $this->_joins[$name], $name);
+        }
+        // MUtil_Echo::track($row);
+
+        return $row;
+    }
+
+    /**
      * Function to allow overruling of transform for certain models
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -198,5 +220,42 @@ class MUtil_Model_Transform_NestedTransformer implements MUtil_Model_ModelTransf
 
             $data[$key][$name] = $rows;
         }
+    }
+
+    /**
+     * Function to allow overruling of transform for certain models
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param MUtil_Model_ModelAbstract $sub
+     * @param array $data
+     * @param array $join
+     * @param string $name
+     */
+    protected function transformSaveSubModel
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
+    {
+        if (! isset($row[$name])) {
+            return;
+        }
+
+        $data = $row[$name];
+        $keys = array();
+
+        // Get the parent key values.
+        foreach ($join as $parent => $child) {
+            if (isset($row[$parent])) {
+                $keys[$child] = $row[$parent];
+            }
+        }
+
+        foreach($data as $key => $subrow) {
+            // Make sure the (possibly changed) parent key
+            // is stored in the sub data.
+            $data[$key] = $keys + $subrow;
+        }
+
+        $saved = $sub->saveAll($data);
+
+        $row[$name] = $saved;
     }
 }

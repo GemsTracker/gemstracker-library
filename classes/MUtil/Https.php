@@ -90,9 +90,11 @@ class MUtil_Https
     public static function on()
     {
         if (empty($_SERVER['HTTPS'])) {
-            return false;
+            return Zend_Session::$_unitTestEnabled;
         }
 
-        return ((strtolower($_SERVER['HTTPS']) !== 'off') || ($_SERVER['SERVER_PORT'] == 443));
+        return ((strtolower($_SERVER['HTTPS']) !== 'off') ||
+                ($_SERVER['SERVER_PORT'] == 443) ||
+                Zend_Session::$_unitTestEnabled);
     }
 }

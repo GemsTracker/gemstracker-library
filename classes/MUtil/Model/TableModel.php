@@ -73,6 +73,21 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
     }
 
     /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    protected function _save(array $newValues, array $filter = null)
+    {
+        // $this->_saveTableData returns the new row values, including any automatic changes.
+        // add $newValues to throw nothing away.
+        return $this->_saveTableData($this->_table, $newValues, $filter, parent::SAVE_MODE_ALL) + $newValues;
+    }
+
+    /**
      * Delete items from the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -110,24 +125,5 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
         } else {
             return $this->_table->select(Zend_Db_Table_Abstract::SELECT_WITH_FROM_PART);
         }
-    }
-
-    /**
-     * Save a single model item.
-     *
-     * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
-     * to decide on update versus insert.
-     * @return array The values as they are after saving (they may change).
-     */
-    public function save(array $newValues, array $filter = null)
-    {
-        // $this->_saveTableData returns the new row values, including any automatic changes.
-        // add $newValues to throw nothing away.
-        $updatedValues = $this->_saveTableData($this->_table, $newValues, $filter, parent::SAVE_MODE_ALL) + $newValues;
-
-        // Handle possible onLoad
-        $updatedValues = $this->processAfterLoad(array($updatedValues));
-        return reset($updatedValues);
     }
 }

@@ -172,6 +172,20 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
     }
 
     /**
+     * This transform function performs the actual save of the data and is called after
+     * the saving of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
+    {
+        // No changes
+        return $row;
+    }
+
+    /**
      * Function to allow overruling of transform for certain models
      *
      * @param MUtil_Model_ModelAbstract $model

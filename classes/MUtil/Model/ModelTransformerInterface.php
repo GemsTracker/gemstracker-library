@@ -97,6 +97,5 @@ interface MUtil_Model_ModelTransformerInterface
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    // public function transformAfterSave(MUtil_Model_ModelAbstract $model, array $row);
-
+    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row);
 }

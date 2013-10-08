@@ -154,6 +154,79 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         return $table;
     }
 
+
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @param array $saveTables Optional array containing the table names to save,
+     * otherwise the tables set to save at model level will be saved.
+     * @return array The values as they are after saving (they may change).
+     */
+    protected function _save(array $newValues, array $filter = null, array $saveTables = null)
+    {
+        $saveTables = $this->_checkSaveTables($saveTables);
+        $oldChanged = $this->getChanged();
+
+        // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
+
+        $oldValues = $newValues;
+        foreach ($saveTables as $tableName => $saveMode) {
+            // Gotta repeat this every time, as keys may be set later
+            foreach ($this->_joinFields as $source => $target) {
+                // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
+                // as $source is an index keys it must be a string
+                if (is_string($target)) {
+                    if (! (isset($newValues[$target]) && $newValues[$target])) {
+                        if (! (isset($newValues[$source]) && $newValues[$source])) {
+                            if (MUtil_Model::$verbose) {
+                                MUtil_Echo::r('Missing: ' . $source . ' -> ' . $target, 'ERROR!');
+                            }
+                            continue;
+                        }
+                        $newValues[$target] = $newValues[$source];
+
+                    } elseif (! (isset($newValues[$source]) && $newValues[$source])) {
+                        $newValues[$source] = $newValues[$target];
+
+                    } elseif ((strlen($newValues[$target]) > 0) &&
+                            (strlen($newValues[$source]) > 0) &&
+                            $newValues[$target] != $newValues[$source]) {
+                        // Join key values changed.
+                        //
+                        // Set the old values as the filter
+                        $filter[$target] = $newValues[$target];
+                        $filter[$source] = $newValues[$source];
+
+                        // Switch the target value to the value in the source field.
+                        //
+                        // JOIN FIELD ORDER IS IMPORTANT!!!
+                        // The changing field must be stated first in the join statement.
+                        $newValues[$target] = $newValues[$source];
+                    }
+                } elseif ($target instanceof Zend_Db_Expr &&
+                        (! (isset($newValues[$source]) && $newValues[$source]))) {
+                    $newValues[$source] = $target;
+                }
+            }
+
+            //$this->_saveTableData returns the new row values, including any automatic changes.
+            $newValues = $this->_saveTableData($this->_tables[$tableName], $newValues, $filter, $saveMode)
+                    + $oldValues;
+            // MUtil_Echo::track($oldValues, $newValues, $filter);
+            $oldValues = $newValues;
+        }
+
+        // If anything has changed, it counts as only one item for the user.
+        if ($this->getChanged() > $oldChanged) {
+            $this->setChanged(++$oldChanged);
+        }
+
+        return reset($newValues);
+    }
+
     /**
      * Add the table to the default save tables.
      *
@@ -313,81 +386,6 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         }
 
         return $select;
-    }
-
-    /**
-     * Save a single model item.
-     *
-     * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
-     * to decide on update versus insert.
-     * @param array $saveTables Optional array containing the table names to save,
-     * otherwise the tables set to save at model level will be saved.
-     * @return array The values as they are after saving (they may change).
-     */
-    public function save(array $newValues, array $filter = null, array $saveTables = null)
-    {
-        $saveTables = $this->_checkSaveTables($saveTables);
-        $oldChanged = $this->getChanged();
-
-        // MUtil_Echo::track($newValues, $filter, $saveTables, $this->_joinFields);
-
-        $oldValues = $newValues;
-        foreach ($saveTables as $tableName => $saveMode) {
-            // Gotta repeat this every time, as keys may be set later
-            foreach ($this->_joinFields as $source => $target) {
-                // Use is_string as $target and $target can be e.g. a Zend_Db_Expr() object
-                // as $source is an index keys it must be a string
-                if (is_string($target)) {
-                    if (! (isset($newValues[$target]) && $newValues[$target])) {
-                        if (! (isset($newValues[$source]) && $newValues[$source])) {
-                            if (MUtil_Model::$verbose) {
-                                MUtil_Echo::r('Missing: ' . $source . ' -> ' . $target, 'ERROR!');
-                            }
-                            continue;
-                        }
-                        $newValues[$target] = $newValues[$source];
-
-                    } elseif (! (isset($newValues[$source]) && $newValues[$source])) {
-                        $newValues[$source] = $newValues[$target];
-
-                    } elseif ((strlen($newValues[$target]) > 0) &&
-                            (strlen($newValues[$source]) > 0) &&
-                            $newValues[$target] != $newValues[$source]) {
-                        // Join key values changed.
-                        //
-                        // Set the old values as the filter
-                        $filter[$target] = $newValues[$target];
-                        $filter[$source] = $newValues[$source];
-
-                        // Switch the target value to the value in the source field.
-                        //
-                        // JOIN FIELD ORDER IS IMPORTANT!!!
-                        // The changing field must be stated first in the join statement.
-                        $newValues[$target] = $newValues[$source];
-                    }
-                } elseif ($target instanceof Zend_Db_Expr &&
-                        (! (isset($newValues[$source]) && $newValues[$source]))) {
-                    $newValues[$source] = $target;
-                }
-            }
-
-            //$this->_saveTableData returns the new row values, including any automatic changes.
-            $newValues = $this->_saveTableData($this->_tables[$tableName], $newValues, $filter, $saveMode)
-                    + $oldValues;
-            // MUtil_Echo::track($oldValues, $newValues, $filter);
-            $oldValues = $newValues;
-        }
-
-        // If anything has changed, it counts as only one item for the user.
-        if ($this->getChanged() > $oldChanged) {
-            $this->setChanged(++$oldChanged);
-        }
-
-        // Handle possible onLoad
-        $newValues = $this->processAfterLoad(array($newValues));
-
-        return reset($newValues);
     }
 
     /**

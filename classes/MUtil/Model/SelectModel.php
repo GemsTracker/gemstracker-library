@@ -86,6 +86,19 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
     }
 
     /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    protected function _save(array $newValues, array $filter = null)
+    {
+        throw new Exception('Cannot save ' . __CLASS__ . ' data.');
+    }
+
+    /**
      * Delete items from the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
@@ -114,18 +127,5 @@ class MUtil_Model_SelectModel extends MUtil_Model_DatabaseModelAbstract
     public function getSelect()
     {
         return clone $this->_select;
-    }
-
-    /**
-     * Save a single model item.
-     *
-     * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
-     * to decide on update versus insert.
-     * @return array The values as they are after saving (they may change).
-     */
-    public function save(array $newValues, array $filter = null)
-    {
-        throw new Exception('Cannot save ' . __CLASS__ . ' data.');
     }
 }

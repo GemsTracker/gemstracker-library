@@ -190,6 +190,58 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
      */
     abstract protected function _loadAllTraversable();
 
+
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    protected function _save(array $newValues, array $filter = null)
+    {
+        if ($this->_saveable) {
+            $data = $this->_loadAllTraversable();
+            if ($data instanceof Traversable) {
+                $data = iterator_to_array($this->_loadAllTraversable());
+            }
+
+            if ($keys = $this->getKeys()) {
+                $search = array();
+                $newValues = $newValues + $filter;
+
+                foreach ($keys as $key) {
+                    if (isset($newValues[$key])) {
+                        $search[$key] = $newValues[$key];
+                    } else {
+                        // Crude but hey
+                        throw new MUtil_Model_ModelException(sprintf('Key value "%s" missing when saving data.', $key));
+                    }
+                }
+
+                $rowId = MUtil_Ra::findKeys($data, $search);
+
+                if ($rowId) {
+                    // Overwrite to new values
+                    $data[$rowId] = $newValues + $data[$rowId];
+                } else {
+                    $data[] = $newValues;
+                }
+
+
+            } else {
+                $data[] = $newValues;
+            }
+
+            $this->_saveAllTraversable($data);
+
+            return $newValues;
+        } else {
+            throw new MUtil_Model_ModelException(sprintf('Save not implemented for model "%s".', $this->getName()));
+        }
+    }
+
     /**
      * When $this->_saveable is true a child class should either override the
      * delete() and save() functions of this class or override _saveAllTraversable().
@@ -386,56 +438,6 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
 
         return $data;
     }
-
-    /**
-     * Save a single model item.
-     *
-     * @param array $newValues The values to store for a single model item.
-     * @param array $filter If the filter contains old key values these are used
-     * to decide on update versus insert.
-     * @return array The values as they are after saving (they may change).
-     */
-    public function save(array $newValues, array $filter = null)
-    {
-        if ($this->_saveable) {
-            $data = $this->_loadAllTraversable();
-            if ($data instanceof Traversable) {
-                $data = iterator_to_array($this->_loadAllTraversable());
-            }
-
-            if ($keys = $this->getKeys()) {
-                $search = array();
-                $newValues = $newValues + $filter;
-
-                foreach ($keys as $key) {
-                    if (isset($newValues[$key])) {
-                        $search[$key] = $newValues[$key];
-                    } else {
-                        // Crude but hey
-                        throw new MUtil_Model_ModelException(sprintf('Key value "%s" missing when saving data.', $key));
-                    }
-                }
-
-                $rowId = MUtil_Ra::findKeys($data, $search);
-
-                if ($rowId) {
-                    // Overwrite to new values
-                    $data[$rowId] = $newValues + $data[$rowId];
-                } else {
-                    $data[] = $newValues;
-                }
-
-
-            } else {
-                $data[] = $newValues;
-            }
-
-            $this->_saveAllTraversable($data);
-        } else {
-            throw new MUtil_Model_ModelException(sprintf('Save not implemented for model "%s".', $this->getName()));
-        }
-    }
-
     /**
      * Sort function for sorting array on defined sort order
      *

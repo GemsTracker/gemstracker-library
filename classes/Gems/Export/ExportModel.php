@@ -70,6 +70,19 @@ class Gems_Export_ExportModel extends MUtil_Model_ModelAbstract
         return $result;
     }
 
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    protected function _save(array $newValues, array $filter = null)
+    {
+        return $newValues;
+    }
+
     public function delete($filter = true)
     {
         return false;
@@ -78,10 +91,5 @@ class Gems_Export_ExportModel extends MUtil_Model_ModelAbstract
     public function hasNew()
     {
         return false;
-    }
-
-    public function save(array $newValues, array $filter = null)
-    {
-        return $newValues;
     }
 }

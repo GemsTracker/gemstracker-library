@@ -198,6 +198,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             }
         }
 
+        // Chek for https
         if (!MUtil_Https::on()) {
             if (! ($this->offsetExists('http') && $this->offsetGet('http'))) {
                 MUtil_Https::enforce();
