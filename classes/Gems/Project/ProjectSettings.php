@@ -198,6 +198,12 @@ class Gems_Project_ProjectSettings extends ArrayObject
             }
         }
 
+        if (!MUtil_Https::on()) {
+            if (! ($this->offsetExists('http') && $this->offsetGet('http'))) {
+                MUtil_Https::enforce();
+            }
+        }
+
         if ($missing) {
             if (count($missing) == 1) {
                 $error = sprintf("Missing required project setting: '%s'.", reset($missing));

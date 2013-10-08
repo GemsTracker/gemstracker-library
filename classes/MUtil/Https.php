@@ -46,6 +46,24 @@
 class MUtil_Https
 {
     /**
+     * Reroutes if http was not used
+     *
+     * @return void
+     */
+    public static function enforce()
+    {
+        if (self::on()) {
+            return;
+        }
+
+        $request    = Zend_Controller_Front::getInstance()->getRequest();
+        $url        = 'https://' . $_SERVER['HTTP_HOST'] . $request->getRequestUri();
+        $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+        $redirector->gotoUrl($url);
+
+    }
+
+    /**
      * True when the url is a HTTPS url, false when HTTP, null otherwise
      *
      * @return boolean True when HTTPS, false when HTTP, null otherwise

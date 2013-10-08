@@ -365,10 +365,15 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'multiOptions', $dbLookup->getUserConsents()
                 );
 
-        $this->setIfExists('gr2o_opened',
-                'label', $translator->_('Opened'),
+        $this->setIfExists('gr2o_opened',     'label', $translator->_('Opened'),
                 'formatFunction', $translated->formatDateTime
                 );
+
+        $this->setIfExists('gr2o_changed',    'label', $translator->_('Changed on'),
+                'formatFunction', $translated->formatDateTime);
+
+        $this->setIfExists('gr2o_changed_by', 'label', $translator->_('Changed by'),
+                'multiOptions', $this->util->getDbLookup()->getStaff());
 
         return $this;
     }
@@ -455,10 +460,8 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_phone_4', 'size', 15);
 
         $this->setIfExists('gr2o_opened',     'elementClass', 'hidden'); // Has little use to show: is usually editor
-        $this->setIfExists('gr2o_changed',    'label', $translator->_('Changed on'), 'elementClass', 'Exhibitor');
-        $this->setIfExists('gr2o_changed_by', 'label', $translator->_('Changed by'),
-                'elementClass', 'Exhibitor',
-                'multiOptions', $this->util->getDbLookup()->getStaff());
+        $this->setIfExists('gr2o_changed',    'elementClass', 'Exhibitor');
+        $this->setIfExists('gr2o_changed_by', 'elementClass', 'Exhibitor');
 
         $this->setIfExists('gr2o_consent',
                 'default', $this->util->getDefaultConsent(),
