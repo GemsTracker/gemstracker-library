@@ -46,7 +46,8 @@
 class MUtil_Validate_SimpleEmail extends Zend_Validate_Regex
 {
     // Reg checked at Wikipedia, only | char is technically allowed in name and not in there.
-    const EMAIL_REGEX = '/^([[:alnum:]._!#$%*\/&?{}+=`\'^~-])+@[[:alnum:]]+[[:alnum:].-]+\\.[[:alpha:]]{2,}$/';
+    // const EMAIL_REGEX = '/^([[:alnum:]._!#$%*\/&?{}+=`\'^~-])+@[[:alnum:]]+[[:alnum:].-]+\\.[[:alpha:]]{2,}$/';
+    const EMAIL_REGEX = '/^(([[:alnum:]._!#$%*\/&?{}+=`\'^~-])+@[[:alnum:]]+[[:alnum:].-]+\\.[[:alpha:]]{2,}){0,1}$/';
 
     /**
      * @var array

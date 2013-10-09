@@ -414,12 +414,15 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->set('grs_id_user');
 
         $this->set('grs_email',
+                'required', true,
+                'autoInsertNotEmptyValidator', false, // Make sure it works ok with next
                 'size', 30,
                 'validator', 'SimpleEmail');
         $this->addColumn('CASE WHEN grs_email IS NULL OR LENGTH(TRIM(grs_email)) = 0 THEN 1 ELSE 0 END', 'calc_email');
         $this->set('calc_email',
                 'label', $translator->_('Respondent has no e-mail'),
                 'elementClass', 'Checkbox',
+                'required', true,
                 'order', $this->getOrder('grs_email') + 1,
                 'validator', new Gems_Validate_OneOf(
                         $translator->_('Respondent has no e-mail'),
