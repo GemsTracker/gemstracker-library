@@ -439,7 +439,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $trans->addModel($model, $joins);
 
         $this->addTransformer($trans);
-        $this->set($name, 'type', MUtil_Model::TYPE_CHILD_MODEL);
+        $this->set($name,
+                'model', $model,
+                'elementClass', 'FormTable',
+                'type', MUtil_Model::TYPE_CHILD_MODEL
+                );
 
         return $trans;
     }

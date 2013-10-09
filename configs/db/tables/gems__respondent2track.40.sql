@@ -29,7 +29,8 @@ CREATE TABLE if not exists gems__respondent2track (
       INDEX (gr2t_id_track),
       INDEX (gr2t_id_user),
       INDEX (gr2t_start_date),
-      INDEX (gr2t_id_organization)
+      INDEX (gr2t_id_organization),
+      INDEX (gr2t_created_by)
    )
    ENGINE=InnoDB
    auto_increment = 100000

@@ -133,14 +133,9 @@ class MUtil_Model
     const TYPE_TIME         = 5;
 
     /**
-     * Type identifiers for sub models that return one row per item
-     */
-    const TYPE_INLINE_MODEL = 6;
-
-    /**
      * Type identifiers for sub models that can return multiple row per item
      */
-    const TYPE_CHILD_MODEL  = 7;
+    const TYPE_CHILD_MODEL  = 6;
 
     /**
      *

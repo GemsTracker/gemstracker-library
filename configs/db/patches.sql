@@ -521,3 +521,8 @@ UPDATE gems__roles
     SET grl_privileges =
         CONCAT(grl_privileges,',pr.agenda-activity,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit')
     WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.agenda-activity%';
+
+-- PATCH: Performance, indexes
+ALTER TABLE `gems__tokens` ADD INDEX(`gto_by`);
+
+ALTER TABLE `gems__respondent2track` ADD INDEX(`gr2t_created_by`);
