@@ -86,7 +86,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                         ) OR
                             gaa_id_organization = ?', $organizationId);
         }
-        MUtil_Echo::track($select->__toString());
+        // MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('activities'));
         return $results;

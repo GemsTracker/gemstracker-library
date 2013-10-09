@@ -45,161 +45,24 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransformerInterface
+class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransformerAbstract
 {
-    /**
-     *
-     * @var array of join functions
-     */
-    protected $_joins = array();
-
-    /**
-     *
-     * @var array of MUtil_Model_ModelAbstract
-     */
-    protected $_subModels = array();
-
-    /**
-     * Add an (extra) model to the join
-     *
-     * @param MUtil_Model_ModelAbstract $subModel
-     * @param array $joinFields
-     * @return \MUtil_Model_Transform_NestedTransformer (continuation pattern)
-     */
-    public function addModel(MUtil_Model_ModelAbstract $subModel, array $joinFields)
-    {
-        // MUtil_Model::$verbose = true;
-
-        $name = $subModel->getName();
-        $this->_subModels[$name] = $subModel;
-        $this->_joins[$name]     = $joinFields;
-
-        return $this;
-    }
-
-    /**
-     * If the transformer add's fields, these should be returned here.
-     * Called in $model->AddTransformer(), so the transformer MUST
-     * know which fields to add by then (optionally using the model
-     * for that).
-     *
-     * @param MUtil_Model_ModelAbstract $model The parent model
-     * @return array Of filedname => set() values
-     */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
-    {
-        $data = array();
-        foreach ($this->_subModels as $sub) {
-            foreach ($sub->getItemNames() as $name) {
-                if (! $model->has($name)) {
-                    $data[$name] = $sub->get($name);
-                    $data[$name]['no_text_search'] = true;
-
-                    // Remove unsuited data
-                    unset($data[$name]['table'], $data[$name]['column_expression']);
-                }
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * This transform function checks the filter for
-     * a) retreiving filters to be applied to the transforming data,
-     * b) adding filters that are the result
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $filter
-     * @return array The (optionally changed) filter
-     */
-    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
-    {
-        // Make sure the join fields are in the result set/
-        foreach ($this->_joins as $joins) {
-            foreach ($joins as $source => $target) {
-                if (!is_integer($source)) {
-                    $model->get($source);
-                }
-            }
-        }
-
-        return $filter;
-    }
-
-    /**
-     * This transform function checks the sort to
-     * a) remove sorts from the main model that are not possible
-     * b) add sorts that are required needed
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $sort
-     * @return array The (optionally changed) sort
-     */
-    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort)
-    {
-        foreach ($this->_subModels as $sub) {
-            foreach ($sort as $key => $value) {
-                if ($sub->has($key)) {
-                    // Remove all sorts on columns from the submodel
-                    unset($sort[$key]);
-                }
-            }
-        }
-
-        return $sort;
-    }
-
-    /**
-     * The transform function performs the actual transformation of the data and is called after
-     * the loading of the data in the source model.
-     *
-     * @param MUtil_Model_ModelAbstract $model The parent model
-     * @param array $data Nested array
-     * @return array Nested array containing (optionally) transformed data
-     */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
-    {
-        if (! $data) {
-            return $data;
-        }
-
-        foreach ($this->_subModels as $name => $sub) {
-            $this->transformSubModel($model, $sub, $data, $name);
-        }
-        // MUtil_Echo::track($data);
-
-        return $data;
-    }
-
-    /**
-     * This transform function performs the actual save of the data and is called after
-     * the saving of the data in the source model.
-     *
-     * @param MUtil_Model_ModelAbstract $model The parent model
-     * @param array $row Array containing row
-     * @return array Row array containing (optionally) transformed data
-     */
-    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
-    {
-        // No changes
-        return $row;
-    }
-
     /**
      * Function to allow overruling of transform for certain models
      *
      * @param MUtil_Model_ModelAbstract $model
      * @param MUtil_Model_ModelAbstract $sub
      * @param array $data
+     * @param array $join
      * @param string $name
      */
-    protected function transformSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, $name)
+    protected function transformLoadSubModel
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name)
     {
-        if (1 === count($this->_joins[$name])) {
+        if (1 === count($join)) {
             // Suimple implementation
-            $mkey = key($this->_joins[$name]);
-            $skey = reset($this->_joins[$name]);
+            $mkey = key($join);
+            $skey = reset($join);
 
             $mfor = MUtil_Ra::column($mkey, $data);
 
@@ -233,7 +96,7 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
             $empty = array_fill_keys($sub->getItemNames(), null);
             foreach ($data as &$mrow) {
                 $filter = $sub->getFilter();
-                foreach ($this->_joins[$name] as $from => $to) {
+                foreach ($join as $from => $to) {
                     if (isset($mrow[$from])) {
                         $filter[$to] = $mrow[$from];
                     }
@@ -250,5 +113,32 @@ class MUtil_Model_Transform_JoinTransformer implements MUtil_Model_ModelTransfor
                 // MUtil_Echo::track($sdata, $mrow);
             }
         }
+    }
+
+    /**
+     * Function to allow overruling of transform for certain models
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param MUtil_Model_ModelAbstract $sub
+     * @param array $data
+     * @param array $join
+     * @param string $name
+     */
+    protected function transformSaveSubModel
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
+    {
+        $keys = array();
+
+        // Get the parent key values.
+        foreach ($join as $parent => $child) {
+            if (isset($row[$parent])) {
+                $keys[$child] = $row[$parent];
+            }
+        }
+
+        $row   = $keys + $row;
+        $saved = $sub->save($row);
+
+        $row = $saved + $row;
     }
 }

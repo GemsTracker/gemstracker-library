@@ -49,7 +49,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_SelectModelPaginator implements Zend_Paginator_Adapter_Interface
+class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_PrefetchInterface
 {
     /**
      * Store for count

@@ -226,7 +226,13 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         // We are no longer being lazy.
         // But there may not be a current value.
         if ($current = $this->repeater->__current()) {
-            return $current->$name;
+            if (!$current->offsetExists($name)) {
+                if (MUtil_Model::$verbose) {
+                    MUtil_Echo::r(sprintf("Field %s missing in model %s.", $name, $this->model->getName()));
+                }
+                return null;
+            }
+            return $current->offsetGet($name);
         }
     }
 

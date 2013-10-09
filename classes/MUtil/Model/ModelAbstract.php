@@ -235,12 +235,9 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Processes empty strings, filters items that should not be saved
-     * according to setSaveWhen() and changes values that have a setOnSave()
-     * function.
+     * Processes on load functions
      *
-     * @see setOnSave
-     * @set setSaveWhen
+     * @see setOnLoad
      *
      * @param array $data The values to save
      * @param boolean $new True when it is a new item

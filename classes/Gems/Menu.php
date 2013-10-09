@@ -278,7 +278,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             // ALLOW ORGANIZATION CHANGE
             $this->addPage(null, null, 'organization', 'change-ui');
         }
-
     }
 
     /**
@@ -687,6 +686,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         // Privileges not associated with menu item
         //$this->addHiddenPrivilege('pr.plan.choose-org');
+        $this->addHiddenPrivilege('pr.organization-switch');
         $this->addHiddenPrivilege('pr.plan.mail-as-application');
         $this->addHiddenPrivilege('pr.respondent.multiorg');
         $this->addHiddenPrivilege('pr.respondent.result');

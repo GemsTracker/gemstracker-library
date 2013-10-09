@@ -123,7 +123,7 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
             if (null === $this->_currentItem) {
                 $this->_currentItem = reset($this->_repeater);
             } else {
-            $this->_currentItem = next($this->_repeater);
+                $this->_currentItem = next($this->_repeater);
             }
         } else {
             if (null === $this->_currentItem) {

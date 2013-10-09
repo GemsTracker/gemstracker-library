@@ -216,6 +216,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
      */
     public function render(Zend_View_Abstract $view)
     {
+        // MUtil_Echo::r(sprintf('Rendering snippet %s.', get_class($this)));
         if ($this->getRedirectRoute()) {
             $this->redirectRoute();
 

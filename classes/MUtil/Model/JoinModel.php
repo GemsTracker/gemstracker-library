@@ -224,7 +224,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             $this->setChanged(++$oldChanged);
         }
 
-        return reset($newValues);
+        return $newValues;
     }
 
     /**

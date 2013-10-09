@@ -44,8 +44,15 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Db_Iterator_SelectIterator implements Iterator
+class MUtil_Db_Iterator_SelectIterator implements Countable, Iterator
 {
+    /**
+     * The number of items
+     *
+     * @var int
+     */
+    protected $_count;
+
     /**
      * Current key
      *
@@ -88,6 +95,24 @@ class MUtil_Db_Iterator_SelectIterator implements Iterator
         $this->_statement = $this->_select->query();
         $this->_row       = $this->_statement->fetch();
     }
+
+    /**
+     * Count interface implementation
+     * @return int
+     */
+    public function count()
+    {
+        if (null !== $this->_count) {
+            return $this->_count;
+        }
+
+        // Why implement again what has already been done :)
+        $pag = new Zend_Paginator_Adapter_DbSelect($this->_select);
+        $this->_count = $pag->count();
+
+        return $this->_count;
+    }
+
 
     /**
      * Return the current element
