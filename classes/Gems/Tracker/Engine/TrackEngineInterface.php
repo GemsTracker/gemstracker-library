@@ -204,6 +204,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getRoundChangedEvent($roundId);
 
     /**
+     * Get the defaults for a new round
+     *
+     * @return array Of fieldname => default
+     */
+    public function getRoundDefaults();
+
+    /**
      * An array of snippet names for editing a round.
      *
      * @return array of string snippet names
@@ -270,7 +277,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return Gems_Event_TrackCompletedEventInterface|null
      */
     public function getTrackCompletionEvent();
-    
+
     /**
      * An array of snippet names for creating a track.
      *

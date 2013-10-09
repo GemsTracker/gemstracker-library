@@ -513,7 +513,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                         case 'multiselect':
                             $results[$field] = explode(self::FIELD_SEP, $result);
                             break;
-                        
+
                         case 'date':
                             if (empty($result)) {
                                 $results[$field] = null;
@@ -698,6 +698,38 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         if (isset($this->_rounds[$roundId]['gro_changed_event']) && $this->_rounds[$roundId]['gro_changed_event']) {
             return $this->events->loadRoundChangedEvent($this->_rounds[$roundId]['gro_changed_event']);
         }
+    }
+
+    /**
+     * Get the defaults for a new round
+     *
+     * @return array Of fieldname => default
+     */
+    public function getRoundDefaults()
+    {
+        $this->_ensureRounds();
+
+        if ($this->_rounds) {
+            $defaults = end($this->_rounds);
+
+            if ($this->_support_tables) {
+                foreach ($this->_support_tables as $cond => $table) {
+                    foreach (explode('=', $cond) as $field) {
+                        $start = substr($field, 0, 4);
+                        unset($defaults[trim($field)], $defaults[$start . '_created'], $defaults[$start . '_created_by']);
+                    }
+                }
+            }
+
+            unset($defaults['gro_id_round'], $defaults['gro_id_survey']);
+
+            $defaults['gro_id_order'] = $defaults['gro_id_order'] + 10;
+        } else {
+            // Rest of defaults come form model
+            $defaults = array('gro_id_track' => $this->_trackId);
+        }
+
+        return $defaults;
     }
 
     /**
@@ -919,7 +951,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     $element = new Gems_JQuery_Form_Element_DatePicker('tmp_element', $options);
                     $element->setStorageFormat('yyyy-MM-dd');
                 }
-                
+
                 if (!empty($value)) {
                     $value = MUtil_Date::format($value, $element->getStorageFormat(), $element->getDateFormat());
                 } else {

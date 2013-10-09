@@ -178,7 +178,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         parent::loadFormData();
 
         if ($this->createData) {
-            $this->formData['gro_id_track'] = $this->trackId;
+            $this->formData = $this->trackEngine->getRoundDefaults() + $this->formData;
         }
 
         // Check the survey name
