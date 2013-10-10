@@ -1,11 +1,11 @@
 
 CREATE TABLE if not exists gems__agenda_procedures (
         gap_id_procedure    bigint unsigned not null auto_increment,
-        gap_name            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gap_name            varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gap_id_organization bigint unsigned null references gems__organizations (gor_id_organization),
 
-        gap_name_for_resp   varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gap_name_for_resp   varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gap_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gap_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 

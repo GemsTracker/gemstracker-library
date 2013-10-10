@@ -1,11 +1,11 @@
 
 CREATE TABLE if not exists gems__agenda_activities (
         gaa_id_activity     bigint unsigned not null auto_increment,
-        gaa_name            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gaa_name            varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gaa_id_organization bigint unsigned null references gems__organizations (gor_id_organization),
 
-        gaa_name_for_resp   varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gaa_name_for_resp   varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gaa_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gaa_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
