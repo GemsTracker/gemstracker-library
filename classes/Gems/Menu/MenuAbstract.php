@@ -233,6 +233,7 @@ abstract class Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Activities'), 'pr.agenda-activity', 'agenda-activity');
         $setup->addBrowsePage($this->_('Procedures'), 'pr.agenda-procedure', 'agenda-procedure');
         $setup->addBrowsePage($this->_('Locations'),  'pr.locations', 'location');
+        $setup->addBrowsePage($this->_('Staff'),      'pr.agenda-staff', 'agenda-staff');
     }
 
     /**

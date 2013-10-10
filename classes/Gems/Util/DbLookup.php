@@ -242,36 +242,6 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns an array with identical key => value pairs containing care provision locations.
-     *
-     * @param int $irgId Optional to slect for single organization
-     * @return array
-     */
-    public function getLocations($orgId = null)
-    {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $orgId;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__locations', array('glo_id_location', 'glo_name'))
-                ->order('glo_name');
-
-        if ($orgId) {
-            // Check only for active when with $orgId: those are usually used
-            // with editing, while the whole list is used for display.
-            $select->where('glo_active = 1');
-            $select->where('glo_id_organization = ?', $orgId);
-        }
-
-        $results = $this->db->fetchPairs($select);
-        $this->cache->save($results, $cacheId, array('locations'));
-        return $results;
-    }
-
-    /**
      * Return the available mail templates.
      *
      * @staticvar array $data

@@ -98,6 +98,67 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      * @param int $organizationId Optional
      * @return array activity_id => name
      */
+    public function getHealthcareStaff($organizationId = null)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__agenda_staff', array('gas_id_staff', 'gas_name'))
+                ->order('gas_name');
+
+        if ($organizationId) {
+            // Check only for active when with $orgId: those are usually used
+            // with editing, while the whole list is used for display.
+            $select->where('gas_active = 1')
+                    ->where('gas_id_organization = ?', $organizationId);
+        }
+        // MUtil_Echo::track($select->__toString());
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('staff'));
+        return $results;
+
+    }
+
+    /**
+     * Returns an array with identical key => value pairs containing care provision locations.
+     *
+     * @param int $irgId Optional to slect for single organization
+     * @return array
+     */
+    public function getLocations($orgId = null)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $orgId;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__locations', array('glo_id_location', 'glo_name'))
+                ->order('glo_name');
+
+        if ($orgId) {
+            // Check only for active when with $orgId: those are usually used
+            // with editing, while the whole list is used for display.
+            $select->where('glo_active = 1');
+            $select->where('glo_id_organization = ?', $orgId);
+        }
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('locations'));
+        return $results;
+    }
+
+
+    /**
+     *
+     * @param int $organizationId Optional
+     * @return array activity_id => name
+     */
     public function getProcedures($organizationId = null)
     {
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
@@ -177,9 +238,10 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
 
         $values = array(
-            'gaa_name'     => $name,
-            'gaa_match_to' => $name,
-            'gaa_active'   => 1,
+            'gaa_name'            => $name,
+            'gaa_id_organization' => $organizationId,
+            'gaa_match_to'        => $name,
+            'gaa_active'          => 1,
         );
 
         $result = $model->save($values);
@@ -187,6 +249,67 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
 
         return $result['gaa_id_activity'];
+    }
+
+
+    /**
+     * Find a healt care provider for the name and organization.
+     *
+     * @param string $name The name to match against
+     * @param int $organizationId Organization id
+     * @param boolean $create Create a match when it does not exist
+     * @return array location
+     */
+    public function matchHealthcareStaff($name, $organizationId, $create = true)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $matches = $this->cache->load($cacheId);
+
+        if (! $matches) {
+            $matches = array();
+            $select     = $this->db->select();
+            $select->from('gems__agenda_staff')
+                    ->order('gas_name');
+
+            $result = $this->db->fetchAll($select);
+            foreach ($result as $row) {
+                foreach (explode('|', $row['gas_match_to']) as $match) {
+                    $matches[$match][$row['gas_id_organization']] = $row;
+                }
+            }
+            $this->cache->save($matches, $cacheId, array('staff'));
+        }
+
+        if (isset($matches[$name])) {
+            if ($organizationId) {
+                if (isset($matches[$name][$organizationId])) {
+                    return $matches[$name][$organizationId];
+                }
+            } else {
+                // Return the first location among the organizations
+                return reset($matches[$name]);
+            }
+        }
+
+        if (! $create) {
+            return null;
+        }
+
+        $model = new MUtil_Model_TableModel('gems__agenda_staff');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gas');
+
+        $values = array(
+            'gas_name'            => $name,
+            'gas_id_organization' => $organizationId,
+            'gas_match_to'        => $name,
+            'gas_active'          => 1,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
+
+        return $result;
     }
 
     /**
@@ -298,9 +421,10 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         Gems_Model::setChangeFieldsByPrefix($model, 'gap');
 
         $values = array(
-            'gap_name'     => $name,
-            'gap_match_to' => $name,
-            'gap_active'   => 1,
+            'gap_name'            => $name,
+            'gap_id_organization' => $organizationId,
+            'gap_match_to'        => $name,
+            'gap_active'          => 1,
         );
 
         $result = $model->save($values);
