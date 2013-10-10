@@ -172,6 +172,11 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         return $this->_get('can_access');
     }
 
+    public function getCreateAccountTemplate()
+    {
+        return $this->_get('gor_create_account_template');
+    }
+
     /**
      * Get the code attribute.
      *
@@ -180,6 +185,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function getCode()
     {
         return $this->_get('gor_code');
+    }
+
+    /**
+     * Get the contact name attribute.
+     *
+     * @return string
+     */
+    public function getContactName()
+    {
+        return $this->_get('gor_contact_name');
     }
 
     /**
@@ -260,6 +275,14 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         return $this->_get('gor_name');
     }
 
+    /**
+     *  Get the template id for the reset password mail
+     * @return  integer Template ID
+     */
+    public function getResetPasswordTemplate()
+    {
+        return $this->_get('gor_reset_pass_template');
+    }
     /**
      * Get the signature of the organization.
      *

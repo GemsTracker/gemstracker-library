@@ -217,6 +217,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         // MAIL CONTAINER
         $setup->addMailSetupMenu($this->_('Mail'));
+        $setup->addCommSetupMenu($this->_('Communication'));
 
 
         // LOG CONTROLLER

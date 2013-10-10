@@ -54,6 +54,18 @@ class Gems_Mail extends MUtil_Mail
      * @var GemsEscort
      */
     public $escort = null;
+
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+    
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
     
     /**
      * Mail character set
@@ -84,14 +96,18 @@ class Gems_Mail extends MUtil_Mail
             $bounce = $this->bounceCheck();
         }
         if ($bounce === true) {
-            $name  = str_replace('@', ' at ', $email);
+            $name  = str_replace('@', ' at ', $email);        
+            if (is_array($email)) {
+                $name = array_shift($name);
+                if (count($email) > 1) {
+                    $name .= ' & ' . (count($email)-1) . ' addresses';
+                }
+            }
             $email = $this->getFrom();
-
             if (! $email) {
                 throw new Gems_Exception_Coding('Adding bounce To address while From is not set.');
             }
         }
-
         return parent::addTo($email, $name);
     }
     

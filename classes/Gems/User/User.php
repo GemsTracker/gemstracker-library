@@ -767,8 +767,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 $greeting[] = $this->_getVar('user_last_name');
             } else {
                 $name = $this->getLoginName();
-                $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
-                $greeting[] = $name;
+                if ($name) {
+                    $name = substr($name, 0, 3) . str_repeat('*', strlen($name) - 2);
+                    $greeting[] = $name;
+                }
             }
             array_filter($greeting);
 

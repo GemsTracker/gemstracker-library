@@ -60,17 +60,28 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     public $filterStandard = array('gsf_active' => 1);
 
+    public $menu;    
+    /**
+     * 
+     * @var Gems_Loader
+     */
+    public $loader;
+
     /**
      *
      * @var Gems_Project_ProjectSettings
      */
     public $project;
 
+    public $request;
+
     public $sortKey = array('name' => SORT_ASC);
+
+    public $view;
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
-     *
+     * 
      * Adds a button column to the model, if such a button exists in the model.
      *
      * @param MUtil_Model_TableBridge $bridge
@@ -127,6 +138,9 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         // Add reset button if allowed
         if ($menuItem = $this->findAllowedMenuItem('reset')) {
             $bridge->addItemLink($menuItem->toActionLink($this->getRequest(), $bridge, $this->_('password')));
+        }
+        if ($menuItem = $this->findAllowedMenuItem('mail')) {
+            $bridge->addItemLink($menuItem->toActionLink($this->getRequest(), $bridge));
         }
     }
 
@@ -494,6 +508,24 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         }
     }
 
+
+    public function mailAction() {
+        $this->loadUser();
+        $this->html->h3(sprintf($this->_('Send mail to: %s'), $this->_user->getFullName()));
+
+        $params['mailTarget']   = 'staff';
+        $params['menu']         = $this->menu;
+        $params['model']        = $this->getModel();
+        $params['identifier']   = array($this->_getIdParam());
+        $params['to']           = $this->_user->getFullName() . ' <' . $this->_user->getEmailAddress() . '>';
+        $params['view']         = $this->view;
+        $params['routeAction']  = 'show';
+
+        
+        $this->addSnippet('Mail_MailFormSnippet', $params);
+    }
+
+
     /**
      * Action to allow password reset
      */
@@ -517,18 +549,58 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             'forceRules' => false    // If user logs in using password that does not obey the rules, he is forced to change it
             ));
 
+        $createElement = new Zend_Form_Element_Submit('create_account');
+        $createElement->setLabel($this->translate->_('Create account mail'))
+                    ->setAttrib('class', 'button')
+                    ->setOrder(0);
+
+        $form->addElement($createElement);
+
+        $resetElement = new Zend_Form_Element_Submit('reset_password');
+        $resetElement->setLabel($this->translate->_('Reset password mail'))
+                    ->setAttrib('class', 'button')
+                    ->setOrder(1);
+        $form->addElement($resetElement);
+
         /****************
          * Process form *
          ****************/
-        if ($this->_request->isPost() && $form->isValid($_POST, false)) {
-            // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules
-            if ($form->getMessages()) {
-                $this->addMessage($form->getMessages());
+        if ($this->_request->isPost()) {
+            $data = $this->_request->getPost();
+            if (isset($data['create_account'])) {
+                $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
+                $mail->setOrganizationFrom();
+                if ($mail->setCreateAccountTemplate()) {
+                    $mail->send();
+                    $this->addMessage($this->_('Mail sent'));
+                    $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
+                } else {
+                    $this->addMessage($this->_('No default Create Account mail template set in organization or project'));
+                }
+
+            } elseif (isset($data['reset_password'])) {
+                $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
+                $mail->setOrganizationFrom();
+                if ($mail->setResetPasswordTemplate()) {
+                    $mail->send();
+                    $this->addMessage($this->_('Mail sent'));
+                    $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
+                } else {
+                    $this->addMessage($this->_('No default Reset Password mail template set in organization or project'));
+                }
+                
+
+            } elseif ($form->isValid($data, false)) {
+                // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules
+                if ($form->getMessages()) {
+                    $this->addMessage($form->getMessages());
+                }
+                $this->addMessage($this->_('New password is active.'));
+                $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
+
+            } else {
+                $this->addMessage($form->getErrorMessages());
             }
-            $this->addMessage($this->_('New password is active.'));
-            $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
-        } else {
-            $this->addMessage($form->getErrorMessages());
         }
 
         /****************
@@ -539,7 +611,6 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         } else {
             $form->addButtons($this->createMenuLinks());
         }
-
         $this->beforeFormDisplay($form, false);
 
         $this->html[] = $form;

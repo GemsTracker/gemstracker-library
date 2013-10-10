@@ -90,6 +90,8 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
         }
         $this->addItems($bridge, 'gor_welcome', 'gor_signature');
 
+        $this->addItems($bridge, 'gor_create_account_template', 'gor_reset_pass_template');
+
         if (!($bridge->getTab('access'))) {
             $bridge->addTab('access', 'value', $this->_('Access'));
         }

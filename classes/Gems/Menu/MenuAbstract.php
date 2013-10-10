@@ -253,6 +253,23 @@ abstract class Gems_Menu_MenuAbstract
         return $this->addPage($label, $privilege, $controller, $action, $other);
     }
 
+    /**
+     * Add a Mail menu tree to the menu
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addCommSetupMenu($label)
+    {
+        $setup = $this->addContainer($label);
+
+        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'comm-template');
+
+        return $setup;
+    }
+
+
     public function addContainer($label, $privilege = null, array $other = array())
     {
         $other['label'] = $label;
@@ -516,6 +533,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addShowAction();
         $pages[] = $page->addEditAction();
         $pages[] = $page->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
+        $pages[] = $page->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1);
         $pages[] = $page->addDeleteAction();
         $pages[] = $page->addExcelAction();
         $pages[] = $page->addImportAction();

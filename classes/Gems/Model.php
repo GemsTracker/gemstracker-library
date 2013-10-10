@@ -126,6 +126,18 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the commtemplate model
+     * 
+     * @return Gems_Model_CommtemplateModel
+     */
+    public function getCommtemplateModel()
+    {
+        $model = $this->_loadClass('CommtemplateModel', true);
+
+        return $model;
+    }
+
+    /**
      * Create a Gems project wide unique user id
      *
      * @see Gems_Model_RespondentModel

@@ -167,6 +167,10 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
             $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));
             $model->set('gor_welcome',   'label', $this->_('Greeting'),  'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
             $model->set('gor_signature', 'label', $this->_('Signature'), 'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
+
+            $templates = $this->loader->getMailLoader()->getMailElements()->getAvailableMailTemplates();
+            $model->set('gor_create_account_template', 'label', $this->_('Create Account template'), 'multiOptions', $templates);
+            $model->set('gor_reset_pass_template', 'label', $this->_('Reset Password template'), 'multiOptions', $templates);
         }
         $model->set('gor_accessible_by', 'label', $this->_('Accessible by'), 'description', $this->_('Checked organizations see this organizations respondents.'),
                 'elementClass', 'MultiCheckbox', 'multiOptions', $this->util->getDbLookup()->getOrganizations());

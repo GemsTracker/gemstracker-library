@@ -536,3 +536,11 @@ UPDATE gems__roles
 ALTER TABLE `gems__tokens` ADD INDEX(`gto_by`);
 
 ALTER TABLE `gems__respondent2track` ADD INDEX(`gr2t_created_by`);
+
+-- PATCH: Organization create account template SELECT
+ALTER TABLE gems__organizations
+    ADD gor_create_account_template bigint unsigned null AFTER gor_allowed_ip_ranges;
+
+-- PATCH: Organization Reset Password template SELECT
+ALTER TABLE gems__organizations
+    ADD gor_reset_pass_template bigint unsigned null AFTER gor_allowed_ip_ranges;

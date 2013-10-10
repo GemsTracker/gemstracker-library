@@ -1,0 +1,409 @@
+<?php
+
+/**
+ * Copyright (c) 2013, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Mail
+ * @author     Jasper van Gestel <jappie@dse.nl>
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ */
+
+/**
+ *
+ *
+ * @package    Gems
+ * @subpackage Mail
+ * @copyright  Copyright (c) 2013 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.6.2
+ */
+abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
+{
+    /**
+     * @var string  Message body in BBcode
+     */
+    protected $bodyBb;
+
+    /**
+     * @var string  Message body in Html
+     */
+    protected $bodyHtml;
+
+    /**
+     * @var string  Message body in Plain Text
+     */
+    protected $bodyText;
+
+    /**
+     * Collection of the different available mailfields
+     * @var array
+     */
+    protected $mailFields;
+
+    /**
+     * The mailfields with marked keys
+     * @var array
+     */
+    protected $markedMailFields;
+
+    /**
+     * Flash messages
+     * @var array
+     */
+    protected $messages;
+
+    /**
+     * @var string  Email From field
+     */
+    protected $from;
+    protected $language;
+    protected $layout;
+
+    /**
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     * Project Object
+     * @var 
+     */
+    protected $project;
+
+    /**
+     * @var Gems_User_Organization
+     */
+    protected $organization;
+
+    /**
+     * @var integer     Organization ID
+     */
+    protected $organizationId;
+
+    /**
+     * @var string      Subject of the Message
+     */
+    protected $subject;
+
+    /**
+     * 
+     * @var string      filename of the html template
+     */
+	protected $templateStyle;
+
+    protected $time;
+
+    /**
+     * Collection of all the recipients of the mail
+     * @var array
+     */
+    protected $to = array();
+
+    /**
+     * The start and end markers for the mailfields
+     * @var array
+     */
+    protected $mailFieldMarkers = array(
+                                    'start' => '{',
+                                    'end' => '}'
+                                    );
+
+
+    /**
+     * Add Mailfields to the existing mailfields
+     * @param array $mailfields 
+     */
+    protected function addMailFields($mailfields)
+    {
+        $this->mailFields = array_merge($mailfields, $this->mailFields);
+    }
+
+    /**
+     * After registry load, load the MailFields
+     */
+    public function afterRegistry()
+    {
+        $this->loadOrganization();
+        $this->loadMailFields();    
+    }
+
+    /**
+     * After the mail has been processed by the mailer
+     */
+    protected function afterMail()
+    { }
+
+    /**
+     * Before the mail is processed by the mailer
+     */
+    protected function beforeMail()
+    { }
+
+    /**
+     * Returns true if the "email.bounce" setting exists in the project
+     * configuration and is true
+     * @return boolean
+     */
+    public function bounceCheck()
+    {
+        return $this->project->getEmailBounce();
+    }
+
+
+    /**
+     * Return the mailFields
+     *
+     * @param  boolean $marked      Return the mailfields with their markers
+     * @return Array                List of the mailfields and their values
+     */
+    public function getMailFields($marked=true) {
+        if ($marked) {
+            if (! $this->markedMailFields) {
+                $this->markedMailFields = $this->markMailFields($this->mailFields);
+            }
+            return $this->markedMailFields;
+        } else {
+            return $this->mailFields;
+        }
+    }
+
+
+    /**
+     * Add Flash Message
+     * @param string $message 
+     */
+    public function addMessage($message)
+    {
+        $this->messages[] = $message;
+    }
+
+
+    // 
+    // 
+    /**
+     * Replace the mailkeys with the mailfields in given text
+     * @param  string $text     The text to apply the replacment to
+     * @return string           The text with replaced mailfields
+     */
+    public function applyFields($text)
+    {
+        $mailKeys = array_keys($this->getMailFields());
+        
+        return str_replace($mailKeys, $this->mailFields, $text);
+    }
+
+
+    /**
+     * Get Flash message
+     * @return Array
+     */
+    public function getMessages() 
+    {
+        return $this->messages;
+    }
+
+    /**
+     * Get the organization in relation to the current mailtarget
+     * @return Gems_User_Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * Get the correct Mail Template Style
+     * @return string 
+     */
+    protected function getTemplateStyle()
+    {
+        if ($this->templateStyle) {
+            return $this->templateStyle;
+        } else {
+            return $this->organization->getStyle();
+        }
+    }
+
+    /**
+     * Initialize the mailfields
+     */
+    protected function loadMailFields()
+    {
+        if ($this->organization) {
+            $this->mailFields = array_merge($this->project->getMailFields(), $this->organization->getMailFields());
+        } else {
+            $this->mailFields = $this->project->getMailFields();
+        }
+    }
+
+    /**
+     * Load the organization from the given organization id
+     */
+    protected function loadOrganization()
+    {
+        if (!$this->organizationId) {
+            $this->loadOrganizationId();
+        }
+        $this->organization = $this->loader->getOrganization($this->organizationId);
+    }
+
+    /**
+     * Function to get the current organization id. 
+     */
+    protected function loadOrganizationId()
+    { }
+
+    /**
+     * Add specified markers to the mailfield keys
+     * @param  Array $mailfields
+     * @return Array            The marked mailfields
+     */
+    public function markMailFields($mailFields)
+    {
+        $markedMailFields = MUtil_Ra::braceKeys($mailFields, $this->mailFieldMarkers['start'], $this->mailFieldMarkers['end']);
+        return $markedMailFields;
+    }
+
+    public function setBody($message, $renderer = 'Bbcode')
+    {
+        if ($renderer == 'Bbcode') {
+            $this->bodyBb = $message;
+        } elseif ($renderer == 'Html') {
+            $this->bodyHtml = $message;
+        } elseif ($renderer == 'Text') {
+            $this->bodyText = $message;
+        }
+    }
+
+
+    /**
+     * Organization or project Style (as defined in application/configs/email/)
+     */
+    public function setStyle($style)
+    {
+        $this->templateStyle = $style;
+    }
+
+    /**
+     * Set the languange in which the mail should be sent.
+     */
+    public function setLanguage()
+    {
+    }
+
+    /**
+     * Set the time when the email should be sent.
+     */
+    public function setTime()
+    {
+    }
+
+    /**
+     * Add a To field
+     */
+    public function addTo($newTo, $newToName = '')
+    {  
+        if (is_array($newTo)) {
+            $this->to  = array_merge($newTo, $this->to);
+        } else {
+            if (empty($newToName)) {
+                $this->to[] = $newTo;
+            } else {
+                $this->to[$newToName] = $newTo;
+            }
+        }
+    }
+
+    /**
+     * set the from field
+     */
+    public function setFrom($newFrom)
+    {
+        $this->from = $newFrom;
+    }
+
+    public function setOrganizationFrom() {
+        $this->from = $this->organization->getEmail();
+    }
+
+
+
+    /**
+     * set the subject of the mail
+     */
+    public function setSubject($newSubject)
+    {
+        $this->subject = $newSubject;
+    }
+
+    /**
+     * set a specific template as subject/body
+     * @param integer   Template ID
+     */
+    public function setTemplate($templateId)
+    {
+        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();        
+        $select->where('gct_id_template = ?', $templateId);
+        
+        $template = $this->db->fetchRow($select);
+
+        $this->subject = $template['gctt_subject'];
+        $this->bodyBb = $template['gctt_body'];
+    }
+
+    /**
+     * Send the mail
+     */
+    public function send()
+    {
+        $mail = $this->loader->getMail();
+        
+        $mail->setFrom($this->from);
+        $mail->addTo($this->to, '', $this->bounceCheck());
+
+        if (isset($this->project->email['bcc'])) {
+            $mail->addBcc($this->project->email['bcc']);
+        }
+        
+        $mail->setSubject($this->applyFields($this->subject));
+
+        if ($this->bodyBb) {
+            $mail->setBodyBBCode($this->applyFields($this->bodyBb));
+        } else {
+            if ($this->bodyHtml) {
+                $this->setBodyHtml($this->applyFields($this->bodyHtml));
+            } elseif ($this->bodyText) {
+                $this->setBodyHtml($this->applyFields($this->bodyHtml));
+            }
+        }
+        $mail->setTemplateStyle($this->getTemplateStyle());
+
+        $mail->send();
+    }
+}

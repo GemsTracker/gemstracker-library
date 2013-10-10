@@ -425,6 +425,33 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * The default Email Template for Create Account
+     *
+     * @return string   Template Code
+     */
+    public function getEmailCreateAccount()
+    {
+        if ($this->offsetExists('email') && isset($this->email['createAccountTemplate'])) {
+            return (string) $this->email['createAccountTemplate'];
+        }
+        return false;
+    }
+
+    /**
+     * The default Email template for Reset password
+     *
+     * @return string   Template Code
+     */
+    public function getEmailResetPassword()
+    {
+
+        if ($this->offsetExists('email') && isset($this->email['resetPasswordTemplate'])) {
+            return (string) $this->email['resetPasswordTemplate'];
+        }
+        return false;
+    }
+
+    /**
      * Get the directory to use as the root for automatic import
      *
      * @return string
@@ -463,7 +490,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
      * Array with the imports settings or empty
      *
      * @return array
-     * /
+     */
     public function getImports()
     {
         if (isset($this['import'])) {

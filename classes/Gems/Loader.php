@@ -185,6 +185,27 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     }
 
     /**
+     * @return Gems_Mail
+     */
+
+    public function getMail($charset = null)
+    {
+        return $this->_loadClass('mail', true, array($charset));
+    }
+
+    public function getMailLoader()
+    {
+        return $this->_getClass('mailLoader', 'Mail_MailLoader');
+    }
+
+    public function getMailTargets()
+    {
+        $loader = $this->getMailLoader();
+        return $loader->getMailTargets();
+    }
+
+
+    /**
      *
      * @return Gems_Import_ImportLoader
      */
@@ -222,6 +243,11 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     public function getPdf()
     {
         return $this->_getClass('pdf');
+    }
+
+    public function getRespondent($patientId=false, $organization=false)
+    {
+        return $this->_loadClass('Tracker_Respondent');
     }
 
     /**
