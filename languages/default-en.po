@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-09 17:25+0100\n"
+"POT-Creation-Date: 2013-10-10 15:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -364,17 +364,17 @@ msgstr "Add"
 #: classes/Gems/Menu.php:354 classes/Gems/Menu.php:460
 #: classes/Gems/Email/EmailFormAbstract.php:280
 #: classes/Gems/Email/EmailFormAbstract.php:291
-#: classes/Gems/Menu/MenuAbstract.php:471
-#: classes/Gems/Menu/MenuAbstract.php:484
-#: classes/Gems/Menu/MenuAbstract.php:494
+#: classes/Gems/Menu/MenuAbstract.php:472
+#: classes/Gems/Menu/MenuAbstract.php:485
+#: classes/Gems/Menu/MenuAbstract.php:495
 msgid "Preview"
 msgstr "Preview"
 
 #: classes/Gems/Menu.php:363 classes/Gems/Default/ExportAction.php:223
 #: classes/Gems/Default/ReceptionAction.php:95
 #: classes/Gems/Default/TrackMaintenanceAction.php:407
-#: classes/Gems/Menu/MenuAbstract.php:480
-#: classes/Gems/Menu/MenuAbstract.php:571 snippets/AddTracksSnippet.php:241
+#: classes/Gems/Menu/MenuAbstract.php:481
+#: classes/Gems/Menu/MenuAbstract.php:572 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -396,8 +396,8 @@ msgstr "Delete"
 
 #: classes/Gems/Menu.php:414 classes/Gems/Default/ReceptionAction.php:99
 #: classes/Gems/Default/SurveyMaintenanceAction.php:609
-#: classes/Gems/Menu/MenuAbstract.php:487
-#: classes/Gems/Menu/MenuAbstract.php:557
+#: classes/Gems/Menu/MenuAbstract.php:488
+#: classes/Gems/Menu/MenuAbstract.php:558
 #: classes/Gems/Tracker/Model/TrackModel.php:102
 msgid "Surveys"
 msgstr "Surveys"
@@ -435,7 +435,7 @@ msgstr "Patients"
 msgid "Overview"
 msgstr "Overview"
 
-#: classes/Gems/Menu.php:667 classes/Gems/Menu/MenuAbstract.php:444
+#: classes/Gems/Menu.php:667 classes/Gems/Menu/MenuAbstract.php:445
 msgid "Project"
 msgstr "Project"
 
@@ -471,7 +471,8 @@ msgstr "Changelog"
 msgid "Respondent nr"
 msgstr "Patient nr"
 
-#: classes/Gems/Model.php:230 classes/Gems/Default/AgendaActivityAction.php:96
+#: classes/Gems/Model.php:230 classes/Gems/Default/AgendaActivityAction.php:98
+#: classes/Gems/Default/AgendaProcedureAction.php:98
 #: classes/Gems/Default/ExportAction.php:252
 #: classes/Gems/Default/IndexAction.php:229
 #: classes/Gems/Default/LocationAction.php:115
@@ -834,10 +835,20 @@ msgid "Nothing to do."
 msgstr "Nothing to do."
 
 #: classes/Gems/Default/AgendaActivityAction.php:92
+#: classes/Gems/Default/AgendaProcedureAction.php:92
 msgid "Activity"
 msgstr "Activity"
 
-#: classes/Gems/Default/AgendaActivityAction.php:97
+#: classes/Gems/Default/AgendaActivityAction.php:93
+msgid ""
+"An activity is a high level description about an appointment:\n"
+"e.g. consult, check-up, diet, operation, physiotherapy or other."
+msgstr ""
+"An activity is a high level description about an appointment:\n"
+"e.g. consult, check-up, diet, operation, physiotherapy or other."
+
+#: classes/Gems/Default/AgendaActivityAction.php:99
+#: classes/Gems/Default/AgendaProcedureAction.php:99
 msgid ""
 "Optional, an import match with an organization has priority over those "
 "without."
@@ -845,17 +856,30 @@ msgstr ""
 "Optional, an import match with an organization has priority over those "
 "without."
 
-#: classes/Gems/Default/AgendaActivityAction.php:101
+#: classes/Gems/Default/AgendaActivityAction.php:103
+#: classes/Gems/Default/AgendaProcedureAction.php:103
+msgid "Respondent explanation"
+msgstr "Patient explanation"
+
+#: classes/Gems/Default/AgendaActivityAction.php:104
+#: classes/Gems/Default/AgendaProcedureAction.php:104
+msgid "Alternative description to use with respondents."
+msgstr "Alternative description to use for patients."
+
+#: classes/Gems/Default/AgendaActivityAction.php:106
+#: classes/Gems/Default/AgendaProcedureAction.php:106
 #: classes/Gems/Default/LocationAction.php:119
 msgid "Import matches"
 msgstr "Import matches"
 
-#: classes/Gems/Default/AgendaActivityAction.php:102
+#: classes/Gems/Default/AgendaActivityAction.php:107
+#: classes/Gems/Default/AgendaProcedureAction.php:107
 #: classes/Gems/Default/LocationAction.php:120
 msgid "Split multiple import matches using '|'."
 msgstr "Split multiple import matches using '|'."
 
-#: classes/Gems/Default/AgendaActivityAction.php:105
+#: classes/Gems/Default/AgendaActivityAction.php:110
+#: classes/Gems/Default/AgendaProcedureAction.php:110
 #: classes/Gems/Default/LocationAction.php:123
 #: classes/Gems/Default/OrganizationAction.php:181
 #: classes/Gems/Default/SurveyMaintenanceAction.php:472
@@ -863,7 +887,8 @@ msgstr "Split multiple import matches using '|'."
 msgid "Code name"
 msgstr "Code name"
 
-#: classes/Gems/Default/AgendaActivityAction.php:107
+#: classes/Gems/Default/AgendaActivityAction.php:112
+#: classes/Gems/Default/AgendaProcedureAction.php:112
 #: classes/Gems/Default/LocationAction.php:125
 #: classes/Gems/Default/OrganizationAction.php:181
 #: classes/Gems/Default/SurveyMaintenanceAction.php:472
@@ -871,7 +896,8 @@ msgstr "Code name"
 msgid "Only for programmers."
 msgstr "Only for programmers."
 
-#: classes/Gems/Default/AgendaActivityAction.php:109
+#: classes/Gems/Default/AgendaActivityAction.php:114
+#: classes/Gems/Default/AgendaProcedureAction.php:114
 #: classes/Gems/Default/GroupAction.php:120
 #: classes/Gems/Default/LocationAction.php:154
 #: classes/Gems/Default/MailJobAction.php:82
@@ -887,28 +913,41 @@ msgstr "Only for programmers."
 msgid "Active"
 msgstr "Active"
 
-#: classes/Gems/Default/AgendaActivityAction.php:110
+#: classes/Gems/Default/AgendaActivityAction.php:115
+#: classes/Gems/Default/AgendaProcedureAction.php:115
 #: classes/Gems/Default/LocationAction.php:155
 msgid "Inactive means assignable only through automatich processes."
 msgstr "Inactive means assignable only through automatich processes."
 
-#: classes/Gems/Default/AgendaActivityAction.php:127
+#: classes/Gems/Default/AgendaActivityAction.php:132
 msgid "Agenda activity"
 msgstr "Agenda activity"
 
-#: classes/Gems/Default/AgendaActivityAction.php:138
+#: classes/Gems/Default/AgendaActivityAction.php:143
 msgid "activity"
 msgid_plural "activities"
 msgstr[0] "activity"
 msgstr[1] "activities"
 
-#: classes/Gems/Default/AgendaActivityAction.php:148
+#: classes/Gems/Default/AgendaProcedureAction.php:93
 msgid ""
-"An activity is a high level description about an appointment:\n"
-"e.g. consult, check-up, diet, operation, physiotherapy or other."
+"A procedure describes an appointments effects on a respondent:\n"
+"e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) "
+"operation, etc..."
 msgstr ""
-"An activity is a high level description about an appointment:\n"
-"e.g. consult, check-up, diet, operation, physiotherapy or other."
+"A procedure describes an appointments effects on a patient:\n"
+"e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) "
+"operation, etc..."
+
+#: classes/Gems/Default/AgendaProcedureAction.php:132
+msgid "Agenda procedures"
+msgstr "Agenda procedures"
+
+#: classes/Gems/Default/AgendaProcedureAction.php:143
+msgid "procedure"
+msgid_plural "procedures"
+msgstr[0] "procedure"
+msgstr[1] "procedures"
 
 #: classes/Gems/Default/AskAction.php:167
 #, php-format
@@ -1435,7 +1474,7 @@ msgid "Separate multiple commands with semicolons (;)."
 msgstr "Separate multiple commands with semicolons (;)."
 
 #: classes/Gems/Default/DatabaseAction.php:511
-#: classes/Gems/Menu/MenuAbstract.php:370
+#: classes/Gems/Menu/MenuAbstract.php:371
 msgid "Run"
 msgstr "Run"
 
@@ -1818,7 +1857,7 @@ msgid "Phone 4"
 msgstr "Phone 4"
 
 #: classes/Gems/Default/LocationAction.php:172
-#: classes/Gems/Menu/MenuAbstract.php:234
+#: classes/Gems/Menu/MenuAbstract.php:235
 msgid "Locations"
 msgstr "Locations"
 
@@ -2510,7 +2549,7 @@ msgid "Session content"
 msgstr "Session content"
 
 #: classes/Gems/Default/ProjectInformationAction.php:273
-#: classes/Gems/Menu/MenuAbstract.php:445
+#: classes/Gems/Menu/MenuAbstract.php:446
 msgid "Session"
 msgstr "Session"
 
@@ -2996,7 +3035,7 @@ msgstr[0] "source"
 msgstr[1] "sources"
 
 #: classes/Gems/Default/SourceAction.php:264
-#: classes/Gems/Menu/MenuAbstract.php:543
+#: classes/Gems/Menu/MenuAbstract.php:544
 msgid "Survey Sources"
 msgstr "Survey Sources"
 
@@ -3081,7 +3120,7 @@ msgstr "You are not allowed to change this password."
 #: classes/Gems/Default/SummaryAction.php:109
 #: classes/Gems/Email/OneMailForm.php:55
 #: classes/Gems/Export/RespondentExport.php:211
-#: classes/Gems/Menu/MenuAbstract.php:604
+#: classes/Gems/Menu/MenuAbstract.php:605
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:117
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:198
 msgid "Round"
@@ -3711,7 +3750,7 @@ msgstr[1] "fields"
 
 #: classes/Gems/Default/TrackFieldsAction.php:202
 #: classes/Gems/Email/EmailFormAbstract.php:476
-#: classes/Gems/Menu/MenuAbstract.php:576
+#: classes/Gems/Menu/MenuAbstract.php:577
 msgid "Fields"
 msgstr "Fields"
 
@@ -3849,7 +3888,7 @@ msgstr[0] "round"
 msgstr[1] "rounds"
 
 #: classes/Gems/Default/TrackRoundsAction.php:221
-#: classes/Gems/Menu/MenuAbstract.php:589
+#: classes/Gems/Menu/MenuAbstract.php:590
 msgid "Rounds"
 msgstr "Rounds"
 
@@ -4109,145 +4148,149 @@ msgstr "Direct import"
 msgid "Activities"
 msgstr "Activities"
 
-#: classes/Gems/Menu/MenuAbstract.php:293
+#: classes/Gems/Menu/MenuAbstract.php:234
+msgid "Procedure"
+msgstr "Procedure"
+
+#: classes/Gems/Menu/MenuAbstract.php:294
 msgid "Survey answers"
 msgstr "Survey answers"
 
-#: classes/Gems/Menu/MenuAbstract.php:298
+#: classes/Gems/Menu/MenuAbstract.php:299
 msgid "Respondent archives"
 msgstr "Respondent archives"
 
-#: classes/Gems/Menu/MenuAbstract.php:322
+#: classes/Gems/Menu/MenuAbstract.php:323
 msgid "Download"
 msgstr "Download"
 
-#: classes/Gems/Menu/MenuAbstract.php:338
+#: classes/Gems/Menu/MenuAbstract.php:339
 msgid "Importable"
 msgstr "Importable"
 
-#: classes/Gems/Menu/MenuAbstract.php:340
+#: classes/Gems/Menu/MenuAbstract.php:341
 msgid "Import result"
 msgstr "Import result"
 
-#: classes/Gems/Menu/MenuAbstract.php:343
+#: classes/Gems/Menu/MenuAbstract.php:344
 msgid "Imported files"
 msgstr "Imported files"
 
-#: classes/Gems/Menu/MenuAbstract.php:344
+#: classes/Gems/Menu/MenuAbstract.php:345
 msgid "Imported failures"
 msgstr "Imported failures"
 
-#: classes/Gems/Menu/MenuAbstract.php:362
+#: classes/Gems/Menu/MenuAbstract.php:363
 msgid "Activity log"
 msgstr "Activity Log"
 
-#: classes/Gems/Menu/MenuAbstract.php:368
+#: classes/Gems/Menu/MenuAbstract.php:369
 msgid "Automatic mail"
 msgstr "Automatic mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:369
+#: classes/Gems/Menu/MenuAbstract.php:370
 msgid "Turn Automatic Mail Jobs OFF"
 msgstr "Turn Automatic Mail Jobs OFF"
 
-#: classes/Gems/Menu/MenuAbstract.php:373
+#: classes/Gems/Menu/MenuAbstract.php:374
 msgid "Servers"
 msgstr "Servers"
 
-#: classes/Gems/Menu/MenuAbstract.php:377
+#: classes/Gems/Menu/MenuAbstract.php:378
 msgid "Templates"
 msgstr "Templates"
 
-#: classes/Gems/Menu/MenuAbstract.php:409
+#: classes/Gems/Menu/MenuAbstract.php:410
 msgid "Track Summary"
 msgstr "Track Summary"
 
-#: classes/Gems/Menu/MenuAbstract.php:413
+#: classes/Gems/Menu/MenuAbstract.php:414
 msgid "Track Compliance"
 msgstr "Track Compliance"
 
-#: classes/Gems/Menu/MenuAbstract.php:417
+#: classes/Gems/Menu/MenuAbstract.php:418
 msgid "By period"
 msgstr "By period"
 
-#: classes/Gems/Menu/MenuAbstract.php:418
+#: classes/Gems/Menu/MenuAbstract.php:419
 msgid "By token"
 msgstr "By token"
 
-#: classes/Gems/Menu/MenuAbstract.php:419
+#: classes/Gems/Menu/MenuAbstract.php:420
 msgid "By respondent"
 msgstr "By patient"
 
-#: classes/Gems/Menu/MenuAbstract.php:423
+#: classes/Gems/Menu/MenuAbstract.php:424
 msgid "Bulk mail"
 msgstr "Bulk mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:441
+#: classes/Gems/Menu/MenuAbstract.php:442
 msgid "Errors"
 msgstr "Errors"
 
-#: classes/Gems/Menu/MenuAbstract.php:442
+#: classes/Gems/Menu/MenuAbstract.php:443
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu/MenuAbstract.php:443
+#: classes/Gems/Menu/MenuAbstract.php:444
 msgid "PHP Errors"
 msgstr "PHP Errors"
 
-#: classes/Gems/Menu/MenuAbstract.php:446
+#: classes/Gems/Menu/MenuAbstract.php:447
 msgid "Maintenance mode"
 msgstr "Maintenance mode"
 
-#: classes/Gems/Menu/MenuAbstract.php:447
+#: classes/Gems/Menu/MenuAbstract.php:448
 msgid "Clean cache"
 msgstr "Clean cache"
 
-#: classes/Gems/Menu/MenuAbstract.php:516
+#: classes/Gems/Menu/MenuAbstract.php:517
 msgid "Reset password"
 msgstr "Reset password"
 
-#: classes/Gems/Menu/MenuAbstract.php:544
+#: classes/Gems/Menu/MenuAbstract.php:545
 msgid "Check status"
 msgstr "Check status"
 
-#: classes/Gems/Menu/MenuAbstract.php:546
+#: classes/Gems/Menu/MenuAbstract.php:547
 msgid "Synchronize surveys"
 msgstr "Synchronize surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:548
-#: classes/Gems/Menu/MenuAbstract.php:564
+#: classes/Gems/Menu/MenuAbstract.php:549
+#: classes/Gems/Menu/MenuAbstract.php:565
 msgid "Check is answered"
 msgstr "Check is answered"
 
-#: classes/Gems/Menu/MenuAbstract.php:550
+#: classes/Gems/Menu/MenuAbstract.php:551
 msgid "Check attributes"
 msgstr "Check attributes"
 
-#: classes/Gems/Menu/MenuAbstract.php:552
+#: classes/Gems/Menu/MenuAbstract.php:553
 msgid "Synchronize all surveys"
 msgstr "Synchronize all surveys"
 
-#: classes/Gems/Menu/MenuAbstract.php:553
-#: classes/Gems/Menu/MenuAbstract.php:566
+#: classes/Gems/Menu/MenuAbstract.php:554
+#: classes/Gems/Menu/MenuAbstract.php:567
 msgid "Check all is answered"
 msgstr "Check all is answered"
 
-#: classes/Gems/Menu/MenuAbstract.php:554
+#: classes/Gems/Menu/MenuAbstract.php:555
 msgid "Check all attributes"
 msgstr "Check all attributes"
 
-#: classes/Gems/Menu/MenuAbstract.php:561
+#: classes/Gems/Menu/MenuAbstract.php:562
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:572
+#: classes/Gems/Menu/MenuAbstract.php:573
 msgid "Copy"
 msgstr "Copy"
 
-#: classes/Gems/Menu/MenuAbstract.php:610
+#: classes/Gems/Menu/MenuAbstract.php:611
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:613
+#: classes/Gems/Menu/MenuAbstract.php:614
 msgid "Check all assignments"
 msgstr "Check all assignments"
 
@@ -6276,6 +6319,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "Respondent description"
+#~ msgstr "Patient descrription"
 
 #~ msgid "Matches"
 #~ msgstr "Matches"

@@ -94,6 +94,41 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     *
+     * @param int $organizationId Optional
+     * @return array activity_id => name
+     */
+    public function getProcedures($organizationId = null)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $organizationId;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__agenda_procedures', array('gap_id_procedure', 'gap_name'))
+                ->order('gap_name');
+
+        if ($organizationId) {
+            // Check only for active when with $orgId: those are usually used
+            // with editing, while the whole list is used for display.
+            $select->where('gap_active = 1')
+                    ->where('(
+                            gap_id_organization IS NULL
+                        AND
+                            gap_name NOT IN (SELECT gap_name FROM gems__agenda_procedures WHERE gap_id_procedure = ?)
+                        ) OR
+                            gap_id_organization = ?', $organizationId);
+        }
+        // MUtil_Echo::track($select->__toString());
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('procedures'));
+        return $results;
+
+    }
+
+    /**
      * Find an activity code for the name and organization.
      *
      * @param string $name The name to match against
@@ -212,5 +247,66 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
 
         return $result;
+    }
+
+    /**
+     * Find a procedure code for the name and organization.
+     *
+     * @param string $name The name to match against
+     * @param int $organizationId Organization id
+     * @param boolean $create Create a match when it does not exist
+     * @return int or null
+     */
+    public function matchProcedure($name, $organizationId, $create = true)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $matches = $this->cache->load($cacheId);
+
+        if (! $matches) {
+            $matches = array();
+            $select  = $this->db->select();
+            $select->from('gems__agenda_procedures', array('gap_id_procedure', 'gap_match_to', 'gap_id_organization'));
+
+            $result = $this->db->fetchAll($select);
+            foreach ($result as $row) {
+                if (null === $row['gap_id_organization']) {
+                    $key = 'null';
+                } else {
+                    $key = $row['gap_id_organization'];
+                }
+                foreach (explode('|', $row['gap_match_to']) as $match) {
+                    $matches[$match][$key] = $row['gap_id_procedure'];
+                }
+            }
+            $this->cache->save($matches, $cacheId, array('procedures'));
+        }
+
+        if (isset($matches[$name])) {
+            if (isset($matches[$name][$organizationId])) {
+                return $matches[$name][$organizationId];
+            }
+            if (isset($matches[$name]['null'])) {
+                return $matches[$name]['null'];
+            }
+        }
+
+        if (! $create) {
+            return null;
+        }
+
+        $model = new MUtil_Model_TableModel('gems__agenda_procedures');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gap');
+
+        $values = array(
+            'gap_name'     => $name,
+            'gap_match_to' => $name,
+            'gap_active'   => 1,
+        );
+
+        $result = $model->save($values);
+
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
+
+        return $result['gap_id_procedure'];
     }
 }

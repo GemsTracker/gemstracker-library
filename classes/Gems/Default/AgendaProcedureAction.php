@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_AgendaProcedureAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -53,7 +53,7 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
      */
     protected $autofilterParameters = array(
         'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gaa_name' => SORT_ASC),
+        'extraSort'   => array('gap_name' => SORT_ASC),
         );
 
     /**
@@ -61,7 +61,7 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
      *
      * @var array
      */
-    public $cacheTags = array('activity', 'activities');
+    public $cacheTags = array('procedure', 'procedures');
 
     /**
      *
@@ -83,41 +83,41 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
     protected function createModel($detailed, $action)
     {
         $translated = $this->util->getTranslated();
-        $model      = new MUtil_Model_TableModel('gems__agenda_activities');
+        $model      = new MUtil_Model_TableModel('gems__agenda_procedures');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gap');
 
-        $model->setDeleteValues('gaa_active', 0);
+        $model->setDeleteValues('gap_active', 0);
 
-        $model->set('gaa_name',                    'label', $this->_('Activity'),
-                'description', $this->_('An activity is a high level description about an appointment:
-e.g. consult, check-up, diet, operation, physiotherapy or other.').
+        $model->set('gap_name',                    'label', $this->_('Activity'),
+                'description', $this->_('A procedure describes an appointments effects on a respondent:
+e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operation, etc...'),
                 'required', true
                 );
 
-        $model->setIfExists('gaa_id_organization', 'label', $this->_('Organization'),
+        $model->setIfExists('gap_id_organization', 'label', $this->_('Organization'),
                 'description', $this->_('Optional, an import match with an organization has priority over those without.'),
                 'multiOptions', $translated->getEmptyDropdownArray() + $this->util->getDbLookup()->getOrganizations()
                 );
 
-        $model->setIfExists('gaa_name_for_resp',   'label', $this->_('Respondent explanation'),
+        $model->setIfExists('gap_name_for_resp',   'label', $this->_('Respondent explanation'),
                 'description', $this->_('Alternative description to use with respondents.')
                 );
-        $model->setIfExists('gaa_match_to',        'label', $this->_('Import matches'),
+        $model->setIfExists('gap_match_to',        'label', $this->_('Import matches'),
                 'description', $this->_("Split multiple import matches using '|'.")
                 );
 
-        $model->setIfExists('gaa_code',        'label', $this->_('Code name'),
+        $model->setIfExists('gap_code',        'label', $this->_('Code name'),
                 'size', 10,
                 'description', $this->_('Only for programmers.'));
 
-        $model->setIfExists('gaa_active',      'label', $this->_('Active'),
+        $model->setIfExists('gap_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $translated->getYesNo()
                 );
 
-        $model->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+        $model->addColumn("CASE WHEN gap_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
         return $model;
     }
@@ -129,7 +129,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.').
      */
     public function getIndexTitle()
     {
-        return $this->_('Agenda activity');
+        return $this->_('Agenda procedures');
     }
 
     /**
@@ -140,7 +140,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.').
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('activity', 'activities', $count);
+        return $this->plural('procedure', 'procedures', $count);
     }
 
     /**
@@ -150,6 +150,6 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.').
     {
         parent::indexAction();
 
-        $this->html->pInfo($this->getModel()->get('gaa_name', 'description'));
+        $this->html->pInfo($this->getModel()->get('gap_name', 'description'));
     }
 }
