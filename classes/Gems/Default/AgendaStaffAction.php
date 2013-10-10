@@ -102,7 +102,7 @@ class Gems_Default_AgendaStaffAction extends Gems_Controller_ModelSnippetActionA
                 );
 
         $model->setIfExists('gas_id_user',         'label', $this->_('GemsTracker user'),
-                'description', $this->_('Optional link this healt care provider to a GemsTracker Staff user.'),
+                'description', $this->_('Optional: link this health care provider to a GemsTracker Staff user.'),
                 'multiOptions', $translated->getEmptyDropdownArray() + $dblookup->getStaff()
                 );
         $model->setIfExists('gas_match_to',        'label', $this->_('Import matches'),
@@ -127,7 +127,7 @@ class Gems_Default_AgendaStaffAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getIndexTitle()
     {
-        return $this->_('Agenda healtcare staff');
+        return $this->_('Agenda healtcare provider');
     }
 
     /**
@@ -138,6 +138,6 @@ class Gems_Default_AgendaStaffAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getTopic($count = 1)
     {
-        return $this->plural('staff', 'staff', $count);
+        return $this->plural('healthcare staff', 'healthcare staff', $count);
     }
 }

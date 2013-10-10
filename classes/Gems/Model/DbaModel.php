@@ -97,9 +97,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
 
         $this->defaultDb = $db;
 
-        foreach ($directories as $path => $value) {
-            $this->addDirectory($path, $value);
-        }
+        $this->directories = $directories;
 
         //Grab translate object from the Escort
         $this->translate = GemsEscort::getInstance()->translate;
@@ -185,7 +183,7 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
             $tables = array_merge($tables, $pathData['db']->listTables());
         }
         $tables = array_unique($tables);
-        
+
         if ($tables) { // Can be empty
             $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
         }
@@ -287,40 +285,10 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
     }
 
     /**
-     * Add a directory with definitions to list of directories
+     * The encoding used in the script files
      *
-     * @param string $path
-     * @param mixed name | Zend_Db_Adaptor_Abstract | array(['path' =>], ['name' =>, |'db' =>,])
-     * @return \Gems_Model_DbaModel
+     * @return string
      */
-    public function addDirectory($path, $value)
-    {
-        if (is_array($value)) {
-            $pathData = $value;
-
-        } elseif ($value instanceof Zend_Db_Adapter_Abstract) {
-            $pathData['db'] = $value;
-
-        } else {
-            $pathData['name'] = $value;
-        }
-
-        if (! isset($pathData['path'])) {
-            $pathData['path'] = $path;
-        }
-        if (! isset($pathData['db'])) {
-            $pathData['db'] = $this->defaultDb;
-        }
-        if (! isset($pathData['name'])) {
-            $config = $pathData['db']->getConfig();
-            $pathData['name'] = $config['dbname'];
-        }
-
-        $this->directories[] = $pathData;
-
-        return $this;
-    }
-
     public function getFileEncoding()
     {
         return $this->file_encoding;

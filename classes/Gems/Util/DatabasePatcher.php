@@ -45,43 +45,45 @@
  */
 class Gems_Util_DatabasePatcher
 {
+    /**
+     *
+     * @var array
+     */
     private $_loaded_patches;
 
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
     protected $db;
-    protected $patch_files;
-    protected $patch_locations;
 
-    public function __construct(Zend_Db_Adapter_Abstract $db, $files, $paths = null)
+    /**
+     *
+     * @var array Of location => Zend_Db_Adapter_Abstract db
+     */
+    protected $patch_databases;
+
+    /**
+     *
+     * @var array Of file => location
+     */
+    protected $patch_sources;
+
+    /**
+     *
+     * @param Zend_Db_Adapter_Abstract $db
+     * @param mixed $files Array of file names or single file name
+     * @param array $databases Nested array with rowes containing path, name and db keys.
+     */
+    public function __construct(Zend_Db_Adapter_Abstract $db, $files, array $databases)
     {
         $this->db = $db;
 
-        if (! is_array($paths)) {
-            $paths = (array) $paths;
-        }
-
         foreach ((array) $files as $file) {
-            if (file_exists($file)) {
-                $this->patch_files[] = $file;
-
-            } elseif ($paths) {
-                foreach ($paths as $path => $pathData) {
-                    if (is_array($pathData)) {
-                        $location = $pathData['name'];
-
-                    } elseif ($pathData instanceof Zend_Db_Adapter_Abstract) {
-                        $config   = $pathData->getConfig();
-                        $location = $config['dbname'];
-
-                    } else {
-                        $location = $pathData;
-                    }
-                    if (file_exists($path . '/' . $file)) {
-                        $this->patch_files[] = $path . '/' . $file;
-
-                        if (! is_numeric($location)) {
-                            $this->patch_locations[$path . '/' . $file] = $location;
-                        }
-                    }
+            foreach ($databases as $dbData) {
+                if (file_exists($dbData['path'] . '/' . $file)) {
+                    $this->patch_databases[$dbData['name']] = $dbData['db'];
+                    $this->patch_sources[$dbData['path'] . '/' . $file] = $dbData['name'];
                 }
             }
         }
@@ -92,21 +94,15 @@ class Gems_Util_DatabasePatcher
         if (! $this->_loaded_patches) {
             $this->_loaded_patches = array();
 
-            foreach ($this->patch_files as $file) {
-                $this->_loadPatchFile($file, $applicationLevel);
+            foreach ($this->patch_sources as $file => $location) {
+                $this->_loadPatchFile($file, $location, $applicationLevel);
             }
         }
     }
 
-    private function _loadPatchFile($file_name, $applicationLevel)
+    private function _loadPatchFile($file, $location, $applicationLevel)
     {
-        if (isset($this->patch_locations[$file_name])) {
-            $location = $this->patch_locations[$file_name];
-        } else {
-            $location = $file_name;
-        }
-
-        if ($sql = file_get_contents($file_name)) {
+        if ($sql = file_get_contents($file)) {
 
             $levels = preg_split('/--\s*(GEMS\s+)?VERSION:?\s*/', $sql);
 
@@ -137,7 +133,7 @@ class Gems_Util_DatabasePatcher
                                     'gpa_location' => $location,
                                     'gpa_name'     => $name,
                                     'gpa_order'    => $i,
-                                    'gpa_sql'      => $statement
+                                    'gpa_sql'      => $statement,
                                 );
                         }
                     }
@@ -157,7 +153,7 @@ class Gems_Util_DatabasePatcher
      */
     public function executePatch($patchLevel, $ignoreCompleted = true, $ignoreExecuted = false)
     {
-        $sql = 'SELECT gpa_id_patch, gpa_sql, gpa_completed FROM gems__patches WHERE gpa_level = ?';
+        $sql = 'SELECT gpa_id_patch, gpa_sql, gpa_location, gpa_completed FROM gems__patches WHERE gpa_level = ?';
         if ($ignoreCompleted) {
             $sql .= ' AND gpa_completed = 0';
         }
@@ -176,8 +172,15 @@ class Gems_Util_DatabasePatcher
             $data['gpa_executed'] = 1;
             $data['gpa_changed']  = $current;
 
+            if (isset($this->patch_databases[$patch['gpa_location']])) {
+                $db = $this->patch_databases[$patch['gpa_location']];
+            } else {
+                $db = $this->db;
+            }
+            MUtil_Echo::track($db->getConfig());
+
             try {
-                $stmt = $this->db->query($patch['gpa_sql']);
+                $stmt = $db->query($patch['gpa_sql']);
                 if ($rows = $stmt->rowCount()) {
                     $data['gpa_result'] = 'OK: ' . $rows . ' changed';
                 } else {

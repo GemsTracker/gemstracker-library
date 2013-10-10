@@ -1386,23 +1386,50 @@ class GemsEscort extends MUtil_Application_Escort
      * Return the directories where the Database Administrator Model (DbaModel)
      * should look for sql creation files.
      *
-     * @return array directory => name | Zend_Db_Adaptor_Abstract | array(['path' =>], 'name' =>, 'db' =>,)
+     * @return array Of index => array('path' =>, 'name' =>, 'db' =>,)
      */
     public function getDatabasePaths()
     {
         $path = APPLICATION_PATH . '/configs/db';
         if (file_exists($path)) {
-            $paths[$path] = GEMS_PROJECT_NAME;
+            $paths[] = array(
+                'path' => $path,
+                'name' => GEMS_PROJECT_NAME,
+                'db'   => $this->db,
+                );
         }
 
         if ($this instanceof Gems_Project_Log_LogRespondentAccessInterface) {
-            $paths[GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access'] = 'gems_log';
+            $path = GEMS_LIBRARY_DIR . '/configs/db_log_respondent_access';
+            if (file_exists($path)) {
+                $paths[] = array(
+                    'path' => $path,
+                    'name' => 'gems_log',
+                    'db'   => $this->db,
+                    );
+            }
         }
 
-        $paths[GEMS_LIBRARY_DIR . '/configs/db'] = 'gems';
+        $path = GEMS_LIBRARY_DIR . '/configs/db';
+        if (file_exists($path)) {
+            $paths[] = array(
+                'path' => $path,
+                'name' => 'gems',
+                'db'   => $this->db,
+                );
+        }
 
         if ($this->project->hasResponseDatabase()) {
-            $paths[GEMS_LIBRARY_DIR . '/configs/db_response_data'] = $this->project->getResponseDatabase();
+            $path = GEMS_LIBRARY_DIR . '/configs/db_response_data';
+            if (file_exists($path)) {
+                $dbResponse = $this->project->getResponseDatabase();
+                $config     = $dbResponse->getConfig();
+                $paths[] = array(
+                    'path' => $path,
+                    'name' => $config['dbname'],
+                    'db'   => $dbResponse,
+                    );
+            }
         }
 
         return $paths;
