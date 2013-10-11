@@ -543,4 +543,4 @@ ALTER TABLE gems__organizations
 
 -- PATCH: Organization Reset Password template SELECT
 ALTER TABLE gems__organizations
-    ADD gor_reset_pass_template bigint unsigned null AFTER gor_allowed_ip_ranges;
+    ADD gor_reset_pass_template bigint unsigned null AFTER gor_create_account_template;

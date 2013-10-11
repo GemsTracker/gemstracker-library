@@ -168,19 +168,19 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         }
 
         $select = $this->db->select();
-        $select->from('gems__agenda_procedures', array('gap_id_procedure', 'gap_name'))
-                ->order('gap_name');
+        $select->from('gems__agenda_procedures', array('gapr_id_procedure', 'gapr_name'))
+                ->order('gapr_name');
 
         if ($organizationId) {
             // Check only for active when with $orgId: those are usually used
             // with editing, while the whole list is used for display.
-            $select->where('gap_active = 1')
+            $select->where('gapr_active = 1')
                     ->where('(
-                            gap_id_organization IS NULL
+                            gapr_id_organization IS NULL
                         AND
-                            gap_name NOT IN (SELECT gap_name FROM gems__agenda_procedures WHERE gap_id_procedure = ?)
+                            gapr_name NOT IN (SELECT gapr_name FROM gems__agenda_procedures WHERE gapr_id_procedure = ?)
                         ) OR
-                            gap_id_organization = ?', $organizationId);
+                            gapr_id_organization = ?', $organizationId);
         }
         // MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
@@ -388,17 +388,17 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         if (! $matches) {
             $matches = array();
             $select  = $this->db->select();
-            $select->from('gems__agenda_procedures', array('gap_id_procedure', 'gap_match_to', 'gap_id_organization'));
+            $select->from('gems__agenda_procedures', array('gapr_id_procedure', 'gapr_match_to', 'gapr_id_organization'));
 
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
-                if (null === $row['gap_id_organization']) {
+                if (null === $row['gapr_id_organization']) {
                     $key = 'null';
                 } else {
-                    $key = $row['gap_id_organization'];
+                    $key = $row['gapr_id_organization'];
                 }
-                foreach (explode('|', $row['gap_match_to']) as $match) {
-                    $matches[$match][$key] = $row['gap_id_procedure'];
+                foreach (explode('|', $row['gapr_match_to']) as $match) {
+                    $matches[$match][$key] = $row['gapr_id_procedure'];
                 }
             }
             $this->cache->save($matches, $cacheId, array('procedures'));
@@ -421,16 +421,16 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         Gems_Model::setChangeFieldsByPrefix($model, 'gap');
 
         $values = array(
-            'gap_name'            => $name,
-            'gap_id_organization' => $organizationId,
-            'gap_match_to'        => $name,
-            'gap_active'          => 1,
+            'gapr_name'            => $name,
+            'gapr_id_organization' => $organizationId,
+            'gapr_match_to'        => $name,
+            'gapr_active'          => 1,
         );
 
         $result = $model->save($values);
 
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
 
-        return $result['gap_id_procedure'];
+        return $result['gapr_id_procedure'];
     }
 }
