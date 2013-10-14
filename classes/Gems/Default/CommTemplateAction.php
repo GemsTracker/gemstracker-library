@@ -57,7 +57,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
      * @return MUtil_Model_ModelAbstract
      */
     
-    protected $createEditSnippets = 'Gems_Snippets_Mail_MailModelFormSnippet';
+    protected $createEditSnippets = 'Mail_MailModelFormSnippet';
 
     public function createModel($detailed, $action)
     {
