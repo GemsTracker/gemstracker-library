@@ -43,60 +43,27 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
+class Gems_Snippets_Mail_TokenMailFormSnippet extends Gems_Snippets_Mail_MailFormSnippet
 {
-    /**
-     * @var Gems_Loader
-     */
-    protected $loader;
+	protected $lastContact;
+	protected $round;
+	protected $survey;
+	protected $track;
 
-    /**
-     * @var integer     Organization ID
-     */
-    protected $organizationId;
-    
-    /**
-     * @var integer     Patient ID
-     */
-    protected $patientId;
+	protected $util;
 
-    /**
-     * @var Gems_Tracker_Respondent
-     */
-    protected $respondent;
+	protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+	{
+		$bridge->setFormOrder(true);
+		parent::addFormElements($bridge,$model);
 
-
-
-    public function __construct($patientId=false, $organizationId=false)
-    {
-        $this->patientId = $patientId;
-        $this->organizationId = $organizationId;
-    }
-
-	public function afterRegistry()
-    {
-        $this->respondent = $this->loader->getRespondent($this->patientId, $this->organizationId);
-        parent::afterRegistry();
-
-        $this->addTo($this->respondent->getEmailAddress(), $this->respondent->getName());
-    }
-
-    public function getDataLoaded()
-    {
-        if ($this->respondent->exists) {
-            return true;
-        } else {
-            $this->addMessage($this->translate->_('Respondent') . $this->translate->_(' data not found'));
-            return false;
-        }
-    }
-
-    /**
-     * Get the respondent mailfields and add them
-     */
-    protected function loadMailFields()
-    {
-        parent::loadMailFields();
-        $this->addMailFields($this->respondent->getMailFields());
-    }
+		$trackElement = $bridge->addExhibitor('track', array('label' => $this->translate->_('Track')));
+		$trackElement->setOrder(11);
+		$roundElement = $bridge->addExhibitor('round', array('label' => $this->translate->_('Round')));
+		$roundElement->setOrder(12);
+		$surveyElement = $bridge->addExhibitor('survey', array('label' => $this->translate->_('Survey')));
+		$surveyElement->setOrder(13);
+		$lastContactElement = $bridge->addExhibitor('last_contact', array('label' => $this->translate->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
+		$lastContactElement->setOrder(14);
+	}
 }

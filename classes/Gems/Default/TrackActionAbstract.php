@@ -78,6 +78,8 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     // Set when this controller should only showe results from a single tracktype.
     public $trackType = null;
 
+    public $view;
+
     protected function _createTable()
     {
         $result[] = parent::_createTable();
@@ -281,6 +283,18 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function emailAction()
     {
+        
+        $params['mailTarget']   = 'token';
+        $params['menu']         = $this->menu;
+        $params['model']        = $this->getModel();
+        $params['identifier']   = $this->_getIdParam();
+        $params['view']         = $this->view;
+        $params['routeAction']  = 'show';
+        $params['formTitle']    = sprintf($this->_('Send mail to: %s %s'), $this->getTopic(), strtoupper($this->_getIdParam()));
+        $params['templateOnly'] = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
+
+        $this->addSnippet('Mail_TokenMailFormSnippet', $params);
+        /*
         $model = $this->getModel();
 
         if ($tokenData = $model->applyRequest($this->getRequest())->loadFirst()) {
@@ -322,7 +336,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
         } else {
             $this->addMessage(sprintf($this->_('%s %s not found.'), $this->getTopic(1), $this->_getParam(MUtil_Model::REQUEST_ID1)));
-        }
+        }*/
     }
 
     /**

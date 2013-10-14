@@ -46,6 +46,12 @@
 class Gems_Mail_staffMailer extends Gems_Mail_MailerAbstract
 {
     /**
+     * 
+     * @var boolean True if Target data is loaded
+     */
+    public $dataLoaded;
+
+    /**
      * @var Gems_Loader
      */
     protected $loader;
@@ -91,7 +97,6 @@ class Gems_Mail_staffMailer extends Gems_Mail_MailerAbstract
 	public function afterRegistry()
     {    
         $this->user = $this->loader->getUserLoader()->getUserByStaffId($this->staffId);
-    	
 
         parent::afterRegistry();
     	
@@ -99,7 +104,17 @@ class Gems_Mail_staffMailer extends Gems_Mail_MailerAbstract
         $mailFields = $this->user->getMailFields();
         $this->addMailFields($mailFields);
         
-        $this->addTo($this->user->getEmailAddress());
+        $this->addTo($this->user->getEmailAddress(), $this->user->getFullName());
+    }
+
+    public function getDataLoaded()
+    {
+        if ($this->user) {
+            return true;
+        } else {
+            $this->addMessage($this->translate->_('Staff') . $this->translate->_(' data not found'));
+            return false;
+        }
     }
 
     /**

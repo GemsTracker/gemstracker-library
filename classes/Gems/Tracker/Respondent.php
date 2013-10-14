@@ -45,6 +45,18 @@
  */
 class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 {
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     * 
+     * @var Boolean true if Respondent exists in the database
+     */
+    public $exists = false;
+
 	/**
      *
      * @var Gems_Loader
@@ -111,8 +123,11 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 		$select->where('gr2o_patient_nr = ?', $patientId)
                ->where('gr2o_id_organization = ?', $organizationId);
 
-		$result = $select->query()->fetchRow();
+		$result = $this->db->fetchRow($select);
+        if ($result) {
 
+            $this->exists = true;
+        }
         return $result;
 	}
 
@@ -159,7 +174,12 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         
         $greeting = $genderGreetings[$this->respondent['grs_gender']];
 
-        return $greeting . ' ' . $this->getName();
+        return $greeting . ' ' . $this->getLastName();
+    }
+
+    public function getId()
+    {
+        return $this->respondent['grs_id_user'];
     }
 
     /**
@@ -168,7 +188,12 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getLastName()
     {
-        return $this->respondent['grs_last_name'];
+        $lastname = '';
+        if (!empty($this->respondent['grs_surname_prefix'])) {
+            $lastname .= $this->respondent['grs_surname_prefix'] . ' ';
+        }
+        $lastname .= $this->respondent['grs_last_name'];
+        return $lastname;
     }
     /**
      * Get the respondents prefered language
@@ -188,7 +213,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     public function getMailFields() {
         if ($this->respondent) {
             $result = array();
-            $result['email']        = $this->getEmail();
+            $result['email']        = $this->getEmailAddress();
             $result['first_name']   = $this->getFirstName();
             $result['full_name']    = $this->getFullName();
             $result['greeting']     = $this->getGreeting();
@@ -213,11 +238,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getName()
     {
-        $fullName = $this->getFirstName();
-        if (!empty($this->respondent['grs_surname_prefix'])) {
-            $fullName .= ' ' . $this->respondent['grs_surname_prefix'];
-        }
-        $fullName .= $this->getLastName();
+        $fullName = $this->getFirstName() . ' ' . $this->getLastName();
 
         return $fullName;
     }

@@ -186,7 +186,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         if ($marked) {
             if (! $this->markedMailFields) {
                 $this->markedMailFields = $this->markMailFields($this->mailFields);
-            }
+                }
             return $this->markedMailFields;
         } else {
             return $this->mailFields;
@@ -235,6 +235,28 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * Get specific data set in the mailer
+     * @return Array 
+     */
+    public function getPresetTargetData()
+    {
+        $targetData = array();
+        if ($this->to) {
+            $fullDisplay = array();
+            foreach($this->to as $name=>$address) {
+                $fullTo = '';
+                if (!is_numeric($name)) {
+                    $fullTo .= $name . ' ';
+                }
+                $fullTo .= '<' . $address . '>';
+                $fullDisplay[] = $fullTo;
+            }
+            $targetData['to'] = join(', ', $fullDisplay);
+        }
+        return $targetData;
     }
 
     /**
@@ -364,7 +386,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * set a specific template as subject/body
-     * @param integer   Template ID
+     * @param integer  $templateId Template ID
      */
     public function setTemplate($templateId)
     {
@@ -375,6 +397,16 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
         $this->subject = $template['gctt_subject'];
         $this->bodyBb = $template['gctt_body'];
+        $this->setTemplateId($templateId);
+    }
+
+    /**
+     * set the base selected template. The actual message could be changed
+     * @param integer $templateId Template ID
+     */
+    public function setTemplateId($templateId)
+    {
+        $this->templateId = $templateId;
     }
 
     /**
@@ -395,15 +427,17 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
         if ($this->bodyBb) {
             $mail->setBodyBBCode($this->applyFields($this->bodyBb));
-        } else {
-            if ($this->bodyHtml) {
-                $this->setBodyHtml($this->applyFields($this->bodyHtml));
-            } elseif ($this->bodyText) {
-                $this->setBodyHtml($this->applyFields($this->bodyHtml));
-            }
+        } elseif ($this->bodyHtml) {
+            $mail->setBodyHtml($this->applyFields($this->bodyHtml));
+        } elseif ($this->bodyText) {
+            $mail->setBodyText($this->applyFields($this->bodyText));
         }
         $mail->setTemplateStyle($this->getTemplateStyle());
 
+        $this->beforeMail();
+
         $mail->send();
+
+        $this->afterMail();
     }
 }

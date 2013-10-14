@@ -511,15 +511,14 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     public function mailAction() {
         $this->loadUser();
-        $this->html->h3(sprintf($this->_('Send mail to: %s'), $this->_user->getFullName()));
 
         $params['mailTarget']   = 'staff';
         $params['menu']         = $this->menu;
         $params['model']        = $this->getModel();
         $params['identifier']   = array($this->_getIdParam());
-        $params['to']           = $this->_user->getFullName() . ' <' . $this->_user->getEmailAddress() . '>';
         $params['view']         = $this->view;
         $params['routeAction']  = 'show';
+        $params['formTitle']    = sprintf($this->_('Send mail to: %s'), $this->_user->getFullName());
 
         
         $this->addSnippet('Mail_MailFormSnippet', $params);

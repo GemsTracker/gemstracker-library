@@ -247,7 +247,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     public function getRespondent($patientId=false, $organization=false)
     {
-        return $this->_loadClass('Tracker_Respondent');
+       return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organization));
     }
 
     /**

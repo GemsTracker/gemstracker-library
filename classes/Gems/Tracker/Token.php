@@ -1057,6 +1057,15 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * 
+     * @return string Last mail sent date
+     */
+    public function getMailSentDate()
+    {
+        return $this->_gemsData['gto_mail_sent_date'];
+    }
+
+    /**
      * Returns a snippet name that can be used to display this token.
      *
      * @return string
@@ -1195,6 +1204,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     public function getTrackId()
     {
         return $this->_gemsData['gto_id_track'];
+    }
+
+    public function getTrackName()
+    {
+        $trackData = $this->db->fetchRow("SELECT gtr_track_name FROM gems__tracks WHERE gtr_id_track = ?", $this->getTrackId());
+        return $trackData['gtr_track_name'];
     }
 
     /**
