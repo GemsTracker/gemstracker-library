@@ -84,7 +84,7 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
 
     public function getDataLoaded()
     {
-        if ($this->respondent->exists) {
+        if ($this->respondent) {
             return true;
         } else {
             $this->addMessage($this->translate->_('Respondent') . $this->translate->_(' data not found'));
@@ -93,11 +93,41 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
     }
 
     /**
+     * Get the respondent mailfields
+     * @return array
+     */
+    protected function getRespondentMailfields()
+    {
+        if ($this->respondent) {
+            $result = array();
+            $result['email']        = $this->respondent->getEmailAddress();
+            $result['first_name']   = $this->respondent->getFirstName();
+            $result['full_name']    = $this->respondent->getFullName();
+            $result['greeting']     = $this->respondent->getGreeting();
+            $result['last_name']    = $this->respondent->getLastName();
+            $result['name']         = $this->respondent->getName();
+        } else {
+            $result = array(
+                'email'     => '',
+                'first_name'=> '',
+                'full_name' => '',
+                'greeting'  => '',
+                'last_name' => '',
+                'name'      => ''
+            );
+        }
+        return $result;
+    }
+
+
+    /**
      * Get the respondent mailfields and add them
      */
     protected function loadMailFields()
     {
         parent::loadMailFields();
-        $this->addMailFields($this->respondent->getMailFields());
+        $this->addMailFields($this->getRespondentMailFields());
     }
+
+
 }

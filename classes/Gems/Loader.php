@@ -245,7 +245,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
         return $this->_getClass('pdf');
     }
 
-    public function getRespondent($patientId=false, $organization=false)
+    public function getRespondent($patientId, $organization)
     {
        return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organization));
     }

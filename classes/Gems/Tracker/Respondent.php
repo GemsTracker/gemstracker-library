@@ -97,7 +97,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     protected $util;
 
-	public function __construct($patientId=false, $organizationId=false)
+	public function __construct($patientId, $organizationId)
     {
         $this->patientId = $patientId;
         $this->organizationId = $organizationId;
@@ -106,9 +106,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     public function afterRegistry()
     {
         $this->model = $this->loader->getModels()->getRespondentModel(true);
-        if ($this->patientId && $this->organizationId) {
-            $this->respondent = $this->getRespondent($this->patientId, $this->organizationId);
-        }
+        $this->respondent = $this->getRespondent($this->patientId, $this->organizationId);
     }
 
     /**
@@ -204,32 +202,6 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
             $this->respondentLanguage = $this->respondent['grs_iso_lang'];
         }
         return $this->respondentLanguage;
-    }
-
-    /**
-     * Get the respondent Mailfields
-     * @return array
-     */
-    public function getMailFields() {
-        if ($this->respondent) {
-            $result = array();
-            $result['email']        = $this->getEmailAddress();
-            $result['first_name']   = $this->getFirstName();
-            $result['full_name']    = $this->getFullName();
-            $result['greeting']     = $this->getGreeting();
-            $result['last_name']    = $this->getLastName();
-            $result['name']         = $this->getName();
-        } else {
-            $result = array(
-                'email'     => '',
-                'first_name'=> '',
-                'full_name' => '',
-                'greeting'  => '',
-                'last_name' => '',
-                'name'      => ''
-            );
-        }
-        return $result;
     }
 
     /**
