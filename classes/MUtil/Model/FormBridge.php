@@ -82,11 +82,6 @@ class MUtil_Model_FormBridge
      */
     public $defaultSize = 40;
 
-
-    protected $currentOrder = 0;
-    protected $order = false;
-    protected $orderIncrement = 10;
-
     // First list html attributes, then Zend attributes, lastly own attributes
     private $_allowedOptions = array(
         self::AUTO_OPTIONS       => array('elementClass', 'multiOptions'),
@@ -129,9 +124,6 @@ class MUtil_Model_FormBridge
         if (is_string($element)) {
             $element = $this->form->getElement($name);
         }
-
-        $this->setElementOrder($element);
-        
         $this->_applyFilters($name, $element);
         if (! $element instanceof Zend_Form_Element_Hidden) {
             $this->_applyValidators($name, $element);
@@ -437,7 +429,6 @@ class MUtil_Model_FormBridge
         $element = new MUtil_Form_Element_Exhibitor($name, $options);
 
         $this->form->addElement($element);
-        $this->setElementOrder($element);
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 
         return $element;
@@ -461,7 +452,6 @@ class MUtil_Model_FormBridge
         $element = new MUtil_Form_Element_FakeSubmit($name, $options);
 
         $this->form->addElement($element);
-        $this->setElementOrder($element);
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 
         return $element;
@@ -567,7 +557,6 @@ class MUtil_Model_FormBridge
         $element = new MUtil_Form_Element_Table($form, $name, $options);
 
         $this->form->addElement($element);
-        $this->setElementOrder($element);
 
         return $element;
     }
@@ -580,8 +569,7 @@ class MUtil_Model_FormBridge
         $element = new Zend_Form_Element_Hidden($name, $options);
 
         $this->form->addElement($element);
-        $this->setElementOrder($element);
-        
+
         return $element;
     }
 
@@ -605,9 +593,6 @@ class MUtil_Model_FormBridge
         $element = new MUtil_Form_Element_Html($name, $options);
 
         $this->form->addElement($element);
-        $this->setElementOrder($element);
-        
-        // MUtil_Echo::r($element->getOrder(), $element->getName());
 
         return $element;
     }
@@ -699,9 +684,7 @@ class MUtil_Model_FormBridge
         $element = new Zend_Form_Element_Password($name, $options);
         $this->_applyFilters($name, $element);
         $this->_applyValidators($name, $element);
-
         $this->form->addElement($element);
-        $this->setElementOrder($element);
 
         if ($stringlength) {
             $element->addValidator('StringLength', true, $stringlength);
@@ -710,7 +693,6 @@ class MUtil_Model_FormBridge
         if (isset($repeatLabel)) {
             $repeatElement = new Zend_Form_Element_Password($repeatName, $repeatOptions);
             $this->form->addElement($repeatElement);
-            $this->setElementOrder($element);
             $this->_applyFilters($name, $repeatElement);
 
             if ($stringlength) {
@@ -779,9 +761,7 @@ class MUtil_Model_FormBridge
             return $this->form->addTab($name, isset($options['value']) ? $options['value'] : null);
         } else {
             $element = new MUtil_Form_Element_Tab($name, $options);
-
             $this->form->addElement($element);
-            $this->setElementOrder($element);
         }
 
         return $element;
@@ -905,11 +885,6 @@ class MUtil_Model_FormBridge
         return $this->model;
     }
 
-    public function getNextOrder()
-    {
-        return $this->currentOrder += $this->orderIncrement;
-    }
-
     /**
      * Retrieve a tab from a Gems_TabForm to add extra content to it
      *
@@ -921,18 +896,6 @@ class MUtil_Model_FormBridge
         if (method_exists($this->form, 'getTab')) {
             return $this->form->getTab($name);
         }
-    }
-
-    protected function setElementOrder($element)
-    {
-        if ($this->order && !$element->getOrder()) {
-            $element->setOrder($this->getNextOrder());
-        }
-    }
-
-    public function setFormOrder($order)
-    {
-        $this->order = $order;
     }
 
     /**
