@@ -41,52 +41,26 @@
  * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.2
+ * @since      Class available since version 1.6.2
  */
-class Gems_Task_Db_ExecutePatch extends Gems_Task_TaskAbstract
+class Gems_Task_Db_AddPatches extends Gems_Task_Db_PatchAbstract
 {
     /**
-     * @var Zend_Db_Adapter_Abstract
-     */
-    public $db;
-
-    /**
-     * @var GemsEscort
-     */
-    public $escort;
-
-    /**
+     * Should handle execution of the task, taking as much (optional) parameters as needed
      *
-     * @var Gems_Util_DatabasePatcher
+     * The parameters should be optional and failing to provide them should be handled by
+     * the task
+     *
+     * @param int $patchLevel Only execute patches for this patchlevel
+     * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
+     * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed
+     *                                (this includes the ones that are executed but not completed)
      */
-    public $patcher;
-
     public function execute($patchLevel = null, $ignoreCompleted = true, $ignoreExecuted = false)
     {
-        $this->_batch->addMessage(sprintf($this->translate->_('Executing patchlevel %d'), $patchLevel));
-        $result = $this->patcher->executePatch($patchLevel, $ignoreCompleted, $ignoreExecuted);
-        $this->_batch->addMessage(sprintf($this->translate->_('%d patch(es) executed.'), $result));
+        $batch = $this->getBatch();
 
-        if ($result>0) {
-            //Perform a clean cache only when needed
-            $this->_batch->setTask('CleanCache', 'cleancache'); //If already scheduled, don't reschedule
-        }
-    }
-
-    /**
-     * Now we have the requests answered, add the DatabasePatcher as it needs the db object
-     *
-     * @return boolean
-     */
-    public function checkRegistryRequestsAnswers() {
-        $this->escort = GemsEscort::getInstance();
-        
-        //As an upgrade almost always includes executing db patches, make a DatabasePatcher object available
-        $this->patcher = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
-
-        //Now load all patches, and save the resulting changed patches for later (not used yet)
-        $changed  = $this->patcher->uploadPatches($this->loader->getVersions()->getBuild());
-
-        return true;
+        $batch->addMessage(sprintf($this->translate->_('Adding patchlevel %d'), $patchLevel));
+        $this->patcher->loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, $batch);
     }
 }

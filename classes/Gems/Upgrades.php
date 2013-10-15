@@ -86,8 +86,8 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade143to150()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 42);
-        $this->_batch->addTask('Db_ExecutePatch', 43);
+        $this->_batch->addTask('Db_AddPatches', 42);
+        $this->_batch->addTask('Db_AddPatches', 43);
 
         $this->_batch->addTask('Db_CreateNewTables');
 
@@ -109,7 +109,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade150to151()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 44);
+        $this->_batch->addTask('Db_AddPatches', 44);
 
         return true;
     }
@@ -119,7 +119,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade151to152()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 45);
+        $this->_batch->addTask('Db_AddPatches', 45);
 
         return true;
     }
@@ -129,7 +129,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade152to153()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 46);
+        $this->_batch->addTask('Db_AddPatches', 46);
 
         return true;
     }
@@ -139,7 +139,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade153to154()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 47);
+        $this->_batch->addTask('Db_AddPatches', 47);
 
         return true;
     }
@@ -149,7 +149,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade154to155()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 48);
+        $this->_batch->addTask('Db_AddPatches', 48);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
@@ -161,7 +161,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade155to156()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 49);
+        $this->_batch->addTask('Db_AddPatches', 49);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
@@ -173,7 +173,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade156to157()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 50);
+        $this->_batch->addTask('Db_AddPatches', 50);
 
         return true;
     }
@@ -183,7 +183,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade157to16()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 51);
+        $this->_batch->addTask('Db_AddPatches', 51);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
@@ -195,7 +195,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade16to161()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 52);
+        $this->_batch->addTask('Db_AddPatches', 52);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
@@ -207,7 +207,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade161to162()
     {
-        $this->_batch->addTask('Db_ExecutePatch', 53);
+        $this->_batch->addTask('Db_AddPatches', 53);
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 

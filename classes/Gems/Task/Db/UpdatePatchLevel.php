@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2012, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,47 +26,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    Gems
  * @subpackage Task
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $id: UpdatePatchLevel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
- * Cleans the cache during a batch job
  *
- * Normally when performing certain upgrades you need to clean the cache. When you use
- * this task you can schedule this too. Normally using ->setTask('CleanCache', 'clean')
- * will be sufficient as we only need to run the cache cleaning once. for immidiate cache
- * cleaning, for example when the next task depends on it, perform the actions below
- * in your own task.
  *
  * @package    Gems
  * @subpackage Task
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.2
+ * @since      Class available since version 1.6.2
  */
-class Gems_Task_CleanCache extends MUtil_Task_TaskAbstract
+class Gems_Task_Db_UpdatePatchLevel extends MUtil_Task_TaskAbstract
 {
     /**
-     *
-     * @var Zend_Cache_Core
+     * @var Zend_Db_Adapter_Abstract
      */
-    protected $cache;
+    protected $db;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
+     *
+     * @param int $patchLevel Only execute patches for this patchlevel
      */
-    public function execute($text = null)
+    public function execute($patchLevel = null)
     {
-        if ($this->cache instanceof Zend_Cache_Core) {
-            $this->cache->clean(Zend_Cache::CLEANING_MODE_ALL);
-            $this->getBatch()->addMessage($this->_('Cache cleaned'));
+        //Update the patchlevel only when we have executed at least one patch
+        $batch = $this->getBatch();
+        if ($batch->getCounter('executed')) {
+            $this->db->query(
+                    'INSERT IGNORE INTO gems__patch_levels (gpl_level, gpl_created) VALUES (?, CURRENT_TIMESTAMP)',
+                    $patchLevel
+                    );
         }
+
     }
 }

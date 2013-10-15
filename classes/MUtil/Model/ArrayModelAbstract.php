@@ -146,6 +146,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
             return new MUtil_Model_Iterator_ArrayModelFilterIterator($data, $this, $filters);
         }
 
+        $filteredData = array();
         foreach ($data as $key => $row) {
             if ($this->_applyFiltersToRow($row, $filters, true)) {
                 // print_r($row);

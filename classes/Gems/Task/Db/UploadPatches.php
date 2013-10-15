@@ -26,46 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
  */
 
 /**
- * Cleans the cache during a batch job
+ * Execute a certain patchlevel
  *
- * Normally when performing certain upgrades you need to clean the cache. When you use
- * this task you can schedule this too. Normally using ->setTask('CleanCache', 'clean')
- * will be sufficient as we only need to run the cache cleaning once. for immidiate cache
- * cleaning, for example when the next task depends on it, perform the actions below
- * in your own task.
+ * Cleans the cache when patches where executed
  *
  * @package    Gems
- * @subpackage Task
+ * @subpackage Task_Db
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.2
+ * @since      Class available since version 1.6.2
  */
-class Gems_Task_CleanCache extends MUtil_Task_TaskAbstract
+class Gems_Task_Db_UploadPatches extends Gems_Task_Db_PatchAbstract
 {
-    /**
-     *
-     * @var Zend_Cache_Core
-     */
-    protected $cache;
-
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($text = null)
+    public function execute()
     {
-        if ($this->cache instanceof Zend_Cache_Core) {
-            $this->cache->clean(Zend_Cache::CLEANING_MODE_ALL);
-            $this->getBatch()->addMessage($this->_('Cache cleaned'));
+        //Now load all patches, and save the resulting changed patches for later (not used yet)
+        $changed  = $this->patcher->uploadPatches($this->loader->getVersions()->getBuild());
+
+
+        if ($changed) {
+            $this->getBatch()->addMessage(sprintf($this->_('%d new or changed patch(es).'), $changed));
         }
     }
 }

@@ -269,8 +269,9 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
     public function patchAction()
     {
+        $this->html->h3($this->_('Patch maintenance'));
+
         $patcher  = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
-        $changed  = $patcher->uploadPatches($this->loader->getVersions()->getBuild());
         $tableSql = sprintf(
             'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s`, MAX(gpa_changed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),
@@ -281,13 +282,8 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $this->_('Finished'),
             $this->_('Changed on'));
 
-        if ($changed == -1) {
-            $this->addMessage($this->_('Create the patch table!'));
-        } elseif ($changed) {
-            $this->addMessage(sprintf($this->_('%d new or changed patch(es).'), $changed));
-        }
-
         $form = $this->createForm();
+        $form->setName('database_patcher');
 
         $form->addElement(new MUtil_Form_Element_Exhibitor('app_level', array('label' => $this->_('Gems build'))));
         $form->addElement(new MUtil_Form_Element_Exhibitor('db_level',  array('label' => $this->_('Database build'))));
@@ -299,22 +295,23 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $form->addElement(new Zend_Form_Element_Checkbox('completed', array('label' => $this->_('Ignore finished'))));
         $form->addElement(new Zend_Form_Element_Checkbox('executed', array('label' => $this->_('Ignore executed'))));
         $form->addElement(new Zend_Form_Element_Submit('show_button',   array('label' => $this->_('Show patches'), 'class' => 'button')));
-        $execute = new Zend_Form_Element_Submit('save_button',   array('label' => $this->_('Execute'), 'class' => 'button'));
-        $form->addElement($execute);
+        // $execute = new Zend_Form_Element_Submit('save_button',   array('label' => $this->_('Execute'), 'class' => 'button'));
+        // $form->addElement($execute);
 
         if ($this->request->isPost()) {
             $data = $this->request->getPost();
 
             if ($form->isValid($data)) {
-                if ($execute->isChecked()) {
-                    $changed = $patcher->executePatch($data['level'], $data['completed'], $data['executed']);
-
-                    $data['db_level'] = $data['level'];
-                    $form->getElement('db_level')->setValue($data['db_level']);
-
-                    $this->addMessage(sprintf($this->_('%d patch(es) executed.'), $changed));
-                    $this->_cleanCache();
+                $batch = $this->loader->getTaskRunnerBatch(__CLASS__ . $data['level']);
+                $batch->setFormId($form->getId());
+                if (! $batch->isLoaded()) {
+                    $patcher->loadPatchBatch($data['level'], $data['completed'], $data['executed'], $batch);
                 }
+
+                $this->_helper->batchRunner($batch, sprintf($this->_('Executing patch level %d'), $data['level']));
+
+                $data['db_level'] = $data['level'];
+                $form->getElement('db_level')->setValue($data['db_level']);
 
                 $tableSql = sprintf(
                     'SELECT gpa_id_patch AS `%s`, gpa_level AS `%s`, gpa_location AS `%s`, gpa_name AS `%s`, gpa_sql AS `%s`, gpa_executed AS `%s`, gpa_completed AS `%s`, gpa_result AS `%s`, gpa_changed AS `%s` FROM gems__patches WHERE gpa_level = ? ORDER BY gpa_level, gpa_changed DESC, gpa_location, gpa_name, gpa_order',
@@ -328,10 +325,21 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                     $this->_('Result'),
                     $this->_('Changed on'));
 
-                $tableSql = $this->db->quoteInto($tableSql, $form->getValue('level'));
+                $tableSql = $this->db->quoteInto($tableSql, $data['level']);
+
+                // Hide the form: it is needed for the batch post, but we do not want it visible
+                $form->setAttrib('style', 'display: none;');
             }
 
         } else {
+            $changed = $patcher->uploadPatches($this->loader->getVersions()->getBuild());
+            if ($changed == -1) {
+                $this->addMessage($this->_('Create the patch table!'));
+            } elseif ($changed) {
+                $this->addMessage(sprintf($this->_('%d new or changed patch(es).'), $changed));
+                $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('sess_' . session_id()));
+            }
+
             $data['app_level'] = $this->loader->getVersions()->getBuild();
             $data['db_level']  = $this->db->fetchOne('SELECT gpl_level FROM gems__patch_levels ORDER BY gpl_level DESC');
             $data['level']     = min($data['db_level'] + 1, $data['app_level']);
@@ -350,7 +358,6 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $linksCell = $table->tf($links);
         }
 
-        $this->html->h3($this->_('Patch maintenance'));
         $this->html[] = $form;
 
         if ($data = $this->db->fetchAll($tableSql)) {

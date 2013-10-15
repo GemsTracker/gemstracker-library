@@ -89,18 +89,32 @@ class Gems_Util_DatabasePatcher
         }
     }
 
-    private function _loadPatches($applicationLevel)
+    /**
+     * Load all patches from all patch files with the range
+     *
+     * @param int $minimumLevel
+     * @param int $maximumLevel
+     */
+    private function _loadPatches($minimumLevel, $maximumLevel)
     {
         if (! $this->_loaded_patches) {
             $this->_loaded_patches = array();
 
             foreach ($this->patch_sources as $file => $location) {
-                $this->_loadPatchFile($file, $location, $applicationLevel);
+                $this->_loadPatchFile($file, $location, $minimumLevel, $maximumLevel);
             }
         }
     }
 
-    private function _loadPatchFile($file, $location, $applicationLevel)
+    /**
+     * Load all patches from a single patch file
+     *
+     * @param string $file Full filename
+     * @param string $location Location description
+     * @param int $minimumLevel
+     * @param int $maximumLevel
+     */
+    private function _loadPatchFile($file, $location, $minimumLevel, $maximumLevel)
     {
         if ($sql = file_get_contents($file)) {
 
@@ -112,8 +126,9 @@ class Gems_Util_DatabasePatcher
             foreach ($levels as $level) {
                 list($levelnrtext, $leveltext) = explode("\n", $level, 2);
 
+                // no loading of unused patches
                 $levelnr = intval($levelnrtext);
-                if ($levelnr && ($levelnr <= $applicationLevel)) {
+                if ($levelnr && ($levelnr >= $minimumLevel) && ($levelnr <= $maximumLevel)) {
 
                     $patches = preg_split('/--\s*PATCH:?\s*/', $leveltext);
 
@@ -177,7 +192,6 @@ class Gems_Util_DatabasePatcher
             } else {
                 $db = $this->db;
             }
-            MUtil_Echo::track($db->getConfig());
 
             try {
                 $stmt = $db->query($patch['gpa_sql']);
@@ -229,16 +243,91 @@ class Gems_Util_DatabasePatcher
         return $level;
     }
 
+    /**
+     * Get the database for a location
+     *
+     * @param string $location
+     * @return Zend_Db_Adapter_Abstract
+     */
+    public function getPatchDatabase($location)
+    {
+        if (isset($this->patch_databases[$location])) {
+            return $this->patch_databases[$location];
+        }
+
+        return $this->db;
+    }
+
+    /**
+     * There exist files with patches to load
+     * @return boolean
+     */
     public function hasPatchFiles()
     {
         return (boolean) $this->patch_files;
     }
 
+    /**
+     * Loads execution of selected db patches for the given $patchLevel into a TaskBatch.
+     *
+     * @param int $patchLevel Only execute patches for this patchlevel
+     * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
+     * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed
+     *                                (this includes the ones that are executed but not completed)
+     * @param MUtil_Task_TaskBatch $batch Optional batch, otherwise one is created
+     * @return MUtil_Task_TaskBatch The batch
+     */
+    public function loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, MUtil_Task_TaskBatch $batch)
+    {
+        $select = $this->db->select();
+        $select->from('gems__patches', array('gpa_id_patch', 'gpa_sql', 'gpa_location', 'gpa_completed'))
+                ->where('gpa_level = ?', $patchLevel)
+                ->order('gpa_level')
+                ->order('gpa_location')
+                ->order('gpa_id_patch');
+
+        if ($ignoreCompleted) {
+            $select->where('gpa_completed = 0');
+        }
+        if ($ignoreExecuted) {
+            $select->where('gpa_executed = 0');
+        }
+        // MUtil_Echo::track($ignoreCompleted, $ignoreExecuted, $select);
+
+        $executed = 0;
+        $patches  = $select->query()->fetchAll();
+
+        if ($patches) {
+            foreach ($patches as $patch) {
+                $batch->addTask(
+                        'Db_ExecuteOnePatch',
+                        $patch['gpa_location'],
+                        $patch['gpa_sql'],
+                        $patch['gpa_completed'],
+                        $patch['gpa_id_patch']
+                        );
+            }
+
+            $batch->addTask('Db_UpdatePatchLevel', $patchLevel);
+            $batch->addTask('CleanCache');
+        }
+
+        return $batch;
+    }
+
+    /**
+     * Load all (new and changed) patches from all patch files into permanent storage in the database
+     *
+     * @param int $applicationLevel Highest level of patches to load (no loading of future patches)
+     */
     public function uploadPatches($applicationLevel)
     {
         // Load current
         $select = $this->db->select();
-        $select->from('gems__patches', array('gpa_level', 'gpa_location', 'gpa_name', 'gpa_order', 'gpa_sql', 'gpa_id_patch'));
+        $select->from(
+                'gems__patches',
+                array('gpa_level', 'gpa_location', 'gpa_name', 'gpa_order', 'gpa_sql', 'gpa_id_patch')
+                );
 
         try {
             $existing = $select->query()->fetchAll();
@@ -246,40 +335,42 @@ class Gems_Util_DatabasePatcher
             return -1;
         }
 
+        // Change into a nested tree for easy access
         $tree    = MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
         $changed = 0;
         $current = new MUtil_Db_Expr_CurrentTimestamp();
-        $minimum = $this->getMinimumPatchLevel();
-        // MUtil_Echo::track($minimum);
 
-        $this->_loadPatches($applicationLevel);
+        $this->_loadPatches($this->getMinimumPatchLevel(), $applicationLevel);
         // MUtil_Echo::track($this->_loaded_patches);
         foreach ($this->_loaded_patches as $patch) {
-            if ($minimum <= $patch['gpa_level']) {
-                $level    = $patch['gpa_level'];
-                $location = $patch['gpa_location'];
-                $name     = $patch['gpa_name'];
-                $order    = $patch['gpa_order'];
+            $level    = $patch['gpa_level'];
+            $location = $patch['gpa_location'];
+            $name     = $patch['gpa_name'];
+            $order    = $patch['gpa_order'];
 
-                // Does it exist?
-                if (isset($tree[$level][$location][$name][$order])) {
-                    $sql = $patch['gpa_sql'];
-                    if ($sql != $tree[$level][$location][$name][$order]['gpa_sql']) {
-                        $values['gpa_sql']       = $sql;
-                        $values['gpa_executed']  = 0;
-                        $values['gpa_completed'] = 0;
-                        $values['gpa_changed']   = $current;
+            // Does it exist?
+            if (isset($tree[$level][$location][$name][$order])) {
+                $sql = $patch['gpa_sql'];
+                if ($sql != $tree[$level][$location][$name][$order]['gpa_sql']) {
+                    $values['gpa_sql']       = $sql;
+                    $values['gpa_executed']  = 0;
+                    $values['gpa_completed'] = 0;
+                    $values['gpa_changed']   = $current;
 
-                        $this->db->update('gems__patches', $values, $this->db->quoteInto('gpa_id_patch = ?', $tree[$level][$location][$name][$order]['gpa_id_patch']));
-                        $changed++;
-                    }
+                    $where = $this->db->quoteInto(
+                            'gpa_id_patch = ?',
+                            $tree[$level][$location][$name][$order]['gpa_id_patch']
+                            );
 
-                } else {
-                    $patch['gpa_changed'] = $current;
-                    $patch['gpa_created'] = $current;
-                    $this->db->insert('gems__patches', $patch);
+                    $this->db->update('gems__patches', $values, $where);
                     $changed++;
                 }
+
+            } else {
+                $patch['gpa_changed'] = $current;
+                $patch['gpa_created'] = $current;
+                $this->db->insert('gems__patches', $patch);
+                $changed++;
             }
         } // */
 
