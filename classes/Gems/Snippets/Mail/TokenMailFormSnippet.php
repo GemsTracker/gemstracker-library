@@ -28,42 +28,43 @@
  *
  *
  * @package    Gems
- * @subpackage Mail
+ * @subpackage Snippets\Mail
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
+ * @version    $id TokenMailFormSnippet.php
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Mail
+ * @subpackage Snippets\Mail
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
 class Gems_Snippets_Mail_TokenMailFormSnippet extends Gems_Snippets_Mail_MailFormSnippet
 {
-	protected $lastContact;
-	protected $round;
-	protected $survey;
-	protected $track;
+    protected $lastContact;
+    protected $round;
+    protected $survey;
+    protected $track;
 
-	protected $util;
+    protected $util;
 
-	protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
-	{
-		$bridge->setFormOrder(true);
-		parent::addFormElements($bridge,$model);
+    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        $bridge->setFormOrder(true);
+        parent::addFormElements($bridge,$model);
 
-		$trackElement = $bridge->addExhibitor('track', array('label' => $this->translate->_('Track')));
-		$trackElement->setOrder(11);
-		$roundElement = $bridge->addExhibitor('round', array('label' => $this->translate->_('Round')));
-		$roundElement->setOrder(12);
-		$surveyElement = $bridge->addExhibitor('survey', array('label' => $this->translate->_('Survey')));
-		$surveyElement->setOrder(13);
-		$lastContactElement = $bridge->addExhibitor('last_contact', array('label' => $this->translate->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
-		$lastContactElement->setOrder(14);
-	}
+        $trackElement = $bridge->addExhibitor('track', array('label' => $this->translate->_('Track')));
+        $trackElement->setOrder(11);
+        $roundElement = $bridge->addExhibitor('round', array('label' => $this->translate->_('Round')));
+        $roundElement->setOrder(12);
+        $surveyElement = $bridge->addExhibitor('survey', array('label' => $this->translate->_('Survey')));
+        $surveyElement->setOrder(13);
+        $lastContactElement = $bridge->addExhibitor('last_contact', array('label' => $this->translate->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
+        $lastContactElement->setOrder(14);
+    }
 }

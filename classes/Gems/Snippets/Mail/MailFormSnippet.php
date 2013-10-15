@@ -28,17 +28,18 @@
  *
  *
  * @package    Gems
- * @subpackage Mail
+ * @subpackage Snippets\Mail
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
+ * @version    $id MailFormSnippet.php
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Mail
+ * @subpackage Snippets\Mail
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
