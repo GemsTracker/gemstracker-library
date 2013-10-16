@@ -126,15 +126,13 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load the commtemplate model
-     * 
-     * @return Gems_Model_CommtemplateModel
+     * Load project specific application model or general Gems model otherwise
+     *
+     * @return Gems_Model_AppointmentModel
      */
-    public function getCommtemplateModel()
+    public function createAppointmentModel()
     {
-        $model = $this->_loadClass('CommtemplateModel', true);
-
-        return $model;
+        return $this->_loadClass('AppointmentModel', true);
     }
 
     /**
@@ -192,6 +190,18 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the commtemplate model
+     *
+     * @return Gems_Model_CommtemplateModel
+     */
+    public function getCommtemplateModel()
+    {
+        $model = $this->_loadClass('CommtemplateModel', true);
+
+        return $model;
+    }
+
+    /**
      * Returns the OpenRosaFormModel
      *
      * It is special since it can show how many responses each table has
@@ -218,7 +228,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Load project specific model or general Gems model otherwise
+     * Load project specific respondent model or general Gems model otherwise
      *
      * @param boolean $detail When true more information needed for individual item display is added to the model.
      * @return Gems_Model_RespondentModel

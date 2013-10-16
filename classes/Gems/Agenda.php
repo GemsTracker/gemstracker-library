@@ -186,7 +186,124 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('procedures'));
         return $results;
+    }
 
+    /**
+     * Get the status codes for all active agenda items
+     *
+     * @return array code => label
+     */
+    public function getStatusCodes()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'));
+
+        $results = $this->db->fetchPairs($select);
+        foreach ($results as $code => $name) {
+            $results[$code] = $this->_($name);
+        }
+        asort($results);
+
+        $this->cache->save($results, $cacheId, array('status_codes'));
+        return $results;
+    }
+
+    /**
+     * Get the status codes for active agenda items
+     *
+     * @return array code => label
+     */
+    public function getStatusCodesActive()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'))
+                ->where('gasc_is_active = 1');
+
+        $results = $this->db->fetchPairs($select);
+        foreach ($results as $code => $name) {
+            $results[$code] = $this->_($name);
+        }
+        asort($results);
+
+        $this->cache->save($results, $cacheId, array('status_codes'));
+        return $results;
+    }
+
+    /**
+     * Get the status codes for inactive agenda items
+     *
+     * @return array code => label
+     */
+    public function getStatusCodesInactive()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'))
+                ->where('gasc_is_active = 0');
+
+        $results = $this->db->fetchPairs($select);
+        foreach ($results as $code => $name) {
+            $results[$code] = $this->_($name);
+        }
+        asort($results);
+
+        $this->cache->save($results, $cacheId, array('status_codes'));
+        return $results;
+    }
+
+    /**
+     * Get the status keys for active agenda items
+     *
+     * @return array nr => code
+     */
+    public function getStatusKeysActive()
+    {
+        return array_keys($this->getStatusCodesActive());
+    }
+
+    /**
+     * Get the status keys for inactive agenda items
+     *
+     * @return array nr => code
+     */
+    public function getStatusKeysInactive()
+    {
+        return array_keys($this->getStatusCodesInactive());
+    }
+
+    /**
+     * Get the type codes for agenda items
+     *
+     * @return array code => label
+     */
+    public function getTypeCodes()
+    {
+        return array(
+            'A' => $this->_('Ambulatory'),
+            'E' => $this->_('Emergency'),
+            'F' => $this->_('Field'),
+            'H' => $this->_('Home'),
+            'I' => $this->_('Inpatient'),
+            'S' => $this->_('Short stay'),
+            'V' => $this->_('Virtual'),
+        );
     }
 
     /**
