@@ -83,6 +83,16 @@ class Gems_Menu_ParameterSource extends ArrayObject implements Gems_Menu_Paramet
         }
     }
 
+    public function setAppointmentId($appointmentId)
+    {
+        $this->_setMulti($tokenId, Gems_Model::APPOINTMENT_ID, 'gap_id_appointment');
+
+        // Singal type of MUtil_Model::REQUEST_ID
+        $this->offsetSet(Gems_Model::ID_TYPE, 'appointment');
+
+        return $this;
+    }
+
     public function setPatient($patientNumber, $organizationId)
     {
         $this->_setMulti($patientNumber,  MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr');
@@ -116,8 +126,8 @@ class Gems_Menu_ParameterSource extends ArrayObject implements Gems_Menu_Paramet
     {
         $this->_setMulti($tokenId, MUtil_Model::REQUEST_ID, 'gto_id_token');
 
-        // Singal type of MUtil_Model::REQUEST_ID
-        $this->offsetSet(Gems_Model::ID_TYPE, 'token');
+        // Signal type of MUtil_Model::REQUEST_ID
+        $this->offsetSet(Gems_Model::ID_TYPE, 'appointment');
 
         return $this;
     }

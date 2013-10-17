@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -46,31 +45,153 @@
  */
 class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DatePicker
 {
-    public function datePicker($id, $value = null, array $params = array(), array $attribs = array()) {
-        $result = parent::datePicker($id, $value, $params, $attribs);
-        if (isset($attribs['disabled'])) {
-            $js = "$('#" . $attribs['id'] . "').datepicker('disable');";
-            $this->jquery->addOnLoad($js);
+    /**
+     * Create a jQuery UI Widget Date Picker
+     *
+     * @link   http://docs.jquery.com/UI/Datepicker
+     * @param  string $id
+     * @param  string $value
+     * @param  array  $params jQuery Widget Parameters
+     * @param  array  $attribs HTML Element Attributes
+     * @return string
+     */
+    public function datePicker($id, $value = null, array $params = array(), array $attribs = array())
+    {
+        $attribs = $this->_prepareAttributes($id, $value, $attribs);
+        $picker  = 'datepicker';
+
+        $formatDate = isset($params['dateFormat']) && $params['dateFormat'];
+        $formatTime = false && isset($params['timeFormat']) && $params['timeFormat'];
+
+        // MUtil_Echo::track($params['dateFormat'], $params['timeFormat']);
+        if ((!isset($params['dateFormat'])) && (!isset($params['timeFormat'])) && Zend_Registry::isRegistered('Zend_Locale')) {
+            $params['dateFormat'] = self::resolveZendLocaleToDatePickerFormat();
+        }
+        if ($formatDate) {
+            if ($formatTime) {
+                $picker  = 'datetimepicker';
+            }
+        } elseif ($formatTime) {
+            $picker  = 'timepicker';
+        }
+        // unset($params['timeFormat']);
+
+        // TODO: Allow translation of DatePicker Text Values to get this action from client to server
+        $params = ZendX_JQuery::encodeJson($params);
+
+        $js = sprintf('%s("#%s").%s(%s);',
+                ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                $attribs['id'],
+                $picker,
+                $params
+        );
+
+        if ($formatTime) {
+            $js = file_get_contents(__DIR__ . '/js/jquery-ui-timepicker-addon.js') . "\n\n" . $js;
         }
 
-        if (isset($params['dateFormat']) && $params['dateFormat']) {
-            //*
-            $js = array();
-            $js[] = '{';
-            $js[] = "  var datePick = $('#" . $id . "');";
-            $js[] = '';
-            $js[] = "  datePick.blur(function() {";
-            $js[] = "    var dateused;";
-            $js[] = "    var dateformat = datePick.datepicker('option', 'dateFormat');";
-            $js[] = "    dateused = datePick.attr('value');";
-            $js[] = "    dateused = $.datepicker.parseDate(dateformat, dateused);";
-            $js[] = "    datePick.attr('value', $.datepicker.formatDate(dateformat, dateused));";
-            $js[] = "  });";
-            $js[] = '}';
+        $this->jquery->addOnLoad($js);
 
-            $this->jquery->addOnLoad(implode("\n", $js));
-        }
-        return $result;
+        $onload = $this->onLoadJs(
+                $id,
+                $picker,
+                isset($attribs['disabled']),
+                isset($params['dateFormat']) && $params['dateFormat']);
+
+        $onload->render($this->view);
+
+        return $this->view->formText($id, $value, $attribs);
     }
 
+    /**
+     * Create a JavaScript onload element
+     *
+     * @param string $id
+     * @param string $picker
+     * @param boolean $disabled
+     * @param boolean $dateFormat
+     * @return \MUtil_Html_Code_JavaScript
+     */
+    public function onLoadJs($id, $picker, $disabled, $dateFormat)
+    {
+        $onload = new MUtil_Html_Code_JavaScript(array('ELEM_ID' => $id, 'PICKER' => $picker));
+
+        if ($disabled) {
+            $onload->addContent(__DIR__ . '/js/datepicker.disabled.js');
+        }
+
+        if ($dateFormat) {
+            $onload->addContent(__DIR__ . '/js/datepicker.formatdate.js');
+        }
+
+        return $onload;
+    }
+
+    /**
+     * A Check for Zend_Locale existance has already been done in {@link datePicker()}
+     * this function only resolves the default format from Zend Locale to
+     * a jQuery Time Picker readable format.
+     *
+     * This function can be potentially buggy because of its easy nature and is therefore
+     * stripped from the core functionality to be easily overriden.
+     *
+     * @param string $format
+     * @return string
+     */
+    public static function resolveZendLocaleToTimePickerFormat($format=null)
+    {
+        if($format == null) {
+            $locale = Zend_Registry::get('Zend_Locale');
+            if( !($locale instanceof Zend_Locale) ) {
+                require_once "ZendX/JQuery/Exception.php";
+                throw new ZendX_JQuery_Exception("Cannot resolve Zend Locale format by default, no application wide locale is set.");
+            }
+            /**
+             * @see Zend_Locale_Format
+             */
+            require_once "Zend/Locale/Format.php";
+            $format = Zend_Locale_Format::getDateFormat($locale);
+        }
+
+        $dateFormat = array(
+            'EEEEE' => '', 'EEEE' => '', 'EEE' => '', 'EE' => '', 'E' => '',
+            'MMMM' => '', 'MMM' => '', 'MM' => '', 'M' => '', 'D' => '', 'd' => '',
+            'YYYYY' => '', 'YYYY' => '', 'YYY' => '', 'YY' => '', 'Y' => '',
+            'yyyyy' => '', 'yyyy' => '', 'yyy' => '', 'yy' => '', 'y' => '',
+            'G' => '', 'e' => '', 'a' => 'tt', 'hh' => 'hh', 'h' => 'h', 'HH' => 'HH',
+            'H' => 'H', 'mm' => 'mm', 'm' => 'm', 'ss' => 'ss', 's' => 's', 'S' => 'l',
+            'zzzz' => 'z', 'zzz' => 'z', 'zz' => 'z', 'z' => 'z', 'ZZZZ' => 'Z',
+            'ZZZ' => 'Z', 'ZZ' => 'Z', 'Z' => 'Z', 'A' => '',
+        );
+
+        $replacedAny = false;
+        $newFormat = "";
+        $isText = false;
+        $i = 0;
+        while($i < strlen($format)) {
+            $chr = $format[$i];
+            if($chr == '"' || $chr == "'") {
+                $isText = !$isText;
+            }
+            $replaced = false;
+            if($isText == false) {
+                foreach($dateFormat AS $zl => $jql) {
+                    if(substr($format, $i, strlen($zl)) == $zl) {
+                        $chr = $jql;
+                        $i += strlen($zl);
+                        $replaced = true;
+                        $replacedAny = $replacedAny && strlen($jql);
+                    }
+                }
+            }
+            if($replaced == false) {
+                $i++;
+            }
+            $newFormat .= $chr;
+        }
+
+        if ($replacedAny) {
+            return $newFormat;
+        }
+    }
 }

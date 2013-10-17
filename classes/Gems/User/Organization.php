@@ -136,6 +136,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
         return (boolean) $this->_get('gor_has_respondents') || $this->_get('gor_add_respondents');
     }
 
+    /**
+     * Returns true if this is an existing organization
+     * 
+     * @return boolean
+     */
+    public function exists()
+    {
+        return $this->_noOrganization['gor_name'] !== $this->getName();
+    }
+
 	/**
      * Returns the $key in organizationData when set otherwise the default value
      *

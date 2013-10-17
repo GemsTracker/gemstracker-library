@@ -49,10 +49,30 @@
  */
 class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_DatePicker
 {
+    /**
+     *
+     * @var string The date view format: how the user gets to see te date / datetime
+     */
     protected $_dateFormat;
+
+    /**
+     *
+     * @var Zend_Date The underlying value as a date object
+     */
     protected $_dateValue;
+
+    /**
+     *
+     * @var string The date storage format: how the storage engine delivers the date / datetime
+     */
     protected $_storageFormat;
 
+    /**
+     * Set the underlying parent $this->_value as a string, reflecting the value
+     * of $this->_dateValue.
+     *
+     * @return \MUtil_JQuery_Form_Element_DatePicker (continuation pattern)
+     */
     protected function _applyDateFormat()
     {
         if ($this->_dateValue instanceof Zend_Date) {
@@ -61,11 +81,21 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         return $this;
     }
 
+    /**
+     * Get the date view format: how the user gets to see te date / datetime
+     *
+     * @return string
+     */
     public function getDateFormat()
     {
         return $this->_dateFormat;
     }
 
+    /**
+     * Return the value as a date object
+     *
+     * @return Zend_Date
+     */
     public function getDateValue()
     {
         if ($this->_value && (! $this->_dateValue)) {
@@ -74,14 +104,14 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         return $this->_dateValue;
     }
 
+    /**
+     * Get the date storage format: how the storage engine delivers the date / datetime
+     *
+     * @return string
+     */
     public function getStorageFormat()
     {
         return $this->_storageFormat;
-    }
-
-    public function getValue()
-    {
-        return parent::getValue();
     }
 
     /**
@@ -122,16 +152,35 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         return parent::isValid($value, $context);
     }
 
+    /**
+     * Set the date view format: how the user gets to see te date / datetime
+     *
+     * @param string $format
+     * @return \MUtil_JQuery_Form_Element_DatePicker (continuation patern)
+     */
     public function setDateFormat($format)
     {
         $view = $this->getView();
-        $this->setJQueryParam('dateFormat', $view->getHelper('DatePicker')->resolveZendLocaleToDatePickerFormat($format));
+        $this->setJQueryParam(
+                'dateFormat',
+                ZendX_JQuery_View_Helper_DatePicker::resolveZendLocaleToDatePickerFormat($format)
+                );
+        $this->setJQueryParam(
+                'timeFormat',
+                MUtil_JQuery_View_Helper_DatePicker::resolveZendLocaleToTimePickerFormat($format)
+                );
         $this->_dateFormat = $format;
         $this->_applyDateFormat();
 
         return $this;
     }
 
+    /**
+     * Set the both he _value (as a string) and the _dateValue (as an Zend_Date)
+     *
+     * @param string $format
+     * @return \MUtil_JQuery_Form_Element_DatePicker (continuation patern)
+     */
     public function setDateValue($value)
     {
         // MUtil_Echo::r('Input: ' . $value);
@@ -141,21 +190,25 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
             if ($value instanceof Zend_Date) {
                 $this->_dateValue = $value;
             } else {
-                if (($format = $this->getDateFormat()) && Zend_Date::isDate($value, $format)) {
-                    $this->_dateValue = new Zend_Date($value, $format);
+                $format = $this->getDateFormat();
+                if ($format && Zend_Date::isDate($value, $format)) {
+                    $this->_dateValue = new MUtil_Date($value, $format);
 
-                } elseif (($storageFormat = $this->getStorageFormat()) && Zend_Date::isDate($value, $storageFormat)) {
-                    $this->_dateValue = new Zend_Date($value, $storageFormat);
-
-                } elseif ($format || $storageFormat) {
-                    //Invalid dateformat, should be handled by validator, just ignore the datevalue
-                    //but set the real value so validation runs fine
-                    $this->_dateValue = null;
                 } else {
-                    try {
-                        $this->_dateValue = new Zend_Date($value);
-                    } catch (Zend_Date_Exception $zde) {
+                    $storageFormat = $this->getStorageFormat();
+                    if ($storageFormat && Zend_Date::isDate($value, $storageFormat)) {
+                        $this->_dateValue = new MUtil_Date($value, $storageFormat);
+
+                    } elseif ($format || $storageFormat) {
+                        // Invalid dateformat, should be handled by validator, just ignore the datevalue
+                        // but do set the string value so validation runs fine
                         $this->_dateValue = null;
+                    } else {
+                        try {
+                            $this->_dateValue = new MUtil_Date($value);
+                        } catch (Zend_Date_Exception $zde) {
+                            $this->_dateValue = null;
+                        }
                     }
                 }
             }
@@ -168,6 +221,12 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         return $this;
     }
 
+    /**
+     * Set the date storage format: how the storage engine delivers the date / datetime
+     *
+     * @param string $format
+     * @return \MUtil_JQuery_Form_Element_DatePicker (continuation patern)
+     */
     public function setStorageFormat($format)
     {
         $this->_storageFormat = $format;
@@ -187,6 +246,12 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
         return $this;
     }
 
+    /**
+     * Set view object
+     *
+     * @param  Zend_View_Interface $view
+     * @return Zend_Form_Element
+     */
     public function setView(Zend_View_Interface $view = null)
     {
         $element = parent::setView($view);

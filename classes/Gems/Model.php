@@ -47,9 +47,30 @@
 class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 {
     const ID_TYPE = 'id_type';
+
+    /**
+     * Request key for appointments
+     */
+    const APPOINTMENT_ID = 'aid';
+
+    /**
+     * Request key for respondent tracks
+     */
     const RESPONDENT_TRACK = 'rt';
+
+    /**
+     * Request key for rounds
+     */
     const ROUND_ID = 'rid';
+
+    /**
+     * Request keys for surveys
+     */
     const SURVEY_ID = 'si';
+
+    /**
+     * Request key for tracks (not respondent tracks, tracks!)
+     */
     const TRACK_ID = 'tr';
 
     /**

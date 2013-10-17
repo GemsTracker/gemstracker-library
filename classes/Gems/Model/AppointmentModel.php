@@ -70,6 +70,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
     {
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('appointments', 'gems__appointments', 'gap');
+
+        $this->addColumn(new Zend_Db_Expr("'appointment'"), Gems_Model::ID_TYPE);
     }
 
     /**
@@ -152,7 +154,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $translator = $this->getTranslateAdapter();
 
         $this->setIfExists('gap_admission_time',     'label', $translator->_('Appointment'),
-                'description', 'yyyy-mm-dd hh:mm:ss');
+                'dateFormat',  'dd-MM-yyyy HH:mm',
+                'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_status',             'label', $translator->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
         $this->setIfExists('gas_name',              'label', $translator->_('With'));
@@ -182,9 +185,11 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $translator = $this->getTranslateAdapter();
 
         $this->setIfExists('gap_admission_time',  'label', $translator->_('Appointment'),
-                'description', 'yyyy-mm-dd hh:mm:ss');
+                'dateFormat',  'dd-MM-yyyy HH:mm',
+                'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_discharge_time',  'label', $translator->_('Discharge'),
-                'description', 'yyyy-mm-dd hh:mm:ss');
+                'dateFormat',  'dd-MM-yyyy HH:mm',
+                'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_code',            'label', $translator->_('Type'),
                 'multiOptions', $agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $translator->_('Status'),
@@ -227,7 +232,12 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
         $this->setIfExists('gap_id_organization', 'default', $orgId);
         $this->setIfExists('gap_admission_time',
-                'validator', new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm:ss'))
+                'elementClass', 'Date',
+                'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
+                );
+        $this->setIfExists('gap_discharge_time',
+                'elementClass', 'Date',
+                'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
                 );
         $this->setIfExists('gap_comment',         'elementClass', 'Textarea');
 
