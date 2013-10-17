@@ -140,6 +140,18 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         if ($tokensData = $model->load(true, $sort)) {
 
+            $params['mailTarget']           = 'token';
+            $params['menu']                 = $this->menu;
+            $params['model']                = $model;
+            $params['identifier']           = $this->_getIdParam();
+            $params['view']                 = $this->view;
+            $params['routeAction']          = 'show';
+            $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
+            $params['templateOnly']         = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
+            $params['multipleTokenData']    = $tokensData;
+
+            $this->addSnippet('Mail_TokenBulkMailFormSnippet', $params);
+            /*
             $form = new Gems_Email_MultiMailForm(array(
                 'escort' => $this->escort,
                 'templateOnly' => ! $this->escort->hasPrivilege('pr.token.mail.freetext'),
@@ -168,7 +180,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
                 $this->html->h3(sprintf($this->_('Email %s'), $this->getTopic()));
                 $this->html[] = $form;
-            }
+            }*/
 
 
         } else {

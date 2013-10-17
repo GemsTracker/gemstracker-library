@@ -76,10 +76,15 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
 
 	public function afterRegistry()
     {
-        $this->respondent = $this->loader->getRespondent($this->patientId, $this->organizationId);
+        if ($this->patientId && $this->organizationId) {
+            $this->respondent = $this->loader->getRespondent($this->patientId, $this->organizationId);
+        }
+
         parent::afterRegistry();
 
-        $this->addTo($this->respondent->getEmailAddress(), $this->respondent->getName());
+        if ($this->respondent) {
+            $this->addTo($this->respondent->getEmailAddress(), $this->respondent->getName());
+        }
     }
 
     public function getDataLoaded()

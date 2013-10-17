@@ -46,23 +46,17 @@
  */
 class Gems_Snippets_Mail_TokenMailFormSnippet extends Gems_Snippets_Mail_MailFormSnippet
 {
-    protected $lastContact;
-    protected $round;
-    protected $survey;
-    protected $track;
-
     protected $util;
 
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         
-        $bridge->addHtml('to', 'label', $this->translate->_('To'));
+        $bridge->addHtml('to', 'label', $this->_('To'));
         
-
-        $bridge->addExhibitor('track', array('label' => $this->translate->_('Track')));
-        $bridge->addExhibitor('round', array('label' => $this->translate->_('Round')));
-        $bridge->addExhibitor('survey', array('label' => $this->translate->_('Survey')));
-        $bridge->addExhibitor('last_contact', array('label' => $this->translate->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
+        $bridge->addExhibitor('track', array('label' => $this->_('Track')));
+        $bridge->addExhibitor('round', array('label' => $this->_('Round')));
+        $bridge->addExhibitor('survey', array('label' => $this->_('Survey')));
+        $bridge->addExhibitor('last_contact', array('label' => $this->_('Last contact'), 'formatFunction' => $this->util->getTranslated()->formatDateNever));
         parent::addFormElements($bridge,$model);
     }
 }

@@ -168,6 +168,23 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Return the available Comm templates.
+     *
+     * @staticvar array $data
+     * @return array The tempalteId => subject list
+     */
+    public function getCommTemplates()
+    {
+        static $data;
+
+        if (! $data) {
+            $data = $this->db->fetchPairs("SELECT gct_id_template, gct_name FROM gems__comm_templates ORDER BY gct_name");
+        }
+
+        return $data;
+    }
+
     public function getDefaultGroup()
     {
         $groups  = $this->getActiveStaffGroups();

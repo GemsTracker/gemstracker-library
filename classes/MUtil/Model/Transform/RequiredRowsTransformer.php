@@ -80,9 +80,9 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
     {
         if ($row) {
             $val1 = reset($required);
-            $val2 = reset($row);
+            $key  = key($required);
+            $val2 = $row[$key];
             $i = 0;
-
             while ($i < $count) {
                 if ($val1 != $val2) {
                     return false;
@@ -223,7 +223,6 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
         $requireds = $this->getRequiredRows();
         $data      = MUtil_Ra::to($data, MUtil_Ra::RELAXED);
         $results   = array();
-
         if (! $data) {
             foreach ($requireds as $key => $required) {
                 $results[$key] = $required + $defaults;
@@ -239,8 +238,6 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
                 }
             }
         }
-
-        // MUtil_Echo::track($results);
 
         return $results;
     }

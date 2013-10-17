@@ -72,6 +72,8 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
      */
 	protected $translate;
 
+    protected $util;
+
     /**
      * 
      * @var Zend_View
@@ -84,7 +86,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
      * 
      * @return Gems_Form_Element_CKEditor|Zend_Form_Element_Hidden
      */
-    public function createBodyElement($name, $label, $required=false, $hidden=false)
+    public function createBodyElement($name, $label, $required=false, $hidden=false, $mailFields=array(), $mailFieldsLabel=false)
     {
         if ($hidden) {
             return new Zend_Form_Element_Hidden($name);
@@ -92,6 +94,17 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
 
         $options['required'] = $required;
         $options['label']    = $label;
+
+        $mailBody = new Gems_Form_Element_CKEditor($name, $options);
+        $mailBody->config['availablefields'] = $mailFields;
+        if ($mailFieldsLabel) {
+            $mailBody->config['availablefieldsLabel'] = $mailFieldsLabel;
+        } else {
+            $mailBody->config['availablefieldsLabel'] = $this->translate->_('Fields');
+        }
+
+        $mailBody->config['extraPlugins'] .= ',availablefields';
+        $mailBody->config['toolbar'][] = array('availablefields');
 
         return new Gems_Form_Element_CKEditor($name, $options);
     }
@@ -123,19 +136,20 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         return $element;
     }
 
-   /**
-     * Add an element that just displays the value to the user
-     *
-     * @param string $name Name of element
-     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
-     * @return \MUtil_Form_Element_Exhibitor
+    /**
+     * Create a multioption select with the different mail process options
+     * 
+     * @return Zend_Form_Element_Radio
      */
-    public function createExhibitor($name, $options)
+    public function createMethodElement()
     {
+        $options = $this->util->getTranslated()->getBulkMailProcessOptions();
 
-        $element = new MUtil_Form_Element_Exhibitor($name, $options);
-
-        return $element;
+        return new Zend_Form_Element_Radio('multi_method', array(
+            'label'        => $this->translate->_('Method'),
+            'multiOptions' => $options,
+            'required'     => true,
+            ));
     }
 
     /**

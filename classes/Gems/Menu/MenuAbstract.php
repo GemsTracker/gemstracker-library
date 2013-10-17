@@ -265,6 +265,11 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
+        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'comm-job');
+        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
+        $page->addPage($this->_('Run'), null, 'cron', 'index');
+
+
         $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'comm-template');
 
         return $setup;
