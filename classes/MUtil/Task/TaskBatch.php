@@ -91,6 +91,20 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
         return $this;
     }
 
+
+    /**
+     * Add the directories to be used by this instance, existing instance are overrule
+     * by new directories
+     *
+     * @param array $dirs An array containing the classPrefix => classPath values
+     * @return \MUtil_Task_TaskBatch (continuation pattern)
+     */
+    public function addTaskLoaderPrefixDirectories(array $dirs)
+    {
+        $this->taskLoaderDirs = $dirs + $this->taskLoaderDirs;
+        return $this;
+    }
+
     /**
      * Return the source used to set variables in tasks.
      *
@@ -111,6 +125,7 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function getTaskLoader()
     {
+        MUtil_Echo::track($this->getTaskLoaderPrefixDirectories());
         if (! $this->taskLoader) {
             $this->setTaskLoader(new MUtil_Loader_PluginLoader($this->getTaskLoaderPrefixDirectories()));
         }

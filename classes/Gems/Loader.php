@@ -315,7 +315,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
         if ($taskBatch instanceof MUtil_Task_TaskBatch) {
             $taskBatch->setSource($this);
-            $taskBatch->setTaskLoaderPrefixDirectories($this->_cascadedDirs($this->_dirs, 'Task'));
+            $taskBatch->addTaskLoaderPrefixDirectories($this->_cascadedDirs($this->_dirs, 'Task'));
         }
 
         return $taskBatch;
