@@ -527,7 +527,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     protected function _initSession()
     {
-
+        $this->bootstrap('project'); // Make sure the project is available
         $session = new Zend_Session_Namespace('gems.' . GEMS_PROJECT_NAME . '.session');
 
         $idleTimeout = $this->project->getSessionTimeOut();
