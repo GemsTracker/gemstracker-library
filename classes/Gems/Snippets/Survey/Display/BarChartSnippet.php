@@ -66,8 +66,10 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
     
     /**
      * @var Zend_Controller_Request_Abstract
-     */
+     */    
     public $request;
+    
+    public $data;
     
     /**
      * Array of rulers, defaults to each 10% a ruler
@@ -82,7 +84,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
     
     /**
      * Show gridlines every 10%
-     * 
+     *
      * @var boolean
      */
     public $grid = true;
@@ -150,10 +152,10 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             } else {
                 $position = 100 - $ruler['percentage'];
             }
-            
+                
             // Only draw rulers that are in the visible range
             if ($position >= 0 && $position <= 100) {
-                $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
+            $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
             }
         }
         
@@ -239,21 +241,23 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         $orgId     = $this->request->getParam(MUtil_Model::REQUEST_ID2);
         $patientNr = $this->request->getParam(MUtil_Model::REQUEST_ID1);
         
-        $data = $this->loader->getTracker()->getTokenSelect()
-                ->andRespondentOrganizations()
-                ->andReceptionCodes(array())
-                ->andSurveys()
-                ->forWhere('gsu_code = ?', $this->survey_code)
-                ->forWhere('grc_success = 1')
-                ->forWhere('gr2o_id_organization = ?', $orgId)
-                ->forWhere('gr2o_patient_nr = ?', $patientNr)
-                ->order('gto_completion_time')
-                ->fetchAll();
+        if (! $this->data) {
+            $data = $this->loader->getTracker()->getTokenSelect()
+                    ->andRespondentOrganizations()
+                    ->andReceptionCodes(array())
+                    ->andSurveys()
+                    ->forWhere('gsu_code = ?', $this->survey_code)
+                    ->forWhere('grc_success = 1')
+                    ->forWhere('gr2o_id_organization = ?', $orgId)
+                    ->forWhere('gr2o_patient_nr = ?', $patientNr)
+                    ->order('gto_completion_time')
+                    ->fetchAll();
+
+            $this->data = $data;
+        }
         
-        $this->data = $data;       
-        
-        if (!empty($data)) {
-            $firstRow = reset($data);
+        if (!empty($this->data)) {
+            $firstRow = reset($this->data);
             $this->token = $this->loader->getTracker()->getToken($firstRow);
         }
     }

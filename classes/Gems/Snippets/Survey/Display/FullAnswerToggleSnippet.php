@@ -55,7 +55,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
         $html = $this->getHtmlSequence();
 
         $request = $this->request;
-        $html->hr();
+        $html->hr(array('class'=>'noprint'));
         $params = $request->getParams();
 
         if (isset($params['fullanswers'])) {
@@ -68,7 +68,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
             'action' => $request->getActionName(),
             'routereset' => true) + $params;
         $html->a($url, $this->_('Toggle'), array('class' => 'actionlink'));
-        $html->hr();
+        $html->hr(array('class'=>'noprint'));
 
         return $html;
     }
