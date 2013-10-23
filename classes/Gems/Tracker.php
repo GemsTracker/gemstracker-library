@@ -214,7 +214,8 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $respTrackSelect->where('gr2t_active = 1');
         $respTrackSelect->where('grc_success = 1');
         $respTrackSelect->where('gtr_active = 1');
-        $respTrackSelect->where('gr2t_count != gr2t_completed');
+        // Also recaclulate when track was completed: there may be new rounds!
+        // $respTrackSelect->where('gr2t_count != gr2t_completed');
 
         $batch = $this->loader->getTaskRunnerBatch($batchId);
         //Now set the step duration

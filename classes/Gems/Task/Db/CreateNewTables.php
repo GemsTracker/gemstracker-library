@@ -70,6 +70,7 @@ class Gems_Task_Db_CreateNewTables extends Gems_Task_TaskAbstract
 
         foreach($todo as $tableData) {
             $this->_batch->addToCounter('NewTableCount');
+            unset($tableData['db']);
             $this->_batch->setTask('Db_CreateNewTable', 'create-tbl-' . $tableData['name'], $tableData);
         }
     }

@@ -56,7 +56,11 @@ class Gems_Default_LanguageAction  extends Gems_Controller_Action
 
             $this->session->user_locale = $lang;
             if (Gems_Cookies::setLocale($lang, $this->basepath->getBasePath())) {
-                $this->getResponse()->setRedirect($url);
+                if ($url) {
+                    $this->getResponse()->setRedirect($url);
+                } else {
+                    $this->loader->getCurrentUser()->gotoStartPage($this->menu, $this->getRequest());
+                }
                 return;
             }
 

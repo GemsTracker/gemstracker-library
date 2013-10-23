@@ -808,6 +808,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         // Check for run url
         if ($request->getParam($this->progressParameterName) === $this->progressParameterRunValue) {
+            // [Try to] remove the maxumum execution time for this session
+            @ini_set("max_execution_time", 0);
+            @set_time_limit(0);
+            
             if ($this->isPush()) {
                 return $this->runContinuous();
             }
@@ -844,6 +848,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function runAll()
     {
+        // [Try to] remove the maxumum execution time for this session
+        @ini_set("max_execution_time", 0);
+        @set_time_limit(0);
+
         while ($this->step());
 
         return $this->_session->processed;

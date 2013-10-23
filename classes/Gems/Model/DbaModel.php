@@ -314,15 +314,12 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
      * type     Type of db element (table or view), used in messages
      *
      * @param array $data
-     * @param type $includeResultSets
-     * @return type
+     * @param boolean $includeResultSets
+     * @return string
      */
     public function runScript(array $data, $includeResultSets = false)
     {
         $results = array();
-        if (! isset($data['db'])) {
-            $data['db'] = $this->defaultDb;
-        }
         if ($data['script']) {
             $queries = MUtil_Parser_Sql_WordsParser::splitStatements($data['script'], false);
             $qCount  = count($queries);
@@ -338,6 +335,16 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                         $db = $data['db'];
                     } else {
                         $db = $this->defaultDb;
+                        
+                        // Lookup using location
+                        if (isset($data['location'])) {
+                            foreach ($this->directories as $path) {
+                                if ($path['name'] === $data['location']) {
+                                    $db = $path['db'];
+                                    break;
+                                }
+                            }
+                        }
                     }
                     $stmt = $db->query($sql);
                     if ($rows = $stmt->rowCount()) {
