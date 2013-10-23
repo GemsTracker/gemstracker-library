@@ -125,7 +125,7 @@ class MUtil_Task_TaskBatch extends MUtil_Batch_BatchAbstract
      */
     public function getTaskLoader()
     {
-        MUtil_Echo::track($this->getTaskLoaderPrefixDirectories());
+        // MUtil_Echo::track($this->getTaskLoaderPrefixDirectories());
         if (! $this->taskLoader) {
             $this->setTaskLoader(new MUtil_Loader_PluginLoader($this->getTaskLoaderPrefixDirectories()));
         }
