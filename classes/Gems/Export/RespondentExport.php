@@ -412,9 +412,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public function render($respondents, $group = true, $format = 'html')
     {
         $this->_group = $group;
-        $this->_format = $format;
+        $this->_format = $format;        
         $this->html = new MUtil_Html_Sequence();
-
+        
         $this->html->snippet($this->_reportHeader);
 
         $respondentCount = count($respondents);
@@ -445,6 +445,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $content = $this->view->layout->render();
 
         if ($this->_format == 'pdf') {
+            if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
+                $respondentId = $respondentId['gr2o_patient_nr'];
+            }
             $filename = 'respondent-export-' . strtolower($respondentId) . '.pdf';
             $content = $this->_pdf->convertFromHtml($content);
             $this->_pdf->echoPdfContent($content, $filename, true);

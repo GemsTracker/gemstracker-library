@@ -245,6 +245,13 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
         return $this->_getClass('pdf');
     }
 
+    /**
+     * Get a respondent object
+     * 
+     * @param type $patientId
+     * @param type $organization
+     * @return Gems_Tracker_Respondent
+     */
     public function getRespondent($patientId, $organization)
     {
        return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organization));
