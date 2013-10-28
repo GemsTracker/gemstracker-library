@@ -161,14 +161,20 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
     public function setDateFormat($format)
     {
         $view = $this->getView();
-        $this->setJQueryParam(
-                'dateFormat',
-                ZendX_JQuery_View_Helper_DatePicker::resolveZendLocaleToDatePickerFormat($format)
-                );
-        $this->setJQueryParam(
-                'timeFormat',
-                MUtil_JQuery_View_Helper_DatePicker::resolveZendLocaleToTimePickerFormat($format)
-                );
+
+        list($dateFormat, $separator, $timeFormat) =
+                MUtil_JQuery_View_Helper_DatePicker::splitZendLocaleToDateTimePickerFormat($format);
+
+        if ($dateFormat) {
+            $this->setJQueryParam('dateFormat', $dateFormat);
+        }
+        if ($separator) {
+            $this->setJQueryParam('separator', $separator);
+        }
+        if ($timeFormat) {
+            $this->setJQueryParam('timeFormat', $timeFormat);
+        }
+
         $this->_dateFormat = $format;
         $this->_applyDateFormat();
 

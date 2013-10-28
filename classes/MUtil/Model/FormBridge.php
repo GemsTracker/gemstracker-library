@@ -351,6 +351,11 @@ class MUtil_Model_FormBridge
         if (isset($options['dateFormat'])) {
             // Make sure the model knows the dateFormat (can be important for storage).
             $this->getModel()->set($name, 'dateFormat', $options['dateFormat']);
+
+            if (! isset($options['size'])) {
+                // Auto guess size
+                $options['size'] = strlen($options['dateFormat']);
+            }
         }
 
         // Make sure form knows it is a jQuery form
@@ -841,7 +846,8 @@ class MUtil_Model_FormBridge
             foreach ($typeOptions[$type] as $key => $value) {
                 if (is_array($value) && isset($options[$key])) {
                     $options[$key] = $value + $options[$key];
-                } else {
+
+                } elseif (!isset($options[$key])) { // Do not overwrite existing values
                     $options[$key] = $value;
                 }
             }

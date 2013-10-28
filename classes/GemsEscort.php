@@ -1296,13 +1296,13 @@ class GemsEscort extends MUtil_Application_Escort
         // Now set some defaults
         $dateFormOptions['dateFormat']   = 'dd-MM-yyyy';
         $dateFormOptions['description']  = 'dd-mm-yyyy';
-        $dateFormOptions['size']         =  10;
         $dateFormOptions['jQueryParams'] = array(
             'buttonImage' => $this->getUtil()->getImageUri('datepicker.png'),
             'changeMonth' => true,
-            'changeYear' => true,
-            'duration' => 'fast',
-            'showOn' => 'button',
+            'changeYear'  => true,
+            'duration'    => 'fast',
+            'showOn'      => 'button',
+            'stepMinute'  => 5,
         );
 
         Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));

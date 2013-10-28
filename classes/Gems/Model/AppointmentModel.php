@@ -232,8 +232,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
         $this->setIfExists('gap_id_organization', 'default', $orgId);
         $this->setIfExists('gap_admission_time',
-                'elementClass', 'Date',
-                'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
+                'elementClass', 'Date' //,
+                // 'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
                 );
         $this->setIfExists('gap_discharge_time',
                 'elementClass', 'Date',
