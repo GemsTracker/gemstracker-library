@@ -141,7 +141,9 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
             'organization' => array(
                 'default'   => -1  // No default organization
-            )
+            ),
+            
+            'idleTimeout' => $this->defaultSessionTimeout   // Sesison timeout default 1800
         );
     }
 

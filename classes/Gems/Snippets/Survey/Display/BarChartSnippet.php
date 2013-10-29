@@ -161,35 +161,36 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         
         foreach ($data as $row) {
             $token = $this->loader->getTracker()->getToken($row);
-            
-            $answers = $token->getRawAnswers();
-            if (array_key_exists($this->question_code, $answers)) {
-                $value = (float) $answers[$this->question_code];        // Cast to number
-                $height = $this->getPercentage($value);
-                $height = max(min($height, 100),10);    // Add some limits
-                $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
-                $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
-                $date = $token->getCompletionTime()->get('dd-MM-yyyy HH:mm');
-                $info = $html->div($date, array('class'=>'info'));
-                $info[] = $html->br();
-                $info[] = $answers[$this->question_code];   // The raw answer
-                $info[] = $html->br();
-                $info[] = $token->getRoundDescription();
-                $legendrow = $html->div('', array('class'=>'legendrow'));
-                $legendrow[] = $html->div($date, array('class'=> 'date', 'renderClosingTag'=>true));
-                $legendrow[] = $html->div($token->getRoundDescription(), array('class'=> 'round', 'renderClosingTag'=>true));
-                $legendrow[] = $html->div($answers[$this->question_code], array('class'=> 'value', 'renderClosingTag'=>true));
-                $legend[] = $legendrow;
-                if (empty($value))  {
-                    $value = 'N/A';
+            if ($token->getReceptionCode()->isSuccess()) {
+                $answers = $token->getRawAnswers();
+                if (array_key_exists($this->question_code, $answers)) {
+                    $value = (float) $answers[$this->question_code];        // Cast to number
+                    $height = $this->getPercentage($value);
+                    $height = max(min($height, 100),10);    // Add some limits
+                    $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => 'spacer bar'));
+                    $valueBar = $html->div('', array('class' => 'bar col'.(($col % $maxcols) + 1), 'style' => sprintf('height: %s%%;', $height)));
+                    $date = $token->getCompletionTime()->get('dd-MM-yyyy HH:mm');
+                    $info = $html->div($date, array('class'=>'info'));
+                    $info[] = $html->br();
+                    $info[] = $answers[$this->question_code];   // The raw answer
+                    $info[] = $html->br();
+                    $info[] = $token->getRoundDescription();
+                    $legendrow = $html->div('', array('class'=>'legendrow'));
+                    $legendrow[] = $html->div($date, array('class'=> 'date', 'renderClosingTag'=>true));
+                    $legendrow[] = $html->div($token->getRoundDescription(), array('class'=> 'round', 'renderClosingTag'=>true));
+                    $legendrow[] = $html->div($answers[$this->question_code], array('class'=> 'value', 'renderClosingTag'=>true));
+                    $legend[] = $legendrow;
+                    if (empty($value))  {
+                        $value = 'N/A';
+                    }
+                    // Link the value to the answer view in a new window (not the bar to avoid usability issues on touch devices)
+                    $valueBar[] = $html->a(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId()), array('target'=>'_blank'), $html->div($value, array('class'=>'value')));
+                    $valueBar[] = $info;
+
+                    $chart[] = $valueBar;
+
+                    $col ++;
                 }
-                // Link the value to the answer view in a new window (not the bar to avoid usability issues on touch devices)
-                $valueBar[] = $html->a(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId()), array('target'=>'_blank'), $html->div($value, array('class'=>'value')));
-                $valueBar[] = $info;
-                
-                $chart[] = $valueBar;
-                
-                $col ++;
             }
         }
         $wrapper[] = $legend;
@@ -229,7 +230,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
 
         if ($this->showButtons) {
             $buttonDiv = $htmlDiv->buttonDiv();
-            $buttonDiv->actionLink(array(), $this->_('Back'), array('onclick' => 'history.go(-1);'));
+            $buttonDiv->actionLink(array(), $this->_('Back'), array('onclick' => 'window.history.go(-1); return false;'));
             $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
         }
         return $htmlDiv;
