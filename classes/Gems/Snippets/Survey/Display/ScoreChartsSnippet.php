@@ -56,8 +56,15 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
         
         $data = $this->getModel()->load();
         
-        $firstToken = reset($data);
-        $token = $this->loader->getTracker()->getToken($firstToken);
+        // Find the first token with answers
+        foreach($data as $tokenData) {
+            $token = $this->loader->getTracker()->getToken($tokenData);
+            $tokenAnswers = $token->getRawAnswers();
+            if (!empty($tokenAnswers)) {            
+                break;
+            }
+        }
+        
         $options = array(
             'data'=>$data, 
             'showHeaders' => false,
@@ -67,16 +74,18 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
         // Some spacing with previous elements
         $snippets[] = MUtil_Html::create()->p(MUtil_Html::raw('&nbsp;'), array('style'=>'clear:both;'));
         
-        foreach ($token->getRawAnswers() as $key => $value)
+        foreach ($tokenAnswers as $key => $value)
         {
             if (substr(strtolower($key),0,5) == 'score') {
                 $options['question_code'] = $key;
                 // We need custom configuration here, to be added later
-                
+                    
                 $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey_Display_BarChartSnippet', $options);        
             }
         }
-        //$snippets[] = MUtil_Html::create()->p(array('style'=>'clear:both;page-break-after:always;'));
+        
+        // Clear the floats
+        $snippets[] = MUtil_Html::create()->p(array('style'=>'clear:both;'));
                 
         return $snippets;
     }
