@@ -122,7 +122,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                 }
 
                 $onclick = new MUtil_Html_OnClickArrayAttribute();
-                $onclick->addSumbit();
+                $onclick->addSubmit();
                 $bridge->addRadio('add_to_track', 'label', $this->_('Add'),
                         'multiOptions', array(
                             '1' => $this->_('To existing track'),

@@ -395,7 +395,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
             $onblur = new MUtil_Html_JavascriptArrayAttribute('onblur');
-            $onblur->addSumbitOnChange('this.value');
+            $onblur->addSubmitOnChange('this.value');
 
             $this->set('grs_ssn',
                     'onblur', $onblur->render($this->view),  // Render needed as element does not know HtmlInterface

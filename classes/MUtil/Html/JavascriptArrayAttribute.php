@@ -133,7 +133,7 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
      * @param string $condition Optional condition for submit
      * @return \MUtil_Html_JavascriptArrayAttribute
      */
-    public function addSumbit($condition = null)
+    public function addSubmit($condition = null)
     {
         if ($condition) {
             $this->add("if ($condition) {this.form.submit();}");
@@ -150,7 +150,7 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
      * @param string $condition Optional extra condition for submit
      * @return \MUtil_Html_JavascriptArrayAttribute
      */
-    public function addSumbitOnChange($condition = null)
+    public function addSubmitOnChange($condition = null)
     {
         if ($condition) {
             $this->add("if (($condition) && (this.getAttribute('value') != this.value)) {this.form.submit();}");
