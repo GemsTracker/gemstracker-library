@@ -190,11 +190,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
         $paramKey = $this->getParameterKey();
 
         if ($paramKey) {
-            if ($tabId == $this->defaultTab) {
-                return array($paramKey => null);
-            } else {
-                return array($paramKey => $tabId);
-            }
+            return array($paramKey => $tabId);
         }
 
         return array();
