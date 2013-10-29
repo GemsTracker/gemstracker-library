@@ -1303,6 +1303,7 @@ class GemsEscort extends MUtil_Application_Escort
             'duration'    => 'fast',
             'showOn'      => 'button',
             'stepMinute'  => 5,
+            'timeJsUrl'   => $this->basepath->getBasePath() . '/gems/js',
         );
 
         Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));

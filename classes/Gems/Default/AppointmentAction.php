@@ -90,6 +90,13 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
     protected $respondentId;
 
     /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array('Generic_ContentTitleSnippet', 'Agenda_AppointmentShowSnippet');
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -173,6 +180,7 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
      */
     protected function loadParams()
     {
+        $patientNr           = $this->_getParam(MUtil_Model::REQUEST_ID1);
         $this->appointmentId = $this->_getParam(Gems_Model::APPOINTMENT_ID);
 
         if ($this->appointmentId) {
@@ -186,7 +194,6 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                 $this->respondentId   = $data['gap_id_user'];
             }
         } else {
-            $patientNr            = $this->_getParam(MUtil_Model::REQUEST_ID1);
             $this->organizationId = $this->_getParam(MUtil_Model::REQUEST_ID2);
 
             if ($patientNr && $this->organizationId) {
@@ -213,6 +220,14 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                     throw new Gems_Exception($this->_('Organization does not exist.'));
                 }
             }
+        }
+
+        $source = $this->menu->getParameterSource();
+        if ($this->appointmentId) {
+            $source->setAppointmentId($this->appointmentId);
+        }
+        if ($patientNr && $this->organizationId) {
+            $source->setPatient($patientNr, $this->organizationId);
         }
     }
 }

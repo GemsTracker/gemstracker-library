@@ -49,6 +49,9 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      * Create a jQuery UI Widget Date Picker
      *
      * @link   http://docs.jquery.com/UI/Datepicker
+     * @link   http://trentrichardson.com/examples/timepicker
+     *
+     * @static boolean $sayThisOnlyOnce Output JavaScript only once.
      * @param  string $id
      * @param  string $value
      * @param  array  $params jQuery Widget Parameters
@@ -57,6 +60,8 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      */
     public function datePicker($id, $value = null, array $params = array(), array $attribs = array())
     {
+        static $sayThisOnlyOnce = true;
+
         $attribs = $this->_prepareAttributes($id, $value, $attribs);
         $picker  = 'datepicker';
 
@@ -74,9 +79,13 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
         } elseif ($formatTime) {
             $picker  = 'timepicker';
         }
-        // unset($params['timeFormat']);
+        if (isset($params['timeJsUrl'])) {
+            $baseurl = $params['timeJsUrl'];
+            unset($params['timeJsUrl']);
+        } else {
+            $baseurl = false;
+        }
 
-        // TODO: Allow translation of DatePicker Text Values to get this action from client to server
         $params = ZendX_JQuery::encodeJson($params);
 
         $js = sprintf('%s("#%s").%s(%s);',
@@ -86,8 +95,30 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
                 $params
         );
 
-        if ($formatTime) {
-            $js = file_get_contents(__DIR__ . '/js/jquery-ui-timepicker-addon.js') . "\n\n" . $js;
+        if ($formatTime && $sayThisOnlyOnce) {
+
+            if ($locale = Zend_Registry::get('Zend_Locale')) {
+                $language = $locale->getLanguage();
+                // We have a language, but only when not english
+                if ($language && $language != 'en') {
+                    $files[] = sprintf('i18n/jquery-ui-timepicker-addon-%s.js', $language);
+                }
+            }
+            $files[] = 'jquery-ui-timepicker-addon.js';
+
+            if ($baseurl) {
+                foreach ($files as $file) {
+                    $this->jquery->addJavascriptFile($baseurl . '/' . $file);
+                }
+            } else {
+                foreach ($files as $file) {
+                    if (file_exists(__DIR__ . '/js/' . $file)) {
+                        $js = "\n// File: $file\n\n" . file_get_contents(__DIR__ . '/js/' . $file) . "\n\n" . $js;
+                    }
+                }
+            }
+
+            $sayThisOnlyOnce = false;
         }
 
         $this->jquery->addOnLoad($js);

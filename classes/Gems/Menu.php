@@ -323,17 +323,21 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        /*
-        MUtil_Lazy::iff(
-            is('gr2o_id_organization', $this->escort->getCurrentOrganization()),
-            aget(MUtil_Model::REQUEST_ID,  'gr2o_patient_nr'),
-            aget(MUtil_Model::REQUEST_ID1, 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2, 'gr2o_id_organization')
-            );
-        */
-
         $page->addEditAction('pr.respondent.edit')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+
+        // Add "appointments"
+        $appParams = array(Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
+        $apage = $page->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');
+        $apage->setNamedParameters($params)
+                ->setHiddenOrgId($orgId)
+                ->addAutofilterAction();
+        $apage->addCreateAction();
+        $apage->addShowAction()->setNamedParameters($appParams);
+        $apage->addEditAction()->setNamedParameters($appParams);
+        $apage->addDeleteAction()->setNamedParameters($appParams);
+        $page->addExcelAction();
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 

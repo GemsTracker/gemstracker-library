@@ -71,7 +71,13 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         // gems__respondents MUST be first table for INSERTS!!
         parent::__construct('appointments', 'gems__appointments', 'gap');
 
+        $this->addTable(
+                'gems__respondent2org',
+                array('gap_id_user' => 'gr2o_id_user', 'gap_id_organization' => 'gr2o_id_organization')
+                );
+
         $this->addColumn(new Zend_Db_Expr("'appointment'"), Gems_Model::ID_TYPE);
+        $this->setKeys(array(Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'));
     }
 
     /**
@@ -80,7 +86,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
     protected function _addJoinTables()
     {
         if ($this->has('gap_id_organization')) {
-            $this->addLeftTable(
+            $this->addTable(
                     'gems__organizations',
                     array('gap_id_organization' => 'gor_id_organization')
                     );
@@ -154,6 +160,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $translator = $this->getTranslateAdapter();
 
         $this->setIfExists('gap_admission_time',     'label', $translator->_('Appointment'),
+                // 'formatFunction', array($this->util->getTranslated(), 'formatDateTime'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
                 'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_status',             'label', $translator->_('Type'),
@@ -188,7 +195,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
                 'dateFormat',  'dd-MM-yyyy HH:mm',
                 'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_discharge_time',  'label', $translator->_('Discharge'),
-                'dateFormat',  'dd-MM-yyyy HH:mm',
+                'dateFormat',  'HH:mm',
                 'description', 'yyyy-mm-dd hh:mm');
         $this->setIfExists('gap_code',            'label', $translator->_('Type'),
                 'multiOptions', $agenda->getTypeCodes());
@@ -231,14 +238,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
 
         $this->setIfExists('gap_id_organization', 'default', $orgId);
-        $this->setIfExists('gap_admission_time',
-                'elementClass', 'Date' //,
-                // 'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
-                );
-        $this->setIfExists('gap_discharge_time',
-                'elementClass', 'Date',
-                'validator',    new Zend_Validate_Date(array('format' =>'yyyy-MM-dd hh:mm'))
-                );
+        $this->setIfExists('gap_admission_time',  'elementClass', 'Date');
+        $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');
         $this->setIfExists('gap_comment',         'elementClass', 'Textarea');
 
         $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $agenda->getActivities($orgId));

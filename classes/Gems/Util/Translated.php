@@ -182,6 +182,9 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
      */
     public function formatTime($dateTimeValue)
     {
+        if ($dateTimeValue instanceof Zend_Date) {
+            $dateTimeValue = $dateTimeValue->getTimestamp();
+        }
         $seconds = str_pad($dateTimeValue % 60, 2, '0', STR_PAD_LEFT);
         $rest    = intval($dateTimeValue / 60);
         $minutes = str_pad($rest % 60, 2, '0', STR_PAD_LEFT);

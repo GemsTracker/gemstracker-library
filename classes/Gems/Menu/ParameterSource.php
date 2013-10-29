@@ -85,10 +85,7 @@ class Gems_Menu_ParameterSource extends ArrayObject implements Gems_Menu_Paramet
 
     public function setAppointmentId($appointmentId)
     {
-        $this->_setMulti($tokenId, Gems_Model::APPOINTMENT_ID, 'gap_id_appointment');
-
-        // Singal type of MUtil_Model::REQUEST_ID
-        $this->offsetSet(Gems_Model::ID_TYPE, 'appointment');
+        $this->_setMulti($appointmentId, Gems_Model::APPOINTMENT_ID, 'gap_id_appointment');
 
         return $this;
     }
