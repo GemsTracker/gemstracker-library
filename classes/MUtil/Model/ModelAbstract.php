@@ -1238,14 +1238,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function loadNew($count = null)
     {
         $empty = array();
-        foreach ($this->_model as $name => $mdata) {
-            if (array_key_exists('default', $mdata)) {
-                $empty[$name] = $mdata['default'];
-            } else {
-                $empty[$name] = null;
-            }
+        foreach ($this->getItemNames() as $name) {
+            $empty[$name] = $this->get($name, 'default');
         }
-        $empty = $this->_filterDataAfterLoad($empty, true);
+        $empty = reset($this->processAfterLoad(array($empty), true));
 
         // Return only a single row when no count is specified
         if (null === $count) {
@@ -1303,9 +1299,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @see MUtil_Model_SelectModelPaginator
      *
      * @param array $data Nested array containing rows or iterator
+     * @param boolean $new True when it is a new item
      * @return array Nested
      */
-    public function processAfterLoad($data)
+    public function processAfterLoad($data, $new = false)
     {
         if (($this->_transformers || $this->getMeta(self::LOAD_TRANSFORMER)) && ($data instanceof Traversable)) {
             $data = iterator_to_array($data, true);
@@ -1317,7 +1314,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         if ($this->getMeta(self::LOAD_TRANSFORMER)) {
             foreach ($data as $key => $row) {
-                $data[$key] = $this->_filterDataAfterLoad($row, false);
+                $data[$key] = $this->_filterDataAfterLoad($row, $new);
             }
         }
 
