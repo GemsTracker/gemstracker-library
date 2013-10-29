@@ -194,8 +194,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
             $source->offsetSet('can_be_taken', $bridge->can_be_taken);
 
             $link = $menuItem->toActionLink($source);
-            $link->title = array($this->_('Token'), $tokenUpper);
-
+            
+            if ($link) {
+                $link->title = array($this->_('Token'), $tokenUpper);
+            }
+            
             $td = $bridge->tdh($bridge->can_be_taken->if($link, $tokenUpper));
         } else {
             $td = $bridge->tdh($tokenUpper);
