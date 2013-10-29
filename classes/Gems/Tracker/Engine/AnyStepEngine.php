@@ -95,6 +95,22 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
         $rounds[$itemData['gro_id_round']] = $this->_('This round');
         return $this->_applyOptions($model, 'grp_valid_for_id', $rounds, $itemData);
     }
+    
+    /**
+     * Any round can depend on any token so always fo a full check from the start
+     * 
+     * When valid until depends on a future round, filling out the future token 
+     * should result in setting the valid until for all rounds in the track
+     * 
+     * @param Gems_Tracker_RespondentTrack $respTrack
+     * @param Gems_Tracker_Token $startToken
+     * @param type $userId
+     * @return type
+     */
+    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId)
+    {
+        return parent::checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
+    }
 
     /**
      * A longer description of the workings of the engine.
