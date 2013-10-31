@@ -194,7 +194,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
             }
         }
 
-        if ($this->_hiddenOrgId  && $raiseConditions) {
+        if ($this->_hiddenOrgId && $raiseConditions) {
             // Remove org paramter that should remain hidden when conditions have been raised.
             if (isset($parameters[MUtil_Model::REQUEST_ID1], $parameters[MUtil_Model::REQUEST_ID2]) &&
                     ($parameters[MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {

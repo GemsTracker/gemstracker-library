@@ -96,11 +96,10 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
                     Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
                     Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR
                     )))->class = 'date';
-            $div->br();
         }
         // $div->strong($date->toString());
         // $div->br();
-        $div->span(sprintf($this->_('At: %s.'), $date->toString(Zend_Date::TIME_SHORT)))->class = 'time';
+        $div->span($date->toString(Zend_Date::TIME_SHORT))->class = 'time';
         return $div;
     }
 }

@@ -57,8 +57,6 @@ class Gems_Menu_HiddenOrganizationHrefAttribute extends MUtil_Html_HrefArrayAttr
     {
         $results = parent::_getArrayRendered();
 
-        // MUtil_Echo::track($results);
-
         if (isset($results[MUtil_Model::REQUEST_ID1], $results[MUtil_Model::REQUEST_ID2]) && ($results[MUtil_Model::REQUEST_ID2] == $this->_hiddenOrgId)) {
             $results[MUtil_Model::REQUEST_ID] = $results[MUtil_Model::REQUEST_ID1];
             unset($results[MUtil_Model::REQUEST_ID1], $results[MUtil_Model::REQUEST_ID2]);

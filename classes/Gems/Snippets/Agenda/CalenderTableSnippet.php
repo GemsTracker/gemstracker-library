@@ -47,11 +47,25 @@
 class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
+     * Optional string format for date
+     * 
+     * @var string
+     */
+    protected $dateFormat;
+    
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
 
+    /**
+     * Optional database string format for date
+     * 
+     * @var string
+     */
+    protected $storageFormat = 'yyyy-MM-dd HH:mm:ss';
+    
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -64,28 +78,45 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
+        $bridge->gr2o_id_organization; 
+                
+        if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'show', 'allowed' => true))) {
+            $appButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
+        } else {
+            $appButton = null;
+        }
+        if ($menuItem = $this->menu->find(array('controller' => 'respondent', 'action' => 'show', 'allowed' => true))) {
+            $respButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show respondent'));
+        } else {
+            $respButton = null;
+        }
+
+        $br    = MUtil_Html::create('br');
+        
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calender');
         $table->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
 
         // Row with dates and patient data
-        $table->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
+        $table->tr(array('onlyWhenChanged' => true, 'class' => 'date'));
         $bridge->addSortable('date_only', $this->_('Date'), array('class' => 'date'))->colspan = 4;
 
         // Row with dates and patient data
-        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
-        $bridge->addSortable('gr2o_patient_nr');
-        $bridge->addSortable('name');
+        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time'));
+        // Add title, to make sure row displays when time is same as time for previous day
+        $bridge->addSortable('gap_admission_time')->title = $bridge->date_only;
         $bridge->addSortable('gor_name');
-        $bridge->addSortable('glo_name');
+        $bridge->addSortable('glo_name')->colspan = 2;
 
-        $link = null;
-
-        $bridge->tr(array('class' => 'odd'));
-        $bridge->addItemLink($link);
-        $bridge->addSortable('gap_admission_time');
-        $bridge->addSortable('gaa_name');
-        $bridge->addSortable('gapr_name');
+        $bridge->tr();
+        $bridge->addColumn($appButton)->class = 'middleAlign';
+        $bridge->addMultiSort('gr2o_patient_nr', $br, 'name');
+        // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));
+        $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+        // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
+        $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
+        
+        unset($table[MUtil_Html_TableElement::THEAD]);
     }
 
     /**
@@ -125,9 +156,13 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
 
         $params = $this->requestCache->getProgramParams() + $this->defaultSearchData;
 
-        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($params, $this->db)) {
-            $filter[] = $where;
-            $model->addFilter($filter);
+        $where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
+                $params, 
+                $this->db, 
+                $this->dateFormat,
+                $this->storageFormat);
+        if ($where) {
+            $model->addFilter(array($where));
         }
 
     }

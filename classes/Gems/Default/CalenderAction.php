@@ -53,6 +53,7 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
      */
     protected $autofilterParameters = array(
         'defaultSearchData' => 'getDefaultSearchData',
+        'dateFormat'        => 'getDateFormat',
         'extraSort'         => array('gap_admission_time' => SORT_ASC),
         );
 
@@ -89,6 +90,26 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
     }
 
     /**
+     * Get the date format used for the appointment date
+     *
+     * @return array
+     */
+    public function getDateFormat()
+    {
+        $model = $this->getModel();
+        
+        $format = $model->get('gap_admission_time', 'dateFormat');
+        if (! $format) {
+            $options = array();
+            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+            
+            $format = $options['dateFormat'];
+        }
+        
+        return $format;
+    }
+    
+    /**
      * Returns possible status types, can be filtered by implementations
      *
      * @return array
@@ -96,14 +117,12 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
     protected function getDefaultSearchData()
     {
         // The date is kept in the requestCache so it should not be an object
-        $date    = new MUtil_Date();
-        $options = array();
-        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-
+        $date  = new MUtil_Date();
+        
         return array(
             'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
             'dateused'            => 'gap_admission_time',
-            'datefrom'            => $date->toString($options['dateFormat']),
+            'datefrom'            => $date->toString($this->getDateFormat()),
             );
     }
 }

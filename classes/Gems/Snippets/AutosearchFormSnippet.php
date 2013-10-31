@@ -66,6 +66,13 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     protected $containingId;
 
     /**
+     * Optional string format for date
+     * 
+     * @var string
+     */
+    protected $dateFormat;
+    
+    /**
      *
      * @var Gems_Menu
      */
@@ -144,15 +151,18 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             }
             $element->setValue($defaultDate);
         }
-        $elements[] = $element;
+        $elements['dateused'] = $element;
 
-        $options = array();
+        if ($this->dateFormat) {
+            $options['dateFormat'] = $this->dateFormat;
+        }
         $options['label'] = $fromLabel;
         MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-        $elements[] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
+        
+        $elements['datefrom'] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements[] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
+        $elements['dateuntil'] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
     }
 
     /**
@@ -391,17 +401,21 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      * @param Zend_Db_Adapter_Abstract $db
      * @return string
      */
-    public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db)
+    public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
     {
         $isUsed = isset($data['dateused']) && $data['dateused'];
         if (! $isUsed) {
             return;
         }
 
-        $options   = array();
-        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-        $outFormat = 'yyyy-MM-dd';
-        $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+        if (null === $outFormat) {
+            $outFormat = 'yyyy-MM-dd';
+        }
+        if (null === $inFormat) {
+            $options   = array();
+            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+            $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+        }
 
         $isFrom  = isset($data['datefrom'])  && $data['datefrom']  && MUtil_Date::isDate($data['datefrom'],  $inFormat);
         $isUntil = isset($data['dateuntil']) && $data['dateuntil'] && MUtil_Date::isDate($data['dateuntil'], $inFormat);
