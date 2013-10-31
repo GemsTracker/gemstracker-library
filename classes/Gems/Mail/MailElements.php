@@ -80,6 +80,59 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
      */
     protected $view;
 
+
+    /**
+     * Adds a form multiple times in a table
+     *
+     * You can add your own 'form' either to the model or here in the parameters.
+     * Otherwise a form of the same class as the parent form will be created.
+     *
+     * All elements not yet added to the form are added using a new FormBridge
+     * instance using the default label / non-label distinction.
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return MUtil_Form_Element_Table
+     */
+    public function addFormTabs($parentBridge, $name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = func_get_args();
+        $options = MUtil_Ra::pairs($options, 2);
+
+        /*$options = $this->_mergeOptions($name, $options,
+            self::SUBFORM_OPTIONS);*/
+        //MUtil_Echo::track($options);
+        if (isset($options['form'])) {
+            $form = $options['form'];
+            unset($options['form']);
+        } else {
+            $formClass = get_class($parentBridge->getForm());
+            $form = new $formClass();
+        }
+        $parentForm = $parentBridge->getForm();
+        $submodel = $parentBridge->getModel()->get($name, 'model');
+        if ($submodel instanceof MUtil_Model_ModelAbstract) {
+            $bridge = new MUtil_Model_FormBridge($submodel, $form);
+            $subItemNumber = 0;
+            foreach ($submodel->getItemsOrdered() as $itemName) {
+                if (! $form->getElement($name)) {
+                    if ($submodel->has($itemName, 'label')) {
+                        $bridge->add($itemName);
+                        $subelement = $form->getElement($itemName);
+                    } else {
+                        $bridge->addHidden($itemName);
+                    }
+                }
+            }
+        }
+        $form->activateJQuery();
+        $tabcolumn = 'gctt_lang';
+        $element = new Gems_Form_Element_Tabs($form, $name, $options, $tabcolumn);
+        
+        $parentBridge->getForm()->addElement($element);
+        return $element;
+    }
+
     /**
      * Create an HTML Body element with CKEditor
      *
@@ -195,13 +248,23 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     public function createTemplateSelectElement($name, $label, $target=false, $list=false, $onChangeSubmit=false)
     {
         $options['label'] = $label;
-        
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
-        
+
+        $query = 'SELECT gems__comm_templates.gct_id_template, gems__comm_templates.gct_name 
+        FROM gems__comm_template_translations
+        RIGHT JOIN gems__comm_templates ON gems__comm_templates.gct_id_template = gems__comm_template_translations.gctt_id_template
+        WHERE gems__comm_template_translations.gctt_subject <> "" 
+        AND gems__comm_template_translations.gctt_body <> ""';
         if ($target) {
-            $select->where('gct_target = ?', $target);
+            $query .= ' AND gems__comm_templates.gct_target = ?';
         }
-        $options['multiOptions'] = $this->db->fetchPairs($select);
+        $query .= ' GROUP BY gems__comm_templates.gct_id_template';
+
+        if ($target) {
+            $options['multiOptions'] = $this->db->fetchPairs($query, $target);
+        } else {
+            $options['multiOptions'] = $this->db->fetchPairs($query);
+        }
+
         if (! $list) {
             $options['multiOptions'] = array('' => '') + $options['multiOptions'];
         }

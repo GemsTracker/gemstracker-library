@@ -98,7 +98,7 @@ class MUtil_Model_FormBridge
         self::SUBFORM_OPTIONS    => array('class', 'escape', 'form', 'tabindex'),
         self::TAB_OPTIONS        => array('value'),
         self::TEXT_OPTIONS       => array('maxlength', 'minlength', 'onblur', 'onchange', 'onfocus', 'onselect', 'size'),
-        self::TEXTAREA_OPTIONS   => array('cols', 'rows', 'wrap'),
+        self::TEXTAREA_OPTIONS   => array('cols', 'rows', 'wrap', 'decorators'),
         );
 
     public function __construct(MUtil_Model_ModelAbstract $model, Zend_Form $form)
@@ -264,7 +264,6 @@ class MUtil_Model_FormBridge
             // Merge them: first use supplied $options, and add missing values from model
             return (array) $options + (array) $modelOptions;
         }
-
         return $options;
     }
 

@@ -440,6 +440,17 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Check if multiple language mail templates is supported
+     * @return boolean 
+     */
+    public function getEmailMultiLanguage()
+    {
+        if ($this->offsetExists('email') && isset($this->email['multiLanguage'])) {
+            return (boolean) $this->email['multiLanguage'];
+        }
+    }
+
+    /**
      * The default Email template for Reset password
      *
      * @return string   Template Code
@@ -515,6 +526,17 @@ class Gems_Project_ProjectSettings extends ArrayObject
             return $this['jquery']['local'];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Get the default locale
+     * @return string locale
+     */
+    public function getLocaleDefault()
+    {
+        if ($this->offsetExists('locale') && isset($this->locale['default'])) {
+            return (string) $this->locale['default'];
         }
     }
 

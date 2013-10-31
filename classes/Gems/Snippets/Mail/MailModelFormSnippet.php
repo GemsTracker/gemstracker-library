@@ -72,11 +72,9 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
      */
     protected $request;
 
-    /**
-     *
-     * @var Zend_Translate
-     */
-    protected $translate;
+    protected $util;
+
+    protected $view;
 
     public function afterRegistry() {
         $this->mailElements = $this->loader->getMailLoader()->getMailElements();
@@ -103,43 +101,50 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $this->initItems();
+        $this->addItems($bridge, 'gct_id_template', 'gct_target');
 
-        
-        $this->addItems($bridge, 'gct_id_template');
+        $bridge->getForm()->getElement('gct_target')->setAttrib('onchange', 'this.form.submit()');
 
-        $bridge->addSelect(
-                    'gct_target', 
-                    array(
-                        'label' => $this->translate->_('Mail target'),
-                        'multiOptions' => $this->mailTargets,
-                        'onchange' => 'this.form.submit()'
-                    )
-                );
+        $this->addItems($bridge, 'gct_name');
 
-        $this->addItems($bridge, 'gct_name', 'gctt_subject');
-        $mailBody = $bridge->addElement($this->mailElements->createBodyElement('gctt_body', $this->translate->_('Message'), $model->get('gctt_body', 'required')));
-        if ($mailBody instanceof Gems_Form_Element_CKEditor) {
-            $mailBody->config['availablefields'] = $this->mailer->getMailFields();
-            $mailBody->config['availablefieldsLabel'] = $this->translate->_('Fields');
+        //$bridge->addFormTable('gctt');
+        $this->mailElements->addFormTabs($bridge, 'gctt');
 
-            $mailBody->config['extraPlugins'] .= ',availablefields';
-            $mailBody->config['toolbar'][] = array('availablefields');
-        }
+        $config = array(
+        'extraPlugins' => 'bbcode,availablefields',
+        'toolbar' => array(
+            array('Source','-','Undo','Redo'),
+            array('Find','Replace','-','SelectAll','RemoveFormat'),
+            array('Link', 'Unlink', 'Image', 'SpecialChar'),
+            '/',
+            array('Bold', 'Italic','Underline'),
+            array('NumberedList','BulletedList','-','Blockquote'),
+            array('Maximize'),
+            array('availablefields')
+            )
+        );
+        $config['availablefields'] = $this->mailer->getMailFields();
+        $config['availablefieldsLabel'] = $this->_('Fields');
+
+
+        $this->view->inlineScript()->prependScript("
+            CKEditorConfig = ".Zend_Json::encode($config).";
+            ");
 
         $this->addItems($bridge, 'gct_code');
         $this->addItems($bridge, 'gctt_lang');
 
-        $bridge->addFakeSubmit('preview', array('label' => $this->translate->_('Preview')));
+        $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
 
-        $bridge->addElement($this->mailElements->createEmailElement('to', $this->translate->_('To (test)'), true));
-        $bridge->addElement($this->mailElements->createEmailElement('from', $this->translate->_('From'), true));
+        $bridge->addElement($this->mailElements->createEmailElement('to', $this->_('To (test)'), true));
+        $bridge->addElement($this->mailElements->createEmailElement('from', $this->_('From'), true));
         
         
-        $bridge->addFakeSubmit('sendtest', array('label' => $this->translate->_('Send (test)')));
+        $bridge->addFakeSubmit('sendtest', array('label' => $this->_('Send (test)')));
         
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
-        $bridge->addHtml('available_fields', array('label' => $this->translate->_('Available fields')));
+        $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));
     }
 
     /**
@@ -148,19 +153,36 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected function loadFormData() {
         parent::loadFormData();
 
-        if ($this->formData['gctt_subject'] || $this->formData['gctt_body']) {
-            $content = '[b]';
-            $content .= $this->translate->_('Subject:');
-            $content .= '[/b] [i]';
-            $content .= $this->mailer->applyFields($this->formData['gctt_subject']);
-            $content .= "[/i]\n\n";
-            $content .= $this->mailer->applyFields($this->formData['gctt_body']);
-        } else {
-            $content = ' ';
+        if (isset($this->formData['gctt'])) {
+            $multi = false;
+            if (count($this->formData['gctt']) > 1) {
+                $multi = true;
+                $allLanguages = $this->util->getLocalized()->getLanguages();
+            }
+            $content = '';
+            foreach($this->formData['gctt'] as $templateLanguage) {
+                if ($multi) {
+                    $content .= '[b]'.$allLanguages[$templateLanguage['gctt_lang']].":[/b]\n\n";
+                }
+                if ($templateLanguage['gctt_subject'] || $templateLanguage['gctt_body']) {
+                    $content .= '[b]';
+                    $content .= $this->_('Subject:');
+                    $content .= '[/b] [i]';
+                    $content .= $this->mailer->applyFields($templateLanguage['gctt_subject']);
+                    $content .= "[/i]\n\n";
+                    $content .= $this->mailer->applyFields($templateLanguage['gctt_body']);       
+                }
+                if ($multi) {
+                    $content .= "\n\n";
+                }
+            }
+            if (!empty($content)) {
+                $this->formData['preview_html'] = MUtil_Markup::render($content, 'Bbcode', 'Html');
+                $this->formData['preview_text'] = MUtil_Markup::render($content, 'Bbcode', 'Text');
+            }
         }
-        $this->formData['preview_html'] = MUtil_Markup::render($content, 'Bbcode', 'Html');
-        $this->formData['preview_text'] = MUtil_Markup::render($content, 'Bbcode', 'Text');
-
+        
+        
         $organization = $this->mailer->getOrganization();
         $this->formData['to'] = $this->formData['from'] = null;
         if ($organization->getEmail()) {
@@ -180,9 +202,9 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         if ($this->request->isPost()) {
             $data = $this->request->getPost();
             if (!empty($data['preview'])) {
-                $this->addMessage($this->translate->_('Preview updated'));
+                $this->addMessage($this->_('Preview updated'));
             } elseif (!empty($data['sendtest'])) {
-                $this->addMessage($this->translate->_('Test mail sent'));
+                $this->addMessage($this->_('Test mail sent'));
             }
         }
     }

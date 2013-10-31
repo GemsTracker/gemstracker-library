@@ -549,3 +549,5 @@ ALTER TABLE gems__organizations
 -- PATCH: Organization Reset Password template SELECT
 ALTER TABLE gems__organizations
     ADD gor_reset_pass_template bigint unsigned null AFTER gor_create_account_template;
+
+ALTER TABLE  `gems__comm_template_translations` CHANGE  `gctt_subject`  `gctt_subject` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE  `gctt_body`  `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;

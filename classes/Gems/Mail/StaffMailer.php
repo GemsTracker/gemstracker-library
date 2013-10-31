@@ -106,6 +106,7 @@ class Gems_Mail_staffMailer extends Gems_Mail_MailerAbstract
         $this->addMailFields($mailFields);
         
         $this->addTo($this->user->getEmailAddress(), $this->user->getFullName());
+        $this->setLanguage($this->user->getLocale());
     }
 
     public function getDataLoaded()

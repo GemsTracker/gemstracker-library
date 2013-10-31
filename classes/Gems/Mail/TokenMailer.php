@@ -128,6 +128,14 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         return $targetData;
     }
 
+    protected function loadDefault()
+    {
+        parent::loadDefault();
+
+        $this->token = $this->loader->getTracker()->getToken($this->tokenIdentifier);
+        
+    }
+
 	/**
      * Get the respondent mailfields and add them
      */

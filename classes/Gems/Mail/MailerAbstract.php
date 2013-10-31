@@ -61,6 +61,8 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      */
     protected $bodyText;
 
+    protected $db;
+
     /**
      * Collection of the different available mailfields
      * @var array
@@ -125,6 +127,8 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      * @var array
      */
     protected $to = array();
+
+    protected $util;
 
     /**
      * The start and end markers for the mailfields
@@ -219,6 +223,18 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         return str_replace($mailKeys, $this->mailFields, $text);
     }
 
+    /**
+     * Get the prefered template language
+     * @return string language code
+     */
+    public function getLanguage()
+    {
+        if ($this->project->getEmailMultiLanguage() && $this->language) {
+            return $this->language;
+        } else {
+            return $this->project->getLocaleDefault();
+        }
+    }
 
     /**
      * Get Flash message
@@ -257,6 +273,11 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
             }
             $targetData['to'] = join(', ', $fullDisplay);
         }
+        if ($this->language) {
+            $allLanguages = $this->util->getLocalized()->getLanguages();
+            $targetData['prefered_language'] = $allLanguages[$this->language];
+        }
+
         return $targetData;
     }
 
@@ -270,6 +291,53 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
             return $this->templateStyle;
         } else {
             return $this->organization->getStyle();
+        }
+    }
+
+    /**
+     * get a specific template.
+     * If the selected translation exists, get that translation
+     * Else if the selected translation isn't the default, select the default translation
+     * Else select the first not empty translation
+     * Else return false
+     * @param integer  $templateId Template ID
+     */
+    public function getTemplate($templateId)
+    {
+        $language = $this->getLanguage();
+        $select = $this->db->select();
+        $select->from('gems__comm_template_translations')
+               ->where('gctt_id_template = ?', $templateId)
+               ->where('gctt_lang = ?', $language);
+        
+        $template = $this->db->fetchRow($select);
+        if ($template) {
+            return $template;
+        }
+
+        if ($language !== $this->project->getLocaleDefault()) {
+            $language = $this->project->getLocaleDefault();
+            $select = $this->db->select();
+            $select->from('gems__comm_template_translations')
+                   ->where('gctt_id_template = ?', $templateId)
+                   ->where('gctt_lang = ?', $language);
+            
+            $template = $this->db->fetchRow($select);
+            if ($template) {
+                return $template;
+            }
+        }
+        
+        $select = $this->db->select();
+        $select->from('gems__comm_template_translations')
+               ->where('gctt_id_template = ?', $templateId)
+               ->where('gctt_subject <> ""')
+               ->where('gctt_body <> ""');
+        $template = $this->db->fetchRow($select);
+        if ($template) {
+            return $template;
+        } else {
+            return false;
         }
     }
 
@@ -335,9 +403,11 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Set the languange in which the mail should be sent.
+     * @param string $language language code
      */
-    public function setLanguage()
+    public function setLanguage($language)
     {
+        $this->language = $language;
     }
 
     /**
@@ -391,14 +461,10 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      */
     public function setTemplate($templateId)
     {
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();        
-        $select->where('gct_id_template = ?', $templateId);
-        
-        $template = $this->db->fetchRow($select);
-
-        $this->subject = $template['gctt_subject'];
-        $this->bodyBb = $template['gctt_body'];
-        $this->setTemplateId($templateId);
+        if ($template = $this->getTemplate($templateId)) {
+            $this->subject = $template['gctt_subject'];
+            $this->bodyBb = $template['gctt_body'];
+        }
     }
 
     /**

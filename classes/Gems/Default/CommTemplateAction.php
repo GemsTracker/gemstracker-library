@@ -32,6 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
+ * @version    $id CommTemplateAction.php
  */
 
 /**
@@ -45,6 +46,11 @@
  */
 class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetActionAbstract
 {
+
+    protected $createEditSnippets = 'Mail_MailModelFormSnippet';
+
+    //public $showSnippets = 'Mail_CommTemplateShowSnippet';
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -56,9 +62,6 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
      * @param string $action The current action.
      * @return MUtil_Model_ModelAbstract
      */
-    
-    protected $createEditSnippets = 'Mail_MailModelFormSnippet';
-
     public function createModel($detailed, $action)
     {
         $currentLanguage = $this->locale->getLanguage();
@@ -67,27 +70,43 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
         
         if ($detailed) {
             $commTargets = $this->loader->getMailTargets();
-            // Translations maybe?
+            $translatedCommTargets = array();
             foreach($commTargets as $name=>$label) {
-                
+                $translatedCommTargets[$name] = $this->_($label);
             }
-            $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets);
+            $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $translatedCommTargets);
         }
 
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
-        $model->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50);
+
+        $translationModel = new MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
+        $translationModel->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', 'MUtil_Echo::track');
         if ($detailed) {
-            $model->set('gctt_body', 'label', $this->_('Message'), 'elementClass', 'Textarea', 'rows', 4);
-
-            $model->setIfExists('gct_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
+            $translationModel->set('gctt_body', 'label', $this->_('Message'), 'elementClass', 'textarea', 'decorators', array('CKEditor'),'rows', 4);
         }
-        $model->set('gctt_lang', 'elementClass', 'hidden',  'value', $currentLanguage );
 
-        $allLanguages = $this->util->getLocalized()->getLanguages();
-        //MUtil_Echo::track($allLanguages);
+        if ($this->project->getEmailMultiLanguage()) {
+            $allLanguages = $this->util->getLocalized()->getLanguages();
+            ksort($allLanguages);
+            $requiredRows = array();
+            foreach($allLanguages as $code=>$language) {
+                $requiredRows[]['gctt_lang'] = $code;
+            }
+        } else {
+            $defaultLanguage = $this->project->getLocaleDefault();
+            $requiredRows[]['gctt_lang'] = $defaultLanguage;
+
+            $translationModel->setFilter(array('gctt_lang' => $defaultLanguage));
+        }
+
+        $transformer = new MUtil_Model_Transform_RequiredRowsTransformer();
+        $transformer->setRequiredRows($requiredRows);
+        $translationModel->addTransformer($transformer);
 
 
-
+        $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
+        
+        
         return $model;
     }
 

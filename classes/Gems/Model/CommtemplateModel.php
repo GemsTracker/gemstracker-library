@@ -60,7 +60,7 @@ Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
     {
         $currentLanguage = $this->locale->getLanguage();
         
-        $this->addLeftTable(
+        /*$this->addLeftTable(
             'gems__comm_template_translations',
             array(
                 'gct_id_template' => 'gctt_id_template',
@@ -68,7 +68,7 @@ Class Gems_Model_CommtemplateModel extends Gems_Model_JoinModel
             ),
             'gctt');
 
-        $this->setOnSave('gctt_lang', $currentLanguage);
+        $this->setOnSave('gctt_lang', $currentLanguage);*/
     }
 
 }

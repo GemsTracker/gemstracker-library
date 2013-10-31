@@ -183,10 +183,11 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
     protected function sendMail() {
         $mails = 0;
         $updates = 0;
+        $mailSent = false;
 
-        if ($this->formData['multi_method'] == 'M') {
-            foreach($this->multipleTokenData as $tokenData) {
-                if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
+        foreach($this->multipleTokenData as $tokenData) {
+            if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
+                if ($this->formData['multi_method'] == 'M') {
                     $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
                     $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                     $mailer->setSubject($this->formData['subject']);
@@ -196,36 +197,28 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
 
                     $mails++;
                     $updates++;
-                }
-            }
-        } else {
-            $mailSent = false;
-            foreach($this->multipleTokenData as $tokenData) {
-                if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
-                    if (!$mailSent) {
-                        $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
-                        $mailer->setFrom($this->fromOptions[$this->formData['from']]);
-                        $mailer->setSubject($this->formData['subject']);
-                        $mailer->setBody($this->formData['body']);
-                        $mailer->setTemplateId($this->formData['select_template']);
-                        $mailer->send();
-                        $mailSent == false;
-                        $mails++;
-                        $updates++;
+                } elseif (!$mailSent) {
+                    $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
+                    $mailer->setFrom($this->fromOptions[$this->formData['from']]);
+                    $mailer->setSubject($this->formData['subject']);
+                    $mailer->setBody($this->formData['body']);
+                    $mailer->setTemplateId($this->formData['select_template']);
+                    $mailer->send();
+                    $mailSent == false;
+                    $mails++;
+                    $updates++;
 
-                        if ($this->formData['multi_method'] == 'A') {
-                            break;
-                        }
-                    } else {
-                        if ($this->formData['multi_method'] == 'O') {
-                            $this->mailer->updateToken($tokenData['gto_id_token']);
-                            $updates++;
-                        }
+                    if ($this->formData['multi_method'] == 'A') {
+                        break;
                     }
+                } elseif ($this->formData['multi_method'] == 'O') {
+                    $this->mailer->updateToken($tokenData['gto_id_token']);
+                    $updates++;
                 }
             }
-            $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
         }
+        
+        $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
         
     }
 }

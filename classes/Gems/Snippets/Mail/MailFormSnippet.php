@@ -146,6 +146,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         
         $bridge->addHtml('to', 'label', $this->_('To'));
+        $bridge->addHtml('prefered_language', 'label', $this->_('Prefered Language'));
 
         $bridge->addElement($this->mailElements->createTemplateSelectElement('select_template', $this->_('Template'),$this->mailTarget, $this->templateOnly, true));
 
@@ -453,8 +454,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
             $template = $this->db->fetchRow($select);
 
-            $this->formData['subject'] = $template['gctt_subject'];
-            $this->formData['body'] = $template['gctt_body'];
+            if ($template = $this->mailer->getTemplate($this->formData['select_template'])) {
+                $this->formData['subject'] = $template['gctt_subject'];
+                $this->formData['body'] = $template['gctt_body'];
+            }
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());
@@ -497,7 +500,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     }
 
     protected function sendMail() {
-        MUtil_Echo::track($this->fromOptions);
         $this->mailer->setFrom($this->fromOptions[$this->formData['from']]);
         $this->mailer->setSubject($this->formData['subject']);
         $this->mailer->setBody($this->formData['body']);
