@@ -1241,7 +1241,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         foreach ($this->getItemNames() as $name) {
             $empty[$name] = $this->get($name, 'default');
         }
-        $empty = reset($this->processAfterLoad(array($empty), true));
+        $data = $this->processAfterLoad(array($empty), true);
+        $empty = reset($data);
 
         // Return only a single row when no count is specified
         if (null === $count) {
