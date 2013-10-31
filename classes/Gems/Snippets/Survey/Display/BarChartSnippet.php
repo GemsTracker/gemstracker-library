@@ -161,7 +161,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         
         foreach ($data as $row) {
             $token = $this->loader->getTracker()->getToken($row);
-            if ($token->getReceptionCode()->isSuccess()) {
+            if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
                 $answers = $token->getRawAnswers();
                 if (array_key_exists($this->question_code, $answers)) {
                     $value = (float) $answers[$this->question_code];        // Cast to number
