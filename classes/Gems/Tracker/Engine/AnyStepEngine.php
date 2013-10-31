@@ -74,7 +74,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
         foreach ($rounds as $roundId => $round) {
             $rounds[$roundId] = $this->getRoundDescription($round);
         }
-        return $this->_applyOptions($model, 'grp_valid_after_id', $rounds, $itemData);
+        return $this->_applyOptions($model, 'gro_valid_after_id', $rounds, $itemData);
     }
 
     /**
@@ -93,15 +93,15 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
             $rounds[$roundId] = $this->getRoundDescription($round);
         }
         $rounds[$itemData['gro_id_round']] = $this->_('This round');
-        return $this->_applyOptions($model, 'grp_valid_for_id', $rounds, $itemData);
+        return $this->_applyOptions($model, 'gro_valid_for_id', $rounds, $itemData);
     }
-    
+
     /**
      * Any round can depend on any token so always fo a full check from the start
-     * 
-     * When valid until depends on a future round, filling out the future token 
+     *
+     * When valid until depends on a future round, filling out the future token
      * should result in setting the valid until for all rounds in the track
-     * 
+     *
      * @param Gems_Tracker_RespondentTrack $respTrack
      * @param Gems_Tracker_Token $startToken
      * @param type $userId

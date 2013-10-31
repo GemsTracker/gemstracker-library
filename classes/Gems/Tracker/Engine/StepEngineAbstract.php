@@ -59,12 +59,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     protected $_roundModelClass = 'MUtil_Model_TableModel';
 
     /**
-     *
-     * @var array (optional) of type join_condition => table_name
-     */
-    protected $_support_tables = array('gro_id_round = grp_id_round' => 'gems__round_periods');
-
-    /**
      * Helper function for default handling of multi options value sets
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -120,9 +114,9 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     protected function applyDatesValidAfter(MUtil_Model_ModelAbstract $model, array &$itemData, $language)
     {
         // Set the after date fields that can be chosen for the current values
-        $dateOptions = $this->getDateOptionsFor($itemData['grp_valid_after_source'], $itemData['grp_valid_after_id'], $language, true);
+        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_after_source'], $itemData['gro_valid_after_id'], $language, true);
 
-        return $this->_applyOptions($model, 'grp_valid_after_field', $dateOptions, $itemData);
+        return $this->_applyOptions($model, 'gro_valid_after_field', $dateOptions, $itemData);
     }
 
     /**
@@ -135,18 +129,18 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     protected function applyDatesValidFor(MUtil_Model_ModelAbstract $model, array &$itemData, $language)
     {
-        $dateOptions = $this->getDateOptionsFor($itemData['grp_valid_for_source'], $itemData['grp_valid_for_id'], $language, true);
+        $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language, true);
 
-        if ($itemData['gro_id_round'] == $itemData['grp_valid_for_id']) {
+        if ($itemData['gro_id_round'] == $itemData['gro_valid_for_id']) {
             // Cannot use the valid until of the same round to calculate that valid until
             unset($dateOptions['gto_valid_until']);
         }
 
-        if ($itemData['grp_valid_for_source'] == self::NO_TABLE) {
-            $model->del('grp_valid_for_unit', 'label');
-            $model->del('grp_valid_for_length', 'label');
+        if ($itemData['gro_valid_for_source'] == self::NO_TABLE) {
+            $model->del('gro_valid_for_unit', 'label');
+            $model->del('gro_valid_for_length', 'label');
         }
-        return $this->_applyOptions($model, 'grp_valid_for_field', $dateOptions, $itemData);
+        return $this->_applyOptions($model, 'gro_valid_for_field', $dateOptions, $itemData);
     }
 
     /**
@@ -285,13 +279,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 if(array_key_exists($token->getRoundId(), $this->_rounds)) {
                     $round      = $this->_rounds[$token->getRoundId()];
 
-                    $fromDate   = $this->getValidFromDate($round['grp_valid_after_source'], $round['grp_valid_after_field'], $round['grp_valid_after_id'], $token, $respTrack);
-                    $validFrom  = $this->calculateFromDate($fromDate, $round['grp_valid_after_unit'], $round['grp_valid_after_length']);
+                    $fromDate   = $this->getValidFromDate($round['gro_valid_after_source'], $round['gro_valid_after_field'], $round['gro_valid_after_id'], $token, $respTrack);
+                    $validFrom  = $this->calculateFromDate($fromDate, $round['gro_valid_after_unit'], $round['gro_valid_after_length']);
 
                     // MUtil_Echo::track($round, (string) $fromDate, $validFrom);
 
-                    $untilDate  = $this->getValidUntilDate($round['grp_valid_for_source'], $round['grp_valid_for_field'], $round['grp_valid_for_id'], $token, $respTrack, $validFrom);
-                    $validUntil = $this->calculateUntilDate($untilDate, $round['grp_valid_for_unit'], $round['grp_valid_for_length']);
+                    $untilDate  = $this->getValidUntilDate($round['gro_valid_for_source'], $round['gro_valid_for_field'], $round['gro_valid_for_id'], $token, $respTrack, $validFrom);
+                    $validUntil = $this->calculateUntilDate($untilDate, $round['gro_valid_for_unit'], $round['gro_valid_for_length']);
 
                     $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
                 }
@@ -317,19 +311,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         } else {
             return 0;
         }
-    }
-
-    /**
-     * Create model for rounds. Allowes overriding by sub classes.
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createRoundModel()
-    {
-        $model = new Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
-        $model->addTable('gems__round_periods', array('gro_id_round' => 'grp_id_round'), 'grp');
-
-        return $model;
     }
 
     /**
@@ -438,7 +419,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'elementClass', 'html',
                     'value', MUtil_Html::create()->h4($this->_('Valid from calculation'))
                     );
-            $model->set('grp_valid_after_source',
+            $model->set('gro_valid_after_source',
                     'label', $this->_('Date source'),
                     'default', self::TOKEN_TABLE,
                     'elementClass', 'Radio',
@@ -446,22 +427,22 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'required', true,
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_after_id',
+            $model->set('gro_valid_after_id',
                     'label', $this->_('Round used'),
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_after_field',
+            $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_after_length',
+            $model->set('gro_valid_after_length',
                     'label', $this->_('Add to date'),
                     'description', $this->_('Can be negative'),
                     'required', false,
                     'filter', 'Int'
                     );
-            $model->set('grp_valid_after_unit',
+            $model->set('gro_valid_after_unit',
                     'label', $this->_('Add to date unit'),
                     'multiOptions',
                     $this->getDateUnitsList(true)
@@ -473,7 +454,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'elementClass', 'html',
                     'value', MUtil_Html::create()->h4($this->_('Valid for calculation'))
                     );
-            $model->set('grp_valid_for_source',
+            $model->set('gro_valid_for_source',
                     'label', $this->_('Date source'),
                     'default', self::TOKEN_TABLE,
                     'elementClass', 'Radio',
@@ -481,23 +462,23 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'required', true,
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_for_id',
+            $model->set('gro_valid_for_id',
                     'label', $this->_('Round used'),
                     'default', '',
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_for_field',
+            $model->set('gro_valid_for_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
                     'onchange', 'this.form.submit();'
                     );
-            $model->set('grp_valid_for_length',
+            $model->set('gro_valid_for_length',
                     'label', $this->_('Add to date'),
                     'required', false,
                     'default', 2,
                     'filter', 'Int'
                     );
-            $model->set('grp_valid_for_unit',
+            $model->set('gro_valid_for_unit',
                     'label', $this->_('Add to date unit'),
                     'multiOptions', $this->getDateUnitsList(false)
                     );
@@ -712,7 +693,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         $first  = ! $this->getPreviousRoundId($itemData['gro_id_round'], $itemData['gro_id_order']);
 
         if ($first) {
-            $itemData['grp_valid_after_source'] = self::RESPONDENT_TRACK_TABLE;
+            $itemData['gro_valid_after_source'] = self::RESPONDENT_TRACK_TABLE;
         }
 
         // Update the current round data
@@ -731,12 +712,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         // vice versa. So we have to set it now.
         $result = $this->applySurveyListValidAfter($model, $itemData) || $result;
 
-        if (! $this->_sourceUsesSurvey($itemData['grp_valid_after_source'])) {
-            $model->del('grp_valid_after_id', 'label');
+        if (! $this->_sourceUsesSurvey($itemData['gro_valid_after_source'])) {
+            $model->del('gro_valid_after_id', 'label');
         }
 
         // Set allowed after sources
-        $result = $this->_applyOptions($model, 'grp_valid_after_source', $this->getSourceList(true, $first), $itemData) || $result;
+        $result = $this->_applyOptions($model, 'gro_valid_after_source', $this->getSourceList(true, $first), $itemData) || $result;
 
         // Set the after date fields that can be chosen for the current values
         $result = $this->applyDatesValidAfter($model, $itemData, $language) || $result;
@@ -748,12 +729,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         $result = $this->applySurveyListValidFor($model, $itemData) || $result;
 
         // Display used survey only when appropriate
-        if (! $this->_sourceUsesSurvey($itemData['grp_valid_for_source'])) {
-            $model->del('grp_valid_for_id', 'label');
+        if (! $this->_sourceUsesSurvey($itemData['gro_valid_for_source'])) {
+            $model->del('gro_valid_for_id', 'label');
         }
 
         // Set allowed for sources
-        $result = $this->_applyOptions($model, 'grp_valid_for_source', $this->getSourceList(false, $first), $itemData) || $result;
+        $result = $this->_applyOptions($model, 'gro_valid_for_source', $this->getSourceList(false, $first), $itemData) || $result;
 
         // Set the for date fields that can be chosen for the current values
         $result = $this->applyDatesValidFor($model, $itemData, $language) || $result;

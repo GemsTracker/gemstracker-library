@@ -61,7 +61,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     public $sortKey = array('gtr_track_name' => SORT_ASC);
 
     public $summarizedActions = array('index', 'autofilter', 'check-all');
-    
+
     public $menuShowIncludeLevel = 10;
 
     /**
@@ -189,7 +189,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         return true;
     }
-    
+
     public function copyAction()
     {
         $trackId = $this->_getIdParam();
@@ -209,18 +209,17 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         // Now save (not done yet)
         $savedValues = $trackModel->save($newTrack);
         $newTrackId = $savedValues['gtr_id_track'];
-        
+
         // Now copy the rounds
         $roundModel->applyRequest($this->getRequest());
         $rounds = $roundModel->load();
-        
+
         if ($rounds) {
             $numRounds = count($rounds);
             $newRounds = $roundModel->loadNew($numRounds);
             foreach ($newRounds as $idx => $newRound) {
                 $round = $rounds[$idx];
                 unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
-                unset($round['grp_id_round'], $round['grp_changed'], $round['grp_changed_by'], $round['grp_created'], $round['grp_created_by']);
                 $round['gro_id_track'] = $newTrackId;
                 $newRounds[$idx] = $round + $newRounds[$idx];
             }
@@ -229,11 +228,11 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         } else {
             $numRounds = 0;
         }
-        
+
         // Now copy the fields
         $fieldModel->applyRequest($this->getRequest());
         $fields = $fieldModel->load();
-        
+
         if ($fields) {
             $numFields = count($fields);
             $newFields = $fieldModel->loadNew($numFields);

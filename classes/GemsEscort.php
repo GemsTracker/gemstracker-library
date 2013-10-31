@@ -1303,6 +1303,7 @@ class GemsEscort extends MUtil_Application_Escort
             'duration'    => 'fast',
             'showOn'      => 'button',
             'stepMinute'  => 5,
+            'size'        => 10,
             'timeJsUrl'   => $this->basepath->getBasePath() . '/gems/js',
         );
 

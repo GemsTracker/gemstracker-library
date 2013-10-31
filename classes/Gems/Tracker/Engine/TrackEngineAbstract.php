@@ -56,12 +56,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
     /**
      *
-     * @var array (optional) of type join_condition => table_name
-     */
-    protected $_support_tables;
-
-    /**
-     *
      * @var array
      */
     protected $_trackData;
@@ -128,15 +122,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         if (! is_array($this->_rounds)) {
             $roundSelect = $this->db->select();
-            $roundSelect->from('gems__rounds');
-
-            if ($this->_support_tables) {
-                foreach ($this->_support_tables as $cond => $table) {
-                    $roundSelect->join($table, $cond);
-                }
-            }
-
-            $roundSelect
+            $roundSelect->from('gems__rounds')
                 ->where('gro_id_track = ?', $this->_trackId)
                 ->order('gro_id_order');
 
@@ -433,9 +419,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     protected function createRoundModel()
     {
-        $model = new Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
-
-        return $model;
+        return new Gems_Model_TableModel('rounds', 'gems__rounds', 'gro');
     }
 
     /**
@@ -711,16 +695,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
         if ($this->_rounds) {
             $defaults = end($this->_rounds);
-
-            if ($this->_support_tables) {
-                foreach ($this->_support_tables as $cond => $table) {
-                    foreach (explode('=', $cond) as $field) {
-                        $start = substr($field, 0, 4);
-                        unset($defaults[trim($field)], $defaults[$start . '_created'], $defaults[$start . '_created_by']);
-                    }
-                }
-            }
-
             unset($defaults['gro_id_round'], $defaults['gro_id_survey']);
 
             $defaults['gro_id_order'] = $defaults['gro_id_order'] + 10;

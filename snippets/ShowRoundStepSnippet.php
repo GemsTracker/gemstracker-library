@@ -97,15 +97,15 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
         $bridge->addItem('gro_icon_file');
 
         $bridge->addItem($model->get('valid_after', 'value'));
-        $this->_addIf(array('grp_valid_after_source', 'grp_valid_after_id', 'grp_valid_after_field'), $bridge, $model);
-        if ($model->has('grp_valid_after_length', 'label')) {
-            $bridge->addItem(array($bridge->grp_valid_after_length, ' ', $bridge->grp_valid_after_unit), $model->get('grp_valid_after_length', 'label'));
+        $this->_addIf(array('gro_valid_after_source', 'gro_valid_after_id', 'gro_valid_after_field'), $bridge, $model);
+        if ($model->has('gro_valid_after_length', 'label')) {
+            $bridge->addItem(array($bridge->gro_valid_after_length, ' ', $bridge->gro_valid_after_unit), $model->get('gro_valid_after_length', 'label'));
         }
 
         $bridge->addItem($model->get('valid_for', 'value'));
-        $this->_addIf(array('grp_valid_for_source', 'grp_valid_for_id', 'grp_valid_for_field'), $bridge, $model);
-        if ($model->has('grp_valid_for_length', 'label')) {
-            $bridge->addItem(array($bridge->grp_valid_for_length, ' ', $bridge->grp_valid_for_unit), $model->get('grp_valid_after_length', 'label'));
+        $this->_addIf(array('gro_valid_for_source', 'gro_valid_for_id', 'gro_valid_for_field'), $bridge, $model);
+        if ($model->has('gro_valid_for_length', 'label')) {
+            $bridge->addItem(array($bridge->gro_valid_for_length, ' ', $bridge->gro_valid_for_unit), $model->get('gro_valid_after_length', 'label'));
         }
 
         $bridge->addItem('gro_active');

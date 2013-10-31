@@ -350,11 +350,6 @@ class MUtil_Model_FormBridge
         if (isset($options['dateFormat'])) {
             // Make sure the model knows the dateFormat (can be important for storage).
             $this->getModel()->set($name, 'dateFormat', $options['dateFormat']);
-
-            if (! isset($options['size'])) {
-                // Auto guess size
-                $options['size'] = strlen($options['dateFormat']);
-            }
         }
 
         // Make sure form knows it is a jQuery form

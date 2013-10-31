@@ -61,14 +61,14 @@ class Gems_Tracker_Engine_NextStepEngine extends Gems_Tracker_Engine_StepEngineA
         $previous = $this->getPreviousRoundId($itemData['gro_id_round'], $itemData['gro_id_order']);
 
         if ($previous) {
-            $itemData['grp_valid_after_id'] = $previous;
+            $itemData['gro_valid_after_id'] = $previous;
             $rounds[$previous] = $this->getRoundDescription($this->_rounds[$previous]);
 
         } else {
-            $itemData['grp_valid_after_id'] = null;
+            $itemData['gro_valid_after_id'] = null;
             $rounds = $this->util->getTranslated()->getEmptyDropdownArray();
         }
-        $model->set('grp_valid_after_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
+        $model->set('gro_valid_after_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
 
         return false;
     }
@@ -86,12 +86,12 @@ class Gems_Tracker_Engine_NextStepEngine extends Gems_Tracker_Engine_StepEngineA
             $itemData['gro_id_round'] = '';
         }
         // Fixed value
-        $itemData['grp_valid_for_id'] = $itemData['gro_id_round'];
+        $itemData['gro_valid_for_id'] = $itemData['gro_id_round'];
 
         // The options array
         $rounds[$itemData['gro_id_round']] = $this->_('This round');
 
-        $model->set('grp_valid_for_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
+        $model->set('gro_valid_for_id', 'multiOptions', $rounds, 'elementClass', 'Exhibitor');
 
         return false;
     }

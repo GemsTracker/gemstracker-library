@@ -550,4 +550,69 @@ ALTER TABLE gems__organizations
 ALTER TABLE gems__organizations
     ADD gor_reset_pass_template bigint unsigned null AFTER gor_create_account_template;
 
-ALTER TABLE  `gems__comm_template_translations` CHANGE  `gctt_subject`  `gctt_subject` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, CHANGE  `gctt_body`  `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE  `gems__comm_template_translations`
+    CHANGE  `gctt_subject`  `gctt_subject` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+    CHANGE  `gctt_body`  `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+-- PATCH: Store round information in single table
+
+ALTER TABLE gems__rounds
+    DROP gro_valid_after,
+    DROP gro_valid_for,
+    DROP gro_used_date,
+    DROP gro_used_date_order,
+    DROP gro_used_date_field;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_after_id     bigint unsigned null references gems__rounds (gro_id_round)
+        AFTER gro_display_event;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_after_source varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tok'
+        AFTER gro_valid_after_id;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_after_field  varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null
+                               default 'gto_valid_from'
+        AFTER gro_valid_after_source;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_after_unit   char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M'
+        AFTER gro_valid_after_field;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_after_length int not null default 0
+        AFTER gro_valid_after_unit;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_for_id       bigint unsigned null references gems__rounds (gro_id_round)
+        AFTER gro_valid_after_length;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_for_source   varchar(12) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'nul'
+        AFTER gro_valid_for_id;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_for_field    varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null
+        AFTER gro_valid_for_source;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_for_unit     char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M'
+        AFTER gro_valid_for_field;
+
+ALTER TABLE gems__rounds ADD
+        gro_valid_for_length   int not null default 0
+        AFTER gro_valid_for_unit;
+
+UPDATE gems__rounds, gems__round_periods SET
+            gro_valid_after_id     = gro_valid_after_id,
+            gro_valid_after_source = grp_valid_after_source,
+            gro_valid_after_field  = grp_valid_after_field,
+            gro_valid_after_unit   = grp_valid_after_unit,
+            gro_valid_after_length = grp_valid_after_length,
+            gro_valid_for_id       = grp_valid_for_id,
+            gro_valid_for_source   = grp_valid_for_source,
+            gro_valid_for_field    = grp_valid_for_field,
+            gro_valid_for_unit     = grp_valid_for_unit,
+            gro_valid_for_length   = grp_valid_for_length
+        WHERE gro_id_round = grp_id_round;
