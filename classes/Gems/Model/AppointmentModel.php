@@ -85,6 +85,8 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
      */
     protected function _addJoinTables()
     {
+        $this->addTable('gems__respondents', array('gap_id_user' => 'grs_id_user'));
+
         if ($this->has('gap_id_organization')) {
             $this->addTable(
                     'gems__organizations',

@@ -220,7 +220,7 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
-     * Add a Mail menu tree to the menu
+     * Add a agenda setup menu tree to the menu
      *
      * @param string $label
      * @param array $other
@@ -235,6 +235,8 @@ abstract class Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Locations'),       'pr.locations',        'location');
         $setup->addBrowsePage($this->_('Healtcare staff'), 'pr.agenda-staff',     'agenda-staff');
         $setup->addBrowsePage($this->_('Status codes'),    'pr.status-code',      'agenda-status-code');
+
+        return $setup;
     }
 
     /**
@@ -252,6 +254,21 @@ abstract class Gems_Menu_MenuAbstract
         $other['button_only'] = true;
 
         return $this->addPage($label, $privilege, $controller, $action, $other);
+    }
+
+    /**
+     * Add a calender page to the menu
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addCalenderPage($label)
+    {
+        $page = $this->addPage($label, 'pr.calender', 'calender');
+        $page->addAutofilterAction();
+
+        return $page;
     }
 
     /**

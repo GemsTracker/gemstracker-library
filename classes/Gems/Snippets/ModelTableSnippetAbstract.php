@@ -69,6 +69,13 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     protected $containingId;
 
     /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = array();
+
+    /**
      * Use keyboard to select row
      *
      * @var boolean
@@ -282,7 +289,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
             // Remove all empty values (but not arrays) from the filter
             $data = array_filter($data, function($i) { return is_array($i) || strlen($i); });
 
-            $model->applyParameters($data);
+            $model->applyParameters($data + $this->defaultSearchData);
 
         } else {
             parent::processFilterAndSort($model);

@@ -90,16 +90,17 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
             return $date;
         }
         $div = MUtil_Html::create('div');
+        $div->class = 'calender';
         if (0 < $date->getYear()->getTimestamp()) {
-            $div->strong(ucfirst($date->toString(
+            $div->span(ucfirst($date->toString(
                     Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
                     Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR
-                    )));
+                    )))->class = 'date';
             $div->br();
         }
         // $div->strong($date->toString());
         // $div->br();
-        $div->append(sprintf($this->_('At: %s.'), $date->toString(Zend_Date::TIME_SHORT)));
+        $div->span(sprintf($this->_('At: %s.'), $date->toString(Zend_Date::TIME_SHORT)))->class = 'time';
         return $div;
     }
 }

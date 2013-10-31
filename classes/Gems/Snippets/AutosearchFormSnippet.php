@@ -53,6 +53,13 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     protected $db;
 
     /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = array();
+
+    /**
      *
      * @var string The id of a div that contains target that should be replaced.
      */
@@ -501,9 +508,15 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     protected function getSearchData()
     {
         if ($this->requestCache) {
-            return $this->requestCache->getProgramParams();
+            $data = $this->requestCache->getProgramParams();
         } else {
-            return $this->request->getParams();
+            $data = $this->request->getParams();
         }
+
+        if ($this->defaultSearchData) {
+            $data = $data + $this->defaultSearchData;
+        }
+
+        return $data;
     }
 }

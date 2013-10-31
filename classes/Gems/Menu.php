@@ -656,10 +656,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // MAIN RESPONDENTS ITEM
         $this->addRespondentPage($this->_('Respondents'));
 
-        /*
-        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
-            $this->addPage($this->_('Switch'), 'pr.respondent', 'organization', 'choose');
-        } // */
+        // MAIN CALENDER ITEM
+        $this->addCalenderPage($this->_('Calender'));
 
         // MAIN PLANNING ITEM
         $this->addPlanPage($this->_('Overview'));

@@ -195,6 +195,49 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     }
 
     /**
+     * Add the respondent name as a caclulated field to the model
+     * @param Gems_Model_JoinModel $model
+     * @param string $label
+     */
+    public static function addNameToModel(Gems_Model_JoinModel $model, $label)
+    {
+        $nameExpr[]  = "COALESCE(grs_last_name, '-')";
+        $fieldList[] = 'grs_last_name';
+        if ($model->has('grs_partner_last_name')) {
+            if ($model->has('grs_partner_surname_prefix')) {
+                $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
+                $fieldList[] = 'grs_partner_surname_prefix';
+            }
+
+            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_last_name), '')";
+            $fieldList[] = 'grs_partner_last_name';
+        }
+        $nameExpr[] = "', '";
+
+        if ($model->has('grs_first_name')) {
+            if ($model->has('grs_initials_name')) {
+                $nameExpr[]  = "COALESCE(grs_first_name, grs_initials_name, '')";
+                $fieldList[] = 'grs_first_name';
+                $fieldList[] = 'grs_initials_name';
+            } else {
+                $nameExpr[]  = "COALESCE(grs_first_name, '')";
+                $fieldList[] = 'grs_first_name';
+            }
+        } elseif ($model->has('grs_initials_name')) {
+            $nameExpr[]  = "COALESCE(grs_initials_name, '')";
+            $fieldList[] = 'grs_initials_name';
+        }
+        if ($model->has('grs_surname_prefix')) {
+            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_surname_prefix), '')";
+            $fieldList[] = 'grs_surname_prefix';
+        }
+        $model->set('name',
+                'label', $label,
+                'column_expression', "CONCAT(" . implode(', ', $nameExpr) . ")",
+                'fieldlist', $fieldList);
+   }
+
+    /**
      * Set those settings needed for the browse display
      *
      * @return \Gems_Model_RespondentModel
@@ -216,40 +259,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('gr2o_patient_nr', 'label', $translator->_('Respondent nr'));
 
-        $nameExpr[]  = "COALESCE(grs_last_name, '-')";
-        $fieldList[] = 'grs_last_name';
-        if ($this->has('grs_partner_last_name')) {
-            if ($this->has('grs_partner_surname_prefix')) {
-                $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_surname_prefix), '')";
-                $fieldList[] = 'grs_partner_surname_prefix';
-            }
-
-            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_partner_last_name), '')";
-            $fieldList[] = 'grs_partner_last_name';
-        }
-        $nameExpr[] = "', '";
-
-        if ($this->has('grs_first_name')) {
-            if ($this->has('grs_initials_name')) {
-                $nameExpr[]  = "COALESCE(grs_first_name, grs_initials_name, '')";
-                $fieldList[] = 'grs_first_name';
-                $fieldList[] = 'grs_initials_name';
-            } else {
-                $nameExpr[]  = "COALESCE(grs_first_name, '')";
-                $fieldList[] = 'grs_first_name';
-            }
-        } elseif ($this->has('grs_initials_name')) {
-            $nameExpr[]  = "COALESCE(grs_initials_name, '')";
-            $fieldList[] = 'grs_initials_name';
-        }
-        if ($this->has('grs_surname_prefix')) {
-            $nameExpr[]  = "COALESCE(CONCAT(' ', grs_surname_prefix), '')";
-            $fieldList[] = 'grs_surname_prefix';
-        }
-        $this->set('name',
-                'label', $translator->_('Name'),
-                'column_expression', "CONCAT(" . implode(', ', $nameExpr) . ")",
-                'fieldlist', $fieldList);
+        self::addNameToModel($this, $translator->_('Name'));
 
         $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'));
 
