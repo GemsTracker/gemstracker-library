@@ -267,6 +267,7 @@ abstract class Gems_Menu_MenuAbstract
     {
         $page = $this->addPage($label, 'pr.calendar', 'calendar');
         $page->addAutofilterAction();
+        $page->addImportAction();
 
         return $page;
     }

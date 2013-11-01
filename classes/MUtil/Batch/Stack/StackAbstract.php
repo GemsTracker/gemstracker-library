@@ -69,7 +69,8 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
             $checks = MUtil_Ra::nonScalars($params);
             foreach ($checks as $object) {
                 if (! $this->_allowedClasses->get($object)) {
-                    $name = get_class($object);
+                    $name   = get_class($object);
+                    $method = reset($params);
                     throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
                 }
             }
@@ -78,6 +79,7 @@ abstract class MUtil_Batch_Stack_StackAbstract implements MUtil_Batch_Stack_Stac
             $checks = MUtil_Ra::nonScalars($params);
             $object = reset($checks);
             $name   = get_class($object);
+            $method = reset($params);
             throw new MUtil_Batch_BatchException("Not allowed batch class $name parameter for method: '$method'.");
         }
     }
