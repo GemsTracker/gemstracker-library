@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CalenderSearchSnippet.php$
+ * @version    $Id: CalendarSearchSnippet.php$
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_CalenderSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Agenda_CalendarSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
 {
     /**
      *

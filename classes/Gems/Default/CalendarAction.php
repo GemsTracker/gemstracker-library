@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CalenderAction.php$
+ * @version    $Id: CalendarAction.php$
  */
 
 /**
@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -54,7 +54,11 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
     protected $autofilterParameters = array(
         'defaultSearchData' => 'getDefaultSearchData',
         'dateFormat'        => 'getDateFormat',
-        'extraSort'         => array('gap_admission_time' => SORT_ASC),
+        'extraSort'         => array(
+            'gap_admission_time' => SORT_ASC,
+            'gor_name'           => SORT_ASC,
+            'glo_name'           => SORT_ASC,
+            ),
         );
 
     /**
@@ -62,14 +66,14 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Agenda_CalenderTableSnippet';
+    protected $autofilterSnippets = 'Agenda_CalendarTableSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Agenda_CalenderSearchSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Agenda_CalendarSearchSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -97,18 +101,18 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
     public function getDateFormat()
     {
         $model = $this->getModel();
-        
+
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
             $options = array();
             MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-            
+
             $format = $options['dateFormat'];
         }
-        
+
         return $format;
     }
-    
+
     /**
      * Returns possible status types, can be filtered by implementations
      *
@@ -118,7 +122,7 @@ class Gems_Default_CalenderAction extends Gems_Controller_ModelSnippetActionAbst
     {
         // The date is kept in the requestCache so it should not be an object
         $date  = new MUtil_Date();
-        
+
         return array(
             'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
             'dateused'            => 'gap_admission_time',

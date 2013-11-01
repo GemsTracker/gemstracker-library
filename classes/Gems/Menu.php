@@ -656,8 +656,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // MAIN RESPONDENTS ITEM
         $this->addRespondentPage($this->_('Respondents'));
 
-        // MAIN CALENDER ITEM
-        $this->addCalenderPage($this->_('Calender'));
+        // MAIN CALENDAR ITEM
+        $this->addCalendarPage($this->_('Calendar'));
 
         // MAIN PLANNING ITEM
         $this->addPlanPage($this->_('Overview'));

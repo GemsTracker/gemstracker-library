@@ -90,7 +90,7 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
             return $date;
         }
         $div = MUtil_Html::create('div');
-        $div->class = 'calender';
+        $div->class = 'calendar';
         if (0 < $date->getYear()->getTimestamp()) {
             $div->span(ucfirst($date->toString(
                     Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .

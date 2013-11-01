@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CalenderTableSnippet.php$
+ * @version    $Id: CalendarTableSnippet.php$
  */
 
 /**
@@ -44,15 +44,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
      * Optional string format for date
-     * 
+     *
      * @var string
      */
     protected $dateFormat;
-    
+
     /**
      *
      * @var Zend_Db_Adapter_Abstract
@@ -61,11 +61,11 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
 
     /**
      * Optional database string format for date
-     * 
+     *
      * @var string
      */
     protected $storageFormat = 'yyyy-MM-dd HH:mm:ss';
-    
+
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
@@ -78,8 +78,8 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
      */
     protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $bridge->gr2o_id_organization; 
-                
+        $bridge->gr2o_id_organization;
+
         if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'show', 'allowed' => true))) {
             $appButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
         } else {
@@ -92,9 +92,9 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
         }
 
         $br    = MUtil_Html::create('br');
-        
+
         $table = $bridge->getTable();
-        $table->appendAttrib('class', 'calender');
+        $table->appendAttrib('class', 'calendar');
         $table->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
 
         // Row with dates and patient data
@@ -115,7 +115,7 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
         $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
         $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
-        
+
         unset($table[MUtil_Html_TableElement::THEAD]);
     }
 
@@ -157,8 +157,8 @@ class Gems_Snippets_Agenda_CalenderTableSnippet extends Gems_Snippets_ModelTable
         $params = $this->requestCache->getProgramParams() + $this->defaultSearchData;
 
         $where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
-                $params, 
-                $this->db, 
+                $params,
+                $this->db,
                 $this->dateFormat,
                 $this->storageFormat);
         if ($where) {

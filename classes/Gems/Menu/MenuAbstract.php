@@ -257,15 +257,15 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
-     * Add a calender page to the menu
+     * Add a calendar page to the menu
      *
      * @param string $label
      * @param array $other
      * @return Gems_Menu_SubMenuItem
      */
-    public function addCalenderPage($label)
+    public function addCalendarPage($label)
     {
-        $page = $this->addPage($label, 'pr.calender', 'calender');
+        $page = $this->addPage($label, 'pr.calendar', 'calendar');
         $page->addAutofilterAction();
 
         return $page;
