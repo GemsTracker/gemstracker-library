@@ -447,6 +447,8 @@ class Gems_Project_ProjectSettings extends ArrayObject
     {
         if ($this->offsetExists('email') && isset($this->email['multiLanguage'])) {
             return (boolean) $this->email['multiLanguage'];
+        } else {
+            return true;
         }
     }
 
