@@ -85,7 +85,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
         }
         
         // Clear the floats
-        $snippets[] = MUtil_Html::create()->p(array('style'=>'clear:both;'));
+        $snippets[] = MUtil_Html::create()->p(array('class'=>'chartfooter'));
                 
         return $snippets;
     }
