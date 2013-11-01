@@ -49,7 +49,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
     protected $createEditSnippets = 'Mail_MailModelFormSnippet';
 
-    //public $showSnippets = 'Mail_CommTemplateShowSnippet';
+    public $showSnippets = 'Mail_CommTemplateShowSnippet';
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -80,9 +80,19 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
 
         $translationModel = new MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
-        $translationModel->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', 'MUtil_Echo::track');
+        if ($action === 'index') {
+            $translationModel->set('gctt', 'label', $this->_('Subject'), 'size', 50, 'formatFunction', array('Gems_Default_CommTemplateAction', 'displayMultipleSubjects'));
+        } else {
+            $translationModel->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50);
+        }
         if ($detailed) {
-            $translationModel->set('gctt_body', 'label', $this->_('Message'), 'elementClass', 'textarea', 'decorators', array('CKEditor'),'rows', 4);
+            $translationModel->set('gctt_body', 
+                'label', $this->_('Message'), 
+                'elementClass', 'textarea',
+                'decorators', array('CKEditor'),
+                'rows', 4,
+                'formatFunction', array('Gems_Default_CommTemplateAction', 'bbToHtml')
+            );
         }
 
         if ($this->project->getEmailMultiLanguage()) {
@@ -106,7 +116,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
         $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
         
-        
+        MUtil_Echo::track($action);
         return $model;
     }
 
@@ -126,6 +136,31 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
     public function getIndexTitle()
     {
         return $this->_('Email') . ' ' . $this->_('templates');
+    }
+
+    public static function bbToHtml($bbcode) {
+        $text = MUtil_Markup::render($bbcode, 'Bbcode', 'Html'); 
+
+        $div = MUtil_Html::create()->div(array('class' => 'mailpreview'));
+        $div->raw($text);
+        
+        return $div;
+    }
+
+    public static function displayMultipleSubjects($subValuesArray)
+    {
+        $html = MUtil_Html::create()->div();
+        $output = '';
+        foreach($subValuesArray as $subitem) {
+            if (!empty($subitem['gctt_subject'])) {
+                $paragraph = $html->p();
+                $paragraph->strong()[] = $subitem['gctt_lang'].':';
+                $paragraph->br();
+                $paragraph[] = $subitem['gctt_subject'];
+            }
+        }
+        MUtil_Echo::track($subValuesArray);
+        return $html;
     }
 
 }

@@ -285,7 +285,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
         $page->addPage($this->_('Run'), null, 'cron', 'index');
-
+        $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
 
         $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'comm-template');
 
