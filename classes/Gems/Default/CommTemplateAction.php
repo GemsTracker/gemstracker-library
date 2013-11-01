@@ -122,20 +122,19 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
     public function getCreateTitle()
     {
-        return $this->_('New') . ' ' . $this->_('template');
+        return $this->_('New template');
     }
 
     public function getEditTitle()
     {
         $data = $this->getModel()->loadFirst();
-        $topic = $this->_('template');
-        $edit = $this->_('Edit');
-        return $edit .' '. $topic . ': ' . $data['gct_name'];
+
+        return sprintf($this->_('Edit template: %s'), $data['gct_name']);
     }
 
     public function getIndexTitle()
     {
-        return $this->_('Email') . ' ' . $this->_('templates');
+        return $this->_('Email templates');
     }
 
     public static function bbToHtml($bbcode) {

@@ -150,7 +150,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     /**
      * Load extra data not from the model into the form
      */
-    protected function loadFormData() {
+    protected function loadFormData() 
+    {
         parent::loadFormData();
 
         if (isset($this->formData['gctt'])) {
@@ -159,27 +160,12 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
                 $multi = true;
                 $allLanguages = $this->util->getLocalized()->getLanguages();
             }
-            $content = '';
-            foreach($this->formData['gctt'] as $templateLanguage) {
-                if ($multi) {
-                    $content .= '[b]'.$allLanguages[$templateLanguage['gctt_lang']].":[/b]\n\n";
-                }
-                if ($templateLanguage['gctt_subject'] || $templateLanguage['gctt_body']) {
-                    $content .= '[b]';
-                    $content .= $this->_('Subject:');
-                    $content .= '[/b] [i]';
-                    $content .= $this->mailer->applyFields($templateLanguage['gctt_subject']);
-                    $content .= "[/i]\n\n";
-                    $content .= $this->mailer->applyFields($templateLanguage['gctt_body']);       
-                }
-                if ($multi) {
-                    $content .= "\n\n";
-                }
-            }
-            if (!empty($content)) {
-                $this->formData['preview_html'] = MUtil_Markup::render($content, 'Bbcode', 'Html');
-                $this->formData['preview_text'] = MUtil_Markup::render($content, 'Bbcode', 'Text');
-            }
+
+            $preview = $this->getPreview($this->formData['gctt']);
+
+            $this->formData['preview_html'] = $preview['html'];
+            $this->formData['preview_text'] = $preview['text'];
+            
         }
         
         
@@ -192,6 +178,44 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());
+    }
+
+    /**
+     * Style the template previews
+     * @param  array $templateArray template data
+     * @return array html and text views
+     */
+    protected function getPreview($templateArray)
+    {
+        $multi = false;
+        if (count($templateArray) > 1) {
+            $multi = true;
+            $allLanguages = $this->util->getLocalized()->getLanguages();
+        }
+
+        $htmlView = MUtil_Html::create()->div();
+        $textView = MUtil_Html::create()->div();
+        foreach($templateArray as $template) {
+            if ($multi) {
+                $htmlView->h3()[] = $allLanguages[$template['gctt_lang']];
+                $textView->h3()[] = $allLanguages[$template['gctt_lang']];
+            }
+            
+            $content = '';
+            if ($template['gctt_subject'] || $template['gctt_body']) {
+                $content .= '[b]';
+                $content .= $this->_('Subject:');
+                $content .= '[/b] [i]';
+                $content .= $this->mailer->applyFields($template['gctt_subject']);
+                $content .= "[/i]\n\n";
+                $content .= $this->mailer->applyFields($template['gctt_body']);       
+            }
+            $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
+            $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
+
+        }
+
+        return array('html' => $htmlView, 'text' => $textView);
     }
 
     /**

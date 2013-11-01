@@ -393,7 +393,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         if ($this->formTitle) {
              return $this->formTitle;
          } else {
-            $title = $this->_('Email to') . ': ' . $this->_($this->mailTarget);
+            $title = $this->_('Email to: '). $this->_($this->mailTarget);
             return $title;
          }
     }

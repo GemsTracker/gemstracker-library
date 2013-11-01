@@ -114,7 +114,7 @@ class Gems_Mail_staffMailer extends Gems_Mail_MailerAbstract
         if ($this->user) {
             return true;
         } else {
-            $this->addMessage($this->translate->_('Staff') . $this->translate->_(' data not found'));
+            $this->addMessage($this->translate->_('staff data not found'));
             return false;
         }
     }

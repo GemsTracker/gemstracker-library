@@ -107,7 +107,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
                 return false;
             }
         } else {
-            $this->addMessage($this->translate->_('Token') . $this->translate->_(' not found'));
+            $this->addMessage($this->translate->_('Token not found'));
             return false;
         }
     }

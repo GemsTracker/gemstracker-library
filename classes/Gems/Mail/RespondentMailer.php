@@ -97,7 +97,7 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
         if ($this->respondent) {
             return true;
         } else {
-            $this->addMessage($this->translate->_('Respondent') . $this->translate->_(' data not found'));
+            $this->addMessage($this->translate->_('Respondent data not found'));
             return false;
         }
     }
