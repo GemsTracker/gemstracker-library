@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-10 17:48+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/GemsEscort.php:319
@@ -3274,7 +3274,7 @@ msgstr "Indien leeg zal de vragenlijst niet tevoorschijn komen!"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:140
 msgid "Duration calculated"
-msgstr "Afnametijd berekent"
+msgstr "Berekende afnametijd"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:146
 msgid "Upload new PDF"
