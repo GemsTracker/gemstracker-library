@@ -67,16 +67,9 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
         $currentLanguage = $this->locale->getLanguage();
         $model = $this->loader->getModels()->getCommtemplateModel($currentLanguage);
 
-        
-        if ($detailed) {
-            $commTargets = $this->loader->getMailTargets();
-            $translatedCommTargets = array();
-            foreach($commTargets as $name=>$label) {
-                $translatedCommTargets[$name] = $this->_($label);
-            }
-            $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $translatedCommTargets);
-        }
+        $commTargets = $this->loader->getMailTargets();
 
+        $model->set('gct_target', 'label', $this->_('Mail Target'), 'multiOptions', $commTargets, 'Gems_Default_CommTemplateAction', 'translateTargets');
         $model->set('gct_name', 'label', $this->_('Name'), 'size', 50);
 
         $translationModel = new MUtil_Model_TableModel('gems__comm_template_translations', 'gctt');
@@ -116,7 +109,6 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
         $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
         
-        MUtil_Echo::track($action);
         return $model;
     }
 
@@ -138,7 +130,11 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
     }
 
     public static function bbToHtml($bbcode) {
-        $text = MUtil_Markup::render($bbcode, 'Bbcode', 'Html'); 
+        $text = '';
+        if (!empty($bbcode)) {
+            $text = MUtil_Markup::render($bbcode, 'Bbcode', 'Html');
+        }
+
 
         $div = MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
@@ -150,16 +146,27 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
     {
         $html = MUtil_Html::create()->div();
         $output = '';
+
+        $multi = false;
+        if (count($subValuesArray) > 1) {
+            $multi = true;
+        }
         foreach($subValuesArray as $subitem) {
             if (!empty($subitem['gctt_subject'])) {
                 $paragraph = $html->p();
-                $paragraph->strong()[] = $subitem['gctt_lang'].':';
-                $paragraph->br();
+                if ($multi) {
+                    $paragraph->strong()[] = $subitem['gctt_lang'].':';
+                    $paragraph->br();
+                }
                 $paragraph[] = $subitem['gctt_subject'];
             }
         }
-        MUtil_Echo::track($subValuesArray);
         return $html;
+    }
+
+    public static function translateTargets($targetName)
+    {
+        return $this->_($targetName);
     }
 
 }

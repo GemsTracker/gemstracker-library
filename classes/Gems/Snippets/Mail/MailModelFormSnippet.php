@@ -196,22 +196,28 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $htmlView = MUtil_Html::create()->div();
         $textView = MUtil_Html::create()->div();
         foreach($templateArray as $template) {
-            if ($multi) {
-                $htmlView->h3()[] = $allLanguages[$template['gctt_lang']];
-                $textView->h3()[] = $allLanguages[$template['gctt_lang']];
-            }
+            
             
             $content = '';
             if ($template['gctt_subject'] || $template['gctt_body']) {
+                if ($multi) {
+                    $htmlView->h3()[] = $allLanguages[$template['gctt_lang']];
+                    $textView->h3()[] = $allLanguages[$template['gctt_lang']];
+                }
+
+
                 $content .= '[b]';
                 $content .= $this->_('Subject:');
                 $content .= '[/b] [i]';
                 $content .= $this->mailer->applyFields($template['gctt_subject']);
                 $content .= "[/i]\n\n";
                 $content .= $this->mailer->applyFields($template['gctt_body']);       
+            
+
+
+                $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
+                $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
             }
-            $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
-            $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
 
         }
 

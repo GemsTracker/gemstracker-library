@@ -58,9 +58,12 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
     	if ($this->submodel) {
     		$data = $this->loadData();
     		$submodelName = $this->submodel->getName();
-
+            $multi = false;
+            if (count($data[$submodelName]) > 1) {
+                $multi = true;
+            }
     		foreach($data[$submodelName] as $item) {
-        		if (isset($this->subTitleItem) && isset($item[$this->subTitleItem])) {
+        		if ($multi && isset($this->subTitleItem) && isset($item[$this->subTitleItem])) {
         			$subContainer->h3($item[$this->subTitleItem]);
         		}
         		$subTable = $subContainer->table();
