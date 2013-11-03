@@ -178,22 +178,18 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
      */
     protected function _loadAllTraversable()
     {
-        $tables = array();
-        foreach (array_reverse($this->directories) as $pathData) {
-            $tables = array_merge($tables, $pathData['db']->listTables());
-        }
-        $tables = array_unique($tables);
-
-        if ($tables) { // Can be empty
-            $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
-        }
-
         $data  = array();
 
         foreach (array_reverse($this->directories) as $i => $pathData) {
             $mainDirectory = $pathData['path'];
             $location      = $pathData['name'];
             $db            = $pathData['db'];
+            $tables        = $pathData['db']->listTables();
+            
+            if ($tables) { // Can be empty
+                $tables = array_change_key_case(array_combine($tables, $tables), CASE_LOWER);
+            }
+
 
             if (is_dir($mainDirectory)) {
                 foreach (new DirectoryIterator($mainDirectory) as $directory) {
@@ -246,24 +242,27 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
                     }
                 }
             }
-        }
 
-        foreach ($tables as $table) {
-            $data[$table] = array(
-                'name'        => $table,
-                'group'       => $this->_getGroupName($table),
-                'type'        => 'table',
-                'order'       => self::DEFAULT_ORDER,
-                'defined'     => false,
-                'exists'      => true,
-                'state'       => self::STATE_UNKNOWN,
-                'path'        => null,
-                'fullPath'    => $file->getPathname(),
-                'fileName'    => $table . '.' . self::STATE_UNKNOWN . '.sql',
-                'script'      => '',
-                'lastChanged' => null,
-                'location'    => 'n/a',
-                );
+            foreach ($tables as $table) {
+                if (! isset($data[$table])) {
+                    $data[$table] = array(
+                        'name'        => $table,
+                        'group'       => $this->_getGroupName($table),
+                        'type'        => 'table',
+                        'order'       => self::DEFAULT_ORDER,
+                        'defined'     => false,
+                        'exists'      => true,
+                        'state'       => self::STATE_UNKNOWN,
+                        'path'        => null,
+                        'fullPath'    => $file->getPathname(),
+                        'fileName'    => $table . '.' . self::STATE_UNKNOWN . '.sql',
+                        'script'      => '',
+                        'lastChanged' => null,
+                        'location'    => $location,
+                        'db'          => $db,
+                        );
+                }
+            }
         }
         return $data;
     }
