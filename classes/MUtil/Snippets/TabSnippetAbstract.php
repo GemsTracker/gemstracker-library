@@ -106,7 +106,11 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      */
     protected $tabClass       = 'tab';
 
-
+    /**
+     * Sets the default and current tab and returms the current
+     * 
+     * @return The current tab
+     */
     public function getCurrentTab()
     {
         $tabs = $this->getTabs();

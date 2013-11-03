@@ -1333,6 +1333,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         foreach ($this->_transformers as $transformer) {
             $row = $transformer->transformRowAfterSave($this, $row);
+            $this->addChanged($transformer->getChanged());
         }
 
         return $row;

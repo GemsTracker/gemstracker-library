@@ -47,6 +47,33 @@
 class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransformerAbstract
 {
     /**
+     * If the transformer add's fields, these should be returned here.
+     * Called in $model->AddTransformer(), so the transformer MUST
+     * know which fields to add by then (optionally using the model
+     * for that).
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @return array Of filedname => set() values
+     */
+    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    {
+        $data = array();
+        foreach ($this->_subModels as $sub) {
+            foreach ($sub->getItemNames() as $name) {
+                if (! $model->has($name)) {
+                    $data[$name] = $sub->get($name);
+                    $data[$name]['no_text_search'] = true;
+
+                    // Remove unsuited data
+                    unset($data[$name]['table'], $data[$name]['column_expression']);
+                    unset($data[$name]['label'], $data[$name]['elementClass']);
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Function to allow overruling of transform for certain models
      *
      * @param MUtil_Model_ModelAbstract $model

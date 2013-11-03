@@ -47,6 +47,13 @@
 abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_ModelTransformerInterface
 {
     /**
+     * The number of rows changed at the last save
+     * 
+     * @var int 
+     */
+    protected $_changed = 0;
+    
+    /**
      *
      * @var array of join functions
      */
@@ -58,6 +65,16 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      */
     protected $_subModels = array();
 
+    /**
+     * The number of item rows changed since the last save or delete
+     *
+     * @return int
+     */
+    public function getChanged()
+    {
+        return $this->_changed;
+    }
+    
     /**
      * Add an (extra) model to the join
      *
@@ -175,6 +192,7 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
 
         foreach ($this->_subModels as $name => $sub) {
             $this->transformSaveSubModel($model, $sub, $row, $this->_joins[$name], $name);
+            $this->_changed = $this->_changed + $sub->getChanged();
         }
         // MUtil_Echo::track($row);
 

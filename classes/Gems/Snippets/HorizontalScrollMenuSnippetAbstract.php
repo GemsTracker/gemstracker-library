@@ -46,48 +46,14 @@
  * @since      Class available since version 1.6
  */
 //abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetAbstract
-abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_Snippets_SnippetAbstract
+abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_Snippets_TabSnippetAbstract
 {
-    /**
-     * Optional standard url parts
-     *
-     * @var array
-     */
-    protected $baseUrl = array();
-
     /**
      * Shortfix to add class attribute
      *
      * @var string
      */
     protected $class = 'horizontal_scroll_menu';
-
-    /**
-     *
-     * @var string Id of the current tab
-     */
-    protected $currentTab;
-
-    /**
-     *
-     * @var string Id of default tab
-     */
-    protected $defaultTab;
-
-    /**
-     * Show bar when there is only a single tab
-     *
-     * @var boolean
-     */
-    protected $displaySingleTab = false;
-
-    /**
-     * Default href parameter values
-     *
-     * @var array
-     */
-    protected $href = array();
-
 
     /**
      *
@@ -106,13 +72,6 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
 
 
     /**
-     * Optional: $request or $tokenData must be set
-     *
-     * @var Zend_Controller_Request_Abstract
-     */
-    protected $request;
-
-    /**
      *
      * @var int Show scroll controls from this number of tabs
      */
@@ -120,24 +79,9 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
 
     /**
      *
-     * @var string Class attribute for active tab
-     */
-    protected $tabActiveClass = 'active';
-
-    /**
-     *
-     * @var string Class attribute for all tabs
-     */
-    protected $tabClass       = 'tab';
-
-
-    /**
-     *
      * @var int Length of a label before it is cut off
      */
-
     protected $tabLabelLength = 20;
-
 
     /**
      *
@@ -145,47 +89,11 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
      */
     protected $tabLabelCutOffString = '...';
 
-
+    /**
+     *
+     * @var Zend_View
+     */
     protected $view;
-
-    /**
-     * Return optionally the single parameter key which should left out for the default value,
-     * but is added for all other tabs.
-     *
-     * @return mixed
-     */
-    protected function getParameterKey()
-    {
-        return null;
-    }
-
-    /**
-     * Return the parameters that should be used for this tabId
-     *
-     * @param string $tabId
-     * @return array
-     */
-    protected function getParameterKeysFor($tabId)
-    {
-        $paramKey = $this->getParameterKey();
-
-        if ($paramKey) {
-            if ($tabId == $this->defaultTab) {
-                return array($paramKey => null);
-            } else {
-                return array($paramKey => $tabId);
-            }
-        }
-
-        return array();
-    }
-
-    /**
-     * Function used to fill the tab bar
-     *
-     * @return array tabId => label
-     */
-    abstract protected function getTabs();
 
     /**
      * Create the snippets content
@@ -212,19 +120,8 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
 
             $view->inlineScript()->appendScript($script);
 
-            // When empty, first is default
-            if (null === $this->defaultTab) {
-                reset($tabs);
-                $this->defaultTab = key($tabs);
-            }
-            if (null === $this->currentTab) {
-                $this->currentTab = $this->request->getParam($this->getParameterKey());
-
-                // Param can exist and be empty
-                if (! $this->currentTab) {
-                    $this->currentTab = $this->defaultTab;
-                }
-            }
+            // Set the correct parameters
+            $this->getCurrentTab();
 
             $scrollContainer = MUtil_Html::create()->div();
 
@@ -238,20 +135,19 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
                 $li = $tabRow->li(array('class' => $this->tabClass));
 
                 if (strlen($content) > $this->tabLabelLength) {
-                    $content = substr($content,0, $this->tabLabelLength) .$this->tabLabelCutOffString;
-
+                    $content = substr($content, 0, $this->tabLabelLength) . $this->tabLabelCutOffString;
                 }
 
                 $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+                
+                if ($tabId === $this->currentTab) {
+                    $li->appendAttrib('class', $this->tabActiveClass);
+                }
             }
-
-            $tabRow[$this->currentTab]->appendAttrib('class', $this->tabActiveClass);
 
             if ($tabCount > $this->scrollFromSize) {
                 $scrollContainer->a('#', $this->nextLabel, array('class' => 'next'));
             }
-
-
 
             return $scrollContainer;
         } else {

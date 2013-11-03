@@ -47,6 +47,13 @@
 interface MUtil_Model_ModelTransformerInterface
 {
     /**
+     * The number of item rows changed since the last save or delete
+     *
+     * @return int
+     */
+    public function getChanged();
+    
+    /**
      * If the transformer add's fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
      * know which fields to add by then (optionally using the model
