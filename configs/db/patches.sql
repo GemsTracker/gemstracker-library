@@ -676,3 +676,11 @@ UPDATE gems__rounds, gems__round_periods SET
             gro_valid_for_unit     = grp_valid_for_unit,
             gro_valid_for_length   = grp_valid_for_length
         WHERE gro_id_round = grp_id_round;
+
+INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
+    (SELECT gmt_id_message, gmt_subject, 'token', null, gmt_changed, gmt_changed_by, gmt_created, gmt_created_by FROM gems__mail_templates);
+
+INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
+    (SELECT gmt_id_message, 'en', gmt_subject, gmt_body FROM gems__mail_templates);
+    
+    

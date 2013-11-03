@@ -18,7 +18,9 @@ CREATE TABLE if not exists gems__comm_templates (
    AUTO_INCREMENT = 20
    CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
-INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_changed, gct_changed_by, gct_created, gct_created_by)
+INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
     VALUES
-    (20, 'Questions for your treatement at {organization}', '', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
-    (21, 'Reminder: your treatement at {organization}', '', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
+    (15, 'Questions for your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (16, 'Reminder: your treatement at {organization}', 'token', null,CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (17, 'Global Password reset', 'staffPassword', 'passwordReset', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1),
+    (18, 'Global Account created', 'staffPassword', 'accountCreate', CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);

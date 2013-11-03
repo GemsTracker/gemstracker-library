@@ -211,8 +211,8 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     {
         return array(
             'M' => $this->_('Send multiple mails per respondent, one for each checked token.'),
-            'O' => $this->_('Send one mail per respondent, mark all checked tokens as send.'),
-            'A' => $this->_('Send one mail per respondent, mark only mailed tokens as send.'),
+            'O' => $this->_('Send one mail per respondent, mark all checked tokens as sent.'),
+            'A' => $this->_('Send one mail per respondent, mark only mailed tokens as sent.'),
             );
     }
 

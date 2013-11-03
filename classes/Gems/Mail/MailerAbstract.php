@@ -302,9 +302,11 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      * Else return false
      * @param integer  $templateId Template ID
      */
-    public function getTemplate($templateId)
+    public function getTemplate($templateId, $language=null)
     {
-        $language = $this->getLanguage();
+        if (!$language) {
+            $language = $this->getLanguage();
+        }
         $select = $this->db->select();
         $select->from('gems__comm_template_translations')
                ->where('gctt_id_template = ?', $templateId)
@@ -441,6 +443,9 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         $this->from = $newFrom;
     }
 
+    /**
+     * Set the current Organization as from
+     */
     public function setOrganizationFrom() {
         $this->from = $this->organization->getEmail();
     }

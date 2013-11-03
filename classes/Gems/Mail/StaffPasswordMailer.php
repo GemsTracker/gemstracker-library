@@ -98,7 +98,6 @@ class Gems_Mail_staffPasswordMailer extends Gems_Mail_StaffMailer
      */
     public function setResetPasswordTemplate()
     {
-        MUtil_Echo::track($this->organization->getName());
         $templateId = $this->organization->getResetPasswordTemplate();
         if ($templateId) {
             $this->setTemplate($this->organization->getResetPasswordTemplate());

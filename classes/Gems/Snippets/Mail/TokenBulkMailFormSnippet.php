@@ -204,7 +204,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                     $mailer->setBody($this->formData['body']);
                     $mailer->setTemplateId($this->formData['select_template']);
                     $mailer->send();
-                    $mailSent == false;
+                    $mailSent = true;
                     $mails++;
                     $updates++;
 

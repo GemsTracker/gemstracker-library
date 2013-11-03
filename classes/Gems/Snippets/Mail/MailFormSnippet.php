@@ -301,6 +301,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         $this->fromOptions[$key] = $name . ' <' . $email . '>';
 
         // As "the" application
+        $key = 'application';
         $user = $this->loader->getCurrentUser();
         if ($user->hasPrivilege('pr.plan.mail-as-application') &&
             isset($this->project->email['site'])) {
@@ -442,21 +443,18 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      */
     protected function loadFormData()
     {
-        
+        $presetTargetData = $this->mailer->getPresetTargetData();
         if ($this->request->isPost()) {
             $this->formData = $this->request->getPost() + $this->formData;
         }
-        if (isset($this->formData['select_template']) && !empty($this->formData['select_template'])) {
-            $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
 
-            $select->where('gct_id_template = ?', $this->formData['select_template'])
-                    ->where('gct_target = ?', $this->mailTarget);
-
-            $template = $this->db->fetchRow($select);
-
-            if ($template = $this->mailer->getTemplate($this->formData['select_template'])) {
-                $this->formData['subject'] = $template['gctt_subject'];
-                $this->formData['body'] = $template['gctt_body'];
+        if (empty($this->formData['preview']) && !isset($this->formData['send'])) {
+            if (isset($this->formData['select_template']) && !empty($this->formData['select_template'])) {
+                
+                if ($template = $this->mailer->getTemplate($this->formData['select_template'])) {
+                    $this->formData['subject'] = $template['gctt_subject'];
+                    $this->formData['body'] = $template['gctt_body'];
+                }
             }
         }
 
@@ -472,10 +470,18 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         } else {
             $content = ' ';
         }
-        $this->formData['preview_html'] = MUtil_Markup::render($content, 'Bbcode', 'Html');
-        $this->formData['preview_text'] = MUtil_Markup::render($content, 'Bbcode', 'Text');
+        $htmlView = MUtil_Html::create()->div();
+        $textView = MUtil_Html::create()->div();
 
-        $this->formData = array_merge($this->formData, $this->mailer->getPresetTargetData());
+        $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
+        $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
+
+        $this->formData['preview_html'] = $htmlView;
+        $this->formData['preview_text'] = $textView;
+        
+        
+
+        $this->formData = array_merge($this->formData, $presetTargetData);
 
     }
 

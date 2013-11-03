@@ -131,7 +131,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         if ($this->util->getCronJobLock()->isLocked()) {
             $this->html->append($this->_('Cron jobs turned off.'));
         } else {
-            $this->mailJob();
+            $this->commJob();
         }
     }
 
@@ -218,8 +218,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         $this->loader->getTracker()->processCompletedTokens(null, $startUser->getUserId());
 
         $model  = $this->loader->getTracker()->getTokenModel();
-        //$mailer->continueOnError = true;
-
+        
         $sql = "SELECT *
             FROM gems__comm_jobs
             WHERE gcj_active = 1
@@ -264,17 +263,15 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                             }
 
                             if ($job['gcj_process_method'] == 'M') {
-                                $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                                 $mailer->setTemplate($job['gcj_id_message']);
                                 $mailer->send();
 
                                 $mails++;
                                 $updates++;
                             } elseif (!$mailSent) {
-                                $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                                 $mailer->setTemplate($job['gcj_id_message']);
                                 $mailer->send();
-                                $mailSent == false;
+                                $mailSent = true;
                                 $mails++;
                                 $updates++;
                                 if ($job['gcj_process_method'] == 'A') {
@@ -287,36 +284,11 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                         }
         
                         $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
-        
-                        /*
-                        $mailer->setMethod($job['gmj_process_method']);
-                        if ($job['gmj_from_method'] == 'F') {
-                            $mailer->setFrom($job['gmj_from_fixed']);
-                        } else {
-                            $mailer->setFrom($job['gmj_from_method']);
-                        }
-
-                        $templateData = $this->getTemplate($job['gmj_id_message']);
-                        $mailer->setSubject($templateData['gmt_subject']);
-                        $mailer->setBody($templateData['gmt_body']);
-
-                        $mailer->setTokens(MUtil_Ra::column('gto_id_token', $tokensData));
-                        $mailer->process($tokensData);*/
                     }
                     $tokensData = null;
                 }
             }
         }
-
-        $msg = $mailer->getMessages();
-        if (! $msg) {
-            $msg[] = $this->_('No mails sent.');
-        }
-        if ($mailer->bounceCheck()) {
-            array_unshift($msg, $this->_('On this test system all mail will be delivered to the from address.'));
-        }
-
-        $this->addMessage($msg);
 
         if (! $startUser->isCurrentUser()) {
             $startUser->setAsCurrentUser();

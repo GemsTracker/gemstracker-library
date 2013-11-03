@@ -339,50 +339,16 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
 
         if ($target) {
-            $select->where('gct_target = ?', $target);
+            if (is_array($target)) {
+                $select->where('gct_target IN (?)', $target);
+            } else {
+                $select->where('gct_target = ?', $target);
+            }
         }
         $templates = $this->db->fetchPairs($select);
         if (! $list) {
             $templates = array('' => '') + $templates;
         }
         return $templates;
-    }
-
-    /**
-     * Style the template previews
-     * @param  array $templateArray template data
-     * @return array html and text views
-     */
-    protected function getPreview($templateArray)
-    {
-        $multi = false;
-        if (count($templateArray) > 1) {
-            $multi = true;
-            $allLanguages = $this->util->getLocalized()->getLanguages();
-        }
-
-        $htmlView = MUtil_Html::create()->div();
-        $textView = MUtil_Html::create()->div();
-        foreach($templateArray as $template) {
-            if ($multi) {
-                $htmlView->h3()[] = $allLanguages[$template['gctt_lang']];
-                $textView->h3()[] = $allLanguages[$template['gctt_lang']];
-            }
-            
-            $content = '';
-            if ($template['gctt_subject'] || $template['gctt_body']) {
-                $content .= '[b]';
-                $content .= $this->_('Subject:');
-                $content .= '[/b] [i]';
-                $content .= $this->mailer->applyFields($template['gctt_subject']);
-                $content .= "[/i]\n\n";
-                $content .= $this->mailer->applyFields($template['gctt_body']);       
-            }
-            $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
-            $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
-
-        }
-
-        return array('html' => $htmlView, 'text' => $textView);
     }
 }
