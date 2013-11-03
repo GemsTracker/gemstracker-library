@@ -213,11 +213,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // STAFF CONTROLLER
         $page = $cont->addStaffPage($this->_('Staff'));
 
+        // AGENDA CONTAINER
         $setup->addAgendaSetupMenu($this->_('Agenda'));
 
         // MAIL CONTAINER
-        $setup->addMailSetupMenu($this->_('Mail'));
         $setup->addCommSetupMenu($this->_('Communication'));
+        $setup->addMailSetupMenu($this->_('Mail'));
 
 
         // LOG CONTROLLER

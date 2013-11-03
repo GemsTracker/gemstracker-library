@@ -554,6 +554,66 @@ ALTER TABLE  `gems__comm_template_translations`
     CHANGE  `gctt_subject`  `gctt_subject` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
     CHANGE  `gctt_body`  `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
 
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.template')
+    WHERE (grl_privileges LIKE '%,pr.mail' OR grl_privileges LIKE '%,pr.mail,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.template%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.template.create')
+    WHERE (grl_privileges LIKE '%,pr.mail.create' OR grl_privileges LIKE '%,pr.mail.create,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.template.create%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.template.delete')
+    WHERE (grl_privileges LIKE '%,pr.mail.delete' OR grl_privileges LIKE '%,pr.mail.delete,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.template.delete%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.template.edit')
+    WHERE (grl_privileges LIKE '%,pr.mail.edit' OR grl_privileges LIKE '%,pr.mail.edit,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.template.edit%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.template.excel')
+    WHERE (grl_privileges LIKE '%,pr.mail.excel' OR grl_privileges LIKE '%,pr.mail.excel,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.template.excel%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.job')
+    WHERE (grl_privileges LIKE '%,pr.mail.job' OR grl_privileges LIKE '%,pr.mail.job,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.job%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.job.create')
+    WHERE (grl_privileges LIKE '%,pr.mail.job.create' OR grl_privileges LIKE '%,pr.mail.job.create,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.job.create%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.job.delete')
+    WHERE (grl_privileges LIKE '%,pr.mail.job.delete' OR grl_privileges LIKE '%,pr.mail.job.delete,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.job.delete%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.job.edit')
+    WHERE (grl_privileges LIKE '%,pr.mail.job.edit' OR grl_privileges LIKE '%,pr.mail.job.edit,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.job.edit%';
+
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.comm.job.excel')
+    WHERE (grl_privileges LIKE '%,pr.mail.job.excel' OR grl_privileges LIKE '%,pr.mail.job.excel,%') AND 
+        grl_privileges NOT LIKE '%pr.comm.job.excel%';
+
 -- PATCH: Store round information in single table
 
 ALTER TABLE gems__rounds

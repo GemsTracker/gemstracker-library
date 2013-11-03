@@ -161,6 +161,15 @@ class Gems_Default_MailJobAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function indexAction()
     {
+        $style = new MUtil_Html_StyleArrayAttribute();
+        $style->add('background', 'yellow');
+        $style->add('border', "3px solid red");
+        $style->add('color', 'red');
+
+        $div = $this->html->div($style);
+        $div->h1($this->_('Deprecated'), array('style' => 'color: red;'));
+        $div->pInfo($this->_('Go to Setup -> Communication -> Automatic mail for the replacement.'));
+
         $lock = $this->util->getCronJobLock();
         if ($lock->isLocked()) {
             $this->addMessage(sprintf($this->_('Automatic mails have been turned off since %s.'), $lock->getLockTime()));

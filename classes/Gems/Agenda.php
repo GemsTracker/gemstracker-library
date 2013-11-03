@@ -195,23 +195,12 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      */
     public function getStatusCodes()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'));
-
-        $results = $this->db->fetchPairs($select);
-        foreach ($results as $code => $name) {
-            $results[$code] = $this->_($name);
-        }
-        asort($results);
-
-        $this->cache->save($results, $cacheId, array('status_codes'));
-        return $results;
+        $codes = $this->getStatusCodesActive() +
+                $this->getStatusCodesInactive();
+        
+        asort($codes);
+        
+        return $codes;
     }
 
     /**
@@ -221,24 +210,14 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      */
     public function getStatusCodesActive()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'))
-                ->where('gasc_is_active = 1');
-
-        $results = $this->db->fetchPairs($select);
-        foreach ($results as $code => $name) {
-            $results[$code] = $this->_($name);
-        }
-        asort($results);
-
-        $this->cache->save($results, $cacheId, array('status_codes'));
-        return $results;
+        $codes = array(
+            'AC' => $this->_('Active'),
+            'CO' => $this->_('Completed'),
+        );
+        
+        asort($codes);
+        
+        return $codes;
     }
 
     /**
@@ -248,24 +227,14 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      */
     public function getStatusCodesInactive()
     {
-        $cacheId = __CLASS__ . '_' . __FUNCTION__;
-
-        if ($results = $this->cache->load($cacheId)) {
-            return $results;
-        }
-
-        $select = $this->db->select();
-        $select->from('gems__agenda_statuscodes', array('gasc_code', 'gasc_name'))
-                ->where('gasc_is_active = 0');
-
-        $results = $this->db->fetchPairs($select);
-        foreach ($results as $code => $name) {
-            $results[$code] = $this->_($name);
-        }
-        asort($results);
-
-        $this->cache->save($results, $cacheId, array('status_codes'));
-        return $results;
+        $codes = array(
+            'AB' => $this->_('Aborted'),
+            'CA' => $this->_('Cancelled'),
+        );
+        
+        asort($codes);
+        
+        return $codes;
     }
 
     /**

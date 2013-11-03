@@ -100,6 +100,23 @@ class Gems_Default_MailTemplateAction extends Gems_Controller_BrowseEditAction
         return $this->_('Email templates');
     }
 
+    /**
+     * Action for showing a browse page
+     */
+    public function indexAction()
+    {
+        $style = new MUtil_Html_StyleArrayAttribute();
+        $style->add('background', 'yellow');
+        $style->add('border', "3px solid red");
+        $style->add('color', 'red');
+
+        $div = $this->html->div($style);
+        $div->h1($this->_('Deprecated'), array('style' => 'color: red;'));
+        $div->pInfo($this->_('Go to Setup -> Communication -> Templates for the replacement.'));
+        
+        parent::indexAction();
+    }
+    
     protected function processForm($saveLabel = null, $data = null)
     {
         $model = $this->getModel();

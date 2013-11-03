@@ -234,7 +234,6 @@ abstract class Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Procedures'),      'pr.agenda-procedure', 'agenda-procedure');
         $setup->addBrowsePage($this->_('Locations'),       'pr.locations',        'location');
         $setup->addBrowsePage($this->_('Healtcare staff'), 'pr.agenda-staff',     'agenda-staff');
-        $setup->addBrowsePage($this->_('Status codes'),    'pr.status-code',      'agenda-status-code');
 
         return $setup;
     }
@@ -283,12 +282,23 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
-        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'comm-job');
+        // COMMUNICATION ACTIVITY CONTROLLER
+        //$setup->addBrowsePage();
+        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+        $page->addShowAction();
+
+        // AUTOMATIC COMMUNICATION CONTROLLER
+        $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
         $page->addPage($this->_('Run'), null, 'cron', 'index');
+        
+        // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
 
-        $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'comm-template');
+        // COMMUNICATION TEMPLATE CONTROLLER
+        $setup->addBrowsePage($this->_('Templates'), 'pr.comm.template', 'comm-template');
 
         return $setup;
     }
@@ -400,21 +410,10 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
-        // MAIL ACTIVITY CONTROLLER
-        //$setup->addBrowsePage();
-        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
-        $page->addAutofilterAction();
-        $page->addExcelAction();
-        $page->addShowAction();
-
         // MAIL JOB CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.mail.job', 'mail-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
         $page->addPage($this->_('Run'), null, 'cron', 'index');
-
-        // MAIL SERVER CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
-        // $page->addAction($this->_('Test'), 'pr.mail.server.test', 'test')->addParameters(MUtil_Model::REQUEST_ID);
 
         // MAIL CONTROLLER
         $setup->addBrowsePage($this->_('Templates'), 'pr.mail', 'mail-template');
