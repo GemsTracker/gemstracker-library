@@ -1428,7 +1428,7 @@ class GemsEscort extends MUtil_Application_Escort
                 $config     = $dbResponse->getConfig();
                 $paths[] = array(
                     'path' => $path,
-                    'name' => $config['dbname'],
+                    'name' => 'gemsdata',
                     'db'   => $dbResponse,
                     );
             }
