@@ -5,6 +5,7 @@ CREATE TABLE gems__appointment2tracks (
         ga2t_id_appointment bigint unsigned not null references gems__appointments (gap_id_appointment),
 
         ga2t_code           varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        ga2t_active         boolean not null default 1,
 
         ga2t_changed        timestamp not null default current_timestamp on update current_timestamp,
         ga2t_changed_by     bigint unsigned not null,

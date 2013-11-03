@@ -110,10 +110,7 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
         $tabCount = count($tabs);
 
         if ($tabs && ($this->displaySingleTab || $tabCount > 1)) {
-
-
             // Is there a better helper to include JS?
-
             $view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.horizontalScrollMenu.js');
 
             $script = '(function($) {$(".'.$this->class.'").horizontalScrollMenu();}(jQuery));';
@@ -123,10 +120,14 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
             // Set the correct parameters
             $this->getCurrentTab();
 
+            
             $scrollContainer = MUtil_Html::create()->div();
 
             if ($tabCount > $this->scrollFromSize) {
                 $scrollContainer->a('#', $this->prevLabel, array('class' => 'prev'));
+            } else {
+                $scrollContainer->span(array('class' => 'prev disabled'))
+                        ->raw(str_repeat('&nbsp', strlen($this->prevLabel)));
             }
 
             $tabRow = $scrollContainer->div(array('class' => 'container'))->ul();
@@ -139,14 +140,17 @@ abstract class Gems_Snippets_HorizontalScrollMenuSnippetAbstract extends MUtil_S
                 }
 
                 $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
-                
-                if ($tabId === $this->currentTab) {
+
+                if ($tabId == $this->currentTab) {
                     $li->appendAttrib('class', $this->tabActiveClass);
                 }
             }
 
             if ($tabCount > $this->scrollFromSize) {
                 $scrollContainer->a('#', $this->nextLabel, array('class' => 'next'));
+            } else {
+                $scrollContainer->span(array('class' => 'next disabled'))
+                        ->raw(str_repeat('&nbsp', strlen($this->nextLabel)));
             }
 
             return $scrollContainer;
