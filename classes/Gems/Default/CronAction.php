@@ -228,6 +228,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
         $jobs = $this->db->fetchAll($sql);
 
+        $mailed = false;
         if ($jobs) {
             foreach ($jobs as $job) {
                 if ($user->getUserId() != $job['gcj_id_user_as']) {
@@ -242,18 +243,17 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                     $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
 
                     $multipleTokensData = $model->load($filter);
-
-                    if (count($tokensData)) {
+                    if (count($multipleTokensData)) {
 
                         $mails = 0;
                         $updates = 0;
                         $mailSent = false;
 
-                        foreach($multipleTokenData as $tokenData) {
+                        foreach($multipleTokensData as $tokenData) {
                             $mailer = $this->loader->getMailLoader()->getMailer('token', $tokenData);
 
                             if ($job['gcj_from_method'] == 'O') {
-                                $organization  = $this->mailer->getOrganization();
+                                $organization  = $mailer->getOrganization();
                                 $from = $organization->getName() . ' <' . $organization->getEmail() . '>';
                                 $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'U') {
@@ -265,6 +265,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                             if ($job['gcj_process_method'] == 'M') {
                                 $mailer->setTemplate($job['gcj_id_message']);
                                 $mailer->send();
+                                $mailed = true;
 
                                 $mails++;
                                 $updates++;
@@ -272,6 +273,8 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                                 $mailer->setTemplate($job['gcj_id_message']);
                                 $mailer->send();
                                 $mailSent = true;
+                                $mailed = true;
+
                                 $mails++;
                                 $updates++;
                                 if ($job['gcj_process_method'] == 'A') {
@@ -288,6 +291,10 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                     $tokensData = null;
                 }
             }
+        }
+
+        if (!$mailed) {
+            $this->addMessage($this->_('No mails sent.'));
         }
 
         if (! $startUser->isCurrentUser()) {

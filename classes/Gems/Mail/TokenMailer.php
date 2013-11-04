@@ -160,7 +160,13 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
         $logData['grco_method']       = 'email';
         $logData['grco_topic']        = substr($this->subject, 0, 120);
-        $logData['grco_address']      = substr($this->to, 0, 120);
+
+        $to = array();
+        foreach($this->to as $name=> $address) {
+            $to[] = $name . '<'.$address.'>';
+        }
+
+        $logData['grco_address']      = substr(join(',', $to), 0, 120);
         $logData['grco_sender']       = substr($this->from, 0, 120);
 
         $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
@@ -169,6 +175,8 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $logData['grco_changed_by']   = $currentUserId;
         $logData['grco_created']      = $changeDate;
         $logData['grco_created_by']   = $currentUserId;
+
+        MUtil_Echo::track($logData);
 
         $this->db->insert('gems__log_respondent_communications', $logData);
     }

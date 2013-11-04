@@ -673,10 +673,46 @@ UPDATE gems__rounds, gems__round_periods SET
             gro_valid_for_length   = grp_valid_for_length
         WHERE gro_id_round = grp_id_round;
 
--- PATCH: Insert old mail templates into coom table
+-- PATCH: Insert old mail templates into comm table
 
 INSERT ignore INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_code, gct_changed, gct_changed_by, gct_created, gct_created_by)
     (SELECT gmt_id_message, gmt_subject, 'token', null, gmt_changed, gmt_changed_by, gmt_created, gmt_created_by FROM gems__mail_templates);
 
 INSERT ignore INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
     (SELECT gmt_id_message, 'en', gmt_subject, gmt_body FROM gems__mail_templates);
+
+INSERT ignore INTO gems__comm_jobs (gcj_id_job,
+    gcj_id_message,
+    gcj_id_user_as,
+    gcj_active,
+    gcj_from_method,
+    gcj_from_fixed,
+    gcj_process_method,
+    gcj_filter_mode,
+    gcj_filter_days_between,
+    gcj_filter_max_reminders,
+    gcj_id_organization,
+    gcj_id_track,
+    gcj_id_survey,
+    gcj_changed,
+    gcj_changed_by,
+    gcj_created,
+    gcj_created_by) 
+    (SELECT gmj_id_job,
+        gmj_id_message,
+        gmj_id_user_as,
+        gmj_active,
+        gmj_from_method,
+        gmj_from_fixed,
+        gmj_process_method,
+        gmj_filter_mode,
+        gmj_filter_days_between,
+        gmj_filter_max_reminders,
+        gmj_id_organization,
+        gmj_id_track,
+        gmj_id_survey,
+        gmj_changed,
+        gmj_changed_by,
+        gmj_created,
+        gmj_created_by
+        FROM gems__mail_jobs);

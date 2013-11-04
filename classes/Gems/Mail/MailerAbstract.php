@@ -469,6 +469,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         if ($template = $this->getTemplate($templateId)) {
             $this->subject = $template['gctt_subject'];
             $this->bodyBb = $template['gctt_body'];
+            $this->setTemplateId($templateId);
         }
     }
 

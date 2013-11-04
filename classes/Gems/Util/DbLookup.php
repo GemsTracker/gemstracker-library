@@ -227,20 +227,20 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
             '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)'
         );
 
-        if ($job['gmj_filter_mode'] == 'R') {
-            $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gmj_filter_days_between'] . ' DAY)';
-            $filter[] = 'gto_mail_sent_num < ' . $job['gmj_filter_max_reminders'];
+        if ($job['gcj_filter_mode'] == 'R') {
+            $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
+            $filter[] = 'gto_mail_sent_num < ' . $job['gcj_filter_max_reminders'];
         } else {
             $filter['gto_mail_sent_date'] = NULL;
         }
-        if ($job['gmj_id_organization']) {
-            $filter['gto_id_organization'] = $job['gmj_id_organization'];
+        if ($job['gcj_id_organization']) {
+            $filter['gto_id_organization'] = $job['gcj_id_organization'];
         }
-        if ($job['gmj_id_track']) {
-            $filter['gto_id_track'] = $job['gmj_id_track'];
+        if ($job['gcj_id_track']) {
+            $filter['gto_id_track'] = $job['gcj_id_track'];
         }
-        if ($job['gmj_id_survey']) {
-            $filter['gto_id_survey'] = $job['gmj_id_survey'];
+        if ($job['gcj_id_survey']) {
+            $filter['gto_id_survey'] = $job['gcj_id_survey'];
         }
 
         return $filter;
