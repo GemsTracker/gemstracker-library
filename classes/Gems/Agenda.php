@@ -197,9 +197,9 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     {
         $codes = $this->getStatusCodesActive() +
                 $this->getStatusCodesInactive();
-        
+
         asort($codes);
-        
+
         return $codes;
     }
 
@@ -214,9 +214,9 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             'AC' => $this->_('Active'),
             'CO' => $this->_('Completed'),
         );
-        
+
         asort($codes);
-        
+
         return $codes;
     }
 
@@ -231,9 +231,9 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             'AB' => $this->_('Aborted'),
             'CA' => $this->_('Cancelled'),
         );
-        
+
         asort($codes);
-        
+
         return $codes;
     }
 
@@ -245,6 +245,20 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     public function getStatusKeysActive()
     {
         return array_keys($this->getStatusCodesActive());
+    }
+
+    /**
+     * Get the status keys for active agenda items as a quoted db query string for use in "x IN (?)"
+     *
+     * @return Zend_Db_Expr
+     */
+    public function getStatusKeysActiveDbQuoted()
+    {
+        $codes = array();
+        foreach ($this->getStatusCodesActive() as $key => $label) {
+            $codes[] = $this->db->quote($key);
+        }
+        return new Zend_Db_Expr(implode(", ", $codes));
     }
 
     /**
