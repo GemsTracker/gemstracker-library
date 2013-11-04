@@ -272,6 +272,20 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get the status keys for active agenda items as a quoted db query string for use in "x IN (?)"
+     *
+     * @return Zend_Db_Expr
+     */
+    public function getStatusKeysInactiveDbQuoted()
+    {
+        $codes = array();
+        foreach ($this->getStatusCodesInactive() as $key => $label) {
+            $codes[] = $this->db->quote($key);
+        }
+        return new Zend_Db_Expr(implode(", ", $codes));
+    }
+
+    /**
      * Get the type codes for agenda items
      *
      * @return array code => label
