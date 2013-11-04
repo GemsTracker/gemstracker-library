@@ -240,25 +240,17 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      * Use this to add a privilege that is not associated with a menu item.
      *
      * @param string $privilege
+     * @param string $label
      * @return Gems_Menu
      */
-    public function addHiddenPrivilege($privilege)
+    public function addHiddenPrivilege($privilege, $label = null)
     {
-        $this->_hiddenPrivileges[$privilege] = sprintf($this->_('Stand-alone privilege: %s'), $privilege);
+        if (null === $label) {
+            $label = $this->_('Stand-alone privilege: %s');
+        }
+        $this->_hiddenPrivileges[$privilege] = sprintf($label, $privilege);
 
         return $this;
-    }
-
-    /**
-     * Method retained to maintain BC - {@see Gems_Menu::addHiddenPrivilege}
-     *
-     * @deprecated
-     * @param string $privilege
-     * @return Gems_Menu
-     */
-    public function addHiddenPrivilige($privilege)
-    {
-        return $this->addHiddenPrivilege($privilege);
     }
 
     public function addLogonOffToken()
@@ -689,15 +681,30 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->addContactPage($this->_('Contact'));
 
         // Privileges not associated with menu item
-        //$this->addHiddenPrivilege('pr.plan.choose-org');
-        $this->addHiddenPrivilege('pr.organization-switch');
-        $this->addHiddenPrivilege('pr.plan.mail-as-application');
-        $this->addHiddenPrivilege('pr.respondent.multiorg');
-        $this->addHiddenPrivilege('pr.respondent.result');
-        $this->addHiddenPrivilege('pr.respondent.who');
-        $this->addHiddenPrivilege('pr.staff.edit.all');
-        $this->addHiddenPrivilege('pr.staff.see.all');
-        $this->addHiddenPrivilege('pr.token.mail.freetext');
+        $this->addHiddenPrivilege('pr.organization-switch', $this->_(
+                'Grant access to all organization.'
+                ));
+        $this->addHiddenPrivilege('pr.plan.mail-as-application', $this->_(
+                'Grant right to impersonate the site when mailing.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.multiorg', $this->_(
+                'Display multiple organizations in respondent overview.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.result', $this->_(
+                'Display results in token overviews.'
+                ));
+        $this->addHiddenPrivilege('pr.respondent.who', $this->_(
+                'Display staff member name in token overviews.'
+                ));
+        $this->addHiddenPrivilege('pr.staff.edit.all', $this->_(
+                'Grant right to edit staff members from all organizations.'
+                ));
+        $this->addHiddenPrivilege('pr.staff.see.all', $this->_(
+                'Display all organizations in staff overview.'
+                ));
+        $this->addHiddenPrivilege('pr.token.mail.freetext', $this->_(
+                'Grant right to send free text (i.e. non-template) email messages.'
+                ));
 
 
         //Changelog added as button only

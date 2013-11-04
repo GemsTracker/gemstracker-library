@@ -1,3 +1,10 @@
+Important changes from 1.6.1 => 1.6.2
+============================================================
+Agenda and calendar screens added to version
+Mail templates for staff members, respondents, users, etc... possible
+Improved import scalability
+Role management has a better display interface
+
 Important changes from 1.6 => 1.6.1
 ============================================================
 Added support for ODK Collect by adding OpenRosa support
