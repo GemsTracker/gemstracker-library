@@ -340,6 +340,18 @@ class Gems_Tracker_Token_TokenSelect {
      * @param string $surveyId
      * @return Gems_Tracker_Token_TokenSelect
      */
+    public function forSurveyCode($surveyCode) {
+        $this->sql_select->where('gsu_code = ?', $surveyCode);
+
+        return $this;
+    }
+
+    /**
+     * Select only a specific surveyId
+     *
+     * @param string $surveyId
+     * @return Gems_Tracker_Token_TokenSelect
+     */
     public function forSurveyId($surveyId) {
         $this->sql_select->where('gto_id_survey = ?', $surveyId);
 

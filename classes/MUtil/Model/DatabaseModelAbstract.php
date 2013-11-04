@@ -160,6 +160,17 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 if ($expression = $this->get($name, 'column_expression')) {
                     //The brackets tell Zend_Db_Select that this is an epression in a sort.
                     $name = '(' . $expression . ')';
+                } elseif ('limit' === strtolower($name)) {
+                    if (is_array($value)) {
+                        $count  = array_shift($value);
+                        $offset = reset($value);
+                    } else {
+                        $count  = $value;
+                        $offset = null;
+                    }
+                    $select->limit($count, $offset);
+                    continue;
+
                 } else {
                     $name = $adapter->quoteIdentifier($name);
                 }
