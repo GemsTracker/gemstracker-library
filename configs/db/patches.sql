@@ -683,4 +683,5 @@ INSERT INTO gems__comm_templates (gct_id_template, gct_name, gct_target, gct_cod
 INSERT INTO gems__comm_template_translations (gctt_id_template, gctt_lang, gctt_subject, gctt_body)
     (SELECT gmt_id_message, 'en', gmt_subject, gmt_body FROM gems__mail_templates);
     
-    
+ALTER TABLE  gems__comm_templates
+    CHANGE  `gct_target`  `gct_target` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
