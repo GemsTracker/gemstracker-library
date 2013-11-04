@@ -3,7 +3,7 @@ CREATE TABLE if not exists gems__comm_templates (
       gct_id_template bigint unsigned not null,
 
       gct_name        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-      gct_target      varchar(16) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+      gct_target      varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
       gct_code        varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
       gct_changed     timestamp not null default current_timestamp on update current_timestamp,
