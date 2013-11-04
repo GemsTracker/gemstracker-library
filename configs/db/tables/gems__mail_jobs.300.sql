@@ -1,4 +1,6 @@
 
+-- depreciated, moved to gems__comm_jobs
+
 CREATE TABLE if not exists gems__mail_jobs (
         gmj_id_job bigint unsigned not null auto_increment,
 

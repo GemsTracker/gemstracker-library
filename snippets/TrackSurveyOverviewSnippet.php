@@ -119,7 +119,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
     private function getRepeater($trackId)
     {
         $sql = "
-            SELECT gro_id_round, gro_id_track, gro_round_description, gro_icon_file, gro_valid_after, gro_valid_for, gro_used_date, gro_active,
+            SELECT gro_id_round, gro_id_track, gro_round_description, gro_icon_file, gro_active,
                 gsu_id_survey, gsu_survey_name, gsu_survey_description, gsu_survey_pdf, gsu_active,
                 ggp_name
             FROM gems__rounds LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey

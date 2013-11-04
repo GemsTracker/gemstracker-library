@@ -1,9 +1,10 @@
+
 CREATE TABLE if not exists gems__comm_template_translations (
-      gctt_id_template  bigint unsigned not null, 
+      gctt_id_template  bigint unsigned not null,
       gctt_lang      varchar(2) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
       gctt_subject      varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
-      gctt_body         text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null, 
-     
+      gctt_body         text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+
 
       PRIMARY KEY (gctt_id_template,gctt_lang)
    )
@@ -28,7 +29,7 @@ Click on [url={token_url}]this link[/url] to start or go to [url]{site_ask_url}[
 {organization_signature}'),
     (17, 'en', 'Password reset requested', 'To set a new password for the [b]{organization}[/b] site [b]{project}[/b], please click on this link:\n{reset_url}'),
     (17, 'nl', 'Wachtwoord opnieuw instellen aangevraagd', 'Om een nieuw wachtwoord in te stellen voor de [b]{organization}[/b] site [b]{project}[/b], klik op deze link:\n{reset_url}'),
-    (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b]. 
+    (18, 'en', 'New account created', 'A new account has been created for the [b]{organization}[/b] site [b]{project}[/b].
 To set your password and activate the account please click on this link:\n{reset_url}'),
-    (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b]. 
+    (18, 'nl', 'Nieuw account aangemaakt', 'Een nieuw account is aangemaakt voor de [b]{organization}[/b] site [b]{project}[/b].
 Om uw wachtwoord te kiezen en uw account te activeren, klik op deze link:\n{reset_url}');

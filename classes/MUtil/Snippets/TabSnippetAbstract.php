@@ -108,7 +108,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
 
     /**
      * Sets the default and current tab and returms the current
-     * 
+     *
      * @return The current tab
      */
     public function getCurrentTab()
@@ -122,11 +122,11 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
         }
         if (null === $this->currentTab) {
             $this->currentTab = $this->request->getParam($this->getParameterKey());
-
-            // Param can exist and be empty or can be false
-            if (! ($this->currentTab && isset($tabs[$this->currentTab])))  {
-                $this->currentTab = $this->defaultTab;
-            }
+        }
+        
+        // Param can exist and be empty or can have a false value
+        if (! ($this->currentTab && isset($tabs[$this->currentTab])))  {
+            $this->currentTab = $this->defaultTab;
         }
 
         return $this->currentTab;

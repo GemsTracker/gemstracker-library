@@ -1,5 +1,5 @@
 
--- depreciated, remrered into gems__rounds
+-- depreciated, remerged into gems__rounds
 
 CREATE TABLE if not exists gems__round_periods (
         grp_id_round bigint unsigned not null references gems__rounds (gro_id_round),

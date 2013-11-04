@@ -1,4 +1,6 @@
 
+-- depreciated, moved to gems__comm_templates and gems__comm_template_translations
+
 CREATE TABLE if not exists gems__mail_templates (
       gmt_id_message bigint unsigned not null auto_increment,
 
