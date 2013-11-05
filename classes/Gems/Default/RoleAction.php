@@ -304,21 +304,24 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
     public function formatLongLine(array $privileges)
     {
         $output     = MUtil_Html::create('div');
-        $privileges = array_combine($privileges, $privileges);
-        foreach ($this->getUsedPrivileges() as $privilege => $description) {
-            if (isset($privileges[$privilege])) {
-                if (count($output) > 11) {
-                    $output->append('...');
-                    return $output;
+        
+        if (count($privileges)) {       
+            $privileges = array_combine($privileges, $privileges);
+            foreach ($this->getUsedPrivileges() as $privilege => $description) {
+                if (isset($privileges[$privilege])) {
+                    if (count($output) > 11) {
+                        $output->append('...');
+                        return $output;
+                    }
+                    if (MUtil_String::contains($description, '<br/>')) {
+                        $description = substr($description, 0, strpos($description, '<br/>') - 1);
+                    }
+                    $output->raw($description);
+                    $output->br();
                 }
-                if (MUtil_String::contains($description, '<br/>')) {
-                    $description = substr($description, 0, strpos($description, '<br/>') - 1);
-                }
-                $output->raw($description);
-                $output->br();
             }
         }
-        
+            
         return $output;
     }
     
@@ -345,7 +348,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         list($parents_string, $privileges_string) = explode("\t", $data, 2);
         $parents    = explode(', ', $parents_string);
         $privileges = explode(', ', $privileges_string);
-        $privileges = array_combine($privileges, $privileges);
+        if (count($privileges) > 0 ) {
+            $privileges = array_combine($privileges, $privileges);
+        }
         
         $notAllowed = $this->getUsedPrivileges();
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);
