@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-04 16:58+0100\n"
+"POT-Creation-Date: 2013-11-05 13:44+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -137,33 +137,33 @@ msgstr "Niet doorgegaan"
 msgid "Cancelled"
 msgstr "Afgezegd"
 
-#: classes/Gems/Agenda.php:282
+#: classes/Gems/Agenda.php:296
 msgid "Ambulatory"
 msgstr "Aanloop"
 
-#: classes/Gems/Agenda.php:283
+#: classes/Gems/Agenda.php:297
 msgid "Emergency"
 msgstr "Noodgeval"
 
-#: classes/Gems/Agenda.php:284 classes/Gems/Email/EmailFormAbstract.php:484
+#: classes/Gems/Agenda.php:298 classes/Gems/Email/EmailFormAbstract.php:484
 #: classes/Gems/Mail/MailElements.php:295
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:773
 msgid "Field"
 msgstr "Veld"
 
-#: classes/Gems/Agenda.php:285
+#: classes/Gems/Agenda.php:299
 msgid "Home"
 msgstr "Thuis"
 
-#: classes/Gems/Agenda.php:286
+#: classes/Gems/Agenda.php:300
 msgid "Inpatient"
 msgstr "Patiënt"
 
-#: classes/Gems/Agenda.php:287
+#: classes/Gems/Agenda.php:301
 msgid "Short stay"
 msgstr "Kort verblijf"
 
-#: classes/Gems/Agenda.php:288
+#: classes/Gems/Agenda.php:302
 msgid "Virtual"
 msgstr "Virueel"
 
@@ -298,7 +298,7 @@ msgstr "Toestemmingen"
 msgid "Access"
 msgstr "Toegang"
 
-#: classes/Gems/Menu.php:206 classes/Gems/Default/RoleAction.php:455
+#: classes/Gems/Menu.php:206 classes/Gems/Default/RoleAction.php:463
 msgid "Roles"
 msgstr "Rollen"
 
@@ -307,7 +307,7 @@ msgid "Assigned"
 msgstr "Toegewezen"
 
 #: classes/Gems/Menu.php:208 classes/Gems/Default/RoleAction.php:256
-#: classes/Gems/Default/RoleAction.php:470
+#: classes/Gems/Default/RoleAction.php:478
 msgid "Privileges"
 msgstr "Priviléges"
 
@@ -403,7 +403,7 @@ msgstr "Kenmerk"
 msgid "Scan Responses"
 msgstr "Scan antwoorden"
 
-#: classes/Gems/Menu.php:325 classes/Gems/Default/AppointmentAction.php:162
+#: classes/Gems/Menu.php:325 classes/Gems/Default/AppointmentAction.php:168
 msgid "Appointments"
 msgstr "Afspraken"
 
@@ -581,7 +581,8 @@ msgstr "Changelog"
 
 #: classes/Gems/Model.php:270 classes/Gems/Default/ComplianceAction.php:93
 #: classes/Gems/Model/RespondentModel.php:260
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:140
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:140
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:142
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:224
 msgid "Respondent nr"
 msgstr "Patiënt nr"
@@ -589,7 +590,7 @@ msgstr "Patiënt nr"
 #: classes/Gems/Model.php:273 classes/Gems/Default/AgendaActivityAction.php:98
 #: classes/Gems/Default/AgendaProcedureAction.php:98
 #: classes/Gems/Default/AgendaStaffAction.php:99
-#: classes/Gems/Default/CommJobAction.php:98
+#: classes/Gems/Default/CommJobAction.php:105
 #: classes/Gems/Default/ExportAction.php:252
 #: classes/Gems/Default/IndexAction.php:229
 #: classes/Gems/Default/LocationAction.php:115
@@ -663,7 +664,7 @@ msgstr "Achternaam"
 #: classes/Gems/Default/TrackMaintenanceAction.php:319
 #: classes/Gems/Model/RespondentModel.php:262
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:60
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:142
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:144
 #: classes/Gems/Tracker/Model/TrackModel.php:99
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:69
 msgid "Name"
@@ -1083,22 +1084,22 @@ msgid_plural "healthcare staff"
 msgstr[0] "zorgverlener"
 msgstr[1] "zorgverleners"
 
-#: classes/Gems/Default/AppointmentAction.php:173
+#: classes/Gems/Default/AppointmentAction.php:179
 msgid "appointment"
 msgid_plural "appointments"
 msgstr[0] "afspraak"
 msgstr[1] "afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:208
+#: classes/Gems/Default/AppointmentAction.php:214
 msgid "Requested agenda data not available!"
 msgstr "Verzochte afspraak gegevens niet gevonden!"
 
-#: classes/Gems/Default/AppointmentAction.php:217
+#: classes/Gems/Default/AppointmentAction.php:223
 #, php-format
 msgid "You have no access to %s appointments!"
 msgstr "U heeft geen toegang %s afspraken!"
 
-#: classes/Gems/Default/AppointmentAction.php:220
+#: classes/Gems/Default/AppointmentAction.php:226
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
@@ -1212,16 +1213,6 @@ msgstr "Verwerkings methode"
 msgid "Filter for"
 msgstr "Selecteer op"
 
-#: classes/Gems/Default/CommJobAction.php:94
-#: classes/Gems/Default/MailJobAction.php:94
-msgid "Days between reminders"
-msgstr "Aantal dagen tussen herinneringen"
-
-#: classes/Gems/Default/CommJobAction.php:95
-#: classes/Gems/Default/MailJobAction.php:95
-msgid "Maximum number of reminders"
-msgstr "Maximum aantal herinneringen"
-
 #: classes/Gems/Default/CommJobAction.php:100
 #: classes/Gems/Default/ExportAction.php:228
 #: classes/Gems/Default/ExportAction.php:505
@@ -1239,33 +1230,43 @@ msgstr "Maximum aantal herinneringen"
 msgid "Survey"
 msgstr "Vragenlijst"
 
-#: classes/Gems/Default/CommJobAction.php:114
+#: classes/Gems/Default/CommJobAction.php:103
+#: classes/Gems/Default/MailJobAction.php:94
+msgid "Days between reminders"
+msgstr "Aantal dagen tussen herinneringen"
+
+#: classes/Gems/Default/CommJobAction.php:104
+#: classes/Gems/Default/MailJobAction.php:95
+msgid "Maximum number of reminders"
+msgstr "Maximum aantal herinneringen"
+
+#: classes/Gems/Default/CommJobAction.php:119
 #: classes/Gems/Default/MailJobAction.php:114
 msgid "First mail"
 msgstr "Eerste mail"
 
-#: classes/Gems/Default/CommJobAction.php:115
+#: classes/Gems/Default/CommJobAction.php:120
 #: classes/Gems/Default/MailJobAction.php:115
 msgid "Reminder"
 msgstr "Herinnering"
 
-#: classes/Gems/Default/CommJobAction.php:126
+#: classes/Gems/Default/CommJobAction.php:131
 #: classes/Gems/Default/MailJobAction.php:126
 msgid "Use organizational from address"
 msgstr "Gebruik vanaf adres van organisatie"
 
-#: classes/Gems/Default/CommJobAction.php:129
+#: classes/Gems/Default/CommJobAction.php:134
 #: classes/Gems/Default/MailJobAction.php:129
 #, php-format
 msgid "Use site %s address"
 msgstr "Gebruik %s adres van de site"
 
-#: classes/Gems/Default/CommJobAction.php:132
+#: classes/Gems/Default/CommJobAction.php:137
 #: classes/Gems/Default/MailJobAction.php:132
 msgid "Use the 'By staff member' address"
 msgstr "Gebruik 'Door medewerker' adres"
 
-#: classes/Gems/Default/CommJobAction.php:133
+#: classes/Gems/Default/CommJobAction.php:138
 #: classes/Gems/Default/MailJobAction.php:133
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:290
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:338
@@ -1274,30 +1275,30 @@ msgstr "Gebruik 'Door medewerker' adres"
 msgid "Other"
 msgstr "Overige"
 
-#: classes/Gems/Default/CommJobAction.php:145
+#: classes/Gems/Default/CommJobAction.php:150
 #: classes/Gems/Default/MailJobAction.php:145
 msgid "Automatic mail jobs"
 msgstr "Automatische mail opdrachten "
 
-#: classes/Gems/Default/CommJobAction.php:156
+#: classes/Gems/Default/CommJobAction.php:161
 #: classes/Gems/Default/MailJobAction.php:156
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatische mail opdracht"
 msgstr[1] "automatische mail opdrachten"
 
-#: classes/Gems/Default/CommJobAction.php:166
+#: classes/Gems/Default/CommJobAction.php:171
 #: classes/Gems/Default/MailJobAction.php:175
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatische mail opdrachten staan sinds %s uit."
 
-#: classes/Gems/Default/CommJobAction.php:170
+#: classes/Gems/Default/CommJobAction.php:175
 #: classes/Gems/Default/MailJobAction.php:179
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Automatische mail opdrachten AANzetten"
 
-#: classes/Gems/Default/CommJobAction.php:176
+#: classes/Gems/Default/CommJobAction.php:181
 #: classes/Gems/Default/MailJobAction.php:185
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
@@ -1978,7 +1979,7 @@ msgstr "Kan toegewezen worden aan"
 
 #: classes/Gems/Default/GroupAction.php:117
 #: classes/Gems/Default/LogAction.php:201
-#: classes/Gems/Default/RoleAction.php:444
+#: classes/Gems/Default/RoleAction.php:452
 msgid "Role"
 msgstr "Rol"
 
@@ -2280,6 +2281,7 @@ msgstr "Alle acties"
 
 #: classes/Gems/Default/LogAction.php:190
 #: classes/Gems/Default/TrackFieldsAction.php:108
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:89
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:102
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:118
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:473
@@ -2994,9 +2996,9 @@ msgstr "Behandeling"
 #: classes/Gems/Default/RespondentNewAction.php:179
 #: classes/Gems/Default/TrackAction.php:132
 #: classes/Gems/Default/TrackAction.php:548
+#: classes/Gems/Snippets/EditTrackSnippet.php:95
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:223
 #: snippets/DeleteInSourceTrackSnippet.php:112
-#: snippets/EditTrackSnippet.php:95
 msgid "Rejection code"
 msgstr "Afkeuringscode"
 
@@ -3047,13 +3049,14 @@ msgstr ""
 #: classes/Gems/Default/RespondentPlanAction.php:67
 #: classes/Gems/Default/SurveyAction.php:181
 #: classes/Gems/Default/TrackAction.php:300
+#: classes/Gems/Snippets/EditTrackSnippet.php:110
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:89
 #: snippets/DeleteInSourceTrackSnippet.php:132
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:145
 #: snippets/DeleteTrackTokenSnippet.php:195
 #: snippets/EditSingleSurveyTokenSnippet.php:224
-#: snippets/EditTrackSnippet.php:110 snippets/EditTrackTokenSnippet.php:144
+#: snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowSingleSurveyTokenSnippet.php:140
 #: snippets/ShowTrackTokenSnippet.php:146
 msgid "Show respondent"
@@ -3062,8 +3065,9 @@ msgstr "Toon patiënt"
 #: classes/Gems/Default/RespondentPlanAction.php:73
 #: classes/Gems/Default/TrackAction.php:269
 #: classes/Gems/Default/TrackAction.php:288
+#: classes/Gems/Snippets/EditTrackSnippet.php:108
 #: snippets/DeleteInSourceTrackSnippet.php:129
-#: snippets/EditTrackSnippet.php:108 snippets/EditTrackTokenSnippet.php:142
+#: snippets/EditTrackTokenSnippet.php:142
 #: snippets/ShowTrackTokenSnippet.php:145
 msgid "Show track"
 msgstr "Toon traject"
@@ -3098,7 +3102,7 @@ msgid "this role"
 msgstr "deze rol"
 
 #: classes/Gems/Default/RoleAction.php:159
-#: classes/Gems/Default/RoleAction.php:448
+#: classes/Gems/Default/RoleAction.php:456
 msgid "Inherited"
 msgstr "Overerfd"
 
@@ -3107,7 +3111,7 @@ msgid "Illegal name"
 msgstr "Naam niet toegestaan"
 
 #: classes/Gems/Default/RoleAction.php:251
-#: classes/Gems/Default/RoleAction.php:445
+#: classes/Gems/Default/RoleAction.php:453
 msgid "Parents"
 msgstr "Afgeleid van"
 
@@ -3123,38 +3127,38 @@ msgstr "Niet toegestaan"
 msgid "Editing `master` is not allowed"
 msgstr "Het wijzigen van `master` is niet toegestaan"
 
-#: classes/Gems/Default/RoleAction.php:378
+#: classes/Gems/Default/RoleAction.php:386
 msgid "No privileges found."
 msgstr "Geen priviléges gevonden."
 
-#: classes/Gems/Default/RoleAction.php:410
+#: classes/Gems/Default/RoleAction.php:418
 msgid "role"
 msgid_plural "roles"
 msgstr[0] "Rol"
 msgstr[1] "Rollen"
 
-#: classes/Gems/Default/RoleAction.php:415
+#: classes/Gems/Default/RoleAction.php:423
 msgid "Administrative roles"
 msgstr "Beheer rollen en rechten"
 
-#: classes/Gems/Default/RoleAction.php:446
-#: classes/Gems/Default/RoleAction.php:464
+#: classes/Gems/Default/RoleAction.php:454
+#: classes/Gems/Default/RoleAction.php:472
 msgid "Allowed"
 msgstr "Toegestaan"
 
-#: classes/Gems/Default/RoleAction.php:453
+#: classes/Gems/Default/RoleAction.php:461
 msgid "Project role overview"
 msgstr "Project rollen"
 
-#: classes/Gems/Default/RoleAction.php:463
+#: classes/Gems/Default/RoleAction.php:471
 msgid "Privilege"
 msgstr "Privilége"
 
-#: classes/Gems/Default/RoleAction.php:465
+#: classes/Gems/Default/RoleAction.php:473
 msgid "Denied"
 msgstr "Geweigerd"
 
-#: classes/Gems/Default/RoleAction.php:469
+#: classes/Gems/Default/RoleAction.php:477
 msgid "Project privileges"
 msgstr "Project priviléges"
 
@@ -3825,13 +3829,15 @@ msgstr "Per kenmerk plannen"
 
 #: classes/Gems/Default/TrackAction.php:121
 #: classes/Gems/Model/RespondentModel.php:323
-#: snippets/DeleteInSourceTrackSnippet.php:82 snippets/EditTrackSnippet.php:72
+#: classes/Gems/Snippets/EditTrackSnippet.php:72
+#: snippets/DeleteInSourceTrackSnippet.php:82
 msgid "Respondent number"
 msgstr "Patiënt nummer"
 
 #: classes/Gems/Default/TrackAction.php:122
+#: classes/Gems/Snippets/EditTrackSnippet.php:73
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:219
-#: snippets/DeleteInSourceTrackSnippet.php:83 snippets/EditTrackSnippet.php:73
+#: snippets/DeleteInSourceTrackSnippet.php:83
 msgid "Respondent name"
 msgstr "Patiënt naam"
 
@@ -3843,8 +3849,9 @@ msgstr "Toewijzingen van dit traject aan %s: %s"
 
 #: classes/Gems/Default/TrackAction.php:272
 #: classes/Gems/Default/TrackAction.php:285
+#: classes/Gems/Snippets/EditTrackSnippet.php:109
 #: snippets/DeleteInSourceTrackSnippet.php:131
-#: snippets/DeleteTrackTokenSnippet.php:194 snippets/EditTrackSnippet.php:109
+#: snippets/DeleteTrackTokenSnippet.php:194
 #: snippets/ShowTrackTokenSnippet.php:147
 msgid "Show tracks"
 msgstr "Toon trajecten"
@@ -4918,21 +4925,27 @@ msgstr "Toon actieve"
 msgid "Score"
 msgstr "Score"
 
-#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:74
-msgid "No appointments found."
-msgstr "Geen afspraken gevonden."
-
-#: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:75
-msgid "(all locations)"
-msgstr "(alle locaties)"
-
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:71
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:84
 msgid "Show appointment"
 msgstr "Toon afspraak"
 
-#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:137
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:76
+msgid "Edit appointment"
+msgstr "Afspraak wijzigen"
+
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:120
+msgid "No appointments found."
+msgstr "Geen afspraken gevonden."
+
+#: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:137
+#: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:139
 msgid "Time"
 msgstr "Tijd"
+
+#: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:75
+msgid "(all locations)"
+msgstr "(alle locaties)"
 
 #: classes/Gems/Snippets/Export/ReportFooterSnippet.php:55
 msgid "Report generation finished."
@@ -5782,25 +5795,25 @@ msgstr ""
 "Gebruiker niet gevonden of email adres onbekend of gebruiker kan niet "
 "gereset worden."
 
-#: classes/Gems/Util/DbLookup.php:389
+#: classes/Gems/Util/DbLookup.php:399
 #, php-format
 msgid "Respondent id %s not found."
 msgstr "Patiënt id %s niet gevonden."
 
-#: classes/Gems/Util/DbLookup.php:392
+#: classes/Gems/Util/DbLookup.php:402
 #, php-format
 msgid "With the organization nr %d."
 msgstr "Met het organisatie nummer %d."
 
-#: classes/Gems/Util/DbLookup.php:441
+#: classes/Gems/Util/DbLookup.php:451
 msgid "&laquo;system&raquo;"
 msgstr "&laquo;systeem&raquo;"
 
-#: classes/Gems/Util/DbLookup.php:491
+#: classes/Gems/Util/DbLookup.php:501
 msgid "inactive"
 msgstr "inactief"
 
-#: classes/Gems/Util/DbLookup.php:492
+#: classes/Gems/Util/DbLookup.php:502
 msgid "source inactive"
 msgstr "bron inactief"
 
