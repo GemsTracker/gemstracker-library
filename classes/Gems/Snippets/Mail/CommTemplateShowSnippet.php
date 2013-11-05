@@ -67,9 +67,8 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
         			$subContainer->h3($item[$this->subTitleItem]);
         		}
         		$subTable = $subContainer->table();
-
            		foreach($item as $subColumnName => $subValue) {
-           			if ($subLabel = $this->model->get($subColumnName, 'label')) {
+           			if ($subLabel = $this->submodel->get($subColumnName, 'label')) {
         				$row = $subTable->tr();
         				$row->th()[] = $subLabel;
         				$row->td()[] = $this->processValue($subColumnName, $subValue, $this->submodel);

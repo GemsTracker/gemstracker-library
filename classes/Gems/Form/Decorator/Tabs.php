@@ -183,6 +183,9 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
 
                 $list = $containerDiv->ul();
             }
+            $tabNumber = 0;
+
+            $active = $this->getOption('active');
             foreach($subforms as $subform) {
                 if ($activeTabs) {
                     if ($tabcolumn = $this->getOption('tabcolumn')) {
@@ -191,6 +194,13 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                         $elements = reset($subform->getElements());
                         $tabName = $element->getValue();
                     }
+                    
+                    if ($active == $tabName) {
+                        $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
+                        $jquery->addOnLoad($js);
+                    }
+                    $tabNumber++;
+
                     $tabId = $tabName.'-tab';
                     $list->li()->a('#'.$tabId, $tabName);
                     $subtable = $containerDiv->div(array('id' => $tabId))->table(array('class' => 'formTable'));

@@ -66,6 +66,8 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
 
     protected $menu;
 
+    protected $project;
+
     /**
      * 
      * @var Zend_Translate;
@@ -127,7 +129,8 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         }
         $form->activateJQuery();
         $tabcolumn = 'gctt_lang';
-        $element = new Gems_Form_Element_Tabs($form, $name, $options, $tabcolumn);
+        $active = $this->project->getLocaleDefault();
+        $element = new Gems_Form_Element_Tabs($form, $name, $options, $tabcolumn, $active);
         
         $parentBridge->getForm()->addElement($element);
         return $element;
