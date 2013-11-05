@@ -364,15 +364,18 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
      */
     public function formatPrivileges(array $privileges)
     {
-        $output     = MUtil_Html_ListElement::ul();
-        $privileges = array_combine($privileges, $privileges);
-        foreach ($this->getUsedPrivileges() as $privilege => $description) {
-            if (isset($privileges[$privilege])) {
-                $output->li()->raw($description);
+        if (count($privileges)) {
+            $output     = MUtil_Html_ListElement::ul();
+            $privileges = array_combine($privileges, $privileges);
+            
+            foreach ($this->getUsedPrivileges() as $privilege => $description) {
+                if (isset($privileges[$privilege])) {
+                    $output->li()->raw($description);
+                }
             }
-        }
-        if (count($output)) {
-            return $output;
+            if (count($output)) {
+                return $output;
+            }
         }
         
         return MUtil_Html::create('em', $this->_('No privileges found.'));

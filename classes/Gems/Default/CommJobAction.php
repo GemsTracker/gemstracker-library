@@ -91,13 +91,18 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
-        $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
-        $model->set('gcj_filter_max_reminders','label', $this->_('Maximum number of reminders'), 'validators[]', 'Digits');
+        
+        // If you really want to see this information in the overview, uncomment for the shorter labels
+        // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
+        // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
+        
+        $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
+        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());     
 
         if ($detailed) {
+            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
+            $model->set('gcj_filter_max_reminders','label', $this->_('Maximum number of reminders'), 'validators[]', 'Digits');
             $model->set('gcj_id_organization', 'label', $this->_('Organization'), 'multiOptions', $empty + $dbLookup->getOrganizations());
-            $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
-            $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
         }
 
         return $model;
