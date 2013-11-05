@@ -1,6 +1,6 @@
 
 CREATE TABLE if not exists gems__comm_templates (
-      gct_id_template bigint unsigned not null,
+      gct_id_template bigint unsigned not null AUTO_INCREMENT,
 
       gct_name        varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
       gct_target      varchar(32) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
