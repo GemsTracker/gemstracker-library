@@ -102,13 +102,15 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
         $bridge->addSortable('date_only', $this->_('Date'), array('class' => 'date'))->colspan = 4;
 
         // Row with dates and patient data
-        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time'));
-        // Add title, to make sure row displays when time is same as time for previous day
-        $bridge->addSortable('gap_admission_time')->title = $bridge->date_only;
+        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
+        $td =$bridge->addSortable('gap_admission_time');
+        $td->append(' ');
+        $td->img()->src = 'stopwatch.png';
+        $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
         $bridge->addSortable('gor_name');
         $bridge->addSortable('glo_name')->colspan = 2;
 
-        $bridge->tr();
+        $bridge->tr()->appendAttrib('class', $bridge->row_class);
         $bridge->addColumn($appButton)->class = 'middleAlign';
         $bridge->addMultiSort('gr2o_patient_nr', $br, 'name');
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));

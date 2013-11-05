@@ -47,19 +47,65 @@
 class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
-     * Set a fixed model sort.
-     *
-     * Leading _ means not overwritten by sources.
-     *
-     * @var array
-     */
-    protected $_fixedSort = array('gap_admission_time' => SORT_DESC);
-
-    /**
      *
      * @var Gems_Loader
      */
     protected $loader;
+
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    {
+        $bridge->gr2o_patient_nr;
+        $bridge->gr2o_id_organization;
+
+        if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'show', 'allowed' => true))) {
+            $appButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Show appointment'));
+        } else {
+            $appButton = null;
+        }
+        if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'edit', 'allowed' => true))) {
+            $respButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Edit appointment'));
+        } else {
+            $respButton = null;
+        }
+
+        $br    = MUtil_Html::create('br');
+
+        $table = $bridge->getTable();
+        $table->appendAttrib('class', 'calendar');
+        $table->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
+
+        // Row with dates and patient data
+        $table->tr(array('onlyWhenChanged' => true, 'class' => 'date'));
+        $bridge->addSortable('date_only', $this->_('Date'), array('class' => 'date'))->colspan = 4;
+
+        // Row with dates and patient data
+        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
+        $td =$bridge->addSortable('gap_admission_time');
+        $td->append(' ');
+        $td->img()->src = 'stopwatch.png';
+        $td->colspan = 4;
+        $td->class = 'centerAlign';
+        $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
+
+        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+        $bridge->addColumn($appButton)->class = 'middleAlign';
+        $bridge->addMultiSort('gas_name', $br, 'glo_name');
+        $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+        // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
+        $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
+
+        unset($table[MUtil_Html_TableElement::THEAD]);
+    }
 
     /**
      * Called after the check that all required registry values
@@ -83,6 +129,15 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     {
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->applyBrowseSettings();
+
+        $model->addColumn(new Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
+        $model->set('date_only', 'dateFormat',
+                    Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
+                    Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
+        $model->set('gap_admission_time', 'label', $this->_('Time'),
+                'dateFormat', 'hh:mm');
+
+        $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
         return $model;
     }
@@ -115,10 +170,10 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        $model->addFilter(array(
-            'gap_id_user'         => $this->request->getParam(MUtil_Model::REQUEST_ID1),
-            'gap_id_organization' => $this->request->getParam(MUtil_Model::REQUEST_ID2),
-            'gap_status'          => $this->loader->getAgenda()->getStatusKeysActive(),
+        $model->setFilter(array(
+            'gr2o_patient_nr'      => $this->request->getParam(MUtil_Model::REQUEST_ID1),
+            'gr2o_id_organization' => $this->request->getParam(MUtil_Model::REQUEST_ID2),
+            'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
             ));
     }
 }

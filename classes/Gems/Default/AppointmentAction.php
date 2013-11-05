@@ -61,9 +61,15 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
      * @var mixed String or array of snippets name
      */
     protected $autofilterParameters = array(
-        'columns'     => 'getBrowseColumns',
-        'extraSort'   => array('gap_admission_time' => SORT_ASC),
+        'extraSort'   => array('gap_admission_time' => SORT_DESC),
         );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterSnippets = 'Agenda_AppointmentsTableSnippet';
 
     /**
      *

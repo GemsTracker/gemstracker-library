@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
+class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
 {
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -140,7 +140,7 @@ class EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
 
             // Create the actual tokens!!!!
             $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);
-            $refresh = true;  
+            $refresh = true;
 
         } elseif (! (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed'])) {
             // Check if startdate has changed

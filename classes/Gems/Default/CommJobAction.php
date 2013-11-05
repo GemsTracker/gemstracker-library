@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MailJobAction.php 972 2012-10-08 09:35:02Z mennodekker $
+ * @version    $Id: CommJobAction.php 972 2012-10-08 09:35:02Z mennodekker $
  */
 
 /**
@@ -42,7 +42,7 @@
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4.4
+ * @since      Class available since version 1.6.2
  */
 class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstract
 {
@@ -91,13 +91,13 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         }
         $model->set('gcj_process_method',      'label', $this->_('Processing Method'), 'default', 'O', 'multiOptions', $translated->getBulkMailProcessOptions());
         $model->set('gcj_filter_mode',         'label', $this->_('Filter for'), 'multiOptions', $unselected + $this->getBulkMailFilterOptions());
-        
+
         // If you really want to see this information in the overview, uncomment for the shorter labels
         // $model->set('gcj_filter_days_between', 'label', $this->_('Interval'), 'validators[]', 'Digits');
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
-        
+
         $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
-        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());     
+        $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
 
         if ($detailed) {
             $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
@@ -184,7 +184,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
     public function showAction()
     {
         parent::showAction();
-        
+
         $id = $this->getRequest()->getParam('id');
         if (!is_null($id)) {
             $id = (int) $id;

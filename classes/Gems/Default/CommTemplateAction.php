@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id CommTemplateAction.php
+ * @version    $Id: CommTemplateAction.php 972 2012-10-08 09:35:02Z mennodekker $
  */
 
 /**
@@ -79,8 +79,8 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
             $translationModel->set('gctt_subject', 'label', $this->_('Subject'), 'size', 50);
         }
         if ($detailed) {
-            $translationModel->set('gctt_body', 
-                'label', $this->_('Message'), 
+            $translationModel->set('gctt_body',
+                'label', $this->_('Message'),
                 'elementClass', 'textarea',
                 'decorators', array('CKEditor'),
                 'rows', 4,
@@ -108,7 +108,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
 
         $model->addModel($translationModel, array('gct_id_template' => 'gctt_id_template'), 'gctt');
-        
+
         return $model;
     }
 
@@ -138,7 +138,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
 
         $div = MUtil_Html::create()->div(array('class' => 'mailpreview'));
         $div->raw($text);
-        
+
         return $div;
     }
 

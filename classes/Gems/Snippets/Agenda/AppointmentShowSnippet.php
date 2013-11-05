@@ -99,7 +99,10 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
         }
         // $div->strong($date->toString());
         // $div->br();
-        $div->span($date->toString(Zend_Date::TIME_SHORT))->class = 'time';
+        $td = $div->span($date->toString(Zend_Date::TIME_SHORT));
+        $td->class = 'time middleAlign';
+        $td->append(' ');
+        $td->img()->src = 'stopwatch.png';
         return $div;
     }
 }
