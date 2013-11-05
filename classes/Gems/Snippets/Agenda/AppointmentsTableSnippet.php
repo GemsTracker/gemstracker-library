@@ -97,7 +97,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         $td->class = 'centerAlign';
         $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
 
-        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+        $bridge->tr()->class = array('odd', $bridge->row_class);
         $bridge->addColumn($appButton)->class = 'middleAlign';
         $bridge->addMultiSort('gas_name', $br, 'glo_name');
         $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
@@ -173,7 +173,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         $model->setFilter(array(
             'gr2o_patient_nr'      => $this->request->getParam(MUtil_Model::REQUEST_ID1),
             'gr2o_id_organization' => $this->request->getParam(MUtil_Model::REQUEST_ID2),
-            'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
+            // 'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
             ));
     }
 }

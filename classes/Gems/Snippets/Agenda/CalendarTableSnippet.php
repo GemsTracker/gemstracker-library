@@ -110,7 +110,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
         $bridge->addSortable('gor_name');
         $bridge->addSortable('glo_name')->colspan = 2;
 
-        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+        $bridge->tr()->class = array('odd', $bridge->row_class);
         $bridge->addColumn($appButton)->class = 'middleAlign';
         $bridge->addMultiSort('gr2o_patient_nr', $br, 'name');
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));

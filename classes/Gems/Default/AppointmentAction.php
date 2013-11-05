@@ -134,7 +134,7 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                                 FROM gems__appointments
                                 WHERE gap_id_user = ? AND gap_id_organization = ?
                                 ORDER BY gap_admission_time DESC",
-                            array($this->respId, $this->orgId)
+                            array($this->respondentId, $this->organizationId)
                             );
 
                     if ($loid !== false) {
