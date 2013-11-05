@@ -419,7 +419,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     protected function createRoundModel()
     {
-        return new MUtil_Model_TableModel('rounds', 'gems__rounds', 'gro');
+        return new Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
     }
 
     /**
