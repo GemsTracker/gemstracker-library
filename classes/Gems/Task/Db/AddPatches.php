@@ -61,6 +61,7 @@ class Gems_Task_Db_AddPatches extends Gems_Task_Db_PatchAbstract
         $batch = $this->getBatch();
 
         $batch->addMessage(sprintf($this->translate->_('Adding patchlevel %d'), $patchLevel));
+        $this->patcher->uploadPatches($patchLevel);
         $this->patcher->loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, $batch);
     }
 }
