@@ -345,7 +345,20 @@ class MUtil_Model_FormBridge
             self::DATE_OPTIONS, self::DISPLAY_OPTIONS, self::JQUERY_OPTIONS, self::TEXT_OPTIONS);
 
         // Allow centrally set options
-        self::applyFixedOptions(__FUNCTION__, $options);
+        $type = __FUNCTION__;
+        if (isset($options['dateFormat'])) {
+            list($dateFormat, $separator, $timeFormat) =
+                    MUtil_JQuery_View_Helper_DatePicker::splitZendLocaleToDateTimePickerFormat($options['dateFormat']);
+
+            if ($timeFormat) {
+                if ($dateFormat) {
+                    $type = 'datetime';
+                } else {
+                    $type = 'time';
+                }
+            }
+        }
+        self::applyFixedOptions($type, $options);
 
         if (isset($options['dateFormat'])) {
             // Make sure the model knows the dateFormat (can be important for storage).
@@ -819,6 +832,14 @@ class MUtil_Model_FormBridge
         return $this;
     }
 
+    /**
+     * Get the fixed options set in the registry. These settings overrule any
+     * options set through the model or as parameters.
+     *
+     * @staticvar array $typeOptions
+     * @param string $type
+     * @param array  $options Existing options
+     */
     public static function applyFixedOptions($type, array &$options)
     {
         static $typeOptions;
@@ -839,9 +860,9 @@ class MUtil_Model_FormBridge
         if (isset($typeOptions[$type])) {
             foreach ($typeOptions[$type] as $key => $value) {
                 if (is_array($value) && isset($options[$key])) {
-                    $options[$key] = $value + $options[$key];
+                    $options[$key] = $options[$key] + $value;
 
-                } elseif (!isset($options[$key])) { // Do not overwrite existing values
+                } else {
                     $options[$key] = $value;
                 }
             }

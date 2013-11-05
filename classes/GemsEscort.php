@@ -1293,21 +1293,50 @@ class GemsEscort extends MUtil_Application_Escort
 
         $this->prepareController();
 
+        $imgUrl = $this->getUtil()->getImageUri('datepicker.png');
+        $jstUrl = $this->basepath->getBasePath() . '/gems/js';
+
         // Now set some defaults
         $dateFormOptions['dateFormat']   = 'dd-MM-yyyy';
         $dateFormOptions['description']  = 'dd-mm-yyyy';
+        $dateFormOptions['size']         =  10;
         $dateFormOptions['jQueryParams'] = array(
-            'buttonImage' => $this->getUtil()->getImageUri('datepicker.png'),
+            'buttonImage' => $imgUrl,
+            'changeMonth' => true,
+            'changeYear'  => true,
+            'duration'    => 'fast',
+            'showOn'      => 'button',
+        );
+        $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy hh:mm';
+        $datetimeFormOptions['description']  = $this->_('dd-mm-yyyy hh:mm');
+        $datetimeFormOptions['size']         = 16;
+        $datetimeFormOptions['jQueryParams'] = array(
+            'buttonImage' => $imgUrl,
             'changeMonth' => true,
             'changeYear'  => true,
             'duration'    => 'fast',
             'showOn'      => 'button',
             'stepMinute'  => 5,
-            'size'        => 10,
-            'timeJsUrl'   => $this->basepath->getBasePath() . '/gems/js',
+            'size'        => 8,
+            'timeJsUrl'   => $jstUrl,
         );
 
-        Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array('date' => $dateFormOptions));
+        $timeFormOptions['dateFormat']   = 'hh:mm';
+        $timeFormOptions['description']  = $this->_('hh:mm');
+        $timeFormOptions['jQueryParams'] = array(
+            'buttonImage' => $imgUrl,
+            'duration'    => 'fast',
+            'showOn'      => 'button',
+            'stepMinute'  => 5,
+            'size'        => 8,
+            'timeJsUrl'   => $jstUrl,
+        );
+
+        Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array(
+            'date'     => $dateFormOptions,
+            'datetime' => $datetimeFormOptions,
+            'time'     => $timeFormOptions,
+            ));
     }
 
     /**
