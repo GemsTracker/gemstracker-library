@@ -143,7 +143,8 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      */
     public function createMenu(GemsEscort $escort)
     {
-        return $this->_loadClass('Menu', true, func_get_args());
+        return $this->getMenu($escort);
+        // return $this->_loadClass('Menu', true, func_get_args());
     }
 
     /**
@@ -203,7 +204,17 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
         $loader = $this->getMailLoader();
         return $loader->getMailTargets();
     }
-
+    
+    /**
+     * Get the project specific menu or general Gems menu otherwise
+     *
+     * @param GemsEscort $escort
+     * @return Gems_Menu
+     */
+    public function getMenu(GemsEscort $escort)
+    {
+        return $this->_getClass('menu', 'Menu', func_get_args());
+    }
 
     /**
      *
