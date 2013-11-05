@@ -195,10 +195,10 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
         $this->setIfExists('gap_admission_time',  'label', $translator->_('Appointment'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $this->_('dd-mm-yyyy hh:mm'));
+                'description', $translator->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_discharge_time',  'label', $translator->_('Discharge'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $this->_('dd-mm-yyyy hh:mm'));
+                'description', $translator->_('dd-mm-yyyy hh:mm'));
         $this->setIfExists('gap_code',            'label', $translator->_('Type'),
                 'multiOptions', $agenda->getTypeCodes());
         $this->setIfExists('gap_status',          'label', $translator->_('Status'),

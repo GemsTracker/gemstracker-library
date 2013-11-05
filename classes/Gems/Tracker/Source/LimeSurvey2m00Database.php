@@ -58,9 +58,7 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
     {
         $missingFields = parent::_checkTokenTable($tokenTable);
 
-        self::addnewAttributeFields($tokenTable, $missingFields);
-
-        return $missingFields;
+        return self::addnewAttributeFields($tokenTable, $missingFields);
     }
 
     /**
@@ -102,7 +100,7 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
      */
     public static function addnewAttributeFields(array $tokenTable, array $missingFields)
     {
-         if (! isset($tokenTable['participant_id'])) {
+        if (! isset($tokenTable['participant_id'])) {
             $missingFields['participant_id'] = "ADD participant_id varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL";
         }
         if (! isset($tokenTable['blacklisted'])) {
