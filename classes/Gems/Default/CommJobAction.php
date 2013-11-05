@@ -75,7 +75,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
 
         Gems_Model::setChangeFieldsByPrefix($model, 'gcj');
 
-        $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates());
+        $model->set('gcj_id_message',          'label', $this->_('Template'), 'multiOptions', $unselected + $dbLookup->getCommTemplates('token'));
         $model->set('gcj_id_user_as',          'label', $this->_('By staff member'),
                 'multiOptions', $unselected + $dbLookup->getActiveStaff(), 'default', $this->escort->getCurrentUserId(),
                 'description', $this->_('Used for logging and possibly from address.'));

@@ -174,12 +174,22 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      * @staticvar array $data
      * @return array The tempalteId => subject list
      */
-    public function getCommTemplates()
+    public function getCommTemplates($mailTarget=false)
     {
         static $data;
 
         if (! $data) {
-            $data = $this->db->fetchPairs("SELECT gct_id_template, gct_name FROM gems__comm_templates ORDER BY gct_name");
+            $sql = 'SELECT gct_id_template, gct_name FROM gems__comm_templates';
+            if ($mailTarget) {
+                $sql .= ' WHERE gct_target = ?';
+            }
+            $sql .= ' ORDER BY gct_name';
+
+            if ($mailTarget) {
+                $data = $this->db->fetchPairs($sql, $mailTarget);
+            } else {
+                $data = $this->db->fetchPairs($sql);
+            }
         }
 
         return $data;
