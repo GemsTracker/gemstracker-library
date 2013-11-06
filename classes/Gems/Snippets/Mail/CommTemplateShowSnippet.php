@@ -70,8 +70,8 @@ class Gems_Snippets_Mail_CommTemplateShowSnippet extends Gems_Snippets_ModelItem
            		foreach($item as $subColumnName => $subValue) {
            			if ($subLabel = $this->submodel->get($subColumnName, 'label')) {
         				$row = $subTable->tr();
-        				$row->th()[] = $subLabel;
-        				$row->td()[] = $this->processValue($subColumnName, $subValue, $this->submodel);
+        				$row->th()->append($subLabel);
+        				$row->td()->append($this->processValue($subColumnName, $subValue, $this->submodel));
         			}
         		}
         	}

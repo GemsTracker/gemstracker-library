@@ -155,7 +155,7 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
             if (!empty($subitem['gctt_subject'])) {
                 $paragraph = $html->p();
                 if ($multi) {
-                    $paragraph->strong()[] = $subitem['gctt_lang'].':';
+                    $paragraph->strong()->append($subitem['gctt_lang'].':');
                     $paragraph->br();
                 }
                 $paragraph[] = $subitem['gctt_subject'];

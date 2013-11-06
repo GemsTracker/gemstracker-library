@@ -177,8 +177,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $this->formData['to'] = $this->formData['from'] = null;
         if ($organization->getEmail()) {
             $this->formData['to'] = $this->formData['from'] = $organization->getEmail();
-        } elseif ($this->project->email['site']) {
-            $this->formData['to'] = $this->formData['from'] = $this->project->email['site'];
+        } elseif ($this->project->getSiteEmail ()) {
+            $this->formData['to'] = $this->formData['from'] = $this->project->getSiteEmail();
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());
@@ -205,8 +205,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             $content = '';
             if ($template['gctt_subject'] || $template['gctt_body']) {
                 if ($multi) {
-                    $htmlView->h3()[] = $allLanguages[$template['gctt_lang']];
-                    $textView->h3()[] = $allLanguages[$template['gctt_lang']];
+                    $htmlView->h3()->append($allLanguages[$template['gctt_lang']]);
+                    $textView->h3()->append($allLanguages[$template['gctt_lang']]);
                 }
 
 
