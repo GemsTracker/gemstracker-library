@@ -253,8 +253,8 @@ class GemsEscort extends MUtil_Application_Escort
         $cachePrefix = GEMS_PROJECT_NAME . '_';
 
 
-        // Check if APC extension is loaded
-        if ($useCache === 'apc' && extension_loaded('apc')) {
+        // Check if APC extension is loaded and enabled
+        if ($useCache === 'apc' && extension_loaded('apc') && ini_get('apc.enabled')) {
             $cacheBackend = 'Apc';
             $cacheBackendOptions = array();
             //Add path to the prefix as APC is a SHARED cache
