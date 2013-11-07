@@ -388,7 +388,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
                 foreach (explode('|', $row['gas_match_to']) as $match) {
-                    $matches[$match][$row['gas_id_organization']] = $row;
+                    $matches[$match][$row['gas_id_organization']] = $row['gas_id_staff'];
                 }
             }
             $this->cache->save($matches, $cacheId, array('staff'));
@@ -401,8 +401,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                 }
             } else {
                 // Return the first location among the organizations
-                $first = reset($matches[$name]);
-                return $first[$organizationId];
+                return reset($matches[$name]);
             }
         }
 
@@ -424,7 +423,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
 
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
 
-        return $result[$organizationId];
+        return $result['gas_id_staff'];
     }
 
     /**
