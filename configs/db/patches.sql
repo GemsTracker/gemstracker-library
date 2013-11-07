@@ -661,7 +661,7 @@ ALTER TABLE gems__rounds ADD
         AFTER gro_valid_for_unit;
 
 UPDATE gems__rounds, gems__round_periods SET
-            gro_valid_after_id     = gro_valid_after_id,
+            gro_valid_after_id     = grp_valid_after_id,
             gro_valid_after_source = grp_valid_after_source,
             gro_valid_after_field  = grp_valid_after_field,
             gro_valid_after_unit   = grp_valid_after_unit,
@@ -697,7 +697,7 @@ INSERT ignore INTO gems__comm_jobs (gcj_id_job,
     gcj_changed,
     gcj_changed_by,
     gcj_created,
-    gcj_created_by) 
+    gcj_created_by)
     (SELECT gmj_id_job,
         gmj_id_message,
         gmj_id_user_as,

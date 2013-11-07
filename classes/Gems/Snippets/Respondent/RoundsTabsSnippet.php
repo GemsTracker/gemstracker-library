@@ -239,7 +239,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
                 if (strlen($label)) {
                     $tabs[$name] = $label;
                 } else {
-                    $tabs[$name] = $this->_('&laquo;empty&raquo;');
+                    $tabs[$name] = MUtil_Html::raw($this->_('&laquo;empty&raquo;'));
                 }
 
                 if ($state > $tabState) {
