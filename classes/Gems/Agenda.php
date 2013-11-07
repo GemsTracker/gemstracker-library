@@ -372,7 +372,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
      * @param string $name The name to match against
      * @param int $organizationId Organization id
      * @param boolean $create Create a match when it does not exist
-     * @return array location
+     * @return int gas_id_staff staff id
      */
     public function matchHealthcareStaff($name, $organizationId, $create = true)
     {
