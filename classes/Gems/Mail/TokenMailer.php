@@ -93,8 +93,10 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
                 $this->patientId = $this->token->getPatientNumber();
                 $this->organizationId = $this->token->getOrganizationId();
             }
-
+        } else {
+            $this->loadDefault();
         }
+
 		parent::afterRegistry();
 	}
 
@@ -110,6 +112,31 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
             $this->addMessage($this->translate->_('Token not found'));
             return false;
         }
+    }
+
+    protected function getDefaultToken()
+    {
+        $model = $this->loader->getTracker()->getTokenModel();
+
+        $organizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();    
+
+        $filter['gto_id_organization'] = $organizationId;
+        $filter[] = 'grs_email IS NOT NULL';
+
+        // Without sorting we get the fastest load times
+        $sort = false;
+
+        $tokenData = $model->loadFirst($filter, $sort);
+
+        if (! $tokenData) {
+            // Well then just try to get any token
+            $tokenData = $model->loadFirst(false, $sort);
+            if (! $tokenData) {
+                //No tokens, just add an empty array and hope we get no notices later
+                $tokenData = $model->loadNew();
+            }
+        }
+        return $tokenData;
     }
 
     /**
@@ -130,10 +157,16 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
     protected function loadDefault()
     {
-        parent::loadDefault();
+        $this->tokenIdentifier = $tokenData = $this->getDefaultToken();
+        if (!empty($tokenData['gto_id_organization'])) {
+            $this->organizationId = $tokenData['gto_id_organization'];
+            $this->patientId = $tokenData['gr2o_patient_nr'];
+            $this->respondent = $this->loader->getRespondent($this->patientId, $this->organizationId);
+        }
 
-        $this->token = $this->loader->getTracker()->getToken($this->tokenIdentifier);
-        
+        if ($tokenData['gto_id_token']) {
+            $this->token = $this->loader->getTracker()->getToken($this->tokenIdentifier);
+        }       
     }
 
 	/**

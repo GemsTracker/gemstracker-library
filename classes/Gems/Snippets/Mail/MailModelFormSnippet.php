@@ -80,15 +80,6 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $this->mailElements = $this->loader->getMailLoader()->getMailElements();
         $this->mailTargets = $this->loader->getMailLoader()->getMailTargets();
 
-        $this->mailTarget = false;
-        if ($this->request->isPost()) {
-            $data = $this->request->getPost();
-            $this->mailTarget = $data['gct_target'];
-        } else {
-            reset($this->mailTargets);
-            $this->mailTarget = key($this->mailTargets);
-        }
-        $this->mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget);
         parent::afterRegistry();
     }
 
@@ -157,6 +148,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected function loadFormData() 
     {
         parent::loadFormData();
+        $this->loadMailer();
+
 
         if (isset($this->formData['gctt'])) {
             $multi = false;
@@ -182,6 +175,22 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());
+    }
+
+    /**
+     * Loads the correct mailer
+     */
+    protected function loadMailer()
+    {
+        $this->mailTarget = false;
+
+        if (isset($this->formData['gct_target']) && isset($this->mailTargets[$this->formData['gct_target']])) {
+            $this->mailTarget = $this->formData['gct_target'];
+        } else {
+            reset($this->mailTargets);
+            $this->mailTarget = key($this->mailTargets);
+        }
+        $this->mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget);
     }
 
     /**

@@ -107,7 +107,11 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     public function afterRegistry()
     {
         $this->model = $this->loader->getModels()->getRespondentModel(true);
-        $this->respondent = $this->getRespondent($this->patientId, $this->organizationId);
+        if ($this->patientId && $this->organizationId) {
+            $this->respondent = $this->getRespondent($this->patientId, $this->organizationId);
+        } else {
+            $this->respondent = $this->getDefaultRespondent();
+        }
     }
 
     /**
@@ -129,6 +133,16 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         }
         return $result;
 	}
+
+    protected function getDefaultRespondent()
+    {
+        $select = $this->model->getSelect();
+        $result = $this->db->fetchRow($select);
+        if ($result) {
+            $this->exists = true;
+        }
+        return $result;   
+    }
 
     /**
      * Get Email adres of respondent
