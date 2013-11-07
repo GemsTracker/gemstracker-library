@@ -72,6 +72,13 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
     protected $autofilterSnippets = 'Agenda_AppointmentsTableSnippet';
 
     /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'Agenda_AppointmentFormSnippet';
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
@@ -192,12 +199,18 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
         if ($this->appointmentId) {
             $select = $this->db->select();
             $select->from('gems__appointments', array('gap_id_user', 'gap_id_organization'))
+                    ->joinInner(
+                            'gems__respondent2org',
+                            'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
+                            array('gr2o_patient_nr')
+                            )
                     ->where('gap_id_appointment = ?', $this->appointmentId);
             $data = $this->db->fetchRow($select);
 
             if ($data) {
                 $this->organizationId = $data['gap_id_organization'];
                 $this->respondentId   = $data['gap_id_user'];
+                $patientNr            = $data['gr2o_patient_nr'];
             }
         } else {
             $this->organizationId = $this->_getParam(MUtil_Model::REQUEST_ID2);

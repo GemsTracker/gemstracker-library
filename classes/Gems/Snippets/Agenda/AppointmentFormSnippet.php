@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,47 +27,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    MUtil
- * @subpackage Controller
+ * @package    Gems
+ * @subpackage Snippets
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id: Cli.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: AppointmentFormSnippet.php$
  */
 
 /**
- * Command line response client for Zend. Thanks to
- * http://stackoverflow.com/questions/2325338/running-a-zend-framework-action-from-command-line
  *
- * @package    MUtil
- * @subpackage Controller
- * @copyright  Copyright (c) 2012 Erasmus MC
+ *
+ * @package    Gems
+ * @subpackage Snippets
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.2
+ * @since      Class available since version 1.6.2
  */
-class MUtil_Controller_Response_Cli extends Zend_Controller_Response_Cli
+class Gems_Snippets_Agenda_AppointmentFormSnippet extends Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
-     * Send all headers
      *
-     * Sends any headers specified. If an {@link setHttpResponseCode() HTTP response code}
-     * has been specified, it is sent with the first header.
-     *
-     * @return Zend_Controller_Response_Abstract
+     * @var GemsLoader
      */
-    public function sendHeaders()
+    protected $loader;
+
+    /**
+     *
+     * @var MUtil_Model_ModelAbstract
+     */
+    protected $model;
+
+    /**
+     * Creates the model
+     *
+     * @return MUtil_Model_ModelAbstract
+     */
+    protected function createModel()
     {
-        return $this;
+        if (! $this->model instanceof Gems_Model_AppointmentModel) {
+            $this->model = $this->loader->getModels()->createAppointmentModel();
+            $this->model->applyDetailSettings();
+        }
+        $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
+        $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
+
+        return $this->model;
     }
 
     /**
-     * Send the response, including all headers, rendering exceptions if so
-     * requested.
-     *
-     * @return void
+     * If menu item does not exist or is not allowed, redirect to index
      */
-    public function sendResponse()
+    protected function setAfterSaveRoute()
     {
-        $this->outputBody();
+        parent::setAfterSaveRoute();
+
+        if (isset($this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID])) {
+            $this->afterSaveRouteUrl[Gems_Model::APPOINTMENT_ID] = $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID];
+            unset($this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID]);
+        }
     }
 }

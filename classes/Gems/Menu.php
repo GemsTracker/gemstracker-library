@@ -326,11 +326,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $apage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId)
                 ->addAutofilterAction();
-        $apage->addCreateAction();
+        $apage->addCreateAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
         $apage->addShowAction()->setNamedParameters($appParams);
         $apage->addEditAction()->setNamedParameters($appParams);
         $apage->addDeleteAction()->setNamedParameters($appParams);
-        $page->addExcelAction();
+        $page->addExcelAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 

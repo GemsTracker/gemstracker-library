@@ -67,11 +67,11 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      * Optional string format for date
-     * 
+     *
      * @var string
      */
     protected $dateFormat;
-    
+
     /**
      *
      * @var Gems_Menu
@@ -153,12 +153,23 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
         }
         $elements['dateused'] = $element;
 
+        $type = 'date';
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
+            list($dateFormat, $separator, $timeFormat) =
+                    MUtil_JQuery_View_Helper_DatePicker::splitZendLocaleToDateTimePickerFormat($options['dateFormat']);
+
+            if ($timeFormat) {
+                if ($dateFormat) {
+                    $type = 'datetime';
+                } else {
+                    $type = 'time';
+                }
+            }
         }
         $options['label'] = $fromLabel;
-        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-        
+        MUtil_Model_FormBridge::applyFixedOptions($type, $options);
+
         $elements['datefrom'] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');

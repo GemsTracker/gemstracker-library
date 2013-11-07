@@ -284,12 +284,12 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
         if ($this->requestCache) {
-            $data = $this->requestCache->getProgramParams();
+            $data = $this->requestCache->getProgramParams() + $this->defaultSearchData;
 
             // Remove all empty values (but not arrays) from the filter
             $data = array_filter($data, function($i) { return is_array($i) || strlen($i); });
 
-            $model->applyParameters($data + $this->defaultSearchData);
+            $model->applyParameters($data);
 
         } else {
             parent::processFilterAndSort($model);

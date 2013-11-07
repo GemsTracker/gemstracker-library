@@ -136,7 +136,7 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
             // Always as first validator
             $isDate = new MUtil_Validate_Date_IsDate();
             $isDate->setDateFormat($this->_dateFormat);
-            
+
             array_unshift($validators, $isDate);
             $this->setValidators($validators);
         }

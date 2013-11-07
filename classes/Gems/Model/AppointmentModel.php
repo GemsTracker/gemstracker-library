@@ -212,6 +212,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->setIfExists('gap_id_procedure',    'label', $translator->_('Procedures'));
         $this->setIfExists('gap_id_location',     'label', $translator->_('Location'));
         $this->setIfExists('gap_id_organization', 'label', $translator->_('Organization'),
+                'elementClass', 'Exhibitor',
                 'multiOptions', $empty + $dbLookup->getOrganizations());
         $this->setIfExists('gap_subject',         'label', $translator->_('Subject'));
         $this->setIfExists('gap_comment',         'label', $translator->_('Comment'));

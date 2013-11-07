@@ -1307,7 +1307,7 @@ class GemsEscort extends MUtil_Application_Escort
             'duration'    => 'fast',
             'showOn'      => 'button',
         );
-        $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy hh:mm';
+        $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $datetimeFormOptions['description']  = $this->_('dd-mm-yyyy hh:mm');
         $datetimeFormOptions['size']         = 16;
         $datetimeFormOptions['jQueryParams'] = array(
@@ -1321,7 +1321,7 @@ class GemsEscort extends MUtil_Application_Escort
             'timeJsUrl'   => $jstUrl,
         );
 
-        $timeFormOptions['dateFormat']   = 'hh:mm';
+        $timeFormOptions['dateFormat']   = 'HH:mm';
         $timeFormOptions['description']  = $this->_('hh:mm');
         $timeFormOptions['jQueryParams'] = array(
             'buttonImage' => $imgUrl,
