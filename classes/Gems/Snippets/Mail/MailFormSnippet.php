@@ -282,7 +282,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         $options[$key] = $this->createMultiOption(array(MUtil_Model::REQUEST_ID => $organization->getId()),
             $name, $email, $extra, $title,
             array('controller' => 'organization', 'action' => 'edit'));
-        $this->fromOptions[$key] = $name . ' <' . $email . '>';
+        $this->fromOptions[$key] = $email;//$name . ' <' . $email . '>';
 
         // The user
         $key = 'user';
@@ -298,7 +298,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         $options[$key] = $this->createMultiOption(array(),
             $name, $email, $extra, $title,
             array('controller' => 'option', 'action' => 'edit'));
-        $this->fromOptions[$key] = $name . ' <' . $email . '>';
+        $this->fromOptions[$key] = $email;//$name . ' <' . $email . '>';
 
         // As "the" application
         $key = 'application';
@@ -309,7 +309,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
             if ($email = $this->project->email['site']) {
                 $options['application'] = $this->createMultiOption(array(), $this->project->name, $email);
                 $valid[]     = 'application';
-                $this->fromOptions[$key] = $this->project->name . ' <' . $email . '>';
+                $this->fromOptions[$key] = $email;//$this->project->name . ' <' . $email . '>';
             }
         }
 

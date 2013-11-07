@@ -254,10 +254,10 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
                             if ($job['gcj_from_method'] == 'O') {
                                 $organization  = $mailer->getOrganization();
-                                $from = $organization->getName() . ' <' . $organization->getEmail() . '>';
+                                $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
                                 $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'U') {
-                                $from = $user->getFullName() . ' <' . $user->getEmailAddress() . '>';
+                                $from = $user->getEmailAddress();//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
                             } elseif ($job['gcj_from_method'] == 'F') {
                                 $mailer->setFrom($job['gcj_from_fixed']);
                             }
