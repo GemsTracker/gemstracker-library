@@ -376,7 +376,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch = null)
     {
         if (null === $batch) {
-            $batch = new Gems_Task_TaskRunnerBatch();
+            $batch = new Gems_Task_TaskRunnerBatch('tmp-tack-' . $respTrack->getRespondentTrackId());
         }
         // Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
