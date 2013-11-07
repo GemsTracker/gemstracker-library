@@ -532,7 +532,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         }
 
         $model = new MUtil_Model_TableModel('gems__agenda_procedures');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gap');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
 
         $values = array(
             'gapr_name'            => $name,
