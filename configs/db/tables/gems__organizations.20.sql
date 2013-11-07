@@ -12,7 +12,7 @@ CREATE TABLE if not exists gems__organizations (
 
         gor_provider_id      varchar(10)   CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        -- A commy separated list of organization numbers that can look at respondents in this organization
+        -- A comma separated list of organization numbers that can look at respondents in this organization
         gor_accessible_by    text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gor_contact_name     varchar(50)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,

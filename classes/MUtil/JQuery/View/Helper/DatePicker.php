@@ -97,6 +97,7 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
 
         if ($formatTime && $sayThisOnlyOnce) {
 
+            $files[] = 'jquery-ui-timepicker-addon.js';
             if ($locale = Zend_Registry::get('Zend_Locale')) {
                 $language = $locale->getLanguage();
                 // We have a language, but only when not english
@@ -104,7 +105,6 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
                     $files[] = sprintf('i18n/jquery-ui-timepicker-addon-%s.js', $language);
                 }
             }
-            $files[] = 'jquery-ui-timepicker-addon.js';
 
             if ($baseurl) {
                 foreach ($files as $file) {

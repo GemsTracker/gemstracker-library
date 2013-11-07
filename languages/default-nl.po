@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-05 13:44+0100\n"
+"POT-Creation-Date: 2013-11-07 17:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -48,7 +48,20 @@ msgstr "Login: %s"
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1714
+#: classes/GemsEscort.php:1301
+msgid "dd-mm-yyyy"
+msgstr "dd-mm-jjjj"
+
+#: classes/GemsEscort.php:1311 classes/Gems/Model/AppointmentModel.php:198
+#: classes/Gems/Model/AppointmentModel.php:201
+msgid "dd-mm-yyyy hh:mm"
+msgstr "dd-mm-jjjj uu:mm"
+
+#: classes/GemsEscort.php:1325
+msgid "hh:mm"
+msgstr "uu:mm"
+
+#: classes/GemsEscort.php:1743
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -56,44 +69,44 @@ msgstr ""
 "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw "
 "gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1878
+#: classes/GemsEscort.php:1907
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1880 classes/GemsEscort.php:1884
-#: classes/GemsEscort.php:1885
+#: classes/GemsEscort.php:1909 classes/GemsEscort.php:1913
+#: classes/GemsEscort.php:1914
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1896
+#: classes/GemsEscort.php:1925
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1898 classes/GemsEscort.php:1955
+#: classes/GemsEscort.php:1927 classes/GemsEscort.php:1984
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1913 classes/Gems/Default/StaffAction.php:361
+#: classes/GemsEscort.php:1942 classes/Gems/Default/StaffAction.php:361
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
-#: classes/GemsEscort.php:1915 classes/Gems/Default/OrganizationAction.php:113
+#: classes/GemsEscort.php:1944 classes/Gems/Default/OrganizationAction.php:113
 #: classes/Gems/Default/StaffAction.php:362
 #: classes/Gems/Model/HiddenOrganizationModel.php:115
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1939 classes/GemsEscort.php:1953
+#: classes/GemsEscort.php:1968 classes/GemsEscort.php:1982
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1940
+#: classes/GemsEscort.php:1969
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
-#: classes/GemsEscort.php:2087 classes/GemsEscort.php:2089
-#: classes/Gems/Mail/TokenMailer.php:223 classes/Gems/Mail/TokenMailer.php:225
+#: classes/GemsEscort.php:2116 classes/GemsEscort.php:2118
+#: classes/Gems/Mail/TokenMailer.php:256 classes/Gems/Mail/TokenMailer.php:258
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -146,7 +159,7 @@ msgid "Emergency"
 msgstr "Noodgeval"
 
 #: classes/Gems/Agenda.php:298 classes/Gems/Email/EmailFormAbstract.php:484
-#: classes/Gems/Mail/MailElements.php:295
+#: classes/Gems/Mail/MailElements.php:298
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:773
 msgid "Field"
 msgstr "Veld"
@@ -403,7 +416,7 @@ msgstr "Kenmerk"
 msgid "Scan Responses"
 msgstr "Scan antwoorden"
 
-#: classes/Gems/Menu.php:325 classes/Gems/Default/AppointmentAction.php:168
+#: classes/Gems/Menu.php:325 classes/Gems/Default/AppointmentAction.php:175
 msgid "Appointments"
 msgstr "Afspraken"
 
@@ -442,7 +455,7 @@ msgstr "Voeg toe"
 #: classes/Gems/Menu/MenuAbstract.php:526
 #: classes/Gems/Menu/MenuAbstract.php:536
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:168
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:137
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:130
 msgid "Preview"
 msgstr "Preview"
 
@@ -598,7 +611,7 @@ msgstr "Patiënt nr"
 #: classes/Gems/Default/MailJobAction.php:98
 #: classes/Gems/Default/StaffAction.php:384
 #: classes/Gems/Model/AppointmentModel.php:174
-#: classes/Gems/Model/AppointmentModel.php:216
+#: classes/Gems/Model/AppointmentModel.php:214
 #: classes/Gems/Model/RespondentModel.php:255
 #: classes/Gems/Model/RespondentModel.php:305
 #: classes/Gems/Snippets/Export/ReportHeaderSnippet.php:63
@@ -785,17 +798,17 @@ msgid "Edit %s"
 msgstr "Bewerk %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:528
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:272
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:283
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
 #: classes/Gems/Controller/BrowseEditAction.php:609
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:365
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:376
 msgid "Reset search"
 msgstr "Herstart zoeken"
 
 #: classes/Gems/Controller/BrowseEditAction.php:620
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:381
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:392
 msgid "Search"
 msgstr "Zoeken"
 
@@ -868,6 +881,7 @@ msgstr "Nieuwe %1$s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:958
 #: classes/Gems/Email/MailTemplateForm.php:118
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:243
 #: classes/Gems/User/Form/ChangePasswordForm.php:348
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:245
 msgid "Save"
@@ -1084,22 +1098,22 @@ msgid_plural "healthcare staff"
 msgstr[0] "zorgverlener"
 msgstr[1] "zorgverleners"
 
-#: classes/Gems/Default/AppointmentAction.php:179
+#: classes/Gems/Default/AppointmentAction.php:186
 msgid "appointment"
 msgid_plural "appointments"
 msgstr[0] "afspraak"
 msgstr[1] "afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:214
+#: classes/Gems/Default/AppointmentAction.php:227
 msgid "Requested agenda data not available!"
 msgstr "Verzochte afspraak gegevens niet gevonden!"
 
-#: classes/Gems/Default/AppointmentAction.php:223
+#: classes/Gems/Default/AppointmentAction.php:236
 #, php-format
 msgid "You have no access to %s appointments!"
 msgstr "U heeft geen toegang %s afspraken!"
 
-#: classes/Gems/Default/AppointmentAction.php:226
+#: classes/Gems/Default/AppointmentAction.php:239
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
@@ -1316,7 +1330,7 @@ msgstr "Bron mail gegevens"
 #: classes/Gems/Default/MailLogAction.php:127
 #: classes/Gems/Default/MailTemplateAction.php:62
 #: classes/Gems/Email/EmailFormAbstract.php:349
-#: classes/Gems/Model/AppointmentModel.php:218
+#: classes/Gems/Model/AppointmentModel.php:217
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:156
 msgid "Subject"
 msgstr "Onderwerp"
@@ -1576,7 +1590,7 @@ msgstr "Geen gegevens in %s."
 #: classes/Gems/Default/TrackFieldsAction.php:122
 #: classes/Gems/Default/TrackMaintenanceAction.php:321
 #: classes/Gems/Model/AppointmentModel.php:168
-#: classes/Gems/Model/AppointmentModel.php:204
+#: classes/Gems/Model/AppointmentModel.php:202
 msgid "Type"
 msgstr "Type"
 
@@ -1590,7 +1604,7 @@ msgstr "Groep"
 #: classes/Gems/Default/LocationAction.php:111
 #: classes/Gems/Default/OrganizationAction.php:134
 #: classes/Gems/Model/AppointmentModel.php:173
-#: classes/Gems/Model/AppointmentModel.php:215
+#: classes/Gems/Model/AppointmentModel.php:213
 msgid "Location"
 msgstr "Locatie"
 
@@ -1598,7 +1612,7 @@ msgstr "Locatie"
 #: classes/Gems/Default/MailLogAction.php:130
 #: classes/Gems/Default/SourceAction.php:225
 #: classes/Gems/Export/RespondentExport.php:213
-#: classes/Gems/Model/AppointmentModel.php:206
+#: classes/Gems/Model/AppointmentModel.php:204
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:157
 msgid "Status"
 msgstr "Status"
@@ -1905,7 +1919,7 @@ msgstr "Vraag"
 
 #: classes/Gems/Default/ExportAction.php:536
 #: classes/Gems/Email/EmailFormAbstract.php:485
-#: classes/Gems/Mail/MailElements.php:296
+#: classes/Gems/Mail/MailElements.php:299
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:120
 msgid "Value"
 msgstr "waarde"
@@ -2227,7 +2241,7 @@ msgstr "vanaf"
 
 #: classes/Gems/Default/LogAction.php:83
 #: classes/Gems/Default/TokenPlanAction.php:254
-#: classes/Gems/Snippets/AutosearchFormSnippet.php:164
+#: classes/Gems/Snippets/AutosearchFormSnippet.php:175
 msgid "until"
 msgstr "tot"
 
@@ -2818,7 +2832,7 @@ msgstr "Door"
 #: classes/Gems/Email/MailTemplateForm.php:82
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:128
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:171
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:140
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:133
 #: classes/Gems/Tracker/Model/TrackModel.php:106
 msgid "From"
 msgstr "Van"
@@ -3967,7 +3981,7 @@ msgstr "Afgelopen op"
 #: classes/Gems/Default/TrackActionAbstract.php:233
 #: classes/Gems/Export/RespondentExport.php:300
 #: classes/Gems/Model/AppointmentModel.php:175
-#: classes/Gems/Model/AppointmentModel.php:219
+#: classes/Gems/Model/AppointmentModel.php:218
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:161
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:278
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:300
@@ -4065,10 +4079,10 @@ msgstr[1] "velden"
 
 #: classes/Gems/Default/TrackFieldsAction.php:202
 #: classes/Gems/Email/EmailFormAbstract.php:476
-#: classes/Gems/Mail/MailElements.php:156
+#: classes/Gems/Mail/MailElements.php:159
 #: classes/Gems/Menu/MenuAbstract.php:619
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:162
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:127
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:119
 msgid "Fields"
 msgstr "Velden"
 
@@ -4238,14 +4252,14 @@ msgid "Upgrades"
 msgstr "Upgrades"
 
 #: classes/Gems/Email/EmailFormAbstract.php:101
-#: classes/Gems/Mail/MailElements.php:303
+#: classes/Gems/Mail/MailElements.php:306
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:224
 msgid "no email adress"
 msgstr "geen email adres"
 
 #: classes/Gems/Email/EmailFormAbstract.php:145
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:178
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:147
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:142
 msgid "Available fields"
 msgstr "Beschikbare velden"
 
@@ -4264,12 +4278,12 @@ msgid "You do not have an e-mail address."
 msgstr "U heeft geen email adres."
 
 #: classes/Gems/Email/EmailFormAbstract.php:291
-#: classes/Gems/Mail/MailElements.php:219
+#: classes/Gems/Mail/MailElements.php:222
 msgid "Preview HTML"
 msgstr "Html voorbeeld"
 
 #: classes/Gems/Email/EmailFormAbstract.php:300
-#: classes/Gems/Mail/MailElements.php:233
+#: classes/Gems/Mail/MailElements.php:236
 msgid "Preview text"
 msgstr "Tekstvoorbeeld"
 
@@ -4284,7 +4298,7 @@ msgstr "Invoer fout! Veranderingen niet uitgevoerd!"
 
 #: classes/Gems/Email/EmailFormAbstract.php:446
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:465
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:210
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:223
 msgid "Subject:"
 msgstr "Onderwerp:"
 
@@ -4293,7 +4307,7 @@ msgid "BBCode info page"
 msgstr "BBCode info pagina"
 
 #: classes/Gems/Email/MailTemplateForm.php:56
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:143
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:136
 msgid "Send (test)"
 msgstr "Verstuur (test)"
 
@@ -4302,7 +4316,7 @@ msgid "Test using"
 msgstr "Test met"
 
 #: classes/Gems/Email/MailTemplateForm.php:134
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:139
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:132
 msgid "To (test)"
 msgstr "Aan (test)"
 
@@ -4311,7 +4325,7 @@ msgid "Test mail send, changes not saved!"
 msgstr "Test email verstuurd. De veranderingen zijn nog niet opgeslagen!"
 
 #: classes/Gems/Email/MultiMailForm.php:75
-#: classes/Gems/Mail/MailElements.php:202
+#: classes/Gems/Mail/MailElements.php:205
 msgid "Method"
 msgstr "Methode"
 
@@ -4478,7 +4492,7 @@ msgstr "Fout in tabblad \"%s\""
 msgid "Direct import"
 msgstr "Directe import"
 
-#: classes/Gems/Mail/RespondentMailer.php:100
+#: classes/Gems/Mail/RespondentMailer.php:96
 msgid "Respondent data not found"
 msgstr "Patiënt gegevens niet gevonden"
 
@@ -4486,19 +4500,19 @@ msgstr "Patiënt gegevens niet gevonden"
 msgid "staff data not found"
 msgstr "mederwerker gegevens niet gevonden"
 
-#: classes/Gems/Mail/TokenMailer.php:110
+#: classes/Gems/Mail/TokenMailer.php:112
 msgid "Token not found"
 msgstr "Kenmerk niet gevonden"
 
 #: classes/Gems/Menu/MenuAbstract.php:233
 #: classes/Gems/Model/AppointmentModel.php:171
-#: classes/Gems/Model/AppointmentModel.php:213
+#: classes/Gems/Model/AppointmentModel.php:211
 msgid "Activities"
 msgstr "Activiteiten"
 
 #: classes/Gems/Menu/MenuAbstract.php:234
 #: classes/Gems/Model/AppointmentModel.php:172
-#: classes/Gems/Model/AppointmentModel.php:214
+#: classes/Gems/Model/AppointmentModel.php:212
 msgid "Procedures"
 msgstr "Procedures"
 
@@ -4673,15 +4687,15 @@ msgid "Appointment"
 msgstr "Afspraak"
 
 #: classes/Gems/Model/AppointmentModel.php:170
-#: classes/Gems/Model/AppointmentModel.php:209
+#: classes/Gems/Model/AppointmentModel.php:207
 msgid "With"
 msgstr "Met"
 
-#: classes/Gems/Model/AppointmentModel.php:200
+#: classes/Gems/Model/AppointmentModel.php:199
 msgid "Discharge"
 msgstr "Ontslag"
 
-#: classes/Gems/Model/AppointmentModel.php:211
+#: classes/Gems/Model/AppointmentModel.php:209
 msgid "Referrer"
 msgstr "Verwijzer"
 
@@ -4991,11 +5005,11 @@ msgid "Email to: "
 msgstr "Email naar:"
 
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:496
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:235
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:257
 msgid "Preview updated"
 msgstr "Tekstvoorbeeld bijgewerkt"
 
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:237
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:259
 msgid "Test mail sent"
 msgstr "Test mail verzonden"
 
