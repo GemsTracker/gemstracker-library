@@ -401,7 +401,8 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                 }
             } else {
                 // Return the first location among the organizations
-                return reset($matches[$name]);
+                $first = reset($matches[$name]);
+                return $first[$organizationId];
             }
         }
 
@@ -423,7 +424,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
 
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
 
-        return $result;
+        return $result[$organizationId];
     }
 
     /**
