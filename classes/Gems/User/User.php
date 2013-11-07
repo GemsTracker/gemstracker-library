@@ -891,6 +891,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     {
         $result['reset_key'] = $this->getPasswordResetKey();
         $result['reset_url'] = $this->getBaseOrganization()->getLoginUrl() . '/index/resetpassword/key/' . $result['reset_key'];
+        $result['reset_in_hours'] = $this->definition->getResetKeyDurationInHours();
 
         return $result + $this->getMailFields($locale);
     }

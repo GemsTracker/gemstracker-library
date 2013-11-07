@@ -441,6 +441,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     public function setFrom($newFrom)
     {
         $this->from = $newFrom;
+        $this->mailFields['from'] = $this->mailFields['reply_to'] = $newFrom;
     }
 
     /**

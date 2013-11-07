@@ -106,7 +106,9 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
     {
         if ($this->respondent) {
             $result = array();
+            $result['bcc']          = $this->mailFields['project_bcc'];
             $result['email']        = $this->respondent->getEmailAddress();
+            $result['from']         = '';
             $result['first_name']   = $this->respondent->getFirstName();
             $result['full_name']    = $this->respondent->getFullName();
             $result['greeting']     = $this->respondent->getGreeting();
@@ -115,6 +117,7 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
         } else {
             $result = array(
                 'email'     => '',
+                'from'      => '',
                 'first_name'=> '',
                 'full_name' => '',
                 'greeting'  => '',
@@ -122,6 +125,10 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
                 'name'      => ''
             );
         }
+
+        $result['reply_to']       = $result['from'];
+        $result['to']             = $result['email'];
+
         return $result;
     }
 
