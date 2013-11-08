@@ -693,6 +693,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $this->addHiddenPrivilege('pr.respondent.result', $this->_(
                 'Display results in token overviews.'
                 ));
+        $this->addHiddenPrivilege('pr.respondent.show-deleted', $this->_(
+                'Grant checkbox to view deleted respondents in respondent overview.'
+                ));
         $this->addHiddenPrivilege('pr.respondent.who', $this->_(
                 'Display staff member name in token overviews.'
                 ));

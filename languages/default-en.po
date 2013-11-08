@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-07 17:56+0100\n"
+"POT-Creation-Date: 2013-11-08 14:14+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -571,22 +571,26 @@ msgid "Display results in token overviews."
 msgstr "Display results in token overviews."
 
 #: classes/Gems/Menu.php:697
+msgid "Grant checkbox to view deleted respondents in respondent overview."
+msgstr "Grant checkbox to view deleted patients  in patient overview."
+
+#: classes/Gems/Menu.php:700
 msgid "Display staff member name in token overviews."
 msgstr "Display staff member name in token overviews."
 
-#: classes/Gems/Menu.php:700
+#: classes/Gems/Menu.php:703
 msgid "Grant right to edit staff members from all organizations."
 msgstr "Grant right to edit staff members from all organizations."
 
-#: classes/Gems/Menu.php:703
+#: classes/Gems/Menu.php:706
 msgid "Display all organizations in staff overview."
 msgstr "Display all organizations in staff overview."
 
-#: classes/Gems/Menu.php:706
+#: classes/Gems/Menu.php:709
 msgid "Grant right to send free text (i.e. non-template) email messages."
 msgstr "Grant right to send free text (i.e. non-template) email messages."
 
-#: classes/Gems/Menu.php:711
+#: classes/Gems/Menu.php:714
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -3359,7 +3363,7 @@ msgstr ""
 "User with id %s already exists but is deleted, do you want to reactivate the "
 "account?"
 
-#: classes/Gems/Default/StaffAction.php:371 classes/Gems/User/User.php:1281
+#: classes/Gems/Default/StaffAction.php:371 classes/Gems/User/User.php:1282
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
 msgid "Username"
 msgstr "Username"
@@ -5667,21 +5671,21 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1260
+#: classes/Gems/User/User.php:1261
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1276
+#: classes/Gems/User/User.php:1277
 #: classes/Gems/User/Form/ChangePasswordForm.php:170
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
 
-#: classes/Gems/User/User.php:1361
+#: classes/Gems/User/User.php:1362
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1389
+#: classes/Gems/User/User.php:1390
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 

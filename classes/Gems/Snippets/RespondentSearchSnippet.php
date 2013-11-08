@@ -72,7 +72,7 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
         $elements = parent::getAutoSearchElements($data);
 
         $user = $this->loader->getCurrentUser();
-        if ($user->hasRole('admin')) {
+        if ($user->hasPrivilege('pr.respondent.show-deleted')) {
             $element = new Zend_Form_Element_Checkbox('grc_success');
             $element->setLabel($this->_('Show active'));
             $element->getDecorator('Label')->setOption('placement', Zend_Form_Decorator_Abstract::APPEND);
