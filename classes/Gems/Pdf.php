@@ -337,9 +337,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         }
 
         $pdfContents = file_get_contents($tempOutputFilename);
-
         @unlink($tempInputFilename);
         @unlink($tempOutputFilename);
+        
+        if ($pdfContents == '') {
+            throw new Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
+        }
 
         return $pdfContents;
     }
