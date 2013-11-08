@@ -459,7 +459,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
      */
     public function getEmailResetPassword()
     {
-
         if ($this->offsetExists('email') && isset($this->email['resetPasswordTemplate'])) {
             return (string) $this->email['resetPasswordTemplate'];
         }

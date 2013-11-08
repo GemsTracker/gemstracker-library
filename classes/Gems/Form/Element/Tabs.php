@@ -42,19 +42,20 @@
  */
 class Gems_Form_Element_Tabs extends MUtil_Form_Element_Table
 {
-    private $_active;
 
-    private $_tabcolumn;
-
+    private $_decoratorOptions;
 
 
     public function __construct(Zend_Form $subForm, $spec, $options = null, $tabcolumn = null, $active = null)
     {
-        if ($tabcolumn) {
-            $this->_tabcolumn = $tabcolumn;
+        if (isset($options['tabcolumn'])) {
+            $this->_decoratorOptions['tabcolumn'] = $options['tabcolumn'];
         }
-        if ($active) {
-            $this->_active = $active;
+        if (isset($options['active'])) {
+            $this->_decoratorOptions['active'] = $options['active'];
+        }
+        if (isset($options['selectedTabElement'])) {
+            $this->_decoratorOptions['selectedTabElement'] = $options['selectedTabElement'];
         }
         parent::__construct($subForm, $spec, $options);
     }
@@ -72,7 +73,7 @@ class Gems_Form_Element_Tabs extends MUtil_Form_Element_Table
 
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
-            $this->addDecorator('Tabs', array('tabcolumn' => $this->_tabcolumn, 'active' => $this->_active))
+            $this->addDecorator('Tabs', $this->_decoratorOptions)
                 ->addDecorator('HtmlTag', array('tag' => 'dd',
                                                 'id'  => $this->getName() . '-element'))
                 ->addDecorator('Label', array('tag' => 'dt'));

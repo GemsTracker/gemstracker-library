@@ -483,6 +483,25 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         $this->templateId = $templateId;
     }
 
+
+    /**
+     * set the To field, overwriting earlier settings completely
+     * @param [type] $to [description]
+     */
+    public function setTo($newTo, $newToName = '')
+    {  
+        if (is_array($newTo)) {
+            $this->to  = $newTo;
+        } else {
+            $this->to = array();
+            if (empty($newToName)) {
+                $this->to[] = $newTo;
+            } else {
+                $this->to[$newToName] = $newTo;
+            }
+        }
+    }
+
     /**
      * Send the mail
      */

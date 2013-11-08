@@ -98,13 +98,18 @@ class Gems_Mail_staffPasswordMailer extends Gems_Mail_StaffMailer
      */
     public function setResetPasswordTemplate()
     {
+
         $templateId = $this->organization->getResetPasswordTemplate();
+
         if ($templateId) {
             $this->setTemplate($this->organization->getResetPasswordTemplate());
             return true;
         } elseif ($this->project->getEmailResetPassword()) {
-            $this->setTemplateByCode($this->project->getEmailResetPassword());
-            return true;
+            if ($this->setTemplateByCode($this->project->getEmailResetPassword())) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -120,8 +125,11 @@ class Gems_Mail_staffPasswordMailer extends Gems_Mail_StaffMailer
         $select->where('gct_code = ?', $templateCode);
         
         $template = $this->db->fetchRow($select);
-
-        $this->subject = $template['gctt_subject'];
-        $this->bodyBb = $template['gctt_body'];
+        if ($template) {
+            $this->setTemplate($template['gct_id_template']);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

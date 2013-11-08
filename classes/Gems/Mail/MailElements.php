@@ -128,9 +128,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
             }
         }
         $form->activateJQuery();
-        $tabcolumn = 'gctt_lang';
-        $active = $this->project->getLocaleDefault();
-        $element = new Gems_Form_Element_Tabs($form, $name, $options, $tabcolumn, $active);
+        $element = new Gems_Form_Element_Tabs($form, $name, $options);
         
         $parentBridge->getForm()->addElement($element);
         return $element;

@@ -79,6 +79,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     public function afterRegistry() {
         $this->mailElements = $this->loader->getMailLoader()->getMailElements();
         $this->mailTargets = $this->loader->getMailLoader()->getMailTargets();
+        
 
         parent::afterRegistry();
     }
@@ -97,10 +98,9 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
 
         $bridge->getForm()->getElement('gct_target')->setAttrib('onchange', 'this.form.submit()');
 
-        
 
-        //$bridge->addFormTable('gctt');
-        $this->mailElements->addFormTabs($bridge, 'gctt');
+        $defaultTab = $this->project->getLocaleDefault();
+        $this->mailElements->addFormTabs($bridge, 'gctt', 'active', $defaultTab, 'tabcolumn', 'gctt_lang', 'selectedTabElement', 'send_language');        
 
         $config = array(
         'extraPlugins' => 'bbcode,availablefields',
@@ -123,16 +123,15 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             CKEditorConfig = ".Zend_Json::encode($config).";
             ");
 
-        $this->addItems($bridge, 'gct_code');
-        $this->addItems($bridge, 'gctt_lang');
-
+        
 
         $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
 
         $bridge->addElement($this->mailElements->createEmailElement('to', $this->_('To (test)'), true));
         $bridge->addElement($this->mailElements->createEmailElement('from', $this->_('From'), true));
         
-        
+        //$bridge->addRadio('send_language', array('label' => $this->_('Test language'), 'multiOptions' => ))
+        $bridge->addHidden('send_language');
         $bridge->addFakeSubmit('sendtest', array('label' => $this->_('Send (test)')));
         
         $bridge->addElement($this->getSaveButton());        
@@ -140,6 +139,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
         $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));
+        $this->addItems($bridge, 'gct_code');
     }
 
     /**
@@ -256,7 +256,22 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
             if (!empty($data['preview'])) {
                 $this->addMessage($this->_('Preview updated'));
             } elseif (!empty($data['sendtest'])) {
-                $this->addMessage($this->_('Test mail sent'));
+                $this->mailer->setTo($data['to']);
+
+                $template = array();
+                foreach($data['gctt'] as $templateLanguage) {
+                    if ($templateLanguage['gctt_lang'] == $data['send_language']) {
+                        $template = $templateLanguage;
+                    }
+                }
+
+                $this->mailer->setFrom($data['from']);
+                $this->mailer->setSubject($template['gctt_subject']);
+                $this->mailer->setBody($template['gctt_body'], 'Bbcode');
+                $this->mailer->setTemplateId($data['gct_id_template']);
+                $this->mailer->send();
+                
+                $this->addMessage(sprintf($this->_('Test mail sent to %s'), $data['to']));
             }
         }
     }

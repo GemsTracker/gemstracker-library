@@ -209,8 +209,6 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $logData['grco_created']      = $changeDate;
         $logData['grco_created_by']   = $currentUserId;
 
-        MUtil_Echo::track($logData);
-
         $this->db->insert('gems__log_respondent_communications', $logData);
     }
 	

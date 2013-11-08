@@ -179,6 +179,11 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                 $jquery = $view->jQuery();
 
                 $js = sprintf('%1$s("#tabElement").tabs();', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
+
+                if ($selectedTabElement = $this->getOption('selectedTabElement')) {
+                    $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
+                }
+                
                 $jquery->addOnLoad($js);
 
                 $list = $containerDiv->ul();
@@ -191,11 +196,12 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                     if ($tabcolumn = $this->getOption('tabcolumn')) {
                         $tabName = $subform->getElement($tabcolumn)->getValue();
                     } else {
-                        $elements = reset($subform->getElements());
+                        $elements = $subform->getElements();
+                        $element = reset($elements);
                         $tabName = $element->getValue();
                     }
                     
-                    if ($active == $tabName) {
+                    if ($active && $active == $tabName) {
                         $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
                         $jquery->addOnLoad($js);
                     }
@@ -258,8 +264,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      * @return Zend_Form_Decorator_Interface
      */
     public function setElement($element)
-    {
-        $this->_subform = $element;
+    {        $this->_subform = $element;
 
         return $this;
     }
