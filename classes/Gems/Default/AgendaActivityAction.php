@@ -91,7 +91,7 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
 
         $model->set('gaa_name',                    'label', $this->_('Activity'),
                 'description', $this->_('An activity is a high level description about an appointment:
-e.g. consult, check-up, diet, operation, physiotherapy or other.').
+e.g. consult, check-up, diet, operation, physiotherapy or other.'),
                 'required', true
                 );
 
