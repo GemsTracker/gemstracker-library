@@ -211,8 +211,8 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     public function getStatusCodesActive()
     {
         $codes = array(
-            'AC' => $this->_('Active'),
-            'CO' => $this->_('Completed'),
+            'AC' => $this->_('Active appointment'),
+            'CO' => $this->_('Completed appointment'),
         );
 
         asort($codes);
@@ -228,8 +228,8 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     public function getStatusCodesInactive()
     {
         $codes = array(
-            'AB' => $this->_('Aborted'),
-            'CA' => $this->_('Cancelled'),
+            'AB' => $this->_('Aborted appointment'),
+            'CA' => $this->_('Cancelled appointment'),
         );
 
         asort($codes);

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-08 14:14+0100\n"
+"POT-Creation-Date: 2013-11-09 14:22+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -106,7 +106,7 @@ msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
 #: classes/GemsEscort.php:2116 classes/GemsEscort.php:2118
-#: classes/Gems/Mail/TokenMailer.php:256 classes/Gems/Mail/TokenMailer.php:258
+#: classes/Gems/Mail/TokenMailer.php:254 classes/Gems/Mail/TokenMailer.php:256
 #, php-format
 msgid "%d survey"
 msgid_plural "%d surveys"
@@ -118,36 +118,19 @@ msgid "Database needs to be updated!"
 msgstr "Database needs to be updated!"
 
 #: classes/Gems/Agenda.php:214
-#: classes/Gems/Default/AgendaActivityAction.php:114
-#: classes/Gems/Default/AgendaProcedureAction.php:114
-#: classes/Gems/Default/AgendaStaffAction.php:112
-#: classes/Gems/Default/CommJobAction.php:82
-#: classes/Gems/Default/GroupAction.php:120
-#: classes/Gems/Default/LocationAction.php:154
-#: classes/Gems/Default/MailJobAction.php:82
-#: classes/Gems/Default/OrganizationAction.php:160
-#: classes/Gems/Default/ReceptionAction.php:87
-#: classes/Gems/Default/SourceAction.php:101
-#: classes/Gems/Default/SurveyMaintenanceAction.php:456
-#: classes/Gems/Default/SurveyMaintenanceAction.php:526
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:785
-#: classes/Gems/Tracker/Model/TrackModel.php:104
-#: classes/Gems/Util/TrackData.php:163
-#: classes/OpenRosa/Model/OpenRosaFormModel.php:70
-msgid "Active"
+msgid "Active appointment"
 msgstr "Active"
 
-#: classes/Gems/Agenda.php:215 classes/Gems/Tracker/Token.php:1094
-#: classes/Gems/Tracker/Model/StandardTokenModel.php:208
-msgid "Completed"
+#: classes/Gems/Agenda.php:215
+msgid "Completed appointment"
 msgstr "Completed"
 
 #: classes/Gems/Agenda.php:231
-msgid "Aborted"
-msgstr "Aborted"
+msgid "Aborted appointment"
+msgstr "Show"
 
 #: classes/Gems/Agenda.php:232
-msgid "Cancelled"
+msgid "Cancelled appointment"
 msgstr "Cancelled"
 
 #: classes/Gems/Agenda.php:296
@@ -159,7 +142,7 @@ msgid "Emergency"
 msgstr "Emergency"
 
 #: classes/Gems/Agenda.php:298 classes/Gems/Email/EmailFormAbstract.php:484
-#: classes/Gems/Mail/MailElements.php:298
+#: classes/Gems/Mail/MailElements.php:296
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:773
 msgid "Field"
 msgstr "Field"
@@ -455,7 +438,7 @@ msgstr "Add"
 #: classes/Gems/Menu/MenuAbstract.php:526
 #: classes/Gems/Menu/MenuAbstract.php:536
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:168
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:130
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:128
 msgid "Preview"
 msgstr "Preview"
 
@@ -732,7 +715,7 @@ msgstr "Could not create '%s' directory."
 msgid " The error message is: %s"
 msgstr " The error message is: %s"
 
-#: classes/Gems/Pdf.php:336
+#: classes/Gems/Pdf.php:336 classes/Gems/Pdf.php:344
 #, php-format
 msgid "Unable to run PDF conversion (%s): \"%s\""
 msgstr "Unable to run PDF conversion (%s): \"%s\""
@@ -1031,12 +1014,32 @@ msgstr "Code name"
 
 #: classes/Gems/Default/AgendaActivityAction.php:112
 #: classes/Gems/Default/AgendaProcedureAction.php:112
+#: classes/Gems/Default/CommTemplateAction.php:105
 #: classes/Gems/Default/LocationAction.php:125
 #: classes/Gems/Default/OrganizationAction.php:186
 #: classes/Gems/Default/SurveyMaintenanceAction.php:472
 #: classes/Gems/Tracker/Model/TrackModel.php:115
 msgid "Only for programmers."
 msgstr "Only for programmers."
+
+#: classes/Gems/Default/AgendaActivityAction.php:114
+#: classes/Gems/Default/AgendaProcedureAction.php:114
+#: classes/Gems/Default/AgendaStaffAction.php:112
+#: classes/Gems/Default/CommJobAction.php:82
+#: classes/Gems/Default/GroupAction.php:120
+#: classes/Gems/Default/LocationAction.php:154
+#: classes/Gems/Default/MailJobAction.php:82
+#: classes/Gems/Default/OrganizationAction.php:160
+#: classes/Gems/Default/ReceptionAction.php:87
+#: classes/Gems/Default/SourceAction.php:101
+#: classes/Gems/Default/SurveyMaintenanceAction.php:456
+#: classes/Gems/Default/SurveyMaintenanceAction.php:526
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:785
+#: classes/Gems/Tracker/Model/TrackModel.php:104
+#: classes/Gems/Util/TrackData.php:163
+#: classes/OpenRosa/Model/OpenRosaFormModel.php:70
+msgid "Active"
+msgstr "Active"
 
 #: classes/Gems/Default/AgendaActivityAction.php:115
 #: classes/Gems/Default/AgendaProcedureAction.php:115
@@ -1340,16 +1343,21 @@ msgstr "Subject"
 msgid "Message"
 msgstr "Message"
 
-#: classes/Gems/Default/CommTemplateAction.php:117
+#: classes/Gems/Default/CommTemplateAction.php:105
+#: classes/Gems/Default/ReceptionAction.php:80
+msgid "Code"
+msgstr "Code"
+
+#: classes/Gems/Default/CommTemplateAction.php:118
 msgid "New template"
 msgstr "New template"
 
-#: classes/Gems/Default/CommTemplateAction.php:124
+#: classes/Gems/Default/CommTemplateAction.php:125
 #, php-format
 msgid "Edit template: %s"
 msgstr "Edit template: %s"
 
-#: classes/Gems/Default/CommTemplateAction.php:129
+#: classes/Gems/Default/CommTemplateAction.php:130
 #: classes/Gems/Default/MailTemplateAction.php:100
 msgid "Email templates"
 msgstr "Email templates"
@@ -1915,7 +1923,7 @@ msgstr "Question"
 
 #: classes/Gems/Default/ExportAction.php:536
 #: classes/Gems/Email/EmailFormAbstract.php:485
-#: classes/Gems/Mail/MailElements.php:299
+#: classes/Gems/Mail/MailElements.php:297
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:120
 msgid "Value"
 msgstr "Value"
@@ -2820,7 +2828,7 @@ msgstr "By"
 #: classes/Gems/Email/MailTemplateForm.php:82
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:128
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:171
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:133
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:131
 #: classes/Gems/Tracker/Model/TrackModel.php:106
 msgid "From"
 msgstr "From"
@@ -2869,10 +2877,6 @@ msgstr "Track %s does not exist."
 #: classes/Gems/Default/ReceptionAction.php:56
 msgid "Additional action"
 msgstr "Additional action"
-
-#: classes/Gems/Default/ReceptionAction.php:80
-msgid "Code"
-msgstr "Code"
 
 #: classes/Gems/Default/ReceptionAction.php:83
 msgid "Is success code"
@@ -4048,7 +4052,7 @@ msgstr[1] "fields"
 
 #: classes/Gems/Default/TrackFieldsAction.php:202
 #: classes/Gems/Email/EmailFormAbstract.php:476
-#: classes/Gems/Mail/MailElements.php:159
+#: classes/Gems/Mail/MailElements.php:157
 #: classes/Gems/Menu/MenuAbstract.php:619
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:162
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:119
@@ -4218,14 +4222,14 @@ msgid "Upgrades"
 msgstr "Upgrades"
 
 #: classes/Gems/Email/EmailFormAbstract.php:101
-#: classes/Gems/Mail/MailElements.php:306
+#: classes/Gems/Mail/MailElements.php:304
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:224
 msgid "no email adress"
 msgstr "no email adress"
 
 #: classes/Gems/Email/EmailFormAbstract.php:145
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:178
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:142
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:141
 msgid "Available fields"
 msgstr "Available fields"
 
@@ -4244,12 +4248,12 @@ msgid "You do not have an e-mail address."
 msgstr "You do not have an e-mail address."
 
 #: classes/Gems/Email/EmailFormAbstract.php:291
-#: classes/Gems/Mail/MailElements.php:222
+#: classes/Gems/Mail/MailElements.php:220
 msgid "Preview HTML"
 msgstr "Preview HTML"
 
 #: classes/Gems/Email/EmailFormAbstract.php:300
-#: classes/Gems/Mail/MailElements.php:236
+#: classes/Gems/Mail/MailElements.php:234
 msgid "Preview text"
 msgstr "Preview text"
 
@@ -4273,7 +4277,7 @@ msgid "BBCode info page"
 msgstr "BBCode info page"
 
 #: classes/Gems/Email/MailTemplateForm.php:56
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:136
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:135
 msgid "Send (test)"
 msgstr "Send (test)"
 
@@ -4282,7 +4286,7 @@ msgid "Test using"
 msgstr "Test using"
 
 #: classes/Gems/Email/MailTemplateForm.php:134
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:132
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:130
 msgid "To (test)"
 msgstr "To (test)"
 
@@ -4291,7 +4295,7 @@ msgid "Test mail send, changes not saved!"
 msgstr "Test mail send, changes not saved!"
 
 #: classes/Gems/Email/MultiMailForm.php:75
-#: classes/Gems/Mail/MailElements.php:205
+#: classes/Gems/Mail/MailElements.php:203
 msgid "Method"
 msgstr "Method"
 
@@ -4974,9 +4978,10 @@ msgstr "Email to: "
 msgid "Preview updated"
 msgstr "Preview updated"
 
-#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:259
-msgid "Test mail sent"
-msgstr "Test mail sent"
+#: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:274
+#, php-format
+msgid "Test mail sent to %s"
+msgstr "Test mail sent to %s"
 
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:95
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:69
@@ -5120,6 +5125,11 @@ msgstr "%d tokens created to by round changes."
 #: classes/Gems/Tracker/ChangeTracker.php:93
 msgid "No tokens were changed."
 msgstr "No tokens were changed."
+
+#: classes/Gems/Tracker/Token.php:1094
+#: classes/Gems/Tracker/Model/StandardTokenModel.php:208
+msgid "Completed"
+msgstr "Completed"
 
 #: classes/Gems/Tracker/Token.php:1102 classes/Gems/Tracker/Token.php:1104
 msgid "Future"
@@ -6717,6 +6727,12 @@ msgstr[0] ""
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
 
+#~ msgid "Aborted"
+#~ msgstr "Aborted"
+
+#~ msgid "Cancelled"
+#~ msgstr "Cancelled"
+
 #~ msgid "Two letter code for use in application"
 #~ msgstr "Two letter code for use in application"
 
@@ -7435,9 +7451,6 @@ msgstr[1] ""
 
 #~ msgid "Period from today:"
 #~ msgstr "Period from today:"
-
-#~ msgid "Completed on"
-#~ msgstr "Completed on"
 
 #~ msgid "Expected"
 #~ msgstr "Expected"
