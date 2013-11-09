@@ -137,7 +137,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
                     Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
                     Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
         $this->model->set('gap_admission_time', 'label', $this->_('Time'),
-                'dateFormat', 'hh:mm');
+                'dateFormat', 'HH:mm');
 
         $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 

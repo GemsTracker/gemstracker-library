@@ -149,7 +149,7 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                     }
 
                     $model->set('gap_id_user',         'default', $this->respondentId);
-                    $model->set('gap_admission_time',  'default', $now); //->toString('yyyy-MM-dd hh:mm:ss'));
+                    $model->set('gap_admission_time',  'default', $now);
                 }
             } else {
                 $model->applyDetailSettings();

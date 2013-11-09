@@ -168,10 +168,10 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      * might be to allow either option, but datetimepicker does not understand that.)
      *
      * Some examples:
-     *  - "yyyy-MM-dd hh:mm"  => array("yy-mm-dd", " ", "hh:mm")
+     *  - "yyyy-MM-dd HH:mm"  => array("yy-mm-dd", " ", "hh:mm")
      *  - "X yyyy-MM-dd X"    => array("X yy-mm-dd X", false, false)
      *  - "yy \"hi': mm\" MM" => array("y 'hi'': mm' mm", false, false)
-     *  - "yyyy-MM-dd 'date: yyyy-MM-dd' HH:mm 'time'': hh:mm' zzzz Q", => array("yy-mm-dd", " 'date: yyyy-MM-dd' ", "HH:mm 'time'': hh:mm' z Q")
+     *  - "yyyy-MM-dd 'date: yyyy-MM-dd' HH:mm 'time'': hh:mm' HH:mm Q", => array("yy-mm-dd", " 'date: yyyy-MM-dd' ", "HH:mm 'time'': HH:mm' z Q")
      *  - "HH:mm:ss"          => array(false, false, "HH:mm:ss")
      *  - Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
      *
