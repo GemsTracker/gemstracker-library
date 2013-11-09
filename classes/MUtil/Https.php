@@ -89,10 +89,14 @@ class MUtil_Https
      */
     public static function on()
     {
+        if (($_SERVER['SERVER_PORT'] == 443)) {
+            return true;
+        }
+        
         if (empty($_SERVER['HTTPS'])) {
             return false;
         }
 
-        return ((strtolower($_SERVER['HTTPS']) !== 'off') || ($_SERVER['SERVER_PORT'] == 443));
+        return strtolower($_SERVER['HTTPS']) !== 'off';
     }
 }
