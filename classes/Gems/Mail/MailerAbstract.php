@@ -313,7 +313,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
                ->where('gctt_lang = ?', $language);
         
         $template = $this->db->fetchRow($select);
-        if ($template) {
+        if ($template && !empty($template['gctt_subject'])) {
             return $template;
         }
 
@@ -325,7 +325,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
                    ->where('gctt_lang = ?', $language);
             
             $template = $this->db->fetchRow($select);
-            if ($template) {
+            if ($template && !empty($template['gctt_subject'])) {
                 return $template;
             }
         }
@@ -336,7 +336,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
                ->where('gctt_subject <> ""')
                ->where('gctt_body <> ""');
         $template = $this->db->fetchRow($select);
-        if ($template) {
+        if ($template && !empty($template['gctt_subject'])) {
             return $template;
         } else {
             return false;

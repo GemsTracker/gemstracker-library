@@ -47,6 +47,12 @@
 class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransformerAbstract
 {
     /**
+     * Is the submodel new?
+     * @var boolean
+     */
+    protected $_new;
+
+    /**
      * If the transformer add's fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
      * know which fields to add by then (optionally using the model
@@ -74,6 +80,24 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
     }
 
     /**
+     * The transform function performs the actual transformation of the data and is called after
+     * the loading of the data in the source model.
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param array $data Nested array
+     * @return array Nested array containing (optionally) transformed data
+     */
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    {
+
+        if ($new) {
+            $this->_new = $new;
+        }
+
+        return parent::transformLoad($model, $data);
+    }
+
+    /**
      * Function to allow overruling of transform for certain models
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -94,7 +118,11 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
                 }
             }
 
-            $rows = $sub->load($filter);
+            if ($this->_new) {
+                $rows = $sub->loadAllNew();
+            } else {
+                $rows = $sub->load($filter);
+            }
 
             $data[$key][$name] = $rows;
         }

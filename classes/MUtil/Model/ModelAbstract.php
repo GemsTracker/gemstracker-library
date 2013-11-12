@@ -1202,6 +1202,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Creates new items - in memory only. And returns them all
+     *
+     * @return array Nested when $count is not null, otherwise just a simple array
+     */
+    public function loadAllNew()
+    {
+        $empty = array();
+        foreach ($this->getItemNames() as $name) {
+            $empty[$name] = $this->get($name, 'default');
+        }
+        $data = $this->processAfterLoad(array($empty), true);
+
+        return $data;
+    }
+
+    /**
      * Returns an array containing the first requested item.
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filteloa
@@ -1237,11 +1253,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function loadNew($count = null)
     {
-        $empty = array();
-        foreach ($this->getItemNames() as $name) {
-            $empty[$name] = $this->get($name, 'default');
-        }
-        $data = $this->processAfterLoad(array($empty), true);
+        $data = $this->loadAllNew();
         $empty = reset($data);
 
         // Return only a single row when no count is specified
@@ -1310,7 +1322,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         foreach ($this->_transformers as $transformer) {
-            $data = $transformer->transformLoad($this, $data);
+            $data = $transformer->transformLoad($this, $data, $new);
         }
 
         if ($this->getMeta(self::LOAD_TRANSFORMER)) {
