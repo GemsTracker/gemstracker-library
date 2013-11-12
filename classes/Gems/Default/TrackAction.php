@@ -479,10 +479,21 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             $sql = "SELECT gems__respondent2track2field.*,gems__track_fields.* FROM gems__respondent2track2field LEFT JOIN gems__track_fields ON gtf_id_field = gr2t2f_id_field WHERE gr2t2f_id_respondent_track = ? ORDER BY gtf_id_order";
             $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
 
+            $fieldsElements = $this->loader->getTracker()->getRespondentTrack($data['gr2t_id_respondent_track'])->getFieldsElements();
+
             foreach ($fieldValues as $field) {
+                $fieldDisplayValue   = $field['gr2t2f_value'];
+
+                if (array_key_exists($field['gtf_id_field'], $fieldsElements) && $fieldsElements[$field['gtf_id_field']] instanceof Zend_Form_Element_Select) {
+                    $fieldDisplayElement = $fieldsElements[$field['gtf_id_field']];
+                    $multiOptions = $fieldDisplayElement->getMultiOptions();
+                    if (array_key_exists($fieldDisplayValue, $multiOptions)) {
+                        $fieldDisplayValue = $multiOptions[$fieldDisplayValue];
+                    }
+                }
                 $table->tr();
                 $table->tdh($field['gtf_field_name']);
-                $table->td($field['gr2t2f_value']);
+                $table->td($fieldDisplayValue);
             }
 
             $this->html[] = $table;
