@@ -518,6 +518,8 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         
         $mail->setSubject($this->applyFields($this->subject));
 
+        $mail->setTemplateStyle($this->getTemplateStyle());
+
         if ($this->bodyBb) {
             $mail->setBodyBBCode($this->applyFields($this->bodyBb));
         } elseif ($this->bodyHtml) {
@@ -525,8 +527,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         } elseif ($this->bodyText) {
             $mail->setBodyText($this->applyFields($this->bodyText));
         }
-        $mail->setTemplateStyle($this->getTemplateStyle());
-
+        
         $this->beforeMail();
 
         $mail->send();
