@@ -87,9 +87,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
             $appButton = null;
         }
         if ($menuItem = $this->menu->find(array('controller' => 'appointment', 'action' => 'edit', 'allowed' => true))) {
-            $respButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Edit appointment'));
+            $editButton = $menuItem->toActionLink($this->request, $bridge, $this->_('Edit appointment'));
         } else {
-            $respButton = null;
+            $editButton = null;
         }
 
         $br    = MUtil_Html::create('br');
@@ -98,14 +98,15 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         $table->appendAttrib('class', 'calendar');
 
         $bridge->tr()->appendAttrib('class', $bridge->row_class);
-        $bridge->addColumn($appButton)->class = 'middleAlign';
-        $bridge->addMultiSort('date_only', 'gap_admission_time');
+        if ($appButton) {
+            $bridge->addItemLink($appButton)->class = 'middleAlign';
+        }
+        $bridge->addMultiSort(array($bridge->date_only), 'gap_admission_time');
         $bridge->addMultiSort('gas_name', $br, 'glo_name');
         $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
-        // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
-        $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
-
-        unset($table[MUtil_Html_TableElement::THEAD]);
+        if ($editButton) {
+            $bridge->addItemLink($editButton)->class = 'middleAlign rightAlign';
+        }
     }
 
     /**
@@ -139,7 +140,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
                 // 'dateFormat', 'HH:mm ' . Zend_Date::WEEKDAY);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
-        $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png'));
+        $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
