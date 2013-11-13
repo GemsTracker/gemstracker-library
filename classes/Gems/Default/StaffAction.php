@@ -60,9 +60,9 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     public $filterStandard = array('gsf_active' => 1);
 
-    public $menu;    
+    public $menu;
     /**
-     * 
+     *
      * @var Gems_Loader
      */
     public $loader;
@@ -81,7 +81,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
-     * 
+     *
      * Adds a button column to the model, if such a button exists in the model.
      *
      * @param MUtil_Model_TableBridge $bridge
@@ -520,7 +520,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $params['routeAction']  = 'show';
         $params['formTitle']    = sprintf($this->_('Send mail to: %s'), $this->_user->getFullName());
 
-        
+
         $this->addSnippet('Mail_MailFormSnippet', $params);
     }
 
@@ -548,14 +548,14 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             'forceRules' => false    // If user logs in using password that does not obey the rules, he is forced to change it
             ));
 
-        $createElement = new Zend_Form_Element_Submit('create_account');
+        $createElement = new MUtil_Form_Element_FakeSubmit('create_account');
         $createElement->setLabel($this->translate->_('Create account mail'))
                     ->setAttrib('class', 'button')
                     ->setOrder(0);
 
         $form->addElement($createElement);
 
-        $resetElement = new Zend_Form_Element_Submit('reset_password');
+        $resetElement = new MUtil_Form_Element_FakeSubmit('reset_password');
         $resetElement->setLabel($this->translate->_('Reset password mail'))
                     ->setAttrib('class', 'button')
                     ->setOrder(1);
@@ -566,7 +566,8 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
          ****************/
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
-            if (isset($data['create_account'])) {
+            MUtil_Echo::track($data);
+            if (isset($data['create_account']) && $data['create_account']) {
                 $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
                 $mail->setOrganizationFrom();
                 if ($mail->setCreateAccountTemplate()) {
@@ -577,7 +578,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
                     $this->addMessage($this->_('No default Create Account mail template set in organization or project'));
                 }
 
-            } elseif (isset($data['reset_password'])) {
+            } elseif (isset($data['reset_password']) && $data['reset_password']) {
                 $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
                 $mail->setOrganizationFrom();
                 if ($mail->setResetPasswordTemplate()) {
@@ -587,7 +588,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
                 } else {
                     $this->addMessage($this->_('No default Reset Password mail template set in organization or project'));
                 }
-                
+
 
             } elseif ($form->isValid($data, false)) {
                 // If form is valid, but contains messages, do show them. Most likely these are the not enforced password rules

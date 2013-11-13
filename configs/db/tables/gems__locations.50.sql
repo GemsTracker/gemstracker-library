@@ -2,7 +2,9 @@
 CREATE TABLE if not exists gems__locations (
         glo_id_location     bigint unsigned not null auto_increment,
         glo_name            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
-        glo_id_organization bigint unsigned not null references gems__organizations (gor_id_organization),
+
+        -- Yes, quick and dirty, will correct later (probably)
+        glo_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         glo_match_to        varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         glo_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
@@ -30,7 +32,6 @@ CREATE TABLE if not exists gems__locations (
 
         PRIMARY KEY (glo_id_location),
         INDEX (glo_name),
-        INDEX (glo_id_organization),
         INDEX (glo_match_to)
     )
     ENGINE=InnoDB

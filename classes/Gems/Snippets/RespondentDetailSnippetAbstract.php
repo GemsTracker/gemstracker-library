@@ -159,7 +159,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
     public function checkConsent($consent)
     {
         static $warned;
-        
+
         if ($warned) {
             return $consent;
         }

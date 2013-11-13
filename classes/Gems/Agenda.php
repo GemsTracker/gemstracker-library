@@ -126,11 +126,14 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     /**
      * Returns an array with identical key => value pairs containing care provision locations.
      *
-     * @param int $irgId Optional to slect for single organization
+     * @param int $orgId Optional to slect for single organization
      * @return array
      */
     public function getLocations($orgId = null)
     {
+        // Make sure no invalid data gets through
+        $orgId = intval($orgId);
+
         $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $orgId;
 
         if ($results = $this->cache->load($cacheId)) {
@@ -145,7 +148,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             // Check only for active when with $orgId: those are usually used
             // with editing, while the whole list is used for display.
             $select->where('glo_active = 1');
-            $select->where('glo_id_organization = ?', $orgId);
+            $select->where("glo_organizations LIKE '%:$orgId:%'");
         }
 
         $results = $this->db->fetchPairs($select);
@@ -448,7 +451,9 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
                 foreach (explode('|', $row['glo_match_to']) as $match) {
-                    $matches[$match][$row['glo_id_organization']] = $row;
+                    foreach (explode(':', trim($row['glo_organizations'], ':')) as $subOrg) {
+                        $matches[$match][$subOrg] = $row;
+                    }
                 }
             }
             $this->cache->save($matches, $cacheId, array('locations'));
@@ -458,11 +463,28 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
             if ($organizationId) {
                 if (isset($matches[$name][$organizationId])) {
                     return $matches[$name][$organizationId];
+                } else {
+                    $first = reset($matches[$name]);
+
+                    // Change this match, add this organization
+                    $values = array(
+                        'glo_id_location'   => $first['glo_id_location'],
+                        'glo_organizations' => ':' . implode(':', array_keys($matches[$name])) . ':' .
+                            $organizationId . ':',
+                    );
                 }
             } else {
                 // Return the first location among the organizations
                 return reset($matches[$name]);
             }
+        } else {
+            // A new match
+            $values = array(
+                'glo_name'          => $name,
+                'glo_organizations' => ':' . $organizationId . ':',
+                'glo_match_to'      => $name,
+                'glo_active'        => 1,
+            );
         }
 
         if (! $create) {
@@ -471,13 +493,6 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
 
         $model = new MUtil_Model_TableModel('gems__locations');
         Gems_Model::setChangeFieldsByPrefix($model, 'glo');
-
-        $values = array(
-            'glo_name'            => $name,
-            'glo_id_organization' => $organizationId,
-            'glo_match_to'        => $name,
-            'glo_active'   => 1,
-        );
 
         $result = $model->save($values);
 

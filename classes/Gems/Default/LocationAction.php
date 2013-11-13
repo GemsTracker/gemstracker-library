@@ -81,7 +81,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
         // Newline placeholder
         $br = MUtil_Html::create('br');
 
-        $columns[10] = array('glo_name', $br, 'glo_id_organization');
+        $columns[10] = array('glo_name', $br, 'glo_organizations');
         $columns[20] = array('glo_url', $br, 'glo_url_route');
         $columns[30] = array('glo_address_1', $br, 'glo_zipcode', MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
         $columns[40] = array(MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_match_to');
@@ -112,9 +112,13 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
                 'required', true
                 );
 
-        $model->setIfExists('glo_id_organization', 'label', $this->_('Organization'),
+        $model->set('glo_organizations', 'label', $this->_('Organizations'),
+                'description', $this->_('Checked organizations see this organizations respondents.'),
+                'elementClass', 'MultiCheckbox',
                 'multiOptions', $this->util->getDbLookup()->getOrganizations()
                 );
+        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp->apply($model, 'glo_organizations');
 
         $model->setIfExists('glo_match_to',        'label', $this->_('Import matches'),
                 'description', $this->_("Split multiple import matches using '|'.")

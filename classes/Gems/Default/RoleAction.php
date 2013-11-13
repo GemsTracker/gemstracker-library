@@ -56,7 +56,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
      * @var GemsEscort
      */
     public $escort;
-    
+
+    public $sortKey = 'grl_name';
+
     /**
      *
      * @var array
@@ -256,19 +258,19 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
         $tpr = new MUtil_Model_Type_ConcatenatedRow(',', '<br/>');
         $tpr->apply($model, 'grl_privileges');
-        
+
         if ($detailed) {
             $model->set('grl_privileges', 'formatFunction', array($this, 'formatPrivileges'));
-            
+
             if ('show' === $action) {
                 $model->addColumn('grl_parents', 'inherited');
                 $tpa->apply($model, 'inherited');
-                $model->set('inherited', 
+                $model->set('inherited',
                         'label', $this->_('Inherited privileges'),
                         'formatFunction', array($this, 'formatInherited'));
-                
+
                 $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
-                $model->set('not_allowed', 
+                $model->set('not_allowed',
                         'label', $this->_('Not allowed'),
                         'formatFunction', array($this, 'formatNotAllowed'));
             }
@@ -297,15 +299,15 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
     /**
      * Output for browsing rols
-     * 
+     *
      * @param array $privileges
      * @return array
      */
     public function formatLongLine(array $privileges)
     {
         $output     = MUtil_Html::create('div');
-        
-        if (count($privileges)) {       
+
+        if (count($privileges)) {
             $privileges = array_combine($privileges, $privileges);
             foreach ($this->getUsedPrivileges() as $privilege => $description) {
                 if (isset($privileges[$privilege])) {
@@ -321,13 +323,13 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
                 }
             }
         }
-            
+
         return $output;
     }
-    
+
     /**
      * Output of not allowed for viewing rols
-     * 
+     *
      * @param array $parent
      * @return MUtil_Html_ListElement
      */
@@ -336,10 +338,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $privileges = array_keys($this->getInheritedPrivileges($parents));
         return $this->formatPrivileges($privileges);
     }
-    
+
     /**
      * Output of not allowed for viewing rols
-     * 
+     *
      * @param strong $data parents tab privileges
      * @return MUtil_Html_ListElement
      */
@@ -351,19 +353,19 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (count($privileges) > 0 ) {
             $privileges = array_combine($privileges, $privileges);
         }
-        
+
         $notAllowed = $this->getUsedPrivileges();
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);
 
         $output = $this->formatPrivileges(array_keys($notAllowed));
         $output->class = 'deleted';
-                
+
         return $output;
     }
-    
+
     /**
      * Output for viewing rols
-     * 
+     *
      * @param array $privileges
      * @return MUtil_Html_ListElement
      */
@@ -372,7 +374,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (count($privileges)) {
             $output     = MUtil_Html_ListElement::ul();
             $privileges = array_combine($privileges, $privileges);
-            
+
             foreach ($this->getUsedPrivileges() as $privilege => $description) {
                 if (isset($privileges[$privilege])) {
                     $output->li()->raw($description);
@@ -382,13 +384,13 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
                 return $output;
             }
         }
-        
+
         return MUtil_Html::create('em', $this->_('No privileges found.'));
     }
-    
+
     /**
      * Get the privileges for thess parents
-     * 
+     *
      * @param array $parents
      * @return array privilege => setting
      */
@@ -403,16 +405,16 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
                 $inherited = $inherited + array_flip($rolePrivileges[$parent][Zend_Acl::TYPE_ALLOW]);
-                $inherited = $inherited + 
+                $inherited = $inherited +
                         array_flip($rolePrivileges[$parent][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW]);
             }
         }
         // Sneaks in:
         unset($inherited[""]);
-        
+
         return $inherited;
     }
-    
+
     public function getTopic($count = 1)
     {
         return $this->plural('role', 'roles', $count);
@@ -425,7 +427,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
     /**
      * Get the privileges a role can have.
-     * 
+     *
      * @return array
      */
     protected function getUsedPrivileges()
@@ -437,10 +439,10 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
             //don't allow to edit the pr.nologin and pr.islogin privilege
             unset($privileges['pr.nologin']);
             unset($privileges['pr.islogin']);
-            
+
             $this->usedPrivileges = $privileges;
         }
-        
+
         return $this->usedPrivileges;
     }
 

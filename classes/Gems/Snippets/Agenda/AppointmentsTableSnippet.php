@@ -47,6 +47,20 @@
 class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
+     * Date storage format string
+     *
+     * @var string
+     */
+    private $_dateStorageFormat;
+
+    /**
+     * Image for time display
+     *
+     * @var MUtil_Html_HtmlElement
+     */
+    private $_timeImg;
+
+    /**
      *
      * @var Gems_Loader
      */
@@ -82,23 +96,10 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
-        $table->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
 
-        // Row with dates and patient data
-        $table->tr(array('onlyWhenChanged' => true, 'class' => 'date'));
-        $bridge->addSortable('date_only', $this->_('Date'), array('class' => 'date'))->colspan = 4;
-
-        // Row with dates and patient data
-        $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'time middleAlign'));
-        $td =$bridge->addSortable('gap_admission_time');
-        $td->append(' ');
-        $td->img()->src = 'stopwatch.png';
-        $td->colspan = 4;
-        $td->class = 'centerAlign';
-        $td->title = $bridge->date_only; // Add title, to make sure row displays when time is same as time for previous day
-
-        $bridge->tr()->class = array('odd', $bridge->row_class);
+        $bridge->tr()->appendAttrib('class', $bridge->row_class);
         $bridge->addColumn($appButton)->class = 'middleAlign';
+        $bridge->addMultiSort('date_only', 'gap_admission_time');
         $bridge->addMultiSort('gas_name', $br, 'glo_name');
         $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
@@ -131,15 +132,51 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         $model->applyBrowseSettings();
 
         $model->addColumn(new Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
-        $model->set('date_only', 'dateFormat',
-                    Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
-                    Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
+        $model->set('date_only', 'formatFunction', array($this, 'formatDate'));
+                // 'dateFormat', Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
         $model->set('gap_admission_time', 'label', $this->_('Time'),
-                'dateFormat', 'HH:mm');
+                'formatFunction', array($this, 'formatTime'));
+                // 'dateFormat', 'HH:mm ' . Zend_Date::WEEKDAY);
+
+        $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
+        $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png'));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
         return $model;
+    }
+
+    /**
+     * Display the date field
+     *
+     * @param MUtil_Date $value
+     */
+    public function formatDate($value)
+    {
+        return MUtil_Html::create(
+                'span',
+                array('class' => 'date'),
+                MUtil_Date::format(
+                        $value,
+                        Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR,
+                        $this->_dateStorageFormat
+                        )
+                );
+    }
+
+    /**
+     * Display the time field
+     *
+     * @param MUtil_Date $value
+     */
+    public function formatTime($value)
+    {
+        return MUtil_Html::create(
+                'span',
+                array('class' => 'time'),
+                $this->_timeImg,
+                MUtil_Date::format($value, ' HH:mm ' . Zend_Date::WEEKDAY, $this->_dateStorageFormat)
+                );
     }
 
     /**
