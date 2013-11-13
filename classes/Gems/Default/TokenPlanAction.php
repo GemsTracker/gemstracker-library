@@ -145,7 +145,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $params['model']                = $model;
             $params['identifier']           = $this->_getIdParam();
             $params['view']                 = $this->view;
-            $params['routeAction']          = $this->afterSaveRoute(array());
+            $params['routeAction']          = $this->getAfterSaveRoute(array());
             $params['formTitle']            = sprintf($this->_('Send mail to: %s'), $this->getTopic());
             $params['templateOnly']         = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
             $params['multipleTokenData']    = $tokensData;

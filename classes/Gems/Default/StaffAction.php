@@ -234,29 +234,6 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Send account create mail
-     *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
-     */
-    public function afterSave(array $data, $isNew)
-    {
-        if ($isNew) {
-            $id = $data['gsf_id_user'];
-            $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $id);
-            $mail->setOrganizationFrom();
-            if ($mail->setCreateAccountTemplate()) {
-                $mail->send();
-                $this->addMessage($this->_('Create Account email sent'));
-            } else {
-                $this->addMessage($this->_('No default Create Account mail template set in organization or project'));
-            }
-        }
-        return true;
-    }
-
-    /**
      * Modified createAction to allow reactivation of deleted users
      *
      * When the gsf_login had the 'recordFound' error, we check if the user is deactivated.

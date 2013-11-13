@@ -128,7 +128,10 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
 
         $result['reply_to']       = $result['from'];
         $result['to']             = $result['email'];
-
+        $result['reset_ask']      = '';
+        if ($this->mailFields['organization_login_url']) {
+            $result['reset_ask']      = $this->mailFields['organization_login_url'] . '/index/resetpassword';
+        }
         return $result;
     }
 
