@@ -258,6 +258,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                                 $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'U') {
                                 $from = $user->getEmailAddress();//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
+                                $mailer->setFrom($from);
                             } elseif ($job['gcj_from_method'] == 'F') {
                                 $mailer->setFrom($job['gcj_from_fixed']);
                             }
