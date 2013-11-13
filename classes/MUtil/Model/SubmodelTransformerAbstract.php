@@ -48,11 +48,11 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
 {
     /**
      * The number of rows changed at the last save
-     * 
-     * @var int 
+     *
+     * @var int
      */
     protected $_changed = 0;
-    
+
     /**
      *
      * @var array of join functions
@@ -74,7 +74,7 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
     {
         return $this->_changed;
     }
-    
+
     /**
      * Add an (extra) model to the join
      *
@@ -148,16 +148,17 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
+     * @param boolean $new True when loading a new item
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         if (! $data) {
             return $data;
         }
 
         foreach ($this->_subModels as $name => $sub) {
-            $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name);
+            $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name, $new);
         }
         // MUtil_Echo::track($data);
 
@@ -171,10 +172,11 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * @param MUtil_Model_ModelAbstract $sub
      * @param array $data
      * @param array $join
+     * @param boolean $new True when loading a new item
      * @param string $name
      */
     abstract protected function transformLoadSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name);
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name, $new);
 
     /**
      * This transform function performs the actual save of the data and is called after

@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id TokenMailer.php
+ * @version    $id: TokenMailer.php $
  */
 
 /**
@@ -50,9 +50,9 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
      *
      * @var Zend_Db_Adapter_Abstract
      */
-	protected $db;	
+	protected $db;
 	/**
-	 * 
+	 *
 	 * @var Gems_Loader;
 	 */
 	protected $loader;
@@ -67,7 +67,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 	protected $translate;
 
     /**
-     * 
+     *
      * @var Gems_User;
      */
     protected $user;
@@ -118,7 +118,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
     {
         $model = $this->loader->getTracker()->getTokenModel();
 
-        $organizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();    
+        $organizationId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
 
         $filter['gto_id_organization'] = $organizationId;
         $filter[] = 'grs_email IS NOT NULL';
@@ -141,7 +141,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
     /**
      * Get specific data set in the mailer
-     * @return Array 
+     * @return Array
      */
     public function getPresetTargetData()
     {
@@ -166,7 +166,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
         if ($tokenData['gto_id_token']) {
             $this->token = $this->loader->getTracker()->getToken($this->tokenIdentifier);
-        }       
+        }
     }
 
 	/**
@@ -211,7 +211,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
         $this->db->insert('gems__log_respondent_communications', $logData);
     }
-	
+
 	/**
      * Returns an array of {field_names} => values for this token for
      * use in an e-mail tamplate.
@@ -238,11 +238,11 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
             $todo = $tSelect->fetchRow();
 
             // Set the basic fields
-            
+
             $result['round']                   = $this->token->getRoundDescription();
 
             $organizationLoginUrl = $this->organization->getLoginUrl();
-            
+
             $result['site_ask_url']            = $organizationLoginUrl . '/ask/';
             // Url's
             $url      = $organizationLoginUrl . '/ask/forward/' . MUtil_Model::REQUEST_ID . '/';
@@ -258,7 +258,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
             $result['token']            = strtoupper($this->token->getTokenId());
             $result['token_from']       = MUtil_Date::format($this->token->getValidFrom(), Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
-            
+
             $result['token_link']       = '[url=' . $url . ']' . $survey->getName() . '[/url]';
 
             $result['token_until']      = MUtil_Date::format($this->token->getValidUntil(), Zend_Date::DATE_LONG, 'yyyy-MM-dd', $locale);
@@ -279,7 +279,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
             $result = $result + $codes;
         } else {
-            $result['round']            = '';            
+            $result['round']            = '';
             $result['site_ask_url']     = '';
             $result['survey']           = '';
             $result['todo_all']         = '';

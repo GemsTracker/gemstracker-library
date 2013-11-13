@@ -98,9 +98,10 @@ class MUtil_Model_Transform_CrossTabTransformer extends MUtil_Model_ModelTransfo
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
+     * @param boolean $new True when loading a new item
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         if (! $data) {
             return $data;

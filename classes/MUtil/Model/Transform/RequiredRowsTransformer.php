@@ -214,9 +214,10 @@ class MUtil_Model_Transform_RequiredRowsTransformer extends MUtil_Model_ModelTra
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
+     * @param boolean $new True when loading a new item
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $defaults  = $this->getDefaultRow($model);
         $keyCount  = $this->getKeyItemCount();

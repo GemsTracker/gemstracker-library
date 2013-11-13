@@ -54,10 +54,11 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
      * @param MUtil_Model_ModelAbstract $sub
      * @param array $data
      * @param array $join
+     * @param boolean $new True when loading a new item
      * @param string $name
      */
     protected function transformLoadSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name)
+            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name, $new)
     {
         if (1 === count($join)) {
             // Suimple implementation
@@ -68,7 +69,11 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
 
             // MUtil_Echo::track($mfor);
 
-            $sdata = $sub->load(array($skey => $mfor));
+            if ($new) {
+                $sdata = $sub->loadNew();
+            } else {
+                $sdata = $sub->load(array($skey => $mfor));
+            }
             // MUtil_Echo::track($sdata);
 
             if ($sdata) {
@@ -102,7 +107,11 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
                     }
                 }
 
-                $sdata = $sub->loadFirst($filter);
+                if ($new) {
+                    $sdata = $sub->loadNew();
+                } else {
+                    $sdata = $sub->loadFirst($filter);
+                }
 
                 if ($sdata) {
                     $mrow += $sdata;

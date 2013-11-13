@@ -103,7 +103,7 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     {
         return 0;
     }
-    
+
     /**
      * If the transformer add's fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
@@ -199,9 +199,10 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
+     * @param boolean $new True when loading a new item
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         // No changes
         return $data;

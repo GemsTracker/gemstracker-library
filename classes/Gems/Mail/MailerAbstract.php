@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id MailerAbstract.php
+ * @version    $id: MailerAbstract.php $
  */
 
 /**
@@ -95,7 +95,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Project Object
-     * @var 
+     * @var
      */
     protected $project;
 
@@ -115,7 +115,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     protected $subject;
 
     /**
-     * 
+     *
      * @var string      filename of the html template
      */
 	protected $templateStyle;
@@ -142,7 +142,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Add Mailfields to the existing mailfields
-     * @param array $mailfields 
+     * @param array $mailfields
      */
     protected function addMailFields($mailfields)
     {
@@ -155,7 +155,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     public function afterRegistry()
     {
         $this->loadOrganization();
-        $this->loadMailFields();    
+        $this->loadMailFields();
     }
 
     /**
@@ -201,7 +201,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Add Flash Message
-     * @param string $message 
+     * @param string $message
      */
     public function addMessage($message)
     {
@@ -209,8 +209,8 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     }
 
 
-    // 
-    // 
+    //
+    //
     /**
      * Replace the mailkeys with the mailfields in given text
      * @param  string $text     The text to apply the replacment to
@@ -219,7 +219,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     public function applyFields($text)
     {
         $mailKeys = array_keys($this->getMailFields());
-        
+
         return str_replace($mailKeys, $this->mailFields, $text);
     }
 
@@ -240,7 +240,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      * Get Flash message
      * @return Array
      */
-    public function getMessages() 
+    public function getMessages()
     {
         return $this->messages;
     }
@@ -256,7 +256,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Get specific data set in the mailer
-     * @return Array 
+     * @return Array
      */
     public function getPresetTargetData()
     {
@@ -283,7 +283,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Get the correct Mail Template Style
-     * @return string 
+     * @return string
      */
     protected function getTemplateStyle()
     {
@@ -311,7 +311,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         $select->from('gems__comm_template_translations')
                ->where('gctt_id_template = ?', $templateId)
                ->where('gctt_lang = ?', $language);
-        
+
         $template = $this->db->fetchRow($select);
         if ($template && !empty($template['gctt_subject'])) {
             return $template;
@@ -323,13 +323,13 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
             $select->from('gems__comm_template_translations')
                    ->where('gctt_id_template = ?', $templateId)
                    ->where('gctt_lang = ?', $language);
-            
+
             $template = $this->db->fetchRow($select);
             if ($template && !empty($template['gctt_subject'])) {
                 return $template;
             }
         }
-        
+
         $select = $this->db->select();
         $select->from('gems__comm_template_translations')
                ->where('gctt_id_template = ?', $templateId)
@@ -367,7 +367,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Function to get the current organization id. 
+     * Function to get the current organization id.
      */
     protected function loadOrganizationId()
     { }
@@ -423,7 +423,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      * Add a To field
      */
     public function addTo($newTo, $newToName = '')
-    {  
+    {
         if (is_array($newTo)) {
             $this->to  = array_merge($newTo, $this->to);
         } else {
@@ -489,7 +489,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
      * @param [type] $to [description]
      */
     public function setTo($newTo, $newToName = '')
-    {  
+    {
         if (is_array($newTo)) {
             $this->to  = $newTo;
         } else {
@@ -508,14 +508,14 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
     public function send()
     {
         $mail = $this->loader->getMail();
-        
+
         $mail->setFrom($this->from);
         $mail->addTo($this->to, '', $this->bounceCheck());
 
         if (isset($this->project->email['bcc'])) {
             $mail->addBcc($this->project->email['bcc']);
         }
-        
+
         $mail->setSubject($this->applyFields($this->subject));
 
         $mail->setTemplateStyle($this->getTemplateStyle());
@@ -527,7 +527,7 @@ abstract class Gems_Mail_MailerAbstract extends MUtil_Registry_TargetAbstract
         } elseif ($this->bodyText) {
             $mail->setBodyText($this->applyFields($this->bodyText));
         }
-        
+
         $this->beforeMail();
 
         $mail->send();

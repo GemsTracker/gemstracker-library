@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id RespondentMailer.php
+ * @version    $Id: RespondentMailer.php $
  */
 
 /**
@@ -55,7 +55,7 @@ class Gems_Mail_RespondentMailer extends Gems_Mail_MailerAbstract
      * @var integer     Organization ID
      */
     protected $organizationId;
-    
+
     /**
      * @var integer     Patient ID
      */

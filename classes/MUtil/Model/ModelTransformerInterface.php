@@ -52,7 +52,7 @@ interface MUtil_Model_ModelTransformerInterface
      * @return int
      */
     public function getChanged();
-    
+
     /**
      * If the transformer add's fields, these should be returned here.
      * Called in $model->AddTransformer(), so the transformer MUST
@@ -92,9 +92,10 @@ interface MUtil_Model_ModelTransformerInterface
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
+     * @param boolean $new True when loading a new item
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data);
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false);
 
     /**
      * This transform function performs the actual save of the data and is called after
