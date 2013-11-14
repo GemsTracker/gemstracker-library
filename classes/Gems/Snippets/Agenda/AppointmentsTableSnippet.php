@@ -57,7 +57,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
      * Image for time display
      *
      * @var MUtil_Html_HtmlElement
-     */
+     * /
     private $_timeImg;
 
     /**
@@ -101,7 +101,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         if ($appButton) {
             $bridge->addItemLink($appButton)->class = 'middleAlign';
         }
-        $bridge->addMultiSort(array($bridge->date_only), 'gap_admission_time');
+        $bridge->addMultiSort(array($bridge->date_only), $br, 'gap_admission_time');
         $bridge->addMultiSort('gas_name', $br, 'glo_name');
         $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
         if ($editButton) {
@@ -140,7 +140,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
                 // 'dateFormat', 'HH:mm ' . Zend_Date::WEEKDAY);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
-        $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
+        // $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
@@ -156,10 +156,10 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     {
         return MUtil_Html::create(
                 'span',
-                array('class' => 'date'),
+                // array('class' => 'date'),
                 MUtil_Date::format(
                         $value,
-                        Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR,
+                        Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME_SHORT . ' ' . Zend_Date::YEAR,
                         $this->_dateStorageFormat
                         )
                 );
@@ -174,9 +174,9 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     {
         return MUtil_Html::create(
                 'span',
-                array('class' => 'time'),
-                $this->_timeImg,
-                MUtil_Date::format($value, ' HH:mm ' . Zend_Date::WEEKDAY, $this->_dateStorageFormat)
+                // array('class' => 'time'),
+                // $this->_timeImg,
+                MUtil_Date::format($value, ' HH:mm ' . Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
     }
 
