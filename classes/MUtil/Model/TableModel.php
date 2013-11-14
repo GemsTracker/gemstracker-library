@@ -63,7 +63,7 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
             $this->_table = $table;
             $table_name = $this->_getTableName($table);
         } else {
-            $this->_table = new Zend_DB_Table($table);
+            $this->_table = new Zend_Db_Table($table);
             $table_name = $table;
         }
 
