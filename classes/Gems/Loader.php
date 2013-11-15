@@ -269,13 +269,14 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     }
 
     /**
+     * Get a new respondentExport
      *
      * @return Gems_Export_RespondentExport
      */
     public function getRespondentExport($container)
     {
         $this->addRegistryContainer($container, 'tmp_export');
-        $class = $this->_getClass('respondentexport', 'Export_RespondentExport');
+        $class = $this->_loadClass('Export_RespondentExport', true);
         $this->removeRegistryContainer('tmp_export');
 
         return $class;
