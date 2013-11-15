@@ -2,8 +2,12 @@ Important changes from 1.6.1 => 1.6.2
 ============================================================
 Agenda and calendar screens added to version
 Mail templates for staff members, respondents, users, etc... possible
+Multi language mail templates with wysiwyg editing
+Barcharts functionality added
 Improved import scalability
 Role management has a better display interface
+Batch commands now also run from the command line
+Core gems css settings moved to shared gems-core.css
 
 Important changes from 1.6 => 1.6.1
 ============================================================
@@ -14,6 +18,7 @@ Import is possible for most data screens, though respondent import is the only o
 New snippet for continuous survey ask-ing with thank you message at the end.
 Stand alone surveys can now be appended to existing tracks
 Project can customize whether the tokens of shared patient are also shared among organizations (default is no)
+GemsTracker now runs from the command line as well
 
 Important changes from 1.5.7 => 1.6
 ============================================================
