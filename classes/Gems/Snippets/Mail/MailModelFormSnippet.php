@@ -127,8 +127,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
 
         $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
 
-        $bridge->addElement($this->mailElements->createEmailElement('to', $this->_('To (test)'), true));
-        $bridge->addElement($this->mailElements->createEmailElement('from', $this->_('From'), true));
+        $bridge->addElement($this->mailElements->createEmailElement('to', $this->_('To (test)'), false));
+        $bridge->addElement($this->mailElements->createEmailElement('from', $this->_('From'), false));
         
         //$bridge->addRadio('send_language', array('label' => $this->_('Test language'), 'multiOptions' => ))
         $bridge->addHidden('send_language');
