@@ -785,7 +785,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         if (! $batch->isLoaded()) {
             $statement = $tokenSelect->getSelect()->query();
             //Process one row at a time to prevent out of memory errors for really big resultsets
-            while ($tokenData  = $statement->fetch()) {
+            while ($tokenData = $statement->fetch()) {
                 $tokenId = $tokenData['gto_id_token'];
                 $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
                 $batch->addToCounter('tokens');

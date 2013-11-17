@@ -255,6 +255,10 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         }
 
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
+        if (! $fopen) {
+            $edata = error_get_last();
+            throw new Gems_Exception('Error opening ' . $files['file'] . '. ' . $edata['message']);
+        }
         foreach($answers as $answer)
         {
             $output = "\t\t<tr>\r\n";
@@ -262,7 +266,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
                 $output .= "\t\t\t<td>$value</td>\r\n";
             }
             $output .= "\t\t</tr>\r\n";
-            fwrite($f,$output);
+            fwrite($f, $output);
         }
         fclose($f);
     }

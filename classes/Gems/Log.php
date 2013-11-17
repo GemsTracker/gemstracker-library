@@ -111,11 +111,13 @@ class Gems_Log extends Zend_Log
         if (!empty($request)) {
             $info[] = 'Request Parameters:';
             foreach ($request->getParams() as $key => $value) {
-                // Make sure a password does not end in the logfile
-                if (false === strpos(strtolower($key), 'password')) {
-                    $info[] = $key . ' => ' . $value;
-                } else {
-                    $info[] = $key . ' => ' . str_repeat('*', strlen($value));
+                if (!is_array($value)) {
+                    // Make sure a password does not end in the logfile
+                    if (false === strpos(strtolower($key), 'password')) {
+                        $info[] = $key . ' => ' . $value;
+                    } else {
+                        $info[] = $key . ' => ' . str_repeat('*', strlen($value));
+                    }
                 }
             }
         }
