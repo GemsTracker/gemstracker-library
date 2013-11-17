@@ -101,9 +101,27 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
         if ($appButton) {
             $bridge->addItemLink($appButton)->class = 'middleAlign';
         }
-        $bridge->addMultiSort(array($bridge->date_only), $br, 'gap_admission_time');
-        $bridge->addMultiSort('gas_name', $br, 'glo_name');
-        $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+        if ($this->sortableLinks) {
+            $bridge->addMultiSort(array($bridge->date_only), $br, 'gap_admission_time');
+            $bridge->addMultiSort('gas_name', $br, 'glo_name');
+            $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+        } else {
+            $bridge->addMultiSort(
+                    array($bridge->date_only), 
+                    $br, 
+                    array($bridge->gap_admission_time, $model->get('gap_admission_time', 'label'))
+                    );
+            $bridge->addMultiSort(
+                    array($bridge->gas_name, $model->get('gas_name', 'label')), 
+                    $br, 
+                    array($bridge->glo_name, $model->get('glo_name', 'label'))
+                    );
+            $bridge->addMultiSort(
+                    array($bridge->gaa_name, $model->get('gaa_name', 'label')), 
+                    $br, 
+                    array($bridge->gapr_name, $model->get('gapr_name', 'label'))
+                    );
+        }
         if ($editButton) {
             $bridge->addItemLink($editButton)->class = 'middleAlign rightAlign';
         }

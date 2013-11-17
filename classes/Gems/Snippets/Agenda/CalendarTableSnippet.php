@@ -114,7 +114,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
         $bridge->addColumn($appButton)->class = 'middleAlign';
         $bridge->addMultiSort('gr2o_patient_nr', $br, 'name');
         // $bridge->addColumn(array($bridge->gr2o_patient_nr, $br, $bridge->name));
-        $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
+        $bridge->addMultiSort(array($this->_('With')), array(' '), 'gas_name', $br, 'gaa_name', array(' '), 'gapr_name');
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
         $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
 
