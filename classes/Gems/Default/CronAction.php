@@ -247,7 +247,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
                         $mails = 0;
                         $updates = 0;
-                        $mailSent = false;
+                        $sentMailAddresses = array();
 
                         foreach($multipleTokensData as $tokenData) {
                             $mailer = $this->loader->getMailLoader()->getMailer('token', $tokenData);
@@ -270,17 +270,15 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
                                 $mails++;
                                 $updates++;
-                            } elseif (!$mailSent) {
+                            } elseif (!isset($sentMailAddresses[$tokenData['grs_email']])) {
                                 $mailer->setTemplate($job['gcj_id_message']);
                                 $mailer->send();
-                                $mailSent = true;
                                 $mailed = true;
 
                                 $mails++;
                                 $updates++;
-                                if ($job['gcj_process_method'] == 'A') {
-                                    break;
-                                }
+                                $sentMailAddresses[$tokenData['grs_email']] = true;
+                                
                             } elseif ($job['gcj_process_method'] == 'O') {
                                 $mailer->updateToken();
                                 $updates++;
