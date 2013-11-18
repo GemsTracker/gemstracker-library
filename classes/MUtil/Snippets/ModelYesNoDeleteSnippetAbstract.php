@@ -140,7 +140,8 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
         if ($this->request->getParam($this->confirmParameter)) {
             $this->performAction();
 
-            return (boolean) $this->getRedirectRoute();
+            $redirectRoute = $this->getRedirectRoute();
+            return empty($redirectRoute);
 
         } else {
             return parent::hasHtmlOutput();
