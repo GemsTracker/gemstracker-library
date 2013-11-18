@@ -65,7 +65,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     protected $loader;
     /**
      * 
-     * @var Gems_Model
+     * @var Gems_Model_RespondentModel
      */
 	protected $model;
 
@@ -121,12 +121,12 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
 	protected function getRespondent($patientId, $organizationId)
     {
-		$select = $this->model->getSelect();
+        $this->model->setFilter(array(
+            'gr2o_patient_nr'      => $patientId,
+            'gr2o_id_organization' => $organizationId
+        ));
+        $result = $this->model->loadFirst();
 
-		$select->where('gr2o_patient_nr = ?', $patientId)
-               ->where('gr2o_id_organization = ?', $organizationId);
-
-		$result = $this->db->fetchRow($select);
         if ($result) {
 
             $this->exists = true;
