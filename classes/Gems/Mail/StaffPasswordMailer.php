@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Mail_staffPasswordMailer extends Gems_Mail_StaffMailer
+class Gems_Mail_StaffPasswordMailer extends Gems_Mail_StaffMailer
 {
     /**
      *
