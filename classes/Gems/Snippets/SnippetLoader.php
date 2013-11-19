@@ -51,6 +51,22 @@
 class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract implements MUtil_Snippets_SnippetLoaderInterface
 {
     /**
+     * Static variable for debuggging purposes. Toggles the echoing of what snippets
+     * are requested and returned.
+     *
+     * Sometimes it is hard to find out what snippets will be loaded. Use the verbose
+     * option to see what snippets are requested and what the resulting snippet
+     * is including the full prefix (if any).
+     *
+     * Use:
+     *     Gems_Snippets_SnippetLoader::$verbose = true;
+     * to enable.
+     *
+     * @var boolean $verbose If true echo information about snippet loading.
+     */
+    public static $verbose = false;
+    
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -106,6 +122,9 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
             $this->addRegistryContainer($extraSourceParameters, 'tmpContainer');
             $snippet = $this->_loadClass($filename, true);
             $this->removeRegistryContainer('tmpContainer');
+            if (self::$verbose) {
+                MUtil_Echo::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
+               }
         } catch (Exception $exc) {
             MUtil_Echo::track($exc->getMessage());
             throw $exc;
