@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: AnswerNameFilterInterface.php 203 2012-01-01 12:51:32Z matijs $
+ * @version    $Id$
  */
 
 /**

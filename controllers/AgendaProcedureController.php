@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id: ComplianceController.php 203 2013-01-01t 12:51:32Z matijs $
+ * @version    $Id: ComplianceController.php 203 2013-01-01t 12:51:32Z matijs $
  */
 
 /**

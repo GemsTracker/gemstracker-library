@@ -27,9 +27,10 @@
  *
  * @package    Gems
  * @subpackage Task_Export
+ * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: ExportCommand.php $
  */
 
 /**

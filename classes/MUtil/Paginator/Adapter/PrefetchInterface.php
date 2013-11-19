@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $id: PrefetchInterface.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: PrefetchInterface.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**

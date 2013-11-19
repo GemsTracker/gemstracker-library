@@ -31,7 +31,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $id: Date.php $
+ * @version    $Id$
  */
 
 /**
