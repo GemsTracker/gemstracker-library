@@ -539,7 +539,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
             $this->afterSendRouteUrl['controller'] = $this->request->getControllerName();
 
-            $find['action'] = $this->afterSaveRouteUrl['action'];
+            $find['action'] = $this->afterSendRouteUrl['action'];
             $find['controller'] = $this->afterSendRouteUrl['controller'];
 
             if (null == $this->menu->find($find)) {
