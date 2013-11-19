@@ -566,7 +566,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
          ****************/
         if ($this->_request->isPost()) {
             $data = $this->_request->getPost();
-            MUtil_Echo::track($data);
+            // MUtil_Echo::track($data);
             if (isset($data['create_account']) && $data['create_account']) {
                 $mail = $this->loader->getMailLoader()->getMailer('staffPassword', $this->_getIdParam());
                 $mail->setOrganizationFrom();

@@ -143,7 +143,7 @@ class MUtil_Registry_Source implements MUtil_Registry_SourceInterface
         foreach ($target->getRegistryRequests() as $name) {
             if (! $this->_applySourceContainers($target, $name)) {
                 if (self::$verbose) {
-                    MUtil_Echo::track('Missed resource: ' . $name);
+                    MUtil_Echo::r('Missed resource: ' . $name, __CLASS__ . '->' .  __FUNCTION__);
                 } /* else {
                 echo '<br/>missed ' . $name . "\n";
                 } // */

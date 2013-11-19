@@ -126,9 +126,9 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
         }
         /*
         if (isset($this->_prefixToPaths[$prefix])) {
-            MUtil_Echo::track($prefix, $this->_prefixToPaths);
+            // MUtil_Echo::track($prefix, $this->_prefixToPaths);
         } else {
-            MUtil_Echo::track($prefix);
+            // MUtil_Echo::track($prefix);
         } // */
 
         return $this;

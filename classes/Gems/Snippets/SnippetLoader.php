@@ -126,7 +126,9 @@ class Gems_Snippets_SnippetLoader extends Gems_Loader_TargetLoaderAbstract imple
                 MUtil_Echo::r('Loading snippet ' . $filename . '<br/>' . 'Using snippet: ' . get_class($snippet));
                }
         } catch (Exception $exc) {
-            MUtil_Echo::track($exc->getMessage());
+            if (self::$verbose) {
+                MUtil_Echo::r($exc->getMessage(), __CLASS__ . '->' .  __FUNCTION__ . '(' . $filename . ')');
+            }
             throw $exc;
         }
 

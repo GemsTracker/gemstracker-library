@@ -151,7 +151,7 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
         if ($result) {
             $this->html->h3(sprintf($this->_('Assignments of this survey to %s: %s'), $respId, $this->getRespondentName()));
 
-            MUtil_Echo::track($result);
+            // MUtil_Echo::track($result);
 
             // Make sure request cache object is loaded.
             $this->getCachedRequestData();

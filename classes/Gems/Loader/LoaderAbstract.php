@@ -203,7 +203,7 @@ class Gems_Loader_LoaderAbstract extends MUtil_Registry_Source
 
         if ($obj instanceof MUtil_Registry_TargetInterface) {
             if ((! $this->applySource($obj)) && parent::$verbose) {
-                MUtil_Echo::track("Source apply to object of type $name failed.");
+                MUtil_Echo::r("Source apply to object of type $name failed.", __CLASS__ . '->' .  __FUNCTION__);
             }
         }
 

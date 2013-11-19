@@ -198,7 +198,7 @@ class MUtil_Html_Renderer
                     }
                     
                 } elseif ($content instanceof __PHP_Incomplete_Class) {
-                    MUtil_Echo::track($content);
+                    MUtil_Echo::r($content, __CLASS__ . '->' .  __FUNCTION__);
                     return '';
 
                 } else {

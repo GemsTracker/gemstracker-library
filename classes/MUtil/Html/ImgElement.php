@@ -107,7 +107,7 @@ class MUtil_Html_ImgElement extends MUtil_Html_HtmlElement
                         }
                     } catch (Exception $e) {
                         if (MUtil_Html::$verbose) {
-                            MUtil_Echo::track($e);
+                            MUtil_Echo::r($e, __CLASS__ . '->' .  __FUNCTION__);
                         }
                     }
                 }
