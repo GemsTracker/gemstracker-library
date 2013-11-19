@@ -403,6 +403,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     public function getRoundModel($detailed, $action)
     {
         $model = parent::getRoundModel($detailed, $action);
+        
+        // Add information about surveys and groups
+        $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
+        $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));    
 
         if ($detailed) {
             // Reset display order to class specific order

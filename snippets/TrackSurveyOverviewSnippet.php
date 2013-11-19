@@ -51,6 +51,12 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+    
+    /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
 
     /**
      * Optional: alternative source for the data above
@@ -118,15 +124,13 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
 
     private function getRepeater($trackId)
     {
-        $sql = "
-            SELECT gro_id_round, gro_id_track, gro_round_description, gro_icon_file, gro_active,
-                gsu_id_survey, gsu_survey_name, gsu_survey_description, gsu_survey_pdf, gsu_active,
-                ggp_name
-            FROM gems__rounds LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey
-              LEFT JOIN gems__groups ON gsu_id_primary_group = ggp_id_group
-            WHERE gro_id_track = ? ORDER BY gro_id_track, gro_id_order";
-
-        return MUtil_Lazy::repeat($this->db->fetchAll($sql, $trackId));
+        if (!($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface)) {
+            $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackData);
+        } 
+        
+        $roundModel = $this->trackEngine->getRoundModel(true, null);
+        
+        return $roundModel->loadRepeatable(array('gro_id_track'=>$trackId));
     }
 
     /**
