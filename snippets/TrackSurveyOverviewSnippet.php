@@ -125,7 +125,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
     private function getRepeater($trackId)
     {
         if (!($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface)) {
-            $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackData);
+            $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
         } 
         
         $roundModel = $this->trackEngine->getRoundModel(true, null);
