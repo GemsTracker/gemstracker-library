@@ -196,8 +196,8 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         if (!$this->form) {
             $this->form = new Gems_Form();
-            return $this->form;
         }
+        return $this->form;
     }
 
     /**
