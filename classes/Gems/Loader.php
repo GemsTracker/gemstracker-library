@@ -188,12 +188,14 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
     /**
      * @return Gems_Mail
      */
-
     public function getMail($charset = null)
     {
         return $this->_loadClass('mail', true, array($charset));
     }
 
+    /**
+     * @return Gems_Mail_MailLoader
+     */
     public function getMailLoader()
     {
         return $this->_getClass('mailLoader', 'Mail_MailLoader');

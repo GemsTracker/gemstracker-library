@@ -57,6 +57,10 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 	 */
 	protected $loader;
 
+    /**
+     *
+     * @var Gems_Tracker_Token
+     */
 	protected $token;
 	protected $tokenIdentifier;
 
