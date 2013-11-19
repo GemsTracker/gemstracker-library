@@ -291,7 +291,7 @@ abstract class Gems_Menu_MenuAbstract
 
         // AUTOMATIC COMMUNICATION CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
-        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.mail.job', 'cron', 'cron-lock');
+        $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
         $page->addPage($this->_('Run'), null, 'cron', 'index');
         
         // MAIL SERVER CONTROLLER
