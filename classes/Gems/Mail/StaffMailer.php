@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id  StaffMailer.php
+ * @version    $id: StaffMailer.php $
  */
 
 /**
@@ -47,7 +47,7 @@
 class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
 {
     /**
-     * 
+     *
      * @var boolean True if Target data is loaded
      */
     public $dataLoaded;
@@ -69,13 +69,13 @@ class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
     protected $organizationId;
 
     /**
-     * 
+     *
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
 
     /**
-     * 
+     *
      * @var integer     Staff ID
      */
     protected $staffId;
@@ -96,15 +96,15 @@ class Gems_Mail_StaffMailer extends Gems_Mail_MailerAbstract
 
 
 	public function afterRegistry()
-    {    
+    {
         $this->user = $this->loader->getUserLoader()->getUserByStaffId($this->staffId);
 
         parent::afterRegistry();
-    	
+
         $this->user = $this->loader->getUserLoader()->getUserByStaffId($this->staffId);
         $mailFields = $this->user->getMailFields();
         $this->addMailFields($mailFields);
-        
+
         $this->addTo($this->user->getEmailAddress(), $this->user->getFullName());
         $this->setLanguage($this->user->getLocale());
     }

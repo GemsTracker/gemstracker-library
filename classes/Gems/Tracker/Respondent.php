@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id Respondent.php
+ * @version    $id: Respondent.php $
  */
 
 /**
@@ -53,7 +53,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     protected $db;
 
     /**
-     * 
+     *
      * @var Boolean true if Respondent exists in the database
      */
     public $exists = false;
@@ -64,19 +64,19 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     protected $loader;
     /**
-     * 
+     *
      * @var Gems_Model_RespondentModel
      */
 	protected $model;
 
     /**
-     * 
+     *
      * @var integer Organization Id
      */
     private $organizationId;
 
     /**
-     * 
+     *
      * @var integer Patient Id
      */
     private $patientId;
@@ -87,7 +87,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     protected $respondent;
 
     /**
-     * 
+     *
      * @var string Respondent language
      */
     protected $respondentLanguage;
@@ -141,7 +141,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         if ($result) {
             $this->exists = true;
         }
-        return $result;   
+        return $result;
     }
 
     /**
@@ -170,7 +170,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     {
 
         $genderGreetings = $this->util->getTranslated()->getGenderHello($this->getLanguage());
-        
+
         $greeting = $genderGreetings[$this->respondent['grs_gender']];
 
         return $greeting . ' ' . $this->getName();
@@ -181,10 +181,10 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      * @return string
      */
     public function getGreeting()
-    {   
+    {
 
         $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
-        
+
         $greeting = $genderGreetings[$this->respondent['grs_gender']];
 
         return $greeting . ' ' . $this->getLastName();
@@ -229,7 +229,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
         return $fullName;
     }
-    
+
     /**
      * Overwrite the respondents prefered language
      */
@@ -238,7 +238,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * 
+     *
      * @return integer Organization ID
      */
     public function getOrganizationId()

@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $id StaffPasswordMailer.php
+ * @version    $id: StaffPasswordMailer.php $
  */
 
 /**
@@ -69,7 +69,7 @@ class Gems_Mail_StaffPasswordMailer extends Gems_Mail_StaffMailer
     	} else {
     		$result['reset_key'] = '';
         	$result['reset_url'] = '';
-        
+
     	}
     	return $result;
     }
@@ -79,7 +79,7 @@ class Gems_Mail_StaffPasswordMailer extends Gems_Mail_StaffMailer
      * @return  boolean success
      */
     public function setCreateAccountTemplate()
-    {   
+    {
         $templateId = $this->organization->getCreateAccountTemplate();
         if ($templateId) {
             $this->setTemplate($this->organization->getCreateAccountTemplate());
@@ -121,9 +121,9 @@ class Gems_Mail_StaffPasswordMailer extends Gems_Mail_StaffMailer
      */
     public function setTemplateByCode($templateCode)
     {
-        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();        
+        $select = $this->loader->getModels()->getCommTemplateModel()->getSelect();
         $select->where('gct_code = ?', $templateCode);
-        
+
         $template = $this->db->fetchRow($select);
         if ($template) {
             $this->setTemplate($template['gct_id_template']);
