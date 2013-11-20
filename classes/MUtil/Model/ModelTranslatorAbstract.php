@@ -206,7 +206,16 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
 
         foreach($this->getFieldsTranslations() as $sourceName => $targetName) {
             if ($this->_targetModel->get($targetName, 'label')) {
-                $bridge->add($targetName);
+                $options = $this->_targetModel->get($targetName, 'multiOptions');
+                if ($options) {
+                    $filter = new MUtil_Filter_LooseArrayFilter(
+                            $options,
+                            $this->_targetModel->get($targetName, 'extraValueKeys')
+                            );
+                    $bridge->add($targetName)->addFilter($filter);
+                } else {
+                    $bridge->add($targetName);
+                }
             } else {
                 $bridge->addHidden($targetName);
             }
@@ -570,20 +579,28 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                 }
             }
         } // */
+        // MUtil_Echo::track($row);
 
         if (! $this->targetForm->isValid($row)) {
             $messages = $this->targetForm->getMessages(null, true);
-            if (isset($this->_errors[$key])) {
-                $this->_errors[$key] = array_merge($this->_errors[$key], $messages);
-            } else {
-                $this->_errors[$key] = $messages;
+
+            // Remove errors for elements not in the import
+            $messages = array_intersect_key($messages, $row);
+
+            if ($messages) {
+                if (isset($this->_errors[$key])) {
+                    $this->_errors[$key] = array_merge($this->_errors[$key], $messages);
+                } else {
+                    $this->_errors[$key] = $messages;
+                }
             }
-            return $row;
         }
 
-        $this->targetForm->populate($row);
+        // $this->targetForm->populate($row);
 
-        $row = $this->targetForm->getValues() + $row;
+        // Notice: this vchanges all dates back to string, making the batch easier
+        $row = array_intersect_key($this->targetForm->getValues(), $row) + $row;
+        // MUtil_Echo::track($row);
 
         return $row;
     }

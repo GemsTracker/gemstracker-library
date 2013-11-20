@@ -78,6 +78,7 @@ class MUtil_Task_Import_SaveToModel extends MUtil_Task_TaskAbstract
             $batch = $this->getBatch();
             $batch->addToCounter('imported');
 
+            // MUtil_Echo::track($row);
             $this->targetModel->save($row);
             $batch->addToCounter('changed', $this->targetModel->getChanged());
         }

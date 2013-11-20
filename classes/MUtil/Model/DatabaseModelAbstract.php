@@ -537,10 +537,24 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     // The name is in the set being stored
                     if (array_key_exists($name, $returnValues)) {
 
+                        if ($this->isAutoSave($name)) {
+                            continue;
+                        }
+                        
+                        if (is_object($returnValues[$name]) || is_object($value)) {
+                            $noChange = $returnValues[$name] == $value;
+                        } else {
+                            // Make sure differences such as extra start zero's on text fields do
+                            // not disappear, while preventing a difference between an integer
+                            // and string input of triggering a false change
+                            $noChange = ($returnValues[$name] == $value) &&
+                                    (strlen($returnValues[$name]) == strlen($value));
+                        }
+
                         // Detect change that is not auto update
-                        if (! (($returnValues[$name] == $value) || $this->isAutoSave($name))) {
-                            // MUtil_Echo::rs($name, $returnValues[$name], $value);
-                            // MUtil_Echo::r($returnValues);
+                        if (! $noChange) {
+                            // MUtil_Echo::track($name, $returnValues[$name], $value);
+                            // MUtil_Echo::track($returnValues);
 
                             // Update the row, if the saveMode allows it
                             if (($saveMode & self::SAVE_MODE_UPDATE) &&

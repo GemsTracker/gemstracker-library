@@ -68,7 +68,7 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         $this->orgTranslations = $this->db->fetchPairs('
             SELECT gor_provider_id, gor_id_organization
                 FROM gems__organizations
@@ -91,6 +91,22 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     public function checkRegistryRequestsAnswers()
     {
         return ($this->db instanceof Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
+    }
+
+    /**
+     * Prepare for the import.
+     *
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function startImport()
+    {
+        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
+            throw new MUtil_Model_ModelException("Trying to start the import without target model.");
+        }
+
+        $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
+
+        return parent::startImport();
     }
 
     /**
@@ -166,21 +182,6 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
 
         if (!isset($row['grs_email'])) {
             $row['calc_email'] = 1;
-        }
-
-        if (isset($row['grs_gender']) && $row['grs_gender']) {
-            $gender = strtoupper($row['grs_gender'][0]);
-            switch ($gender) {
-                case 'F':
-                case 'V':
-                    $gender = 'F'; // Intentional fall through
-                case 'M':
-                    break;
-                default:
-                    $gender = 'U';
-            }
-
-            $row['grs_gender'] = $gender;
         }
 
         return $row;
