@@ -209,9 +209,9 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
 
         $logData['grco_changed']      = $changeDate;
-        $logData['grco_changed_by']   = $currentUserId;
+        $logData['grco_changed_by']   = $currentUserId ? $currentUserId : 0;
         $logData['grco_created']      = $changeDate;
-        $logData['grco_created_by']   = $currentUserId;
+        $logData['grco_created_by']   = $currentUserId ? $currentUserId : 0;
 
         $this->db->insert('gems__log_respondent_communications', $logData);
     }
