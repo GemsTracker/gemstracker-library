@@ -48,9 +48,21 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
 {
     /**
      *
+     * @var Gems_Agenda
+     */
+    protected $_agenda;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var Gems_loader
+     */
+    protected $loader;
 
     /**
      *
@@ -68,6 +80,8 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
     public function afterRegistry()
     {
         parent::afterRegistry();
+
+        $this->_agenda = $this->loader->getAgenda();
 
         $this->orgTranslations = $this->db->fetchPairs('
             SELECT gor_provider_id, gor_id_organization
@@ -90,7 +104,9 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->db instanceof Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
+        return ($this->db instanceof Zend_Db_Adapter_Abstract) &&
+            ($this->loader instanceof Gems_Loader) &&
+            parent::checkRegistryRequestsAnswers();
     }
 
     /**
@@ -101,21 +117,27 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
      */
     public function getFieldsTranslations()
     {
+        $this->_targetModel->setAlias('gas_name_attended_by', 'gap_id_attended_by');
+        $this->_targetModel->setAlias('gas_name_referred_by', 'gap_id_referred_by');
+        $this->_targetModel->setAlias('gaa_name', 'gap_id_activity');
+        $this->_targetModel->setAlias('gapr_name', 'gap_id_procedure');
+        $this->_targetModel->setAlias('glo_name', 'gap_id_location');
+
         return array(
-            'gap_patient_id'             => 'gr2o_patient_nr',
-            'gap_organization_id'        => 'gr2o_id_organization',
-            'gap_appointment_id'         => 'gap_id_in_source',
-            'gap_admission_time'         => 'gap_admission_time',
-            'gap_discharge_time'         => 'gap_discharge_time',
-            'gap_admission_code'         => 'gap_code',
-            'gap_status_code'            => 'gap_status',
-            'gap_attended_by'            => 'gas_name_attended_by',
-            'gap_referred_by'            => 'gas_name_referred_by',
-            'gap_activity'               => 'gaa_name',
-            'gap_procedure'              => 'gap_name',
-            'gap_location'               => 'gap_name',
-            'gap_subject'                => 'gap_subject',
-            'gap_comment'                => 'gap_comment',
+            'gap_patient_nr'      => 'gr2o_patient_nr',
+            'gap_organization_id' => 'gap_id_organization',
+            'gap_id_in_source'    => 'gap_id_in_source',
+            'gap_admission_time'  => 'gap_admission_time',
+            'gap_discharge_time'  => 'gap_discharge_time',
+            'gap_admission_code'  => 'gap_code',
+            'gap_status_code'     => 'gap_status',
+            'gap_attended_by'     => 'gas_name_attended_by',
+            'gap_referred_by'     => 'gas_name_referred_by',
+            'gap_activity'        => 'gaa_name',
+            'gap_procedure'       => 'gapr_name',
+            'gap_location'        => 'glo_name',
+            'gap_subject'         => 'gap_subject',
+            'gap_comment'         => 'gap_comment',
 
             // Autofill fields - without a source field but possibly set in this translator
             'gap_id_user',
@@ -139,79 +161,58 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
         }
 
         // Get the real organization from the provider_id or code if it exists
-        if (isset($row['gr2o_id_organization'], $this->orgTranslations[$row['gr2o_id_organization']])) {
-            $row['gr2o_id_organization'] = $this->orgTranslations[$row['gr2o_id_organization']];
+        if (isset($row['gap_id_organization'], $this->orgTranslations[$row['gap_id_organization']])) {
+            $row['gap_id_organization'] = $this->orgTranslations[$row['gap_id_organization']];
         }
 
-        if (! isset($row['grs_id_user'])) {
+        if (! isset($row['gap_id_user'])) {
+            if (isset($row['gr2o_patient_nr'], $row['gap_id_organization'])) {
 
-            $id = false;
-
-            if (isset($row['gr2o_patient_nr'], $row['gr2o_id_organization'])) {
                 $sql = 'SELECT gr2o_id_user
                         FROM gems__respondent2org
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
 
-                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gr2o_id_organization']));
-            }
-
-            if ((!$id) &&
-                    isset($row['grs_ssn']) &&
-                    $this->_targetModel instanceof Gems_Model_RespondentModel &&
-                    $this->_targetModel->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
-
-                if (Gems_Model_RespondentModel::SSN_HASH === $this->_targetModel->hashSsn) {
-                    $search = $this->_targetModel->saveSSN($row['grs_ssn']);
-                } else {
-                    $search = $row['grs_ssn'];
-                }
-
-                $sql = 'SELECT grs_id_user FROM gems__respondents WHERE grs_ssn = ?';
-
-                $id = $this->db->fetchOne($sql, $search);
-
-                // Check for change in patient ID
-                if ($id &&
-                        isset($row['gr2o_id_organization']) &&
-                        $this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
-
-                    $sql = 'SELECT gr2o_patient_nr
-                            FROM gems__respondent2org
-                            WHERE gr2o_id_user = ? AND gr2o_id_organization = ?';
-
-                    $patientId = $this->db->fetchOne($sql, array($id, $row['gr2o_id_organization']));
-
-                    if ($patientId) {
-                        $copyId       = $this->_targetModel->getKeyCopyName('gr2o_patient_nr');
-                        $row[$copyId] = $patientId;
-                    }
+                $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gap_id_organization']));
+                // MUtil_Echo::track($id, $row['gr2o_patient_nr'], $row['gap_id_organization']);
+                
+                if ($id) {
+                    $row['gap_id_user'] = $id;
                 }
             }
-
-            if ($id) {
-                $row['grs_id_user']  = $id;
-                $row['gr2o_id_user'] = $id;
-            }
         }
 
-        if (!isset($row['grs_email'])) {
-            $row['calc_email'] = 1;
+        if (isset($row['gas_name_attended_by'])) {
+            $row['gap_id_attended_by'] = $this->_agenda->matchHealthcareStaff(
+                    $row['gas_name_attended_by'],
+                    $row['gap_id_organization']
+                    );
         }
-
-        if (isset($row['grs_gender']) && $row['grs_gender']) {
-            $gender = strtoupper($row['grs_gender'][0]);
-            switch ($gender) {
-                case 'F':
-                case 'V':
-                    $gender = 'F'; // Intentional fall through
-                case 'M':
-                    break;
-                default:
-                    $gender = 'U';
-            }
-
-            $row['grs_gender'] = $gender;
+        if (isset($row['gas_name_referred_by'])) {
+            $row['gap_id_referred_by'] = $this->_agenda->matchHealthcareStaff(
+                    $row['gas_name_referred_by'],
+                    $row['gap_id_organization']
+                    );
         }
+        if (isset($row['gaa_name'])) {
+            $row['gap_id_activity'] = $this->_agenda->matchActivity(
+                    $row['gaa_name'],
+                    $row['gap_id_organization']
+                    );
+        }
+        if (isset($row['gapr_name'])) {
+            $row['gap_id_procedure'] = $this->_agenda->matchProcedure(
+                    $row['gapr_name'],
+                    $row['gap_id_organization']
+                    );
+        }
+        if (isset($row['glo_name'])) {
+            $location = $this->_agenda->matchLocation(
+                    $row['glo_name'],
+                    $row['gap_id_organization']
+                    );
+            $row['gap_id_location'] = $location['glo_id_location'];
+        }
+                MUtil_Echo::track($row);
 
         return $row;
     }

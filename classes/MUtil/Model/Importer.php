@@ -295,6 +295,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         } else {
             $batch = $this->_importBatch;
         }
+        $this->_importBatch->getStack()->registerAllowedClass('MUtil_Date');
         // MUtil_Echo::track($this->_importBatch->count());
 
         if (! $batch->isLoaded()) {

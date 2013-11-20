@@ -275,7 +275,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
                 break;
 
             default:
-                $trs = new Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
+                $trs = new Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
                 break;
         }
         $this->applySource($trs);

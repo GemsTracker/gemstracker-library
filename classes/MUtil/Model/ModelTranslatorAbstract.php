@@ -235,7 +235,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     protected function _prepareRow($row, $key)
     {
         if (null === $this->_mapRequired) {
-            throw new MUtil_Model_ModelException("Trying to transalte without call to startImport().");
+            throw new MUtil_Model_ModelException("Trying to translate without call to startImport().");
         }
 
         if ($row instanceof Traversable) {
