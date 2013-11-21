@@ -33,7 +33,6 @@
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @version    $Id: StaffPasswordMailer.php $
- * @version    $id: StaffPasswordMailer.php $
  */
 
 /**

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $id: RespondentTranslator.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: RespondentTranslator.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -174,7 +174,7 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
 
                 $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gap_id_organization']));
                 // MUtil_Echo::track($id, $row['gr2o_patient_nr'], $row['gap_id_organization']);
-                
+
                 if ($id) {
                     $row['gap_id_user'] = $id;
                 }
