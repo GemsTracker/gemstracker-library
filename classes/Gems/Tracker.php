@@ -135,6 +135,12 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      *
+     * @var Gems_Log
+     */
+    protected $logger;
+
+    /**
+     *
      * @var Zend_Translate
      */
     protected $translate;
@@ -797,6 +803,13 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $changed = true;
         } else {
             $changed = false;
+        }
+
+        $exceptions = $batch->getExceptions();
+        foreach ($exceptions as $exception) {
+            if ($exception instanceof Exception) {
+                $this->logger->logError($exception);
+            }
         }
 
         $batch->reset();

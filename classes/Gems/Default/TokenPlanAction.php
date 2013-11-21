@@ -277,7 +277,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         } else {
             $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
         }
-        
+
         $elements[] = $this->_('Select:');
         $elements[] = MUtil_Html::create('br');
 
@@ -511,9 +511,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         // MUtil_Model::$verbose = true;
 
         // Check for unprocessed tokens
-        //$this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id);
         $filter = $this->getCachedRequestData(true);
-        $orgId = array_key_exists('gto_id_organization', $filter) ? $filter['gto_id_organization'] : null;
+        $orgId  = array_key_exists('gto_id_organization', $filter) ? $filter['gto_id_organization'] : null;
         $this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id, $orgId);
 
         parent::indexAction();

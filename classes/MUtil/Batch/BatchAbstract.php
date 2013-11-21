@@ -368,6 +368,17 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     }
 
     /**
+     * Add to exception store
+     * @param Exception $e
+     * @return MUtil_Batch_BatchAbstract (continuation pattern)
+     */
+    public function addException(Exception $e)
+    {
+        $this->_session->exceptions[] = $e;
+        return $this;
+    }
+
+    /**
      * Add a message to the message stack.
      *
      * @param string $text A message to the user
@@ -422,6 +433,16 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         }
 
         return 0;
+    }
+
+    /**
+     * Return the stored exceptions.
+     *
+     * @return array of Exceptions
+     */
+    public function getExceptions()
+    {
+        return $this->_session->exceptions;
     }
 
     /**
@@ -668,7 +689,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
     /**
      * Get the current stack
-     * 
+     *
      * @return MUtil_Batch_Stack_Stackinterface
      */
     public function getStack()
@@ -784,11 +805,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function reset()
     {
-        $this->_session->count     = 0;
-        $this->_session->counters  = array();
-        $this->_session->finished  = false;
-        $this->_session->messages  = array();
-        $this->_session->processed = 0;
+        $this->_session->count      = 0;
+        $this->_session->counters   = array();
+        $this->_session->exceptions = array();
+        $this->_session->finished   = false;
+        $this->_session->messages   = array();
+        $this->_session->processed  = 0;
 
         $this->stack->reset();
 
@@ -811,7 +833,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
             // [Try to] remove the maxumum execution time for this session
             @ini_set("max_execution_time", 0);
             @set_time_limit(0);
-            
+
             if ($this->isPush()) {
                 return $this->runContinuous();
             }
@@ -1121,7 +1143,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
 
             } catch (Exception $e) {
                 $this->addMessage('ERROR!!!');
-                $this->addMessage('While calling:' . $command[0] . '(' . implode(',', MUtil_Ra::flatten($command[1])) . ')');
+                $this->addMessage(
+                        'While calling:' . $command[0] . '(' . implode(',', MUtil_Ra::flatten($command[1])) . ')'
+                        );
+                $this->addException($e);
                 $this->stopBatch($e->getMessage());
 
                 //MUtil_Echo::track($e);

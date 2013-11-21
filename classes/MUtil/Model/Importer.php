@@ -182,16 +182,18 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         $importTranslator->startImport();
         $batch->setVariable('modelTranslator', $importTranslator);
 
-        $iter = $this->getSourceModel()->loadIterator();
+        if (! $batch->hasSessionVariable('iterator')) {
+            $iter = $this->getSourceModel()->loadIterator();
+            
+            if (($iter instanceof Iterator) && ($iter instanceof Serializable)) {
+                $batch->setSessionVariable('iterator', $iter);
+            } else {
+                $batch->setVariable('iterator', $iter);
 
-        if (($iter instanceof Iterator) && ($iter instanceof Serializable)) {
-            $batch->setSessionVariable('iterator', $iter);
-        } else {
-            $batch->setVariable('iterator', $iter);
-
-            if ($batch->isPull()) {
-                // Cannot pull when iterator is not serializable
-                $batch->setMethodPush();
+                if ($batch->isPull()) {
+                    // Cannot pull when iterator is not serializable
+                    $batch->setMethodPush();
+                }
             }
         }
 

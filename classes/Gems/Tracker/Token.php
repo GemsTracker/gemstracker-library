@@ -1057,7 +1057,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * 
+     *
      * @return string Last mail sent date
      */
     public function getMailSentDate()
@@ -1540,12 +1540,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         return $this->_updateToken($values, $userId);
     }
-    
+
     /**
      * Handle sending responses to the response database (if used)
-     * 
+     *
      * Triggered by checkTokenCompletion
-     * 
+     *
      * @param int $userId The id of the gems user
      */
     protected function toResponseDatabase($userId)
@@ -1575,7 +1575,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         {
             $dbResponse[$response['gdr_answer_id']] = $response;
         }
-        
+
         $inserts = array();
         foreach ($responses as $fieldName => $response) {
             $rValues['gdr_answer_id'] = $fieldName;
