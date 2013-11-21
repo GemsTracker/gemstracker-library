@@ -130,9 +130,9 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
 
         parent::addBrowseTableColumns($bridge, $model);
 
-
-        $td = $bridge->getTable()->tbody()->getLast()->getFirst()->span();
-        $td->class = 'right';
+        $bridge->getTable()->addColumn(null,$this->_('Action'));        
+        $td = $bridge->getTable()->tbody()->getLast()->getLast();
+        $td->class = 'fileAction';
 
         foreach ($this->getFileIcons($bridge) as $icon => $item) {
             if (is_array($item)) {

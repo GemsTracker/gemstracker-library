@@ -679,7 +679,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         $results = array_fill_keys($this->targetModel->getItemsOrdered(), array());
         $minimal = array(); // Array for making sure all fields are there
-
+        
         foreach ($for as $transKey => $transName) {
             if (! isset($this->importTranslators[$transKey])) {
                 throw new Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
@@ -770,9 +770,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 $required = $this->targetModel->get($name, 'required');
 
-                $resultRow[$this->_('Field')]    = $label;
+                $resultRow[$this->_('Field description')]    = $label;
                 $resultRow[$this->_('Content')]  = $type;
-                $resultRow[$this->_('Required')] = $required ? $this->_('Yes') : ' ';
+                // Prepend the 'required' row
+                $resultRow = array($this->_('Required') =>$required ? $this->_('Yes') : ' ') + $resultRow;
 
                 $output[$name] = $resultRow + $minimal;
             }

@@ -83,7 +83,7 @@ class Gems_Mail_MailLoader extends Gems_Loader_LoaderAbstract
      * Get the correct mailer class from the given target
      * @param  [type] $target      mailtarget (lowercase)
      * @param  array  $identifiers the identifiers needed for the specific mailtargets
-     * @return Mailer class
+     * @return Gems_Mail_MailerAbstract class
      */
     public function getMailer($target = null, $id = false, $orgId = false) 
     {   
