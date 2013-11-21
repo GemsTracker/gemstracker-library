@@ -90,5 +90,8 @@ class Gems_Task_Tracker_CheckTokenCompletion extends MUtil_Task_TaskAbstract
                 $this->_('Checked %d tokens.'),
                 $batch->getCounter('checkedTokens')
                 ));
+
+        // Free memory
+        $tracker->removeToken($token);
     }
 }

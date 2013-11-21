@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -306,18 +307,6 @@ interface Gems_Tracker_TrackerInterface
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param int $sourceId A source identifier
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @return Gems_Task_TaskRunnerBatchs A batch to process the synchronization
-     */
-    public function synchronizeSources($sourceId = null, $userId = null);
-
-    /**
-     * Recalculates all token dates, timing and results
-     * and outputs text messages.
-     *
-     * Does not reflect changes to tracks or rounds.
-     *
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param string $cond
@@ -333,4 +322,24 @@ interface Gems_Tracker_TrackerInterface
      * @return Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function refreshTokenAttributes($batch_id, $cond = null);
+
+    /**
+     * Remove token from cache for saving memory
+     *
+     * @param string|Gems_Tracker_Token $token
+     * @return \Gems_Tracker (continuation pattern)
+     */
+    public function removeToken($token);
+
+    /**
+     * Recalculates all token dates, timing and results
+     * and outputs text messages.
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param int $sourceId A source identifier
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @return Gems_Task_TaskRunnerBatchs A batch to process the synchronization
+     */
+    public function synchronizeSources($sourceId = null, $userId = null);
 }

@@ -75,5 +75,8 @@ class Gems_Task_Tracker_ProcessTokenCompletion extends MUtil_Task_TaskAbstract
             $trackId = $respTrack->getRespondentTrackId();
             $batch->setTask('Tracker_CheckTrackTokens', 'chktrck-' . $trackId, $trackId, $userId);
         }
+
+        // Free memory
+        $tracker->removeToken($token);
     }
 }

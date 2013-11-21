@@ -806,9 +806,11 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         }
 
         $exceptions = $batch->getExceptions();
-        foreach ($exceptions as $exception) {
-            if ($exception instanceof Exception) {
-                $this->logger->logError($exception);
+        if ($exceptions) {
+            foreach ($exceptions as $exception) {
+                if ($exception instanceof Exception) {
+                    $this->logger->logError($exception);
+                }
             }
         }
 
@@ -850,40 +852,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         }
 
         return $batch;
-    }
-
-    /**
-     * Recalculates all token dates, timing and results
-     * and outputs text messages.
-     *
-     * Does not reflect changes to tracks or rounds.
-     *
-     * @param int $sourceId A source identifier
-     * @param int $userId Id of the user who takes the action (for logging)
-     * @return Gems_Task_TaskRunnerBatch A batch to process the synchronization
-     */
-    public function synchronizeSources($sourceId = null, $userId = null)
-    {
-        $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
-        $batch = $this->loader->getTaskRunnerBatch($batch_id);
-
-        if (! $batch->isLoaded()) {
-            if ($sourceId) {
-                $sources = array($sourceId);
-            } else {
-                $select = $this->db->select();
-                $select->from('gems__sources', array('gso_id_source'))
-                        ->where('gso_active = 1');
-                $sources = $this->db->fetchCol($select);
-            }
-
-            foreach ($sources as $source) {
-                $batch->addTask('Tracker_SourceSyncSurveys', $source, $userId);
-            }
-        }
-
-        return $batch;
-
     }
 
     /**
@@ -949,5 +917,57 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         self::$verbose = true;
 
         return $batch;
+    }
+
+    /**
+     * Remove token from cache for saving memory
+     *
+     * @param string|Gems_Tracker_Token $token
+     * @return \Gems_Tracker (continuation pattern)
+     */
+    public function removeToken($token)
+    {
+        if ($token instanceof Gems_Tracker_Token) {
+            $tokenId = $token->getTokenId();
+        } else {
+            $tokenId = $token;
+        }
+        unset($this->_tokens[$tokenId]);
+
+        return $this;
+    }
+
+    /**
+     * Recalculates all token dates, timing and results
+     * and outputs text messages.
+     *
+     * Does not reflect changes to tracks or rounds.
+     *
+     * @param int $sourceId A source identifier
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @return Gems_Task_TaskRunnerBatch A batch to process the synchronization
+     */
+    public function synchronizeSources($sourceId = null, $userId = null)
+    {
+        $batch_id = 'source_synch' . ($sourceId ? '_' . $sourceId : '');
+        $batch = $this->loader->getTaskRunnerBatch($batch_id);
+
+        if (! $batch->isLoaded()) {
+            if ($sourceId) {
+                $sources = array($sourceId);
+            } else {
+                $select = $this->db->select();
+                $select->from('gems__sources', array('gso_id_source'))
+                        ->where('gso_active = 1');
+                $sources = $this->db->fetchCol($select);
+            }
+
+            foreach ($sources as $source) {
+                $batch->addTask('Tracker_SourceSyncSurveys', $source, $userId);
+            }
+        }
+
+        return $batch;
+
     }
 }

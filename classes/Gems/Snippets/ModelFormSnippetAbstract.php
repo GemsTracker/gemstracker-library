@@ -348,6 +348,8 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
 
     /**
      * If menu item does not exist or is not allowed, redirect to index
+     *
+     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {
@@ -369,5 +371,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 $this->resetRoute = true;
             }
         }
+
+        return $this;
     }
 }

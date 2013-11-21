@@ -77,6 +77,8 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends Gems_Snippets_ModelFor
 
     /**
      * If menu item does not exist or is not allowed, redirect to index
+     *
+     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {
@@ -86,5 +88,7 @@ class Gems_Snippets_Agenda_AppointmentFormSnippet extends Gems_Snippets_ModelFor
             $this->afterSaveRouteUrl[Gems_Model::APPOINTMENT_ID] = $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID];
             unset($this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID]);
         }
+
+        return $this;
     }
 }

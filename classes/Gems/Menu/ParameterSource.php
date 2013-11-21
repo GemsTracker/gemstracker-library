@@ -124,7 +124,7 @@ class Gems_Menu_ParameterSource extends ArrayObject implements Gems_Menu_Paramet
         $this->_setMulti($tokenId, MUtil_Model::REQUEST_ID, 'gto_id_token');
 
         // Signal type of MUtil_Model::REQUEST_ID
-        $this->offsetSet(Gems_Model::ID_TYPE, 'appointment');
+        $this->offsetSet(Gems_Model::ID_TYPE, 'token');
 
         return $this;
     }

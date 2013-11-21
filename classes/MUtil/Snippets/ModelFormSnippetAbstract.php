@@ -536,7 +536,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                 }
             }
         }
-
+ 
         return $this;
     }
 
