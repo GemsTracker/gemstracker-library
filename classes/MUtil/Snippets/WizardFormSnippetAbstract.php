@@ -241,7 +241,7 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
             $this->_cancelButton,
             $this->_finishButton,
             ), 'buttons');
-        
+
         $group = $this->_form->getDisplayGroup('buttons');
         $group->removeDecorator('DtDdWrapper');
         $group->removeDecorator('HtmlTag');

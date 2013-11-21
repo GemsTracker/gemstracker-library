@@ -217,7 +217,15 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
     public function render(Zend_View_Abstract $view)
     {
         // MUtil_Echo::r(sprintf('Rendering snippet %s.', get_class($this)));
-        if ($this->hasHtmlOutput() !== true && $this->getRedirectRoute()) {
+        //
+        // TODO: Change snippet workings.
+        // All forms are processed twice if hasHtmlOutput() is called here. This is
+        // a problem when downloading files.
+        // However: not being able to call hasHtmlOutput() twice is not part of the original plan
+        // so I gotta rework the forms. :(
+        //
+        // if ((!$this->hasHtmlOutput()) && $this->getRedirectRoute()) {
+        if ($this->getRedirectRoute()) {
             $this->redirectRoute();
 
         } else {

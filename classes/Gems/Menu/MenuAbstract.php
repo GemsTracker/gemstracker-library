@@ -205,20 +205,6 @@ abstract class Gems_Menu_MenuAbstract
         return $page;
     }
 
-    public function addBrowsePage($label, $privilege, $controller, array $other = array())
-    {
-        $page = $this->addPage($label, $privilege, $controller, 'index', $other);
-        $page->addAutofilterAction();
-        $page->addCreateAction();
-        $page->addShowAction();
-        $page->addEditAction();
-        $page->addDeleteAction();
-        $page->addExcelAction();
-        $page->addImportAction();
-
-        return $page;
-    }
-
     /**
      * Add a agenda setup menu tree to the menu
      *
@@ -236,6 +222,29 @@ abstract class Gems_Menu_MenuAbstract
         $setup->addBrowsePage($this->_('Healtcare staff'), 'pr.agenda-staff',     'agenda-staff');
 
         return $setup;
+    }
+
+    /**
+     * Add a browse / ceate / edit / show / etc.. menu item 
+     *
+     * @param string $label
+     * @param string $privilege
+     * @param string $controller
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addBrowsePage($label, $privilege, $controller, array $other = array())
+    {
+        $page = $this->addPage($label, $privilege, $controller, 'index', $other);
+        $page->addAutofilterAction();
+        $page->addCreateAction();
+        $page->addShowAction();
+        $page->addEditAction();
+        $page->addDeleteAction();
+        $page->addExcelAction();
+        $page->addImportAction();
+
+        return $page;
     }
 
     /**
@@ -293,7 +302,7 @@ abstract class Gems_Menu_MenuAbstract
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
         $page->addPage($this->_('Run'), null, 'cron', 'index');
-        
+
         // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
 
@@ -372,7 +381,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addShowAction();
         $page->addEditAction();
         $page->addDeleteAction();
-        $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download');
+        $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download')
+                ->setModelParameters(1);
 
         return $page;
     }
