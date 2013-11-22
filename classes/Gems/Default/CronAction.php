@@ -92,6 +92,102 @@ class Gems_Default_CronAction extends Gems_Controller_Action
     public $util;
 
     /**
+     * Perform automatic job mail
+     */
+    public function commJob()
+    {
+        $userLoader = $this->loader->getUserLoader();
+        $startUser  = $userLoader->getCurrentUser();
+        $user       = $startUser;
+
+        // Check for unprocessed tokens
+        $this->loader->getTracker()->processCompletedTokens(null, $startUser->getUserId());
+
+        $model  = $this->loader->getTracker()->getTokenModel();
+
+        $sql = "SELECT *
+            FROM gems__comm_jobs
+            WHERE gcj_active = 1
+            ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
+                CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
+                CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";
+
+        $jobs = $this->db->fetchAll($sql);
+
+        $mailed = false;
+        if ($jobs) {
+            foreach ($jobs as $job) {
+                if ($user->getUserId() != $job['gcj_id_user_as']) {
+                    $user = $userLoader->getUserByStaffId($job['gcj_id_user_as']);
+                }
+
+                if ($user->isActive()) {
+                    if (! $user->isCurrentUser()) {
+                        $user->setAsCurrentUser();
+                    }
+
+                    $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
+
+                    $multipleTokensData = $model->load($filter);
+                    if (count($multipleTokensData)) {
+
+                        $mails = 0;
+                        $updates = 0;
+                        $sentMailAddresses = array();
+
+                        foreach($multipleTokensData as $tokenData) {
+                            $mailer = $this->loader->getMailLoader()->getMailer('token', $tokenData);
+
+                            if ($job['gcj_from_method'] == 'O') {
+                                $organization  = $mailer->getOrganization();
+                                $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
+                                $mailer->setFrom($from);
+                            } elseif ($job['gcj_from_method'] == 'U') {
+                                $from = $user->getEmailAddress();//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
+                                $mailer->setFrom($from);
+                            } elseif ($job['gcj_from_method'] == 'F') {
+                                $mailer->setFrom($job['gcj_from_fixed']);
+                            }
+
+                            if ($job['gcj_process_method'] == 'M') {
+                                $mailer->setTemplate($job['gcj_id_message']);
+                                $mailer->send();
+                                $mailed = true;
+
+                                $mails++;
+                                $updates++;
+                            } elseif (!isset($sentMailAddresses[$tokenData['grs_email']])) {
+                                $mailer->setTemplate($job['gcj_id_message']);
+                                $mailer->send();
+                                $mailed = true;
+
+                                $mails++;
+                                $updates++;
+                                $sentMailAddresses[$tokenData['grs_email']] = true;
+
+                            } elseif ($job['gcj_process_method'] == 'O') {
+                                $mailer->updateToken();
+                                $updates++;
+                            }
+                        }
+
+                        $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
+                    }
+                    $tokensData = null;
+                }
+            }
+        }
+
+        if (!$mailed) {
+            $this->addMessage($this->_('No mails sent.'));
+        }
+
+        if (! $startUser->isCurrentUser()) {
+            $startUser->setAsCurrentUser();
+        }
+    }
+
+    /**
      * Action that switches the cron job lock on or off.
      */
     public function cronLockAction()
@@ -108,7 +204,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
      * Loads an e-mail template
      *
      * @param integer|null $templateId
-     */
+     * /
     protected function getTemplate($templateId)
     {
         return $this->db->fetchRow('SELECT * FROM gems__mail_templates WHERE gmt_id_message = ?', $templateId);
@@ -119,12 +215,15 @@ class Gems_Default_CronAction extends Gems_Controller_Action
      *
      * @param int $userId
      * @return string
-     */
+     * /
     protected function getUserLogin($userId)
     {
         return $this->db->fetchOne("SELECT gsf_login FROM gems__staff WHERE gsf_id_user = ?", $userId);
     }
 
+    /**
+     * The general "do the jobs" action
+     */
     public function indexAction()
     {
         $this->initHtml();
@@ -135,6 +234,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         }
     }
 
+    /*
     public function mailJob()
     {
         $userLoader = $this->loader->getUserLoader();
@@ -206,98 +306,5 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         if (! $startUser->isCurrentUser()) {
             $startUser->setAsCurrentUser();
         }
-    }
-
-    public function commJob()
-    {
-        $userLoader = $this->loader->getUserLoader();
-        $startUser  = $userLoader->getCurrentUser();
-        $user       = $startUser;
-
-        // Check for unprocessed tokens
-        $this->loader->getTracker()->processCompletedTokens(null, $startUser->getUserId());
-
-        $model  = $this->loader->getTracker()->getTokenModel();
-        
-        $sql = "SELECT *
-            FROM gems__comm_jobs
-            WHERE gcj_active = 1
-            ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
-                CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
-                CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";
-
-        $jobs = $this->db->fetchAll($sql);
-
-        $mailed = false;
-        if ($jobs) {
-            foreach ($jobs as $job) {
-                if ($user->getUserId() != $job['gcj_id_user_as']) {
-                    $user = $userLoader->getUserByStaffId($job['gcj_id_user_as']);
-                }
-
-                if ($user->isActive()) {
-                    if (! $user->isCurrentUser()) {
-                        $user->setAsCurrentUser();
-                    }
-
-                    $filter = $this->loader->getUtil()->getDbLookup()->getFilterForMailJob($job);
-
-                    $multipleTokensData = $model->load($filter);
-                    if (count($multipleTokensData)) {
-
-                        $mails = 0;
-                        $updates = 0;
-                        $sentMailAddresses = array();
-
-                        foreach($multipleTokensData as $tokenData) {
-                            $mailer = $this->loader->getMailLoader()->getMailer('token', $tokenData);
-
-                            if ($job['gcj_from_method'] == 'O') {
-                                $organization  = $mailer->getOrganization();
-                                $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
-                                $mailer->setFrom($from);
-                            } elseif ($job['gcj_from_method'] == 'U') {
-                                $from = $user->getEmailAddress();//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
-                                $mailer->setFrom($from);
-                            } elseif ($job['gcj_from_method'] == 'F') {
-                                $mailer->setFrom($job['gcj_from_fixed']);
-                            }
-
-                            if ($job['gcj_process_method'] == 'M') {
-                                $mailer->setTemplate($job['gcj_id_message']);
-                                $mailer->send();
-                                $mailed = true;
-
-                                $mails++;
-                                $updates++;
-                            } elseif (!isset($sentMailAddresses[$tokenData['grs_email']])) {
-                                $mailer->setTemplate($job['gcj_id_message']);
-                                $mailer->send();
-                                $mailed = true;
-
-                                $mails++;
-                                $updates++;
-                                $sentMailAddresses[$tokenData['grs_email']] = true;
-                                
-                            } elseif ($job['gcj_process_method'] == 'O') {
-                                $mailer->updateToken();
-                                $updates++;
-                            }
-                        }
-        
-                        $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
-                    }
-                    $tokensData = null;
-                }
-            }
-        }
-
-        if (!$mailed) {
-            $this->addMessage($this->_('No mails sent.'));
-        }
-
-        if (! $startUser->isCurrentUser()) {
-            $startUser->setAsCurrentUser();
-        }
-    }
+    } // */
 }
