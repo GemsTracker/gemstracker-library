@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @version    $Id$
  * @package    Gems
  * @subpackage Log
@@ -88,17 +88,28 @@ class Gems_Log extends Zend_Log
             $info[] = 'Info:      ' . $this->stripHtml($text);
         }
 
-        /* WAIT FOR TEST, I DO NOT KNOW HOW TO TRIGGER THIS CODE
-        $chained = $exception;
-        while (method_exists($chained, 'getChainedException') &&
-            ($chained = $chained->getChainedException())) {
+        if (method_exists($exception, 'getChainedException')) {
+            $chained = $exception->getChainedException();
+
+            if ($chained) {
+                $info[] = '';
+                $info[] = 'Chained class:   ' . get_class($chained);
+                $info[] = 'Changed message: ' . $this->stripHtml($chained->getMessage());
+                if (($chained instanceof Gems_Exception) && ($text = $chained->getInfo())) {
+                    $info[] = 'Changed info:    ' . $this->stripHtml($text);
+                }
+            }
+        }
+        $previous = $exception->getPrevious();
+        while ($previous) {
             $info[] = '';
-            $info[] = 'Chained class:   ' . get_class($chained);
-            $info[] = 'Changed message: ' . $this->stripHtml($chained->getMessage());
-            if (($chained instanceof Gems_Exception) && ($text = $chained->getInfo())) {
+            $info[] = 'Chained class:   ' . get_class($previous);
+            $info[] = 'Changed message: ' . $this->stripHtml($previous->getMessage());
+            if (($previous instanceof Gems_Exception) && ($text = $previous->getInfo())) {
                 $info[] = 'Changed info:    ' . $this->stripHtml($text);
             }
-        } */
+            $previous = $previous->getPrevious();
+        }
 
         foreach ($info as $line) {
             $this->log($line, Zend_Log::ERR);

@@ -274,8 +274,12 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
                 $trs = new Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
                 break;
 
-            default:
+            case 'calendar':
                 $trs = new Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                break;
+
+            default:
+                $trs = new Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
                 break;
         }
         $this->applySource($trs);

@@ -74,11 +74,9 @@ class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswe
         
         $keys = array();
         if ($requestFullAnswers !== false) {
-            while ($row = $repeater->__next()) {
-                // Add the keys that contain values.
-                // We don't care about the values in the array.
-                $keys += array_filter($row->getArrayCopy());
-            }
+            // No filtering
+            return $model->getItemsOrdered();
+            
         } else {            
             foreach ($model->getItemNames() as $name) {
                 $start = substr(strtolower($name),0,$this->IncludeLength);

@@ -309,6 +309,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                 $engine = $tracker->getTrackEngine($trackId);
                 $model  = $engine->getRoundModel(false, $action);
                 $model->set('ggp_name',   'label', $this->_('Group'));
+                $model->addSort(array('gro_id_order' => SORT_ASC));
             } break;
 
             case "fields": {
@@ -319,6 +320,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                 $model->set('gtf_field_values', 'label', $this->_('Values'));
                 $model->set('gtf_field_type', 'label', $this->_('Type'));
                 $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+                $model->addSort(array('gtf_id_order' => SORT_ASC));
             } break;
 
             default: {
@@ -427,7 +429,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
     /**
      * Shows a list
-     * Enter description here ...
+     *
      * @param string $mode
      * @param array $keys
      */
@@ -436,7 +438,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $action = $this->getRequest()->getActionName();
         $this->getRequest()->setActionName($mode);
 
-        $baseurl = array('action' => $mode) + $this->getRequest()->getParams();
+        $baseurl = $this->getRequest()->getParams();
 
         $model = $this->getModel();
         $repeatable = $model->loadRepeatable();

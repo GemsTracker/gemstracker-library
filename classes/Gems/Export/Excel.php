@@ -232,8 +232,8 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
 
     public function handleExportBatchStep($data, $filter, $language)
     {
-        $batch = $this->_batch;
-        $files = $batch->getMessage('file', array());
+        $batch   = $this->_batch;
+        $files   = $batch->getMessage('file', array());
         $survey  = $this->loader->getTracker()->getSurvey($data['sid']);
         $answers = $survey->getRawTokenAnswerRows($filter);
         $answerModel = $survey->getAnswerModel($language);
@@ -255,7 +255,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         }
 
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
-        if (! $fopen) {
+        if (! $f) {
             $edata = error_get_last();
             throw new Gems_Exception('Error opening ' . $files['file'] . '. ' . $edata['message']);
         }
