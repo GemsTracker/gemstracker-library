@@ -96,7 +96,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
      */
     public function commJob()
     {
-        //*
+        /*
         Zend_Mail::setDefaultTransport(new Zend_Mail_Transport_File(array(
             'callback' => function ($transport) {
                 // throw new Zend_Mail_Transport_Exception('Invalid e-mail address');
