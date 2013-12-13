@@ -43,50 +43,111 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
-               
+class GEMS_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
+
     /**
      * Copied from parent, but insert chart instead of table after commented out part
-     * 
+     *
      * @param \Zend_View_Abstract $view
      * @return type
      */
     public function getHtmlOutput(\Zend_View_Abstract $view) {
         $snippets = array();
-        
+
         $data = $this->getModel()->load();
-        
+
         // Find the first token with answers
         foreach($data as $tokenData) {
             $token = $this->loader->getTracker()->getToken($tokenData);
             $tokenAnswers = $token->getRawAnswers();
-            if (!empty($tokenAnswers)) {            
+            if (!empty($tokenAnswers)) {
                 break;
             }
         }
-        
-        $options = array(
-            'data'=>$data, 
-            'showHeaders' => false,
-            'showButtons' => false
-            );
 
         // Some spacing with previous elements
         $snippets[] = MUtil_Html::create()->p(MUtil_Html::raw('&nbsp;'), array('style'=>'clear:both;'));
-        
-        foreach ($tokenAnswers as $key => $value)
-        {
-            if (substr(strtolower($key),0,5) == 'score') {
-                $options['question_code'] = $key;
-                // We need custom configuration here, to be added later
-                    
-                $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey_Display_BarChartSnippet', $options);        
+
+        $config = $this->getConfig($token);
+        // Fallback to all score elements in one chart when no config found
+        if (! is_array($config)) {
+            $config = array();
+            foreach ($tokenAnswers as $key => $value)
+            {
+                if (substr(strtolower($key),0,5) == 'score') {
+                    $config[0]['question_code'][] = $key;
+                }
             }
         }
         
+        // Set the default options
+        $defaultOptions = array(
+            'data'=>$data,
+            'showHeaders' => false,
+            'showButtons' => false
+            );
+        
+        // Add all configured charts
+        foreach ($config as $chartOptions) {
+            $chartOptions = $chartOptions + $defaultOptions;
+            $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey_Display_BarChartSnippet', $chartOptions);
+        }        
+
         // Clear the floats
         $snippets[] = MUtil_Html::create()->p(array('class'=>'chartfooter'));
-                
+
         return $snippets;
+    }
+
+    /**
+     * Get config options for this token
+     *
+     * Order of reading is track/round, survey, survey code
+     *
+     * @param Gems_Tracker_Token $token
+     */
+    public function getConfig($token)
+    {
+        try {
+            $trackId = $token->getTrackId();
+            $roundId = $token->getRoundId();
+
+            $db = Zend_Db_Table::getDefaultAdapter();
+
+            $select = $db->select()->from('gems__chart_config')
+                    ->where('gcc_tid = ?', $trackId)
+                    ->where('gcc_rid = ?', $roundId);
+
+            if ($result = $select->query()->fetch()) {
+                $config = Zend_Json::decode($result['gcc_config']);
+                return $config;
+            }
+
+            $surveyId = $token->getSurveyId();
+            $select = $db->select()->from('gems__chart_config')
+                ->where('gcc_sid = ?', $surveyId);
+
+            if ($result = $select->query()->fetch()) {
+                $config = Zend_Json::decode($result['gcc_config']);
+                return $config;
+            }
+
+            $surveyCode = $token->getSurvey()->getCode();
+            $select = $db->select()->from('gems__chart_config')
+                ->where('gcc_code = ?', $surveyCode);
+
+            $config = $select->query()->fetch();
+            if ($config !== false) {
+                $config = Zend_Json::decode($config['gcc_config']);
+            }
+
+            return $config;
+
+        } catch (Exception $exc) {
+            // Just ignore...
+        }
+
+        // If all fails, we might be missing the config table
+        return false;
     }
 }
