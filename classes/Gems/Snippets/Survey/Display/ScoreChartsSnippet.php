@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class GEMS_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
+class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Tracker_Answers_TrackAnswersModelSnippet  {
 
     /**
      * Copied from parent, but insert chart instead of table after commented out part
