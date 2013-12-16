@@ -121,7 +121,7 @@ class Gems_Default_ContactAction extends Gems_Controller_Action
         $this->initHtml();
 
         $this->html->h3()->sprintf($this->_('About %s'), $this->project->getName());
-        $this->html->pInfo($this->project->getLongDescription($this->locale->getLanguage()));
+        $this->html->pInfo(MUtil_Html_Raw::raw($this->project->getLongDescription($this->locale->getLanguage())));
         $this->html->append($this->_getOrganizationsList());
     }
 
