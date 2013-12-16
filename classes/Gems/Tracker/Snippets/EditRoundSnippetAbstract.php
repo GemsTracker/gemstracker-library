@@ -162,7 +162,8 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
 
         if (! $this->roundId) {
             $this->roundId = $this->request->getParam(Gems_Model::ROUND_ID);
-        }
+        }      
+       
         $this->createData = (! $this->roundId);
 
         return parent::hasHtmlOutput();
@@ -177,7 +178,7 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
     {
         parent::loadFormData();
 
-        if ($this->createData) {
+        if ($this->createData && !$this->request->isPost()) {
             $this->formData = $this->trackEngine->getRoundDefaults() + $this->formData;
         }
 
