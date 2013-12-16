@@ -162,8 +162,14 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
 
         if (! $this->roundId) {
             $this->roundId = $this->request->getParam(Gems_Model::ROUND_ID);
+        }      
+        
+        if ($this->request->isPost()) {
+            // If post we keep the formvalues and do not overwrite with default data
+            $this->createData = false;
+        } else {
+            $this->createData = (! $this->roundId);
         }
-        $this->createData = (! $this->roundId);
 
         return parent::hasHtmlOutput();
     }
