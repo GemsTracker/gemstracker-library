@@ -68,7 +68,7 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     public function afterRegistry()
     {
         parent::afterRegistry();
-        
+
         $this->orgTranslations = $this->db->fetchPairs('
             SELECT gor_provider_id, gor_id_organization
                 FROM gems__organizations
@@ -92,7 +92,7 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     {
         return ($this->db instanceof Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
     }
-    
+
     /**
      * Get information on the field translations
      *
@@ -102,11 +102,11 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
     public function getFieldsTranslations()
     {
         $fieldList = parent::getFieldsTranslations();
-        
+
         // Add the key values (so organization id is present)
         $keys = array_combine(array_values($this->_targetModel->getKeys()), array_values($this->_targetModel->getKeys()));
         $fieldList = $fieldList + $keys;
-        
+
         return $fieldList;
     }
 
