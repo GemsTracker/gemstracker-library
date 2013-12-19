@@ -212,7 +212,7 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
                     );
             $row['gap_id_location'] = $location['glo_id_location'];
         }
-                MUtil_Echo::track($row);
+        // MUtil_Echo::track($row);
 
         return $row;
     }

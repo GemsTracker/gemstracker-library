@@ -348,8 +348,8 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
     public function formatNotAllowed($data)
     {
         list($parents_string, $privileges_string) = explode("\t", $data, 2);
-        $parents    = explode(', ', $parents_string);
-        $privileges = explode(', ', $privileges_string);
+        $parents    = explode(',', $parents_string);
+        $privileges = explode(',', $privileges_string);
         if (count($privileges) > 0 ) {
             $privileges = array_combine($privileges, $privileges);
         }
