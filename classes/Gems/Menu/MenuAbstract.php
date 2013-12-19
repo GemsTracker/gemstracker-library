@@ -605,6 +605,9 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
         $page->addAction($this->_('Check all attributes'), 'pr.source.check-attributes-all', 'attributes-all');
+        
+        // ADD CHART SETUP CONTROLLER
+        $setup->addBrowsePage($this->_('Charts setup'), 'pr.chartsetup', 'chartconfig');
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
