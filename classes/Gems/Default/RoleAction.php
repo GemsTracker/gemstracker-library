@@ -358,7 +358,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);
 
         $output = $this->formatPrivileges(array_keys($notAllowed));
-        $output->class = 'deleted';
+        $output->class = 'notallowed deleted';
 
         return $output;
     }
@@ -374,6 +374,8 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (count($privileges)) {
             $output     = MUtil_Html_ListElement::ul();
             $privileges = array_combine($privileges, $privileges);
+            
+            $output->class = 'allowed';
 
             foreach ($this->getUsedPrivileges() as $privilege => $description) {
                 if (isset($privileges[$privilege])) {
