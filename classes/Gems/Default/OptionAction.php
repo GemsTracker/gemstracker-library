@@ -74,6 +74,28 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
             $this->_reroute();      // Force refresh
         }
     }
+    
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null) {
+        // fix privilege escalation
+        
+        // first load the current record from the database
+        $model = $this->getModel();
+        $model->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
+        $databaseData = $model->loadFirst();
+        
+        // Now only take values from elements that allow input (exclude hidden)
+        $validData = array();
+        foreach($form->getElements() as $element) {
+            if (! ($element instanceof Zend_Form_Element_Hidden || $element instanceof Zend_Form_Element_Submit)) {
+                $validData[$element->getName()] = $data[$element->getName()];
+            }
+        }
+
+        // Now add the other fields back from the current record so we have all id's etc.
+        $data = $validData + $databaseData;
+        
+        return true;
+    }
 
     /**
      * Allow a user to change his / her password.
