@@ -225,7 +225,7 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
-     * Add a browse / ceate / edit / show / etc.. menu item 
+     * Add a browse / ceate / edit / show / etc.. menu item
      *
      * @param string $label
      * @param string $privilege
@@ -400,7 +400,7 @@ abstract class Gems_Menu_MenuAbstract
         // EXPORT TO HTML
         $page = $import->addFilePage($this->_('Importable'), 'pr.file-import', 'file-import');
         // $page->addButtonOnly($this->_('Auto import'), 'pr.file-import.auto', 'file-import', 'auto');
-        $page->addImportAction('pr.file-import.import', array('label' => $this->_('Import result')))
+        $page->addImportAction('pr.file-import.import', array('label' => $this->_('Import file')))
                 ->setModelParameters(1);
 
         $page = $import->addFilePage($this->_('Imported files'), 'pr.file-import', 'imported-files');
@@ -605,7 +605,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
         $page->addAction($this->_('Check all attributes'), 'pr.source.check-attributes-all', 'attributes-all');
-        
+
         // ADD CHART SETUP CONTROLLER
         $setup->addBrowsePage($this->_('Charts setup'), 'pr.chartsetup', 'chartconfig');
 
