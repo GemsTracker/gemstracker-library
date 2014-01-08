@@ -217,7 +217,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 $keyCount = 2;
 
                 // Use MONDAY as start of week
-                $groupby['period_1'] = new Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
+                $groupby['period_1'] = new Zend_Db_Expr("substr(YEARWEEK(gto_valid_from, 3),1,4)");
+                //$groupby['period_1'] = new Zend_Db_Expr("YEAR($this->dateFrom) - CASE WHEN WEEK($this->dateFrom, 1) = 0 THEN 1 ELSE 0 END");
                 $groupby['period_2'] = new Zend_Db_Expr("WEEK($this->dateFrom, 3)");
 
                 $date->setWeekday(1);
@@ -235,6 +236,10 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                     $values = array();
                     $values['period_1'] = $date->get(Zend_Date::YEAR);
                     $values['period_2'] = $date->get(Zend_Date::WEEK);
+                    // When monday is in the previous year, add one to the year
+                    if ($date->get(Zend_Date::DAY_OF_YEAR)>14 && $date->get(Zend_Date::WEEK) == 1) {
+                        $values['period_1'] =  $values['period_1'] + 1;
+                    }
                     $values['range']    = $i;
                     $requiredRows[$i]   = $values;
                     $date->addWeek(1);
