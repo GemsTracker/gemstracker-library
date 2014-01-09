@@ -54,6 +54,27 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
     public $project;
 
     /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $data The data that will later be loaded into the form
+     * @param optional boolean $new Form should be for a new element
+     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
+     */
+    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    {
+        foreach($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $bridge->add($name);
+            }
+        }
+    }
+
+    /**
      * Hook to perform action after a record (with changes) was saved
      *
      * As the data was already saved, it can NOT be changed anymore
@@ -65,24 +86,36 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
     public function afterSave(array $data, $isNew)
     {
         // Reload the current user data
-        if ($this->loader->getCurrentUser()->getLoginName() === $data['gsf_login']) {
+        $user = $this->loader->getCurrentUser();
+        if ($user->getLoginName() === $data['gsf_login']) {
+            $currentOrg = $user->getCurrentOrganizationId();
+
             $this->loader->getUserLoader()->unsetCurrentUser();
-            $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization'])->setAsCurrentUser();
-            
+            $user = $this->loader->getUser($data['gsf_login'], $data['gsf_id_organization'])->setAsCurrentUser();
+            $user->setCurrentOrganization($currentOrg);
+
             // If locale has changed, set it in a cookie
             Gems_Cookies::setLocale($data['gsf_iso_lang'], GemsEscort::getInstance()->basepath);
             $this->_reroute();      // Force refresh
         }
     }
-    
-    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null) {
+
+    /**
+     *
+     * @param array $data
+     * @param boolean $isNew
+     * @param Zend_Form $form
+     * @return boolean
+     */
+    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    {
         // fix privilege escalation
-        
+
         // first load the current record from the database
         $model = $this->getModel();
         $model->setFilter(array('gsf_id_user' => $this->loader->getCurrentUser()->getUserId()));
         $databaseData = $model->loadFirst();
-        
+
         // Now only take values from elements that allow input (exclude hidden)
         $validData = array();
         foreach($form->getElements() as $element) {
@@ -93,7 +126,7 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
 
         // Now add the other fields back from the current record so we have all id's etc.
         $data = $validData + $databaseData;
-        
+
         return true;
     }
 
@@ -155,11 +188,14 @@ class Gems_Default_OptionAction  extends Gems_Controller_BrowseEditAction
     {
         $model = $this->loader->getModels()->getStaffModel();
 
+        $noscript = new MUtil_Validate_NoScript();
+
         $model->set('gsf_login',          'label', $this->_('Login Name'), 'elementClass', 'Exhibitor');
-        $model->set('gsf_email',          'label', $this->_('E-Mail'), 'size', 30);
-        $model->set('gsf_first_name',     'label', $this->_('First name'));
-        $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
-        $model->set('gsf_last_name',      'label', $this->_('Last name'), 'required', true);
+        $model->set('gsf_email',          'label', $this->_('E-Mail'), 'size', 30,
+                'validator', new MUtil_Validate_SimpleEmail());
+        $model->set('gsf_first_name',     'label', $this->_('First name'), 'validator', $noscript);
+        $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...', 'validator', $noscript);
+        $model->set('gsf_last_name',      'label', $this->_('Last name'), 'required', true, 'validator', $noscript);
         $model->set('gsf_gender',         'label', $this->_('Gender'), 'multiOptions', $this->util->getTranslated()->getGenders(),
                 'elementClass', 'Radio', 'separator', '');
         $model->set('gsf_iso_lang',       'label', $this->_('Language'), 'multiOptions', $this->util->getLocalized()->getLanguages());

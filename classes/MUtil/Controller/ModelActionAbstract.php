@@ -124,7 +124,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
+            if ($model->has($name, 'label') || $model->has($name, 'elementClass')) {
                 $bridge->add($name);
             } else {
                 $bridge->addHidden($name);

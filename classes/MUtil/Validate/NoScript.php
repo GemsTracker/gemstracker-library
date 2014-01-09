@@ -36,7 +36,7 @@
  */
 
 /**
- * Validate that the input is a phone number
+ * Validate that the input is not an attempt to put any XSS text in the unput.
  *
  * @package    MUtil
  * @subpackage Validate
@@ -44,24 +44,16 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Validate_Phone extends Zend_Validate_Regex
+class MUtil_Validate_NoScript extends MUtil_Validate_Regexclude
 {
-    const PHONE_REGEX = '/^[\d\s\+\(\)\-]*$/';
-
-    /**
-     * @var array
-     */
-    protected $_messageTemplates = array(
-        self::INVALID   => "Invalid type given, value should be string, integer or float",
-        self::NOT_MATCH => "'%value%' is not a phone number (e.g. +12 (0)34-567 890).",
-    );
+    const SCRIPT_REGEX = '/[<>{}\(\)]/';
 
     /**
      * Regular expression pattern
      *
      * @var string
      */
-    protected $_pattern = self::PHONE_REGEX;
+    protected $_pattern = self::SCRIPT_REGEX;
 
     /**
      * Sets validator options
@@ -69,7 +61,7 @@ class MUtil_Validate_Phone extends Zend_Validate_Regex
      * @param  string|Zend_Config $pattern
      * @return void
      */
-    public function __construct($pattern = self::PHONE_REGEX)
+    public function __construct($pattern = self::SCRIPT_REGEX)
     {
         parent::__construct($pattern);
     }

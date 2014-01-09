@@ -187,7 +187,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
 
         //And add them to the bridge
         foreach($elements as $name) {
-            if ($label = $model->get($name, 'label')) {
+            if ($model->has($name, 'label') || $model->has($name, 'elementClass')) {
                 $bridge->add($name);
             } else {
                 $bridge->addHidden($name);
@@ -536,7 +536,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                 }
             }
         }
- 
+
         return $this;
     }
 

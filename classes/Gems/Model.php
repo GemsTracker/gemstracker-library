@@ -346,6 +346,10 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $created_field    = $prefix . '_created';
         $created_by_field = $prefix . '_created_by';
 
+        foreach (array($changed_field, $changed_by_field, $created_field, $created_by_field) as $field) {
+            $model->set($field, 'elementClass', 'none');
+        }
+
         $model->setOnSave($changed_field, new MUtil_Db_Expr_CurrentTimestamp());
         $model->setSaveOnChange($changed_field);
         $model->setOnSave($created_field, new MUtil_Db_Expr_CurrentTimestamp());

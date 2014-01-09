@@ -674,6 +674,16 @@ class MUtil_Model_FormBridge
         return $this->_addToForm($name, 'Multiselect', $options);
     }
 
+    /**
+     * Stub for elements where no class should be displayed.
+     *
+     * @param string $name Name of element
+     */
+    public function addNone($name)
+    {
+        return null;
+    }
+
     public function addPassword($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
