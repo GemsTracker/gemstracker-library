@@ -411,6 +411,78 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         throw new Gems_Exception_Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
     }
+    
+    /**
+     * Copy a track and all it's related data (rounds/fields etc)
+     * 
+     * @param inte $oldTrackId  The id of the track to copy
+     * @return int              The id of the copied track
+     */
+    public function copyTrack($oldTrackId)
+    {
+        $trackModel = $this->tracker->getTrackModel();
+        
+        $roundModel = $this->getRoundModel(true, 'rounds');
+        $fieldModel = $this->getFieldModel(true, 'fields');
+
+        // First load the track
+        $trackModel->applyParameters(array('id' => $oldTrackId));
+        $track = $trackModel->loadFirst();
+
+        // Create an empty track
+        $newTrack = $trackModel->loadNew();
+        unset($track['gtr_id_track'], $track['gtr_changed'], $track['gtr_changed_by'], $track['gtr_created'], $track['gtr_created_by']);
+        $track['gtr_track_name'] .= $this->_(' - Copy');
+        $newTrack = $track + $newTrack;
+        // Now save (not done yet)
+        $savedValues = $trackModel->save($newTrack);
+        $newTrackId = $savedValues['gtr_id_track'];
+
+        // Now copy the rounds
+        $roundModel->applyParameters(array('id' => $oldTrackId));
+        $rounds = $roundModel->load();
+
+        if ($rounds) {
+            $numRounds = count($rounds);
+            $newRounds = $roundModel->loadNew($numRounds);
+            foreach ($newRounds as $idx => $newRound) {
+                $round = $rounds[$idx];
+                unset($round['gro_id_round'], $round['gro_changed'], $round['gro_changed_by'], $round['gro_created'], $round['gro_created_by']);
+                $round['gro_id_track'] = $newTrackId;
+                $newRounds[$idx] = $round + $newRounds[$idx];
+            }
+            // Now save (not done yet)
+            $savedValues = $roundModel->saveAll($newRounds);
+        } else {
+            $numRounds = 0;
+        }
+
+        // Now copy the fields
+        $fieldModel->applyRequest($this->getRequest());
+        $fields = $fieldModel->load();
+
+        if ($fields) {
+            $numFields = count($fields);
+            $newFields = $fieldModel->loadNew($numFields);
+            foreach ($newFields as $idx => $newField) {
+                $field = $fields[$idx];
+                unset($field['gtf_id_field'], $field['gtf_changed'], $field['gtf_changed_by'], $field['gtf_created'], $field['gtf_created_by']);
+                $field['gtf_id_track'] = $newTrackId;
+                $newFields[$idx] = $field + $newFields[$idx];
+            }
+            // Now save (not done yet)
+            $savedValues = $fieldModel->saveAll($newFields);
+        } else {
+            $numFields = 0;
+        }
+
+        //MUtil_Echo::track($track, $copy);
+        //MUtil_Echo::track($rounds, $newRounds);
+        //MUtil_Echo::track($fields, $newFields);
+        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        
+        return $newTrackId;
+    }
 
     /**
      * Create model for rounds. Allowes overriding by sub classes.
@@ -457,6 +529,22 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         }
 
         return $fields;
+    }
+    
+    /**
+     * Returns a model that can be used to retrieve or save the data.
+     *
+     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param string $action The current action
+     * @return MUtil_Model_ModelAbstract
+     */    
+    public function getFieldModel($detailed, $action)
+    {
+        $model = new MUtil_Model_TableModel('gems__track_fields');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
+        $model->setKeys(array('id' => 'gtf_id_track'));
+        
+        return $model;
     }
 
     /**
