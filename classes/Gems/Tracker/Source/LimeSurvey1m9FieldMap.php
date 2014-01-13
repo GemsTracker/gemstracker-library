@@ -268,7 +268,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         do {
                             $row = $rows[$i];
                             $row['sgq'] .= $row['sq_title'];
-                            $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                            if ($rows[$i]['type'] === 'O') {    // List, only one answer don't add _
+                                $row['code'] = $row['title'];
+                            } else {
+                                $row['code'] = $row['title'] . '_' . $row['sq_title'];
+                            }
                             $map[$row['sgq']] = $row;
                             $row1 = $row;
                             if ($row['type'] !== 'M') {
