@@ -458,7 +458,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         }
 
         // Now copy the fields
-        $fieldModel->applyRequest($this->getRequest());
+        $fieldModel->applyParameters(array('id' => $oldTrackId));
         $fields = $fieldModel->load();
 
         if ($fields) {
