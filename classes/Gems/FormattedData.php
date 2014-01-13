@@ -53,6 +53,13 @@ class Gems_FormattedData extends IteratorIterator
 
     private $formatted;
 
+    /**
+     * A cache for the model options needed to format the data
+     *
+     * @var array
+     */
+    protected $_options = array();
+
     public function __construct($data, MUtil_Model_ModelAbstract $model, $formatted = true) {
         $this->data  = parent::__construct(new ArrayObject($data));
         $this->model = $model;
@@ -80,7 +87,7 @@ class Gems_FormattedData extends IteratorIterator
      * @return array The formatted array
      */
     static function format($row, $model) {
-        foreach ($row as $fieldname=>$value) {               
+        foreach ($row as $fieldname=>$value) {
                 $row[$fieldname] = self::_format($fieldname, $row[$fieldname], $model);
         }
         return $row;
@@ -96,14 +103,13 @@ class Gems_FormattedData extends IteratorIterator
      */
     private static function _format($name, $result, $model)
     {
-        static $opts = array();
         static $view = null;
 
-        if (!isset($opts[$name])) {
-            $opts[$name] = $model->get($name, array('default', 'multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'));
+        if (!isset($this->_options[$name])) {
+            $this->_options[$name] = $model->get($name, array('default', 'multiOptions', 'formatFunction', 'dateFormat', 'storageFormat', 'itemDisplay'));
         }
 
-        $options = $opts[$name];
+        $options = $this->_options[$name];
 
         foreach($options as $key => $value) {
             switch ($key) {
@@ -144,7 +150,7 @@ class Gems_FormattedData extends IteratorIterator
                         // if there is a formatFunction skip the date formatting
                         continue;
                     }
-                    
+
                     $dateFormat = $value;
                     $storageFormat = $model->get($name, 'storageFormat');
                     $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
