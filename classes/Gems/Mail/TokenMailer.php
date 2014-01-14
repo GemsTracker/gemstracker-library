@@ -196,7 +196,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $logData['grco_id_token']     = $this->token->getTokenId();
 
         $logData['grco_method']       = 'email';
-        $logData['grco_topic']        = substr($this->subject, 0, 120);
+        $logData['grco_topic']        = substr($this->applyFields($this->subject), 0, 120);
 
         $to = array();
         foreach($this->to as $name=> $address) {
