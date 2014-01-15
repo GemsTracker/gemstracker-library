@@ -110,10 +110,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @param type $conversionTargetClass
      */
     public function convertTo($conversionTargetClass);
-    
+
     /**
      * Copy a track and all it's related data (rounds/fields etc)
-     * 
+     *
      * @param inte $oldTrackId  The id of the track to copy
      * @return int              The id of the copied track
      */
@@ -146,14 +146,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return string Name
      */
     public function getDescription();
-    
+
     /**
      * Returns a model that can be used to retrieve or save the data.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @return MUtil_Model_ModelAbstract
-     */    
+     */
     public function getFieldModel($detailed, $action);
 
     /**
@@ -170,6 +170,15 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array of Zend_Form_Element
      */
     public function getFieldsElements();
+
+    /**
+     * Returns a model that can be used to retrieve or save the field definitions for the track editor.
+     *
+     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param string $action The current action
+     * @return MUtil_Model_ModelAbstract
+     */
+    public function getFieldsMaintenanceModel($detailed, $action);
 
     /**
      * Get the round id of the first round

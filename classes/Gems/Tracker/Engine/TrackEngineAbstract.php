@@ -412,17 +412,17 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         throw new Gems_Exception_Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
     }
-    
+
     /**
      * Copy a track and all it's related data (rounds/fields etc)
-     * 
+     *
      * @param inte $oldTrackId  The id of the track to copy
      * @return int              The id of the copied track
      */
     public function copyTrack($oldTrackId)
     {
         $trackModel = $this->tracker->getTrackModel();
-        
+
         $roundModel = $this->getRoundModel(true, 'rounds');
         $fieldModel = $this->getFieldModel(true, 'fields');
 
@@ -481,7 +481,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         //MUtil_Echo::track($rounds, $newRounds);
         //MUtil_Echo::track($fields, $newFields);
         Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
-        
+
         return $newTrackId;
     }
 
@@ -531,20 +531,20 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
         return $fields;
     }
-    
+
     /**
      * Returns a model that can be used to retrieve or save the data.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @return MUtil_Model_ModelAbstract
-     */    
+     */
     public function getFieldModel($detailed, $action)
     {
         $model = new MUtil_Model_TableModel('gems__track_fields');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $model->setKeys(array('id' => 'gtf_id_track'));
-        
+
         return $model;
     }
 
@@ -665,6 +665,18 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         }
 
         return $elements;
+    }
+
+    /**
+     * Returns a model that can be used to retrieve or save the field definitions for the track editor.
+     *
+     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param string $action The current action
+     * @return MUtil_Model_ModelAbstract
+     */
+    public function getFieldsMaintenanceModel($detailed, $action)
+    {
+        return new Gems_Tracker_Model_FieldMaintenanceModel();
     }
 
     /**

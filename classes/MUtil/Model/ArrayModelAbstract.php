@@ -439,6 +439,7 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
 
         return $data;
     }
+
     /**
      * Sort function for sorting array on defined sort order
      *
