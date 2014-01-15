@@ -601,6 +601,38 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         return $tokenId;
     }
+    
+    /**
+     * Get all unanswered tokens for the person answering this token
+     * 
+     * Similar to @see $this->getNextUnansweredToken()
+     * Similar to @see $this->getTokenCountUnanswered()
+     * 
+     * @return array of tokendata
+     */ 
+    public function getAllUnansweredTokens($where = '')
+    {
+        $select = $this->tracker->getTokenSelect();
+        $select->andReceptionCodes()
+                ->andRespondentTracks()
+                ->andRounds()
+                ->andSurveys()
+                ->andTracks()
+                ->forGroupId($this->getSurvey()->getGroupId())
+                ->forRespondent($this->getRespondentId(), $this->getOrganizationId())
+                ->onlySucces()
+                ->order('gtr_track_type')
+                ->order('gtr_track_name')
+                ->order('gr2t_track_info')
+                ->order('gto_valid_until')
+                ->order('gto_valid_from');
+
+        if (!empty($where)) {
+            $select->forWhere($where);
+        }
+
+        return $select->fetchAll();        
+    }
 
     /**
      * Returns a field from the raw answers as a date object.

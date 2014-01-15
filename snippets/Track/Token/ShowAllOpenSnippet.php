@@ -116,23 +116,9 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
         }
 
         // Get the tokens
-        $select = $tracker->getTokenSelect();
-        $select->andReceptionCodes()
-                ->andRespondentTracks()
-                ->andRounds()
-                ->andSurveys()
-                ->andTracks()
-                ->forGroupId($this->token->getSurvey()->getGroupId())
-                ->forRespondent($this->token->getRespondentId(), $this->token->getOrganizationId())
-                ->onlySucces()
-                ->forWhere($where)
-                ->order('gtr_track_type')
-                ->order('gtr_track_name')
-                ->order('gr2t_track_info')
-                ->order('gto_valid_until')
-                ->order('gto_valid_from');
+        $tokens = $this->token->getAllUnansweredTokens($where);
 
-        if ($tokens = $select->fetchAll()) {
+        if ($tokens) {
             $currentToken = $this->token->isCompleted() ? false : $this->token->getTokenId();
             $lastRound    = false;
             $lastTrack    = false;
