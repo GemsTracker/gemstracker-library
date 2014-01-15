@@ -391,7 +391,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $batch->setMessage('createdTokens', sprintf($this->_('%d tokens created to by round changes.'), $i));
 
         // Step four: set the dates and times
-        $changed = $this->checkTokensFromStart($respTrack, $userId);
+        //$changed = $this->checkTokensFromStart($respTrack, $userId);
+        $changed = $respTrack->checkTrackTokens($userId);
         $ica = $batch->addToCounter('tokenDateCauses', $changed ? 1 : 0);
         $ich = $batch->addToCounter('tokenDateChanges', $changed);
         $batch->setMessage('tokenDateChanges', sprintf($this->_('%2$d token date changes in %1$d tracks.'), $ica, $ich));
