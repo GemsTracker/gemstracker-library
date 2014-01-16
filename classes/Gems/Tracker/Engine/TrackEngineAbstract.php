@@ -672,11 +672,42 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
+     * @param array $data the current request data
      * @return Gems_Tracker_Model_FieldMaintenanceModel
      */
-    public function getFieldsMaintenanceModel($detailed, $action)
+    public function getFieldsMaintenanceModel($detailed, $action, array $data)
     {
-        return $this->tracker->createTrackClass('Model_FieldMaintenanceModel');
+        $model = $this->tracker->createTrackClass('Model_FieldMaintenanceModel');
+
+        if ($detailed) {
+            if (('edit' === $action) || ('create' === $action)) {
+                $model->applyEditSettings($this->_trackId, $data);
+
+                if ('create' === $action) {
+                    $model->set('gtf_id_track', 'default', $this->_trackId);
+
+                    // Set the default round order
+
+                    // Load last row
+                    $row = $model->loadFirst(
+                            array('gtf_id_track' => $this->_trackId),
+                            array('gtf_id_order' => SORT_DESC)
+                            );
+
+                    if ($row && isset($row['gtf_id_order'])) {
+                        $new_order = $row['gtf_id_order'] + 10;
+                        $model->set('gtf_id_order', 'default', $new_order);
+                    }
+                }
+            } else {
+                $model->applyDetailSettings($this->_trackId, $data);
+            }
+
+        } else {
+            $model->applyBrowseSettings();
+        }
+
+        return $model;
     }
 
     /**

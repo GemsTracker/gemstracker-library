@@ -519,20 +519,9 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
             //
             // Mind you the values may have changed, either because of an edit or
             // because a new item was created.
-            $model = $this->getModel();
-            $keys  = $model->getKeys();
-            if (count($keys) == 1) {
-                $key = reset($keys);
+            foreach ($this->getModel()->getKeys() as $id => $key) {
                 if (isset($this->formData[$key])) {
-                    $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID] = $this->formData[$key];
-                }
-            } else {
-                $i = 1;
-                foreach ($model->getKeys() as $key) {
-                    if (isset($this->formData[$key])) {
-                        $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID . $i] = $this->formData[$key];
-                    }
-                    $i++;
+                    $this->afterSaveRouteUrl[$id] = $this->formData[$key];
                 }
             }
         }

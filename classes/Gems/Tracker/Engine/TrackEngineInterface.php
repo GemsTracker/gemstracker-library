@@ -176,9 +176,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
+     * @param array $data the current request data
      * @return Gems_Tracker_Model_FieldMaintenanceModel
      */
-    public function getFieldsMaintenanceModel($detailed, $action);
+    public function getFieldsMaintenanceModel($detailed, $action, array $data);
 
     /**
      * Get the round id of the first round

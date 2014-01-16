@@ -1037,16 +1037,6 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Get the model transformers
-     *
-     * @return array of MUtil_Model_ModelTransformerInterface
-     */
-    public function getTransformers()
-    {
-        return $this->_transformers;
-    }
-
-    /**
      * Splits a wildcard search text into its constituent parts.
      *
      * @param string $searchText
@@ -1066,6 +1056,16 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function getTextSearchFilter($searchText)
     { }
+
+    /**
+     * Get the model transformers
+     *
+     * @return array of MUtil_Model_ModelTransformerInterface
+     */
+    public function getTransformers()
+    {
+        return $this->_transformers;
+    }
 
     public function has($name, $subkey = null)
     {

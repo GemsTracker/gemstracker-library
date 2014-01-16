@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage FieldMaintenanceModel
+ * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
@@ -39,13 +39,19 @@
  *
  *
  * @package    Gems
- * @subpackage FieldMaintenanceModel
+ * @subpackage Tracker
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
 class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 {
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
     /**
      *
      * @var Zend_Translate
@@ -57,6 +63,12 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * @var Zend_Translate_Adapter
      */
     protected $translateAdapter;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
 
     /**
      *
@@ -119,6 +131,158 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         parent::afterRegistry();
 
         $this->initTranslateable();
+    }
+
+    /**
+     * Set those settings needed for the browse display
+     *
+     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     */
+    public function applyBrowseSettings()
+    {
+        $yesNo = $this->util->getTranslated()->getYesNo();
+
+        $this->set('gtf_id_order',     'label', $this->_('Order'));
+        $this->set('gtf_field_name',   'label', $this->_('Name'));
+        $this->set('gtf_field_code',   'label', $this->_('Code Name'),
+                'description', $this->_('Optional extra name to link the field to program code.'));
+        $this->set('gtf_field_type',   'label', $this->_('Type'),
+                'multiOptions', $this->getFieldTypes(),
+                'default', 'text',
+                'order', $this->getOrder('gtf_id_track') + 5
+                );
+        $this->set('gtf_required',     'label', $this->_('Required'), 'multiOptions', $yesNo);
+        $this->set('gtf_readonly',     'label', $this->_('Readonly'),
+                'multiOptions', $yesNo,
+                'description', $this->_('Check this box if this field is always set by code instead of the user.')
+                );
+
+        return $this;
+    }
+
+    /**
+     * Set those settings needed for the detailed display
+     *
+     * @param int $trackId The current track id
+     * @param int $data The currently known data
+     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     */
+    public function applyDetailSettings($trackId, array &$data)
+    {
+        $this->applyBrowseSettings();
+
+        $this->set('gtf_id_track',          'label', $this->_('Track'),
+                'multiOptions', $this->util->getTrackData()->getAllTracks()
+                );
+        $this->set('gtf_field_description', 'label', $this->_('Description'),
+                'description', $this->_('Optional extra description to show the user.'));
+
+        // Display of data field
+        if (! (isset($data['gtf_field_type']) && $data['gtf_field_type'])) {
+            if (isset($data['gtf_field_type'])) {
+                $data[$this->_modelField] = $this->getModelNameForRow($data);
+            }
+
+            if (isset($data[$this->_modelField]) && ($data[$this->_modelField] === 'a')) {
+                $data['gtf_field_type'] = 'appointment';
+            } else {
+                if (isset($data['gtf_id_field']) && $data['gtf_id_field']) {
+                    $data[Gems_Model::FIELD_ID] = $data['gtf_id_field'];
+                }
+                if (isset($data[Gems_Model::FIELD_ID])) {
+                    $data['gtf_field_type'] = $this->db->fetchOne(
+                            "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
+                            $data[Gems_Model::FIELD_ID]
+                            );
+                } else  {
+                    $data['gtf_field_type'] = 'select';
+                }
+            }
+        }
+
+        if ($data['gtf_field_type'] === 'select' || $data['gtf_field_type'] === 'multiselect') {
+            $this->set('gtf_field_values', 'label', $this->_('Values'),
+                    'description', $this->_('Separate multiple values with a vertical bar (|)'),
+                    'formatFunction', array($this, 'formatValues'));
+        }
+    }
+
+    /**
+     * Set those values needed for editing
+     *
+     * @param int $trackId The current track id
+     * @param int $data The currently known data
+     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     */
+    public function applyEditSettings($trackId, array $data)
+    {
+        $this->applyDetailSettings($trackId, $data);
+
+        $noSubChange = false;
+        $subId = $data[$this->_modelField];
+
+        if ($subId == 'f') {
+            $sql = 'SELECT gr2t2f_id_field
+                FROM gems__respondent2track2field
+                WHERE gr2t2f_id_field = ?';
+        } elseif ($subId == 'a') {
+            $sql = 'SELECT gr2t2a_id_app_field
+                FROM gems__respondent2track2appointment
+                WHERE gr2t2a_id_app_field = ?';
+        } else {
+            $sql = false;
+        }
+        if ($sql) {
+            $noSubChange = $this->db->fetchOne($sql, $data[Gems_Model::FIELD_ID]);
+        }
+
+        $this->set('gtf_id_field',          'elementClass', 'Hidden');
+        $this->set('gtf_id_track',          'elementClass', 'Exhibitor');
+
+        if ($noSubChange) {
+            $this->set('gtf_field_type',    'elementClass', 'Exhibitor');
+        } else {
+            $this->set('gtf_field_type',    'elementClass', 'Select',
+                    'onchange', 'this.form.submit();');
+        }
+
+        $this->set('gtf_field_name',        'elementClass', 'Text',
+                'size', '30',
+                'minlength', 4,
+                'required', true //,
+                // 'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
+                );
+
+        $this->set('gtf_id_order',          'elementClass', 'Text',
+                'validators[0]', 'Int',
+                'validators[1]', new Zend_Validate_GreaterThan(0)
+                );
+
+        $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
+        $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30);
+
+        if ($this->has('gtf_field_values', 'label')) {
+            $this->set('gtf_field_values',  'elementClass', 'Textarea',
+                    'minlength', 4,
+                    'rows', 4,
+                    'required', true
+                    );
+        } else {
+            $this->set('gtf_field_values',  'elementClass', 'Hidden');
+        }
+        $this->set('gtf_required',          'elementClass', 'CheckBox');
+        $this->set('gtf_readonly',          'elementClass', 'CheckBox');
+    }
+
+    /**
+     * Put each value on a separate line
+     *
+     * @param string $values
+     * @return \MUtil_Html_Sequence
+     */
+    public function formatValues($values)
+    {
+        return new MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
     }
 
     /**

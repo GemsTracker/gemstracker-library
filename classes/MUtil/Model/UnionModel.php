@@ -47,6 +47,11 @@
 class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
 {
     /**
+     * Identifier for text filter field
+     */
+    const TEXT_FILTER = 'text_filter__';
+
+    /**
      * When empty nothing is cleared
      *
      * @var array keyname => keyname
@@ -74,6 +79,13 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      * @var array of $name => array map or false when no mapping occurs
      */
     protected $_unionMapsFrom;
+
+    /**
+     * Name of the field used for temporary storage of the text filter
+     *
+     * @var string
+     */
+    public $textFilterField = self::TEXT_FILTER;
 
     /**
      * Contains a map to the fields names of a sub model from the fields names
@@ -133,12 +145,38 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
         $setcount = 0;
         $results  = array();
 
+        if (isset($filter[$this->textFilterField])) {
+            $textFilter = $filter[$this->textFilterField];
+            unset($filter[$this->textFilterField]);
+        } else {
+            $textFilter = false;
+        }
+
         foreach ($this->_getFilterModels($filter) as $name => $model) {
             if ($model instanceof MUtil_Model_ModelAbstract) {
-                $resultset = $model->load(
-                        $this->_map($filter, $name, false, true),
-                        $this->_map($sort, $name, false, false)
-                        );
+
+                $modelFilter = $this->_map($filter, $name, false, true);
+
+                if ($textFilter) {
+                    // Text filter is always on visible fields and uses multiOptions
+                    if (isset($this->_unionMapsTo[$name]) && $this->_unionMapsTo[$name]) {
+                        foreach ($this->getCol('label') as $fname => $label) {
+                            if (isset($this->_unionMapsTo[$name][$fname])) {
+                                $mname = $this->_unionMapsTo[$name][$fname];
+                            } else {
+                                $mname = $fname;
+                            }
+                            $model->set($mname, 'label', $label, 'multiOptions', $this->get($fname, 'multiOptions'));
+                        }
+                    } else {
+                        foreach ($this->getCol('label') as $fname => $label) {
+                            $model->set($fname, 'label', $label, 'multiOptions', $this->get($fname, 'multiOptions'));
+                        }
+                    }
+                    $modelFilter = array_merge($modelFilter, $model->getTextSearchFilter($textFilter));
+                }
+
+                $resultset = $model->load($modelFilter, $this->_map($sort, $name, false, false));
 
                 if ($resultset) {
                     $sub = array($this->_modelField => $name);
@@ -162,7 +200,7 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      *
      * @param array $row The row of values to map
      * @param string $name Union sub model name
-     * @param boolean $from When true map from the fields names the a sub model to the fields names of this model
+     * @param boolean $from When true map from the fields names if the sub model to the fields names of this model
      * @param boolean $recursive When true sub arrays are mapped as well (only used for filter renaming)
      * @return array
      */
@@ -360,6 +398,18 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
         }
     }
 
+
+    /**
+     * Creates a filter for this model for the given wildcard search text.
+     *
+     * @param string $searchText
+     * @return array An array of filter statements for wildcard text searching for this model type
+     */
+    public function getTextSearchFilter($searchText)
+    {
+        return array($this->textFilterField => $searchText);
+    }
+
     /**
      * Return a union model
      *
@@ -391,6 +441,26 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
         // All sub models must allow new rows
         foreach ($this->_unionModels as $model) {
             if (! ($model instanceof MUtil_Model_ModelAbstract && $model->hasNew())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * True when the model supports general text filtering on all
+     * labelled fields.
+     *
+     * This must be implemented by each sub model on it's own.
+     *
+     * @return boolean
+     */
+    public function hasTextSearchFilter()
+    {
+        // All sub models must allow new rows
+        foreach ($this->_unionModels as $model) {
+            if (! ($model instanceof MUtil_Model_ModelAbstract && $model->hasTextSearchFilter())) {
                 return false;
             }
         }

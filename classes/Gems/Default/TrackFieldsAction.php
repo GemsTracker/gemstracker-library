@@ -43,69 +43,45 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionAbstract
 {
-    public $sortKey = array('gtf_id_order' => SORT_ASC);
-
-    public $summarizedActions = array('index', 'autofilter');
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraSort' => array('gtf_id_order' => SORT_ASC),
+        );
 
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * Variable to set tags for cache cleanup after changes
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
+     * @var array
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        $bridge->addHidden('sub');
-        $bridge->addHidden('gtf_id_field');
-        $bridge->addExhibitor('gtf_id_track');
-        $bridge->addSelect('gtf_field_type', 'onchange', 'this.form.submit();');
-        $bridge->addText('gtf_field_name', 'size', '30',
-                'minlength', 4,
-                'required', true //,
-                // 'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
-                );
-        $bridge->addText('gtf_id_order');
-        $bridge->addText('gtf_field_code', 'minlength', 4,
-                'description', $this->_('Optional extra name to link the field to program code.')
-                );
-        $bridge->addText('gtf_field_description', 'size', 30,
-                'description', $this->_('Optional extra description to show the user.')
-                );
-
-        if ($data['gtf_field_type'] === 'select' || $data['gtf_field_type'] === 'multiselect') {
-            $bridge->addTextarea('gtf_field_values', 'minlength', 4,
-                    'rows', 4,
-                    'description', $this->_('Separate multiple values with a vertical bar (|)'),
-                    'required', false
-                    );
-        }
-        $bridge->addCheckBox('gtf_required');
-        $bridge->addCheckBox('gtf_readonly', 'description', $this->_('Check this box if this field is always set by code instead of the user.'));
-    }
-
+    public $cacheTags = array('track', 'tracks');
 
     /**
-     * Hook to perform action after a record (with changes) was saved
+     * The snippets used for the create and edit actions.
      *
-     * As the data was already saved, it can NOT be changed anymore
-     *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
+     * @var mixed String or array of snippets name
      */
-    public function afterSave(array $data, $isNew)
-    {
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('tracks'));
-        return true;
-    }
+    protected $createEditSnippets = 'ModelFormSnippetGeneric';
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'Gems_Tracker_Snippets_Fields_FieldsAutosearchForm'
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -120,38 +96,12 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
      */
     public function createModel($detailed, $action)
     {
+        $request = $this->getRequest();
+        $data    = $request->getParams();
         $trackId = $this->_getIdParam();
+        $engine  = $this->loader->getTracker()->getTrackEngine($trackId);
 
-        $engine = $this->loader->getTracker()->getTrackEngine($trackId);
-        $model  = $engine->getFieldsMaintenanceModel($detailed, $action);
-
-        if ($detailed) {
-            $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
-        }
-        $model->set('gtf_id_order', 'label', $this->_('Order'));
-        $model->set('gtf_field_name', 'label', $this->_('Name'));
-        $model->set('gtf_field_code', 'label', $this->_('Code Name'));
-        if ($detailed) {
-            $model->set('gtf_field_description', 'label', $this->_('Description'));
-        }
-        $model->set('gtf_field_values', 'label', $this->_('Values'));
-        $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $model->getFieldTypes(), 'default', 'text');
-        $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
-        $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
-        if ($detailed && $action == 'create') {
-            // Set the default round order
-            $new_order = $this->db->fetchOne(
-                    "SELECT MAX(gtf_id_order) FROM gems__track_fields WHERE gtf_id_track = ?",
-                    $this->_getParam(MUtil_Model::REQUEST_ID));
-
-            if ($new_order) {
-                $model->set('gtf_id_order', 'default', $new_order + 10);
-            }
-        }
-
-        if ($trackId) {
-            $model->set('gtf_id_track', 'default', $trackId);
-        }
+        $model   = $engine->getFieldsMaintenanceModel($detailed, $action, $data);
 
         return $model;
     }
@@ -161,7 +111,7 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
      *
      * Uses $this->getModel()
      *      $this->addFormElements()
-     */
+     * /
     public function deleteAction()
     {
         $field = $this->_getParam('fid');
@@ -188,35 +138,33 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Returns a text element for autosearch. Can be overruled.
+     * Helper function to get the title for the index action.
      *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return $string
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    public function getIndexTitle()
     {
-        $elements = parent::getAutoSearchElements($model, $data);
-        $elements[] = new Zend_Form_Element_Hidden(MUtil_Model::REQUEST_ID);
-
-        return $elements;
+        return sprintf($this->_('Fields %s'), $this->util->getTrackData()->getTrackTitle($this->_getIdParam()));
     }
 
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('field', 'fields', $count);
     }
 
-    public function getTopicTitle()
-    {
-
-        return $this->_('Fields') . ' ' .
-            $this->util->getTrackData()->getTrackTitle($this->_getIdParam());
-    }
-
+    /**
+     * Set the menu
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
     public function init()
     {
         // Make sure the menu knows the track type
