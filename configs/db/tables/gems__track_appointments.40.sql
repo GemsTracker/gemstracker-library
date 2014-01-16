@@ -17,7 +17,7 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_created            timestamp not null,
         gtap_created_by         bigint unsigned not null,
 
-        PRIMARY KEY (gtap_id_field),
+        PRIMARY KEY (gtap_id_app_field),
         INDEX (gtap_id_track),
         INDEX (gtap_id_order)
     )

@@ -1629,9 +1629,9 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * When there is more than one key a increasing number is added to
      * MUtil_Model::REQUEST_ID starting with 1.
      *
-     * String key names ar eleft as is.
+     * String key names are left as is.
      *
-     * @param array $keys
+     * @param array $keys [alternative_]name or number => name
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setKeys(array $keys)

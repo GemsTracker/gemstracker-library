@@ -63,13 +63,14 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        $bridge->addHidden('sub');
         $bridge->addHidden('gtf_id_field');
         $bridge->addExhibitor('gtf_id_track');
         $bridge->addSelect('gtf_field_type', 'onchange', 'this.form.submit();');
         $bridge->addText('gtf_field_name', 'size', '30',
                 'minlength', 4,
-                'required', true,
-                'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
+                'required', true //,
+                // 'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
                 );
         $bridge->addText('gtf_id_order');
         $bridge->addText('gtf_field_code', 'minlength', 4,
@@ -120,24 +121,10 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
     public function createModel($detailed, $action)
     {
         $trackId = $this->_getIdParam();
-        $types   = array(
-            'select'      => $this->_('Select one'),
-            'multiselect' => $this->_('Select multiple'),
-            'appointment' => $this->_('Appointment'),
-            'date'        => $this->_('Date'),
-            'text'        => $this->_('Free text'));
 
         $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         $model  = $engine->getFieldsMaintenanceModel($detailed, $action);
 
-        MUtil_Echo::track(get_class($model), $model instanceof MUtil_Model_UnionModelAbstract, $model instanceof MUtil_Model_ModelAbstract);
-
-        //*
-        $model = new MUtil_Model_TableModel('gems__track_fields');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
-        // */
-
-        $model->setKeys(array('fid' => 'gtf_id_field', MUtil_Model::REQUEST_ID => 'gtf_id_track'));
         if ($detailed) {
             $model->set('gtf_id_track', 'label', $this->_('Track'), 'multiOptions', $this->util->getTrackData()->getAllTracks());
         }
@@ -148,7 +135,7 @@ class Gems_Default_TrackFieldsAction  extends Gems_Controller_BrowseEditAction
             $model->set('gtf_field_description', 'label', $this->_('Description'));
         }
         $model->set('gtf_field_values', 'label', $this->_('Values'));
-        $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $types, 'default', 'text');
+        $model->set('gtf_field_type', 'label', $this->_('Type'), 'multiOptions', $model->getFieldTypes(), 'default', 'text');
         $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         $model->set('gtf_readonly', 'label', $this->_('Readonly'), 'multiOptions', $this->util->getTranslated()->getYesNo());
         if ($detailed && $action == 'create') {

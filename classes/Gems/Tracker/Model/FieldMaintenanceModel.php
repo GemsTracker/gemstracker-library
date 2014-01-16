@@ -44,30 +44,161 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModelAbstract
+class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 {
     /**
      *
-     * @param string $modelName Hopefully unique model name
+     * @var Zend_Translate
      */
-    public function __construct($modelName = 'fields_maintenance')
+    protected $translate;
+
+    /**
+     *
+     * @var Zend_Translate_Adapter
+     */
+    protected $translateAdapter;
+
+    /**
+     *
+     * @param string $modelName Hopefully unique model name
+     * @param string $modelField The name of the field used to store the sub model
+     */
+    public function __construct($modelName = 'fields_maintenance', $modelField = 'sub')
     {
-        parent::__construct($modelName);
+        parent::__construct($modelName, $modelField);
 
         $model = new MUtil_Model_TableModel('gems__track_fields');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
+        $this->addUnionModel($model, null, 'f');
 
-        $this->addUnionModel($model);
+        $model = new MUtil_Model_TableModel('gems__track_appointments');
+        Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
+
+        $map = $model->getItemsOrdered();
+        $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
+        $map['gtap_id_app_field'] = 'gtf_id_field';
+
+        $this->addUnionModel($model, $map, 'a');
+
+        $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
+        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
+
+        $this->setKeys(array(
+            Gems_Model::FIELD_ID => 'gtf_id_field',
+            MUtil_Model::REQUEST_ID => 'gtf_id_track',
+            ));
+        $this->setClearableKeys(array(Gems_Model::FIELD_ID => 'gtf_id_field'));
+    }
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function _($text, $locale = null)
+    {
+        return $this->translateAdapter->_($text, $locale);
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->initTranslateable();
+    }
+
+    /**
+     * The list of field types
+     *
+     * @return array of storage name => label
+     */
+    public function getFieldTypes()
+    {
+        return array(
+            'select'      => $this->_('Select one'),
+            'multiselect' => $this->_('Select multiple'),
+            'appointment' => $this->_('Appointment'),
+            'date'        => $this->_('Date'),
+            'text'        => $this->_('Free text'),
+            );
     }
 
     /**
      * Get the name of the union model that should be used for this row.
-     * 
+     *
      * @param array $row
      * @return string
      */
     protected function getModelNameForRow(array $row)
     {
-        return 'gems__track_fields';
+        if (isset($row['gtf_field_type']) && ('appointment' === $row['gtf_field_type'])) {
+            return 'a';
+        }
+        return 'f';
+    }
+
+    /**
+     * Function that checks the setup of this class/traight
+     *
+     * This function is not needed if the variables have been defined correctly in the
+     * source for this object and theose variables have been applied.
+     *
+     * return @void
+     */
+    protected function initTranslateable()
+    {
+        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+            // OK
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate) {
+            // Just one step
+            $this->translateAdapter = $this->translate->getAdapter();
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate_Adapter) {
+            // It does happen and if it is all we have
+            $this->translateAdapter = $this->translate;
+            return;
+        }
+
+        // Make sure there always is an adapter, even if it is fake.
+        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
+    }
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string using plural notations
+     * Returns the translated string
+     *
+     * @see Zend_Locale
+     * @param  string             $singular Singular translation string
+     * @param  string             $plural   Plural translation string
+     * @param  integer            $number   Number for detecting the correct plural
+     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function plural($singular, $plural, $number, $locale = null)
+    {
+        $args = func_get_args();
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 }

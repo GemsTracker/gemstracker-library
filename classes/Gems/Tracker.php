@@ -311,6 +311,22 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     }
 
     /**
+     * Dynamically load and create a [Gems|Project]_Tracker class
+     *
+     * @param string $className
+     * @param mixed $param1
+     * @param mixed $param2
+     * @return object
+     */
+    public function createTrackClass($className, $param1 = null, $param2 = null)
+    {
+        $params = func_get_args();
+        array_shift($params);
+
+        return $this->_loadClass($className, true, $params);
+    }
+
+    /**
      * Utility function for detecting unchanged values.
      *
      * @param array $oldValues

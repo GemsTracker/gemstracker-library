@@ -672,11 +672,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return Gems_Tracker_Model_FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed, $action)
     {
-        return new Gems_Tracker_Model_FieldMaintenanceModel();
+        return $this->tracker->createTrackClass('Model_FieldMaintenanceModel');
     }
 
     /**

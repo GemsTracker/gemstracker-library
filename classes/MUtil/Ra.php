@@ -530,6 +530,34 @@ class MUtil_Ra
     }
 
     /**
+     * Maps the key names in the array from the current name to the new
+     * name in the $mapArray
+     *
+     * @param array $sourceArray The array the replace the key names in
+     * @param array $mapArray array containing current name => new name
+     * @param boolean $recursive When true sub arrays are also mapped
+     * @return array
+     */
+    public static function map(array $sourceArray, array $mapArray, $recursive = false)
+    {
+        $result = array();
+        foreach ($sourceArray as $name => $value) {
+
+            if ($recursive && is_array($value)) {
+                $value = self::map($value, $mapArray, true);
+            }
+
+            if (isset($mapArray[$name])) {
+                $result[$mapArray[$name]] = $value;
+            } else {
+                $result[$name] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns a sequential array of all non-scalar values in $value,
      * recursing through any nested arrays.
      *

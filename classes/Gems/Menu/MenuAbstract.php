@@ -635,11 +635,11 @@ abstract class Gems_Menu_MenuAbstract
         $fpage->addCreateAction('pr.track-maintenance.create')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
         $fpage->addShowAction()
-                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field');
+                ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field', 'sub', 'sub');
         $fpage->addEditAction('pr.track-maintenance.edit')
-                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
         $fpage->addDeleteAction('pr.track-maintenance.delete')
-                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track');
+                ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
 
         // Standard tracks
         $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')

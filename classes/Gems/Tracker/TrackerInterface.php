@@ -92,6 +92,16 @@ interface Gems_Tracker_TrackerInterface
     public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
 
     /**
+     * Dynamically load and create a [Gems|Project]_Tracker class
+     *
+     * @param string $className
+     * @param mixed $param1
+     * @param mixed $param2
+     * @return object
+     */
+    public function createTrackClass($className, $param1 = null, $param2 = null);
+    
+    /**
      * Creates a new token with a new random token Id
      *
      * @param array $tokenData The other new data for the token

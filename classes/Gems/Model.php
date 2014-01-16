@@ -54,6 +54,11 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     const APPOINTMENT_ID = 'aid';
 
     /**
+     * Request key for track fields
+     */
+    const FIELD_ID = 'fid';
+
+    /**
      * Request key for respondent tracks
      */
     const RESPONDENT_TRACK = 'rt';

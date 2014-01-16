@@ -176,7 +176,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return Gems_Tracker_Model_FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed, $action);
 
