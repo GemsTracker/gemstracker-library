@@ -28,50 +28,35 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentFormSnippet.php$
+ * @version    $Id: FieldDeleteSnippet.php $
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Tracker
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentFormSnippet extends Gems_Snippets_ModelFormSnippetAbstract
+class Gems_Tracker_Snippets_Fields_FieldDeleteSnippet extends Gems_Snippets_ModelItemYesNoDeleteSnippetGeneric
 {
     /**
+     * Set what to do when the form is 'finished'.
      *
-     * @var GemsLoader
+     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
-    protected $loader;
-
-    /**
-     *
-     * @var MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
+    protected function setAfterDeleteRoute()
     {
-        if (! $this->model instanceof Gems_Model_AppointmentModel) {
-            $this->model = $this->loader->getModels()->createAppointmentModel();
-            $this->model->applyDetailSettings();
-        }
-        $this->model->set('gap_admission_time', 'formatFunction', array($this, 'displayDate'));
-        $this->model->set('gap_discharge_time', 'formatFunction', array($this, 'displayDate'));
+        parent::setAfterDeleteRoute();
 
-        return $this->model;
+        if ($this->afterSaveRouteUrl) {
+            $this->afterSaveRouteUrl[MUtil_Model::REQUEST_ID] = $this->request->getParam(MUtil_Model::REQUEST_ID);
+        }
     }
 }

@@ -357,7 +357,10 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
     {
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction, MUtil_Model::REQUEST_ID => $this->tokenId);
+            $this->afterSaveRouteUrl = array(
+                $this->request->getActionKey() => $this->routeAction,
+                MUtil_Model::REQUEST_ID => $this->tokenId,
+                );
         }
         if (isset($this->formData['add_to_track']) && $this->formData['add_to_track']) {
             $this->afterSaveRouteUrl[$this->request->getControllerKey()] = 'track';

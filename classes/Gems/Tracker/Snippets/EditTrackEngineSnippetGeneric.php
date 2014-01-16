@@ -299,19 +299,4 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
             $this->trackEngine->convertTo($this->formData['gtr_track_class']);
         }
     }
-
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return EditTrackEngineSnippet (continuation pattern)
-     */
-    protected function setAfterSaveRoute()
-    {
-        // Default is just go to the index
-        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction, MUtil_Model::REQUEST_ID => $this->trackId);
-        }
-
-        return $this;
-    }
 }

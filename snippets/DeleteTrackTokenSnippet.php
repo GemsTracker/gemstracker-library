@@ -301,7 +301,10 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
     {
         // Default is just go to the index
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array($this->request->getActionKey() => $this->routeAction, MUtil_Model::REQUEST_ID => $this->_replacementTokenId ? $this->_replacementTokenId : $this->tokenId);
+            $this->afterSaveRouteUrl = array(
+                $this->request->getActionKey() => $this->routeAction,
+                MUtil_Model::REQUEST_ID => $this->_replacementTokenId ? $this->_replacementTokenId : $this->tokenId,
+                );
         }
 
         return $this;

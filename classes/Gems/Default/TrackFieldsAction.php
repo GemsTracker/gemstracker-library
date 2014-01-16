@@ -67,11 +67,11 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
     public $cacheTags = array('track', 'tracks');
 
     /**
-     * The snippets used for the create and edit actions.
+     * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
      */
-    protected $createEditSnippets = 'ModelFormSnippetGeneric';
+    protected $deleteSnippets = 'Gems_Tracker_Snippets_Fields_FieldDeleteSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -107,34 +107,42 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
     }
 
     /**
-     * Creates a form to delete a record
+     * Helper function to get the question for the delete action.
      *
-     * Uses $this->getModel()
-     *      $this->addFormElements()
-     * /
-    public function deleteAction()
+     * @return $string
+     */
+    public function getDeleteQuestion()
     {
         $field = $this->_getParam('fid');
-        $used  = $this->db->fetchOne("SELECT COUNT(*) FROM gems__respondent2track2field WHERE gr2t2f_id_field = ? AND gr2t2f_value IS NOT NULL", $field);
-
-        if ($this->isConfirmedItem($this->_('Delete %s'))) {
-            $model   = $this->getModel();
-            $deleted = $model->delete();
-
-            // Always perform delete, fields may be empty
-            $this->db->delete('gems__respondent2track2field', $this->db->quoteInto('gr2t2f_id_field = ?', $field));
-
-            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
-
-            if ($used) {
-                $this->addMessage(sprintf($this->plural('Field also deleted from %s assigned track.', 'Field also deleted from %s assigned tracks.', $used), $used));
-            }
-
-            $this->_reroute(array('action' => 'index', MUtil_Model::REQUEST_ID => $this->_getParam(MUtil_Model::REQUEST_ID)), true);
-
-        } elseif ($used) {
-            $this->addMessage(sprintf($this->plural('This field will be deleted from %s assigned track.', 'This field will be deleted from %s assigned tracks.', $used), $used));
+        if ('a' === $this->_getParam('sub')) {
+            $used  = $this->db->fetchOne(
+                    "SELECT COUNT(*)
+                        FROM gems__respondent2track2appointment
+                        WHERE gr2t2a_id_app_field = ? AND gr2t2a_id_appointment IS NOT NULL",
+                    $field
+                    );
+        } else {
+            $used  = $this->db->fetchOne(
+                    "SELECT COUNT(*)
+                        FROM gems__respondent2track2field
+                        WHERE gr2t2f_id_field = ? AND gr2t2f_value IS NOT NULL",
+                    $field
+                    );
         }
+
+        if (! $used) {
+            return $this->_('Do you want to delete this field?');
+        }
+
+        $this->addMessage(sprintf($this->plural(
+                'This field will be deleted from %s assigned track.',
+                'This field will be deleted from %s assigned tracks.',
+                $used), $used));
+
+        return sprintf($this->plural(
+                'Do you want to delete this field and the value stored for the field?',
+                'Do you want to delete this field and the %s values stored for the field?',
+                $used), $used);
     }
 
     /**

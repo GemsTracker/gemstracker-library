@@ -275,6 +275,36 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     }
 
     /**
+     * Delete items from the model
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filter
+     * @return int The number of items deleted
+     */
+    public function delete($filter = true)
+    {
+        $rows = $this->load($filter);
+
+        foreach ($rows as $row) {
+            $name = $this->getModelNameForRow($row);
+
+            if ('f' === $name) {
+                $this->db->delete(
+                        'gems__respondent2track2field',
+                        $this->db->quoteInto('gr2t2f_id_field = ?', $field)
+                        );
+
+            } elseif ('a' === $name) {
+                $this->db->delete(
+                        'gems__respondent2track2appointment',
+                        $this->db->quoteInto('gr2t2a_id_app_field= ?', $field)
+                        );
+            }
+        }
+
+        return parent::delete($filter);
+    }
+
+    /**
      * Put each value on a separate line
      *
      * @param string $values

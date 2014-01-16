@@ -162,8 +162,8 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
 
         if (! $this->roundId) {
             $this->roundId = $this->request->getParam(Gems_Model::ROUND_ID);
-        }      
-       
+        }
+
         $this->createData = (! $this->roundId);
 
         return parent::hasHtmlOutput();
@@ -207,23 +207,5 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
             $this->roundId = $this->formData['gro_id_round'];
         }
         $this->trackEngine->updateRoundCount($this->userId);
-    }
-
-    /**
-     * Set what to do when the form is 'finished'.
-     *
-     * @return EditSingleSurveyTokenSnippet (continuation pattern)
-     */
-    protected function setAfterSaveRoute()
-    {
-        // Default is just go to the index
-        if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
-            $this->afterSaveRouteUrl = array(
-                $this->request->getActionKey() => $this->routeAction,
-                MUtil_Model::REQUEST_ID => $this->trackId,
-                Gems_Model::ROUND_ID => $this->roundId);
-        }
-
-        return $this;
     }
 }
