@@ -192,10 +192,10 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
     public function copyAction()
     {
-        $trackId = $this->_getIdParam();        
-        $engine = $this->loader->getTracker()->getTrackEngine($trackId);        
+        $trackId = $this->_getIdParam();
+        $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         $newTrackId = $engine->copyTrack($trackId);
-                
+
         $this->_reroute(array('action' => 'edit', MUtil_Model::REQUEST_ID => $newTrackId));
     }
 
@@ -257,18 +257,14 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
             } break;
 
             case "fields": {
-                $model = new MUtil_Model_TableModel('gems__track_fields');
-                Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
-                $model->setKeys(array('id' => 'gtf_id_track'));
-                $model->set('gtf_field_name', 'label', $this->_('Name'));
-                $model->set('gtf_field_values', 'label', $this->_('Values'));
-                $model->set('gtf_field_type', 'label', $this->_('Type'));
-                $model->set('gtf_required', 'label', $this->_('Required'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+                $trackId = $this->_getIdParam();
+                $engine = $tracker->getTrackEngine($trackId);
+                $model = $engine->getFieldsMaintenanceModel(false, $action, $this->getRequest()->getParams());
                 $model->addSort(array('gtf_id_order' => SORT_ASC));
             } break;
 
             default: {
-                $model = $this->loader->getTracker()->getTrackModel();
+                $model = $tracker->getTrackModel();
                 $model->applyFormatting($detailed);
             }
         }
