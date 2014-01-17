@@ -716,3 +716,6 @@ INSERT ignore INTO gems__comm_jobs (gcj_id_job,
         gmj_created,
         gmj_created_by
         FROM gems__mail_jobs);
+
+-- GEMS VERSION: 54
+-- PATCH:
