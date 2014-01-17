@@ -179,10 +179,6 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         // Display of data field
         if (! (isset($data['gtf_field_type']) && $data['gtf_field_type'])) {
-            if (isset($data['gtf_field_type'])) {
-                $data[$this->_modelField] = $this->getModelNameForRow($data);
-            }
-
             if (isset($data[$this->_modelField]) && ($data[$this->_modelField] === 'a')) {
                 $data['gtf_field_type'] = 'appointment';
             } else {
@@ -195,9 +191,15 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                             $data[Gems_Model::FIELD_ID]
                             );
                 } else  {
-                    $data['gtf_field_type'] = 'select';
+                    if (! $this->has('gtf_field_type', 'default')) {
+                        $this->set('gtf_field_type', 'default', 'text');
+                    }
+                    $data['gtf_field_type'] = $this->get('gtf_field_type', 'default');
                 }
             }
+        }
+        if (! isset($data[$this->_modelField])) {
+            $data[$this->_modelField] = $this->getModelNameForRow($data);
         }
 
         if ($data['gtf_field_type'] === 'select' || $data['gtf_field_type'] === 'multiselect') {
@@ -232,7 +234,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         } else {
             $sql = false;
         }
-        if ($sql) {
+        if ($sql && isset($data[Gems_Model::FIELD_ID])) {
             $noSubChange = $this->db->fetchOne($sql, $data[Gems_Model::FIELD_ID]);
         }
 

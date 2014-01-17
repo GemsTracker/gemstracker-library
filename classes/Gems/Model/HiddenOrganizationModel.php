@@ -55,12 +55,6 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
 
     /**
      *
-     * @var Zend_Translate
-     */
-    protected $translate;
-
-    /**
-     *
      * @var Gems_User_User
      */
     protected $user;
@@ -73,6 +67,8 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
      */
     public function afterRegistry()
     {
+        parent::afterRegistry();
+
         if (! $this->user) {
             $this->user = $this->loader->getCurrentUser();
         }
@@ -109,10 +105,12 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
             if (isset($parameters[MUtil_Model::REQUEST_ID2]) &&
                 (! array_key_exists($parameters[MUtil_Model::REQUEST_ID2], $this->user->getAllowedOrganizations()))) {
 
+                $this->initTranslateable();
+
                 throw new Gems_Exception(
-                        $this->translate->_('Inaccessible or unknown organization'),
+                        $this->_('Inaccessible or unknown organization'),
                         403, null,
-                        sprintf($this->translate->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
+                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
             }
 
             return parent::applyParameters($parameters);

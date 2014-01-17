@@ -159,20 +159,19 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->resetOrder();
 
         $agenda     = $this->loader->getAgenda();
-        $translator = $this->getTranslateAdapter();
 
-        $this->setIfExists('gap_admission_time',     'label', $translator->_('Appointment'),
+        $this->setIfExists('gap_admission_time',     'label', $this->_('Appointment'),
                 // 'formatFunction', array($this->util->getTranslated(), 'formatDateTime'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $translator->_('dd-mm-yyyy hh:mm'));
-        $this->setIfExists('gap_status',             'label', $translator->_('Type'),
+                'description', $this->_('dd-mm-yyyy hh:mm'));
+        $this->setIfExists('gap_status',             'label', $this->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
-        $this->setIfExists('gas_name',              'label', $translator->_('With'));
-        $this->setIfExists('gaa_name',              'label', $translator->_('Activities'));
-        $this->setIfExists('gapr_name',             'label', $translator->_('Procedures'));
-        $this->setIfExists('glo_name',              'label', $translator->_('Location'));
-        $this->setIfExists('gor_name',              'label', $translator->_('Organization'));
-        $this->setIfExists('gap_subject',           'label', $translator->_('Comment'));
+        $this->setIfExists('gas_name',              'label', $this->_('With'));
+        $this->setIfExists('gaa_name',              'label', $this->_('Activities'));
+        $this->setIfExists('gapr_name',             'label', $this->_('Procedures'));
+        $this->setIfExists('glo_name',              'label', $this->_('Location'));
+        $this->setIfExists('gor_name',              'label', $this->_('Organization'));
+        $this->setIfExists('gap_subject',           'label', $this->_('Comment'));
 
         return $this;
     }
@@ -191,31 +190,30 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $agenda     = $this->loader->getAgenda();
         $dbLookup   = $this->util->getDbLookup();
         $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
-        $translator = $this->getTranslateAdapter();
 
-        $this->setIfExists('gap_admission_time',  'label', $translator->_('Appointment'),
+        $this->setIfExists('gap_admission_time',  'label', $this->_('Appointment'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $translator->_('dd-mm-yyyy hh:mm'));
-        $this->setIfExists('gap_discharge_time',  'label', $translator->_('Discharge'),
+                'description', $this->_('dd-mm-yyyy hh:mm'));
+        $this->setIfExists('gap_discharge_time',  'label', $this->_('Discharge'),
                 'dateFormat',  'dd-MM-yyyy HH:mm',
-                'description', $translator->_('dd-mm-yyyy hh:mm'));
-        $this->setIfExists('gap_code',            'label', $translator->_('Type'),
+                'description', $this->_('dd-mm-yyyy hh:mm'));
+        $this->setIfExists('gap_code',            'label', $this->_('Type'),
                 'multiOptions', $agenda->getTypeCodes());
-        $this->setIfExists('gap_status',          'label', $translator->_('Status'),
+        $this->setIfExists('gap_status',          'label', $this->_('Status'),
                 'multiOptions', $agenda->getStatusCodes());
 
-        $this->setIfExists('gap_id_attended_by',  'label', $translator->_('With'),
+        $this->setIfExists('gap_id_attended_by',  'label', $this->_('With'),
                 'multiOptions', $empty + $agenda->getHealthcareStaff());
-        $this->setIfExists('gap_id_referred_by',  'label', $translator->_('Referrer'),
+        $this->setIfExists('gap_id_referred_by',  'label', $this->_('Referrer'),
                 'multiOptions', $empty + $agenda->getHealthcareStaff());
-        $this->setIfExists('gap_id_activity',     'label', $translator->_('Activities'));
-        $this->setIfExists('gap_id_procedure',    'label', $translator->_('Procedures'));
-        $this->setIfExists('gap_id_location',     'label', $translator->_('Location'));
-        $this->setIfExists('gap_id_organization', 'label', $translator->_('Organization'),
+        $this->setIfExists('gap_id_activity',     'label', $this->_('Activities'));
+        $this->setIfExists('gap_id_procedure',    'label', $this->_('Procedures'));
+        $this->setIfExists('gap_id_location',     'label', $this->_('Location'));
+        $this->setIfExists('gap_id_organization', 'label', $this->_('Organization'),
                 'elementClass', 'Exhibitor',
                 'multiOptions', $empty + $dbLookup->getOrganizations());
-        $this->setIfExists('gap_subject',         'label', $translator->_('Subject'));
-        $this->setIfExists('gap_comment',         'label', $translator->_('Comment'));
+        $this->setIfExists('gap_subject',         'label', $this->_('Subject'));
+        $this->setIfExists('gap_comment',         'label', $this->_('Comment'));
 
         if ($setMulti) {
             $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $agenda->getActivities());
@@ -250,24 +248,5 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations($orgId));
 
         return $this;
-    }
-
-    /**
-     * Returns a translate adaptor
-     *
-     * @return Zend_Translate_Adapter
-     */
-    protected function getTranslateAdapter()
-    {
-        if ($this->translate instanceof Zend_Translate)
-        {
-            return $this->translate->getAdapter();
-        }
-
-        if (! $this->translate instanceof Zend_Translate_Adapter) {
-            $this->translate = new MUtil_Translate_Adapter_Potemkin();
-        }
-
-        return $this->translate;
     }
 }

@@ -74,6 +74,9 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
      */
     protected $util;
 
+    /**
+     * Construct a track model
+     */
     public function __construct()
     {
         parent::__construct('gems__tracks');
