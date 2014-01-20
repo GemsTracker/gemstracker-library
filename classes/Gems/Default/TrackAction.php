@@ -53,6 +53,12 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
      */
     public $addTrackContentSnippets = 'TrackSurveyOverviewSnippet';
 
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
     public $sortKey = array('gr2t_created' => SORT_DESC);
 
     public $summarizedActions = array('index', 'autofilter', 'create', 'delete-track', 'edit-track', 'show-track', 'export-track');
@@ -434,6 +440,33 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     public function editTrackAction()
     {
         $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+
+        if ((! $respTrackId) && $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+
+            list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
+
+            if ($patientId && $orgId) {
+                $select = $this->db->select();
+                $select->from('gems__respondent2track', array('gr2t_id_respondent_track'))
+                        ->joinInner(
+                                'gems__respondent2org',
+                                'gr2t_id_user = gr2o_id_user AND gr2t_id_organization = gr2o_id_organization',
+                                array()
+                                )
+                        ->where('gr2o_patient_nr = ?', $patientId)
+                        ->where('gr2o_id_organization = ?', $orgId)
+                        ->order('gr2t_start_date DESC');
+
+                $trackId = $this->_getParam(Gems_Model::TRACK_ID);
+
+                if ($trackId) {
+                    $select->where('gr2t_id_track = ?', $trackId);
+                }
+
+                $respTrackId = $this->db->fetchOne($select);
+            }
+        }
+
         $respTrack   = $this->loader->getTracker()->getRespondentTrack($respTrackId);
 
         // Set variables for the menu
@@ -551,8 +584,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         $model   = $this->getModel();
 
         // Gems_Menu::$verbose = true;
+        $data = $model->applyRequest($request)->loadFirst();
 
-        if ($data = $model->applyRequest($request)->loadFirst()) {
+        if ($data) {
+            $data['track_can_be_created'] = 0;
             $this->setMenuParameters($data);
             // MUtil_Echo::track($data);
             if ($data['grc_description']) {
@@ -588,7 +623,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
                 foreach ($fieldValues as $field) {
                     $fieldDisplayValue   = $field['gr2t2f_value'];
-                    
+
                     if (array_key_exists($field['gtf_id_field'], $fieldsElements) && $fieldsElements[$field['gtf_id_field']] instanceof Zend_Form_Element_Select) {
                         $fieldDisplayElement = $fieldsElements[$field['gtf_id_field']];
                         $multiOptions = $fieldDisplayElement->getMultiOptions();

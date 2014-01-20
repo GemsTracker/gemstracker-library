@@ -355,6 +355,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
                     ->addHiddenParameter('track_can_be_created', 1);
+            $subPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 0)
+                    ->addHiddenParameter('track_can_be_created', 0);
 
         } else {
 

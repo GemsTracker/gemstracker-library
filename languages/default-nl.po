@@ -1965,7 +1965,7 @@ msgstr "Filter"
 
 #: classes/Gems/Default/FileActionAbstract.php:97
 msgid "File (local)"
-msgstr "Bestand (relatief)"
+msgstr "Bestand (lokaal)"
 
 #: classes/Gems/Default/FileActionAbstract.php:105
 msgid "Filename"
@@ -6337,7 +6337,7 @@ msgstr "Onbekende translator '%s'. Moet één van deze zijn: %s"
 #: classes/MUtil/Task/File/CopyFileWhenTask.php:85
 #, php-format
 msgid "Copied file to \"%s\"."
-msgstr "Bestaand gekopiëerd naar \"%s\"."
+msgstr "Bestand gekopiëerd naar \"%s\"."
 
 #: classes/MUtil/Task/File/CopyFileWhenTask.php:88
 #, php-format

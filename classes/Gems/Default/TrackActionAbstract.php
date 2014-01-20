@@ -283,7 +283,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function emailAction()
     {
-        
+
         $params['mailTarget']   = 'token';
         $params['menu']         = $this->menu;
         $params['model']        = $this->getModel();
@@ -404,7 +404,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         }
 
         $this->respondentName = trim($data['grs_first_name'] . ' ' . $data['grs_surname_prefix']) . ' ' . $data['grs_last_name'];
-        
+
         return $this->respondentName;
     }
 
@@ -503,7 +503,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         }
 
         // NOW FOR THE VALUES WE NEED BUT HAVE NO CONSTANT
-        foreach (array('can_be_taken', 'can_edit', 'can_email', 'is_completed', 'grc_success', 'gsu_id_survey', 'gsu_has_pdf') as $key) {
+        foreach (array('track_can_be_created', 'can_be_taken', 'can_edit', 'can_email', 'is_completed', 'grc_success', 'gsu_id_survey', 'gsu_has_pdf') as $key) {
             if (isset($data[$key])) {
                 $source->offsetSet($key, $data[$key]);
             }
