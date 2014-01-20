@@ -86,7 +86,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
                 $model = $this->loader->getModels()->getRespondentModel(true);
                 $model->applyEditSettings();
                 return $model;
-                
+
             case 'calendar':
                 $model = new Gems_Model_AppointmentModel();
                 $this->applySource($model);
@@ -169,7 +169,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      * @param string $filename Name of file to import
      * @return string or false if none found.
      */
-    protected function getFilenameController($filename)
+    public function getFilenameController($filename)
     {
         $filename = strtolower(basename($filename));
         if (preg_match('/^respondent/', $filename)) {

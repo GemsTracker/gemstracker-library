@@ -88,6 +88,9 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      */
     public function _($text, $locale = null)
     {
+        if (! $this->translateAdapter) {
+            $this->initTranslateable();
+        }
         return $this->translateAdapter->_($text, $locale);
     }
 
@@ -230,6 +233,9 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
      */
     public function plural($singular, $plural, $number, $locale = null)
     {
+        if (! $this->translateAdapter) {
+            $this->initTranslateable();
+        }
         $args = func_get_args();
         return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
