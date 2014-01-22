@@ -193,7 +193,7 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        if ($this->request) {
+        if ($this->request instanceof Zend_Controller_Request_Abstract) {
             $model->applyRequest($this->request, $this->removePost);
         }
     }

@@ -383,6 +383,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
             foreach ($this->_tables as $name => $table) {
                 $select->columns(Zend_Db_Select::SQL_WILDCARD, $name);
             }
+            foreach ($this->getCol('column_expression') as $name => $expression) {
+                $select->columns(array($name => $expression));
+            }
         }
 
         return $select;

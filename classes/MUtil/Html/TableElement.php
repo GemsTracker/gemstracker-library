@@ -47,12 +47,28 @@
 class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Html_ColumnInterface, MUtil_Html_FormLayout
 {
     /**
-     * Content position constants
+     * Content position constant for caption
      */
     const CAPTION = 'caption';
+
+    /**
+     * Content position constant for colgroup
+     */
     const COLGROUPS = 'colgroups';
+
+    /**
+     * Content position constant for tbody
+     */
     const TBODY = 'tbody';
+
+    /**
+     * Content position constant for tfoot
+     */
     const TFOOT = 'tfoot';
+
+    /**
+     * Content position constant for thead
+     */
     const THEAD = 'thead';
 
     /**
@@ -144,6 +160,16 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
      */
     protected $_prependString = "\n";
 
+    /**
+     * Extra array with special types for subclasses.
+     *
+     * When an object of one of the key types is used, then use
+     * the class method defined as the value.
+     *
+     * @see $_specialTypesDefault
+     *
+     * @var array Of 'class or interfacename' => 'class method' of null
+     */
     protected $_specialTypes = array(
         'Zend_Form' => 'setAsFormLayout',
         );
@@ -168,6 +194,11 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         return parent::__call($name, $arguments);
     }
 
+    /**
+     * Create a table (no tag to specify)
+     *
+     * @param mixed $arg_array MUtil_Ra::args
+     */
     public function __construct($arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args());
@@ -716,6 +747,13 @@ class MUtil_Html_TableElement extends MUtil_Html_HtmlElement implements MUtil_Ht
         return self::createVar($data, $caption)->render($view);
     }
 
+    /**
+     * Set the row class to alternate per row, specify as many classes as required
+     *
+     * @param string $class1
+     * @param string $class2
+     * @return \MUtil_Html_TableElement
+     */
     public function setAlternateRowClass($class1 = 'odd', $class2 = 'even')
     {
         $args = func_get_args();
