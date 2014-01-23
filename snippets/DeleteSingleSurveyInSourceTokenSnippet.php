@@ -146,7 +146,7 @@ class DeleteSingleSurveyInSourceTokenSnippet extends Gems_Tracker_Snippets_EditS
     {
         $model = parent::createModel();
 
-        $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
+        $options = $this->util->getReceptionCodeLibrary()->getSingleSurveyDeletionCodes();
 
         $model->set('gto_reception_code',
             'label',        $model->get('grc_description', 'label'),

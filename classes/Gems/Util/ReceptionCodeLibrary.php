@@ -170,8 +170,8 @@ class Gems_Util_ReceptionCodeLibrary extends Gems_Registry_TargetAbstract
     public function getSingleSurveyDeletionCodes()
     {
         $select = $this->_getDeletionCodeSelect();
-        $select->where('(grc_for_surveys = ? OR grc_for_tracks = 1)', self::APPLY_DO)
-                ->where('grc_redo_survey = ?', self::REDO_NONE);
+        $select->where('(grc_for_surveys = ? OR grc_for_tracks = 1)', self::APPLY_DO);
+                //->where('grc_redo_survey = ?', self::REDO_NONE);
 
         return $this->db->fetchPairs($select);
     }
