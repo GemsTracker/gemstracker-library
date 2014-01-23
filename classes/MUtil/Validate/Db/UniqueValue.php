@@ -66,9 +66,10 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
      * identify the current row - that can have the value.
      * A database adapter may optionally be supplied to avoid using the registered default adapter.
      *
-     * @param string||array $table The database table to validate against, or array with table and schema keys
-     * @param string $field The field to check for a match
-     * @param string||array $keyFields Names of the key fields to filter out the row of the value
+     * @param string|array $table The database table to validate against, or array with table and schema keys
+     * @param string|array $field A field to check or an array of fields to check for an
+     * unique value combination, though only the value of the first will be shown
+     * @param string|array $keyFields Names of the key fields to filter out the row of the value
      * @param Zend_Db_Adapter_Abstract $adapter An optional database adapter to use.
      */
     public function __construct($table, $field, $keyFields, Zend_Db_Adapter_Abstract $adapter = null)
@@ -107,6 +108,18 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
         }
     }
 
+    /**
+     * Returns true if and only if $value meets the validation requirements
+     *
+     * If $value fails validation, then this method returns false, and
+     * getMessages() will return an array of messages that explain why the
+     * validation failed.
+     *
+     * @param  mixed $value
+     * @param  array $context
+     * @return boolean
+     * @throws Zend_Validate_Exception If validation of $value is impossible
+     */
     public function isValid($value, $context = array())
     {
         /**

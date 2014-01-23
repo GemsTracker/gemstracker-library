@@ -599,6 +599,23 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Creates a validator that checks that this value is used in no other
+     * row in the table of the $name field, except that row itself.
+     *
+     * If $excludes is specified it is used to create db_fieldname => $_POST mappings.
+     * When db_fieldname is numeric it is assumed both should be the same.
+     *
+     * If no $excludes the model creates a filter using the primary key of the table.
+     *
+     * @param string|array $name The name of a model field in the model or an array of them.
+     * @return MUtil_Validate_Db_UniqueValue A validator.
+     */
+    public function createUniqueValidator($name)
+    {
+        return new MUtil_Validate_Model_UniqueValue($this, $name);
+    }
+
+    /**
      * Delete all, one or some values for a certain field name.
      *
      * @param string $name Field name
@@ -1202,9 +1219,9 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Creates new items - in memory only. And returns them all
+     * Creates an array containing one new item - in memory only.
      *
-     * @return array Nested when $count is not null, otherwise just a simple array
+     * @return array Nested with one new row
      */
     public function loadAllNew()
     {

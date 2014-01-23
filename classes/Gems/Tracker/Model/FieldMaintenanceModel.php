@@ -251,13 +251,13 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->set('gtf_field_name',        'elementClass', 'Text',
                 'size', '30',
                 'minlength', 4,
-                'required', true //,
-                // 'validator', $model->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
+                'required', true,
+                'validator', $this->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
                 );
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
-                'validators[0]', 'Int',
-                'validators[1]', new Zend_Validate_GreaterThan(0)
+                'validators[int]', 'Int',
+                'validators[gt]', new Zend_Validate_GreaterThan(0)
                 );
 
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
