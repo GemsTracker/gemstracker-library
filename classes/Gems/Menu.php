@@ -477,6 +477,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        
+        $page->addPage($this->_('Mail Activity Log'), null, 'mail-log', 'resplog')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         $page->addImportAction();
 

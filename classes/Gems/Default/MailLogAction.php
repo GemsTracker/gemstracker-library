@@ -166,4 +166,45 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     {
         return $this->plural('mail activity', 'mail activities', $count);
     }
+    
+    public function resplogAction()  {
+        $model = $this->getModel();        
+        /* @var $model Gems_Model_JoinModel */        
+        $model->addTable('gems__respondent2org', array('grs_id_user' => 'gr2o_id_user'), 'gr2o');
+        $model->setKeys(array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization'));
+        
+        $model->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));        
+        $model->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
+        $model->addLeftTable('gems__track_fields', array('gro_id_relation' => 'gtf_id_field'));
+        $model->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
+        $model->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN 
+                COALESCE(gtf_field_name, ggp_name )
+                ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
+        
+        $model->set('ggp_name', 'label', $this->translate->getAdapter()->_('Fill out by'));
+
+        $respondent = $this->loader->getRespondent(
+                $this->getRequest()->getParam(MUtil_Model::REQUEST_ID1), 
+                $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
+            );
+        $params['contentTitle'] = sprintf($this->translate->_('Mail Activity Log for %s'), $respondent->getName());
+        
+        $this->addSnippets(array('Generic_ContentTitleSnippet'), $params);
+        
+        $this->autofilterParameters = array(
+            'browse'        => true,
+            'containingId'  => 'autofilter_target',
+            'keyboard'      => true,
+            'onEmpty'       => 'getOnEmptyText',
+            'sortParamAsc'  => 'asrt',
+            'sortParamDesc' => 'dsrt',
+            'extraSort'   => array('grco_created' => SORT_DESC)
+        );
+        
+        $this->autofilterSnippets = 'Respondent_MailLogSnippet';
+        
+        $this->autofilterAction(false);
+        
+        $this->addSnippets(array('Respondent_Relation_CurrentButtonRowSnippet'), array());
+    }
 }
