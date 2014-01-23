@@ -540,7 +540,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                         if ($this->isAutoSave($name)) {
                             continue;
                         }
-                        
+
                         if (is_object($returnValues[$name]) || is_object($value)) {
                             $noChange = $returnValues[$name] == $value;
                         } else {
@@ -725,10 +725,14 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 return new MUtil_Validate_Db_UniqueValue($table_name, $names, $excludes, $adapter);
             }
 
-            throw new MUtil_Model_ModelException("Cannot create UniqueValue validator as no keys were defined for table $table_name.");
+            throw new MUtil_Model_ModelException(
+                    "Cannot create UniqueValue validator as no keys were defined for table $table_name."
+                    );
         }
 
-        throw new MUtil_Model_ModelException("Cannot create UniqueValue validator as no table was defined for field $name.");
+        throw new MUtil_Model_ModelException(
+                "Cannot create UniqueValue validator as no table was defined for field $name."
+                );
     }
 
     /**

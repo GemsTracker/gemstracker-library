@@ -45,6 +45,9 @@ _('Installation not complete! Login is not yet possible!');
 _('Your account is temporarily blocked, please wait %s minutes');
 _('You are not allowed to login from this location.');
 
+// Gems_Validate_IPRanges
+_("One or more IPs are illegal.");
+
 // Gems_Validate_OneOf
 _("Either '%description%' or '%fieldDescription%' must be entered.");
 
@@ -98,11 +101,11 @@ _("'%value%' must contain only digits");
 _("'%value%' is an empty string");
 _("Invalid type given. String, integer or float expected");
 
-// Gems_Validate_IPRanges
-_("One or more IPs are illegal.");
-
 // Zend_Validate_File_Extension but altered in FormBridge
 _("Only %extension% files are accepted.");
+
+// Zend_Validate_GreaterThan
+_("'%value%' is not greater than '%min%'");
 
 /*
 _("Invalid type given, value should be a string");

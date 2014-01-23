@@ -424,7 +424,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $trackModel = $this->tracker->getTrackModel();
 
         $roundModel = $this->getRoundModel(true, 'rounds');
-        $fieldModel = $this->getFieldModel(true, 'fields');
+        $fieldModel = $this->getFieldsMaintenanceModel(false, 'fields', array());
 
         // First load the track
         $trackModel->applyParameters(array('id' => $oldTrackId));
