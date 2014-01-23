@@ -43,10 +43,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSourceInterface
+abstract class MUtil_Model_TableBridgeAbstract
 {
+    /**
+     *
+     * @var MUtil_Model_ModelAbstract
+     */
     protected $model;
-    protected $modelKeys;
+
+    /**
+     *
+     * @var type
+     */
     protected $repeater;
 
     /**
@@ -56,11 +64,24 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
      */
     protected $table;
 
+    /**
+     * Cascades call's to the underlying table
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixes
+     */
     public function __call($name, array $arguments)
     {
         return call_user_func_array(array($this->table,  $name), $arguments);
     }
 
+    /**
+     * Constructs a bridge for a model
+     *
+     * @param MUtil_Model_ModelAbstract $model The model it is all about
+     * @param MUtil_Html_ElementInterface $args_array
+     */
     public function __construct(MUtil_Model_ModelAbstract $model, $args_array = null)
     {
         $this->setModel($model);
@@ -75,12 +96,25 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         }
     }
 
+    /**
+     * Returns a lazy variable for this field.
+     *
+     * Lazy means that the value is esthablished only when rendering.
+     * When redering this value with a repeater it will return a different
+     * value for every row.
+     *
+     * @param string $name
+     * @return MUtil_Lazy_Abstract
+     * @throws MUtil_Model_ModelException
+     */
     public function __get($name)
     {
         $this->_checkName($name);
 
         if (! $this->model->has($name)) {
-            throw new MUtil_Model_ModelException(sprintf('Request for unknown item %s from model %s.', $name, $this->model->getName()));
+            throw new MUtil_Model_ModelException(
+                    sprintf('Request for unknown item %s from model %s.', $name, $this->model->getName())
+                    );
         }
 
         $value = $this->getLazy($name);
@@ -109,6 +143,14 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $value;
     }
 
+    /**
+     * Display the item correctly using the function
+     *
+     * @param mixed $item
+     * @param mxied $function When array each element is applied, when function it is executed,
+     * otherwise it is added to an HtmlElement
+     * @return \MUtil_Html_ElementInterface
+     */
     private static function _applyDisplayFunction($item, $function)
     {
         // MUtil_Echo::track($function);
@@ -144,6 +186,15 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $item;
     }
 
+    /**
+     * Returns a lazy version of the item wrapped in all the functions needed to
+     * display it correctly.
+     *
+     * @param string $name name of the model item
+     * @param mixed $item Lazy variable or a label
+     * @param booelan $forHeader if true uses header settings tableHeaderDisplay instead of itemDisplay
+     * @return type
+     */
     private function _applyDisplayFunctions($name, $item, $forHeader = false)
     {
         if (is_string($name)) {
@@ -161,6 +212,14 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $item;
     }
 
+    /**
+     * Return a lavel with optionally some display functions
+     * from the model wrapped around it lazely.
+     *
+     * @param mixed $label
+     * @param string $name
+     * @return mixed
+     */
     protected function _checkLabel($label, $name)
     {
         if (is_string($name)) {
@@ -174,15 +233,27 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $label;
     }
 
+    /**
+     * Checks name for being a key id field and in that case returns the real field name
+     *
+     * @param string $name
+     * @return string
+     */
     protected function _checkName(&$name)
     {
-        if (isset($this->modelKeys[$name])) {
-            $name = $this->modelKeys[$name];
+        $modelKeys = $this->model->getKeys();
+        if (isset($modelKeys[$name])) {
+            $name = $modelKeys[$name];
         }
 
         return $name;
     }
 
+    /**
+     *
+     * @param string $name
+     * @return MUtil_Lazy_LazyAbstract
+     */
     protected function _getLazyName($name)
     {
         if (is_string($name)) {
@@ -200,6 +271,8 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
      */
     public function getLazy($name)
     {
+        $this->_checkName($name);
+
         if (! $this->repeater) {
             $this->repeater = $this->table->getRepeater();
 
@@ -212,6 +285,12 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         return $this->repeater->$name;
     }
 
+    /**
+     * Returns the real underlying value. Not the lazy object.
+     *
+     * @param string $name
+     * @return mxied
+     */
     public function getLazyValue($name)
     {
         if (! $this->repeater) {
@@ -236,18 +315,25 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
         }
     }
 
-    public function getMenuParameter($name, $default)
+    /**
+     * Get the actual table
+     *
+     * @return MUtil_Html_TableElement
+     */
+    abstract public function getTable();
+
+    /**
+     * Returns true if name is in the model
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function has($name)
     {
         $this->_checkName($name);
 
-        if ($this->model->has($name)) {
-            return $this->getLazy($name);
-        }
-
-        return $default;
+        return $this->model->has($name);
     }
-
-    abstract public function getTable();
 
     /**
      * Add an item based of a lazy if
@@ -268,7 +354,6 @@ abstract class MUtil_Model_TableBridgeAbstract implements Gems_Menu_ParameterSou
     public function setModel(MUtil_Model_ModelAbstract $model)
     {
         $this->model     = $model;
-        $this->modelKeys = $this->model->getKeys();
 
         return $this;
     }

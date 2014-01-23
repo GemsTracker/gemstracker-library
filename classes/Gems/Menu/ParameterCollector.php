@@ -94,6 +94,11 @@ class Gems_Menu_ParameterCollector
                 }
                 $this->values[$name] = $value;
 
+            } elseif ($source instanceof MUtil_Model_TableBridgeAbstract) {
+                if ($source->has($name)) {
+                    $this->values[$name] = $source->getLazy($name);
+                }
+
             } elseif ($source instanceof Gems_Menu_ParameterSourceInterface) {
                 $this->values[$name] = $source->getMenuParameter($name, $this->values[$name]);
 

@@ -227,7 +227,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_addtoLastChild = false;
 
-
     /**
      * In some elements only certain elements are allowed as content. By specifying
      * $_allowedChildTags the element automatically ensures this is the case.
@@ -261,7 +260,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_allowedChildTags;
 
-
     /**
      * Usually no text is appended after an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
@@ -271,18 +269,15 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_appendString = '';
 
-
     /**
      * @var array The actual storage of the attributes.
      */
     protected $_attribs = array();
 
-
     /**
      * @var array The actual storage of the content.
      */
     protected $_content = array();
-
 
     /**
      * Allows the addition of any string content to an attribute with the name specified.
@@ -292,7 +287,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @var boolean|string When not false, content is not used as element content, but added to the attribute
      */
     protected $_contentToTag = false;
-
 
     /**
      * When content must contain certain element types only the default child tag contains
@@ -308,7 +302,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_defaultChildTag;
 
-
     /**
      * The last child element added.
      *
@@ -322,14 +315,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_lastChild;
 
-
     /**
      * Cache for Lazy object version of this element.
      *
      * @var MUtil_Lazy_ObjectWrap
      */
     protected $_lazy;
-
 
     /**
      * The content to display when there is no other data to display when rendering.
@@ -361,7 +352,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_onEmptyContent;
 
-
     /**
      * Usually no text is appended before an element, but for certain elements we choose
      * to add a "\n" newline character instead, to keep the output readable in source
@@ -370,7 +360,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @var string Content added before the element.
      */
     protected $_prependString = '';
-
 
     /**
      * The traditional method of outputting repeated data is added the items to the output
@@ -466,7 +455,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     protected $_repeater;
 
-
     /**
      * When repeatTags is false (the default) only the content is repeated but
      * not the element tags. When repeatTags is true the both the tags and the
@@ -477,7 +465,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @var boolean The repeatTags switch, default false.
      */
     protected $_repeatTags = false;
-
 
     /**
      * Extra array with special types for subclasses.
@@ -535,7 +522,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      */
     public $renderWithoutContent = true;
 
-
     /**
      * The tagName is always set at element creation, but can be changed
      * later on.
@@ -546,7 +532,6 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
      * @var string The tagname
      */
     public $tagName;
-
 
     /**
      * Adds an HtmlElement to this element
@@ -610,6 +595,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         $this->_processParameters($args);
     }
 
+    /**
+     * Returns the attribute, if it exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
     public function __get($name)
     {
         if (array_key_exists($name, $this->_attribs)) {
@@ -617,11 +608,23 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Does this attribute exist
+     *
+     * @param string $name
+     * @return boolean
+     */
     public function __isset ($name)
     {
         return array_key_exists($name, $this->_attribs);
     }
 
+    /**
+     * Set an attribite; except when the $value/$name is a special type
+     *
+     * @param string $name
+     * @param mixed $value
+     */
     public function __set($name, $value)
     {
         if ($this->_notSpecialType($value, $name)) {
@@ -634,6 +637,14 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Renders the object if the view has been set.
+     *
+     * Otherwise a warning is returned as it is not a good idea to throw
+     * exceptions in a __toString() function.
+     *
+     * @return string
+     */
     public function __toString()
     {
         if ($this->view instanceof Zend_View_Abstract) {
@@ -644,6 +655,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Remove an attribute
+     *
+     * @param string $name
+     */
     public function __unset($name)
     {
         unset($this->_attribs[$name]);
@@ -680,6 +696,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Returns true if this element is not allowed as a child element.
+     *
+     * @param mixed $element
+     * @return boolean
+     */
     private function _notAllowedChild($element)
     {
         if ($this->_allowedChildTags) {
@@ -736,6 +758,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return true;
     }
 
+    /**
+     * Checks the constructor parameters
+     *
+     * Special types are added as such. The same goes for element
+     * and attribute objects.
+     *
+     * Other items with a null or integer key are added to the content
+     * while named items are added as attributes.
+     *
+     * @param array $params
+     */
     protected function _processParameters(array $params)
     {
         foreach ($params as $key => $param) {
@@ -758,6 +791,12 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Render the attribute values
+     *
+     * @param Zend_View_Abstract $view
+     * @return array With rendered versions of the attributes
+     */
     private function _renderAttributes(Zend_View_Abstract $view)
     {
         $results = array();
@@ -775,6 +814,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $results;
     }
 
+    /**
+     * Allows an extra repeater to be added to this object.
+     *
+     * If this is the first repeater this acts no different from setRepeater,
+     * but when a repeater already exist a ParallelRepeater is created and
+     * the repeaters are repeated through in parallel.
+     *
+     * @param mixed $repeater
+     * @param string $name
+     * @return \MUtil_Lazy_Repeatable
+     */
     public function addRepeater($repeater, $name = null)
     {
         if (! $repeater instanceof MUtil_Lazy_RepeatableInterface) {
@@ -793,6 +843,13 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $repeater;
     }
 
+    /**
+     * Checks for the child in question to have one of the tagnames in the guards array
+     *
+     * @param mixed $child
+     * @param array $guards
+     * @return boolean
+     */
     public static function alreadyIsA($child, array $guards)
     {
         $tagName = self::extractTagName($child);
@@ -802,6 +859,9 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
 
     /**
      * Add stuff to this element
+     *
+     * When it is a special type it is treated as such, otherwise the
+     * value is appended to the content.
      *
      * @param mixed $value The value to append
      * @return MUtil_Html_HtmlElement
@@ -813,6 +873,15 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this;
     }
 
+    /**
+     * Appends the value to an existing attribute or creates the
+     * attribute if it does not yet exist.
+     *
+     * @param string $name
+     * @param mixed $value
+     * @param string $offset Optional offset for adding
+     * @return \MUtil_Html_HtmlElement
+     */
     public function appendAttrib($name, $value, $offset = null)
     {
         $attrib = $this->$name;
@@ -851,11 +920,21 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this;
     }
 
+    /**
+     * The number of items in the content
+     * @return int
+     */
     public function count()
     {
         return count($this->_content);
     }
 
+    /**
+     * Returns the tagname from a MUtil_Html_ElementInterface or a string or raw object
+     * @param mixed $element
+     * @param string $defaultName
+     * @return string
+     */
     public static function extractTagName($element, $defaultName = null)
     {
         if ($element instanceof MUtil_Html_HtmlInterface) {
@@ -885,15 +964,30 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return null;
     }
 
+    /**
+     * Return an attribute or a property of this object
+     *
+     * @param string $name
+     * @return mixed
+     */
     public function getAttrib($name)
     {
         if (array_key_exists($name, $this->_attribs)) {
             return $this->_attribs[$name];
-        } else {
+        } elseif (property_exists($this, $name)) {
             return $this->$name;
         }
     }
 
+    /**
+     * When content must contain certain element types only the default child tag contains
+     * the tagname of the element that is created to contain the content.
+     *
+     * @see $_defaultChildTag
+     * @see setDefaultChildTag()
+     *
+     * @return string
+     */
     public function getDefaultChildTag()
     {
         return $this->_defaultChildTag;
@@ -915,6 +1009,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Return the content as an iterator
+     *
+     * @return \ArrayIterator
+     */
     public function getIterator()
     {
         return new ArrayIterator($this->_content);
@@ -936,6 +1035,17 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Get the content displayed by the item when it is empty during rendering.
+     *
+     * The reason for there being nothing to display can be that the $_repeater contains
+     * no data. But another reason might be that there is simply nothing to display e.g.
+     * because of conditional statements.
+     *
+     * @see setOnEmpty()
+     *
+     * @return mixed
+     */
     public function getOnEmpty()
     {
         if (! $this->_onEmptyContent) {
@@ -946,6 +1056,10 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this->_onEmptyContent;
     }
 
+    /**
+     *
+     * @return MUtil_Lazy_RepeatableInterface
+     */
     public function getRepeater()
     {
         return $this->_repeater;
@@ -963,21 +1077,52 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this->_repeatTags;
     }
 
+    /**
+     * The element tag
+     *
+     * @return string
+     */
     public function getTagName()
     {
         return $this->tagName;
     }
 
+    /**
+     * Does a specific item exist in the content
+     *
+     * @param scalar $offset
+     * @return boolean
+     */
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->_content);
     }
 
+    /**
+     * Return a specific item of the content
+     *
+     * @param scalar $offset
+     * @return mixed
+     */
     public function offsetGet($offset)
     {
         return $this->_content[$offset];
     }
 
+    /**
+     * Adds $value to the content, unless the $$value / $offset
+     * combination is a special type like e.g. a repeater. In
+     * that case the element is added to the proper variable
+     * instead of to the content.
+     *
+     * The content can be wrapped in another HtmlElement if the
+     * rules of this object demand this, e.g. by requiring all
+     * content to be of a certain element type.
+     *
+     * @param scalar $offset
+     * @param mixed $value
+     * @return void
+     */
     public function offsetSet($offset, $value)
     {
         if ($this->_notSpecialType($value, $offset)) {
@@ -1013,6 +1158,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         }
     }
 
+    /**
+     * Removes $offset from content of the element
+     *
+     * @param scalar $offset
+     */
     public function offsetUnset($offset)
     {
         unset($this->_content[$offset]);
@@ -1233,6 +1383,11 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
         return $this;
     }
 
+    /**
+     * Returns a lazy instance of item. Do NOT use MUtil_Lazy::L() in this function!!!
+     *
+     * @return MUtil_Lazy_ObjectWrap
+     */
     public function toLazy()
     {
         if (! $this->_lazy) {
