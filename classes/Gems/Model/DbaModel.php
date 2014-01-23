@@ -200,7 +200,8 @@ class Gems_Model_DbaModel extends MUtil_Model_ArrayModelAbstract
 
                         foreach (new DirectoryIterator($path) as $file) {
 
-                            $fileName = strtolower($file->getFilename());
+                            $fileName = $file->getFilename();
+                            //$fileName = strtolower($fileName);
 
                             if (substr($fileName, -4) == '.sql') {
                                 $fileName = substr($fileName,  0,  -4);
