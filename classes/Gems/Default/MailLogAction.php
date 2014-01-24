@@ -205,6 +205,6 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         
         $this->autofilterAction(false);
         
-        $this->addSnippets(array('Respondent_Relation_CurrentButtonRowSnippet'), array());
+        $this->addSnippets(array('Generic_CurrentButtonRowSnippet'), array());
     }
 }
