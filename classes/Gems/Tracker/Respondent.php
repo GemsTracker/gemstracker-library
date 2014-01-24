@@ -231,18 +231,27 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Overwrite the respondents prefered language
-     */
-    public function setLocale($locale) {
-        $this->respondentLanguage = $locale;
-    }
-
-    /**
      *
      * @return integer Organization ID
      */
     public function getOrganizationId()
     {
         return $this->organizationId;
+    }
+    
+    /**
+     * 
+     * @return int Patient number (not respondent id)
+     */
+    public function getPatientId()
+    {
+        return $this->patientId;
+    }
+    
+    /**
+     * Overwrite the respondents prefered language
+     */
+    public function setLocale($locale) {
+        $this->respondentLanguage = $locale;
     }
 }

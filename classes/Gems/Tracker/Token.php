@@ -80,6 +80,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * @var Gems_Tracker_Token
      */
     private $_previousToken = null;
+    
+    /**
+     *
+     * @var Gems_Tracker_Respondent
+     */
+    protected $_respondentObject = null;
 
     /**
      *
@@ -941,6 +947,25 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
+    
+    /**
+     * Get the respondent linked to this token
+     *
+     * @return Gems_Tracker_Respondent
+     */
+    public function getRespondent()
+    {
+        $patientNumber = $this->getPatientNumber();
+        $organizationId = $this->getOrganizationId();
+        
+        if (    !($this->_respondentObject instanceof Gems_Tracker_Respondent) 
+                || $this->_respondentObject->getPatientId() !== $patientNumber
+                || $this->_respondentObject->getOrganizationId() !== $organizationId) {
+            $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
+        }
+        
+        return $this->_respondentObject;
+    }
 
     /**
      * Returns the gender as a letter code
@@ -980,7 +1005,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         if (array_key_exists('gto_id_respondent', $this->_gemsData)) {
             return $this->_gemsData['gto_id_respondent'];
         } else {
-            throw new Gems_Exception('Token not loaded correctly');
+            throw new Gems_Exception(sprintf('Token not loaded correctly', $this->getTokenId()));
         }
     }
 
