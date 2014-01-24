@@ -86,9 +86,9 @@ class Gems_FormattedData extends IteratorIterator
      * @param MUtil_Model_ModelAbstract $model
      * @return array The formatted array
      */
-    static function format($row, $model) {
+    public function format($row, $model) {
         foreach ($row as $fieldname=>$value) {
-                $row[$fieldname] = self::_format($fieldname, $row[$fieldname], $model);
+                $row[$fieldname] = $this->_format($fieldname, $row[$fieldname], $model);
         }
         return $row;
     }
@@ -101,7 +101,7 @@ class Gems_FormattedData extends IteratorIterator
       *@param MUtil_Model_ModelAbstract $model
      * @return type
      */
-    private static function _format($name, $result, $model)
+    private function _format($name, $result, $model)
     {
         static $view = null;
 
