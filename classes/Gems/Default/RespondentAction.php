@@ -58,6 +58,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
+    
+    public $menuIndexIncludeLevel = 3;
 
     public $sortKey = array('gr2o_opened' => SORT_DESC);
 

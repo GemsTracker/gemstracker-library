@@ -263,7 +263,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     protected function createMenuLinks($includeLevel = 2, $parentLabel = true)
     {
         if ($includeLevel <= 10) {
-            $includeLevel = 2;
+            $includeLevel = 1;
         }
 
         $request = $this->getRequest();

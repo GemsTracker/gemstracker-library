@@ -311,8 +311,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
         $page->addAutofilterAction();
-        $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);;
-        $page->addShowAction()
+        $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);
+        $page->addExcelAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
+        $page->addImportAction();
+        
+        $page = $page->addShowAction()
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
@@ -327,11 +330,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setHiddenOrgId($orgId)
                 ->addAutofilterAction();
         $apage->addCreateAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
-        $apage->addShowAction()->setNamedParameters($appParams);
+        $apage = $apage->addShowAction()->setNamedParameters($appParams);
         $apage->addEditAction()->setNamedParameters($appParams);
         $apage->addDeleteAction()->setNamedParameters($appParams);
-        $page->addExcelAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
-
+        
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
             $trType = 'T';
@@ -473,16 +475,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
-
-        $page->addDeleteAction('pr.respondent.delete')
-                ->setNamedParameters($params)
-                ->setHiddenOrgId($orgId);
         
         $page->addPage($this->_('Mail Activity Log'), null, 'mail-log', 'resplog')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
-        $page->addImportAction();
+        $page->addDeleteAction('pr.respondent.delete')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
 
         return $page;
     }
@@ -578,7 +578,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $menuList->addByController($controller, 'index', $parentLabel);
         }
 
-        foreach ($this->getCurrentParent()->getChildren() as $child) {
+        foreach ($this->getCurrent()->getChildren() as $child) {
             if ($child instanceof Gems_Menu_SubMenuItem) {
                 $chAction = $child->get('action');
                 $chContr  = $child->get('controller');

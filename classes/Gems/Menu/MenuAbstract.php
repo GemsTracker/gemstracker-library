@@ -238,12 +238,12 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, $privilege, $controller, 'index', $other);
         $page->addAutofilterAction();
         $page->addCreateAction();
-        $page->addShowAction();
-        $page->addEditAction();
-        $page->addDeleteAction();
         $page->addExcelAction();
         $page->addImportAction();
-
+        $show = $page->addShowAction();
+        $show->addEditAction();
+        $show->addDeleteAction();
+        
         return $page;
     }
 
@@ -378,7 +378,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         // $page->addCreateAction();
         // $page->addExcelAction();
-        $page->addShowAction();
+        $page = $page->addShowAction();
         $page->addEditAction();
         $page->addDeleteAction();
         $page->addButtonOnly($this->_('Download'), $privilege . '.download', $controller, 'download')
@@ -563,11 +563,11 @@ abstract class Gems_Menu_MenuAbstract
         $page = $this->addPage($label, 'pr.staff', 'staff', 'index', $other);
         $page->addAutofilterAction();
         $createPage = $page->addCreateAction();
-        $page->addShowAction();
-        $pages[] = $page->addEditAction();
-        $pages[] = $page->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
-        $pages[] = $page->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1);
-        $pages[] = $page->addDeleteAction();
+        $showPage = $page->addShowAction();
+        $pages[] = $showPage->addEditAction();
+        $pages[] = $showPage->addAction($this->_('Reset password'), 'pr.staff.edit', 'reset')->setModelParameters(1);
+        $pages[] = $showPage->addAction($this->_('Send Mail'), 'pr.staff.edit', 'mail')->setModelParameters(1);
+        $pages[] = $showPage->addDeleteAction();
         $pages[] = $page->addExcelAction();
         $pages[] = $page->addImportAction();
         if (! $this->escort->hasPrivilege('pr.staff.edit.all')) {
@@ -593,15 +593,24 @@ abstract class Gems_Menu_MenuAbstract
         $setup = $this->addContainer($label);
 
         // SURVEY SOURCES CONTROLLER
-        $page = $setup->addBrowsePage($this->_('Survey Sources'), 'pr.source', 'source');
-        $page->addAction($this->_('Check status'), null, 'ping')
+        $page = $setup->addPage($this->_('Survey Sources'), 'pr.source', 'source');
+        $page->addAutofilterAction();
+        $page->addCreateAction();
+        $page->addExcelAction();
+        $page->addImportAction();
+        $show = $page->addShowAction();
+        $show->addEditAction();
+        $show->addDeleteAction();
+        
+        $show->addAction($this->_('Check status'), null, 'ping')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')
+        $show->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')
+        $show->addAction($this->_('Check is answered'), 'pr.source.check-answers', 'check')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')
+        $show->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')
                 ->addParameters(MUtil_Model::REQUEST_ID);
+        
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
         $page->addAction($this->_('Check all attributes'), 'pr.source.check-attributes-all', 'attributes-all');
@@ -611,30 +620,31 @@ abstract class Gems_Menu_MenuAbstract
 
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
-        $page->addEditAction();
+        $page->addAutofilterAction();
+        
         $page->addExcelAction();
-        $page->addShowAction();
-        $page->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
+        $showPage = $page->addShowAction();
+        $showPage->addEditAction();
+        $showPage->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+        $showPage->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
-        $page->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
-                ->addParameters(MUtil_Model::REQUEST_ID);
-        $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
-
-        $page->addAutofilterAction();
+        $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');       
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
-        $page->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
+        $showPage = $this->findItem(array('controller'=>'track-maintenance', 'action'=>'show'));
+        $showPage->addButtonOnly($this->_('Copy'),  'pr.track-maintenance.copy', 'track-maintenance', 'copy')
                 ->setModelParameters(1);
 
         // Fields
-        $fpage = $page->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')
+        $fpage = $showPage->addPage($this->_('Fields'), 'pr.track-maintenance', 'track-fields')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
         $fpage->addAutofilterAction();
         $fpage->addCreateAction('pr.track-maintenance.create')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track');
-        $fpage->addShowAction()
+        $fpage = $fpage->addShowAction()
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gtf_id_track', 'fid', 'gtf_id_field', 'sub', 'sub');
         $fpage->addEditAction('pr.track-maintenance.edit')
                 ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
@@ -642,13 +652,13 @@ abstract class Gems_Menu_MenuAbstract
                 ->addNamedParameters('fid', 'gtf_id_field', MUtil_Model::REQUEST_ID, 'gtf_id_track', 'sub', 'sub');
 
         // Standard tracks
-        $fpage = $page->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
+        $fpage = $showPage->addPage($this->_('Rounds'), 'pr.track-maintenance', 'track-rounds')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
                 ->setParameterFilter('gtr_track_type', 'T');
         $fpage->addAutofilterAction();
         $fpage->addCreateAction('pr.track-maintenance.create')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
-        $fpage->addShowAction()
+        $fpage = $fpage->addShowAction()
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track', Gems_Model::ROUND_ID, 'gro_id_round');
         $fpage->addEditAction('pr.track-maintenance.edit')
                 ->addNamedParameters(Gems_Model::ROUND_ID, 'gro_id_round', MUtil_Model::REQUEST_ID, 'gro_id_track');
@@ -657,15 +667,18 @@ abstract class Gems_Menu_MenuAbstract
                 ->setParameterFilter('gtr_track_type', 'T');
 
         // Single survey tracks
-        $fpage = $page->addPage($this->_('Round'), 'pr.track-maintenance', 'track-round', 'show')
+        $fpage = $showPage->addPage($this->_('Round'), 'pr.track-maintenance', 'track-round', 'show')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track')
                 ->setParameterFilter('gtr_track_type', 'S');
         $fpage->addEditAction('pr.track-maintenance.edit')
                 ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gro_id_track');
 
-        $page->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
+        $fpage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(MUtil_Model::REQUEST_ID);
 
+        $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
+                ->addParameters(MUtil_Model::REQUEST_ID);
+        
         $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
 
         return $setup;

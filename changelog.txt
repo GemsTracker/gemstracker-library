@@ -1,3 +1,7 @@
+Important changes from 1.6.3 => 1.6.4
+============================================================
+Menu structure has changed: to avoid nesting problems and issues with breamdcrumb navigation edit and delete actions are now children of the show action
+
 Important changes from 1.6.2 => 1.6.3
 ============================================================
 Limesurvey fieldtype list with comment no longer appends underscore to the fieldname, this might break existing calculation scripts
