@@ -113,27 +113,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
             $this->respondent = $this->getDefaultRespondent();
         }
     }
-
-    /**
-     * Get the respondent with a patientId and organization Id combination
-     * @param  integer $patientId      [description]
-     * @param  integer $organizationId [description]
-     */
-	protected function getRespondent($patientId, $organizationId)
-    {
-        $this->model->setFilter(array(
-            'gr2o_patient_nr'      => $patientId,
-            'gr2o_id_organization' => $organizationId
-        ));
-        $result = $this->model->loadFirst();
-
-        if ($result) {
-
-            $this->exists = true;
-        }
-        return $result;
-	}
-
+    
     protected function getDefaultRespondent()
     {
         $select = $this->model->getSelect();
@@ -171,9 +151,18 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
         $genderGreetings = $this->util->getTranslated()->getGenderHello($this->getLanguage());
 
-        $greeting = $genderGreetings[$this->respondent['grs_gender']];
+        $greeting = $genderGreetings[$this->getGender()];
 
         return $greeting . ' ' . $this->getName();
+    }
+    
+    /**
+     * Get a single char code for the gender (normally M/F/U)
+     * @return string
+     */
+    public function getGender()
+    {
+        return $this->respondent['grs_gender'];
     }
 
     /**
@@ -185,7 +174,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
         $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
 
-        $greeting = $genderGreetings[$this->respondent['grs_gender']];
+        $greeting = $genderGreetings[$this->getGender()];
 
         return $greeting . ' ' . $this->getLastName();
     }
@@ -195,6 +184,17 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         return $this->respondent['grs_id_user'];
     }
 
+    /**
+     * Get the respondents prefered language
+     * @return string
+     */
+    public function getLanguage() {
+        if (!isset($this->respondentLanguage)) {
+            $this->respondentLanguage = $this->respondent['grs_iso_lang'];
+        }
+        return $this->respondentLanguage;
+    }
+    
     /**
      * Get Last name of respondent
      * @return string
@@ -207,16 +207,6 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         }
         $lastname .= $this->respondent['grs_last_name'];
         return $lastname;
-    }
-    /**
-     * Get the respondents prefered language
-     * @return string
-     */
-    public function getLanguage() {
-        if (!isset($this->respondentLanguage)) {
-            $this->respondentLanguage = $this->respondent['grs_iso_lang'];
-        }
-        return $this->respondentLanguage;
     }
 
     /**
@@ -247,6 +237,26 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     {
         return $this->patientId;
     }
+    
+    /**
+     * Get the respondent with a patientId and organization Id combination
+     * @param  integer $patientId      [description]
+     * @param  integer $organizationId [description]
+     */
+	protected function getRespondent($patientId, $organizationId)
+    {
+        $this->model->setFilter(array(
+            'gr2o_patient_nr'      => $patientId,
+            'gr2o_id_organization' => $organizationId
+        ));
+        $result = $this->model->loadFirst();
+
+        if ($result) {
+
+            $this->exists = true;
+        }
+        return $result;
+	}
     
     /**
      * Overwrite the respondents prefered language

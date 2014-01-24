@@ -974,11 +974,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentGender()
     {
-        if (! isset($this->_gemsData['grs_id_user'])) {
-            $this->_ensureRespondentData();
-        }
-
-        return $this->_gemsData['grs_gender'];
+        return $this->getRespondent()->getGender();
     }
 
     /**
@@ -1034,11 +1030,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentLastName()
     {
-        if (! isset($this->_gemsData['grs_id_user'])) {
-            $this->_ensureRespondentData();
-        }
-
-        return trim($this->_gemsData['grs_surname_prefix'] . ' ' . $this->_gemsData['grs_last_name']);
+        return $this->getRespondent()->getLastName();
     }
 
     /**
@@ -1047,11 +1039,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentName()
     {
-        if (! isset($this->_gemsData['grs_id_user'])) {
-            $this->_ensureRespondentData();
-        }
-
-        return $this->_gemsData['grs_first_name'] . ' ' . $this->_gemsData['grs_surname_prefix'] . ' ' . $this->_gemsData['grs_last_name'];
+        $this->getRespondent()->getName();
     }
 
     /**
