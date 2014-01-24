@@ -283,7 +283,9 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function emailAction()
     {
-
+        $token = $this->loader->getTracker()->getToken($this->_getIdParam());
+        $token->applyToMenuSource($this->menu->getParameterSource());
+        
         $params['mailTarget']   = 'token';
         $params['menu']         = $this->menu;
         $params['model']        = $this->getModel();
@@ -404,7 +406,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         }
 
         $this->respondentName = trim($data['grs_first_name'] . ' ' . $data['grs_surname_prefix']) . ' ' . $data['grs_last_name'];
-
+        
         return $this->respondentName;
     }
 
