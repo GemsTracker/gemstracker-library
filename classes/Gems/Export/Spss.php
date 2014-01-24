@@ -169,7 +169,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
         $batch = $this->_batch;
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
         $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
-        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
+        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>0) + $filter); // Limit to one response
 
         if (count($answers) === 0) {
             // don't export empty data
@@ -265,7 +265,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
     public function handleExportBatchStepSyntax($data, $filter, $language, $file)
     {
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
-        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>1) + $filter); // Limit to one response
+        $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>0) + $filter); // Limit to one response
         $answerModel = $survey->getAnswerModel($language);
 
         //Now add the organization id => name mapping
@@ -392,7 +392,7 @@ GET DATA
         $files['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
         $files['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
         $files['headers'][] = "Pragma: cache";                          // HTTP/1.0
-        
+
         $this->_batch->setMessage('file', $files);        
     }
 }
