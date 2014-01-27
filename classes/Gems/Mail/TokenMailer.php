@@ -158,6 +158,21 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         }
         return $targetData;
     }
+    
+    /**
+     * Get the token object used in this mailer
+     * 
+     * @return Gems_Tracker_Token
+     * @throws Gems_Exception_Coding
+     */
+    public function getToken()
+    {
+        if ($this->token instanceof Gems_Tracker_Token) {
+            return $this->token;
+        } else {
+            throw new Gems_Exception_Coding('Token not loaded');
+        }
+    }
 
     protected function loadDefault()
     {

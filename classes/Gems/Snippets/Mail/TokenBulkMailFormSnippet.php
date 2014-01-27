@@ -187,8 +187,11 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
 
         foreach($this->multipleTokenData as $tokenData) {
             if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
-                if ($this->formData['multi_method'] == 'M') {
-                    $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
+                $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
+                /* @var $mailer Gems_Mail_TokenMailer */
+                $token = $mailer->getToken();
+                
+                if ($this->formData['multi_method'] == 'M') {   
                     $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                     $mailer->setSubject($this->formData['subject']);
                     $mailer->setBody($this->formData['body']);
@@ -197,8 +200,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
 
                     $mails++;
                     $updates++;
-                } elseif (!isset($sentMailAddresses[$tokenData['grs_email']])) {
-                    $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
+                } elseif (!isset($sentMailAddresses[$token->getEmail()])) {
                     $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                     $mailer->setSubject($this->formData['subject']);
                     $mailer->setBody($this->formData['body']);
@@ -207,7 +209,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                     $mails++;
                     $updates++;
 
-                    $sentMailAddresses[$tokenData['grs_email']] = true;
+                    $sentMailAddresses[$token->getEmail()] = true;
 
                 } elseif ($this->formData['multi_method'] == 'O') {
                     $this->mailer->updateToken($tokenData['gto_id_token']);

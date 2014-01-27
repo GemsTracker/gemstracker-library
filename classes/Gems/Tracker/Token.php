@@ -788,6 +788,22 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             return 'TokenNotFoundSnippet';
         }
     }
+    
+    /**
+     * Get the email address of the person who needs to fill out this survey.
+     * 
+     * This method will return null when no address available
+     * 
+     * @return string|null Email address of the person who needs to fill out the survey or null
+     */
+    public function getEmail()
+    {
+        if (!$this->getSurvey()->isTakenByStaff()) {
+            return $this->getRespondent()->getEmailAddress();
+        }
+        
+        return null;
+    }
 
     /**
      * Returns a model that can be used to save, edit, etc. the token
