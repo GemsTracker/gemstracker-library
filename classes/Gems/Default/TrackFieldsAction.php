@@ -71,7 +71,7 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
      *
      * @var mixed String or array of snippets name
      */
-    protected $deleteSnippets = 'Gems_Tracker_Snippets_Fields_FieldDeleteSnippet';
+    protected $deleteSnippets = 'Tracker_Fields_FieldDeleteSnippet';
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -80,7 +80,7 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
      */
     protected $indexStartSnippets = array(
         'Generic_ContentTitleSnippet',
-        'Gems_Tracker_Snippets_Fields_FieldsAutosearchForm'
+        'Tracker_Fields_FieldsAutosearchForm'
         );
 
     /**
