@@ -694,6 +694,16 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->_gemsData['gto_changed_by'];
     }
+    
+    /**
+     * Return the comment for this token
+     * 
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->_gemsData['gto_comment'];
+    }
 
     /**
      *
