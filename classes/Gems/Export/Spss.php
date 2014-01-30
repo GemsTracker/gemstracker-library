@@ -231,7 +231,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
                     break;
 
                 case MUtil_Model::TYPE_TIME:
-                    $options['storageFormat'] = 'HH:mm:ss';
+                    $options['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                     $options['dateFormat']    = 'HH:mm:ss';
                     break;
 
@@ -299,15 +299,18 @@ GET DATA
         foreach ($answerRow as $key => $value) {
             $fixedNames[$key] = $this->fixName($key);
             $options          = array();
-            $type             = $answerModel->get($key, 'type');
+            $type             = $answerModel->get($key, 'type');          
             switch ($type) {
                 case MUtil_Model::TYPE_DATE:
                     $type = 'SDATE10';
                     break;
 
                 case MUtil_Model::TYPE_DATETIME:
-                case MUtil_Model::TYPE_TIME:
                     $type = 'DATETIME23';
+                    break;
+                
+                case MUtil_Model::TYPE_TIME:
+                    $type = 'TIME8.0';
                     break;
 
                 case MUtil_Model::TYPE_NUMERIC:
@@ -321,7 +324,7 @@ GET DATA
                     $defaultSize = $this->defaultAlphaSize;
                     $type        = 'A';
                     break;
-            }
+            }                   
             $types[$key] = $type;
             if ($type == 'A' || $type == 'F') {
                 $size = $answerModel->get($key, 'maxlength');   // This comes from db when available

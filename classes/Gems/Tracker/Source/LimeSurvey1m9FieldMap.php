@@ -345,6 +345,13 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         }
                 }
             }
+            // now add some default fields that need a datetime stamp
+            $map = array(
+                'startdate' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
+                'submitdate' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
+                'datestamp' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
+            ) + $map;
+            
             $this->_fieldMap = $map;
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
             $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
@@ -365,8 +372,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         } else {
             $scale_id = $field['scale_id'];
         }
-
-        $code = $field['code'];
 
         $qid  = $field['qid'];
 
@@ -589,7 +594,33 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 return MUtil_Model::TYPE_NUMERIC;
 
             case 'D':
+                //date_format
+                if ($format = $this->_getQuestionAttribute($field['qid'], 'date_format')) {
+                    $date = false;
+                    $time = false;
+                    if (strpos($format, ':')) {
+                        $time = true;
+                    }
+                    if (strpos($format, '-')) {
+                        $date = true;
+                    } elseif (strpos($format, '/')) {
+                        $date = true;
+                    } elseif (strpos($format, '\\')) {
+                        $date = true;
+                    }
+                    if ($date && !$time) {
+                        return MUtil_Model::TYPE_DATE;
+                    } elseif (!$date && $time) {
+                        return MUtil_Model::TYPE_TIME;
+                    } else {
+                        return MUtil_Model::TYPE_DATETIME;
+                    }
+                }
                 return MUtil_Model::TYPE_DATE;
+                
+            case 'stamp':
+                // Not a limesurvey type, used internally for meta data
+                return MUtil_Model::TYPE_DATETIME;
 
             default:
                 return MUtil_Model::TYPE_STRING;
@@ -619,9 +650,22 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $tmpres['dateFormat']    = 'dd MMMM yyyy';
                 // $tmpres['formatFunction']
             }
+            
+            if ($tmpres['type'] === MUtil_Model::TYPE_DATETIME) {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+                $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
+                // $tmpres['formatFunction']
+            }
+            
+            if ($tmpres['type'] === MUtil_Model::TYPE_TIME) {
+                $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
+                $tmpres['dateFormat']    = 'HH:mm:ss';
+                // $tmpres['formatFunction']
+            }
 
             // MUtil_Echo::track($field);
-            if (! isset($oldfld) || ($oldfld['question'] !== $field['question'])) {
+            $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
+            if (isset($field['question']) && (! isset($oldfld) || $oldQuestion !== $field['question'])) {
                 $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['question']));
             }
 
