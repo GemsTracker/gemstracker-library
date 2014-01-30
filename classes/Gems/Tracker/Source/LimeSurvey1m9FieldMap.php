@@ -51,6 +51,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     const ATTRIBUTES_TABLE   = 'question_attributes';
     const GROUPS_TABLE       = 'groups';
     const QUESTIONS_TABLE    = 'questions';
+    
+    /**
+     * Internal type, used for startdate, submitdate, datestamp fields
+     */
+    const INTERNAL           = 'stamp';
 
     protected $_answers;
     protected $_attributes;
@@ -347,9 +352,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
             // now add some default fields that need a datetime stamp
             $map = array(
-                'startdate' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
-                'submitdate' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
-                'datestamp' => array('type' => 'stamp', 'qid' => 0, 'gid' => 0),
+                'startdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+                'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
+                'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
             ) + $map;
             
             $this->_fieldMap = $map;
@@ -618,7 +623,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
                 return MUtil_Model::TYPE_DATE;
                 
-            case 'stamp':
+            case self::INTERNAL:
                 // Not a limesurvey type, used internally for meta data
                 return MUtil_Model::TYPE_DATETIME;
 
@@ -726,6 +731,10 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $result = array();
 
         foreach ($map as $name => $field) {
+            if ($field['type'] == self::INTERNAL) {
+                continue;
+            }
+            
             $tmpres = array();
             $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group'] = $field['gid'];
