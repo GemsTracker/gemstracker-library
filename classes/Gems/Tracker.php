@@ -795,8 +795,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
         $tokenSelect->onlyActive()
                     ->forRespondent($respondentId)
-                    ->andSurveys(array())
-                    ->forWhere('gsu_surveyor_active = 1');
+                    ->andSurveys(array('gsu_surveyor_id'))
+                    ->forWhere('gsu_surveyor_active = 1')
+                    ->order('gsu_surveyor_id');
 
         if (null !== $orgId) {
             $tokenSelect->forWhere('gto_id_organization = ?', $orgId);
@@ -807,10 +808,28 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
         if (! $batch->isLoaded()) {
             $statement = $tokenSelect->getSelect()->query();
             //Process one row at a time to prevent out of memory errors for really big resultsets
-            while ($tokenData = $statement->fetch()) {
+            $tokens = array();
+            $tokencount = 0;
+            $activeId = 0;
+            $maxCount = 100;    // Arbitrary value, change as needed
+            while ($tokenData = $statement->fetch()) {               
                 $tokenId = $tokenData['gto_id_token'];
-                $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
+                $surveyorId = $tokenData['gsu_surveyor_id'];
+                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {                    
+                    // Flush                   
+                    if (count($tokens)> 0) {
+                        $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);    
+                    }                    
+                    
+                    $activeId = $surveyorId;
+                    $tokens = array();
+                }
+                $tokens[] = $tokenId;
+                
                 $batch->addToCounter('tokens');
+            }
+            if (count($tokens)> 0) {
+                $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);    
             }
         }
 

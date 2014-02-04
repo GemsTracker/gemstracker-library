@@ -741,6 +741,34 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return $submitDate instanceof MUtil_Date ? $submitDate : null;
     }
+    
+    /**
+     * Bulk check token completion
+     * 
+     * Returns all tokens from the input array that are completed, by doing 
+     * this in bulk we saved overhead and only do a deep check on the completed
+     * tokens.
+     * 
+     * @param array $tokenIds
+     * @param int $sourceSurveyId
+     * @return array
+     */
+    public function getCompletedTokens($tokenIds, $sourceSurveyId)
+    {
+        $lsDb       = $this->getSourceDatabase();
+        $lsToken   = $this->_getTokenTableName($sourceSurveyId);
+        
+        $sql = "SELECT token FROM $lsToken WHERE token IN(?) AND completed !='N'";
+        
+        $tokens = array();
+        foreach ($tokenIds as $token) {
+            $tokens[] = $this->_getToken($token);
+        }
+        $sql = $lsDb->quoteInto($sql, $tokens);
+        $completedTokens = $lsDb->fetchAll($sql);
+
+        return $completedTokens;
+    }
 
     /**
      * Returns an array containing fieldname => label for each date field in the survey.
