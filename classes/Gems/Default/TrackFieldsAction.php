@@ -114,7 +114,7 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
     public function getDeleteQuestion()
     {
         $field = $this->_getParam('fid');
-        if ('a' === $this->_getParam('sub')) {
+        if (Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
             $used  = $this->db->fetchOne(
                     "SELECT COUNT(*)
                         FROM gems__respondent2track2appointment

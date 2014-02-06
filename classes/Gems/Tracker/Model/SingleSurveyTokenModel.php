@@ -117,16 +117,23 @@ class Gems_Tracker_Model_SingleSurveyTokenModel extends Gems_Tracker_Model_Stand
 
         // Look for respondent track key
         if (isset($filter['gr2t_id_respondent_track'])) {
-            $trackFilter['gr2t2f_id_respondent_track'] = $filter['gr2t_id_respondent_track'];
+            $trackFilter = $filter['gr2t_id_respondent_track'];
         }  elseif (isset($filter['gto_id_respondent_track'])) {
-            $trackFilter['gr2t2f_id_respondent_track'] = $filter['gto_id_respondent_track'];
+            $trackFilter = $filter['gto_id_respondent_track'];
         } else {
             $trackFilter = false;
         }
 
         if ($trackFilter) {
-            // Delete track fields if respondent track was set.
-            $this->_deleteTableData(new Zend_DB_Table('gems__respondent2track2field'), $trackFilter);
+            // Delete track appointments / fields if respondent track was set.
+            $this->_deleteTableData(
+                    new Zend_DB_Table('gems__respondent2track2appointment'),
+                    array('gr2t2a_id_respondent_track' => $trackFilter)
+                    );
+            $this->_deleteTableData(
+                    new Zend_DB_Table('gems__respondent2track2field'),
+                    array('gr2t2f_id_respondent_track' => $trackFilter)
+                    );
         }
 
         return $deleted;

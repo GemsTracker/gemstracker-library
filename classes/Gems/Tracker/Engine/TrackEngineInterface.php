@@ -148,14 +148,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getDescription();
 
     /**
-     * Returns a model that can be used to retrieve or save the data.
+     * Returns an array of the fields in this track
+     * key / value are id / field name
      *
-     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
-     * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return array fieldid => fieldcode
      */
-    public function getFieldModel($detailed, $action);
-
+    public function getFieldNames();
+    
     /**
      * Returns the field data for the respondent track id.
      *

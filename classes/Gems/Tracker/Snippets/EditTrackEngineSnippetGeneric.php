@@ -171,6 +171,15 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         $model = $this->loader->getTracker()->getTrackModel();
         $model->applyFormatting(true);
 
+        if (! $this->trackEngine) {
+            if ($this->trackId) {
+                $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
+            }
+        }
+        if ($this->trackEngine) {
+            $model->applyFields($this->trackEngine, $this->createData ? 'create' : 'edit');
+        }
+
         return $model;
     }
 

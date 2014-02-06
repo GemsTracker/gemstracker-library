@@ -45,9 +45,9 @@
  * @since      Class available since version 1.6.2
  */
 class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
-	
+
     /**
-     * 
+     *
      * @var string Class of the button
      */
 	protected $buttonClass = 'button';
@@ -59,7 +59,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     protected $db;
 
     /**
-     * 
+     *
      * @var Zend_Loader
      */
 	protected $loader;
@@ -69,7 +69,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     protected $project;
 
     /**
-     * 
+     *
      * @var Zend_Translate;
      */
 	protected $translate;
@@ -77,7 +77,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     protected $util;
 
     /**
-     * 
+     *
      * @var Zend_View
      */
     protected $view;
@@ -129,7 +129,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         }
         $form->activateJQuery();
         $element = new Gems_Form_Element_Tabs($form, $name, $options);
-        
+
         $parentBridge->getForm()->addElement($element);
         return $element;
     }
@@ -137,7 +137,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     /**
      * Create an HTML Body element with CKEditor
      *
-     * 
+     *
      * @return Gems_Form_Element_CKEditor|Zend_Form_Element_Hidden
      */
     public function createBodyElement($name, $label, $required=false, $hidden=false, $mailFields=array(), $mailFieldsLabel=false)
@@ -192,7 +192,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
 
     /**
      * Create a multioption select with the different mail process options
-     * 
+     *
      * @return Zend_Form_Element_Radio
      */
     public function createMethodElement()
@@ -248,10 +248,10 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     {
         $options['label'] = $label;
 
-        $query = 'SELECT gems__comm_templates.gct_id_template, gems__comm_templates.gct_name 
+        $query = 'SELECT gems__comm_templates.gct_id_template, gems__comm_templates.gct_name
         FROM gems__comm_template_translations
         RIGHT JOIN gems__comm_templates ON gems__comm_templates.gct_id_template = gems__comm_template_translations.gctt_id_template
-        WHERE gems__comm_template_translations.gctt_subject <> "" 
+        WHERE gems__comm_template_translations.gctt_subject <> ""
         AND gems__comm_template_translations.gctt_body <> ""';
         if ($target) {
             $query .= ' AND gems__comm_templates.gct_target = ?';
@@ -290,7 +290,6 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
 
     public function displayMailFields($mailFields)
     {
-
     	$mailFieldsRepeater = new MUtil_Lazy_RepeatableByKeyValue($mailFields);
         $mailFieldsHtml     = new MUtil_Html_TableElement($mailFieldsRepeater);
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));

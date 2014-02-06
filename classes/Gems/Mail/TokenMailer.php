@@ -158,10 +158,10 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         }
         return $targetData;
     }
-    
+
     /**
      * Get the token object used in this mailer
-     * 
+     *
      * @return Gems_Tracker_Token
      * @throws Gems_Exception_Coding
      */
@@ -177,6 +177,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
     protected function loadDefault()
     {
         $this->tokenIdentifier = $tokenData = $this->getDefaultToken();
+        
         if (!empty($tokenData['gto_id_organization'])) {
             $this->organizationId = $tokenData['gto_id_organization'];
             $this->patientId = $tokenData['gr2o_patient_nr'];
@@ -287,16 +288,9 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
             $result['track']            = $this->token->getTrackName();
 
             // Add the code fields
-            $join = $this->db->quoteInto('gtf_id_field = gr2t2f_id_field AND gr2t2f_id_respondent_track = ?', $this->token->getRespondentTrackId());
-            $select = $this->db->select();
-            $select->from('gems__track_fields', array(new Zend_Db_Expr("CONCAT('track.', gtf_field_code)")))
-                    ->joinLeft('gems__respondent2track2field', $join, array('gr2t2f_value'))
-                    ->distinct()
-                    ->where('gtf_field_code IS NOT NULL')
-                    ->order('gtf_field_code');
-            $codes = $this->db->fetchPairs($select);
+            $codes  = $this->token->getRespondentTrack()->getCodeFields();
+            $result = $result + MUtil_Ra::braceKeys($codes, 'track.', '');
 
-            $result = $result + $codes;
         } else {
             $result['round']            = '';
             $result['site_ask_url']     = '';

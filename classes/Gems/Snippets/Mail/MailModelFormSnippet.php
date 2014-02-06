@@ -44,14 +44,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSnippetGeneric 
+class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSnippetGeneric
 {
     /**
-     * 
+     *
      * @var Gems_Mail_MailElements
      */
     protected $mailElements;
 
+    /**
+     *
+     * @var Gems_Mail_MailerAbstract
+     */
     protected $mailer;
 
     /**
@@ -67,7 +71,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected $project;
 
     /**
-     * 
+     *
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
@@ -75,14 +79,6 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     protected $util;
 
     protected $view;
-
-    public function afterRegistry() {
-        $this->mailElements = $this->loader->getMailLoader()->getMailElements();
-        $this->mailTargets = $this->loader->getMailLoader()->getMailTargets();
-        
-
-        parent::afterRegistry();
-    }
 
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -98,9 +94,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
 
         $bridge->getForm()->getElement('gct_target')->setAttrib('onchange', 'this.form.submit()');
 
-
         $defaultTab = $this->project->getLocaleDefault();
-        $this->mailElements->addFormTabs($bridge, 'gctt', 'active', $defaultTab, 'tabcolumn', 'gctt_lang', 'selectedTabElement', 'send_language');        
+        $this->mailElements->addFormTabs($bridge, 'gctt', 'active', $defaultTab, 'tabcolumn', 'gctt_lang', 'selectedTabElement', 'send_language');
 
         $config = array(
         'extraPlugins' => 'bbcode,availablefields',
@@ -118,23 +113,20 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $config['availablefields'] = $this->mailer->getMailFields();
         $config['availablefieldsLabel'] = $this->_('Fields');
 
-
         $this->view->inlineScript()->prependScript("
             CKEditorConfig = ".Zend_Json::encode($config).";
             ");
-
-        
 
         $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
 
         $bridge->addElement($this->mailElements->createEmailElement('to', $this->_('To (test)'), false));
         $bridge->addElement($this->mailElements->createEmailElement('from', $this->_('From'), false));
-        
+
         //$bridge->addRadio('send_language', array('label' => $this->_('Test language'), 'multiOptions' => ))
         $bridge->addHidden('send_language');
         $bridge->addFakeSubmit('sendtest', array('label' => $this->_('Send (test)')));
-        
-        $bridge->addElement($this->getSaveButton());        
+
+        $bridge->addElement($this->getSaveButton());
 
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
@@ -143,9 +135,76 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     }
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry() {
+        $this->mailElements = $this->loader->getMailLoader()->getMailElements();
+        $this->mailTargets  = $this->loader->getMailLoader()->getMailTargets();
+
+        parent::afterRegistry();
+    }
+
+
+    /**
+     * Style the template previews
+     * @param  array $templateArray template data
+     * @return array html and text views
+     */
+    protected function getPreview($templateArray)
+    {
+        $multi = false;
+        if (count($templateArray) > 1) {
+            $multi = true;
+            $allLanguages = $this->util->getLocalized()->getLanguages();
+        }
+
+        $htmlView = MUtil_Html::create()->div();
+        $textView = MUtil_Html::create()->div();
+        foreach($templateArray as $template) {
+
+
+            $content = '';
+            if ($template['gctt_subject'] || $template['gctt_body']) {
+                if ($multi) {
+                    $htmlView->h3()->append($allLanguages[$template['gctt_lang']]);
+                    $textView->h3()->append($allLanguages[$template['gctt_lang']]);
+                }
+
+
+                $content .= '[b]';
+                $content .= $this->_('Subject:');
+                $content .= '[/b] [i]';
+                $content .= $this->mailer->applyFields($template['gctt_subject']);
+                $content .= "[/i]\n\n";
+                $content .= $this->mailer->applyFields($template['gctt_body']);
+
+
+
+                $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
+                $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
+            }
+
+        }
+
+        return array('html' => $htmlView, 'text' => $textView);
+    }
+
+    protected function getSaveButton()
+    {
+        return new Zend_Form_Element_Submit('save_button',
+            array('label' => $this->_('Save'),
+                  'attribs' => array('class' => $this->buttonClass)
+                )
+            );
+    }
+
+    /**
      * Load extra data not from the model into the form
      */
-    protected function loadFormData() 
+    protected function loadFormData()
     {
         parent::loadFormData();
         $this->loadMailer();
@@ -162,10 +221,8 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
 
             $this->formData['preview_html'] = $preview['html'];
             $this->formData['preview_text'] = $preview['text'];
-            
         }
-        
-        
+
         $organization = $this->mailer->getOrganization();
         $this->formData['to'] = $this->formData['from'] = null;
         if ($organization->getEmail()) {
@@ -194,63 +251,10 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
     }
 
     /**
-     * Style the template previews
-     * @param  array $templateArray template data
-     * @return array html and text views
-     */
-    protected function getPreview($templateArray)
-    {
-        $multi = false;
-        if (count($templateArray) > 1) {
-            $multi = true;
-            $allLanguages = $this->util->getLocalized()->getLanguages();
-        }
-
-        $htmlView = MUtil_Html::create()->div();
-        $textView = MUtil_Html::create()->div();
-        foreach($templateArray as $template) {
-            
-            
-            $content = '';
-            if ($template['gctt_subject'] || $template['gctt_body']) {
-                if ($multi) {
-                    $htmlView->h3()->append($allLanguages[$template['gctt_lang']]);
-                    $textView->h3()->append($allLanguages[$template['gctt_lang']]);
-                }
-
-
-                $content .= '[b]';
-                $content .= $this->_('Subject:');
-                $content .= '[/b] [i]';
-                $content .= $this->mailer->applyFields($template['gctt_subject']);
-                $content .= "[/i]\n\n";
-                $content .= $this->mailer->applyFields($template['gctt_body']);       
-            
-
-
-                $htmlView->div(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Html'));
-                $textView->pre(array('class' => 'mailpreview'))->raw(MUtil_Markup::render($content, 'Bbcode', 'Text'));
-            }
-
-        }
-
-        return array('html' => $htmlView, 'text' => $textView);
-    }
-
-    protected function getSaveButton()
-    {
-        return new Zend_Form_Element_Submit('save_button', 
-            array('label' => $this->_('Save'),
-                  'attribs' => array('class' => $this->buttonClass)
-                )
-            );
-    }
-
-    /**
      * When the form is submitted with a non 'save' button
      */
     protected function onFakeSubmit()
-    { 
+    {
         if ($this->request->isPost()) {
             $data = $this->request->getPost();
             if (!empty($data['preview'])) {
@@ -270,7 +274,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
                 $this->mailer->setBody($template['gctt_body'], 'Bbcode');
                 $this->mailer->setTemplateId($data['gct_id_template']);
                 $this->mailer->send();
-                
+
                 $this->addMessage(sprintf($this->_('Test mail sent to %s'), $data['to']));
             }
         }

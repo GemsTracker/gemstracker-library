@@ -47,6 +47,16 @@
 class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 {
     /**
+     * Constant name to id appointment items
+     */
+    const APPOINTMENTS_NAME = 'a';
+
+    /**
+     * Constant name to id field items
+     */
+    const FIELDS_NAME = 'f';
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
@@ -81,7 +91,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         $model = new MUtil_Model_TableModel('gems__track_fields');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
-        $this->addUnionModel($model, null, 'f');
+        $this->addUnionModel($model, null, self::FIELDS_NAME);
 
         $model = new MUtil_Model_TableModel('gems__track_appointments');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
@@ -90,7 +100,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
         $map['gtap_id_app_field'] = 'gtf_id_field';
 
-        $this->addUnionModel($model, $map, 'a');
+        $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
 
         $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
         $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
@@ -179,7 +189,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         // Display of data field
         if (! (isset($data['gtf_field_type']) && $data['gtf_field_type'])) {
-            if (isset($data[$this->_modelField]) && ($data[$this->_modelField] === 'a')) {
+            if (isset($data[$this->_modelField]) && ($data[$this->_modelField] === self::APPOINTMENTS_NAME)) {
                 $data['gtf_field_type'] = 'appointment';
             } else {
                 if (isset($data['gtf_id_field']) && $data['gtf_id_field']) {
@@ -223,11 +233,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $noSubChange = false;
         $subId = $data[$this->_modelField];
 
-        if ($subId == 'f') {
+        if ($subId == self::FIELDS_NAME) {
             $sql = 'SELECT gr2t2f_id_field
                 FROM gems__respondent2track2field
                 WHERE gr2t2f_id_field = ?';
-        } elseif ($subId == 'a') {
+        } elseif ($subId == self::APPOINTMENTS_NAME) {
             $sql = 'SELECT gr2t2a_id_app_field
                 FROM gems__respondent2track2appointment
                 WHERE gr2t2a_id_app_field = ?';
@@ -289,13 +299,13 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         foreach ($rows as $row) {
             $name = $this->getModelNameForRow($row);
 
-            if ('f' === $name) {
+            if (self::FIELDS_NAME === $name) {
                 $this->db->delete(
                         'gems__respondent2track2field',
                         $this->db->quoteInto('gr2t2f_id_field = ?', $field)
                         );
 
-            } elseif ('a' === $name) {
+            } elseif (self::APPOINTMENTS_NAME === $name) {
                 $this->db->delete(
                         'gems__respondent2track2appointment',
                         $this->db->quoteInto('gr2t2a_id_app_field= ?', $field)
@@ -342,9 +352,9 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     protected function getModelNameForRow(array $row)
     {
         if (isset($row['gtf_field_type']) && ('appointment' === $row['gtf_field_type'])) {
-            return 'a';
+            return self::APPOINTMENTS_NAME;
         }
-        return 'f';
+        return self::FIELDS_NAME;
     }
 
     /**

@@ -58,8 +58,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     protected $_checkStart;
 
     /**
+     * If a field has a code name the value will occur both using
+     * the code name and using the id.
      *
-     * @var array Field data
+     * @var array Field data id/code => value
      */
     protected $_fieldData = null;
 
@@ -174,12 +176,16 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     private function _ensureFieldData($reload = false)
     {
         if ((null === $this->_fieldData) || $reload) {
-            $fieldData = $this->getTrackEngine()->getFieldsData($this->_respTrackId);
-            $fieldMap  = $this->getTrackEngine()->getFields();
+            $engine    = $this->getTrackEngine();
+            $fieldData = $engine->getFieldsData($this->_respTrackId);
+            $fieldMap  = $engine->getFields();
+            // MUtil_Echo::track($fieldData, $fieldMap);
 
             //Map the fielddata to the fieldcode
-            foreach($fieldData as $key=>$value) {
+            foreach($fieldData as $key => $value) {
                 if (isset($fieldMap[$key])) {
+                    // The old name remains in the data set of course,\
+                    // using the code is a second occurence
                     $fieldData[$fieldMap[$key]] = $value;
                 }
             }
@@ -450,6 +456,29 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return all possible code fields with the values filled for those that exist for this track,
+     * optionally with a prefix
+     *
+     * @return array [prefix]code => value
+     */
+    public function getCodeFields()
+    {
+        $codes   = $this->tracker->getAllCodeFields();
+        $results = array_fill_keys($codes, null);
+
+        $this->_ensureFieldData();
+        if ($this->_fieldData) {
+            foreach ($this->_fieldData as $id => $value) {
+                if (isset($codes[$id])) {
+                    $results[$codes[$id]] = $value;
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      *
      * @return string Comment field
      */
@@ -527,14 +556,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         return $this->_fieldData;
     }
-    
+
     /**
      * Returns the fields required for editing a track of this type.
-     * 
+     *
      * Allows for changing options for this specific RespondentTrack
      *
      * @return array of Zend_Form_Element
-     */    
+     */
     public function getFieldsElements()
     {
         return $this->getTrackEngine()->getFieldsElements();

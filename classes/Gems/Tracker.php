@@ -412,6 +412,36 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     }
 
     /**
+     * Returns an array of all field id's for all tracks that have a code id
+     *
+     * @return array id => code
+     */
+    public function getAllCodeFields()
+    {
+        $sql = "SELECT CONCAT(?, ?, gtap_id_app_field) AS field, gtap_field_code AS code
+                    FROM gems__track_appointments
+                    WHERE gtap_field_code IS NOT NULL
+            UNION ALL
+                SELECT CONCAT(?, ?, gtf_id_field) AS field, gtf_field_code AS code
+                    FROM gems__track_fields
+                    WHERE gtf_field_code IS NOT NULL
+            ORDER BY code";
+
+        $fields = $this->db->fetchPairs($sql, array(
+            Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
+            Gems_Tracker_Engine_TrackEngineAbstract::FIELD_KEY_SEPARATOR,
+            Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME,
+            Gems_Tracker_Engine_TrackEngineAbstract::FIELD_KEY_SEPARATOR,
+        ));
+
+        if (! $fields) {
+            return array();
+        }
+
+        return $fields;
+    }
+
+    /**
      * Returns a form to ask for a token
      *
      * @param mixed $args_array MUtil_Ra::args array for Form initiation.
@@ -812,24 +842,24 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $tokencount = 0;
             $activeId = 0;
             $maxCount = 100;    // Arbitrary value, change as needed
-            while ($tokenData = $statement->fetch()) {               
+            while ($tokenData = $statement->fetch()) {
                 $tokenId = $tokenData['gto_id_token'];
                 $surveyorId = $tokenData['gsu_surveyor_id'];
-                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {                    
-                    // Flush                   
+                if ($activeId <> $surveyorId || count($tokens) > $maxCount) {
+                    // Flush
                     if (count($tokens)> 0) {
-                        $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);    
-                    }                    
-                    
+                        $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
+                    }
+
                     $activeId = $surveyorId;
                     $tokens = array();
                 }
                 $tokens[] = $tokenId;
-                
+
                 $batch->addToCounter('tokens');
             }
             if (count($tokens)> 0) {
-                $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);    
+                $batch->addTask('Tracker_BulkCheckTokenCompletion', $tokens, $userId);
             }
         }
 

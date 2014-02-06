@@ -100,7 +100,7 @@ interface Gems_Tracker_TrackerInterface
      * @return object
      */
     public function createTrackClass($className, $param1 = null, $param2 = null);
-    
+
     /**
      * Creates a new token with a new random token Id
      *
@@ -127,6 +127,13 @@ interface Gems_Tracker_TrackerInterface
      */
     public function filterToken($tokenId);
 
+    /**
+     * Returns an array of all field id's for all tracks that have a code id
+     *
+     * @return array id => code
+     */
+    public function getAllCodeFields();
+    
     /**
      * Returns a form to ask for a token
      *
