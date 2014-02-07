@@ -125,10 +125,14 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
         } else {
             $title = null;
         }
+        
+        $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
+        /* @var $mailer Gems_Mail_TokenMailer */
+        $token = $mailer->getToken();
 
         return $this->createMultiOption($tokenData,
-            $this->getTokenName($tokenData),
-            $tokenData['grs_email'],
+            $token->getRespondentName(),
+            $token->getEmail(),
             $tokenData['survey_short'],
             $title,
             $menuFind);
@@ -189,7 +193,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
             if (in_array($tokenData['gto_id_token'], $this->formData['token_select'])) {
                 $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
                 /* @var $mailer Gems_Mail_TokenMailer */
-                $token = $mailer->getToken();                
+                $token = $mailer->getToken();
                 $email = $token->getEmail();
                 
                 if (!empty($email)) {
