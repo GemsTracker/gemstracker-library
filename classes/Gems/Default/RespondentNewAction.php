@@ -364,17 +364,8 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
         $user      = $this->loader->getCurrentUser();
         $userId    = $user->getUserId();
-
-        // Update gr20_opened
-        if ($patientNr) {
-            $where['gr2o_patient_nr = ?']      = $patientNr;
-            $where['gr2o_id_organization = ?'] = $orgId;
-            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $userId;
-
-            $this->db->update('gems__respondent2org', $values, $where);
-        }
-
+        
+        $this->openedRespondent($patientNr, $orgId, $respId);
 
         // Check for completed tokens
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
@@ -432,9 +423,20 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      * @param int $userId
      * @return \Gems_Default_RespondentNewAction
      */
-    protected function openedRespondent($patientId, $orgId)
+    protected function openedRespondent($patientId, $orgId, $respondentId = null)
     {
         if ($patientId) {
+            // Logging
+            if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface) {
+                $request = $this->getRequest();
+                $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
+                if (is_null($respondentId)) {
+                    $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
+                }
+
+                Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
+            }
+            
             $user      = $this->loader->getCurrentUser();
 
             $where['gr2o_patient_nr = ?']      = $patientId;

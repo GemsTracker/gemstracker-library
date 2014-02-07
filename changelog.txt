@@ -3,6 +3,7 @@ Important changes from 1.6.3 => 1.6.4
 Menu structure has changed: to avoid nesting problems and issues with bread-crumb navigation edit and delete actions are now children of the show action
 Track fields split in fields and appointments: check any code using any track field tables directly, track field id's are no longer integers
 GemsEscort->tokenMailFields() no longer exists
+Logging the respondent in respondent controller restored. Action respondent.show logs without, but respondentShow will log respondent id
 
 Important changes from 1.6.2 => 1.6.3
 ============================================================

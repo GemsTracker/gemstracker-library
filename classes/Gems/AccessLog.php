@@ -49,7 +49,6 @@ class Gems_AccessLog
 
     private $_db;
     private $_sessionStore;
-    private $_userInfo;
 
     /**
      * Convenience calls to the log method:
@@ -82,7 +81,6 @@ class Gems_AccessLog
     {
         $this->_db = $db;
         $this->_sessionStore = new Zend_Session_Namespace(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
-        $this->_userInfo = GemsEscort::getInstance()->session;
         $this->loadActions();
     }
 
@@ -105,7 +103,7 @@ class Gems_AccessLog
     }
 
     protected function getActionId($action)
-    {
+    {       
         if (! array_key_exists($action,  $this->_actions)) {
             //Check if a refresh fixes the problem
             $this->loadActions(true);
@@ -171,9 +169,10 @@ class Gems_AccessLog
     public function log($action, Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
     {
         try {
+            $currentUser = GemsEscort::getInstance()->getLoader()->getCurrentUser();
             //When project escort doesn't implement the log interface, we disable logging
             if (!(GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface)
-                || (!isset($this->_userInfo->user_id) && $force === false ) ) {
+                || (is_null($currentUser->getUserId()) && $force === false ) ) {
                 return $this;
             }
 
@@ -187,10 +186,10 @@ class Gems_AccessLog
 
             $values['glua_to']           = $respondentId;
             $values['glua_message']      = $message;
-            $values['glua_by']           = $this->_userInfo->user_id ? $this->_userInfo->user_id  : 0;
-            $values['glua_organization'] = $this->_userInfo->user_organization_id ? $this->_userInfo->user_organization_id : 0;
+            $values['glua_by']           = $currentUser->getUserId() ? $currentUser->getUserId() : 0;
+            $values['glua_organization'] = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
             $values['glua_action']       = $this->getActionId($action);
-            $values['glua_role']         = $this->_userInfo->user_role ? $this->_userInfo->user_role : '--not set--' ;
+            $values['glua_role']         = $currentUser->getRole() ? $currentUser->getRole() : '--not set--' ;
             $values['glua_created']      = new MUtil_Db_Expr_CurrentTimestamp();
 
             if ($request instanceof Zend_Controller_Request_Http) {
@@ -228,7 +227,7 @@ class Gems_AccessLog
             $this->_sessionStore->glua_message      = $values['glua_message'];
 
             $this->_db->insert('gems__log_useractions', $values);
-
+            
             return $this;
         } catch (Exception $exc) {
             Gems_Log::getLogger()->logError($exc, $request);

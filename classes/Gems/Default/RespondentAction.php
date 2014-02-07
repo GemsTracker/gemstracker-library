@@ -486,14 +486,27 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $this->loader->getCurrentUser()->setSurveyReturn($this->getRequest());
     }
 
-    protected function openedRespondent($patientId, $orgId, $userId)
+    protected function openedRespondent($patientId, $orgId, $respondentId)
     {
         if ($patientId) {
+            // Logging
+            if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface) {
+                $request = $this->getRequest();
+                $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
+                if (is_null($respondentId)) {
+                    $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
+                }
+
+                Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
+            }
+            
+            $user      = $this->loader->getCurrentUser();
+
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;
 
             $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
-            $values['gr2o_opened_by']          = $userId;
+            $values['gr2o_opened_by']          = $user->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);
         }
@@ -510,7 +523,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $userId    = $user->getUserId();
 
         // Updated gr20_opened
-        $this->openedRespondent($patientNr, $orgId, $userId);
+        $this->openedRespondent($patientNr, $orgId, $respId);
 
         // Check for completed tokens
         $this->loader->getTracker()->processCompletedTokens($respId, $userId, $orgId);
