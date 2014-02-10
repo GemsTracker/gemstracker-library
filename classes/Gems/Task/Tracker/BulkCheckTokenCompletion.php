@@ -60,7 +60,7 @@ class Gems_Task_Tracker_BulkCheckTokenCompletion extends MUtil_Task_TaskAbstract
     public function execute($tokenData = null, $userId = null)
     {
         $tracker = $this->loader->getTracker();
-        
+
         $token  = $tracker->getToken($tokenData[0]);
         $survey = $token->getSurvey();
         $source = $survey->getSource();
@@ -71,10 +71,9 @@ class Gems_Task_Tracker_BulkCheckTokenCompletion extends MUtil_Task_TaskAbstract
             $completed = $tokenData;
         }
 
-        if (count($completed) > 0) {
+        if ($completed) {
             $batch   = $this->getBatch();
-            foreach($completed as $idx => $row) {
-                $tokenId = $row['token'];
+            foreach($completed as $tokenId) {
                 $batch->setTask('Tracker_CheckTokenCompletion', 'tokchk-' . $tokenId, $tokenId, $userId);
             }
         }

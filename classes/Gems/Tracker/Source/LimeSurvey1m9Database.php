@@ -741,14 +741,14 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         return $submitDate instanceof MUtil_Date ? $submitDate : null;
     }
-    
+
     /**
      * Bulk check token completion
-     * 
-     * Returns all tokens from the input array that are completed, by doing 
+     *
+     * Returns all tokens from the input array that are completed, by doing
      * this in bulk we saved overhead and only do a deep check on the completed
      * tokens.
-     * 
+     *
      * @param array $tokenIds
      * @param int $sourceSurveyId
      * @return array
@@ -757,15 +757,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     {
         $lsDb       = $this->getSourceDatabase();
         $lsToken   = $this->_getTokenTableName($sourceSurveyId);
-        
-        $sql = "SELECT token FROM $lsToken WHERE token IN(?) AND completed !='N'";
-        
-        $tokens = array();
-        foreach ($tokenIds as $token) {
-            $tokens[] = $this->_getToken($token);
-        }
-        $sql = $lsDb->quoteInto($sql, $tokens);
-        $completedTokens = $lsDb->fetchAll($sql);
+
+        $sql = "SELECT REPLACE(token, '_', '-') FROM $lsToken WHERE token IN(?) AND completed !='N'";
+
+        $tokens = array_map(array($this, '_getToken'), $tokenIds);
+
+        $completedTokens = $lsDb->fetchCol($sql, $tokens);
 
         return $completedTokens;
     }
