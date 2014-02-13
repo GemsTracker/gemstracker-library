@@ -110,13 +110,12 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         $dbLookup   = $this->util->getDbLookup();
         $mailLoader = $this->loader->getMailLoader();
         $userLoader = $this->loader->getUserLoader();
-        $startUser  = $userLoader->getCurrentUser();
-        $user       = $startUser;
+        $user       = $userLoader->getCurrentUser();
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
         // Check for unprocessed tokens
-        $tracker->processCompletedTokens(null, $startUser->getUserId());
+        $tracker->processCompletedTokens(null, $user->getUserId());
 
         $sql = "SELECT *
             FROM gems__comm_jobs INNER JOIN
@@ -131,108 +130,97 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         $mailed = false;
         if ($jobs) {
             foreach ($jobs as $job) {
-                if ($user->getUserId() != $job['gcj_id_user_as']) {
-                    $user = $userLoader->getUserByStaffId($job['gcj_id_user_as']);
-                }
+                $sendByMail = $this->getUserEmail($job['gcj_id_user_as']);
 
-                if ($user->isActive()) {
-                    if (! $user->isCurrentUser()) {
-                        $user->setAsCurrentUser();
-                    }
+                $filter = $dbLookup->getFilterForMailJob($job);
 
-                    $filter = $dbLookup->getFilterForMailJob($job);
+                $multipleTokensData = $model->load($filter);
+                if (count($multipleTokensData)) {
 
-                    $multipleTokensData = $model->load($filter);
-                    if (count($multipleTokensData)) {
+                    $errors  = 0;
+                    $mails   = 0;
+                    $updates = 0;
+                    $sentMailAddresses = array();
 
-                        $errors  = 0;
-                        $mails   = 0;
-                        $updates = 0;
-                        $sentMailAddresses = array();
+                    foreach($multipleTokensData as $tokenData) {
+                        $mailer = $mailLoader->getMailer('token', $tokenData);
+                        /* @var $mailer Gems_Mail_TokenMailer */
+                        $token = $mailer->getToken();
+                        $email = $token->getEmail();
 
-                        foreach($multipleTokensData as $tokenData) {
-                            $mailer = $mailLoader->getMailer('token', $tokenData);
-                            /* @var $mailer Gems_Mail_TokenMailer */
-                            $token = $mailer->getToken();
-                            $email = $token->getEmail();
+                        if (!empty($email)) {
+                            if ($job['gcj_from_method'] == 'O') {
+                                $organization  = $mailer->getOrganization();
+                                $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
+                                $mailer->setFrom($from);
+                            } elseif ($job['gcj_from_method'] == 'U') {
+                                $from = $sendByMail;//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
+                                $mailer->setFrom($from);
+                            } elseif ($job['gcj_from_method'] == 'F') {
+                                $mailer->setFrom($job['gcj_from_fixed']);
+                            }
+                            $mailer->setBy($sendByMail);
 
-                            if (!empty($email)) {
-                                if ($job['gcj_from_method'] == 'O') {
-                                    $organization  = $mailer->getOrganization();
-                                    $from = $organization->getEmail();//$organization->getName() . ' <' . $organization->getEmail() . '>';
-                                    $mailer->setFrom($from);
-                                } elseif ($job['gcj_from_method'] == 'U') {
-                                    $from = $user->getEmailAddress();//$user->getFullName() . ' <' . $user->getEmailAddress() . '>';
-                                    $mailer->setFrom($from);
-                                } elseif ($job['gcj_from_method'] == 'F') {
-                                    $mailer->setFrom($job['gcj_from_fixed']);
+                            try {
+                                if ($job['gcj_process_method'] == 'M') {
+                                    $mailer->setTemplate($job['gcj_id_message']);
+                                    $mailer->send();
+                                    $mailed = true;
+
+                                    $mails++;
+                                    $updates++;
+                                } elseif (!isset($sentMailAddresses[$email])) {
+                                    $mailer->setTemplate($job['gcj_id_message']);
+                                    $mailer->send();
+                                    $mailed = true;
+
+                                    $mails++;
+                                    $updates++;
+                                    $sentMailAddresses[$email] = true;
+
+                                } elseif ($job['gcj_process_method'] == 'O') {
+                                    $mailer->updateToken();
+                                    $updates++;
                                 }
+                            } catch (Zend_Mail_Exception $exception) {
+                                $fields = $mailer->getMailFields(false);
 
-                                try {
-                                    if ($job['gcj_process_method'] == 'M') {
-                                        $mailer->setTemplate($job['gcj_id_message']);
-                                        $mailer->send();
-                                        $mailed = true;
+                                $info = sprintf("Error mailing to %s respondent %s with email address %s.",
+                                        $fields['organization'],
+                                        $fields['full_name'],
+                                        $fields['email']
+                                        );
 
-                                        $mails++;
-                                        $updates++;
-                                    } elseif (!isset($sentMailAddresses[$email])) {
-                                        $mailer->setTemplate($job['gcj_id_message']);
-                                        $mailer->send();
-                                        $mailed = true;
+                                // Use a gems exception to pass extra information to the log
+                                $gemsException = new Gems_Exception($info, 0, $exception);
+                                Gems_Log::getLogger()->logError($gemsException);
 
-                                        $mails++;
-                                        $updates++;
-                                        $sentMailAddresses[$email] = true;
-
-                                    } elseif ($job['gcj_process_method'] == 'O') {
-                                        $mailer->updateToken();
-                                        $updates++;
-                                    }
-                                } catch (Zend_Mail_Exception $exception) {
-                                    $fields = $mailer->getMailFields(false);
-
-                                    $info = sprintf("Error mailing to %s respondent %s with email address %s.",
-                                            $fields['organization'],
-                                            $fields['full_name'],
-                                            $fields['email']
-                                            );
-
-                                    // Use a gems exception to pass extra information to the log
-                                    $gemsException = new Gems_Exception($info, 0, $exception);
-                                    Gems_Log::getLogger()->logError($gemsException);
-
-                                    $errors++;
-                                }
+                                $errors++;
                             }
                         }
-
-                        $this->addMessage(sprintf(
-                                $this->_('Sent %d e-mails with template %s, updated %d tokens.'),
-                                $mails,
-                                $job['gct_name'],
-                                $updates
-                                ));
-
-                        if ($errors) {
-                            $this->addMessage(sprintf(
-                                    $this->_('%d error(s) occurred while creating mails for template %s. Check error log for details.'),
-                                    $errors,
-                                    $job['gct_name']
-                                    ));
-                        }
                     }
-                    $tokensData = null;
+
+                    $this->addMessage(sprintf(
+                            $this->_('Sent %d e-mails with template %s, updated %d tokens.'),
+                            $mails,
+                            $job['gct_name'],
+                            $updates
+                            ));
+
+                    if ($errors) {
+                        $this->addMessage(sprintf(
+                                $this->_('%d error(s) occurred while creating mails for template %s. Check error log for details.'),
+                                $errors,
+                                $job['gct_name']
+                                ));
+                    }
                 }
+                $tokensData = null;
             }
         }
 
         if (!$mailed) {
             $this->addMessage($this->_('No mails sent.'));
-        }
-
-        if (! $startUser->isCurrentUser()) {
-            $startUser->setAsCurrentUser();
         }
     }
 
@@ -253,7 +241,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
      * Loads an e-mail template
      *
      * @param integer|null $templateId
-     * /
+     */
     protected function getTemplate($templateId)
     {
         return $this->db->fetchRow('SELECT * FROM gems__mail_templates WHERE gmt_id_message = ?', $templateId);
@@ -264,10 +252,21 @@ class Gems_Default_CronAction extends Gems_Controller_Action
      *
      * @param int $userId
      * @return string
-     * /
+     */
     protected function getUserLogin($userId)
     {
         return $this->db->fetchOne("SELECT gsf_login FROM gems__staff WHERE gsf_id_user = ?", $userId);
+    }
+
+    /**
+     * Returns the Email belonging to this user.
+     *
+     * @param int $userId
+     * @return string
+     */
+    protected function getUserEmail($userId)
+    {
+        return $this->db->fetchOne("SELECT gsf_email FROM gems__staff WHERE gsf_id_user = ?", $userId);
     }
 
     /**

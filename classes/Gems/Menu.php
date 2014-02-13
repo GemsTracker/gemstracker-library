@@ -723,8 +723,16 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         //Changelog added as button only
         $this->addButtonOnly($this->_('Changelog'),  'pr.project-information.changelog', 'project-information','changelog');
 
+        $permissionNeeded = $this->escort->project->getCronPermissionNeeded();
+
         // Special page for automated e-mail cronjob
-        $this->addPage(null, null, 'cron', 'index');
+        if ($permissionNeeded) {
+            $this->addPage(null, 'pr.cron.job', 'cron', 'index');
+            $this->addPage(null, 'pr.cron.job', 'cron', 'test');
+        } else {
+            $this->addPage(null, null, 'cron', 'index');
+            $this->addPage(null, null, 'cron', 'test');
+        }
         $this->addPage(null, null, 'email', 'index');
     }
 

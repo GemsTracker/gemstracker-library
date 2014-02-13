@@ -718,4 +718,7 @@ INSERT ignore INTO gems__comm_jobs (gcj_id_job,
         FROM gems__mail_jobs);
 
 -- GEMS VERSION: 54
--- PATCH:
+-- PATCH: add round description as an option in comm jobs
+ALTER TABLE gems__comm_jobs ADD
+    gcj_round_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
+    AFTER gcj_id_track;

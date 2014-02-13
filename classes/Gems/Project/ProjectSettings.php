@@ -346,6 +346,20 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Is permission needed to run the cron action
+     * @return boolean
+     */
+    public function getCronPermissionNeeded()
+    {
+        if ($this->offsetExists('cron')) {
+            $cronSettings = $this->offsetGet('cron');
+            return (boolean) $cronSettings['permissionNeeded'];
+        }
+
+        return false;
+    }
+
+    /**
      * Returns an (optional) default organization from the project settings
      *
      * @return int Organization number or -1 when not set

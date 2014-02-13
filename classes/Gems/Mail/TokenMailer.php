@@ -46,6 +46,13 @@
  */
 class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 {
+
+    /**
+     * @var User ID of user who sent the mail
+     */
+    protected $by;
+
+
     /**
      *
      * @var Zend_Db_Adapter_Abstract
@@ -207,7 +214,12 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $changeDate                   = new MUtil_Db_Expr_CurrentTimestamp();
 
         $logData['grco_id_to']        = $this->respondent->getId();
-        $logData['grco_id_by']        = $currentUserId;
+
+        if (!$this->by) {
+            $this->by = 0;
+        }
+
+        $logData['grco_id_by']        = $this->by;
         $logData['grco_organization'] = $this->organizationId;
         $logData['grco_id_token']     = $this->token->getTokenId();
 
@@ -225,11 +237,19 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
         $logData['grco_id_message']   = $this->templateId ? $this->templateId : null;
 
         $logData['grco_changed']      = $changeDate;
-        $logData['grco_changed_by']   = $currentUserId ? $currentUserId : 0;
+        $logData['grco_changed_by']   = $this->by;
         $logData['grco_created']      = $changeDate;
-        $logData['grco_created_by']   = $currentUserId ? $currentUserId : 0;
+        $logData['grco_created_by']   = $this->by;
 
         $this->db->insert('gems__log_respondent_communications', $logData);
+    }
+
+    /**
+     * Sets the ID of the user who sent the mail
+     * @param [type] $userId [description]
+     */
+    public function setBy($userId) {
+        $this->by = $userId;
     }
 
 	/**

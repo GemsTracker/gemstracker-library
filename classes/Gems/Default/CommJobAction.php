@@ -53,6 +53,30 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
     public $project;
 
     /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'ModelFormVariableFieldSnippet';
+
+    /**
+     * Query to get the round descriptions for options
+     * @var string
+     */
+    protected $roundDescriptionQuery = "SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_id_track = ? GROUP BY gro_round_description";
+
+    /**
+     * Ajax return function for round selection
+     */
+    public function roundselectAction()
+    {
+        Zend_Layout::resetMvcInstance();
+        $trackId = $this->getRequest()->getParam('sourceValue');
+        $rounds = $this->db->fetchPairs($this->roundDescriptionQuery, $trackId);
+        echo json_encode($rounds);
+    }
+
+    /**
      * Creates a model for getModel(). Called only for each new $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -97,6 +121,17 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         // $model->set('gcj_filter_max_reminders','label', $this->_('Max'), 'validators[]', 'Digits');
 
         $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
+
+        $selectTrackFirst = array('' => $this->_('Select a track first to select a round'));
+        $model->set('gcj_round_description',         'label', $this->_('Round'), 'multiOptions', $selectTrackFirst, 
+                    'variableSelect', array(
+                        'source' => 'gcj_id_track',
+                        'baseQuery' => $this->roundDescriptionQuery,
+                        'ajax' => array('controller' => 'comm-job', 'action' => 'roundselect'),
+                        'firstValue' => $empty,
+                        'disabledEmpty' => true,
+                    ));
+
         $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
 
         if ($detailed) {
