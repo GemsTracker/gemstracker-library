@@ -165,12 +165,10 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                             'required', true);
 
                     // Keep the values, so add hidden
-                    foreach ($this->trackEngine->getFieldsElements() as $element) {
-                        if ($element instanceof Zend_Form_Element) {
-                            $hidden = new Zend_Form_Element_Hidden($element->getName());
-                            $hidden->setBelongsTo(self::TRACKFIELDS_ID);
-                            $bridge->addElement($hidden);
-                        }
+                    foreach ($this->trackEngine->getFields() as $key => $code) {
+                        $hidden = new Zend_Form_Element_Hidden($key);
+                        $hidden->setBelongsTo(self::TRACKFIELDS_ID);
+                        $bridge->addElement($hidden);
                     }
                 } else {
                     $this->_addFieldsElements($bridge);
@@ -324,10 +322,10 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
             $changed = 1;
 
         } else {
-            if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
+            if ($this->trackEngine) {
                 // concatenate user input (gtf_field fields)
                 // before the data is saved (the fields them
-                $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
+                $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData);
             }
 
             // Perform the save
@@ -337,10 +335,6 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
             if ($this->createData) {
                 $this->respondentTrackId = $this->formData['gr2t_id_respondent_track'];
                 $this->tokenId           = $this->formData['gto_id_token'];
-            }
-
-            if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
-                $this->trackEngine->setFieldsData($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
             }
         }
 

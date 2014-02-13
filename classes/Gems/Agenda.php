@@ -59,6 +59,49 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     protected $db;
 
     /**
+     * Get the select statement for appointments in getAppointments()
+     *
+     * Allows for overruling on project level
+     *
+     * @return Zend_Db_Select
+     */
+    protected function _getAppointmentSelect()
+    {
+        $select = $this->db->select();
+
+        $select->from('gems__appointments')
+                ->joinLeft( 'gems__agenda_activities', 'gap_id_activity = gaa_id_activity')
+                ->joinLeft('gems__agenda_procedures',  'gap_id_procedure = gapr_id_procedure')
+                ->joinLeft('gems__locations',          'gap_id_location = glo_id_location')
+                ->order('gap_admission_time DESC');
+
+        return $select;
+    }
+
+    /**
+     * Overrule this function to adapt the display of the agenda items for each project
+     *
+     * @param array $row Row containing result select
+     * @return string
+     */
+    public function getAppointmentDisplay(array $row)
+    {
+        $date = new MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
+        $results[] = $date->toString('dd-MM-yyyy HH:mm');
+        if ($row['gaa_name']) {
+            $results[] = $row['gaa_name'];
+        }
+        if ($row['gapr_name']) {
+            $results[] = $row['gapr_name'];
+        }
+        if ($row['glo_name']) {
+            $results[] = $row['glo_name'];
+        }
+
+        return implode($this->_('; '), $results);
+    }
+
+    /**
      *
      * @param int $organizationId Optional
      * @return array activity_id => name
@@ -91,6 +134,48 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $this->cache->save($results, $cacheId, array('activities'));
         return $results;
 
+    }
+
+    /**
+     *
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @return array appointmentId => appointment description
+     */
+    public function getAppointments($respondentId, $organizationId, $patientNr = null)
+    {
+        $select = $this->_getAppointmentSelect();
+
+        if ($respondentId) {
+            $select->where('gap_id_user = ?', $respondentId)
+                    ->where('gap_id_organization = ?', $organizationId);
+        } else {
+            // Join might have been created in _getAppointmentSelect
+            $from = $select->getPart(Zend_Db_Select::FROM);
+            if (! isset($from['gems__respondent2org'])) {
+                $select->joinInner(
+                        'gems__respondent2org',
+                        'gap_id_user = gr2o_id_user AND gap_id_organization = gr2o_id_organization',
+                        array()
+                        );
+            }
+
+            $select->where('gr2o_patient_nr = ?', $patientNr)
+                    ->where('gr2o_id_organization = ?', $organizationId);
+        }
+
+        $rows = $this->db->fetchAll($select);
+
+        if (! $rows) {
+            return array();
+        }
+
+        $results = array();
+        foreach ($rows as $row) {
+            $results[$row['gap_id_appointment']] = $this->getAppointmentDisplay($row);
+        }
+        return $results;
     }
 
     /**

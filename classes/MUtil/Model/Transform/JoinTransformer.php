@@ -36,7 +36,7 @@
  */
 
 /**
- * Transform that can be used to join models to another model in possubly non-relational
+ * Transform that can be used to join models to another model in possibly non-relational
  * ways.
  *
  * @package    MUtil

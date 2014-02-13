@@ -51,6 +51,18 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function __construct($trackData);
 
     /**
+     * Integrate field loading en showing and editing
+     *
+     * @param \Gems_Tracker_Model_RespondentTrackModel $model
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return \Gems_Tracker_Engine_TrackEngineAbstract
+     */
+    public function addFieldsToModel(\Gems_Tracker_Model_RespondentTrackModel $model, $respondentId, $organizationId, $patientNr = null, $edit = true);
+
+    /**
      * Set menu parameters from this track engine
      *
      * @param Gems_Menu_ParameterSource $source
@@ -154,7 +166,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array fieldid => fieldcode
      */
     public function getFieldNames();
-    
+
     /**
      * Returns the field data for the respondent track id.
      *
@@ -180,6 +192,17 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getFieldsMaintenanceModel($detailed, $action, array $data);
 
+    /**
+     * Get a big array with model settings for fields in a track
+     *
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array fieldname => array(settings)
+     */
+    public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true);
+    
     /**
      * Get the round id of the first round
      *

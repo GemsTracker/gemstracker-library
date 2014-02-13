@@ -354,7 +354,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param int $add
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
-    protected function addChanged($add = 1)
+    public function addChanged($add = 1)
     {
         $this->_changedCount += $add;
 

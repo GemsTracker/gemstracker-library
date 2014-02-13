@@ -46,57 +46,6 @@
 class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
 {
     /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_FormBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        $bridge->addHidden(   'gr2t_id_respondent_track');
-        $bridge->addHidden(   'gr2t_id_user');
-        $bridge->addHidden(   'gr2t_id_track');
-        $bridge->addHidden(   'gr2t_id_organization');
-        $bridge->addHidden(   'gr2t_active');
-        $bridge->addHidden(   'gr2t_count');
-        $bridge->addHidden(   'gr2t_completed');
-        $bridge->addHidden(   'gr2t_reception_code');
-        $bridge->addHidden(   'gr2o_id_organization');
-        $bridge->addHidden(   'gtr_id_track');
-        $bridge->addHidden(   'grc_success');
-
-        // Patient
-        $bridge->addExhibitor('gr2o_patient_nr', 'label', $this->_('Respondent number'));
-        $bridge->addExhibitor('respondent_name', 'label', $this->_('Respondent name'));
-
-        // Track
-        $bridge->addExhibitor('gtr_track_name');
-        if ($this->trackEngine) {
-            $elements = $this->trackEngine->getFieldsElements();
-
-            foreach ($elements as $element) {
-                $element->setBelongsTo(self::TRACKFIELDS_ID);
-                $bridge->addElement($element);
-            }
-        }
-
-        if (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed']) {
-            // Cannot change start date after first answered token
-            $bridge->addExhibitor('gr2t_start_date');
-        } else {
-            $bridge->addDate('gr2t_start_date', 'size', 30);
-        }
-        $bridge->addDate('gr2t_end_date', 'size', 30);
-
-        if (isset($this->formData['grc_succes']) && $this->formData['grc_succes']) {
-            $bridge->addExhibitor('grc_description', 'label', $this->_('Rejection code'));
-        }
-    }
-
-    /**
      *
      * @return Gems_Menu_MenuList
      */
@@ -121,10 +70,10 @@ class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnip
      */
     protected function saveData()
     {
-        if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
+        if ($this->trackEngine) {
             // concatenate user input (gtf_field fields)
             // before the data is saved (the fields them
-            $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]);
+            $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData);
         }
 
         // Perform the save
@@ -147,11 +96,6 @@ class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnip
             if (! $this->respondentTrack->getStartDate()->equals(new MUtil_Date($this->formData['gr2t_start_date']))) {
                 $refresh = true;
             }
-        }
-
-        if ($this->trackEngine && isset($this->formData[self::TRACKFIELDS_ID])) {
-            $changed = $this->trackEngine->setFieldsData($this->respondentTrackId, $this->formData[self::TRACKFIELDS_ID]) ? 1 : $changed;
-            $refresh = $refresh || $changed;
         }
 
         if ($refresh) {

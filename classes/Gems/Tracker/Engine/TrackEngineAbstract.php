@@ -102,6 +102,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
     /**
      *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @var Gems_Tracker
      */
     protected $tracker;
@@ -229,6 +235,35 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Integrate field loading en showing and editing
+     *
+     * @param \Gems_Tracker_Model_RespondentTrackModel $model
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return \Gems_Tracker_Engine_TrackEngineAbstract
+     */
+    public function addFieldsToModel(\Gems_Tracker_Model_RespondentTrackModel $model, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $this->_ensureTrackFields();
+
+        if ($this->_trackFields) {
+            // Add the data to the load / save
+            $transformer = new Gems_Tracker_Model_RespondentTrackModelTransformer(
+                    $this,
+                    $respondentId,
+                    $organizationId,
+                    $patientNr,
+                    $edit
+                    );
+            $model->addTransformer($transformer);
+        }
+
+        return $this;
+    }
+
+    /**
      * Creates all tokens that should exist, but do not exist
      *
      * NOTE: When overruling this function you should not create tokens because they
@@ -301,7 +336,21 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function calculateFieldsInfo($respTrackId, array $data)
     {
-        return trim(implode(' ', MUtil_Ra::flatten($data)));
+        $this->_ensureTrackFields();
+
+        if (! $this->_trackFields) {
+            return null;
+        }
+
+        $results = array();
+        foreach ($this->_trackFields as $key => $field) {
+            if (isset($data[$key]) && strlen($data[$key])) {
+                if ("appointment" !== $field['gtf_field_type']) {
+                    $results[] = $data[$key];
+                }
+            }
+        }
+        return trim(implode(' ', $results));
     }
 
     /**
@@ -743,6 +792,80 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Get a big array with model settings for fields in a track
+     *
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array fieldname => array(settings)
+     */
+    public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $this->_ensureTrackFields();
+
+        if (! $this->_trackFields) {
+            return array();
+        }
+
+        $fieldSettings = array();
+        $appointments  = null;
+        $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
+
+        foreach ($this->_trackFields as $name => $field) {
+
+            // Get the field
+            $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
+            $multi = array_combine($multi, $multi);
+
+            $fieldSettings[$name] = array(
+                'label'       => $field['gtf_field_name'],
+                'required'    => $field['gtf_required'],
+                'description' => $field['gtf_field_description'],
+                );
+
+            if ($field['gtf_readonly']) {
+                $fieldSettings[$name]['elementClass'] = 'Exhibitor';
+
+            } else {
+                switch ($field['gtf_field_type']) {
+                    case "multiselect":
+                        $fieldSettings[$name]['elementClass'] = 'MultiCheckbox';
+                        $fieldSettings[$name]['multiOptions'] = $multi;
+                        break;
+
+                    case "select":
+                        $fieldSettings[$name]['elementClass'] = 'Select';
+                        $fieldSettings[$name]['multiOptions'] = $empty + $multi;
+                        break;
+
+                    case "date":
+                        $fieldSettings[$name]['elementClass']  = 'Date';
+                        $fieldSettings[$name]['storageFormat'] = 'yyyy-MM-dd';
+                        break;
+
+                    case "appointment":
+                        if (! $appointments) {
+                            $agenda       = $this->loader->getAgenda();
+                            $appointments = $agenda->getAppointments($respondentId, $organizationId, $patientNr);
+                            // MUtil_Echo::track($appointments);
+                        }
+                        $fieldSettings[$name]['elementClass'] = 'Select';
+                        $fieldSettings[$name]['multiOptions'] = $empty + $appointments;
+                        break;
+
+                    default:
+                        $fieldSettings[$name]['elementClass'] = 'Text';
+                        $fieldSettings[$name]['size']         = 40;
+                        break;
+                }
+            }
+        }
+
+        return $fieldSettings;
+    }
+
+    /**
      * Get the round id of the first round
      *
      * @return int Gems id of first round
@@ -1071,9 +1194,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $newAppointments = array();
         $newFields       = array();
 
-        MUtil_Echo::track($data);
-
         $this->_ensureTrackFields();
+
+        // Clean up any keys not in fields
+        $data = array_intersect_key($data, $this->_trackFields);
+        // MUtil_Echo::track($data);
 
         foreach ($data as $key => $value) {
 

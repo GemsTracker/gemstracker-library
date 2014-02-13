@@ -48,8 +48,6 @@
  */
 class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_ModelFormSnippetAbstract
 {
-    const TRACKFIELDS_ID = 'gtrFields';
-
     /**
      * Required
      *
@@ -67,7 +65,7 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
     /**
      * Optional, required when creating
      *
-     * @var int Patient Id
+     * @var string Patient "nr"
      */
     protected $patientId;
 
@@ -146,19 +144,13 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
     {
         $model = $this->loader->getTracker()->getRespondentTrackModel();
 
-        $model->set('gtr_track_name',    'label', $this->_('Track'));
-        $model->set('gr2t_track_info',   'label', $this->_('Description'));
-        $model->set('assigned_by',       'label', $this->_('Assigned by'));
-        $model->set('gr2t_start_date',   'label', $this->_('Start'),
-            'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
-            'default', new Zend_Date());
-        $model->set('gr2t_end_date',   'label', $this->_('Ending on'),
-            'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->loader->getUtil()->getTranslated()->formatDate,
-            'default', null);
-        $model->set('gr2t_reception_code');
-        $model->set('gr2t_comment',      'label', $this->_('Comment'));
+        if ($this->respondentTrack) {
+            $model->setRespondentTrack($this->respondentTrack);
+        } else {
+            $model->setTrackEngine($this->trackEngine);
+            $model->setPatientAndOrganization($this->patientId, $this->organizationId);
+        }
+        $model->applyEditSettings();
 
         return $model;
     }
@@ -262,6 +254,8 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
      */
     protected function loadFormData()
     {
+        $model = $this->getModel();
+
         // When creating and not posting nor having $this->formData set already
         // we gotta make a special call
         if ($this->createData && (! ($this->formData || $this->request->isPost()))) {
@@ -270,17 +264,18 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends Gems_Snippets_Model
             $filter['gr2o_patient_nr']      = $this->patientId;
             $filter['gr2o_id_organization'] = $this->organizationId;
 
-            $this->formData = $this->getModel()->loadNew(null, $filter);
+            $this->formData = $model->loadNew(null, $filter);
         } else {
             parent::loadFormData();
         }
-
-        if (! array_key_exists(self::TRACKFIELDS_ID, $this->formData)) {
-            if ($this->trackEngine) {
-                $this->formData[self::TRACKFIELDS_ID] = $this->trackEngine->getFieldsData($this->respondentTrackId);
-            } else {
-                $this->formData[self::TRACKFIELDS_ID] = array();
-            }
+        if (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed']) {
+            // Cannot change start date after first answered token
+            $model->set('gr2t_start_date', 'elementClass', 'Exhibitor');
+        }
+        if (isset($this->formData['grc_success']) && (! $this->formData['grc_success'])) {
+            $model->set('grc_description', 'label', $this->_('Rejection code'),
+                    'elementClass', 'Exhibitor'
+                    );
         }
     }
 }
