@@ -558,18 +558,6 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns the fields required for editing a track of this type.
-     *
-     * Allows for changing options for this specific RespondentTrack
-     *
-     * @return array of Zend_Form_Element
-     */
-    public function getFieldsElements()
-    {
-        return $this->getTrackEngine()->getFieldsElements();
-    }
-
-    /**
      * Returns the description of this track as stored in the fields.
      *
      * @return string

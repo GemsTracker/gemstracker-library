@@ -96,6 +96,12 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     protected $trackEngine;
 
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * Default constructor
      *
      * @param string $name Optional different name for model
@@ -141,10 +147,25 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
      * Set those settings needed for the browse display
      *
      * @return \Gems_Model_RespondentModel
-     * /
+     */
     public function applyBrowseSettings()
     {
+        $formatDate = $this->util->getTranslated()->formatDate;
 
+        $this->resetOrder();
+        $this->set('gtr_track_name',    'label', $this->_('Track'));
+        $this->set('gr2t_track_info',   'label', $this->_('Description'),
+            'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
+        $this->set('assigned_by',       'label', $this->_('Assigned by'));
+        $this->set('gr2t_start_date',   'label', $this->_('Start'),
+        	'dateFormat', 'dd-MM-yyyy',
+            'formatFunction', $formatDate,
+            'default', new Zend_Date());
+        $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
+        	'dateFormat', 'dd-MM-yyyy',
+            'formatFunction', $formatDate);
+        $this->set('gr2t_reception_code');
+        $this->set('gr2t_comment',       'label', $this->_('Comment'));
     }
 
     /**
@@ -159,7 +180,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     {
         $this->resetOrder();
 
-        $formatDate = $this->loader->getUtil()->getTranslated()->formatDate;
+        $formatDate = $this->util->getTranslated()->formatDate;
 
         if ($this->respondentTrack) {
             $this->organizationId = $this->respondentTrack->getOrganizationId();

@@ -557,6 +557,22 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Displays the content spaced
+     *
+     * @param string $value
+     * @return string
+     */
+    public function formatMultiField($value)
+    {
+        // MUtil_Echo::track($value);
+        if (is_array($value)) {
+            return implode(' ', $value);
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * Returns a list of classnames this track engine can be converted into.
      *
      * Should always contain at least the class itself.
@@ -814,10 +830,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
         foreach ($this->_trackFields as $name => $field) {
 
-            // Get the field
-            $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
-            $multi = array_combine($multi, $multi);
-
             $fieldSettings[$name] = array(
                 'label'       => $field['gtf_field_name'],
                 'required'    => $field['gtf_required'],
@@ -830,11 +842,19 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             } else {
                 switch ($field['gtf_field_type']) {
                     case "multiselect":
-                        $fieldSettings[$name]['elementClass'] = 'MultiCheckbox';
-                        $fieldSettings[$name]['multiOptions'] = $multi;
+                        $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
+                        $multi = array_combine($multi, $multi);
+
+                        $fieldSettings[$name]['elementClass']   = 'MultiCheckbox';
+                        $fieldSettings[$name]['multiOptions']   = $multi;
+                        $fieldSettings[$name]['formatFunction'] = array($this, 'formatMultiField');
+
                         break;
 
                     case "select":
+                        $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
+                        $multi = array_combine($multi, $multi);
+
                         $fieldSettings[$name]['elementClass'] = 'Select';
                         $fieldSettings[$name]['multiOptions'] = $empty + $multi;
                         break;
@@ -1210,16 +1230,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
             // Do the hard work for storing dates
             if (isset($this->_trackFields[$id]['gtf_field_type']) && ('date' == $this->_trackFields[$id]['gtf_field_type'])) {
-                if (! $element) {
-                    // Initialize a date element once, so we know about dateformats
-                    $options = array();
-                    MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+                if (! empty($value)) {
+                    if (! $element) {
+                        // Initialize a date element once, so we know about dateformats
+                        $options = array();
+                        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
 
-                    $element = new Gems_JQuery_Form_Element_DatePicker('tmp_element', $options);
-                    $element->setStorageFormat('yyyy-MM-dd');
-                }
+                        $element = new Gems_JQuery_Form_Element_DatePicker('tmp_element', $options);
+                        $element->setStorageFormat('yyyy-MM-dd');
+                    }
 
-                if (!empty($value)) {
                     $value = MUtil_Date::format($value, $element->getStorageFormat(), $element->getDateFormat());
                 } else {
                     $value = null;

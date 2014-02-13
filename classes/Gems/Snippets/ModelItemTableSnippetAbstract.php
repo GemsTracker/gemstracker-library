@@ -55,6 +55,13 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
     protected $class = 'displayer';
 
     /**
+     * When true the menu is displayed
+     *
+     * @var boolean
+     */
+    protected $displayMenu = true;
+
+    /**
      * Optional title to display at the head of this page.
      *
      * @var string Optional
@@ -74,6 +81,13 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      * @var Gems_Menu
      */
     protected $menu;
+
+    /**
+     * An optional list menu items
+     *
+     * @var Gems_Menu_MenuList
+     */
+    protected $menuList = null;
 
     /**
      * Required
@@ -173,9 +187,15 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      */
     protected function setShowTableFooter(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
-        $menuList->addParameterSources($bridge);
+        if ($this->displayMenu) {
+            if (! $this->menuList) {
+                $this->menuList = $this->menu->getCurrentMenuList($this->request, $this->_('Cancel'));
+            }
+            if ($this->menuList instanceof Gems_Menu_MenuList) {
+                $this->menuList->addParameterSources($bridge);
+            }
 
-        $bridge->tfrow($menuList, array('class' => 'centerAlign'));
+            $bridge->tfrow($this->menuList, array('class' => 'centerAlign'));
+        }
     }
 }

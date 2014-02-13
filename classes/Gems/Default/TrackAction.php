@@ -497,44 +497,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
             $links = parent::createMenuLinks(10);
-            $table = parent::getShowTable();
-            $table->setRepeater(array($data));
-
-            // Show the track is deleted
-            if (! $data['grc_success']) {
-                foreach ($table->tbody() as $row) {
-                    if (isset($row[1])) {
-                        $row[1]->appendAttrib('class', 'deleted');
-                    }
-                }
-            }
-            // lookup and display fields that are linked to this respondent track
-            $sql = "SELECT gems__respondent2track2field.*,gems__track_fields.* FROM gems__respondent2track2field LEFT JOIN gems__track_fields ON gtf_id_field = gr2t2f_id_field WHERE gr2t2f_id_respondent_track = ? ORDER BY gtf_id_order";
-            $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
-
-            $fieldsElements = $this->loader->getTracker()->getRespondentTrack($data['gr2t_id_respondent_track'])->getFieldsElements();
-
-            foreach ($fieldValues as $field) {
-                $fieldDisplayValue   = $field['gr2t2f_value'];
-
-                if (array_key_exists($field['gtf_id_field'], $fieldsElements) && $fieldsElements[$field['gtf_id_field']] instanceof Zend_Form_Element_Select) {
-                    $fieldDisplayElement = $fieldsElements[$field['gtf_id_field']];
-                    $multiOptions = $fieldDisplayElement->getMultiOptions();
-                    if (array_key_exists($fieldDisplayValue, $multiOptions)) {
-                        $fieldDisplayValue = $multiOptions[$fieldDisplayValue];
-                    }
-                }
-                $table->tr();
-                $table->tdh($field['gtf_field_name']);
-                $table->td($fieldDisplayValue);
-            }
-
-            $this->html[] = $table;
-
-            if ($links) {
-                $this->html->buttonDiv($links);
-            }
-
+            $this->addSnippet('ModelItemTableSnippetGeneric',
+                    'menuList', $links,
+                    'model', $model,
+                    'trackType', $this->trackType);
         }
 
         $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
@@ -604,43 +570,10 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                     $this->getRespondentName($data)));
 
             if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
-                $table = parent::getShowTable();
-                $table->setRepeater(array($data));
-
-                // Show the track is deleted
-                if (! $data['grc_success']) {
-                    foreach ($table->tbody() as $row) {
-                        if (isset($row[1])) {
-                            $row[1]->appendAttrib('class', 'deleted');
-                        }
-                    }
-                }
-                // lookup and display fields that are linked to this respondent track
-                $sql = "SELECT gems__respondent2track2field.*,gems__track_fields.* FROM gems__respondent2track2field LEFT JOIN gems__track_fields ON gtf_id_field = gr2t2f_id_field WHERE gr2t2f_id_respondent_track = ? ORDER BY gtf_id_order";
-                $fieldValues = $this->db->fetchAll($sql, array('gr2t2f_id_respondent_track' => $data['gr2t_id_respondent_track']));
-
-                $fieldsElements = $this->loader->getTracker()->getRespondentTrack($data['gr2t_id_respondent_track'])->getFieldsElements();
-
-                foreach ($fieldValues as $field) {
-                    $fieldDisplayValue   = $field['gr2t2f_value'];
-
-                    if (array_key_exists($field['gtf_id_field'], $fieldsElements) && $fieldsElements[$field['gtf_id_field']] instanceof Zend_Form_Element_Select) {
-                        $fieldDisplayElement = $fieldsElements[$field['gtf_id_field']];
-                        $multiOptions = $fieldDisplayElement->getMultiOptions();
-                        if (array_key_exists($fieldDisplayValue, $multiOptions)) {
-                            $fieldDisplayValue = $multiOptions[$fieldDisplayValue];
-                        }
-                    }
-                    $table->tr();
-                    $table->tdh($field['gtf_field_name']);
-                    $table->td($fieldDisplayValue);
-                }
-
-                $this->html[] = $table;
-
-                if ($links) {
-                    $this->html->buttonDiv($links);
-                }
+                $this->addSnippet('ModelItemTableSnippetGeneric',
+                        'menuList', $links,
+                        'model', $model,
+                        'trackType', $this->trackType);
 
                 $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackData', $data);
             }

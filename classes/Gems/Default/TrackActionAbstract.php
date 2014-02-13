@@ -215,22 +215,27 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function createRespondentTrackModel($detailed, $action)
     {
-        $model = $this->loader->getTracker()->getRespondentTrackModel();
+        $tracker = $this->loader->getTracker();
+        $model   = $tracker->getRespondentTrackModel();
 
-        $model->resetOrder();
-        $model->set('gtr_track_name',    'label', $this->_('Track'));
-        $model->set('gr2t_track_info',   'label', $this->_('Description'),
-            'description', $this->_('Enter the particulars concerning the assignment to this respondent.'));
-        $model->set('assigned_by',       'label', $this->_('Assigned by'));
-        $model->set('gr2t_start_date',   'label', $this->_('Start'),
-        	'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->util->getTranslated()->formatDate,
-            'default', new Zend_Date());
-        $model->set('gr2t_end_date',   'label', $this->_('Ending on'),
-        	'dateFormat', 'dd-MM-yyyy',
-            'formatFunction', $this->util->getTranslated()->formatDate);
-        $model->set('gr2t_reception_code');
-        $model->set('gr2t_comment',       'label', $this->_('Comment'));
+        $trackEngineId = $this->_getParam(Gems_Model::TRACK_ID);
+        if ($trackEngineId) {
+            $model->setTrackEngine($tracker->getTrackEngine($trackEngineId));
+        }
+        $respondentTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+        if ($respondentTrackId) {
+            $model->setRespondentTrack($tracker->getRespondentTrack($respondentTrackId));
+        }
+        list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
+        $model->setPatientAndOrganization($patientId, $orgId);
+
+        if (in_array($action, array('create', 'delete-track', 'edit-track'))) {
+            $model->applyEditSettings();
+        } elseif (in_array($action, array('export-track', 'show-track'))) {
+            $model->applyDetailSettings();
+        } else {
+            $model->applyBrowseSettings();
+        }
 
         return $model;
     }
@@ -285,7 +290,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     {
         $token = $this->loader->getTracker()->getToken($this->_getIdParam());
         $token->applyToMenuSource($this->menu->getParameterSource());
-        
+
         $params['mailTarget']   = 'token';
         $params['menu']         = $this->menu;
         $params['model']        = $this->getModel();
@@ -406,7 +411,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         }
 
         $this->respondentName = trim($data['grs_first_name'] . ' ' . $data['grs_surname_prefix']) . ' ' . $data['grs_last_name'];
-        
+
         return $this->respondentName;
     }
 
