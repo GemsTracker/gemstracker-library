@@ -123,19 +123,25 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
     	if (isset($selectOptions['ajax'])) {
     		$queryUrl = Zend_Controller_Front::getInstance()->getBaseUrl() . '/' . $selectOptions['ajax']['controller'] . '/' . $selectOptions['ajax']['action'];
     		$source = $selectOptions['source'];
-    		$enableAfter = false;
-    		if (isset($selectOptions['disabledEmpty']) && $selectOptions['disabledEmpty']) {
-				$enableAfter = true;
-			}
-			$firstValue = $this->getFirstValueJs($selectOptions['firstValue']);
-
 			$script = '
 			$("#'.$target.'").getSelectOptions(
                 {
                  queryUrl: "'. $queryUrl .'",
-                 source: "' . $source . '",
-                 enableAfter: ' . $enableAfter . ',
-                 firstValue: ' . $firstValue . ',
+                 source: "' . $source . '",';
+
+            if (isset($selectOptions['disabledEmpty']) && $selectOptions['disabledEmpty']) {
+                $script .= '
+                enableAfter: true,';
+            }
+            if (isset($selectOptions['firstValue']) && $selectOptions['firstValue'] !== false) {
+                $script .= '
+                 firstValue: ' . json_encode($this->getKeyValueArray($selectOptions['firstValue'])) . ',';
+            }
+            if (isset($selectOptions['defaultValues']) && $selectOptions['defaultValues'] !== false) {
+                $script .= '
+                 defaultValues: ' . json_encode($this->getKeyValueArray($selectOptions['defaultValues'])) . ',';
+            }
+            $script .= '
                 }
             );';
     		
@@ -143,22 +149,15 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
     	}
     }
 
-    protected function getFirstValueJs($firstValue) {
-        if ($firstValue) {
-            if ($firstValue === true) {
-                return 'true';
-            } elseif (is_array($firstValue)) {
-                $jsArray = '[';
-                    foreach($firstValue as $key=>$value) {
-                        $jsArray .= "['{$key}','{$value}'],";
-                    }
-                $jsArray .= ']';
-                return $jsArray;
-            } else {
-                return $firstValue;
+    protected function getKeyValueArray($array) {
+        if (is_array($array)) {
+            $newArray = array();
+            foreach($array as $key=>$value) {
+                $newArray[] = array($key, $value);
             }
+            return $newArray;
         }
-        return 'false';
+        return $array;
     }
 
 	/**

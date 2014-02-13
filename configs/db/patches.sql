@@ -722,3 +722,5 @@ INSERT ignore INTO gems__comm_jobs (gcj_id_job,
 ALTER TABLE gems__comm_jobs ADD
     gcj_round_description varchar(100) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null
     AFTER gcj_id_track;
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.cron.job') WHERE grl_privileges NOT LIKE '%pr.cron.job%';

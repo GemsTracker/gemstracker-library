@@ -291,8 +291,6 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
-        $permissionNeeded = $this->escort->project->getCronPermissionNeeded();
-
         // COMMUNICATION ACTIVITY CONTROLLER
         //$setup->addBrowsePage();
         $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
@@ -303,12 +301,9 @@ abstract class Gems_Menu_MenuAbstract
         // AUTOMATIC COMMUNICATION CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
-        if ($permissionNeeded) {
-            $page->addPage($this->_('Run'), 'pr.cron.job', 'cron', 'index');
-        } else {
-            $page->addPage($this->_('Run'), null, 'cron', 'index');
-        }
-
+        
+        $page->addPage($this->_('Run'), 'pr.cron.job', 'cron', 'index');
+        
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
         
         // MAIL SERVER CONTROLLER

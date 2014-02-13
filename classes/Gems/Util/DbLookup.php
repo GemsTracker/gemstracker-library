@@ -249,13 +249,19 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         if ($job['gcj_id_track']) {
             $filter['gto_id_track'] = $job['gcj_id_track'];
         }
-        if ($job['gcj_round_description'] && $job['gcj_id_track']) {
-            $roundIds = $this->db->fetchCol('
-                SELECT gro_id_round WHERE gro_active = 1 AND gro_id_track = ? AND gro_round_description = ?',
-                $job['gcj_id_track'],
-                $job['gcj_round_description']
-            );
-
+        if ($job['gcj_round_description']) {
+            if ($job['gcj_id_track']) {
+                $roundIds = $this->db->fetchCol('
+                    SELECT gro_id_round WHERE gro_active = 1 AND gro_id_track = ? AND gro_round_description = ?',
+                    $job['gcj_id_track'],
+                    $job['gcj_round_description']
+                );
+            } else {
+                $roundIds = $this->db->fetchCol('
+                    SELECT gro_id_round WHERE gro_active = 1 AND gro_round_description = ?',
+                    $job['gcj_round_description']
+                );
+            }
             $filter['gto_id_round'] = $roundIds;
         }
         if ($job['gcj_id_survey']) {
