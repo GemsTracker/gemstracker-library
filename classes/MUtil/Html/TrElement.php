@@ -36,7 +36,7 @@
 
 /**
  *
- * 
+ *
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2012 Erasmus MC
@@ -164,6 +164,12 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
         return 1;
     }
 
+    /**
+     * When repeating content using $_repeater you may want to output the content only when it has
+     * changed.
+     *
+     * @return boolean
+     */
     public function getOnlyWhenChanged()
     {
         return $this->_onlyWhenChanged;
@@ -192,6 +198,7 @@ class MUtil_Html_TrElement extends MUtil_Html_HtmlElement implements MUtil_Html_
 
         return $result;
     }
+    
     /**
      * When repeating content using $_repeater you may want to output the content only when it has
      * changed.
