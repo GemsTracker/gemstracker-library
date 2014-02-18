@@ -724,3 +724,14 @@ ALTER TABLE gems__comm_jobs ADD
     AFTER gcj_id_track;
 
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.cron.job') WHERE grl_privileges NOT LIKE '%pr.cron.job%';
+
+-- PATCH: Update rounds to new appointment / field combination
+UPDATE gems__rounds SET gro_valid_after_field = CONCAT('f__', gro_valid_after_field)
+    WHERE gro_valid_after_source = 'rtr' AND
+        SUBSTRING(gro_valid_after_field, 1, 5) != 'gr2t_' AND
+        SUBSTRING(gro_valid_after_field, 1, 3) != 'f__';
+
+UPDATE gems__rounds SET gro_valid_for_field = CONCAT('f__', gro_valid_for_field)
+    WHERE gro_valid_for_source = 'rtr' AND
+        SUBSTRING(gro_valid_for_field, 1, 5) != 'gr2t_' AND
+        SUBSTRING(gro_valid_for_field, 1, 3) != 'f__';

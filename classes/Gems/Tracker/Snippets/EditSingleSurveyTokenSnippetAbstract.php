@@ -48,8 +48,6 @@
  */
 class Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract extends Gems_Snippets_ModelFormSnippetAbstract
 {
-    const TRACKFIELDS_ID = 'gtfField';
-
     /**
      * Required
      *
@@ -137,8 +135,22 @@ class Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract extends Gems_Sn
     {
         if ($this->token) {
             $model = $this->token->getModel();
+            $this->trackEngine->addFieldsToModel(
+                    $model,
+                    $this->token->getRespondentId(),
+                    $this->token->getOrganizationId(),
+                    null,
+                    true
+                    );
         } else {
             $model = $this->trackEngine->getTokenModel();
+            $this->trackEngine->addFieldsToModel(
+                    $model,
+                    null,
+                    $this->organizationId,
+                    $this->patientId,
+                    true
+                    );
         }
 
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');

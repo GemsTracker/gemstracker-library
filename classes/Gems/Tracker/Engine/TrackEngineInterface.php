@@ -53,14 +53,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Integrate field loading en showing and editing
      *
-     * @param \Gems_Tracker_Model_RespondentTrackModel $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\Gems_Tracker_Model_RespondentTrackModel $model, $respondentId, $organizationId, $patientNr = null, $edit = true);
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $respondentId, $organizationId, $patientNr = null, $edit = true);
 
     /**
      * Set menu parameters from this track engine
@@ -179,7 +179,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * Returns the fields required for editing a track of this type.
      *
      * @return array of Zend_Form_Element
-     */
+     * /
     public function getFieldsElements();
 
     /**
@@ -202,7 +202,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array fieldname => array(settings)
      */
     public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true);
-    
+
     /**
      * Get the round id of the first round
      *

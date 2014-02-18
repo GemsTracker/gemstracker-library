@@ -184,7 +184,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             //Map the fielddata to the fieldcode
             foreach($fieldData as $key => $value) {
                 if (isset($fieldMap[$key])) {
-                    // The old name remains in the data set of course,\
+                    // The old name remains in the data set of course,
                     // using the code is a second occurence
                     $fieldData[$fieldMap[$key]] = $value;
                 }

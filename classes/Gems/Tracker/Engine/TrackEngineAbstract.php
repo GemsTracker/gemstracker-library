@@ -64,6 +64,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     protected $_fieldModels = array();
 
     /**
+     * Cache for appointment fields check
+     *
+     * @var boolean
+     */
+    private $_hasAppointmentFields = null;
+
+    /**
      *
      * @var array of rounds data
      */
@@ -237,14 +244,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Integrate field loading en showing and editing
      *
-     * @param \Gems_Tracker_Model_RespondentTrackModel $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\Gems_Tracker_Model_RespondentTrackModel $model, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
         $this->_ensureTrackFields();
 
@@ -602,8 +609,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
         $fields = array();
 
-        foreach ($this->_trackFields as $field) {
-            $fields[$field['gtf_id_field']] = $field['gtf_field_name'];
+        foreach ($this->_trackFields as $key => $field) {
+            $fields[$key] = $field['gtf_field_name'];
         }
 
         return $fields;
@@ -613,7 +620,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * Returns an array of the fields in this track
      * key / value are id / code
      *
-     * @return array filedid => fieldcode
+     * @return array fieldid => fieldcode
      */
     public function getFields()
     {
@@ -694,7 +701,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * Returns the fields required for editing a track of this type.
      *
      * @return array of Zend_Form_Element
-     */
+     * /
     public function getFieldsElements()
     {
         $this->_ensureTrackFields();
@@ -739,7 +746,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                             $element = new Zend_Form_Element_Select($name);
                             $element->setMultiOptions($empty + $multi);
                             break;
-                            // */
+                            // * /
 
                         default:
                             $element = new Zend_Form_Element_Text($name);
@@ -867,7 +874,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     case "appointment":
                         if (! $appointments) {
                             $agenda       = $this->loader->getAgenda();
-                            $appointments = $agenda->getAppointments($respondentId, $organizationId, $patientNr);
+                            $appointments = $agenda->getActiveAppointments($respondentId, $organizationId, $patientNr);
                             // MUtil_Echo::track($appointments);
                         }
                         $fieldSettings[$name]['elementClass'] = 'Select';
@@ -1177,6 +1184,28 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     public function getTrackName()
     {
         return $this->_trackData['gtr_track_name'];
+    }
+
+    /**
+     * True when this track contains appointment fields
+     *
+     * @return boolean
+     */
+    protected function hasAppointmentFields()
+    {
+        if (null === $this->_hasAppointmentFields) {
+            $this->_ensureTrackFields();
+            $this->_hasAppointmentFields = false;
+            
+            foreach ($this->_trackFields as $field) {
+                if ('appointment' == $field['gtf_field_type']) {
+                    $this->_hasAppointmentFields = true;
+                    break;
+                }
+            }
+        }
+
+        return $this->_hasAppointmentFields;
     }
 
     /**

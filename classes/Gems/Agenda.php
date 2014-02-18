@@ -59,6 +59,21 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     protected $db;
 
     /**
+     * Get all active respondents for this user
+     *
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @return array appointmentId => appointment description
+     */
+    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null)
+    {
+        $where = sprintf('gap_status IN (%s)', $this->getStatusKeysActiveDbQuoted());
+
+        return $this->getAppointments($respondentId, $organizationId, $patientNr, $where);
+    }
+
+    /**
      * Get the select statement for appointments in getAppointments()
      *
      * Allows for overruling on project level
@@ -76,29 +91,6 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                 ->order('gap_admission_time DESC');
 
         return $select;
-    }
-
-    /**
-     * Overrule this function to adapt the display of the agenda items for each project
-     *
-     * @param array $row Row containing result select
-     * @return string
-     */
-    public function getAppointmentDisplay(array $row)
-    {
-        $date = new MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
-        $results[] = $date->toString('dd-MM-yyyy HH:mm');
-        if ($row['gaa_name']) {
-            $results[] = $row['gaa_name'];
-        }
-        if ($row['gapr_name']) {
-            $results[] = $row['gapr_name'];
-        }
-        if ($row['glo_name']) {
-            $results[] = $row['glo_name'];
-        }
-
-        return implode($this->_('; '), $results);
     }
 
     /**
@@ -137,15 +129,44 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Overrule this function to adapt the display of the agenda items for each project
+     *
+     * @param array $row Row containing result select
+     * @return string
+     */
+    public function getAppointmentDisplay(array $row)
+    {
+        $date = new MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
+        $results[] = $date->toString('dd-MM-yyyy HH:mm');
+        if ($row['gaa_name']) {
+            $results[] = $row['gaa_name'];
+        }
+        if ($row['gapr_name']) {
+            $results[] = $row['gapr_name'];
+        }
+        if ($row['glo_name']) {
+            $results[] = $row['glo_name'];
+        }
+
+        return implode($this->_('; '), $results);
+    }
+
+    /**
+     * Get all appointments for a respondent
      *
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
+     * @param string $where Optional extra where statement
      * @return array appointmentId => appointment description
      */
-    public function getAppointments($respondentId, $organizationId, $patientNr = null)
+    public function getAppointments($respondentId, $organizationId, $patientNr = null, $where = null)
     {
         $select = $this->_getAppointmentSelect();
+
+        if ($where) {
+            $select->where($where);
+        }
 
         if ($respondentId) {
             $select->where('gap_id_user = ?', $respondentId)
@@ -165,6 +186,7 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                     ->where('gr2o_id_organization = ?', $organizationId);
         }
 
+        // MUtil_Echo::track($select->__toString());
         $rows = $this->db->fetchAll($select);
 
         if (! $rows) {

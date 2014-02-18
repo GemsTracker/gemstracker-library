@@ -179,6 +179,7 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
                 }
                 break;
 
+            case parent::APPOINTMENT_TABLE:
             case parent::RESPONDENT_TRACK_TABLE:
                 $date = $respTrack->getDate($fieldName);
                 break;

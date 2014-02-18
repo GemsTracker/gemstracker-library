@@ -60,12 +60,12 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
     protected function _addFieldsElements(MUtil_Model_FormBridge $bridge)
     {
         if ($this->trackEngine) {
-            $elements = $this->trackEngine->getFieldsElements();
+            $elements = $this->trackEngine->getFieldNames();
 
-            foreach ($elements as $element) {
-                $element->setBelongsTo(self::TRACKFIELDS_ID);
-                $bridge->addElement($element);
+            foreach ($elements as $id => $name) {
+                $bridge->add($id);
             }
+            // MUtil_Echo::track(array_intersect_key($this->formData, $elements));
         }
     }
 
@@ -165,10 +165,8 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                             'required', true);
 
                     // Keep the values, so add hidden
-                    foreach ($this->trackEngine->getFields() as $key => $code) {
-                        $hidden = new Zend_Form_Element_Hidden($key);
-                        $hidden->setBelongsTo(self::TRACKFIELDS_ID);
-                        $bridge->addElement($hidden);
+                    foreach ($this->trackEngine->getFieldNames() as $key => $code) {
+                        $bridge->addHidden($key);
                     }
                 } else {
                     $this->_addFieldsElements($bridge);
@@ -241,14 +239,6 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
 
         } else {
             parent::loadFormData();
-        }
-
-        if (! array_key_exists(self::TRACKFIELDS_ID, $this->formData)) {
-            if ($this->trackEngine) {
-                $this->formData[self::TRACKFIELDS_ID] = $this->trackEngine->getFieldsData($this->respondentTrackId);
-            } else {
-                $this->formData[self::TRACKFIELDS_ID] = array();
-            }
         }
     }
 

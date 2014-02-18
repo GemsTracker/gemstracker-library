@@ -47,9 +47,29 @@
  */
 abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engine_TrackEngineAbstract
 {
+    /**
+     * Database stored constant value for using an answer in a survey as date source
+     */
     const ANSWER_TABLE = 'ans';
+
+    /**
+     * Database stored constant value for using an appointment as date source
+     */
+    const APPOINTMENT_TABLE = 'app';
+
+    /**
+     * Database stored constant value for using nothing as a date source
+     */
     const NO_TABLE = 'nul';
+
+    /**
+     * Database stored constant value for using a track field as date source
+     */
     const RESPONDENT_TRACK_TABLE = 'rtr';
+
+    /**
+     * Database stored constant value for using a token as date source
+     */
     const TOKEN_TABLE = 'tok';
 
     /**
@@ -94,6 +114,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     protected function _sourceUsesSurvey($source)
     {
         switch ($source) {
+            case self::APPOINTMENT_TABLE:
             case self::NO_TABLE:
             case self::RESPONDENT_TRACK_TABLE:
                 return false;
@@ -344,6 +365,18 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                $survey = $this->tracker->getSurvey($surveyId);
                return $survey->getDatesList($language);
 
+           case self::APPOINTMENT_TABLE:
+               $this->_ensureTrackFields();
+
+               $results = array();
+               foreach ($this->_trackFields as $id => $field) {
+                   if ('appointment' == $field['gtf_field_type']) {
+                       $results[$id] =  $field['gtf_field_name'];
+                   }
+               }
+
+               return $results;
+
            case self::RESPONDENT_TRACK_TABLE:
                $this->_ensureTrackFields();
 
@@ -353,9 +386,9 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                    // 'gr2t_created'    => $this->_('Track created'),
                );
 
-               foreach ($this->_trackFields as $field) {
+               foreach ($this->_trackFields as $id => $field) {
                    if ('date' == $field['gtf_field_type']) {
-                       $results[$field['gtf_id_field']] =  $field['gtf_field_name'];
+                       $results[$id] =  $field['gtf_field_name'];
                    }
                }
 
@@ -403,10 +436,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     public function getRoundModel($detailed, $action)
     {
         $model = parent::getRoundModel($detailed, $action);
-        
+
         // Add information about surveys and groups
         $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
-        $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));    
+        $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
 
         if ($detailed) {
             // Reset display order to class specific order
@@ -518,6 +551,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         }
         if (! ($validAfter && $firstRound)) {
             $results[self::ANSWER_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Answers'), $this->_('Use an answer from a survey.')));
+        }
+        if ($this->hasAppointmentFields()) {
+            $results[self::APPOINTMENT_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Appointment'), $this->_('Use an appointment linked to this track.')));
+        }
+        if (! ($validAfter && $firstRound)) {
             $results[self::TOKEN_TABLE]  = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Token'), $this->_('Use a standard token date.')));
         }
         $results[self::RESPONDENT_TRACK_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Track'), $this->_('Use a track level date.')));
