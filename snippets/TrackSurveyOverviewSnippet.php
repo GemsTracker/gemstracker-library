@@ -51,7 +51,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
-    
+
     /**
      *
      * @var Gems_Loader
@@ -126,11 +126,11 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
     {
         if (!($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface)) {
             $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
-        } 
-        
+        }
+
         $roundModel = $this->trackEngine->getRoundModel(true, null);
-        
-        return $roundModel->loadRepeatable(array('gro_id_track'=>$trackId));
+
+        return $roundModel->loadRepeatable(array('gro_id_track' => $trackId, 'gro_active' => 1));
     }
 
     /**

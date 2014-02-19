@@ -101,9 +101,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param Gems_Tracker_Token $startToken The token to start at
      * @param int $userId Id of the user who takes the action (for logging)
+     * @param Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId);
+    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId, Gems_Tracker_Token $skipToken = null);
 
     /**
      * Check the valid from and until dates in the track

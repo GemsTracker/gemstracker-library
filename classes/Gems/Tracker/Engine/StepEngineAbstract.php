@@ -288,9 +288,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param Gems_Tracker_Token $startToken The token to start at
      * @param int $userId Id of the user who takes the action (for logging)
+     * @param Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId)
+    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId, Gems_Tracker_Token $skipToken = null)
     {
         // Make sure the rounds are loaded
         $this->_ensureRounds();
@@ -306,7 +307,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
             // Change only not-completed tokens with a positive successcode
             if ($token->hasSuccesCode() &&
-                    (! $token->isCompleted())) {
+                    (! $token->isCompleted()) &&
+                    ($token !== $skipToken)) {
 
                 //Only process the token when linked to a round
                 if(array_key_exists($token->getRoundId(), $this->_rounds)) {

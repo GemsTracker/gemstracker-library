@@ -176,8 +176,8 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
 
             $respTrack = $this->token->getRespondentTrack();
             if ($nextToken = $this->token->getNextToken()) {
-                $changed = $respTrack->checkTrackTokens($this->session->user_id, $nextToken);
-            
+                $changed = $respTrack->checkTrackTokens($this->session->user_id, $nextToken, $this->token);
+
                 if ($changed) {
                     $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $changed), $changed));
                 }

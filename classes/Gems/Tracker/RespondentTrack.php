@@ -371,9 +371,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      *
      * @param int $userId Id of the user who takes the action (for logging)
      * @param Gems_Tracker_Token $fromToken Optional token to start from
+     * @param Gems_Tracker_Token $skipToken Optional token to skip in the recalculation when $fromToken is used
      * @return int The number of tokens changed by this code
      */
-    public function checkTrackTokens($userId, Gems_Tracker_Token $fromToken = null)
+    public function checkTrackTokens($userId, Gems_Tracker_Token $fromToken = null, Gems_Tracker_Token $skipToken = null)
     {
         // Execute any defined functions
         $count = $this->handleTrackCalculation($userId);
@@ -385,7 +386,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         // Check for validFrom and validUntil dates that have changed.
         if ($fromToken) {
-            return $count + $engine->checkTokensFrom($this, $fromToken, $userId);
+            return $count + $engine->checkTokensFrom($this, $fromToken, $userId, $skipToken);
         } elseif ($this->_checkStart) {
             return $count + $engine->checkTokensFrom($this, $this->_checkStart, $userId);
         } else {

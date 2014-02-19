@@ -97,19 +97,44 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
     }
 
     /**
-     * Any round can depend on any token so always fo a full check from the start
+     * The end date of any round can depend on any token so always do a end date check
+     * of the previous tokens
      *
-     * When valid until depends on a future round, filling out the future token
-     * should result in setting the valid until for all rounds in the track
-     *
-     * @param Gems_Tracker_RespondentTrack $respTrack
-     * @param Gems_Tracker_Token $startToken
-     * @param type $userId
-     * @return type
+     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param Gems_Tracker_Token $startToken The token to start at
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
+     * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId)
+    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId, Gems_Tracker_Token $skipToken = null)
     {
-        return parent::checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
+        $changed = parent::checkTokensFrom($respTrack, $startToken, $userId);
+
+        // Now loop back
+        $token = $startToken->getPreviousToken();
+        while ($token) {
+            // Change only not-completed tokens with a positive successcode
+            if ($token->hasSuccesCode() &&
+                    (! $token->isCompleted()) &&
+                    ($token !== $skipToken)) {
+
+                //Only process the token when linked to a round
+                if(array_key_exists($token->getRoundId(), $this->_rounds)) {
+                    $round      = $this->_rounds[$token->getRoundId()];
+
+                    // Do not change valid from
+                    $validFrom  = $token->getValidFrom();
+
+                    $untilDate  = $this->getValidUntilDate($round['gro_valid_for_source'], $round['gro_valid_for_field'], $round['gro_valid_for_id'], $token, $respTrack, $validFrom);
+                    $validUntil = $this->calculateUntilDate($untilDate, $round['gro_valid_for_unit'], $round['gro_valid_for_length']);
+
+                    $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
+                }
+            }
+            $token = $token->getPreviousToken();
+        }
+
+        return $changed;
     }
 
     /**
