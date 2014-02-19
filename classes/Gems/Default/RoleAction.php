@@ -53,9 +53,25 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
     public $acl;
 
     /**
+     *
+     * @var Zend_Cache_Core
+     */
+    public $cache = null;
+
+    /**
      * @var GemsEscort
      */
     public $escort;
+
+    /**
+     * This code uses string parent / descendant values but
+     * we want to save and load the numeric values.
+     *
+     * Filled by createModel
+     *
+     * @var array
+     */
+    public $parentTranslation;
 
     public $sortKey = 'grl_name';
 
@@ -170,22 +186,6 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * @param array $data
-     * @param bool  $isNew
-     * @return array
-     */
-    public function afterFormLoad(array &$data, $isNew)
-    {
-        if (isset($data['grl_parents']) && (! is_array($data['grl_parents']))) {
-            $data['grl_parents'] = explode(',', $data['grl_parents']);
-        }
-
-        if (isset($data['grl_privileges']) && (! is_array($data['grl_privileges']))) {
-            $data['grl_privileges'] = explode(',', $data['grl_privileges']);
-        }
-    }
-
-    /**
      * As the ACL might have to be updated, rebuild the acl
      *
      * @param array $data
@@ -194,8 +194,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
      */
     public function afterSave(array $data, $isNew)
     {
-        $roles = $this->loader->getRoles($this->escort);
-        $roles->build();
+        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('roles'));
 
         return true;
     }
@@ -209,8 +208,11 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
      */
     public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
     {
-        if (isset($data['grl_parents'])) {
-            $data['grl_parents'] = implode(',', $data['grl_parents']);
+        if (isset($data['grl_parents']) && (! is_array($data['grl_parents']))) {
+            $data['grl_parents'] = explode(',', $data['grl_parents']);
+        }
+        if (isset($data['grl_parents']) && is_array($data['grl_parents'])) {
+            $data['grl_parents'] = implode(',', Gems_Roles::getInstance()->translateToRoleIds($data['grl_parents']));
         }
 
         //Always add nologin privilege to 'nologin' role
@@ -254,6 +256,8 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
 
         $tpa = new MUtil_Model_Type_ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
+        $model->setOnLoad('grl_parents', array(Gems_Roles::getInstance(), 'translateToRoleNames'));
+
 
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
         $tpr = new MUtil_Model_Type_ConcatenatedRow(',', '<br/>');
@@ -374,7 +378,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (count($privileges)) {
             $output     = MUtil_Html_ListElement::ul();
             $privileges = array_combine($privileges, $privileges);
-            
+
             $output->class = 'allowed';
 
             foreach ($this->getUsedPrivileges() as $privilege => $description) {

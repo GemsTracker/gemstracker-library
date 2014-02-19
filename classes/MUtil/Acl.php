@@ -26,23 +26,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @author     Matijs de Jong
- * @since      1.0
- * @version    $Id$
  * @package    MUtil
  * @subpackage Acl
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * Extends Zend_Acl with a couple of overview functions/
+ * Extends Zend_Acl with a couple of overview functions
  *
- * @author     Matijs de Jong
  * @package    MUtil
  * @subpackage Acl
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Acl extends Zend_Acl
 {

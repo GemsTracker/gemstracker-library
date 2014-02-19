@@ -27,6 +27,7 @@
  *
  * @package    Gems
  * @subpackage Roles
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -46,12 +47,21 @@
  * @subpackage Roles
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @since      Class available since version 1.0
  */
 class Gems_Roles
 {
-
+    /**
+     *
+     * @var Zend_Cache_Core
+     */
     protected $_cache = null;
+
+    /**
+     * The id used in the cache
+     *
+     * @var string
+     */
     protected $_cacheid = 'gems_acl';
 
     /**
@@ -60,15 +70,39 @@ class Gems_Roles
      */
     protected $_acl;
 
+    /**
+     *
+     * @var Gems_Rokes
+     */
     private static $_instanceOfSelf;
 
-    public function __call($method, $args) {
+    /**
+     * Needed for being able to store role id's instead of role names in the db
+     *
+     * @var array role_id => role_name
+     */
+    private $_roleTranslations = array();
+
+    /**
+     * Pass any strang call to MUtil_Acl
+     *
+     * @param stringethod
+     * @param mixed $args
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
         if ($this->_acl instanceof Zend_Acl && method_exists($this->_acl, $method)) {
             return call_user_func_array(array($this->_acl, $method), $args);
         }
     }
 
-    public function __construct($cache = null) {
+    /**
+     *
+     * @param mixed $cache Zend_Cache_Core or GemsEscort
+     */
+    public function __construct($cache = null)
+    {
         self::$_instanceOfSelf = $this;
         $this->setCache($cache);
         if (!is_null($cache))
@@ -76,88 +110,14 @@ class Gems_Roles
     }
 
     /**
-     * Maak een nieuwe ACL aan, omdat de cache verlopen is, of omdat de acl gewijzigd is.
-     *
-     * @return unknown_type
+     * Empty this cache instance
      */
-    public function build() {
-        $this->deleteCache();
-        $this->initAcl();
-        $this->save();
-    }
-
-    private function cmp($a, $b) {
-        return strcmp($a['name'], $b['name']);
-    }
-
-    private function deleteCache() {
-        $cache = $this->_cache;
-        if ($this->_cache instanceof Zend_Cache_Core)
-            $cache->remove($this->_cacheid);
-    }
-
-    /**
-     *
-     * @return MUtil_Acl
-     */
-    public function getAcl() {
-        return $this->_acl;
-    }
-
-    public static function getInstance()
+    private function _deleteCache()
     {
-        if (!isset(self::$_instanceOfSelf)) {
-            $c = __CLASS__;
-            self::$_instanceOfSelf = new $c;
-        }
-        return self::$_instanceOfSelf;
-    }
-
-    /**
-     * Reset de ACL en bouw opnieuw op
-     */
-    private function initAcl() {
-        $this->_acl = new MUtil_Acl();
-        if (get_class(self::$_instanceOfSelf)!=='Gems_Roles') {
-            throw new Gems_Exception_Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
-        }
-        // Probeer eerst uit db in te lezen met fallback als dat niet lukt
-        try {
-            $this->loadDbAcl();
-        } catch (Exception $e) {
-            Gems_Log::getLogger()->logError($e);
-
-            // Reset all roles
-            unset($this->_acl);
-            $this->_acl = new MUtil_Acl();
-
-            //Voeg standaard rollen en privileges in
-            $this->loadDefaultRoles();
-            $this->loadDefaultPrivileges();
-        }
-
-        //Now allow 'master' all access, except for the actions that have the nologin privilege (->the login action)
-        if (!$this->_acl->hasRole('master')) {
-            //Add role if not already present
-            $this->_acl->addRole('master');
-        }
-        $this->_acl->allow('master');
-        $this->_acl->deny('master', null, 'pr.nologin');
-    }
-
-    public function load() {
+        $cache = $this->_cache;
         if ($this->_cache instanceof Zend_Cache_Core) {
-            $cache = $this->_cache;
-            $id = $this->_cacheid;
-            if (!($cache->test($id))) {
-                // cache miss
-                $this->build();
-            } else {
-                // cache hit
-                $this->_acl = $cache->load($id);
-            }
-        } else {
-            $this->build();
+            $cache->remove($this->_cacheid);
+            $cache->remove($this->_cacheid . 'trans');
         }
     }
 
@@ -180,7 +140,7 @@ class Gems_Roles
         }
 
         if (!empty($role['grl_parents'])) {
-            $parents = explode(",", $role['grl_parents']);
+            $parents = $this->translateToRoleNames($role['grl_parents']);
 
             foreach ($parents as $parent) {
                 $this->_expandRole($roleList, $parent, $depth + 1);
@@ -189,22 +149,131 @@ class Gems_Roles
             $parents = array();
         }
 
-        $this->addRole(new Zend_Acl_Role($role['grl_name']), $parents);
+        $this->_acl->addRole(new Zend_Acl_Role($role['grl_name']), $parents);
 
         $privileges = explode(",", $role['grl_privileges']);
-        $this->addPrivilege($role['grl_name'], $privileges);
+        $this->_acl->addPrivilege($role['grl_name'], $privileges);
 
         $roleList[$roleName]['marked'] = true;
+    }
+
+    /**
+     * Reset de ACL en bouw opnieuw op
+     */
+    private function _initAcl()
+    {
+        $this->_acl = new MUtil_Acl();
+
+        if (get_class(self::$_instanceOfSelf)!=='Gems_Roles') {
+            throw new Gems_Exception_Coding("Don't use project specific roles file anymore, you can now do so by using the gems_roles tabel and setup->roles from the interface.");
+        }
+        // Probeer eerst uit db in te lezen met fallback als dat niet lukt
+        try {
+            $this->loadDbAcl();
+
+        } catch (Exception $e) {
+
+            Gems_Log::getLogger()->logError($e);
+
+            // Reset all roles
+            unset($this->_acl);
+            $this->_acl = new MUtil_Acl();
+
+            //Voeg standaard rollen en privileges in
+            $this->loadDefaultRoles();
+            $this->loadDefaultPrivileges();
+        }
+
+        //Now allow 'master' all access, except for the actions that have the nologin privilege (->the login action)
+        if (!$this->_acl->hasRole('master')) {
+            //Add role if not already present
+            $this->_acl->addRole('master');
+        }
+        $this->_acl->allow('master');
+        $this->_acl->deny('master', null, 'pr.nologin');
+    }
+
+    /**
+     * Save to cache
+     *
+     * @throws Gems_Exception
+     */
+    private function _save()
+    {
+        if ($this->_cache instanceof Zend_Cache_Core) {
+            if (! (
+                    $this->_cache->save($this->_acl, $this->_cacheid, array('roles'), null) &&
+                    $this->_cache->save($this->_roleTranslations, $this->_cacheid . 'trans', array('roles'), null)
+                    )) {
+                throw new Gems_Exception('Failed to save acl to cache');
+            }
+        }
+    }
+
+    /**
+     * Maak een nieuwe ACL aan, omdat de cache verlopen is, of omdat de acl gewijzigd is.
+     *
+     * @return void
+     */
+    public function build()
+    {
+        $this->_deleteCache();
+        $this->_initAcl();
+        $this->_save();
+    }
+
+    /**
+     *
+     * @return MUtil_Acl
+     */
+    public function getAcl()
+    {
+        return $this->_acl;
+    }
+
+    /**
+     * Static acces function
+     *
+     * @return Gems_Roles
+     */
+    public static function getInstance()
+    {
+        if (!isset(self::$_instanceOfSelf)) {
+            $c = __CLASS__;
+            self::$_instanceOfSelf = new $c;
+        }
+        return self::$_instanceOfSelf;
+    }
+
+    /**
+     * Load the ACL values either from the cache or from build()
+     */
+    public function load()
+    {
+        if ($this->_cache instanceof Zend_Cache_Core) {
+            $cache = $this->_cache;
+            if (! ($cache->test($this->_cacheid) && $cache->test($this->_cacheid . 'trans'))) {
+                // cache miss
+                $this->build();
+            } else {
+                // cache hit
+                $this->_acl = $cache->load($this->_cacheid);
+                $this->_roleTranslations = $cache->load($this->_cacheid . 'trans');
+            }
+        } else {
+            $this->build();
+        }
     }
 
     /**
      * Load access control list from db
      * @throws Exception
      */
-    public function loadDbAcl() {
+    public function loadDbAcl()
+    {
         $db = Zend_Registry::get('db');
 
-        $sql = "SELECT grl_id_role,grl_name,grl_privileges,grl_parents FROM gems__roles";
+        $sql = "SELECT grl_id_role, grl_name, grl_privileges, grl_parents FROM gems__roles";
 
         $roles = $db->fetchAll($sql);
 
@@ -212,6 +281,10 @@ class Gems_Roles
             throw new Exception("No roles stored in db");
         }
 
+        // Set role id to name tranlations
+        foreach ($roles as $role) {
+            $this->_roleTranslations[$role['grl_id_role']] = $role['grl_name'];
+        }
         $roleList = array_combine(array_map(function($value) { return $value['grl_name']; }, $roles), $roles);
 
         foreach ($roleList as $role) {
@@ -221,36 +294,79 @@ class Gems_Roles
         return true;
     }
 
-    public function loadDefaultPrivileges() {
+    public function loadDefaultPrivileges()
+    {
         /**
          * Only add the nologin role, as the others should come from the database when it is initialized
          */
-        $this->addPrivilege('nologin',
-                        'pr.contact.bugs', 'pr.contact.support',
-                        'pr.nologin'
+        $this->_acl->addPrivilege(
+                'nologin',
+                'pr.contact.bugs', 'pr.contact.support',
+                'pr.nologin'
                 );
     }
 
-    public function loadDefaultRoles() {
+    public function loadDefaultRoles()
+    {
         /**
          * Only add the nologin role, as the others should come from the database when it is initialized
          */
-        $this->addRole(new Zend_Acl_Role('nologin'));
+        $this->_acl->addRole(new Zend_Acl_Role('nologin'));
     }
 
-    private function save() {
-        if ($this->_cache instanceof Zend_Cache_Core) {
-            if (!$this->_cache->save($this->_acl, $this->_cacheid, array(), null))
-                throw new Gems_Exception('Failed to save acl to cache');
-        }
-    }
-
-    public function setCache($cache) {
+    /**
+     *
+     * @param mixed $cache
+     */
+    public function setCache($cache)
+    {
         if ($cache instanceof Zend_Cache_Core) {
             $this->_cache = $cache;
         } elseif ($cache instanceof GemsEscort) {
             $this->_cache = $cache->cache;
         }
-   }
+    }
 
+    /**
+     * Translate all string role id's to numeric role ids
+     *
+     * @param mixed $roles string or array
+     * @return array Of role id's
+     */
+    public function translateToRoleIds($roles)
+    {
+        if (!is_array($roles)) {
+            $roles = explode(",", $roles);
+        }
+
+        $lookup = array_flip($this->_roleTranslations);
+
+        foreach ($roles as $key => $role) {
+            if (isset($lookup[$role])) {
+                $roles[$key] = $lookup[$role];
+            }
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Translate all numeric role id's to string names
+     *
+     * @param mixed $roles string or array
+     * @return array
+     */
+    public function translateToRoleNames($roles)
+    {
+       if (!is_array($roles)) {
+           $roles = explode(",", $roles);
+       }
+       foreach ($roles as $key => $role) {
+           if (isset($this->_roleTranslations[$role])) {
+               $roles[$key] = $this->_roleTranslations[$role];
+           }
+       }
+
+       return $roles;
+    }
 }
