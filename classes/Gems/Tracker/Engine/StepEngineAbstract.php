@@ -79,6 +79,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     protected $_roundModelClass = 'MUtil_Model_TableModel';
 
     /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * Helper function for default handling of multi options value sets
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -546,7 +552,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     protected function getSourceList($validAfter, $firstRound)
     {
-        if (! $validAfter) {
+        if (! ($validAfter || $this->project->isValidUntilRequired())) {
             $results[self::NO_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Does not expire'), ''));
         }
         if (! ($validAfter && $firstRound)) {

@@ -4,6 +4,7 @@ Menu structure has changed: to avoid nesting problems and issues with bread-crum
 Track fields split in fields and appointments: check any code using any track field tables directly, track field id's are no longer integers and getFieldsElements() is no longer in use
 GemsEscort->tokenMailFields() no longer exists
 Logging the respondent in respondent controller restored. Action respondent.show logs without, but respondentShow will log respondent id
+A required valid until definition for each track round can be set at the project level - for new projects this defaults to on
 
 Important changes from 1.6.2 => 1.6.3
 ============================================================

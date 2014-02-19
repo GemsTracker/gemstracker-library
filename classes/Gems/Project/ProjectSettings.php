@@ -142,7 +142,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
             'organization' => array(
                 'default'   => -1  // No default organization
             ),
-            
+
             'idleTimeout' => $this->defaultSessionTimeout   // Sesison timeout default 1800
         );
     }
@@ -441,7 +441,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
     /**
      * Check if multiple language mail templates is supported
-     * @return boolean 
+     * @return boolean
      */
     public function getEmailMultiLanguage()
     {
@@ -873,5 +873,15 @@ class Gems_Project_ProjectSettings extends ArrayObject
     public function isMultiLocale()
     {
         return (boolean) (isset($this['multiLocale']) && $this['multiLocale']);
+    }
+
+    /**
+     * Is a valid until date required for each round in each track
+     *
+     * @return boolean
+     */
+    public function isValidUntilRequired()
+    {
+        return isset($this['track'], $this['track']['requireValidUntil']) && $this['track']['requireValidUntil'];
     }
 }
