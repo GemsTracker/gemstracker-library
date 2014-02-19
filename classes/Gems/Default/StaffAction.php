@@ -189,10 +189,19 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         } else {
             $bridge->addHidden('gul_user_class');
         }
-        //@@TODO: How do we change this? Only per org, or allow per user?
-        //What classes are available? Maybe use something like event loader and add a little desc. to each type?
-        $bridge->addText('gsf_login', 'size', 15, 'minlength', 4,
-            'validator', $model->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user')));
+
+        // The login is ether unique for all users or unique per organization
+        if ($this->project->isLoginShared()) {
+            $model->set('gsf_login', 'validator', $model->createUniqueValidator('gsf_login', array('gsf_id_user')));
+        } else {
+            // per organization
+            $model->set(
+                    'gsf_login',
+                    'validator',
+                    $model->createUniqueValidator(array('gsf_login', 'gsf_id_organization'), array('gsf_id_user'))
+                    );
+        }
+        $bridge->addText('gsf_login', 'size', 15, 'minlength', 4);
 
         // Can the organization be changed?
         if ($this->escort->hasPrivilege('pr.staff.edit.all')) {

@@ -866,6 +866,19 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Is login shared between organizations (which therefore require
+     * a unique staff logon id for each user, instead of for each
+     * user within an organization).
+     *
+     * @return boolean
+     */
+    public function isLoginShared()
+    {
+        return isset($this['organization'], $this['organization']['sharedLogin']) &&
+                $this['organization']['sharedLogin'];
+    }
+
+    /**
      * Is this project use a multi locale project
      *
      * @return boolean
