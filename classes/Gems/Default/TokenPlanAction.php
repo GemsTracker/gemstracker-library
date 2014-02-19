@@ -321,6 +321,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             'notmailed' => $this->_('Not emailed'),
             'tomail'    => $this->_('To email'),
             'toremind'  => $this->_('Needs reminder'),
+            'hasnomail' => $this->_('Missing email'),
             'toanswer'  => $this->_('Yet to Answer'),
             'answered'  => $this->_('Answered'),
             'missed'    => $this->_('Missed'),
@@ -388,6 +389,16 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     $filter[] = 'gto_completion_time IS NOT NULL';
                     break;
 
+                case 'hasnomail':
+                    $filter[] = sprintf(
+                            "(grs_email IS NULL OR grs_email = '' OR grs_email NOT RLIKE '%s') AND
+                                ggp_respondent_members = 1",
+                            str_replace('\'', '\\\'', trim(MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                            );
+                    $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
+                    $filter['gto_completion_time'] = null;
+                    break;
+
                 case 'missed':
                     $filter[] = 'gto_valid_from <= CURRENT_TIMESTAMP';
                     $filter[] = 'gto_valid_until < CURRENT_TIMESTAMP';
@@ -421,7 +432,14 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     break;
 
                 case 'tomail':
-                    $filter[] = "grs_email IS NOT NULL AND grs_email != '' AND ggp_respondent_members = 1";
+                    $filter[] = sprintf(
+                            "grs_email IS NOT NULL AND
+                                grs_email != '' AND
+                                grs_email RLIKE '%s' AND
+                                ggp_respondent_members = 1",
+                            str_replace('\'', '\\\'', trim(MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                            );
+                    //$filter[] = "grs_email IS NOT NULL AND grs_email != '' AND ggp_respondent_members = 1";
                     $filter['gto_mail_sent_date'] = null;
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;

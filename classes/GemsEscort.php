@@ -169,7 +169,7 @@ class GemsEscort extends MUtil_Application_Escort
         $sessionOptions['name']            = GEMS_PROJECT_NAME_UC . '_' . md5(APPLICATION_PATH) . '_SESSID';
         $sessionOptions['cookie_path']     = strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/');
         $sessionOptions['cookie_httponly'] = true;
-        $sessionOptions['cookie_secure']   = (APPLICATION_ENV == 'production');
+        $sessionOptions['cookie_secure']   = (APPLICATION_ENV == 'production') || (APPLICATION_ENV === 'acceptance');
         Zend_Session::start($sessionOptions);
     }
 
