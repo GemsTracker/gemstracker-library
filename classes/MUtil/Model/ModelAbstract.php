@@ -955,7 +955,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return mixed The value to save
+     * @return mixed The value to use instead
      */
     public function getOnLoad($value, $new, $name, array $context = array())
     {

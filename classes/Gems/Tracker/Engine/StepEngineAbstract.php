@@ -80,6 +80,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
     /**
      *
+     * @var Zend_Locale
+     */
+    protected $locale;
+
+    /**
+     *
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
@@ -341,6 +347,51 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     }
 
     /**
+     * Changes the display of gro_valid_after_field into something readable
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string The value to use
+     */
+    public function displayDateCalculation($value, $new, $name, array $context = array())
+    {
+        $validAfter = true;
+
+        $fields = $this->getDateOptionsFor(
+                $context['gro_valid_after_source'],
+                $context['gro_valid_after_id'],
+                $this->locale->getLanguage(),
+                $validAfter
+                );
+
+        if (isset($fields[$context['gro_valid_after_field']])) {
+            $field = $fields[$context['gro_valid_after_field']];
+        } else {
+            $field = $context['gro_valid_after_field'];
+        }
+
+        if ($context['gro_valid_after_length'] > 0) {
+            $format = $this->_('%s plus %s %s');
+        } elseif($context['gro_valid_after_length'] < 0) {
+            $format = $this->_('%s minus %s %s');
+        } else {
+            $format = $this->_('%s');
+        }
+
+        $units = $this->getDateUnitsList($validAfter);
+        if (isset($units[$context['gro_valid_after_unit']])) {
+            $unit = $units[$context['gro_valid_after_unit']];
+        } else {
+            $unit = $context['gro_valid_after_unit'];
+        }
+
+        // MUtil_Echo::track(func_get_args());
+        return sprintf($format, $field, abs($context['gro_valid_after_length']), $unit);
+    }
+
+    /**
      * An array of snippet names for displaying the answers to a survey.
      *
      * @return array if string snippet names
@@ -447,33 +498,42 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         $model->addLeftTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
         $model->addLeftTable('gems__groups', array('gsu_id_primary_group' => 'ggp_id_group'));
 
-        if ($detailed) {
-            // Reset display order to class specific order
-            $model->resetOrder();
-            $model->set('gro_id_track');
-            $model->set('gro_id_survey');
-            $model->set('gro_round_description');
+        // Reset display order to class specific order
+        $model->resetOrder();
+        if (! $detailed) {
             $model->set('gro_id_order');
-            $model->set('gro_icon_file');
+        }
+        $model->set('gro_id_track');
+        $model->set('gro_id_survey');
+        $model->set('gro_round_description');
+        if ($detailed) {
+            $model->set('gro_id_order');
+        }
+        $model->set('gro_icon_file');
 
-            // Calculate valid from
+        // Calculate valid from
+        if ($detailed) {
             $model->set('valid_after',
                     'label', ' ',
                     'elementClass', 'html',
                     'value', MUtil_Html::create()->h4($this->_('Valid from calculation'))
                     );
-            $model->set('gro_valid_after_source',
-                    'label', $this->_('Date source'),
-                    'default', self::TOKEN_TABLE,
-                    'elementClass', 'Radio',
-                    'escape', false,
-                    'required', true,
-                    'onchange', 'this.form.submit();'
-                    );
-            $model->set('gro_valid_after_id',
-                    'label', $this->_('Round used'),
-                    'onchange', 'this.form.submit();'
-                    );
+        }
+        $model->set('gro_valid_after_source',
+                'label', $this->_('Date source'),
+                'default', self::TOKEN_TABLE,
+                'elementClass', 'Radio',
+                'escape', false,
+                'required', true,
+                'onchange', 'this.form.submit();',
+                'multiOptions', $this->getSourceList(true, false, false)
+                );
+        $model->set('gro_valid_after_id',
+                'label', $this->_('Round used'),
+                'onchange', 'this.form.submit();'
+                );
+
+        if ($detailed) {
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
@@ -529,6 +589,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             // Continue with last round level items
             $model->set('gro_active');
             $model->set('gro_changed_event');
+        } else {
+            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations());
+            $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'));
+            $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
+            $model->set('gro_valid_after_length');
+            $model->set('gro_valid_after_unit');
         }
 
         return $model;
@@ -545,26 +611,57 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     }
 
     /**
+     * Get the display values for rounds
+     *
+     * @return array roundId => display string
+     */
+    protected function getRoundTranslations()
+    {
+        $this->_ensureRounds();
+
+        return MUtil_Ra::column('gro_id_order', $this->_rounds);
+    }
+
+    /**
      * Returns the source choices in an array.
      *
      * @param boolean $validAfter True if it concerns _valid_after_ dates
+     * @param boolean $firstRound List for first round
+     * @param boolean $detailed   Return extended info
      * @return array source_name => label
      */
-    protected function getSourceList($validAfter, $firstRound)
+    protected function getSourceList($validAfter, $firstRound, $detailed = true)
     {
         if (! ($validAfter || $this->project->isValidUntilRequired())) {
-            $results[self::NO_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Does not expire'), ''));
+            $results[self::NO_TABLE] = array($this->_('Does not expire'));
         }
         if (! ($validAfter && $firstRound)) {
-            $results[self::ANSWER_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Answers'), $this->_('Use an answer from a survey.')));
+            $results[self::ANSWER_TABLE] = array($this->_('Answers'), $this->_('Use an answer from a survey.'));
         }
         if ($this->hasAppointmentFields()) {
-            $results[self::APPOINTMENT_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Appointment'), $this->_('Use an appointment linked to this track.')));
+            $results[self::APPOINTMENT_TABLE] = array(
+                $this->_('Appointment'),
+                $this->_('Use an appointment linked to this track.'),
+                );
         }
         if (! ($validAfter && $firstRound)) {
-            $results[self::TOKEN_TABLE]  = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Token'), $this->_('Use a standard token date.')));
+            $results[self::TOKEN_TABLE]  = array($this->_('Token'), $this->_('Use a standard token date.'));
         }
-        $results[self::RESPONDENT_TRACK_TABLE] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', $this->_('Track'), $this->_('Use a track level date.')));
+        $results[self::RESPONDENT_TRACK_TABLE] = array($this->_('Track'), $this->_('Use a track level date.'));
+
+        if ($detailed) {
+            foreach ($results as $key => $value) {
+                if (is_array($value)) {
+                    $results[$key] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', reset($value), next($value)));
+                }
+            }
+        } else {
+            foreach ($results as $key => $value) {
+                if (is_array($value)) {
+                    $results[$key] = reset($value);
+                }
+            }
+        }
 
         return $results;
     }
