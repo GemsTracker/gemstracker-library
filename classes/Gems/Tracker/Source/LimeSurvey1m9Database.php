@@ -321,11 +321,16 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * Replaces hyphen with underscore so LimeSurvey won't choke on it
      *
      * @param string $token
+     * @param boolean $reverse  Reverse the action to go from limesurvey to GemsTracker token (default is false)
      * @return string
      */
-    protected function _getToken($tokenId)
+    protected function _getToken($tokenId, $reverse = false)
     {
-        return strtr($tokenId, '-', '_');
+        if ($reverse) {
+            return strtr($tokenId, '_', '-');
+        } else {
+            return strtr($tokenId, '-', '_');
+        }
     }
 
     /**
@@ -758,11 +763,27 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         $lsDb       = $this->getSourceDatabase();
         $lsToken   = $this->_getTokenTableName($sourceSurveyId);
 
-        $sql = "SELECT REPLACE(token, '_', '-') FROM $lsToken WHERE token IN(?) AND completed !='N'";
-
+        // Make sure we use tokens in the format LimeSurvey likes
         $tokens = array_map(array($this, '_getToken'), $tokenIds);
 
-        $completedTokens = $lsDb->fetchCol($sql, $tokens);
+        $sql = $lsDb->select()
+                ->from($lsToken, array('token'))
+                ->where('token IN (?)', $tokens)
+                ->where('completed != ?', 'N');
+
+        $completedTokens = $lsDb->fetchCol($sql);
+
+        // Now make sure we return tokens GemsTracker likes
+        if ($completedTokens) {
+            $translatedTokens = array();
+
+            // Can not use the map function here since we need a second parameter
+            foreach($completedTokens as $token) {
+                $translatedTokens[] = $this->_getToken($token, true);
+            }
+
+            return $translatedTokens;
+        }
 
         return $completedTokens;
     }
@@ -897,7 +918,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 foreach ((array) $filter['token'] as $key => $tokenId) {
                     $token = $this->_getToken($tokenId);
 
-                    $originals[$token] = $tokenId;
                     $filter[$tokenField][$key] = $token;
                 }
                 unset($filter['token']);
@@ -913,7 +933,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $map = $this->_getFieldMap($sourceSurveyId);
             if (isset($filter[$tokenField])) {
                 foreach ($rows as $values) {
-                    $token = $originals[$values['token']];
+                    $token = $this->_getToken($values['token'], true);  // Reverse map
                     $results[$token] = $map->mapKeysToTitles($values);
                 }
                 return $results;
@@ -978,7 +998,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 foreach ((array) $filter['token'] as $key => $tokenId) {
                     $token = $this->_getToken($tokenId);
 
-                    $originals[$token] = $tokenId;
                     $filter[$tokenField][$key] = $token;
                 }
                 unset($filter['token']);
@@ -1068,7 +1087,6 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 $sourceSurveyId = $this->_getSid($surveyId);
             }
 
-            $db       = $this->getSourceDatabase();
             $lsTokens = $this->_getTokenTableName($sourceSurveyId);
             $tokenId  = $this->_getToken($token->getTokenId());
 
