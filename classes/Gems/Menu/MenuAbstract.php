@@ -243,7 +243,7 @@ abstract class Gems_Menu_MenuAbstract
         $show = $page->addShowAction();
         $show->addEditAction();
         $show->addDeleteAction();
-        
+
         return $page;
     }
 
@@ -301,11 +301,11 @@ abstract class Gems_Menu_MenuAbstract
         // AUTOMATIC COMMUNICATION CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
-        
+
         $page->addPage($this->_('Run'), 'pr.cron.job', 'cron', 'index');
-        
+
         $ajaxPage = $this->addPage($this->_('Round Selection'), 'pr.comm.job', 'comm-job', 'roundselect', array('visible' => false));
-        
+
         // MAIL SERVER CONTROLLER
         $page = $setup->addBrowsePage($this->_('Servers'), 'pr.mail.server', 'mail-server');
 
@@ -498,8 +498,8 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('PHP Errors'), null, 'php-errors');
         $page->addAction($this->_('Project'),    null, 'project');
         $page->addAction($this->_('Session'),    null, 'session');
-        $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance', 'project-information', 'maintenance');
-        $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance', 'project-information', 'cacheclean');
+        $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance.maintenance-mode', 'project-information', 'maintenance');
+        $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance.clean-cache', 'project-information', 'cacheclean');
 
         return $page;
     }
@@ -604,7 +604,7 @@ abstract class Gems_Menu_MenuAbstract
         $show = $page->addShowAction();
         $show->addEditAction();
         $show->addDeleteAction();
-        
+
         $show->addAction($this->_('Check status'), null, 'ping')
                 ->addParameters(MUtil_Model::REQUEST_ID);
         $show->addAction($this->_('Synchronize surveys'), 'pr.source.synchronize', 'synchronize')
@@ -613,7 +613,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->addParameters(MUtil_Model::REQUEST_ID);
         $show->addAction($this->_('Check attributes'), 'pr.source.check-attributes', 'attributes')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        
+
         $page->addAction($this->_('Synchronize all surveys'), 'pr.source.synchronize-all', 'synchronize-all');
         $page->addAction($this->_('Check all is answered'), 'pr.source.check-answers-all', 'check-all');
         $page->addAction($this->_('Check all attributes'), 'pr.source.check-attributes-all', 'attributes-all');
@@ -624,7 +624,7 @@ abstract class Gems_Menu_MenuAbstract
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
         $page->addAutofilterAction();
-        
+
         $page->addExcelAction();
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
@@ -633,7 +633,7 @@ abstract class Gems_Menu_MenuAbstract
         $showPage->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
-        $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');       
+        $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
@@ -681,7 +681,7 @@ abstract class Gems_Menu_MenuAbstract
 
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        
+
         $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
 
         return $setup;

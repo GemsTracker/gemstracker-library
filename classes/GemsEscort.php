@@ -1900,7 +1900,7 @@ class GemsEscort extends MUtil_Application_Escort
          * directory with the name lock.txt
          */
         if ($this->getUtil()->getMaintenanceLock()->isLocked()) {
-            if ($user->isActive() && $user->getRole() !== 'master') {
+            if ($user->isActive() && (!$user->hasPrivilege('pr.maintenance.maintenance-mode'))) {
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
