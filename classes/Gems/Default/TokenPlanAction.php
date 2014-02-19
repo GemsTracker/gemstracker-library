@@ -63,7 +63,9 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         // Row with dates and patient data
         $bridge->gtr_track_type; // Data needed for buttons
 
-        $bridge->tr()->appendAttrib('class', $bridge->row_class);
+        $tr = $bridge->tr();
+        $tr->appendAttrib('class', $bridge->row_class);
+        $tr->appendAttrib('title', $bridge->gto_comment);
 
         $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
@@ -73,7 +75,9 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
         $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
 
-        $bridge->tr();
+        $tr = $bridge->tr();
+        $tr->appendAttrib('class', $bridge->row_class);
+        $tr->appendAttrib('title', $bridge->gto_comment);
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 

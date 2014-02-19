@@ -219,15 +219,22 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $element;
     }
 
+    /**
+     * Returns an element with a conditional tagName: it will become either an A or a SPAN
+     * element.
+     *
+     * @param MUtil_Lazy $condition Condition for link display
+     * @param int $page    Page number of this link
+     * @param array $args  Content of the page
+     * @return \MUtil_Html_HtmlElement
+     */
     public function createPageLink($condition, $page, array $args)
     {
-        // Use the condition for the $href
-        $element = MUtil_Html::create()->a(
-            MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page)),
-            $this->_applyDefaults($condition, $args));
-
-        // and make the tagName an if
-        $element->tagName = MUtil_Lazy::iff($condition, 'a', 'span');
+        $element = new MUtil_Html_HtmlElement(
+                MUtil_Lazy::iff($condition, 'a', 'span'),
+                array('href' => MUtil_Lazy::iff($condition, $this->_createHref($this->_currentPageParam, $page))),
+                $this->_applyDefaults($condition, $args)
+                );
 
         return $element;
     }

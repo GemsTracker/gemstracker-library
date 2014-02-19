@@ -100,14 +100,14 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
             $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
         }
 
-        $bridge->tr(array('class' => array('odd', $bridge->row_class)));
+        $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
         $bridge->addColumn($this->getTokenLinks($bridge))->class = 'rightAlign';
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
         $model->set('calc_round_description', 'tableDisplay', 'smallData');
         $bridge->addMultiSort('gsu_survey_name', 'calc_round_description')->colspan = 2;
 
-        $bridge->tr(array('class' => array('odd', $bridge->row_class)));
+        $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
         $bridge->addColumn();
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
