@@ -151,7 +151,7 @@ class Gems_Roles
 
         $this->_acl->addRole(new Zend_Acl_Role($role['grl_name']), $parents);
 
-        $privileges = explode(",", $role['grl_privileges']);
+        $privileges = array_filter(array_map('trim', explode(",", $role['grl_privileges'])));
         $this->_acl->addPrivilege($role['grl_name'], $privileges);
 
         $roleList[$roleName]['marked'] = true;
