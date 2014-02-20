@@ -221,9 +221,9 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
      */
     public function Upgrade162to163()
     {
-        // $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 54);
-        $this->_batch->addTask('UpdateRoleIds');
+        $this->_batch->addTask('Updates_UpdateRoleIds');
 
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 

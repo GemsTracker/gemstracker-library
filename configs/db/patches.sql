@@ -532,11 +532,6 @@ UPDATE gems__roles
         CONCAT(grl_privileges,',pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit')
     WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.agenda-staff%';
 
-UPDATE gems__roles
-    SET grl_privileges =
-        CONCAT(grl_privileges,',pr.status-code,pr.status-code.create,pr.status-code.delete,pr.status-code.edit')
-    WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.status-code%';
-
 -- PATCH: Performance, indexes
 ALTER TABLE `gems__tokens` ADD INDEX(`gto_by`);
 

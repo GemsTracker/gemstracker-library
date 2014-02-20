@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage UpdateRoles
+ * @subpackage Task
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -39,12 +39,12 @@
  *
  *
  * @package    Gems
- * @subpackage UpdateRoles
+ * @subpackage Task
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3  19-feb-2014 20:42:40
  */
-class Gems_Task_UpdateRoleIds extends MUtil_Task_TaskAbstract
+class Gems_Task_Updates_UpdateRoleIds extends MUtil_Task_TaskAbstract
 {
     /**
      * @var Zend_Db_Adapter_Abstract
