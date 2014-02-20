@@ -80,7 +80,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * @var Gems_Tracker_Token
      */
     private $_previousToken = null;
-    
+
     /**
      *
      * @var Gems_Tracker_Respondent
@@ -600,22 +600,21 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $values['gto_valid_from']          = $this->_gemsData['gto_valid_from'];
         $values['gto_valid_until']         = $this->_gemsData['gto_valid_until'];
         $values['gto_mail_sent_date']      = $this->_gemsData['gto_mail_sent_date'];
-        $values['gto_next_mail_date']      = $this->_gemsData['gto_next_mail_date'];
         $values['gto_comment']             = $newComment;
 
         $tokenId = $this->tracker->createToken($values, $userId);
 
         return $tokenId;
     }
-    
+
     /**
      * Get all unanswered tokens for the person answering this token
-     * 
+     *
      * Similar to @see $this->getNextUnansweredToken()
      * Similar to @see $this->getTokenCountUnanswered()
-     * 
+     *
      * @return array of tokendata
-     */ 
+     */
     public function getAllUnansweredTokens($where = '')
     {
         $select = $this->tracker->getTokenSelect();
@@ -637,7 +636,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $select->forWhere($where);
         }
 
-        return $select->fetchAll();        
+        return $select->fetchAll();
     }
 
     /**
@@ -694,10 +693,10 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->_gemsData['gto_changed_by'];
     }
-    
+
     /**
      * Return the comment for this token
-     * 
+     *
      * @return string
      */
     public function getComment()
@@ -798,12 +797,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             return 'TokenNotFoundSnippet';
         }
     }
-    
+
     /**
      * Get the email address of the person who needs to fill out this survey.
-     * 
+     *
      * This method will return null when no address available
-     * 
+     *
      * @return string|null Email address of the person who needs to fill out the survey or null
      */
     public function getEmail()
@@ -811,7 +810,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         if (!$this->getSurvey()->isTakenByStaff()) {
             return $this->getRespondent()->getEmailAddress();
         }
-        
+
         return null;
     }
 
@@ -973,7 +972,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->util->getReceptionCode($this->_gemsData['gto_reception_code']);
     }
-    
+
     /**
      * Get the respondent linked to this token
      *
@@ -983,13 +982,13 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         $patientNumber = $this->getPatientNumber();
         $organizationId = $this->getOrganizationId();
-        
-        if (    !($this->_respondentObject instanceof Gems_Tracker_Respondent) 
+
+        if (    !($this->_respondentObject instanceof Gems_Tracker_Respondent)
                 || $this->_respondentObject->getPatientId() !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
             $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
         }
-        
+
         return $this->_respondentObject;
     }
 

@@ -114,9 +114,6 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
             $bridge->addDate(     'gto_valid_from');
             $bridge->addDate(     'gto_valid_until')
                 ->addValidator(new MUtil_Validate_Date_DateAfter('gto_valid_from'));
-            /* $bridge->addDate(     'gto_next_mail_date')
-                ->addValidator(new MUtil_Validate_Date_DateAfter('gto_valid_from'))
-                ->addValidator(new MUtil_Validate_Date_DateBefore('gto_valid_until')); // */
         }
         $bridge->addTextarea('gto_comment', 'rows', 3, 'cols', 50);
 

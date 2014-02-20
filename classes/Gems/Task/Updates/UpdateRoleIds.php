@@ -51,7 +51,6 @@ class Gems_Task_Updates_UpdateRoleIds extends MUtil_Task_TaskAbstract
      */
     protected $db;
 
-
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
      *
@@ -62,8 +61,8 @@ class Gems_Task_Updates_UpdateRoleIds extends MUtil_Task_TaskAbstract
     {
         $role    = Gems_Roles::getInstance();
         $parents = $this->db->fetchPairs("SELECT grl_id_role, grl_parents FROM gems__roles");
-
-        MUtil_Echo::track($parents);
+        
+        // MUtil_Echo::track($parents);
         if ($parents) {
             foreach ($parents as $id => $priv) {
                 $values['grl_parents'] = implode(',', $role->translateToRoleIds($priv));

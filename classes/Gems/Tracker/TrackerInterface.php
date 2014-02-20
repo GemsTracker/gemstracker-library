@@ -133,7 +133,7 @@ interface Gems_Tracker_TrackerInterface
      * @return array id => code
      */
     public function getAllCodeFields();
-    
+
     /**
      * Returns a form to ask for a token
      *
@@ -311,12 +311,13 @@ interface Gems_Tracker_TrackerInterface
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param int $respondentId  Id of the respondent to check for or NULL
-     * @param int $userId        Id of the user who takes the action (for logging)
-     * @param int $orgId         Optional Id of the organization to check for
-     * @return bool              Did we find new answers?
+     * @param int $respondentId   Id of the respondent to check for or NULL
+     * @param int $userId         Id of the user who takes the action (for logging)
+     * @param int $orgId          Optional Id of the organization to check for
+     * @param boolean $quickCheck Check only tokens with recent gto_start_time's
+     * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null, $orgId = null);
+    public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false);
 
     /**
      * Recalculates all token dates, timing and results

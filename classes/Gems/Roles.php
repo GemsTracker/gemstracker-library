@@ -72,7 +72,7 @@ class Gems_Roles
 
     /**
      *
-     * @var Gems_Rokes
+     * @var Gems_Roles
      */
     private static $_instanceOfSelf;
 
@@ -84,7 +84,7 @@ class Gems_Roles
     private $_roleTranslations = array();
 
     /**
-     * Pass any strang call to MUtil_Acl
+     * Pass any strange call to MUtil_Acl
      *
      * @param stringethod
      * @param mixed $args
@@ -123,6 +123,7 @@ class Gems_Roles
 
     /**
      * Recursively expands roles into Zend_Acl_Role objects
+     *
      * @param array  $roleList
      * @param string $roleName
      */
@@ -184,7 +185,8 @@ class Gems_Roles
             $this->loadDefaultPrivileges();
         }
 
-        //Now allow 'master' all access, except for the actions that have the nologin privilege (->the login action)
+        // Now allow 'master' all access, except for the actions that have the
+        // nologin privilege (->the login action)
         if (!$this->_acl->hasRole('master')) {
             //Add role if not already present
             $this->_acl->addRole('master');

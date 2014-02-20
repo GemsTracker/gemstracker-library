@@ -535,7 +535,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         // Check for unprocessed tokens
         $filter = $this->getCachedRequestData(true);
         $orgId  = array_key_exists('gto_id_organization', $filter) ? $filter['gto_id_organization'] : null;
-        $this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id, $orgId);
+        $this->loader->getTracker()->processCompletedTokens(null, $this->session->user_id, $orgId, true);
 
         parent::indexAction();
     }

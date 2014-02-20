@@ -814,16 +814,17 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      *
      * Does not reflect changes to tracks or rounds.
      *
-     * @param int $respondentId  Id of the respondent to check for or NULL
-     * @param int $userId        Id of the user who takes the action (for logging)
-     * @param int $orgId         Optional Id of the organization to check for
-     * @return bool              Did we find new answers?
+     * @param int $respondentId   Id of the respondent to check for or NULL
+     * @param int $userId         Id of the user who takes the action (for logging)
+     * @param int $orgId          Optional Id of the organization to check for
+     * @param boolean $quickCheck Check only tokens with recent gto_start_time's
+     * @return bool               Did we find new answers?
      */
-    public function processCompletedTokens($respondentId, $userId = null, $orgId = null)
+    public function processCompletedTokens($respondentId, $userId = null, $orgId = null, $quickCheck = false)
     {
         $userId = $this->_checkUserId($userId);
         $tokenSelect = $this->getTokenSelect(array('gto_id_token'));
-        $tokenSelect->onlyActive()
+        $tokenSelect->onlyActive($quickCheck)
                     ->forRespondent($respondentId)
                     ->andSurveys(array('gsu_surveyor_id'))
                     ->forWhere('gsu_surveyor_active = 1')

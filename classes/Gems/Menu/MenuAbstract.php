@@ -291,13 +291,6 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
-        // COMMUNICATION ACTIVITY CONTROLLER
-        //$setup->addBrowsePage();
-        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
-        $page->addAutofilterAction();
-        $page->addExcelAction();
-        $page->addShowAction();
-
         // AUTOMATIC COMMUNICATION CONTROLLER
         $page = $setup->addBrowsePage($this->_('Automatic mail'), 'pr.comm.job', 'comm-job');
         $page->addButtonOnly($this->_('Turn Automatic Mail Jobs OFF'), 'pr.comm.job', 'cron', 'cron-lock');
@@ -311,6 +304,13 @@ abstract class Gems_Menu_MenuAbstract
 
         // COMMUNICATION TEMPLATE CONTROLLER
         $setup->addBrowsePage($this->_('Templates'), 'pr.comm.template', 'comm-template');
+
+        // COMMUNICATION ACTIVITY CONTROLLER
+        //$setup->addBrowsePage();
+        $page = $setup->addPage($this->_('Activity log'), 'pr.mail.log', 'mail-log');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+        $page->addShowAction();
 
         return $setup;
     }

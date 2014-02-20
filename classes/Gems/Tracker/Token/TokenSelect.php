@@ -398,13 +398,19 @@ class Gems_Tracker_Token_TokenSelect {
      *
      * Active is token already in surveyor and completiondate is null
      *
+     * @param boolean $recentCheck Check only tokens with recent gto_start_time's
      * @return Gems_Tracker_Token_TokenSelect
      */
-    public function onlyActive() {
+    public function onlyActive($recentCheck = false) {
 
         $this->sql_select
                 ->where('gto_in_source = ?', 1)
                 ->where('gto_completion_time IS NULL');
+
+        if ($recentCheck) {
+            $this->sql_select->where('gto_start_time > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 7 DAY)');
+            //$this->sql_select->where('(gto_valid_until IS NULL OR gto_valid_until > CURRENT_TIMESTAMP)');
+        }
 
         return $this;
     }
