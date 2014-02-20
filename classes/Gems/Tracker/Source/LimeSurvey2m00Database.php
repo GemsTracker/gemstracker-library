@@ -135,6 +135,13 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
 
         // <base>/index.php/survey/index/sid/834486/token/234/lang/en
         $baseurl = $this->getBaseUrl();
-        return $baseurl . ('/' == substr($baseurl, -1) ? '' : '/') . 'index.php/survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl;
+        $start = $baseurl . ('/' == substr($baseurl, -1) ? '' : '/');
+        if (stripos($_SERVER['SERVER_SOFTWARE'], 'apache') !== false || (ini_get('security.limit_extensions') && ini_get('security.limit_extensions')!='')) {
+            // Apache : index.php/
+            $start .= 'index.php/';
+        } else {
+            $start .= 'index.php?r=';
+        }
+        return $start . 'survey/index/sid/' . $sourceSurveyId . '/token/' . $tokenId . $langUrl;
     }
 }
