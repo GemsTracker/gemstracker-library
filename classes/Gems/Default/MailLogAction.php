@@ -175,10 +175,9 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         
         $model->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));        
         $model->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
-        $model->addLeftTable('gems__track_fields', array('gro_id_relation' => 'gtf_id_field'));
         $model->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
         $model->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN 
-                COALESCE(gtf_field_name, ggp_name )
+                ggp_name
                 ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
         
         $model->set('ggp_name', 'label', $this->translate->getAdapter()->_('Fill out by'));
