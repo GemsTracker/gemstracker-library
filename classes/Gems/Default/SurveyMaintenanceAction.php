@@ -579,7 +579,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
             $select->where("gro_id_track = ?", $singleTrack);
         } else {
             $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', array())
-                    ->group('gems__tracks.gtr_id_track')
+                    ->group('gro_id_survey')
                     ->where("gtr_track_type = 'T'");
         }
         $select->where('gro_id_survey = ?', $currentId);
