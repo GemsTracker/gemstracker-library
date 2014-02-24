@@ -73,6 +73,21 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public $translate;
     
     /**
+     * Holds the optional token filter.
+     * 
+     * When set, a token needs to have all elements in the tokenFilter in order to have _isTokenInFilter 
+     * return true. The tokenFilter is an array containing an array with one or more of the following elements:
+     * <pre>
+     *  code            The track code
+     *  surveyid        The survey ID
+     *  tokenid         the token ID
+     * </pre>
+     * 
+     * @var array 
+     */
+    public $tokenFilter = array();
+    
+    /**
      * Holds the optional track filter.
      * 
      * When set, a track needs to have all elements in the trackFilter in order to have _isTrackInFilter return true.
@@ -148,12 +163,38 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      */
     protected function _isTokenInFilter(Gems_Tracker_Token $token)
     {
+        $result = false;
+        
         // Only if token has a success code
         if ($token->getReceptionCode()->isSuccess()) {
-            return true;
+            $result = true;
+        }
+        
+        if ($result) {
+            $tokenInfo = array(
+                'code'     => $token->getSurvey()->getCode(),
+                'surveyid' => $token->getSurveyId(),
+                'tokenid'  => $token->getTokenId()
+            );
+
+            // Now check if the tokenfilter is true
+            if (empty($this->tokenFilter)) {
+                $result = true;
+            } else {
+                $result = false;
+                // Now read the filter and split by track code or track id
+                foreach ($this->tokenFilter as $filter)
+                {
+                    $remaining = array_diff_assoc($filter, $tokenInfo);
+                    if (empty($remaining)) {
+                        $result = true;
+                        break;
+                    }
+                }
+            }
         }
 
-        return false;
+        return $result;
     }
     
     /**
@@ -288,6 +329,8 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         }
 
         $trackModel = $this->loader->getTracker()->getRespondentTrackModel();
+        $trackModel->setRespondentTrack($track);
+        $trackModel->applyDetailSettings(false);
         $trackModel->resetOrder();
         $trackModel->set('gtr_track_name',    'label', $this->_('Track'));
         $trackModel->set('gr2t_track_info',   'label', $this->_('Description'),
@@ -313,17 +356,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             }
         }
 
-        $table = $bridge->getTable();
-
-        foreach ($track->getFieldData() as $field => $value) {
-            if (is_int($field)) {
-                continue;
-            }
-
-            $table->tr()->th($field)->td($value);
-        }
-
-        $this->html[] = $table;
+        $this->html[] = $bridge->getTable();
         $this->html->br();
 
         $this->_exportTrackTokens($track);
