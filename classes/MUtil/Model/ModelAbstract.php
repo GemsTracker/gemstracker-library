@@ -496,23 +496,20 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             }
 
             // Check for sort parameters and apply + remove them from the filter
-            $nosort = true;
-            if ($param = $this->getSortParamDesc()) {
-                if (isset($parameters[$param])) {
-                    if ($this->has($parameters[$param])) {
-                        $this->addSort(array($parameters[$param] => SORT_DESC));
-                        $nosort = false;
-                    }
-                    unset($parameters[$param]);
-                }
+            $sortAsc  = $this->getSortParamAsc();
+            $sortDesc = $this->getSortParamDesc();
+            $sorts    = array();
+            if ($sortAsc) {
+                $sorts[$sortAsc] = SORT_ASC;
             }
-            if ($param = $this->getSortParamAsc()) {
-                if (isset($parameters[$param])) {
-                    if ($nosort && $this->has($parameters[$param])) {
-                        $this->addSort(array($parameters[$param] => SORT_ASC));
-                    }
-                    unset($parameters[$param]);
+            if ($sortDesc) {
+                $sorts[$sortDesc] = SORT_DESC;
+            }
+            foreach (array_intersect_key($parameters, $sorts) as $param => $field) {
+                if ($this->has($parameters[$param])) {
+                    $this->addSort(array($field => $sorts[$param]));
                 }
+                unset($parameters[$param]);
             }
 
             // Check for the global TextSearchFilter and apply + remove from filter

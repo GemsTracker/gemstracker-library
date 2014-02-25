@@ -51,6 +51,15 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
      *
      * @var mixed String or array of snippets name
      */
+    protected $autofilterParameters = array(
+        'extraSort'   => array('changed' => SORT_DESC),
+        );
+
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
     protected $autofilterSnippets = 'FolderModelTableSnippet';
 
     /**

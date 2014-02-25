@@ -183,7 +183,10 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $form = $bridge->getForm();
 
-        $save = new Zend_Form_Element_Submit('save_button', array('label' => $this->_('Delete respondent'), 'class' => 'button'));
+        $save = new Zend_Form_Element_Submit(
+                'save_button',
+                array('label' => $this->_('Delete respondent'), 'class' => 'button')
+                );
         $form->addElement($save);
 
         if ($request->isPost()) {
@@ -364,7 +367,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
         $user      = $this->loader->getCurrentUser();
         $userId    = $user->getUserId();
-        
+
         $this->openedRespondent($patientNr, $orgId, $respId);
 
         // Check for completed tokens
@@ -436,7 +439,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
                 Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
             }
-            
+
             $user      = $this->loader->getCurrentUser();
 
             $where['gr2o_patient_nr = ?']      = $patientId;

@@ -147,7 +147,7 @@ class MUtil_Html_UrlArrayAttribute extends MUtil_Html_ArrayAttribute
             }
 
             // Remove all (possibly empty) existing parameters from this object
-            $params = array_diff_key($params, $url_parameters);
+            $params = array_diff_key($params, $this->getArray());
 
             foreach ($params as $key => $value) {
                 // E.g. Exceptions are stored as parameters
