@@ -46,6 +46,36 @@
  */
 class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilterAbstract
 {
+
+    /**
+     * Strip elements from the array that are considered empty
+     *
+     * Empty is NULL or empty string, values of 0 are NOT empty unless they are a checkbox
+     *
+     * @param type $inputArray
+     * @param type $model
+     * @return boolean
+     */
+    public function array_filter($inputArray, $model)
+    {
+        $outputArray = array();
+        foreach ($inputArray as $key => $value) {
+            // Null and empty string are skipped
+            if (is_null($value) || $value === '') {
+                continue;
+            }
+            // Maybe do a check on multiOptions for checkboxes etc. to disable some 0 values $model->get($key, 'multiOptions');
+            if ($value == '0' && $options = $model->get($key, 'multiOptions')) {
+                if (count($options) == 2) {
+                    // Probably a checkbox (multi flexi in limesurvey)
+                    continue;
+                }
+            }
+            $outputArray[$key] = $value;
+        }
+        return $outputArray;
+    }
+
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
@@ -94,34 +124,5 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
     public function getEventName()
     {
         return $this->translate->_('Display only the questions with an answer.');
-    }
-    
-    /**
-     * Strip elements from the array that are considered empty
-     * 
-     * Empty is NULL or empty string, values of 0 are NOT empty unless they are a checkbox
-     *  
-     * @param type $inputArray
-     * @param type $model
-     * @return boolean
-     */
-    public function array_filter($inputArray, $model)
-    {
-        $outputArray = array();
-        foreach ($inputArray as $key => $value) {
-            // Null and empty string are skipped
-            if (is_null($value) || $value === '') {
-                continue;
-            }
-            // Maybe do a check on multiOptions for checkboxes etc. to disable some 0 values $model->get($key, 'multiOptions');
-            if ($value == '0' && $options = $model->get($key, 'multiOptions')) {
-                if (count($options) == 2) {
-                    // Probably a checkbox (multi flexi in limesurvey)
-                    continue;
-                }
-            }
-            $outputArray[$key] = $value;
-        }
-        return $outputArray;
     }
 }
