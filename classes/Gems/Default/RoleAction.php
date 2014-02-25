@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
 {
     /**
      *
@@ -272,7 +272,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
                 $model->set('inherited',
                         'label', $this->_('Inherited privileges'),
                         'formatFunction', array($this, 'formatInherited'));
+                $model->setOnLoad('inherited', array(Gems_Roles::getInstance(), 'translateToRoleNames'));
 
+                // Concatenated field, we can not use onload so handle transaltion to rolenames in the formatFunction
                 $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
                 $model->set('not_allowed',
                         'label', $this->_('Not allowed'),
@@ -357,6 +359,9 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (count($privileges) > 0 ) {
             $privileges = array_combine($privileges, $privileges);
         }
+        
+        // Concatenated field, we can not use onload so handle translation here
+        $parents = Gems_Roles::getInstance()->translateToRoleNames($parents);
 
         $notAllowed = $this->getUsedPrivileges();
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);
@@ -405,7 +410,7 @@ class Gems_Default_RoleAction  extends Gems_Controller_BrowseEditAction
         if (! $parents) {
             return array();
         }
-
+        
         $rolePrivileges = $this->escort->acl->getRolePrivileges();
         $inherited      = array();
         foreach ($parents as $parent) {
