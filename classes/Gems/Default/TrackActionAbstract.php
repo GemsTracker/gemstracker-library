@@ -182,6 +182,21 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $this->setTitle(sprintf($this->_('Token answers: %s'), strtoupper($tokenId)));
         $this->addSnippets($token->getAnswerSnippetNames(), 'token', $token, 'tokenId', $tokenId);
     }
+    
+    public function answerExportAction()
+    {
+        $tokenId = $this->_getIdParam();
+        $token   = $this->loader->getTracker()->getToken($tokenId);
+
+        $export = $this->loader->getRespondentExport($this);
+        $export->trackFilter = array(array('resptrackid'=>$token->getRespondentTrackId())); // Only the current track, no other tracks
+        $export->tokenFilter = array(array('tokenid'=>$token->getTokenId()));               // Only the current token
+        
+        $patNr = $token->getPatientNumber();
+        $orgId = $token->getOrganizationId();
+        
+        $export->render(array(array('gr2o_id_organization'=>$orgId, 'gr2o_patient_nr'=>$patNr)), true, 'pdf');
+    }
 
     public function autofilterAction()
     {

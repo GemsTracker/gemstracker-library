@@ -57,6 +57,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
         $request = $this->request;
         $html->hr(array('class'=>'noprint'));
         $params = $request->getParams();
+        $state = $params;                   // Use current state for pdf export
 
         if (isset($params['fullanswers'])) {
             unset($params['fullanswers']);
@@ -68,6 +69,11 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
             'action' => $request->getActionName(),
             'routereset' => true) + $params;
         $html->a($url, $this->_('Toggle'), array('class' => 'actionlink'));
+        
+        $url = array('controller' => $request->getControllerName(),
+            'action' => 'answer-export',
+            'routereset' => true) + $state;
+        $html->a($url, $this->_('PDF export'), array('class' => 'actionlink'));
         $html->hr(array('class'=>'noprint'));
 
         return $html;

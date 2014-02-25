@@ -470,6 +470,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
                     ->set('target', MUtil_Model::REQUEST_ID);
+            $tkPage->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
+                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
+                    ->set('target', MUtil_Model::REQUEST_ID);
         }
 
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
