@@ -479,6 +479,10 @@ abstract class Gems_Menu_MenuAbstract
             $plan->addExcelAction();
         }
 
+        $page = $infoPage->addPage($this->_('Respondent status'), 'pr.plan.consent', 'consent-plan', 'index');
+        $page->addShowAction();
+        $page->addExcelAction();
+
         return $infoPage;
     }
 

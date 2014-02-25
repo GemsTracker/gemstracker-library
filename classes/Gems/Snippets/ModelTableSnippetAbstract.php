@@ -96,6 +96,13 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     public $requestCache;
 
     /**
+     * Optioan to manually diasable the menu
+     *
+     * @var boolean
+     */
+    protected $showMenu = true;
+
+    /**
      * The $request param that stores the ascending sort
      *
      * @var string
@@ -125,7 +132,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
-        if ($showMenuItem = $this->getShowMenuItem()) {
+        if ($this->showMenu && ($showMenuItem = $this->getShowMenuItem())) {
             $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }
 
@@ -134,7 +141,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
 
         parent::addBrowseTableColumns($bridge, $model);
 
-        if ($editMenuItem = $this->getEditMenuItem()) {
+        if ($this->showMenu && ($editMenuItem = $this->getEditMenuItem())) {
             $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
         }
     }

@@ -735,3 +735,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.maintenance.c
     WHERE grl_privileges LIKE '%pr.maintenance%' AND grl_privileges NOT LIKE '%pr.maintenance.clean-cache%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.maintenance.maintenance-mode')
     WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.maintenance.maintenance-mode%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.plan.consent')
+    WHERE grl_privileges LIKE '%pr.plan.respondent%' AND grl_privileges NOT LIKE '%pr.plan.consent%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.plan.consent.excel')
+    WHERE grl_privileges LIKE '%pr.plan.respondent.excel%' AND grl_privileges NOT LIKE '%pr.plan.consent.excel%';
