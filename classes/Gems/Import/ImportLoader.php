@@ -217,7 +217,7 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     {
         $user    = $this->loader->getCurrentUser();
         $orgCode = $user->getCurrentOrganization()->getCode();
-        $orgId   = $orgCode ? $orgCode : $user->getCurrentOrganizationId();
+        $orgId   = $orgCode ? $orgCode : MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
         $date    = new MUtil_Date();
 
         $name[]  = $controller;

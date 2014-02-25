@@ -47,6 +47,17 @@
 class MUtil_File
 {
     /**
+     * Make sure the filename is actually allowd by underlying file systems
+     *
+     * @param string $filename
+     * @return string
+     */
+    public static function cleanupName($filename)
+    {
+        return preg_replace('/[\|\\\?\*<\":>\+\[\]\/]\x00/', "_", $filename);
+    }
+
+    /**
      * Make sure the slashes point the way of the underlying server only
      *
      * @param string $filename

@@ -49,15 +49,6 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     implements MUtil_Model_ModelTranslatorInterface
 {
     /**
-     * Default values for the columns
-     *
-     * Set by startImport().
-     *
-     * @var array
-     */
-    private $_defaultValues = array();
-
-    /**
      * A description that enables users to choose the transformer they need.
      *
      * @var string
@@ -256,12 +247,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         if ($this->_mapRequired) {
             // This does keep the original values. That is intentional.
             foreach ($rowMap as $source) {
-                $row[$this->_fieldMap[$source]] = $row[$source];
+                if (isset($row[$source])) {
+                    $row[$this->_fieldMap[$source]] = $row[$source];
+                }
             }
-        }
-
-        if ($this->_defaultValues) {
-            $row = $row + $this->_defaultValues;
         }
 
         return $row;
@@ -491,10 +480,6 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         $this->_fieldMap       = $this->getFieldsTranslations();
         $this->_fieldKeys      = array_keys($this->_fieldMap);
         $this->_mapRequired    = $this->_fieldKeys !== array_values($this->_fieldMap);
-        $this->_defaultValues  = array_intersect_key(
-                $this->_targetModel->getCol('default'),
-                array_flip($this->_fieldMap)
-                );
 
         // Make sure the target form is set (unless overruled by child class)
         $this->getTargetForm();
