@@ -78,6 +78,7 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         $bridge->addHidden('gto_id_organization');
         $bridge->addHidden('gto_id_track');
         $bridge->addHidden('gto_id_survey');
+        $bridge->addHidden('gto_mail_sent_num');
         $bridge->addHidden('gtr_id_track');
         $bridge->addHidden('gtr_track_type');
 
@@ -153,6 +154,7 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
     public function saveData()
     {
         $model = $this->getModel();
+
         if ($this->formData['gto_valid_until']) {
             // Make sure date based units are valid until the end of the day.
             $date = new MUtil_Date($this->formData['gto_valid_until'], $model->get('gto_valid_until', 'dateFormat'));
@@ -162,6 +164,7 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         }
 
         parent::saveData();
+        // $this->token->setValidFrom($this->formData['gto_valid_from'], $this->formData['gto_valid_until'], $this->loader->getCurrentUser()->getUserId());
 
         if ($this->formData[self::RECALCULATE_FIELD]) {
             // Refresh token with current form data

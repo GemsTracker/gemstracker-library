@@ -181,7 +181,55 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
 
         $this->set('gsu_id_primary_group', 'default', 800);
 
+        $this->setOnSave('gto_mail_sent_date', array($this, 'saveCheckedMailDate'));
+        $this->setOnSave('gto_mail_sent_num',  array($this, 'saveCheckedMailNum'));
+
         $this->useTokenAsKey();
+    }
+
+    /**
+     * Function to check whether the mail_sent should be reset
+     *
+     * @param boolean $isNew True when a new item is being saved
+     * @param array $context The values being saved
+     * @return boolean True when the change should be triggered
+     */
+    private function _checkForMailSent($isNew, array $context)
+    {
+        // Never change on new tokens
+        if ($isNew) {
+            return false;
+        }
+
+        // Only act on existing valid from date
+        if (! (isset($context['gto_valid_from']) && $context['gto_valid_from'])) {
+            return false;
+        }
+
+        // There must be data to reset
+        $hasSentDate = isset($context['gto_mail_sent_date']) && $context['gto_mail_sent_date'];
+        if (! ($hasSentDate || (isset($context['gto_mail_sent_num']) && $context['gto_mail_sent_num']))) {
+            return false;
+        }
+
+        // When only the sent_num is set, then clear the existing data
+        if (! $hasSentDate) {
+            return true;
+        }
+
+        if ($context['gto_valid_from'] instanceof Zend_Date) {
+            $start = $context['gto_valid_from'];
+        } else {
+            $start = new MUtil_Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
+        }
+
+        if ($context['gto_mail_sent_date'] instanceof Zend_Date) {
+            $sent = $context['gto_mail_sent_date'];
+        } else {
+            $sent = new MUtil_Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
+        }
+
+        return $start->isLater($sent);
     }
 
     /**
@@ -238,6 +286,46 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     public function checkRegistryRequestsAnswers()
     {
         return $this->translate && $this->util;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that can transform the saved item.
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function saveCheckedMailDate($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($this->_checkForMailSent($isNew, $context)) {
+            return null;
+        }
+
+        return $this->formatSaveDate($value, $isNew, $name, $context);
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that can transform the saved item.
+     *
+     * @see setSaveWhen()
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return boolean
+     */
+    public function saveCheckedMailNum($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($this->_checkForMailSent($isNew, $context)) {
+            return 0;
+        }
+
+        return $value;
     }
 
     public function useRespondentTrackAsKey()

@@ -1598,11 +1598,30 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function setValidFrom($validFrom, $validUntil, $userId)
     {
+        if ($validFrom && $this->getMailSentDate()) {
+            // Check for newerness
+
+            if ($validFrom instanceof Zend_Date) {
+                $start = $validFrom;
+            } else {
+                $start = new MUtil_Date($validFrom, Gems_Tracker::DB_DATETIME_FORMAT);
+            }
+
+            if ($start->isLater($this->getMailSentDate())) {
+                $values['gto_mail_sent_date'] = null;
+                $values['gto_mail_sent_num']  = 0;
+            }
+        }
+
         if ($validFrom instanceof Zend_Date) {
             $validFrom = $validFrom->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+        } elseif ('' === $validFrom) {
+            $validFrom = null;
         }
         if ($validUntil instanceof Zend_Date) {
             $validUntil = $validUntil->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+        } elseif ('' === $validUntil) {
+            $validUntil = null;
         }
 
         $values['gto_valid_from'] = $validFrom;

@@ -95,6 +95,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         $bridge->addHidden('gto_id_organization');
         $bridge->addHidden('gto_id_track');
         $bridge->addHidden('gto_id_survey');
+        $bridge->addHidden('gto_mail_sent_num');
         $bridge->addHidden('gtr_id_track');
         $bridge->addHidden('gtr_track_type');
 
