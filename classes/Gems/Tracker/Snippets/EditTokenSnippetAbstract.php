@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -25,8 +25,8 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * 
+ *
+ *
  * @package    Gems
  * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -37,7 +37,7 @@
 
 /**
  * Adds basic token editing snippet parameter processing and checking.
- * 
+ *
  * This class supplies the model and adds some display knowledge.
  *
  * @package    Gems
@@ -50,15 +50,15 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
 {
     /**
      * Required
-     * 
+     *
      * @var Gems_Loader
      */
     protected $loader;
-    
-    
+
+
     /**
      * Required
-     * 
+     *
      * @var Zend_Controller_Request_Abstract
      */
     protected $request;
@@ -71,11 +71,11 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
      * @var Gems_Tracker_Token
      */
     protected $token;
-    
+
     /**
      * Optional: id of the selected token to show
-     * 
-     * Can be derived from $request or $token 
+     *
+     * Can be derived from $request or $token
      *
      * @var string
      */
@@ -91,7 +91,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     {
         return $this->loader && $this->request && parent::checkRegistryRequestsAnswers();
     }
-    
+
     /**
      * Creates the model
      *
@@ -100,9 +100,10 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     protected function createModel()
     {
         $model = $this->token->getModel();
-        
+
+        $model->addEditTracking();
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
-        
+
         return $model;
     }
 
@@ -129,10 +130,10 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
         }
     }
 
-    
+
     /**
      * Helper function to allow generalized statements about the items in the model to used specific item names.
-     * 
+     *
      * @param int $count
      * @return $string
      */
@@ -140,7 +141,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     {
         return $this->plural('token', 'tokens', $count);
     }
-    
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -160,8 +161,8 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
             } elseif ($this->request) {
                 $this->tokenId = $this->request->getParam(MUtil_Model::REQUEST_ID);
             }
-        } 
-        
+        }
+
         if ($this->tokenId && (! $this->token)) {
             $this->token = $this->loader->getTracker()->getToken($this->tokenId);
         }

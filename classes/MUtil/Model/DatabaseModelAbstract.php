@@ -276,27 +276,32 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     protected function _filterDataFor($table_name, array $data, $isNew)
     {
-        $tableData = array();
+        $tableCols = array();
 
-        foreach ($this->getItemNames() as $name) {
-
+        // First check the data
+        foreach ($this->getCol('table') as $name => $table) {
             // Is current table?
-            if ($this->is($name, 'table', $table_name)) {
-                if (array_key_exists($name, $data)) {
+            if ($table === $table_name) {
 
+                if (array_key_exists($name, $data)) {
                     if ($data[$name] && (! is_array($data[$name])) && ($len = $this->get($name, 'maxlength'))) {
-                        $tableData[$name] = substr($data[$name], 0, $len);
+                        $data[$name] = substr($data[$name], 0, $len);
                     } else {
-                        $tableData[$name] = $data[$name];
+                        $data[$name] = $data[$name];
                     }
 
                 } elseif ($this->isAutoSave($name)) {
                     // Add a value for on auto save values
-                    $tableData[$name] = null;
+                    $data[$name] = null;
                 }
+
+                $tableCols[$name] = $name;
             }
         }
-        return $this->_filterDataForSave($tableData, $isNew);
+        $data = $this->_filterDataForSave($data, $isNew);
+
+        // MUtil_Echo::track(array_intersect_key($data, $tableCols));
+        return array_intersect_key($data, $tableCols);
     }
 
     /**

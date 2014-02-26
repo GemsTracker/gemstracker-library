@@ -239,19 +239,25 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @see setOnLoad
      *
-     * @param array $data The values to save
+     * @param array $data The row values to load
      * @param boolean $new True when it is a new item
      * @return array The possibly adapted array of values
      */
     protected function _filterDataAfterLoad(array $data, $new = false)
     {
-        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
-            foreach ($data as $name => $value) {
-                $data[$name] = $this->getOnLoad($value, $new, $name, $data);
+        if (! $this->getMeta(self::LOAD_TRANSFORMER)) {
+            return $data;
+        }
+        $newData = $data;
+        foreach ($this->getCol(self::LOAD_TRANSFORMER) as $name => $call) {
+            if ($call) {
+                $value = isset($newData[$name]) ? $newData[$name] : null;
+
+                $newData[$name] = $this->getOnLoad($value, $new, $name, $data);
             }
         }
 
-        return $data;
+        return $newData;
     }
 
     /**
@@ -956,8 +962,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function getOnLoad($value, $new, $name, array $context = array())
     {
-        if ($call = $this->get($name, self::LOAD_TRANSFORMER)) {
-
+        $call = $this->get($name, self::LOAD_TRANSFORMER);
+        if ($call) {
              if (is_callable($call)) {
                  $value = call_user_func($call, $value, $new, $name, $context);
              } else {

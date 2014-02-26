@@ -64,23 +64,28 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $bridge->addHidden('gr2o_id_organization');
-        $bridge->addHidden('gr2t_id_respondent_track');
-        $bridge->addHidden('gr2t_id_user');
-        $bridge->addHidden('gr2t_id_organization');
-        $bridge->addHidden('gr2t_id_track');
-        $bridge->addHidden('gr2t_active');
-        $bridge->addHidden('gr2t_count');
-        $bridge->addHidden('gr2t_reception_code');
-        $bridge->addHidden('gto_id_respondent_track');
-        $bridge->addHidden('gto_id_round');
-        $bridge->addHidden('gto_id_respondent');
-        $bridge->addHidden('gto_id_organization');
-        $bridge->addHidden('gto_id_track');
-        $bridge->addHidden('gto_id_survey');
-        $bridge->addHidden('gto_mail_sent_num');
-        $bridge->addHidden('gtr_id_track');
-        $bridge->addHidden('gtr_track_type');
+        $bridge->addHiddenMulti(
+                'gr2o_id_organization',
+                'gr2t_id_respondent_track',
+                'gr2t_id_user',
+                'gr2t_id_organization',
+                'gr2t_id_track',
+                'gr2t_active',
+                'gr2t_count',
+                'gr2t_reception_code',
+                'gto_id_respondent_track',
+                'gto_id_round',
+                'gto_id_respondent',
+                'gto_id_organization',
+                'gto_id_track',
+                'gto_id_survey',
+                'gto_mail_sent_num',
+                'gto_valid_from_manual',
+                'gto_valid_until_manual',
+                'gtr_id_track',
+                'gtr_track_type',
+                $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                );
 
         if (! $this->createData) {
             $bridge->addExhibitor('gto_id_token');
@@ -166,11 +171,15 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         parent::saveData();
         // $this->token->setValidFrom($this->formData['gto_valid_from'], $this->formData['gto_valid_until'], $this->loader->getCurrentUser()->getUserId());
 
+        // MUtil_Echo::track($this->formData);
+
         if ($this->formData[self::RECALCULATE_FIELD]) {
             // Refresh token with current form data
-            $updateData['gto_valid_from']  = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
-            $updateData['gto_valid_until'] = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
-            $updateData['gto_comment']     = $this->formData['gto_comment'];
+            $updateData['gto_valid_from']         = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
+            $updateData['gto_valid_from_manual']  = $this->formData['gto_valid_from_manual'];
+            $updateData['gto_valid_until']        = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
+            $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
+            $updateData['gto_comment']            = $this->formData['gto_comment'];
 
             $this->token->refresh($updateData);
 

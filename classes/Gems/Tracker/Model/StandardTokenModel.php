@@ -233,6 +233,22 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     }
 
     /**
+     * Add tracking off manual date changes by the user
+     *
+     * @param mixed $value The value to store when the tracked field has changed
+     * @return \Gems_Tracker_Model_StandardTokenModel
+     */
+    public function addEditTracking()
+    {
+        $changer = new MUtil_Model_Type_ChangeTracker($this, 1, 0);
+
+        $changer->apply('gto_valid_from_manual',  'gto_valid_from');
+        $changer->apply('gto_valid_until_manual', 'gto_valid_until');
+
+        return $this;
+    }
+
+    /**
      * Sets the labels, format functions, etc...
      *
      * @return Gems_Tracker_Model_StandardTokenModel

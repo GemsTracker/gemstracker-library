@@ -80,24 +80,29 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
      */
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $bridge->addHidden('gr2o_id_organization');
-        $bridge->addHidden('gr2t_id_respondent_track');
-        $bridge->addHidden('gr2t_id_user');
-        $bridge->addHidden('gr2t_id_organization');
-        $bridge->addHidden('gr2t_id_track');
-        $bridge->addHidden('gr2t_active');
-        $bridge->addHidden('gr2t_count');
-        $bridge->addHidden('gr2t_reception_code');
-        $bridge->addHidden('gr2t_track_info');
-        $bridge->addHidden('gto_id_respondent_track');
-        $bridge->addHidden('gto_id_round');
-        $bridge->addHidden('gto_id_respondent');
-        $bridge->addHidden('gto_id_organization');
-        $bridge->addHidden('gto_id_track');
-        $bridge->addHidden('gto_id_survey');
-        $bridge->addHidden('gto_mail_sent_num');
-        $bridge->addHidden('gtr_id_track');
-        $bridge->addHidden('gtr_track_type');
+        $bridge->addHiddenMulti(
+                'gr2o_id_organization',
+                'gr2t_id_respondent_track',
+                'gr2t_id_user',
+                'gr2t_id_organization',
+                'gr2t_id_track',
+                'gr2t_active',
+                'gr2t_count',
+                'gr2t_reception_code',
+                'gr2t_track_info',
+                'gto_id_respondent_track',
+                'gto_id_round',
+                'gto_id_respondent',
+                'gto_id_organization',
+                'gto_id_track',
+                'gto_id_survey',
+                'gto_mail_sent_num',
+                'gto_valid_from_manual',
+                'gto_valid_until_manual',
+                'gtr_id_track',
+                'gtr_track_type',
+                $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                );
 
         if (! $this->createData) {
             $bridge->addExhibitor('gto_id_token');
@@ -261,7 +266,14 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
             $respTrack  = $tracker->getRespondentTrack($this->formData['to_existing_track']);
             $userId     = $this->loader->getCurrentUser()->getUserId();
             $tokenData  = array();
-            $copyFields = array('gto_id_round', 'gto_valid_from', 'gto_valid_until', 'gto_comment');
+            $copyFields = array(
+                'gto_id_round',
+                'gto_valid_from',
+                'gto_valid_from_manual',
+                'gto_valid_until',
+                'gto_valid_until_manual',
+                'gto_comment',
+                );
 
             foreach ($copyFields as $name) {
                 if (array_key_exists($name, $this->formData)) {

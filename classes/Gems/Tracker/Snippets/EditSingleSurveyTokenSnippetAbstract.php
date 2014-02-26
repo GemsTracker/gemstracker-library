@@ -153,6 +153,7 @@ class Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract extends Gems_Sn
                     );
         }
 
+        $model->addEditTracking();
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
         return $model;
