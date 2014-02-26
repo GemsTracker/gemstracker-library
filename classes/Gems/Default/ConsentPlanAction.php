@@ -70,7 +70,11 @@ class Gems_Default_ConsentPlanAction extends Gems_Controller_ModelSnippetActionA
      * @var array Mixed key => value array for snippet initialization
      */
     protected $showParameters = array(
-        'showMenu' => false,
+        'browse'        => true,
+        'onEmpty'       => 'getOnEmptyText',
+        'showMenu'      => false,
+        'sortParamAsc'  => 'asrt',
+        'sortParamDesc' => 'dsrt',
         );
 
     /**
@@ -116,6 +120,7 @@ class Gems_Default_ConsentPlanAction extends Gems_Controller_ModelSnippetActionA
             $fields[$translated] = new Zend_Db_Expr(sprintf($sql, $consent));
         }
         $fields[$this->_('Dropped')] = new Zend_Db_Expr("SUM(CASE WHEN grc_success = 0 THEN 1 ELSE 0 END)");
+        $fields[$this->_('Total')]   = new Zend_Db_Expr("COUNT(*)");
 
         $select = $this->db->select();
 
@@ -137,8 +142,12 @@ class Gems_Default_ConsentPlanAction extends Gems_Controller_ModelSnippetActionA
         $model->resetOrder();
         $model->set('gor_name', 'label', $this->_('Organization'));
         foreach ($fields as $field => $expr) {
-            $model->set($field, 'label', $field);
+            $model->set($field, 'label', $field,
+                    'tdClass', 'rightAlign',
+                    'thClass', 'rightAlign');
         }
+        $model->set($this->_('Total'), 'itemDisplay', MUtil_Html::create('strong'));
+
         if ($detailed) {
             $model->set($month, 'formatFunction', $this->util->getLocalized()->getMonthName);
         }
