@@ -169,7 +169,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             if ($grouped) {
                 $question = join(', ', $questionCodes);
             } else {
-                $question = isset($questions[$this->question_code]) ? $questions[$this->question_code] : $this->question_code;
+                $question = isset($questions[$questionCodes[0]]) ? $questions[$questionCodes[0]] : $questionCodes[0];
             }
         } else {
             $question = $this->question_text;
