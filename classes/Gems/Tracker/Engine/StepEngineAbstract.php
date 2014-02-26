@@ -204,12 +204,21 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     protected function calculateFromDate($startDate, $type, $period)
     {
         if ($startDate instanceof MUtil_Date) {
-            if ($period) {
-                $date = clone $startDate;
+            $date = clone $startDate;
 
+            switch (strtoupper($type)) {
+                case 'N':
+                case 'H':
+                    break;
+
+                default:
+                    // A 'whole day' period should start at 00:00:00, even when the period is '0'
+                    $date->setTime(0);
+            }
+
+            if ($period) {
                 switch (strtoupper($type)) {
                     case 'D':
-                        $date->setTime(0);
                         $date->addDay($period);
                         break;
 
@@ -218,7 +227,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                         break;
 
                     case 'M':
-                        $date->setTime(0);
                         $date->addMonth($period);
                         break;
 
@@ -227,17 +235,14 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                         break;
 
                     case 'Q':
-                        $date->setTime(0);
                         $date->addMonth($period * 3);
                         break;
 
                     case 'W':
-                        $date->setTime(0);
                         $date->addDay($period * 7);
                         break;
 
                     case 'Y':
-                        $date->setTime(0);
                         $date->addYear($period);
                         break;
 
@@ -245,11 +250,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                         throw new Gems_Exception_Coding('Unknown period type; ' . $type);
 
                 }
-                return $date;
-
-            } else {
-                return $startDate;
             }
+            return $date;
         }
     }
 
@@ -265,14 +267,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         $date = $this->calculateFromDate($startDate, $type, $period);
 
         if ($date instanceof MUtil_Date) {
-
             switch (strtoupper($type)) {
                 case 'N':
                 case 'H':
                     break;
 
                 default:
-                    // Make sure date based units are valid until the end of the day.
+                    // Make sure day based units are valid until the end of the day.
                     $date->addDay(1);
                     $date->subSecond(1);
                     break;
@@ -305,22 +306,53 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         while ($token) {
             // MUtil_Echo::track($token->getTokenId());
 
-            // Change only not-completed tokens with a positive successcode
+            // Change only not-completed tokens with a positive successcode where at least one date
+            // is not set by user input
             if ($token->hasSuccesCode() &&
                     (! $token->isCompleted()) &&
+                    (! ($token->isValidFromManual() && $token->isValidUntilManual())) &&
                     ($token !== $skipToken)) {
 
                 //Only process the token when linked to a round
-                if(array_key_exists($token->getRoundId(), $this->_rounds)) {
+                if (array_key_exists($token->getRoundId(), $this->_rounds)) {
                     $round      = $this->_rounds[$token->getRoundId()];
 
-                    $fromDate   = $this->getValidFromDate($round['gro_valid_after_source'], $round['gro_valid_after_field'], $round['gro_valid_after_id'], $token, $respTrack);
-                    $validFrom  = $this->calculateFromDate($fromDate, $round['gro_valid_after_unit'], $round['gro_valid_after_length']);
+                    if ($token->isValidFromManual()) {
+                        $validFrom = $token->getValidFrom();
+                    } else {
+                        $fromDate   = $this->getValidFromDate(
+                                $round['gro_valid_after_source'],
+                                $round['gro_valid_after_field'],
+                                $round['gro_valid_after_id'],
+                                $token,
+                                $respTrack
+                                );
+                        $validFrom  = $this->calculateFromDate(
+                                $fromDate,
+                                $round['gro_valid_after_unit'],
+                                $round['gro_valid_after_length']
+                                );
+                    }
 
                     // MUtil_Echo::track($round, (string) $fromDate, $validFrom);
 
-                    $untilDate  = $this->getValidUntilDate($round['gro_valid_for_source'], $round['gro_valid_for_field'], $round['gro_valid_for_id'], $token, $respTrack, $validFrom);
-                    $validUntil = $this->calculateUntilDate($untilDate, $round['gro_valid_for_unit'], $round['gro_valid_for_length']);
+                    if ($token->isValidUntilManual()) {
+                        $validUntil = $token->getValidUntil();
+                    } else {
+                        $untilDate  = $this->getValidUntilDate(
+                                $round['gro_valid_for_source'],
+                                $round['gro_valid_for_field'],
+                                $round['gro_valid_for_id'],
+                                $token,
+                                $respTrack,
+                                $validFrom
+                                );
+                        $validUntil = $this->calculateUntilDate(
+                                $untilDate,
+                                $round['gro_valid_for_unit'],
+                                $round['gro_valid_for_length']
+                                );
+                    }
 
                     $changed    += $token->setValidFrom($validFrom, $validUntil, $userId);
                 }

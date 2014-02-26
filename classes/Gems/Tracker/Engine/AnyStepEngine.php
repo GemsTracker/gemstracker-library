@@ -113,9 +113,9 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
         // Now loop back
         $token = $startToken->getPreviousToken();
         while ($token) {
-            // Change only not-completed tokens with a positive successcode
+            // Change only not-completed tokens with a positive successcode where the end date is not set manually
             if ($token->hasSuccesCode() &&
-                    (! $token->isCompleted()) &&
+                    (! ($token->isCompleted() || $token->isValidUntilManual())) &&
                     ($token !== $skipToken)) {
 
                 //Only process the token when linked to a round

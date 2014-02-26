@@ -598,7 +598,9 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $values['gto_round_order']         = $this->_gemsData['gto_round_order'];
         $values['gto_round_description']   = $this->_gemsData['gto_round_description'];
         $values['gto_valid_from']          = $this->_gemsData['gto_valid_from'];
+        $values['gto_valid_from_manual']   = $this->_gemsData['gto_valid_from_manual'];
         $values['gto_valid_until']         = $this->_gemsData['gto_valid_until'];
+        $values['gto_valid_until_manual']  = $this->_gemsData['gto_valid_until_manual'];
         $values['gto_mail_sent_date']      = $this->_gemsData['gto_mail_sent_date'];
         $values['gto_comment']             = $newComment;
 
@@ -1482,6 +1484,24 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     public function isCompleted()
     {
         return isset($this->_gemsData['gto_completion_time']) && $this->_gemsData['gto_completion_time'];
+    }
+
+    /**
+     *
+     * @return boolean True when this date was set by user input
+     */
+    public function isValidFromManual()
+    {
+        return isset($this->_gemsData['gto_valid_from_manual']) && $this->_gemsData['gto_valid_from_manual'];
+    }
+
+    /**
+     *
+     * @return boolean True when this date was set by user input
+     */
+    public function isValidUntilManual()
+    {
+        return isset($this->_gemsData['gto_valid_until_manual']) && $this->_gemsData['gto_valid_until_manual'];
     }
 
     /**

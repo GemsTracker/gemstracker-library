@@ -739,3 +739,9 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.plan.consent'
     WHERE grl_privileges LIKE '%pr.plan.respondent%' AND grl_privileges NOT LIKE '%pr.plan.consent%';
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.plan.consent.excel')
     WHERE grl_privileges LIKE '%pr.plan.respondent.excel%' AND grl_privileges NOT LIKE '%pr.plan.consent.excel%';
+
+-- PATCH: Keeping track of the manual date
+ALTER TABLE  gems__tokens CHANGE gto_comment
+    gto_comment TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null;
+ALTER TABLE  gems__tokens ADD gto_valid_from_manual   boolean not null default 0 AFTER gto_valid_from;
+ALTER TABLE  gems__tokens ADD gto_valid_until_manual  boolean not null default 0 AFTER gto_valid_until;
