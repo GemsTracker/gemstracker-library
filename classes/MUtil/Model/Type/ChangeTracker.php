@@ -191,6 +191,10 @@ class MUtil_Model_Type_ChangeTracker
             return $value;
         }
 
+        if (! ($context[$trackedField] && $context[$oldValueField])) {
+            return $context[$trackedField] || $context[$oldValueField] ? $this->_changedValue : $this->_unchangedValue;
+        }
+
         $storageFormat = $this->_model->get($trackedField, 'storageFormat');
 
         if (! $storageFormat) {
