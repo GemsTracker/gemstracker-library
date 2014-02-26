@@ -676,20 +676,22 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             $this->_ensureTrackFields();
 
             foreach ($results as $field => $result) {
-                switch ($this->_trackFields[$field]['gtf_field_type']) {
-                    case 'multiselect':
-                        $results[$field] = explode(self::FIELD_SEP, $result);
-                        break;
+                if (isset($this->_trackFields[$field])) {
+                    switch ($this->_trackFields[$field]['gtf_field_type']) {
+                        case 'multiselect':
+                            $results[$field] = explode(self::FIELD_SEP, $result);
+                            break;
 
-                    case 'date':
-                        if (empty($result)) {
-                            $results[$field] = null;
-                        } else {
-                            $results[$field] = new MUtil_Date($result, Zend_Date::ISO_8601);
-                        }
+                        case 'date':
+                            if (empty($result)) {
+                                $results[$field] = null;
+                            } else {
+                                $results[$field] = new MUtil_Date($result, Zend_Date::ISO_8601);
+                            }
 
-                    default:
-                        break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -1196,7 +1198,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         if (null === $this->_hasAppointmentFields) {
             $this->_ensureTrackFields();
             $this->_hasAppointmentFields = false;
-            
+
             foreach ($this->_trackFields as $field) {
                 if ('appointment' == $field['gtf_field_type']) {
                     $this->_hasAppointmentFields = true;
@@ -1258,7 +1260,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             }
 
             // Do the hard work for storing dates
-            if (isset($this->_trackFields[$id]['gtf_field_type']) && ('date' == $this->_trackFields[$id]['gtf_field_type'])) {
+            if (isset($this->_trackFields[$key]['gtf_field_type']) &&
+                    ('date' == $this->_trackFields[$key]['gtf_field_type'])) {
                 if (! empty($value)) {
                     if (! $element) {
                         // Initialize a date element once, so we know about dateformats
@@ -1275,13 +1278,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 }
             }
 
-            if ($sub === Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME) {
+            if (Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $sub) {
                 $newAppointments[] = array(
                     'gr2t2a_id_respondent_track' => $respTrackId,
                     'gr2t2a_id_app_field'        => $id,
                     'gr2t2a_id_appointment'      => $value,
                 );
-            } else {
+            } elseif (Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME === $sub) {
                 $newFields[]= array(
                     'gr2t2f_id_respondent_track' => $respTrackId,
                     'gr2t2f_id_field'            => $id,
