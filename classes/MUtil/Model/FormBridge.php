@@ -311,6 +311,18 @@ class MUtil_Model_FormBridge
 
         return $this->$method($name, $options);
     }
+    
+    public function addColorPicker($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = func_get_args();
+        $options = MUtil_Ra::pairs($options, 1);
+        
+        $options = $this->_mergeOptions($name, $options,
+            self::DISPLAY_OPTIONS);
+        
+        
+        return $this->_addToForm($name, 'ColorPicker' , $options);
+    }
 
     public function addCheckbox($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
