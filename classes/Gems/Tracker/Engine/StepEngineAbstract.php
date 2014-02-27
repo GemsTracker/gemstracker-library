@@ -886,7 +886,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
         // VALID AFTER DATE
 
-        // Survey list is indepedent of the actual chosen source, but not
+        // Survey list is independent of the actual chosen source, but not
         // vice versa. So we have to set it now.
         $result = $this->applySurveyListValidAfter($model, $itemData) || $result;
 

@@ -135,37 +135,33 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      */
     public function _checkTrackCount($userId)
     {
-        $sqlCount  = 'SELECT COUNT(*) AS count, SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END) AS completed
-            FROM gems__tokens
-            JOIN gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
+        $sqlCount  = 'SELECT COUNT(*) AS count,
+                SUM(CASE WHEN gto_completion_time IS NULL THEN 0 ELSE 1 END) AS completed
+            FROM gems__tokens INNER JOIN
+                gems__reception_codes ON gto_reception_code = grc_id_reception_code AND grc_success = 1
             WHERE gto_id_respondent_track = ?';
 
-        if ($counts = $this->db->fetchRow($sqlCount, $this->_respTrackId)) {
-            $values['gr2t_count']      = intval($counts['count']);
-            $values['gr2t_completed']  = intval($counts['completed']);
-
-            if ($values['gr2t_count'] == $values['gr2t_completed']) {
-                $tokenSelect = $this->tracker->getTokenSelect(array('MAX(gto_completion_time)'));
-                $tokenSelect->andReceptionCodes(array())
-                        ->forRespondentTrack($this->_respTrackId)
-                        ->onlySucces();
-
-                $values['gr2t_end_date'] = $tokenSelect->fetchOne();
-
-                //Handle TrackCompletionEvent, send only changed fields in $values array
-                $this->tracker->filterChangesOnly($this->_respTrackData, $values);
-                $this->handleTrackCompletion($values, $userId);
-            // } else {
-                // NOTE: end date should not be set to null if already set, i.e. the end date should not change
-                // as it is sometimes set manually or by calculation and rounds can use the date for calculation
-                // (Matijs, 10 October 2012)
-                // $values['gr2t_end_date'] = null;
-            }
-
-            return $this->_updateTrack($values, $userId);
+        $counts = $this->db->fetchRow($sqlCount, $this->_respTrackId);
+        if (! $counts) {
+            $counts = array('count' => 0, 'completed' => 0);
         }
 
-        return 0;
+        $values['gr2t_count']      = intval($counts['count']);
+        $values['gr2t_completed']  = intval($counts['completed']);
+
+        if (! $this->_respTrackData['gr2t_end_date_manual']) {
+            $values['gr2t_end_date'] = $this->calculateEndDate();
+        }
+
+        // Remove unchanged values
+        $this->tracker->filterChangesOnly($this->_respTrackData, $values);
+
+        if ($values['gr2t_count'] == $values['gr2t_completed']) {
+            //Handle TrackCompletionEvent, send only changed fields in $values array
+            $this->handleTrackCompletion($values, $userId);
+        }
+
+        return $this->_updateTrack($values, $userId);
     }
 
     /**
@@ -349,6 +345,65 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $source->offsetSet('can_edit', $this->hasSuccesCode());
 
         return $this;
+    }
+
+    /**
+     * Calculates the track end date
+     *
+     * The end date can be calculated when:
+     *  - all active tokens have a completion date
+     *  - or all active tokens have a valid until date
+     *  - or the end date of the tokens is calculated using the end date
+     *
+     *  You can overrule this calculation at the project level.
+     *
+     * @return string or null
+     */
+    public function calculateEndDate()
+    {
+        // Exclude the tokens whose end date is calculated from the track end date
+        $excludeWheres[] = sprintf(
+                "gro_valid_for_source = '%s' AND gro_valid_for_field = 'gr2t_end_date'",
+                Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE
+                );
+
+        // Exclude the tokens whose start date is calculated from the track end date, while the
+        // end date is calculated using that same start date
+        $excludeWheres[] = sprintf(
+                "gro_valid_after_source = '%s' AND gro_valid_after_field = 'gr2t_end_date' AND
+                    gro_id_round = gro_valid_for_id AND
+                    gro_valid_for_source = '%s' AND gro_valid_for_field = 'gto_valid_from'",
+                Gems_Tracker_Engine_StepEngineAbstract::RESPONDENT_TRACK_TABLE,
+                Gems_Tracker_Engine_StepEngineAbstract::TOKEN_TABLE
+                );
+        // In future we may want to add some nesting to this, e.g. tokens with an end date calculated
+        // from another token whose... for the time being users should use the end date directly in
+        // each token, otherwise the end date will not be calculated
+
+        $maxExpression = "
+            CASE
+            WHEN SUM(
+                CASE WHEN COALESCE(gto_completion_time, gto_valid_until) IS NULL THEN 1 ELSE 0 END
+                ) > 0
+            THEN NULL
+            ELSE MAX(COALESCE(gto_completion_time, gto_valid_until))
+            END as enddate";
+
+        $tokenSelect = $this->tracker->getTokenSelect(array($maxExpression));
+        $tokenSelect->andReceptionCodes(array())
+                ->andRounds(array())
+                ->forRespondentTrack($this->_respTrackId)
+                ->onlySucces();
+
+        foreach ($excludeWheres as $where) {
+            $tokenSelect->forWhere('NOT (' . $where . ')');
+        }
+
+        $endDate = $tokenSelect->fetchOne();
+
+        // MUtil_Echo::track($endDate, $tokenSelect->getSelect()->__toString());
+
+        return $endDate;
     }
 
     /**
