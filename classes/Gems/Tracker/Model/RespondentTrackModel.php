@@ -108,12 +108,20 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
      */
     public function __construct($name = 'surveys')
     {
-        parent::__construct($name, 'gems__respondent2track', 'gr2t');
-        $this->addTable('gems__respondents',     array('gr2t_id_user' => 'grs_id_user'));
-        $this->addTable('gems__respondent2org',  array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'));
-        $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'));
-        $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'));
+        parent::__construct($name, 'gems__respondent2track', 'gr2t', true);
+        $this->addTable('gems__respondents',     array('gr2t_id_user' => 'grs_id_user'), 'grs', false);
+        $this->addTable(
+                'gems__respondent2org',
+                array('gr2t_id_user' => 'gr2o_id_user', 'gr2t_id_organization' => 'gr2o_id_organization'),
+                'gr2o',
+                false
+                );
+        $this->addTable('gems__tracks',          array('gr2t_id_track' => 'gtr_id_track'), 'gtr', false);
+        $this->addTable('gems__reception_codes', array('gr2t_reception_code' => 'grc_id_reception_code'), 'grc', false);
         $this->addLeftTable('gems__staff',       array('gr2t_created_by' => 'gsf_id_user'));
+
+        // No need to send all this information to the user
+        $this->setCol($this->getItemsFor('table', 'gems__staff'), 'elementClass', 'None');
 
         // TODO: altkeys implementatie
         // $this->setKeys($this->_getKeysFor('gems__respondent2track');
@@ -141,6 +149,21 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
 
         $this->addColumn("CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, ''))",
             'respondent_name');
+    }
+
+    /**
+     * Add tracking off manual end date changes by the user
+     *
+     * @param mixed $value The value to store when the tracked field has changed
+     * @return \Gems_Tracker_Model_StandardTokenModel
+     */
+    public function addEditTracking()
+    {
+        $changer = new MUtil_Model_Type_ChangeTracker($this, 1, 0);
+
+        $changer->apply('gr2t_end_date_manual', 'gr2t_end_date');
+
+        return $this;
     }
 
     /**
@@ -233,6 +256,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     public function applyEditSettings()
     {
         $this->applyDetailSettings(true);
+        $this->addEditTracking();
 
         $this->set('gr2o_patient_nr', 'elementClass', 'Exhibitor');
         $this->set('respondent_name', 'elementClass', 'Exhibitor');
@@ -358,6 +382,20 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         // This is the only key to save on, no matter
         // the keys used to initiate the model.
         $this->setKeys($this->_getKeysFor('gems__respondent2track'));
+
+        // Change the end date until the end of the day
+        if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
+            $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
+            if ( ! $displayFormat) {
+                $displayFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+            }
+
+            // Of course do not do so when we got a time format
+            if (! MUtil_Date_Format::getTimeFormat($displayFormat)) {
+                $newValues['gr2t_end_date'] = new MUtil_Date($newValues['gr2t_end_date'], $displayFormat);
+                $newValues['gr2t_end_date']->setTimeToDayEnd();
+            }
+        }
 
         $newValues = parent::save($newValues, $filter);
 

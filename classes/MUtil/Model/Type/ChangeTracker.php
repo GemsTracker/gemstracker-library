@@ -215,10 +215,7 @@ class MUtil_Model_Type_ChangeTracker
             if ($this->_model->has($trackedField, 'dateFormat')) {
                 $secondFormat = $this->_model->get($trackedField, 'dateFormat');
             } else {
-                $options = array();
-                MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-
-                $secondFormat = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+                $secondFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
             }
             if (! Zend_Date::isDate($context[$trackedField], $secondFormat)) {
                 // Cannot compare, do nothing

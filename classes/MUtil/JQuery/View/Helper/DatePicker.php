@@ -175,113 +175,12 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      *  - "HH:mm:ss"          => array(false, false, "HH:mm:ss")
      *  - Zend_Date::ISO_8601 => array("ISO_8601", "T", "HH:mm:ssZ")
      *
+     * @deprecated since version 1.4
      * @param string $format Or Zend_Locale_Format::getDateFormat($locale)
      * @return array dateFormat, seperator, timeFormat
      */
     public static function splitZendLocaleToDateTimePickerFormat($format=null)
     {
-        if($format == null) {
-            $locale = Zend_Registry::get('Zend_Locale');
-            if( !($locale instanceof Zend_Locale) ) {
-                require_once "ZendX/JQuery/Exception.php";
-                throw new ZendX_JQuery_Exception("Cannot resolve Zend Locale format by default, no application wide locale is set.");
-            }
-            /**
-             * @see Zend_Locale_Format
-             */
-            require_once "Zend/Locale/Format.php";
-            $format = Zend_Locale_Format::getDateFormat($locale);
-        }
-
-        $fullDates = array(
-            Zend_Date::ATOM     => array('ATOM',     'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
-            Zend_Date::COOKIE   => array('COOKIE',   ' ', 'HH:mm:ss z'),
-            Zend_Date::ISO_8601 => array('ISO_8601', 'T', 'HH:mm:ssZ' ),
-            Zend_Date::RFC_822  => array('RFC_822',  ' ', 'HH:mm:ss Z'), // No timezone +01:00, use +0100
-            Zend_Date::RFC_850  => array('RFC_850',  ' ', 'HH:mm:ss z'),
-            Zend_Date::RFC_1036 => array('RFC_1036', ' ', 'HH:mm:ss Z'),
-            Zend_Date::RFC_1123 => array('RFC_1123', ' ', 'HH:mm:ss z'),
-            Zend_Date::RFC_2822 => array('RFC_2822', ' ', 'HH:mm:ss Z'),
-            Zend_Date::RFC_3339 => array('yy-mm-dd', 'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
-            Zend_Date::RSS      => array('RSS',      ' ', 'HH:mm:ss Z'),
-            Zend_Date::W3C      => array('W3C',      'T', 'HH:mm:ssZ' ), // No timezone +01:00, use +0100
-        );
-
-        if (isset($fullDates[$format])) {
-            return $fullDates[$format];
-        }
-
-        $dateFormats = array(
-            'EEEEE' => 'D', 'EEEE' => 'DD', 'EEE' => 'D', 'EE' => 'D', 'E' => 'D',
-            'YYYYY' => 'yy', 'YYYY' => 'yy', 'YYY' => 'yy', 'YY' => 'y', 'Y' => 'yy',
-            'yyyyy' => 'yy', 'yyyy' => 'yy', 'yyy' => 'yy', 'yy' => 'y', 'y' => 'yy',
-            'MMMM' => 'MM', 'MMM' => 'M', 'MM' => 'mm', 'M' => 'm',
-            'dd' => 'dd', 'd' => 'd', 'DDD' => 'oo', 'DD' => 'o', 'D' => 'o',
-            'G' => '', 'e' => '', 'w' => '',
-        );
-        $timeFormats = array(
-            'a' => 'tt', 'hh' => 'hh', 'h' => 'h', 'HH' => 'HH',
-            'H' => 'H', 'mm' => 'mm', 'm' => 'm', 'ss' => 'ss', 's' => 's', 'S' => 'l',
-            'zzzz' => 'z', 'zzz' => 'z', 'zz' => 'z', 'z' => 'z', 'ZZZZ' => 'Z',
-            'ZZZ' => 'Z', 'ZZ' => 'Z', 'Z' => 'Z', 'A' => '',
-        );
-
-        $pregs[] = '"[^"]*"'; // Literal text
-        $pregs[] = "'[^']*'"; // Literal text
-        $pregs   = array_merge($pregs, array_keys($dateFormats), array_keys($timeFormats)); // Add key words
-        $preg    = sprintf('/(%s)/', implode('|', $pregs));
-
-        $parts = preg_split($preg, $format, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-
-        $cache      = '';
-        $dateFormat = false;
-        $separator  = false;
-        $timeFormat = false;
-
-        foreach ($parts as $part) {
-            if (isset($dateFormats[$part])) {
-                if (false !== $timeFormat) {
-                    throw new Zend_Form_Element_Exception(sprintf(
-                            'Date format specifier %s not allowed after time specifier in %s in format mask %s.',
-                            $part,
-                            $timeFormat,
-                            $format
-                            ));
-                }
-                $dateFormat .= $cache . $dateFormats[$part];
-                $cache      = '';
-
-            } elseif (isset($timeFormats[$part])) {
-                // Switching to time format mode
-                if (false === $timeFormat) {
-                    if ($dateFormat) {
-                        $separator  = $cache;
-                        $timeFormat = $timeFormats[$part];
-                    } else {
-                        $timeFormat = $cache . $timeFormats[$part];
-                    }
-                } else {
-                    $timeFormat .= $cache . $timeFormats[$part];
-                }
-                $cache = '';
-
-            } elseif ('"' === $part[0]) {
-                // Replace double quotes with single quotes, single quotes in string with two single quotes
-                $cache .= strtr($part, array('"' => "'", "'" => "''"));
-
-            } else {
-                $cache .= $part;
-            }
-        }
-        if ($cache) {
-            if (false === $timeFormat) {
-                $dateFormat .= $cache;
-            } else {
-                $timeFormat .= $cache;
-            }
-        }
-
-        // MUtil_Echo::track($preg);
-        return array($dateFormat, $separator, $timeFormat);
+        return MUtil_Date_Format::splitDateTimeFormat($format);
     }
 }

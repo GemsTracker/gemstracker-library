@@ -274,8 +274,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
                 default:
                     // Make sure day based units are valid until the end of the day.
-                    $date->addDay(1);
-                    $date->subSecond(1);
+                    $date->setTimeToDayEnd();
                     break;
 
             }

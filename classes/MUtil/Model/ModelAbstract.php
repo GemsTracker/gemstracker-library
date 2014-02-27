@@ -117,7 +117,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     );
 
     /**
-     * An identifying name for the model
+     * An identifying name for the model, used for joining models and sub forms, etc...
      *
      * @var string
      */
@@ -154,7 +154,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @param string $modelName Hopefully unique model name
+     * @param string $modelName Hopefully unique model name, used for joining models and sub forms, etc...
      */
     public function __construct($modelName)
     {
@@ -841,11 +841,44 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      * Returns all the field names in this model
-     * @return array
+     *
+     * @return array Of names
      */
     public function getItemNames()
     {
         return array_keys($this->_model);
+    }
+
+    /**
+     * Returns all the field names that have the properties passed in the parameters
+     *
+     * @param string|array $arrayOrKey1 A key => value array or the name of the first key
+     * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2 Optional second key when $arrayOrKey1 is a string
+     * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
+     * @return array Of names
+     */
+    public function getItemsFor($arrayOrKey1, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $args    = func_get_args();
+        $args    = MUtil_Ra::pairs($args);
+        $results = array();
+
+        foreach ($this->_model as $itemName => $row) {
+            $found = true;
+
+            foreach ($args as $paramName => $value) {
+                if (! $this->is($itemName, $paramName, $value)) {
+                    $found = false;
+                    break;
+                }
+            }
+            if ($found) {
+                $results[] = $itemName;
+            }
+        }
+
+        return $results;
     }
 
     /**
@@ -874,6 +907,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $result;
     }
 
+    /**
+     * The names of the items called using get() since the last
+     * call to trackUsage(true).
+     *
+     * @return array
+     */
     public function getItemsUsed()
     {
         if ($this->_model_used) {
@@ -937,6 +976,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this->_keys;
     }
 
+    /**
+     * Get a model level variable named $key
+     *
+     * @param string $key
+     * @param mixed $default Optional default
+     * @return mixed
+     */
     public function getMeta($key, $default = null)
     {
         if (isset($this->_model_meta[$key])) {
@@ -945,6 +991,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $default;
     }
 
+    /**
+     * The internal name of the model, used for joining models and sub forms, etc...
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->_model_name;
@@ -1087,6 +1138,32 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this->_transformers;
     }
 
+    /**
+     * Get one result with a default if it does not exist
+     *
+     * @param type $name
+     * @param string $name Field name
+     * @param string $subkey Field key
+     * @param mixed $default default value, if value does not exist
+     * @return mixed
+     */
+    public function getWithDefault($name, $subkey, $default)
+    {
+        if ($this->has($name, $subkey)) {
+            return $this->get($name, $subkey);
+        }
+
+        return $default;
+    }
+
+    /**
+     * Returns True when the name exists in the model. When used
+     * with a subkey, that subkey has to exist for the name.
+     *
+     * @param string $name Field name
+     * @param string $subkey Optional field key
+     * @return boolean
+     */
     public function has($name, $subkey = null)
     {
         if (null === $subkey) {
@@ -1561,27 +1638,42 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Set attributes for all fields in the model.
+     * Set attributes for all or some fields in the model.
      *
-     * Example:
+     * Example 1, all fields:
      * <code>
      * $this->setCol('save', true) ;
      * $this->setCol(array('save' => true)) ;
      * </code>
      * both set the attribute 'save' to true for all fields.
      *
+     * Example 2, some fields:
+     * <code>
+     * $this->setCol(array('x', 'y', 'z'), 'save', true) ;
+     * $this->setCol(array('x', 'y', 'z'), array('save' => true)) ;
+     * </code>
+     * both set the attribute 'save' to true for the x, y and z fields.
+     *
+     * @param $namesOrKeyArray When array and there is more than one parameter an array of field names
      * @param string|array $arrayOrKey1 A key => value array or the name of the first key
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
-    public function setCol($arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    public function setCol($namesOrKeyArray, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
+        if (is_array($namesOrKeyArray) && $arrayOrKey1) {
+            $names = $namesOrKeyArray;
+            $skip = 1;
+        } else {
+            $names = array_keys($this->_model);
+            $skip = 0;
+        }
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args);
+        $args = MUtil_Ra::pairs($args, $skip);
 
-        foreach ($this->_model as $name => $row) {
+        foreach ($names as $name) {
             $this->set($name, $args);
         }
 
@@ -1834,6 +1926,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this->setMeta('textFilter', $value);
     }
 
+    /**
+     * Start track usage, i.e. each name used in a call to get()
+     *
+     * @param boolean $value
+     */
     public function trackUsage($value = true)
     {
         if ($value) {

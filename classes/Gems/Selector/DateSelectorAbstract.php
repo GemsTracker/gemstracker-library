@@ -200,7 +200,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                     if (0 == $i) {
                         $this->dateCurrentStart = clone $date;
                         $this->dateCurrentEnd   = clone $date;
-                        $this->dateCurrentEnd->addDay(1)->subSecond(1);
+                        $this->dateCurrentEnd->setTimeToDayEnd();
                     }
 
                     $values = array();

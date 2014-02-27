@@ -163,8 +163,7 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         if ($this->formData['gto_valid_until']) {
             // Make sure date based units are valid until the end of the day.
             $date = new MUtil_Date($this->formData['gto_valid_until'], $model->get('gto_valid_until', 'dateFormat'));
-            $date->addDay(1);
-            $date->subSecond(1);
+            $date->setTimeToDayEnd();
             $this->formData['gto_valid_until'] = $date;
         }
 

@@ -221,9 +221,12 @@ class Gems_Tracker_Model_SingleSurveyTokenModel extends Gems_Tracker_Model_Stand
     public function save(array $newValues, array $filter = null, array $saveTables = null)
     {
         // These values are always copied over
-        $newValues['gr2t_start_date']     = $newValues['gto_valid_from'];
-        $newValues['gr2t_end_date']       = $newValues['gto_valid_until'];
-        $newValues['gr2t_reception_code'] = isset($newValues['gto_reception_code']) ? $newValues['gto_reception_code'] : GemsEscort::RECEPTION_OK;
+        $newValues['gr2t_start_date']      = $newValues['gto_valid_from'];
+        $newValues['gr2t_end_date']        = $newValues['gto_valid_until'];
+        $newValues['gr2t_end_date_manual'] = $newValues['gto_valid_until_manual'];
+        $newValues['gr2t_reception_code']  = isset($newValues['gto_reception_code']) ?
+                $newValues['gto_reception_code'] :
+                GemsEscort::RECEPTION_OK;
 
         return parent::save($newValues, $filter, $saveTables);
     }

@@ -330,4 +330,14 @@ class MUtil_Date extends Zend_Date
 
         return ($result !== -1);
     }
+
+    /**
+     * Set the time of this object to 23:59:59
+     *
+     * @return \MUtil_Date (continuation pattern)
+     */
+    public function setTimeToDayEnd()
+    {
+        return $this->setTime('23:59:59', 'hh:mm:ss');
+    }
 }

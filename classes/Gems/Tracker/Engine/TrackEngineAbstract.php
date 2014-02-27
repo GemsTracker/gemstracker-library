@@ -1263,16 +1263,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             if (isset($this->_trackFields[$key]['gtf_field_type']) &&
                     ('date' == $this->_trackFields[$key]['gtf_field_type'])) {
                 if (! empty($value)) {
-                    if (! $element) {
-                        // Initialize a date element once, so we know about dateformats
-                        $options = array();
-                        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-
-                        $element = new Gems_JQuery_Form_Element_DatePicker('tmp_element', $options);
-                        $element->setStorageFormat('yyyy-MM-dd');
-                    }
-
-                    $value = MUtil_Date::format($value, $element->getStorageFormat(), $element->getDateFormat());
+                    $value = MUtil_Date::format(
+                            $value,
+                            'yyyy-MM-dd',
+                            MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat')
+                            );
                 } else {
                     $value = null;
                 }

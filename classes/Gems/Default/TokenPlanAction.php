@@ -491,9 +491,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
     public function getDefaultSearchData()
     {
-        $options  = array();
-        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-        $inFormat = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+        $inFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
         $now      = new MUtil_Date();
 
         return array(

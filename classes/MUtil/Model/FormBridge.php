@@ -347,8 +347,7 @@ class MUtil_Model_FormBridge
         // Allow centrally set options
         $type = __FUNCTION__;
         if (isset($options['dateFormat'])) {
-            list($dateFormat, $separator, $timeFormat) =
-                    MUtil_JQuery_View_Helper_DatePicker::splitZendLocaleToDateTimePickerFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -889,13 +888,34 @@ class MUtil_Model_FormBridge
      */
     public function getAllowedOptions($key = null)
     {
-        if (is_null($key)) return $this->_allowedOptions;
+        if (is_null($key)) {
+            return $this->_allowedOptions;
+        }
 
         if (array_key_exists($key, $this->_allowedOptions)) {
             return $this->_allowedOptions[$key];
         } else {
             return array();
         }
+    }
+
+    /**
+     * Get a single fixed option set in the registry.
+     *
+     * @param string $type   Type name [add]Function of this object
+     * @param string $option Option name
+     */
+    public static function getFixedOption($type, $option)
+    {
+        $options = array();
+
+        self::applyFixedOptions($type, $options);
+
+        if (isset($options[$option])) {
+            return $options[$option];
+        }
+
+        return null;
     }
 
     /**

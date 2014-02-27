@@ -104,10 +104,7 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
 
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $options = array();
-            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-
-            $format = $options['dateFormat'];
+            $format = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         return $format;

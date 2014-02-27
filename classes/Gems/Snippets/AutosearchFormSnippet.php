@@ -156,8 +156,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
         $type = 'date';
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
-            list($dateFormat, $separator, $timeFormat) =
-                    MUtil_JQuery_View_Helper_DatePicker::splitZendLocaleToDateTimePickerFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -423,9 +422,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $outFormat = 'yyyy-MM-dd';
         }
         if (null === $inFormat) {
-            $options   = array();
-            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-            $inFormat  = isset($options['dateFormat']) ? $options['dateFormat'] : null;
+            $inFormat  = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         $isFrom  = isset($data['datefrom'])  && $data['datefrom']  && MUtil_Date::isDate($data['datefrom'],  $inFormat);
