@@ -504,6 +504,10 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Session'),    null, 'session');
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance.maintenance-mode', 'project-information', 'maintenance');
         $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance.clean-cache', 'project-information', 'cacheclean');
+        
+        $templates = $page->addPage($this->_('Templates'), 'pr.templates', 'template');
+        $templates->addAutofilterAction();
+        $templates->addEditAction();
 
         return $page;
     }

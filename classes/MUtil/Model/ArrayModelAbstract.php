@@ -210,7 +210,9 @@ abstract class MUtil_Model_ArrayModelAbstract extends MUtil_Model_ModelAbstract
 
             if ($keys = $this->getKeys()) {
                 $search = array();
-                $newValues = $newValues + $filter;
+                if (is_array($filter)) {
+                    $newValues = $newValues + $filter;    
+                }
 
                 foreach ($keys as $key) {
                     if (isset($newValues[$key])) {
