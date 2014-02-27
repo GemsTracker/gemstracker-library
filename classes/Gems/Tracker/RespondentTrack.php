@@ -493,6 +493,46 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * The round description of the first round that has not been answered.
+     *
+     * @return string Round description or Stopped/Completed if not found.
+     */
+    public function getCurrentRound()
+    {
+        $isStop = false;
+        $today  = new Zend_Date();
+        $tokens = $this->getTokens();
+        $stop   = $this->util->getReceptionCodeLibrary()->getStopString();
+
+        foreach ($tokens as $token) {
+            $validUntil = $token->getValidUntil();
+
+            if (! empty($validUntil) && $validUntil->isEarlier($today)) {
+                continue;
+            }
+
+            if ($token->isCompleted()) {
+                continue;
+            }
+
+            $code = $token->getReceptionCode();
+            if (! $code->isSuccess()) {
+                if ($code->getCode() === $stop) {
+                    $isStop = true;
+                }
+                continue;
+            }
+
+            return $token->getRoundDescription();
+        }
+        if ($isStop) {
+            return $this->translate->_('Track stopped');
+        }
+
+        return $this->translate->_('Track completed');
+    }
+
+    /**
      *
      * @param string $fieldName
      * @return MUtil_Date
