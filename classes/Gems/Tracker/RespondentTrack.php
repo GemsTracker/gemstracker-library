@@ -153,13 +153,13 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $values['gr2t_end_date'] = $this->calculateEndDate();
         }
 
-        // Remove unchanged values
-        $this->tracker->filterChangesOnly($this->_respTrackData, $values);
-
         if ($values['gr2t_count'] == $values['gr2t_completed']) {
             //Handle TrackCompletionEvent, send only changed fields in $values array
             $this->handleTrackCompletion($values, $userId);
         }
+
+        // Remove unchanged values
+        $this->tracker->filterChangesOnly($this->_respTrackData, $values);
 
         return $this->_updateTrack($values, $userId);
     }

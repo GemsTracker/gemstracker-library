@@ -2,7 +2,7 @@
 CREATE TABLE if not exists gemsdata__responses (
         gdr_id_response bigint(20)  unsigned NOT NULL auto_increment,
         gdr_id_token    varchar(9)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
-        gdr_answer_id   varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
+        gdr_answer_id   varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
 
         gdr_response    text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 

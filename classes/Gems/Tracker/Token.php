@@ -1674,16 +1674,20 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
                 $responses['datestamp']);
 
         // first read current responses to differentiate between insert and update
-        $responseSelect = $db->select()->from('gemsdata__responses')
+        $responseSelect = $db->select()->from('gemsdata__responses', array('gdr_answer_id', 'gdr_response'))
                 ->where('gdr_id_token = ?', $this->_tokenId);
-        $currentResponses = $responseSelect->query()->fetchAll();
+        $currentResponses = $db->fetchPairs($responseSelect);
 
-        // Map to gdr__answer_id index array for easy lookups
-        $dbResponse = array();
-        foreach($currentResponses as $response)
-        {
-            $dbResponse[$response['gdr_answer_id']] = $response;
+        if (! $currentResponses) {
+            $currentResponses = array();
         }
+        // MUtil_Echo::track($currentResponses, $responses);
+
+        // Prepare sql
+        $sql = "UPDATE gemsdata__responses
+            SET `gdr_response` = ?, `gdr_changed` = ?, `gdr_changed_by` = ?
+            WHERE gdr_id_token = ? AND gdr_answer_id = ?";
+        $stmt = $db->prepare($sql);
 
         $inserts = array();
         foreach ($responses as $fieldName => $response) {
@@ -1693,51 +1697,48 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             }
             $rValues['gdr_response']  = $response;
 
-            if (array_key_exists($fieldName, $dbResponse)) {    // Already exists, do update
+            if (array_key_exists($fieldName, $currentResponses)) {    // Already exists, do update
                 // But only if value changed
-                if ($dbResponse[$fieldName]['gdr_response'] != $response) {
-                    $where = $db->quoteInto('gdr_id_token = ? AND ', $rValues['gdr_id_token']) .
-                            $db->quoteInto('gdr_answer_id = ?', $fieldName);
-
+                if ($currentResponses[$fieldName] != $response) {
                     try {
-                        $db->update(
-                                'gemsdata__responses',
-                                array(
-                                    'gdr_response'   => $response,
-                                    'gdr_changed'    => $rValues['gdr_changed'],
-                                    'gdr_changed_by' => $rValues['gdr_changed_by'],
-                                    ),
-                                $where);
+                        // MUtil_Echo::track($sql, $rValues['gdr_id_token'], $fieldName, $response);
+                        $stmt->execute(array(
+                            $response,
+                            $rValues['gdr_changed'],
+                            $rValues['gdr_changed_by'],
+                            $rValues['gdr_id_token'],
+                            $fieldName
+                        ));
                     } catch (Zend_Db_Statement_Exception $e) {
                         error_log($e->getMessage());
+                        Gems_Log::getLogger()->logError($e);
                     }
                 }
             } else {
-                // We add the inserts together in one statement to improve speed
-                $inserts[] = $rValues;
+                // We add the inserts together in the next prepared statement to improve speed
+                $inserts[$fieldName] = $rValues;
             }
         }
 
         if (count($inserts)>0) {
+            // MUtil_Echo::track($inserts);
             try {
-                $fields = array();
-                foreach ($inserts[0] as $fieldName => $value)
-                {
-                    $fields[] .= $db->quoteIdentifier($fieldName);
-                }
-                $sql = 'INSERT INTO gemsdata__responses (' . implode(', ', $fields) . ') VALUES ';
+                $fields = array_keys(reset($inserts));
+                $fields = array_map(array($db, 'quoteIdentifier'), $fields);
+                $sql = 'INSERT INTO gemsdata__responses (' .
+                        implode(', ', $fields) . ') VALUES (' .
+                        implode(', ', array_fill(1, count($fields), '?')) . ')';
+
+                // MUtil_Echo::track($sql);
+                $stmt = $db->prepare($sql);
+
                 foreach($inserts as $insert) {
-                    $vals = array();
-                    foreach($insert as $field => $value)
-                    {
-                        $vals[] = $db->quote($value);   // Takes care of converting Zend_Db_Expression
-                    }
-                    $sql .= '(' . implode(', ', $vals) . '),';
+                    // MUtil_Echo::track($insert);
+                    $stmt->execute($insert);
                 }
-                $sql = substr($sql, 0, -1) . ';';
-                $db->query($sql);
             } catch (Zend_Db_Statement_Exception $e) {
                 error_log($e->getMessage());
+                Gems_Log::getLogger()->logError($e);
             }
         }
     }
