@@ -11,6 +11,7 @@ CREATE TABLE if not exists gems__respondent2org (
         --       references gems_staff (gsf_id_user),
 
         -- gr2o_treatment varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
+        gr2o_mailable boolean not null default 1,
         gr2o_comments text CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
         gr2o_consent varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'Unknown'

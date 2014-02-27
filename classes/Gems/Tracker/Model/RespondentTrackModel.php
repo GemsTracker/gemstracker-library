@@ -191,6 +191,16 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
         $this->set('respondent_name',   'label', $this->_('Respondent name'));
         $this->set('gtr_track_name',    'label', $this->_('Track'));
+        
+        $this->set('gr2t_mailable',     
+                'label', $this->_('May be mailed'),
+                'elementClass', 'radio',
+                'separator', ' ',
+                'multiOptions', array(
+                        '1' => $this->_('Yes'),
+                        '0' => $this->_('No'),
+                    )
+                );
 
         // Integrate fields
         $this->trackEngine->addFieldsToModel(

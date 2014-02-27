@@ -349,6 +349,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_email',       'label', $translator->_('E-Mail'),
                 'tab', $translator->_('Contact information'));
+        $this->setIfExists('gr2o_mailable',     'label', $translator->_('May be mailed'));
 
         $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
         $this->setIfExists('grs_address_2',   'label', '&nbsp;');
@@ -440,7 +441,16 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                         $this->get('grs_email', 'label')
                         )
                 );
-
+        $this->set('gr2o_mailable',
+                'label', $this->_('May be mailed'),
+                'elementClass', 'radio',
+                'separator', ' ',
+                'multiOptions', array(
+                        '1' => $this->_('Yes'),
+                        '0' => $this->_('No'),
+                    )
+                );
+        
         $this->setIfExists('grs_first_name', 'filter', $ucfirst);
         $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
         $this->setIfExists('grs_partner_last_name',  'filter', new Zend_Filter_Callback('ucfirst'));

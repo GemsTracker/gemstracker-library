@@ -745,3 +745,8 @@ ALTER TABLE  gems__tokens CHANGE gto_comment
     gto_comment TEXT CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null;
 ALTER TABLE  gems__tokens ADD gto_valid_from_manual   boolean not null default 0 AFTER gto_valid_from;
 ALTER TABLE  gems__tokens ADD gto_valid_until_manual  boolean not null default 0 AFTER gto_valid_until;
+
+-- PATCH: fields to set if a respondent can be mailed in respondent and track
+ALTER TABLE  `gems__respondent2org` ADD  `gr2o_mailable` boolean not null default 1 AFTER  `gr2o_comments`;
+
+ALTER TABLE  `gems__respondent2track` ADD  `gr2t_mailable` boolean not null default 1 AFTER  `gr2t_id_organization`;
