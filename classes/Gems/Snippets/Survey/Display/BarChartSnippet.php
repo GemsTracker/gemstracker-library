@@ -269,8 +269,8 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
      * @param \Zend_View_Abstract $view
      * @return type
      */
-    public function getHtmlOutput(\Zend_View_Abstract $view) {             
-        $view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');            
+    public function getHtmlOutput(\Zend_View_Abstract $view) {
+        //$view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');            
 
         $htmlDiv   = MUtil_Html::create()->div(' ', array('class'=>'barchartcontainer'));
         
