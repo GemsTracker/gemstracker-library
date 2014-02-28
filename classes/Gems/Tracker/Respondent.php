@@ -63,6 +63,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      * @var Gems_Loader
      */
     protected $loader;
+
     /**
      *
      * @var Gems_Model_RespondentModel
@@ -77,7 +78,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var integer Patient Id
+     * @var string Patient Id
      */
     private $patientId;
 
@@ -98,6 +99,11 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     protected $util;
 
+    /**
+     *
+     * @param string $patientId
+     * @param int $organizationId
+     */
 	public function __construct($patientId, $organizationId)
     {
         $this->patientId = $patientId;
@@ -113,7 +119,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
             $this->respondent = $this->getDefaultRespondent();
         }
     }
-    
+
     protected function getDefaultRespondent()
     {
         $select = $this->model->getSelect();
@@ -155,7 +161,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
         return $greeting . ' ' . $this->getName();
     }
-    
+
     /**
      * Get a single char code for the gender (normally M/F/U)
      * @return string
@@ -194,7 +200,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         }
         return $this->respondentLanguage;
     }
-    
+
     /**
      * Get Last name of respondent
      * @return string
@@ -228,18 +234,19 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     {
         return $this->organizationId;
     }
-    
+
     /**
-     * 
+     *
      * @return int Patient number (not respondent id)
      */
     public function getPatientId()
     {
         return $this->patientId;
     }
-    
+
     /**
      * Get the respondent with a patientId and organization Id combination
+     *
      * @param  integer $patientId      [description]
      * @param  integer $organizationId [description]
      */
@@ -257,7 +264,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         }
         return $result;
 	}
-    
+
     /**
      * Overwrite the respondents prefered language
      */
