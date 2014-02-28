@@ -751,3 +751,23 @@ ALTER TABLE gems__respondent2track ADD gr2t_end_date_manual boolean not null def
 ALTER TABLE  `gems__respondent2org` ADD  `gr2o_mailable` boolean not null default 1 AFTER  `gr2o_comments`;
 
 ALTER TABLE  `gems__respondent2track` ADD  `gr2t_mailable` boolean not null default 1 AFTER  `gr2t_id_organization`;
+
+-- PATCH: integrating appointments
+ALTER TABLE gems__appointments ADD gap_source varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null
+    default 'manual' AFTER gap_id_organization;
+ALTER TABLE gems__appointments ADD gap_manual_edit boolean not null default 0
+    AFTER gap_id_in_source;
+UPDATE gems__appointments  SET gap_source = 'import' WHERE gap_id_in_source IS NOT NULL;
+UPDATE gems__appointments  SET gap_manual_edit =
+        CASE WHEN gap_id_in_source IS NULL OR gap_changed_by != gap_created_by THEN 1 ELSE 0 END;
+ALTER TABLE gems__appointments CHANGE gap_id_in_source gap_id_in_source varchar(20) CHARACTER SET 'utf8'
+        COLLATE 'utf8_general_ci' null default null;
+
+ALTER TABLE gems__appointments DROP INDEX gap_id_in_source;
+ALTER TABLE gems__appointments ADD UNIQUE INDEX (gap_id_in_source, gap_id_organization, gap_source);
+
+ALTER TABLE `gems__surveys`
+  DROP `gsu_staff`,
+  DROP `gsu_id_user_field`,
+  DROP `gsu_completion_field`,
+  DROP `gsu_followup_field`;

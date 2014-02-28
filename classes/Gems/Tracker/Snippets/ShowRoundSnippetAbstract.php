@@ -191,6 +191,7 @@ class Gems_Tracker_Snippets_ShowRoundSnippetAbstract extends MUtil_Snippets_Mode
 
         $links->append($this->menu->getCurrent()->toActionLink(true, MUtil_Html::raw($this->_('&lt; Previous')), $source));
         $links->addCurrentParent($this->_('Cancel'));
+        $links->addCurrentChildren();
         $links->addCurrentSiblings();
 
         $source->offsetSet('gro_id_round', $this->trackEngine->getNextRoundId($this->roundId));

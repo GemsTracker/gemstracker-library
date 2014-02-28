@@ -149,7 +149,12 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                     }
 
                     $model->set('gap_id_user',         'default', $this->respondentId);
+                    $model->set('gap_manual_edit',     'default', 1);
                     $model->set('gap_admission_time',  'default', $now);
+                } else {
+                    // When there is something saved, then set manual edit to 1
+                    $model->setSaveOnChange('gap_manual_edit');
+                    $model->setOnSave(      'gap_manual_edit', 1);
                 }
             } else {
                 $model->applyDetailSettings();
