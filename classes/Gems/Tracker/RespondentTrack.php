@@ -177,7 +177,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $fieldMap  = $engine->getFields();
             // MUtil_Echo::track($fieldData, $fieldMap);
 
-            //Map the fielddata to the fieldcode
+            // Map the fielddata to the fieldcode
             foreach($fieldData as $key => $value) {
                 if (isset($fieldMap[$key])) {
                     // The old name remains in the data set of course,
@@ -601,6 +601,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
             if (isset($this->_fieldData[$fieldName])) {
                 $date = $this->_fieldData[$fieldName];
+
+                if (Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_fieldData['sub']) {
+                    $date = $this->tracker->getAppointment($date)->getAdmissionTime();
+                }
             } else {
                 $date = false;
             }

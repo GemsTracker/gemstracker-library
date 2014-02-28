@@ -44,13 +44,26 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
+class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 {
+    /**
+     *
+     * @var array of \Gems_Agenda_Appointment
+     */
+    private $_appointments = array();
+
     /**
      *
      * @var Zend_Cache_Core
      */
     protected $cache;
+
+    /**
+     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     *
+     * @var string $cascade An optional subdirectory where this subclass always loads from.
+     */
+    protected $cascade = 'Agenda';
 
     /**
      *
@@ -59,18 +72,50 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     protected $db;
 
     /**
-     * Get all active respondents for this user
      *
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @return array appointmentId => appointment description
+     * @var Gems_Loader
      */
-    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null)
-    {
-        $where = sprintf('gap_status IN (%s)', $this->getStatusKeysActiveDbQuoted());
+    protected $loader;
 
-        return $this->getAppointments($respondentId, $organizationId, $patientNr, $where);
+    /**
+     *
+     * @var Zend_Translate
+     */
+    protected $translate;
+
+    /**
+     *
+     * @var Zend_Translate_Adapter
+     */
+    protected $translateAdapter;
+
+    /**
+     *
+     * @param type $container A container acting as source fro MUtil_Registry_Source
+     * @param array $dirs The directories where to look for requested classes
+     */
+    public function __construct($container, array $dirs)
+    {
+        parent::__construct($container, $dirs);
+
+        // Make sure the tracker is known
+        $this->addRegistryContainer(array('agenda' => $this));
+    }
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string
+     * returns the translation
+     *
+     * @param  string             $text   Translation string
+     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function _($text, $locale = null)
+    {
+        return $this->translateAdapter->_($text, $locale);
     }
 
     /**
@@ -91,6 +136,36 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
                 ->order('gap_admission_time DESC');
 
         return $select;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->initTranslateable();
+    }
+
+    /**
+     * Get all active respondents for this user
+     *
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @return array appointmentId => appointment description
+     */
+    public function getActiveAppointments($respondentId, $organizationId, $patientNr = null)
+    {
+        $where = sprintf('gap_status IN (%s)', $this->getStatusKeysActiveDbQuoted());
+
+        return $this->getAppointments($respondentId, $organizationId, $patientNr, $where);
     }
 
     /**
@@ -149,6 +224,36 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         }
 
         return implode($this->_('; '), $results);
+    }
+
+    /**
+     * Get an appointment object
+     *
+     * @param mixed $appointmentData Appointment id or array containing appintment data
+     * @return \Gems_Agenda_Appointment
+     */
+    public function getAppointment($appointmentData)
+    {
+        if (! $appointmentData) {
+            throw new Gems_Exception_Coding('Provide at least the apppointment id when requesting an appointment.');
+        }
+
+        if (is_array($appointmentData)) {
+             if (!isset($appointmentData['gap_id_appointment'])) {
+                 throw new Gems_Exception_Coding(
+                         '$appointmentData array should atleast have a key "gap_id_appointment" containing the requested appointment id'
+                         );
+             }
+            $appointmentId = $appointmentData['gap_id_appointment'];
+        } else {
+            $appointmentId = $appointmentData;
+        }
+
+        if (! isset($this->_appointments[$appointmentId])) {
+            $this->_appointments[$appointmentId] = $this->_loadClass('appointment', true, array($appointmentData));
+        }
+
+        return $this->_appointments[$appointmentId];
     }
 
     /**
@@ -414,6 +519,37 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Function that checks the setup of this class/traight
+     *
+     * This function is not needed if the variables have been defined correctly in the
+     * source for this object and theose variables have been applied.
+     *
+     * return @void
+     */
+    protected function initTranslateable()
+    {
+        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+            // OK
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate) {
+            // Just one step
+            $this->translateAdapter = $this->translate->getAdapter();
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate_Adapter) {
+            // It does happen and if it is all we have
+            $this->translateAdapter = $this->translate;
+            return;
+        }
+
+        // Make sure there always is an adapter, even if it is fake.
+        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
+    }
+
+    /**
      * Find an activity code for the name and organization.
      *
      * @param string $name The name to match against
@@ -668,5 +804,25 @@ class Gems_Agenda extends MUtil_Translate_TranslateableAbstract
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
 
         return $result['gapr_id_procedure'];
+    }
+
+    /**
+     * Copy from Zend_Translate_Adapter
+     *
+     * Translates the given string using plural notations
+     * Returns the translated string
+     *
+     * @see Zend_Locale
+     * @param  string             $singular Singular translation string
+     * @param  string             $plural   Plural translation string
+     * @param  integer            $number   Number for detecting the correct plural
+     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see Zend_Locale for more information
+     * @return string
+     */
+    public function plural($singular, $plural, $number, $locale = null)
+    {
+        $args = func_get_args();
+        return call_user_func_array(array($this->translateAdapter, 'plural'), $args);
     }
 }

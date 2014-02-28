@@ -135,6 +135,14 @@ interface Gems_Tracker_TrackerInterface
     public function getAllCodeFields();
 
     /**
+     * Get an appointment object
+     *
+     * @param mixed $appointmentData Appointment id or array containing appintment data
+     * @return \Gems_Agenda_Appointment
+     */
+    public function getAppointment($appointmentData);
+    
+    /**
      * Returns a form to ask for a token
      *
      * @param mixed $args_array MUtil_Ra::args array for Form initiation.

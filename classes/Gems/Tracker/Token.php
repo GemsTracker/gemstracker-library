@@ -187,6 +187,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $this->_tokenId  = $gemsTokenData['gto_id_token'];
         } else {
             $this->_tokenId  = $gemsTokenData;
+            // loading occurs in checkRegistryRequestAnswers
         }
     }
 
@@ -1507,7 +1508,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
-     * @return Gems_Tracker_Token (continuation pattern)
+     * @return \Gems_Tracker_Token (continuation pattern)
      */
     public function refresh(array $gemsData = null)
     {

@@ -104,7 +104,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
     /**
      *
-     * @var array of Gems_Tracker_Token
+     * @var array of \Gems_Tracker_Token
      */
     private $_tokens = array();
 
@@ -442,6 +442,17 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     }
 
     /**
+     * Get an appointment object
+     *
+     * @param mixed $appointmentData Appointment id or array containing appintment data
+     * @return \Gems_Agenda_Appointment
+     */
+    public function getAppointment($appointmentData)
+    {
+        return $this->loader->getAgenda()->getAppointment($appointmentData);
+    }
+
+    /**
      * Returns a form to ask for a token
      *
      * @param mixed $args_array MUtil_Ra::args array for Form initiation.
@@ -589,7 +600,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
     /**
      *
      * @param mixed $tokenData Token id or array containing tokendata
-     * @return Gems_Tracker_Token
+     * @return \Gems_Tracker_Token
      */
     public function getToken($tokenData)
     {
@@ -599,7 +610,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
         if (is_array($tokenData)) {
              if (!isset($tokenData['gto_id_token'])) {
-                 throw new Gems_Exception_Coding('$tokenData array should atleast have a key "gto_id_token" containing the requested token');
+                 throw new Gems_Exception_Coding(
+                         '$tokenData array should at least have a key "gto_id_token" containing the requested token id'
+                         );
              }
             $tokenId = $tokenData['gto_id_token'];
         } else {
