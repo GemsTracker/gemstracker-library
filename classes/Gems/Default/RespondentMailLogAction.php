@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: MailLogAction.php 1753 2014-02-20 14:34:22Z mennodekker $
  */
 
 /**
@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -58,7 +58,13 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      * @var array Mixed key => value array for snippet initialization
      */
     protected $autofilterParameters = array(
-        'extraSort'   => array('grco_created' => SORT_DESC),
+        'browse'        => true,
+        'containingId'  => 'autofilter_target',
+        'keyboard'      => true,
+        'onEmpty'       => 'getOnEmptyText',
+        'sortParamAsc'  => 'asrt',
+        'sortParamDesc' => 'dsrt',
+        'extraSort'   => array('grco_created' => SORT_DESC)
         );
 
     /**
@@ -66,14 +72,23 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @var mixed String or array of snippets name
      */
-    protected $autofilterSnippets = 'Mail_Log_MailLogBrowseSnippet';
+    protected $autofilterSnippets = 'Respondent_MailLogSnippet';
+
 
     /**
      * The snippets used for the index action, before those in autofilter
      *
      * @var mixed String or array of snippets name
      */
-    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail_Log_MailLogSearchSnippet');
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Mail_Log_RespondentMailLogSearchSnippet');
+
+
+    /**
+     * The snippets used for the index action, after those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStopSnippets = array('Generic_CurrentButtonRowSnippet');
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -116,6 +131,18 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
             'assigned_by');
         $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'status');
 
+        $model->addTable('gems__respondent2org', array('grs_id_user' => 'gr2o_id_user'), 'gr2o');
+        $model->setKeys(array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization'));
+        
+        $model->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));        
+        $model->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
+        $model->addLeftTable('gems__staff', array('gto_by' => 'gems__staff_2.gsf_id_user'));
+        $model->addColumn('CASE WHEN gems__staff_2.gsf_id_user IS NULL THEN 
+                ggp_name
+                ELSE COALESCE(CONCAT_WS(" ", CONCAT(COALESCE(gems__staff_2.gsf_last_name,"-"),","), gems__staff_2.gsf_first_name, gems__staff_2.gsf_surname_prefix)) END', 'ggp_name');
+        
+        
+
         $model->resetOrder();
 
         $model->set('grco_created',    'label', $this->_('Date sent'));
@@ -130,11 +157,13 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('status',          'label', $this->_('Status'),
                 'formatFunction', array($this->util->getTokenData(), 'getStatusDescription'));
 
+
         if ($detailed) {
             $model->set('gmt_subject', 'label', $this->_('Template'));
         } else {
             $model->set('grco_created', 'formatFunction', $this->util->getTranslated()->formatDate);
         }
+        $model->set('ggp_name', 'label', $this->translate->getAdapter()->_('Fill out by'));
 
         $filter = $this->util->getRequestCache('index', $detailed)->getProgramParams();
 
@@ -153,7 +182,11 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      */
     public function getIndexTitle()
     {
-        return $this->_('Mail Activity Log');
+        $respondent = $this->loader->getRespondent(
+                $this->getRequest()->getParam(MUtil_Model::REQUEST_ID1), 
+                $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
+            );
+        return sprintf($this->translate->_('Mail Activity Log for %s'), $respondent->getName());
     }
 
     /**

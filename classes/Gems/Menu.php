@@ -480,7 +480,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
         
-        $page->addPage($this->_('Mail Activity Log'), null, 'mail-log', 'resplog')
+        $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
 
