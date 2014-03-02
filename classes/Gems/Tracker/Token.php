@@ -326,6 +326,9 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $source->offsetSet('gsu_id_survey', $this->_gemsData['gto_id_survey']);
             $source->offsetSet('grc_success', $this->_gemsData['grc_success']);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+            $source->offsetSet('show_answers', $this->_gemsData['gto_completion_time'] ? 1 : 0);
+
+            // Used with single track interface
             $source->offsetSet('can_edit', $this->getRespondentTrack()->hasSuccesCode() ? 1 : 0);
             $source->offsetSet('track_can_be_created', 0);
 
