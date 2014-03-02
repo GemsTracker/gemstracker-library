@@ -327,6 +327,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             $source->offsetSet('grc_success', $this->_gemsData['grc_success']);
             $source->offsetSet('is_completed', $this->_gemsData['gto_completion_time'] ? 1 : 0);
             $source->offsetSet('can_edit', $this->getRespondentTrack()->hasSuccesCode() ? 1 : 0);
+            $source->offsetSet('track_can_be_created', 0);
 
             if ($this->_gemsData['grc_success'] &&
                     (! $this->_gemsData['gto_completion_time']) &&

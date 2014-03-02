@@ -342,9 +342,6 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setHiddenOrgId($orgId)
                     ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
 
-            $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
             $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)
                     ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
@@ -363,6 +360,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 0)
                     ->addHiddenParameter('track_can_be_created', 0);
+            $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
+                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
 
         } else {
 
