@@ -139,6 +139,7 @@ class ShowSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippe
         $links->addCurrentParent($this->_('Show surveys'))
                 ->addByController('respondent', 'show', $this->_('Show respondent'))
                 ->addCurrentSiblings()
+                ->addCurrentChildren()
                 ->showDisabled();
 
         return $links;

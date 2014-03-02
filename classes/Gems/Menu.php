@@ -314,7 +314,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $page->addCreateAction('pr.respondent.create')->setParameterFilter('can_add_respondents', true);
         $page->addExcelAction()->setNamedParameters($params)->setHiddenOrgId($orgId);
         $page->addImportAction();
-        
+
         $page = $page->addShowAction()
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
@@ -333,7 +333,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $apage = $apage->addShowAction()->setNamedParameters($appParams);
         $apage->addEditAction()->setNamedParameters($appParams);
         $apage->addDeleteAction()->setNamedParameters($appParams);
-        
+
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
 
             $trType = 'T';
@@ -388,33 +388,33 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
-            $tkPages[$trType] = $trPage->addAction($this->_('Show'), 'pr.track', 'show-track')
+            $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
-            $tkPages[$trType]->addAction($this->_('Export track'), 'pr.track', 'export-track')
+            $itemPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+
+            $itemPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->setHiddenOrgId($orgId)
+                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+
+            $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
-            $tkPages[$trType]->addAction($this->_('Token'), 'pr.token', 'show')
+            $tkPages[$trType] = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
-
-            $tkPages[$trType]->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
-
-            $tkPages[$trType]->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
 
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
                 $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
@@ -436,11 +436,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
-                $tkPages[$trType] = $trPage;
+                // $tkPages[$trType] = $trPage;
 
-                $tkPages[$trType]->addShowAction('pr.survey')
-                    ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                $tkPages[$trType] =$trPage->addShowAction('pr.survey')
+                        ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
+                        ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
             }
         }
 
@@ -479,7 +479,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
-        
+
         $page->addPage($this->_('Mail Activity Log'), null, 'respondent-mail-log', 'index')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
@@ -729,7 +729,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $this->addPage(null, 'pr.cron.job', 'cron', 'index');
         $this->addPage(null, 'pr.cron.job', 'cron', 'test');
-        
+
         $this->addPage(null, null, 'email', 'index');
     }
 
