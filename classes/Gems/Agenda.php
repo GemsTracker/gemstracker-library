@@ -550,6 +550,19 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Returns true when the status code is active
+     * 
+     * @param string $code
+     * @return boolean
+     */
+    public function isStatusActive($code)
+    {
+        $stati = $this->getStatusCodesActive();
+
+        return isset($stati[$code]);
+    }
+
+    /**
      * Find an activity code for the name and organization.
      *
      * @param string $name The name to match against

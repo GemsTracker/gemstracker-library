@@ -786,7 +786,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      */
     public function formatSaveDate($value, $isNew = false, $name = null, array $context = array())
     {
-        if ($name && (! ((null === $value) || ($value instanceof Zend_Db_Expr)))) {
+        if ($name &&
+                (! ((null === $value) ||
+                        ($value instanceof Zend_Db_Expr) ||
+                        MUtil_String::startsWith($value, 'current_', true))
+                )) {
             if ($saveFormat = $this->get($name, 'storageFormat')) {
 
                 if ($value instanceof Zend_Date) {

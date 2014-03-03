@@ -59,6 +59,12 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @var Gems_Agenda
+     */
+    protected $agenda;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -102,6 +108,7 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the admission time
      *
      * @return MUtil_Date Admission time as a date or null
      */
@@ -113,6 +120,16 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
             }
             return new MUtil_Date($this->_gemsData['gap_admission_time'], Gems_Tracker::DB_DATETIME_FORMAT);
         }
+    }
+
+    /**
+     * Return true when the satus is active
+     * 
+     * @return type
+     */
+    public function isActive()
+    {
+        return isset($this->_gemsData['gap_status']) && $this->agenda->isStatusActive($this->_gemsData['gap_status']);
     }
 
     /**

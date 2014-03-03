@@ -91,11 +91,9 @@ class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnip
             $this->trackEngine->checkRoundsFor($this->respondentTrack, $this->userId);
             $refresh = true;
 
-        } elseif (! (isset($this->formData['gr2t_completed']) && $this->formData['gr2t_completed'])) {
-            // Check if startdate has changed
-            if (! $this->respondentTrack->getStartDate()->equals(new MUtil_Date($this->formData['gr2t_start_date']))) {
-                $refresh = true;
-            }
+        } else {
+            // Check if the input has changed, i.e. one of the dates may have changed
+            $refresh = (boolean) $changed;
         }
 
         if ($refresh) {
