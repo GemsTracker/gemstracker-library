@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2013, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  * @package    Gems
  * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @version    $Id: AppointmentModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
@@ -40,12 +40,25 @@
  *
  * @package    Gems
  * @subpackage Model
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
 class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 {
+    /**
+     * The number of tokens changed by the last save
+     *
+     * @var int
+     */
+    protected $_changedTokenCount = 0;
+
+    /**
+     *
+     * @var boolean
+     */
+    protected $autoTrackUpdate = true;
+
     /**
      *
      * @var Gems_Loader
@@ -254,11 +267,70 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->setIfExists('gap_admission_time',  'elementClass', 'Date');
         $this->setIfExists('gap_discharge_time',  'elementClass', 'Date');
         $this->setIfExists('gap_status',          'required', true);
-        $this->setIfExists('gap_comment',         'elementClass', 'Textarea');
+        $this->setIfExists('gap_comment',         'elementClass', 'Textarea', 'rows', 5);
 
         $this->setIfExists('gap_id_activity',     'multiOptions', $empty + $agenda->getActivities($orgId));
         $this->setIfExists('gap_id_procedure',    'multiOptions', $empty + $agenda->getProcedures($orgId));
         $this->setIfExists('gap_id_location',     'multiOptions', $empty + $agenda->getLocations($orgId));
+
+        return $this;
+    }
+
+    /**
+     * The number of tokens changed by the last change
+     *
+     * @return int
+     */
+    public function getChangedTokenCount()
+    {
+        return $this->_changedTokenCount;
+    }
+
+    /**
+     * Are linked tracks automatically updated?
+     *
+     * @return boolean
+     */
+    public function isAutoTrackUpdate()
+    {
+        return $this->autoTrackUpdate;
+    }
+
+    /**
+     * Save a single model item.
+     *
+     * @param array $newValues The values to store for a single model item.
+     * @param array $filter If the filter contains old key values these are used
+     * to decide on update versus insert.
+     * @return array The values as they are after saving (they may change).
+     */
+    public function save(array $newValues, array $filter = null)
+    {
+        $oldChanged = $this->getChanged();
+
+        $returnValues = parent::save($newValues, $filter);
+
+        if ($this->getChanged() && ($this->getChanged() !== $oldChanged)) {
+            if ($this->isAutoTrackUpdate()) {
+                $appointment = $this->loader->getAgenda()->getAppointment($returnValues);
+
+                $this->_changedTokenCount += $appointment->updateTracks();
+            }
+        }
+        // MUtil_Echo::track($this->_changedTokenCount);
+
+        return $returnValues;
+    }
+
+    /**
+     * Automatically update linked tracks
+     *
+     * @param boolean $value
+     * @return \Gems_Model_AppointmentModel (continuation pattern)
+     */
+    public function setAutoTrackUpdate($value = true)
+    {
+        $this->autoTrackUpdate = $value;
 
         return $this;
     }

@@ -77,18 +77,49 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     public $exists = true;
 
     /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
      * Creates the appointments object
      *
      * @param mixed $appointmentData Appointment Id or array containing appointment record
      */
     public function __construct($appointmentData)
     {
-        if (is_array($gemsTokenData)) {
+        if (is_array($appointmentData)) {
             $this->_gemsData       = $appointmentData;
             $this->_appointmentId  = $appointmentData['gap_id_appointment'];
         } else {
             $this->_appointmentId  = $appointmentData;
             // loading occurs in checkRegistryRequestAnswers
+        }
+    }
+
+    /**
+     * Makes sure the respondent data is part of the $this->_gemsData
+     */
+    protected function _ensureRespondentOrgData()
+    {
+        if (! isset($this->_gemsData['gr2o_id_user'], $this->_gemsData['gco_code'])) {
+            $sql = "SELECT *
+                FROM gems__respondents INNER JOIN
+                    gems__respondent2org ON grs_id_user = gr2o_id_user INNER JOIN
+                    gems__consents ON gr2o_consent = gco_description
+                WHERE gr2o_id_user = ? AND gr2o_id_organization = ? LIMIT 1";
+
+            $respId = $this->_gemsData['gap_id_user'];
+            $orgId  = $this->_gemsData['gap_id_organization'];
+            // MUtil_Echo::track($this->_gemsData);
+
+            if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
+                $this->_gemsData = $this->_gemsData + $row;
+            } else {
+                $appId = $this->_appointmentId;
+                throw new Gems_Exception("Respondent data missing for appointment id $appId.");
+            }
         }
     }
 
@@ -115,16 +146,59 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     public function getAdmissionTime()
     {
         if (isset($this->_gemsData['gap_admission_time']) && $this->_gemsData['gap_admission_time']) {
-            if ($this->_gemsData['gap_admission_time'] instanceof MUtil_Date) {
-                return $this->_gemsData['gap_admission_time'];
+            if (! $this->_gemsData['gap_admission_time'] instanceof MUtil_Date) {
+                $this->_gemsData['gap_admission_time'] =
+                        new MUtil_Date($this->_gemsData['gap_admission_time'], Gems_Tracker::DB_DATETIME_FORMAT);
             }
-            return new MUtil_Date($this->_gemsData['gap_admission_time'], Gems_Tracker::DB_DATETIME_FORMAT);
+            return $this->_gemsData['gap_admission_time'];
         }
     }
 
     /**
+     * Return the appointment id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->_appointmentId;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function getOrganizationId()
+    {
+        return $this->_gemsData['gap_id_organization'];
+    }
+
+    /**
+     *
+     * @return string The respondents patient number
+     */
+    public function getPatientNumber()
+    {
+        if (! isset($this->_gemsData['gr2o_patient_nr'])) {
+            $this->_ensureRespondentOrgData();
+        }
+
+        return $this->_gemsData['gr2o_patient_nr'];
+    }
+
+    /**
+     * Return the user / respondent id
+     *
+     * @return int
+     */
+    public function getRespondentId()
+    {
+        return $this->_gemsData['gap_id_user'];
+    }
+
+    /**
      * Return true when the satus is active
-     * 
+     *
      * @return type
      */
     public function isActive()
@@ -155,5 +229,35 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
         $this->exists = isset($this->_gemsData['gap_id_appointment']);
 
         return $this;
+    }
+
+    /**
+     * Recalculate all tracks that use this appointment
+     *
+     * @return int The number of tokens changed by this code
+     */
+    public function updateTracks()
+    {
+        $select = $this->db->select();
+        $select->from('gems__respondent2track2appointment', 'gr2t2a_id_respondent_track')
+                ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
+                ->distinct();
+
+        $tokenChanges = 0;
+        $respTracks   = $this->db->fetchCol($select);
+
+        // MUtil_Echo::track($respTracks);
+        if ($respTracks) {
+            $tracker = $this->loader->getTracker();
+            $userId  = $this->loader->getCurrentUser()->getUserId();
+
+            foreach ($respTracks as $respTrackId) {
+                $respTrack = $tracker->getRespondentTrack($respTrackId);
+                $tokenChanges += $respTrack->checkTrackTokens($userId);
+            }
+        }
+        // MUtil_Echo::track($tokenChanges);
+
+        return $tokenChanges;
     }
 }

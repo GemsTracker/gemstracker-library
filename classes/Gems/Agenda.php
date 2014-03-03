@@ -248,9 +248,13 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         } else {
             $appointmentId = $appointmentData;
         }
+        // MUtil_Echo::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
             $this->_appointments[$appointmentId] = $this->_loadClass('appointment', true, array($appointmentData));
+        } elseif (is_array($appointmentData)) {
+            // Make sure the new values are set in the object
+            $this->_appointments[$appointmentId]->refresh($appointmentData);
         }
 
         return $this->_appointments[$appointmentId];
@@ -551,7 +555,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
     /**
      * Returns true when the status code is active
-     * 
+     *
      * @param string $code
      * @return boolean
      */
