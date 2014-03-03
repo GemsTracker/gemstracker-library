@@ -214,8 +214,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
         $this->set('respondent_name',   'label', $this->_('Respondent name'));
         $this->set('gtr_track_name',    'label', $this->_('Track'));
-        
-        $this->set('gr2t_mailable',     
+
+        $this->set('gr2t_mailable',
                 'label', $this->_('May be mailed'),
                 'elementClass', 'radio',
                 'separator', ' ',
@@ -226,14 +226,16 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
                 );
 
         // Integrate fields
-        $this->trackEngine->addFieldsToModel(
-                $this,
-                $this->respondentId,
-                $this->organizationId,
-                $this->patientId,
-                $edit
-                );
-
+        if ($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface) {
+            $this->trackEngine->addFieldsToModel(
+                    $this,
+                    $this->respondentId,
+                    $this->organizationId,
+                    $this->patientId,
+                    $edit
+                    );
+        }
+        
         $this->set('gr2t_track_info',   'label', $this->_('Description'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
