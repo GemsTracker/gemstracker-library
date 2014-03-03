@@ -1,5 +1,9 @@
 Important changes from 1.6.3 => 1.6.4
 ============================================================
+
+
+Important changes from 1.6.2 => 1.6.3
+============================================================
 Menu structure has changed: to avoid nesting problems and issues with bread-crumb navigation edit and delete actions are now children of the show action
 Track fields split in fields and appointments: check any code using any track field tables directly, track field id's are no longer integers and getFieldsElements() is no longer in use
 GemsEscort->tokenMailFields() no longer exists
@@ -15,9 +19,6 @@ A required valid until definition for each track round can be set at the project
 Support for LimeSurvey 2.05
 The track editor shows more information on the rounds per track
 Fixed several bugs, including one that added an extra day to some valid until dates.
-
-Important changes from 1.6.2 => 1.6.3
-============================================================
 Limesurvey fieldtype list with comment no longer appends underscore to the fieldname, this might break existing calculation scripts
 
 Important changes from 1.6.1 => 1.6.2
