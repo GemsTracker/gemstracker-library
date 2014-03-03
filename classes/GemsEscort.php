@@ -791,7 +791,7 @@ class GemsEscort extends MUtil_Application_Escort
                     $url = $css['url'];
                 } else {
                     $url = $css;
-                    $media = 'screen';
+                    $media = 'all';
                 }
                 // When exporting to pdf, we need full urls
                 if (substr($url,0,4) == 'http') {
