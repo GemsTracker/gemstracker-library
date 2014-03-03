@@ -109,7 +109,7 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
     protected function getRespondentSurveyNames()
     {
         $surveysSql = 'SELECT gsu_id_survey, gsu_survey_name FROM gems__respondent2track 
-                        LEFT JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
+                        JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
                         LEFT JOIN gems__rounds ON gro_id_track = gr2t_id_track
                         LEFT JOIN gems__surveys ON gro_id_survey = gsu_id_survey';
 
@@ -119,14 +119,14 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
                     $this->request->getParam(MUtil_Model::REQUEST_ID2)
                 )
         );
-        MUtil_Echo::track($surveyNames);
+        // MUtil_Echo::track($surveyNames);
         return $surveyNames;
     }
 
     protected function getRespondentTrackNames()
     {
         $tracksSql = 'SELECT gtr_id_track, gtr_track_name FROM gems__respondent2track 
-                        LEFT JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
+                        JOIN gems__respondent2org ON gr2t_id_user = gr2o_id_user AND gr2o_patient_nr = ? AND gr2o_id_organization = ?
                         LEFT JOIN gems__tracks ON gtr_id_track = gr2t_id_track';
                         
         $trackNames = $this->db->fetchPairs($tracksSql, 
@@ -135,7 +135,7 @@ class Gems_Snippets_Mail_Log_RespondentMailLogSearchSnippet extends Gems_Snippet
                     $this->request->getParam(MUtil_Model::REQUEST_ID2)
                 )
         );
-        MUtil_Echo::track($trackNames);
+        // MUtil_Echo::track($trackNames);
         return $trackNames;
     }
 }
