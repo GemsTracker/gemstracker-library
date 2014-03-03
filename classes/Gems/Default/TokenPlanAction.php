@@ -270,24 +270,22 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $allowedOrgs = $user->getRespondentOrganizations();
         $multiOrg    = count($allowedOrgs) > 1;
 
-        if ($multiOrg) {
-            // intval() protects against any escaping tricks
-            $orgId = intval($this->_getParam('gto_id_organization'));
-        } else {
-            $orgId = $user->getCurrentOrganizationId();
-        }
-        if ($orgId) {
-            $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
-        } else {
-            $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
-        }
-
         $elements[] = $this->_('Select:');
         $elements[] = MUtil_Html::create('br');
 
         // Add track selection
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
-            $sql = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_active=1 AND gtr_track_type='T' AND INSTR(gtr_organizations, '|$orgId|') > 0 ORDER BY gtr_track_name";
+            if ($multiOrg) {
+                $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
+            } else {
+                $orgId = $user->getCurrentOrganizationId();
+                $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
+            }
+
+            $sql = "SELECT gtr_id_track, gtr_track_name
+                FROM gems__tracks
+                WHERE gtr_active=1 AND gtr_track_type='T' AND $orgWhere
+                ORDER BY gtr_track_name";
             $elements[] = $this->_createSelectElement('gto_id_track', $sql, $this->_('(all tracks)'));
         }
 
@@ -350,6 +348,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     );
         }
 
+        if ($multiOrg) {
+            $orgWhere = "gr2t_id_organization IN (" . implode(", ", array_keys($allowedOrgs)) . ")";
+        } else {
+            $orgWhere = "gr2t_id_organization = " . intval($user->getCurrentOrganizationId());
+        }
         $sql = "SELECT DISTINCT gsf_id_user, CONCAT(
                         COALESCE(gems__staff.gsf_last_name, ''),
                         ', ',
@@ -357,7 +360,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                         COALESCE(CONCAT(' ', gems__staff.gsf_surname_prefix), '')
                     ) AS gsf_name
                 FROM gems__staff INNER JOIN gems__respondent2track ON gsf_id_user = gr2t_created_by
-                WHERE gr2t_id_organization " . ($orgId ? "= $orgId " : "IN (" . implode(", ", array_keys($allowedOrgs)) . ")") . " AND
+                WHERE $orgWhere AND
                     gr2t_active = 1
                 ORDER BY 2";
         $elements[] = $this->_createSelectElement('gr2t_created_by', $sql, $this->_('(all staff)'));
