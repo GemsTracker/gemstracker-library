@@ -870,10 +870,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         // Is this the first token?
         $first  = ! $this->getPreviousRoundId($itemData['gro_id_round'], $itemData['gro_id_order']);
 
-        if ($first) {
-            $itemData['gro_valid_after_source'] = self::RESPONDENT_TRACK_TABLE;
-        }
-
         // Update the current round data
         if (isset($this->_rounds[$itemData['gro_id_round']])) {
             $this->_rounds[$itemData['gro_id_round']] = $itemData + $this->_rounds[$itemData['gro_id_round']];
