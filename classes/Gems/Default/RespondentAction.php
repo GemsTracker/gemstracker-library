@@ -184,6 +184,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addText(    'grs_email',          'size', 30) // , 'required', true, 'AutoInsertNotEmptyValidator', false)
             ->addValidator(  'SimpleEmail');
         $bridge->addCheckBox('calc_email',         'label', $this->_('Respondent has no e-mail'));
+        $bridge->addRadio('gr2o_mailable');
         $bridge->addText(    'grs_address_1',      'size',  40, 'description', $this->_('With housenumber'))
             ->addFilter(     $ucfirst);
         if ($model->has('grs_address_2')) {

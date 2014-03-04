@@ -281,6 +281,15 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
         $model->setIfExists('gr2o_consent',       'label', $this->translate->_('Consent'), 'multiOptions', MUtil_Lazy::call($this->util->getDbLookup()->getUserConsents), 'default', $this->util->getDefaultConsent());
 
         $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
+        $model->setIfExists('gr2o_mailable',
+                'label', $this->translate->_('May be mailed'),
+                'elementClass', 'radio',
+                'separator', ' ',
+                'multiOptions', array(
+                        '1' => $this->translate->_('Yes'),
+                        '0' => $this->translate->_('No'),
+                    )
+                );
 
         if ($detailed) {
             $model->copyKeys(); // The user can edit the keys.
