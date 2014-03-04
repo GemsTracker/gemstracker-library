@@ -184,7 +184,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
     protected function loadDefault()
     {
         $this->tokenIdentifier = $tokenData = $this->getDefaultToken();
-        
+
         if (!empty($tokenData['gto_id_organization'])) {
             $this->organizationId = $tokenData['gto_id_organization'];
             $this->patientId = $tokenData['gr2o_patient_nr'];
@@ -215,7 +215,7 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
         $logData['grco_id_to']        = $this->respondent->getId();
 
-        if (!$this->by) {
+        if (! is_int($this->by)) {
             $this->by = 0;
         }
 
