@@ -28,50 +28,46 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage ModelFormAssembledSnippetAbstract
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: ModelFormAssembledSnippetAbstract .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
  *
- *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage ModelFormAssembledSnippetAbstract
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.4
+ * @since      Class available since version 1.6.4
  */
-class MUtil_Model_Processor_Element_TextElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
+abstract class MUtil_Snippets_ModelFormAssembledSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
 {
     /**
-     * Allow use textbox specific options
+     * Creates from the model a Zend_Form using createForm and adds elements
+     * using addFormElements().
      *
-     * @var boolean
+     * @return Zend_Form
      */
-    protected $useTextOptions = true;
-
-    /**
-     * Processes the input, changing e.g. the result, context or options
-     *
-     * @param MUtil_Model_Input $input
-     * @return void
-     */
-    public function process(MUtil_Model_Input $input)
+    protected final function getModelForm()
     {
-        $options = $this->getFilteredOptions($input);
+        $model    = $this->getModel();
+        $baseform = $this->createForm();
 
-        $stringLengthValidator = $this->getStringLengthValidator($options);
+        $ass = $this->model->getFormAssembler($this->formData);
 
-        if ($stringLengthValidator) {
-            $input->setOption('validators[]', $stringLengthValidator);
+        foreach ($model->getItemsOrdered() as $name) {
+            $element = $ass->getOutput($name);
+
+            if ($element) {
+                $baseform->addElement($element);
+            }
         }
 
-        $this->applyElement(
-                $input,
-                new Zend_Form_Element_Text($input->getName(), $options)
-                );
+        return $baseform;
     }
+
+
 }

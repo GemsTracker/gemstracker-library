@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2012, Erasmus MC
+ * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@
  * @package    MUtil
  * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DateProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: SelectElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -40,9 +40,9 @@
  *
  * @package    MUtil
  * @subpackage Model
- * @copyright  Copyright (c) 2012 Erasmus MC
+ * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.2
+ * @since      Class available since MUtil version 1.4
  */
 class MUtil_Model_Processor_Element_SelectElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
 {

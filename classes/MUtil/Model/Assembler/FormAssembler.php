@@ -55,6 +55,9 @@ class MUtil_Model_Assembler_FormAssembler extends MUtil_Model_AssemblerAbstract
      */
     protected function _assemble(MUtil_Model_ModelAbstract $model, $name)
     {
+        if (! $model->has($name, 'label')) {
+            return 'Element_HiddenElementProcessor';
+        }
 
         if ($model->has($name, 'multiOptions')) {
             return 'Element_SelectElementProcessor';

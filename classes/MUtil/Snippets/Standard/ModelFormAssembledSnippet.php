@@ -28,50 +28,36 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage ModelFormAssembledSnippet
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: ModelFormAssembledSnippet .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
  *
- *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage ModelFormAssembledSnippet
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.4
+ * @since      Class available since version 1.6.3
  */
-class MUtil_Model_Processor_Element_TextElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
+class ModelFormAssembledSnippet extends MUtil_Snippets_ModelFormAssembledSnippetAbstract
 {
     /**
-     * Allow use textbox specific options
      *
-     * @var boolean
+     * @var MUtil_Model_ModelAbstract
      */
-    protected $useTextOptions = true;
+    protected $model;
 
     /**
-     * Processes the input, changing e.g. the result, context or options
+     * Creates the model
      *
-     * @param MUtil_Model_Input $input
-     * @return void
+     * @return MUtil_Model_ModelAbstract
      */
-    public function process(MUtil_Model_Input $input)
+    protected function createModel()
     {
-        $options = $this->getFilteredOptions($input);
-
-        $stringLengthValidator = $this->getStringLengthValidator($options);
-
-        if ($stringLengthValidator) {
-            $input->setOption('validators[]', $stringLengthValidator);
-        }
-
-        $this->applyElement(
-                $input,
-                new Zend_Form_Element_Text($input->getName(), $options)
-                );
+        return $this->model;
     }
 }

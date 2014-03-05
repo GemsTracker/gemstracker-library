@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TextElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: HiddenElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -40,18 +40,18 @@
  *
  * @package    MUtil
  * @subpackage Model
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4
  */
-class MUtil_Model_Processor_Element_TextElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
+class MUtil_Model_Processor_Element_HiddenElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
 {
     /**
-     * Allow use textbox specific options
+     * Allow use of general display options
      *
      * @var boolean
      */
-    protected $useTextOptions = true;
+    protected $useDisplayOptions = false;
 
     /**
      * Processes the input, changing e.g. the result, context or options
@@ -63,15 +63,6 @@ class MUtil_Model_Processor_Element_TextElementProcessor extends MUtil_Model_Pro
     {
         $options = $this->getFilteredOptions($input);
 
-        $stringLengthValidator = $this->getStringLengthValidator($options);
-
-        if ($stringLengthValidator) {
-            $input->setOption('validators[]', $stringLengthValidator);
-        }
-
-        $this->applyElement(
-                $input,
-                new Zend_Form_Element_Text($input->getName(), $options)
-                );
+        $this->applyElement($input, new Zend_Form_Element_Hidden($input->getName(), $options));
     }
 }
