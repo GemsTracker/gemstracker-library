@@ -11,15 +11,16 @@ Tracks can use appointments instead of date fields: when an appointment is chang
 The token overview can also be filtered on missing or incorrect email addresses and on hover each token shows it's comment
 The token mail communication is reset if a new valid until date is later than the last sent email date
 Sending emails can be blocked on per respondent or per track
+Added a send mails overview for each respondent
 Manual token and track date changes are no longer overruled by recalculations
 The end date of the track is filled as soon as all tokens in a track are completed or have a valid until date
 Logging the respondent in respondent controller restored. Action respondent.show logs without, but respondentShow will log respondent id
 A new respondent status overview tracks the intake of new respondents
 A required valid until definition for each track round can be set at the project level - for new projects this defaults to ON
 Support for LimeSurvey 2.05
+Limesurvey fieldtype list with comment no longer appends underscore to the fieldname, this might break existing calculation scripts
 The track editor shows more information on the rounds per track
 Fixed several bugs, including one that added an extra day to some valid until dates.
-Limesurvey fieldtype list with comment no longer appends underscore to the fieldname, this might break existing calculation scripts
 
 Important changes from 1.6.1 => 1.6.2
 ============================================================
