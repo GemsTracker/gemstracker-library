@@ -282,12 +282,12 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         $model->setIfExists('grs_email',          'label', $this->translate->_('E-Mail'));
         $model->setIfExists('gr2o_mailable',
-                'label', $this->_('May be mailed'),
+                'label', $this->translate->_('May be mailed'),
                 'elementClass', 'radio',
                 'separator', ' ',
                 'multiOptions', array(
-                        '1' => $this->_('Yes'),
-                        '0' => $this->_('No'),
+                        '1' => $this->translate->_('Yes'),
+                        '0' => $this->translate->_('No'),
                     )
                 );
 
