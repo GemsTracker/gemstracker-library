@@ -122,6 +122,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                 gems__comm_templates ON gcj_id_message = gct_id_template
             WHERE gcj_active = 1
             ORDER BY CASE WHEN gcj_id_survey IS NULL THEN 1 ELSE 0 END,
+                CASE WHEN gcj_round_description IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_id_track IS NULL THEN 1 ELSE 0 END,
                 CASE WHEN gcj_id_organization IS NULL THEN 1 ELSE 0 END";
 
