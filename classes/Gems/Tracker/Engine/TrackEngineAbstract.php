@@ -351,12 +351,17 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
         $results = array();
         foreach ($this->_trackFields as $key => $field) {
-            if (isset($data[$key]) && strlen($data[$key])) {
+            if (isset($data[$key]) && (is_array($data[$key]) || strlen($data[$key]))) {
                 if ("appointment" !== $field['gtf_field_type']) {
-                    $results[] = $data[$key];
+                    if (is_array($data[$key])) {
+                        $results = array_merge($results, $data[$key]);
+                    } else {
+                        $results[] = $data[$key];
+                    }
                 }
             }
         }
+        
         return trim(implode(' ', $results));
     }
 
