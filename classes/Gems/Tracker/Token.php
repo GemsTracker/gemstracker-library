@@ -1667,11 +1667,16 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         $db = $this->project->getResponseDatabase();
 
+        // WHY EXPLANATION!!
+        //
+        // For some reason mysql prepared parameters do nothing with a Zend_Db_Expr
+        // object and that causes an error when using CURRENT_TIMESTAMP
+        $current = MUtil_Date::now()->toString(Gems_Tracker::DB_DATETIME_FORMAT);
         $rValues = array(
             'gdr_id_token'   => $this->_tokenId,
-            'gdr_changed'    => new MUtil_Db_Expr_CurrentTimestamp(),
+            'gdr_changed'    => $current,
             'gdr_changed_by' => $userId,
-            'gdr_created'    => new MUtil_Db_Expr_CurrentTimestamp(),
+            'gdr_created'    => $current,
             'gdr_created_by' => $userId,
         );
         $responses = $this->getRawAnswers();
