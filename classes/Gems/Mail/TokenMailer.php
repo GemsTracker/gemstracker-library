@@ -310,7 +310,13 @@ class Gems_Mail_TokenMailer extends Gems_Mail_RespondentMailer
 
             // Add the code fields
             $codes  = $this->token->getRespondentTrack()->getCodeFields();
-            $result = $result + MUtil_Ra::braceKeys($codes, 'track.', '');
+            foreach ($codes as $code => $data) {
+                $key = 'track.' . $code;
+                if (is_array($data)) {
+                    $data = implode(' ', $data);
+                }
+                $result[$key] = $data;
+            }
 
         } else {
             $result['round']            = '';
