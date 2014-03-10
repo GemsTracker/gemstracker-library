@@ -29,7 +29,7 @@
  * Short description of file
  *
  * @package    Gems
- * @subpackage 
+ * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
@@ -41,7 +41,7 @@
  * Long description for class OpenRosaFormModel (if any)...
  *
  * @package    Gems
- * @subpackage Sample
+ * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0

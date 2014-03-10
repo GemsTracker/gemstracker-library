@@ -25,8 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Zsd
- * @subpackage Tracker
+ * @package    Gems
+ * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id: DbSourceSurveyModel.php 223 2011-12-19 09:48:15Z 175780 $
@@ -35,8 +35,8 @@
 /**
  * More correctly a Survey ANSWERS Model as it adds answers to token information
  *
- * @package    Zsd
- * @subpackage Tracker
+ * @package    Gems
+ * @subpackage OpenRosa
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
