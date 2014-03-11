@@ -123,10 +123,6 @@ class Gems_Default_AskAction extends Gems_Controller_Action
         $this->tracker = $this->loader->getTracker();
         $this->tokenId = $this->tracker->filterToken($this->_getParam(MUtil_Model::REQUEST_ID));
 
-        if (! $this->tokenId) {
-            return false;
-        }
-
         $this->token = $this->tracker->getToken($this->tokenId);
 
         if (! $this->token->exists) {
