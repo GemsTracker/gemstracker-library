@@ -134,7 +134,7 @@ class MUtil_Validate_Db_UniqueValue extends Zend_Validate_Db_NoRecordExists
         }
 
         if ($this->_postName && isset($context[$this->_postName])) {
-            $value = $context[$this->_postName];
+            $context[$this->_postName] = $value;
         }
 
         $includes = array();

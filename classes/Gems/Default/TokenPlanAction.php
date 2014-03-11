@@ -273,15 +273,15 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $elements[] = $this->_('Select:');
         $elements[] = MUtil_Html::create('br');
 
+        if ($multiOrg) {
+            $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
+        } else {
+            $orgId = $user->getCurrentOrganizationId();
+            $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
+        }
+        
         // Add track selection
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
-            if ($multiOrg) {
-                $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
-            } else {
-                $orgId = $user->getCurrentOrganizationId();
-                $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
-            }
-
             $sql = "SELECT gtr_id_track, gtr_track_name
                 FROM gems__tracks
                 WHERE gtr_active=1 AND gtr_track_type='T' AND $orgWhere
