@@ -113,6 +113,15 @@ class Gems_Html
         return $creator;
     }
 
+    /**
+     * Create a page panel
+     *
+     * @param mixed $paginator MUtil_Ra::args() arguements
+     * @param mixed $request
+     * @param mixed $translator
+     * @param mixed $args
+     * @return MUtil_Html_PagePanel
+     */
     public static function pagePanel($paginator = null, $request = null, $translator = null, $args = null)
     {
         $types = array(

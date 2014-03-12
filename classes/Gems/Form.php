@@ -26,11 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    Gems
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -40,9 +40,17 @@
  * @subpackage Form
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
 {
+    /**
+     * If set this holds the url and targetid for the autosubmit
+     *
+     * @var array
+     */
+    protected $_autosubmit = null;
+
     /**
      * This variable holds all the stylesheets attached to this form
      *
@@ -56,13 +64,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      * @var array
      */
 	protected $_scripts = null;
-
-    /**
-     * If set this holds the url and targetid for the autosubmit
-     *
-     * @var array
-     */
-    protected $_autosubmit = null;
 
     /**
      * Constructor
@@ -151,7 +152,8 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      * @param string $file
      * @param string $media
      */
-    public function addCss($file, $media = '') {
+    public function addCss($file, $media = '')
+    {
     	$this->_css[$file] = $media;
     }
 
@@ -190,11 +192,16 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      * Add a script to the head
      *
      * @param sring $script name of script, located in baseurl/js/
-     * @return unknown_type
+     * @return Gems_Form (continuation pattern)
      */
-    public function addScript($script) {
-    	if (is_array($this->_scripts) && in_array($script,$this->_scripts)) return true;
+    public function addScript($script)
+    {
+    	if (is_array($this->_scripts) && in_array($script, $this->_scripts)) {
+            return $this;
+        }
     	$this->_scripts[] = $script;
+
+        return $this;
     }
 
     /**
@@ -205,10 +212,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      */
     public function afterRegistry()
     { }
-
-	public function getScripts() {
-    	return $this->_scripts;
-    }
 
     /**
      * Allows the loader to set resources.
@@ -253,14 +256,33 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         return '_' !== $name[0];
     }
 
+    /**
+     * Get the autosubmit arguments (if any)
+     *
+     * @return array or null
+     */
     public function getAutoSubmit()
     {
         return $this->_autosubmit;
     }
 
+    /**
+     * Return form specific css
+     *
+     * @return array
+     */
     public function getCss()
     {
     	return $this->_css;
+    }
+
+    /**
+     * Return form specific javascript
+     *
+     * @return array
+     */
+	public function getScripts() {
+    	return $this->_scripts;
     }
 
     /**
@@ -302,7 +324,13 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
                 ), null, MUtil_Ra::STRICT);
 
         if ($args['targetId'] instanceof MUtil_Html_ElementInterface) {
-            $args['targetId'] = isset($args['targetId']->id) ? '#' . $args['targetId']->id : (isset($args['targetId']->class) ? '.' . $args['targetId']->class: $args['targetId']->getTagName());
+            if (isset($args['targetId']->id)) {
+                $args['targetId'] = '#' . $args['targetId']->id;
+            } elseif (isset($args['targetId']->class)) {
+                $args['targetId'] = '.' . $args['targetId']->class;
+            } else {
+                $args['targetId'] = $args['targetId']->getTagName();
+            }
         } else {
             $args['targetId'] = '#' . $args['targetId'];
         }

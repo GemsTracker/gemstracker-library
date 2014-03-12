@@ -366,8 +366,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Creates a reset button for the search form
      *
-     * @param MUtil_Form $form
-     * @return Zend_Form_Element_Submit
+     * @return Zend_Form_Element_Html or null
      */
     protected function getAutoSearchReset()
     {
