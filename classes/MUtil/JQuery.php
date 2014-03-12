@@ -46,7 +46,7 @@ class MUtil_JQuery extends ZendX_JQuery
 {
     /**
      * Returns the jQuery container object assigned to the view helper.
-     * 
+     *
      * @staticvar ZendX_JQuery_View_Helper_JQuery_Container $jquery
      * @return ZendX_JQuery_View_Helper_JQuery_Container
      */

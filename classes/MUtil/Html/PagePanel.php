@@ -57,12 +57,45 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
      */
     protected $_baseUrl = array();
 
+    /**
+     * The current page number
+     *
+     * @var int
+     */
     protected $_currentPage;
+
+    /**
+     * Default current page number
+     * @var int
+     */
     protected $_currentPageDefault = 1;
+
+    /**
+     * Parameter name to specify new current page
+     *
+     * @var string
+     */
     protected $_currentPageParam   = 'page';
 
+    /**
+     * Array containing default content / attributes for links
+     *
+     * @var array
+     */
     protected $_defaultContent         = array();
+
+    /**
+     * Array containing default content / attributes for disabled links
+     *
+     * @var array
+     */
     protected $_defaultDisabledContent = array('class' => 'disabled');
+
+    /**
+     * Array containing default content / attributes for enabled links
+     *
+     * @var array
+     */
     protected $_defaultEnabledContent  = array();
 
     /**
@@ -283,6 +316,11 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
     }
 
 
+    /**
+     * Return the current page number (calculated if necessary)
+     *
+     * @return int
+     */
     public function getCurrentPage()
     {
         if (null === $this->_currentPage) {
@@ -512,6 +550,14 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return MUtil_Lazy::iff(MUtil_Lazy::comp($this->pages->pageCount, '>', 1), $div);
     }
 
+    /**
+     * Create a page panel
+     *
+     * @param mixed $paginator MUtil_Ra::args() for an MUtil_Html_Sequence
+     * @param mixed $request
+     * @param mixed $args
+     * @return self
+     */
     public static function pagePanel($paginator = null, $request = null, $args = null)
     {
         $args = func_get_args();

@@ -102,6 +102,12 @@ class MUtil_Form extends Zend_Form
         Zend_Dojo::enableView($view);
     }
 
+    /**
+     * Activate JQuery for the view
+     *
+     * @param Zend_View_Interface $view
+     * @return void
+     */
     protected function _activateJQueryView(Zend_View_Interface $view = null)
     {
         if ($this->_no_jquery) {
@@ -305,9 +311,9 @@ class MUtil_Form extends Zend_Form
                 $this->setDisableTranslator($disableTranslateValidators);
             }
         }
-        
+
         $valid = parent::isValid($data);
-        
+
         if (isset($oldTranslations)) {
             $this->setDisableTranslator($oldTranslations);
         }
@@ -369,12 +375,12 @@ class MUtil_Form extends Zend_Form
             foreach ($this as $element) {
                 $element->setDisableTranslator($flag);
             }
-            
+
             // And propagate to displaygroup elements
             foreach($this->getDisplayGroups() as $displayGroup)
             {
                 foreach($displayGroup->getElements() as $element) {
-                    $element->setDisableTranslator($flag);    
+                    $element->setDisableTranslator($flag);
                 }
             }
         }
