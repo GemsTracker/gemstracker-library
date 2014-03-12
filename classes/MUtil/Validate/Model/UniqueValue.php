@@ -98,6 +98,9 @@ class MUtil_Validate_Model_UniqueValue extends Zend_Validate_Abstract
     {
         $this->_setValue($value);
 
+        // Make sure the (optionally filtered) value is in the context
+        $context[reset($this->_fields)] = $value;
+
         $filter = array();
         foreach ($this->_fields as $name) {
             // Return valid when not all the fields to check for are in the context
