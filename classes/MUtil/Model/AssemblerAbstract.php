@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -95,6 +96,13 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
     protected $_row = array();
 
     /**
+     * When true echo's missing data
+     *
+     * @var boolean
+     */
+    public static $verbose = false;
+
+    /**
      * Create the processor for this name
      *
      * @param MUtil_Model_ModelAbstract $model
@@ -102,6 +110,23 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
      * @return MUtil_Model_ProcessorInterface or string or array for creation null when it does not exist
      */
     abstract protected function _assemble(MUtil_Model_ModelAbstract $model, $name);
+
+    /**
+     * Perform the actual processing
+     *
+     * @param MUtil_Model_ProcessorInterface $processor
+     * @param string $name
+     * @param array $data
+     * @return mixed The outpur
+     */
+    protected function _process(MUtil_Model_ProcessorInterface $processor, $name, array $data)
+    {
+        $input = new MUtil_Model_Input($this->_model, $name, $data);
+
+        $processor->process($input);
+
+        return $input->getOutput();
+    }
 
     /**
      * Get the processed output of the input or a lazy object if the data is repeated
@@ -142,31 +167,13 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
             $processor = $this->getProcessor($name);
 
             if ($this->_row) {
-                $input = new MUtil_Model_Input($this->_model, $name, $this->_row);
-
-                $processor->process($input);
-
-                return $input->getOutput();
+                return $this->_process($processor, $name, $this->_row);
             }
         }
 
         return new MUtil_Lazy_Call(array($this, 'output'), array($name));
     }
 
-
-    /**
-     * Returns the plugin loader for processors.
-     *
-     * @return MUtil_Loader_PluginLoader
-     */
-    public function getProcessorLoader()
-    {
-        if (! $this->_processorLoader) {
-            $this->setProcessorLoader(MUtil_Model::getProcessorLoader());
-        }
-
-        return $this->_processorLoader;
-    }
 
     /**
      * Returns the processor for the name
@@ -197,6 +204,20 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
     }
 
     /**
+     * Returns the plugin loader for processors.
+     *
+     * @return MUtil_Loader_PluginLoader
+     */
+    public function getProcessorLoader()
+    {
+        if (! $this->_processorLoader) {
+            $this->setProcessorLoader(MUtil_Model::getProcessorLoader());
+        }
+
+        return $this->_processorLoader;
+    }
+
+    /**
      * Returns true if a processor exist for $name
      *
      * @param string $name
@@ -214,7 +235,9 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
 
             // Try to create one
             if ($this->_model->has($name)) {
-                if ($processor = $this->_assemble($this->_model, $name)) {
+                $processor = $this->_assemble($this->_model, $name);
+
+                if ($processor) {
                     $this->setProcessor($name, $processor);
                 }
             }
@@ -240,15 +263,15 @@ abstract class MUtil_Model_AssemblerAbstract implements MUtil_Model_AssemblerInt
         if ($this->hasProcessor($name)) {
             $processor = $this->getProcessor($name);
 
-            $input = new MUtil_Model_Input($this->_model, $name, $data);
+            return $this->_process($processor, $name, $data);
 
-            $processor->process($input);
-
-            return $input->getOutput();
-
-        } elseif (isset($data[$name])) {
+        } elseif (array_key_exists($name, $data)) {
 
             return $data[$name];
+        }
+
+        if (self::$verbose) {
+            MUtil_Echo::r($name, 'Non-existing output requested processor:');
         }
     }
 

@@ -150,6 +150,12 @@ class MUtil_Model
     private static $_nameSpaces = array('MUtil');
 
     /**
+     *
+     * @var MUtil_Registry_SourceInterface
+     */
+    private static $_source;
+
+    /**
      * Static variable for debuggging purposes. Toggles the echoing of e.g. of sql
      * select statements, using MUtil_Echo.
      *
@@ -164,6 +170,29 @@ class MUtil_Model
      * @var boolean $verbose If true echo retrieval statements.
      */
     public static $verbose = false;
+
+    /**
+     * Add a namespace to all loader
+     *
+     * @param string $nameSpace The namespace without any trailing _
+     * @return boolean True when the namespace is new
+     */
+    public static function addNameSpacee($nameSpace)
+    {
+        if (!in_array($nameSpace, self::$_nameSpaces)) {
+            self::$_nameSpaces[] = $nameSpace;
+
+            foreach (self::$_loaders as $subClass => $loader) {
+                if ($loader instanceof MUtil_Loader_PluginLoader) {
+                    $loader->addPrefixPath(
+                            $nameSpace . '_Model_' . $subClass,
+                            $nameSpace . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $subClass);
+                }
+            }
+
+            return true;
+        }
+    }
 
     /**
      * Returns the plugin loader for assemblers
@@ -185,7 +214,7 @@ class MUtil_Model
     public static function getLoader($subClass)
     {
         if (! isset(self::$_loaders[$subClass])) {
-            $loader = new MUtil_Loader_PluginLoader();
+            $loader = new MUtil_Loader_SourcePluginLoader();
 
             foreach (self::$_nameSpaces as $nameSpace) {
                 $loader->addPrefixPath(
@@ -193,6 +222,10 @@ class MUtil_Model
                         $nameSpace . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $subClass);
             }
             $loader->addFallBackPath();
+
+            if (self::$_source instanceof MUtil_Registry_SourceInterface) {
+                $loader->setSource(self::$_source);
+            }
 
             self::$_loaders[$subClass] = $loader;
         }
@@ -209,6 +242,30 @@ class MUtil_Model
     {
         return self::getLoader('Processor');
         // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+    }
+
+    /**
+     * Get or create the current source
+     *
+     * @return MUtil_Registry_SourceInterface
+     */
+    public static function getSource()
+    {
+        if (! self::$_source instanceof MUtil_Registry_SourceInterface) {
+            self::setSource(new MUtil_Registry_Source());
+        }
+
+        return self::$_source;
+    }
+
+    /**
+     * Is a source available
+     *
+     * @return boolean
+     */
+    public static function hasSource()
+    {
+        return self::$_source instanceof MUtil_Registry_SourceInterface;
     }
 
     /**
@@ -239,5 +296,25 @@ class MUtil_Model
     public static function setProcessorLoader(MUtil_Loader_PluginLoader $loader)
     {
         self::setLoader($loader, 'Processor');
+    }
+
+    /**
+     * Set the current source for loaders
+     *
+     * @param MUtil_Registry_SourceInterface $source
+     * @param boolean $setExisting When true the source is set for all exiting loader
+     * @return void
+     */
+    public static function setSource(MUtil_Registry_SourceInterface $source, $setExisting = true)
+    {
+        self::$_source = $source;
+
+        if ($setExisting) {
+            foreach (self::$_loaders as $loader) {
+                if ($loader instanceof MUtil_Loader_SourcePluginLoader) {
+                    $loader->setSource($source);
+                }
+            }
+        }
     }
 }

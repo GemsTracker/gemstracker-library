@@ -44,8 +44,16 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2
  */
-abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_Model_ProcessorInterface
+abstract class MUtil_Model_Processor_ElementProcessorAbstract extends MUtil_Translate_TranslateableAbstract
+    implements MUtil_Model_Processor_ElementProcessorInterface
 {
+    /**
+     * When true, the item is a new item
+     *
+     * @var boolean
+     */
+    protected $createData = false;
+
     /**
      * When no size is set for a text-element, the size will be set to the minimum of the
      * maxsize and this value.
@@ -55,21 +63,30 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
     protected $defaultTextLength = 40;
 
     /**
-     * Allow use of general display options
+     *
+     * @var Zend_Form
+     */
+    protected $form;
+
+    /**
+     * Allow use of general display options,
+     * when using this objects options functions
      *
      * @var boolean
      */
     protected $useDisplayOptions = true;
 
     /**
-     * Allow use of answers select specific options
+     * Allow use of answers select specific options,
+     * when using this objects options functions
      *
      * @var boolean
      */
     protected $useMultiOptions = false;
 
     /**
-     * Allow use of textbox specific options
+     * Allow use of textbox specific options,
+     * when using this objects options functions
      *
      * @var boolean
      */
@@ -83,7 +100,9 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
      */
     protected function applyElement(MUtil_Model_Input $input, Zend_Form_Element $element)
     {
-        if ($value = $input->getOutput()) {
+        $value = $input->getOutput();
+
+        if (! $value instanceof Zend_Form_Element) {
             $element->setValue($value);
         }
 
@@ -156,6 +175,16 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
     }
 
     /**
+     * Get the form - if known
+     *
+     * @return Zend_Form or null
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
      * Get those options that are actually allowed to be used by this element
      *
      * @param MUtil_Model_Input $input
@@ -168,6 +197,26 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
         $options = $input->getOptions($allowedOptions);
 
         return array_intersect_key($options, array_flip($allowedOptions));
+    }
+
+    /**
+     * Is the form set
+     *
+     * @return boolean
+     */
+    public function hasForm()
+    {
+        return $this->form instanceof Zend_Form;
+    }
+
+    /**
+     * When true we're editing a new item
+     *
+     * @return boolean
+     */
+    public function isCreatingData()
+    {
+        return $this->createData;
     }
 
     /**
@@ -196,5 +245,29 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract implements MUtil_M
         if (isset($stringlength)) {
             return array('StringLength', true, $stringlength);
         }
+    }
+
+    /**
+     * When true we're editing a new item
+     *
+     * @param boolean $isNew
+     * @return \MUtil_Model_Processor_ElementProcessorAbstract (Continuatiuon pattern)
+     */
+    public function setCreatingData($isNew = true)
+    {
+        $this->createData = $isNew;
+        return $this;
+    }
+
+    /**
+     * Set the form - if known
+     *
+     * @param Zend_Form $form
+     * @return \MUtil_Model_Processor_ElementProcessorAbstract (Continuatiuon pattern)
+     */
+    public function setForm(Zend_Form $form)
+    {
+        $this->form = $form;
+        return $this;
     }
 }

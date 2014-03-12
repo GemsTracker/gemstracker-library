@@ -832,7 +832,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Get/load the assembler for forms
      *
      * @param array $data Optional array with data.
-     * @return MUtil_Model_AssemblerInterface
+     * @return MUtil_Model_Assembler_FormAssembler
      */
     public function getFormAssembler(array $data = null)
     {

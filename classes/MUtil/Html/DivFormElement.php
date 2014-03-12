@@ -36,8 +36,7 @@
  */
 
 /**
- * Interface extensions that allows HtmlElements to define how to display
- * form elements.
+ * A Div displayer using bootstrap element classes
  *
  * @package    MUtil
  * @subpackage Html
@@ -67,7 +66,7 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
     {
         $args = MUtil_Ra::args(func_get_args());
 
-        parent::__construct('div', $args);
+        parent::__construct('div', array('class' => 'form-group'), $args);
     }
 
     /**
@@ -107,18 +106,28 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
             $attr['style'] = array('display' => 'inline-block', 'width' => $width);
         }
 
+        $inputGroup = null;
+
         // Place the choosen renderers
         foreach ($order as $renderer) {
             switch ($renderer) {
                 case 'label':
                     $this->label($formrep->element, $attr); // Set label with optional width
                     break;
+
                 case 'error':
                     $prependErrors = false;
                     // Intentional fall through
 
-                default:
+                case 'description':
                     $this->append($formrep->$renderer);
+                    break;
+
+                default:
+                    if (! $inputGroup) {
+                        $inputGroup = $this->div(array('class' => 'input-group'));
+                    }
+                    $inputGroup->append($formrep->$renderer);
             }
         }
 

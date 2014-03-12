@@ -28,48 +28,36 @@
  *
  *
  * @package    MUtil
- * @subpackage ModelFormAssembledSnippetAbstract
+ * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelFormAssembledSnippetAbstract .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: ElementProcessorInterfac .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
  *
  * @package    MUtil
- * @subpackage ModelFormAssembledSnippetAbstract
+ * @subpackage ElementProcessorInterfac
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.4
+ * @since      Class available since version 1.6.3
  */
-abstract class MUtil_Snippets_ModelFormAssembledSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
+interface MUtil_Model_Processor_ElementProcessorInterface extends MUtil_Model_ProcessorInterface
 {
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
-     * using addFormElements().
+     * When true we're editing a new item
      *
-     * @return Zend_Form
+     * @param boolean $isNew
+     * @return \MUtil_Model_Processor_ElementProcessorInterface (Continuatiuon pattern)
      */
-    protected final function getModelForm()
-    {
-        $model    = $this->getModel();
-        $baseform = $this->createForm();
+    public function setCreatingData($isNew = true);
 
-        $ass = $this->model->getFormAssembler($this->formData);
-        $ass->setCreatingData($this->createData)
-                ->setForm($baseform);
-
-        foreach ($model->getItemsOrdered() as $name) {
-            $element = $ass->getOutput($name);
-
-            if ($element) {
-                $baseform->addElement($element);
-            }
-        }
-
-        return $baseform;
-    }
-
-
+    /**
+     * Set the form - if known
+     *
+     * @param Zend_Form $form
+     * @return \MUtil_Model_Processor_ElementProcessorInterface (Continuatiuon pattern)
+     */
+    public function setForm(Zend_Form $form);
 }

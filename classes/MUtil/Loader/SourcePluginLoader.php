@@ -28,48 +28,79 @@
  *
  *
  * @package    MUtil
- * @subpackage ModelFormAssembledSnippetAbstract
+ * @subpackage Loader
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelFormAssembledSnippetAbstract .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: SourcePluginLoader .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
+ * Plugin loader that applies a source when loading
  *
  * @package    MUtil
- * @subpackage ModelFormAssembledSnippetAbstract
+ * @subpackage Loader
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.4
+ * @since      Class available since version 1.6.3
  */
-abstract class MUtil_Snippets_ModelFormAssembledSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
+class MUtil_Loader_SourcePluginLoader extends MUtil_Loader_PluginLoader
 {
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
-     * using addFormElements().
      *
-     * @return Zend_Form
+     * @var MUtil_Registry_SourceInterface
      */
-    protected final function getModelForm()
+    protected $_source;
+
+    /**
+     * Instantiate a new class using the arguments array for initiation
+     *
+     * @param string $className
+     * @param array $arguments Instanciation arguments
+     * @return className
+     */
+    public function createClass($className, array $arguments = array())
     {
-        $model    = $this->getModel();
-        $baseform = $this->createForm();
+        $object = parent::createClass($className, $arguments);
 
-        $ass = $this->model->getFormAssembler($this->formData);
-        $ass->setCreatingData($this->createData)
-                ->setForm($baseform);
+        if ($object instanceof MUtil_Registry_TargetInterface &&
+                $this->_source instanceof MUtil_Registry_SourceInterface) {
 
-        foreach ($model->getItemsOrdered() as $name) {
-            $element = $ass->getOutput($name);
-
-            if ($element) {
-                $baseform->addElement($element);
-            }
+            $this->_source->applySource($object);
         }
 
-        return $baseform;
+        return $object;
     }
 
+    /**
+     * Get the current source for the loader (if any)
+     *
+     * @return \MUtil_Registry_SourceInterface
+     */
+    public function getSource()
+    {
+        return $this->_source;
+    }
 
+    /**
+     * Is there a source for the loader
+     *
+     * @return boolean
+     */
+    public function hasSource()
+    {
+        return $this->_source instanceof MUtil_Registry_SourceInterface;
+    }
+
+    /**
+     * Set the current source for the loader
+     *
+     * @param MUtil_Registry_SourceInterface $source
+     * @return \MUtil_Loader_SourcePluginLoader (continuation pattern)
+     */
+    public function setSource(MUtil_Registry_SourceInterface $source)
+    {
+        $this->_source = $source;
+        return $this;
+    }
 }
