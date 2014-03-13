@@ -115,9 +115,16 @@ class Gems_Default_ConsentPlanAction extends Gems_Controller_ModelSnippetActionA
         }
 
         $consents = $this->util->getDbLookup()->getUserConsents();
+        $deleteds = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
         $sql      = "SUM(CASE WHEN grc_success = 1 AND gr2o_consent = '%s' THEN 1 ELSE 0 END)";
         foreach ($consents as $consent => $translated) {
             $fields[$translated] = new Zend_Db_Expr(sprintf($sql, $consent));
+        }
+        $fields[$this->_('Total OK')] = new Zend_Db_Expr("SUM(CASE WHEN grc_success = 1 THEN 1 ELSE 0 END)");
+
+        $sql      = "SUM(CASE WHEN gr2o_reception_code = '%s' THEN 1 ELSE 0 END)";
+        foreach ($deleteds as $code => $translated) {
+            $fields[$translated] = new Zend_Db_Expr(sprintf($sql, $code));
         }
         $fields[$this->_('Dropped')] = new Zend_Db_Expr("SUM(CASE WHEN grc_success = 0 THEN 1 ELSE 0 END)");
         $fields[$this->_('Total')]   = new Zend_Db_Expr("COUNT(*)");
@@ -146,7 +153,18 @@ class Gems_Default_ConsentPlanAction extends Gems_Controller_ModelSnippetActionA
                     'tdClass', 'rightAlign',
                     'thClass', 'rightAlign');
         }
-        $model->set($this->_('Total'), 'itemDisplay', MUtil_Html::create('strong'));
+        foreach ($deleteds as $code => $translated) {
+            $model->set($translated,
+                    'tdClass', 'rightAlign smallTime',
+                    'thClass', 'rightAlign smallTime');
+        }
+        foreach (array($this->_('Total OK'), $this->_('Dropped'), $this->_('Total')) as $name) {
+            $model->set($name, 'itemDisplay', MUtil_Html::create('strong'),
+                    'tableHeaderDisplay', MUtil_Html::create('em'),
+                    'tdClass', 'rightAlign selectedColumn',
+                    'thClass', 'rightAlign selectedColumn'
+                    );
+        }
 
         if ($detailed) {
             $model->set($month, 'formatFunction', $this->util->getLocalized()->getMonthName);
