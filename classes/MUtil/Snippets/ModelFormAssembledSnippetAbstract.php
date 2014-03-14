@@ -70,6 +70,4 @@ abstract class MUtil_Snippets_ModelFormAssembledSnippetAbstract extends MUtil_Sn
 
         return $baseform;
     }
-
-
 }

@@ -68,7 +68,7 @@ class MUtil_Model_Processor_Element_TextElementProcessor extends MUtil_Model_Pro
         if ($stringLengthValidator) {
             $input->setOption('validators[]', $stringLengthValidator);
         }
-
+        
         $this->applyElement(
                 $input,
                 new Zend_Form_Element_Text($input->getName(), $options)

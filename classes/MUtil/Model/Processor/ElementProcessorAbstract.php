@@ -106,7 +106,69 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract extends MUtil_Tran
             $element->setValue($value);
         }
 
+        /* $this->form->addElement($element, $name, $options);
+        if (is_string($element)) {
+            $element = $this->form->getElement($name);
+        }
+        // */
+        $this->_applyFilters($input, $element);
+        if (! $element instanceof Zend_Form_Element_Hidden) {
+            $this->_applyValidators($input, $element);
+        }
+
         $input->setOutput($element);
+    }
+
+    /**
+     * Apply the filters for element $name to the element
+     *
+     * @param MUtil_Model_Input $input
+     * @param Zend_Form_Element $element
+     */
+    protected function _applyFilters(MUtil_Model_Input $input, Zend_Form_Element $element)
+    {
+        $filters = $input->getOption('filters');
+
+        if ($filter = $input->getOption('filter')) {
+            if ($filters) {
+                array_unshift($filters, $filter);
+            } else {
+                $filters = array($filter);
+            }
+        }
+
+        if ($filters) {
+            foreach ($filters as $filter) {
+                if (is_array($filter)) {
+                    call_user_func_array(array($element, 'addFilter'), $filter);
+                } else {
+                    $element->addFilter($filter);
+                }
+            }
+        }
+    }
+
+    /**
+     * Apply the validators for element $name to the element
+     *
+     * @param MUtil_Model_Input $input
+     * @param Zend_Form_Element $element
+     */
+    protected function _applyValidators(MUtil_Model_Input $input, Zend_Form_Element $element)
+    {
+        $validators = $input->getOption('validators');
+
+        if ($validator = $input->getOption('validator')) {
+            if ($validators) {
+                array_unshift($validators, $validator);
+            } else {
+                $validators = array($validator);
+            }
+        }
+
+        if ($validators) {
+            $element->addValidators($validators);
+        }
     }
 
     /**

@@ -63,13 +63,25 @@ class MUtil_JQuery extends ZendX_JQuery
     }
 
     /**
-     * Check if the view is using JQuery
+     * Check if the view or form is using JQuery
      *
-     * @param Zend_View_Abstract $view
+     * @param mixed $object Zend_View_Abstract or Zend_Form
      * @return boolean
      */
-    public static function usesJQuery(Zend_View_Abstract $view)
+    public static function usesJQuery($object)
     {
-        return false !== $view->getPluginLoader('helper')->getPaths('ZendX_JQuery_View_Helper');
+        if ($object instanceof Zend_View_Abstract) {
+            return false !== $object->getPluginLoader('helper')->getPaths('ZendX_JQuery_View_Helper');
+        }
+
+        if ($object instanceof Zend_Form) {
+            return false !== $object->getPluginLoader(Zend_Form::DECORATOR)->getPaths('ZendX_JQuery_Form_Decorator');
+        }
+
+        if (is_object($object))  {
+            throw new ZendX_JQuery_Exception('Checking for JQuery on invalid object of class: ' . get_class($object));
+        } else {
+            throw new ZendX_JQuery_Exception('Checking for JQuery on non-object');
+        }
     }
 }

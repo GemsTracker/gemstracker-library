@@ -102,7 +102,7 @@ class MUtil_Model_Input
         $this->_context   = $context;
         $this->_model     = $model;
         $this->_name      = $name;
-        $this->_origValue = $context[$name];
+        $this->_origValue = isset($context[$name]) ? $context[$name] : null;
         $this->_output    = $this->_origValue;
     }
 
@@ -152,7 +152,7 @@ class MUtil_Model_Input
      * Return all or a named subset of options
      *
      * @param array $names Optional: an array of names to get the options from
-     * @return array
+     * @return array Of the options that exist
      */
     public function getOptions(array $names = null)
     {
@@ -163,7 +163,9 @@ class MUtil_Model_Input
 
         $result = array();
         foreach ($names as $name) {
-            $result[$name] = $this->getOption($name);
+            if ($this->hasOption($name)) {
+                $result[$name] = $this->getOption($name);
+            }
         }
         return $result;
     }
@@ -186,6 +188,17 @@ class MUtil_Model_Input
     public function getOutput()
     {
         return $this->_output;
+    }
+
+    /**
+     * Does the option exist
+     *
+     * @param string $name The name of an option item
+     * @return boolean
+     */
+    public function hasOption($name)
+    {
+        return array_key_exists($name, $this->_options) || $this->_model->has($this->_name, $name);
     }
 
     /**
