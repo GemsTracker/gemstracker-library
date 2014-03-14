@@ -27,7 +27,7 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets\Survey\Display
+ * @subpackage Events
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -35,11 +35,11 @@
  */
 
 /**
- * Display survey answers with a toggle for full or compact view and add a barchart 
+ * Display survey answers with a toggle for full or compact view and add a barchart
  * for each SCORE element found in the survey.
  *
  * @package    Gems
- * @subpackage Snippets\Survey\Display
+ * @subpackage attribute
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.2
@@ -49,12 +49,12 @@ class Gems_Event_Survey_Display_ToggleCharts extends Gems_Event_Survey_Display_C
     public function getEventName() {
      return parent::getEventName() . ' with chart';
     }
-    
+
     public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token) {
         $snippets = parent::getAnswerDisplaySnippets($token);
-        
+
         // Add the ScoreChartsSnippet
         $snippets[] = 'Survey_Display_ScoreChartsSnippet';
         return $snippets;
-    }    
+    }
 }

@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage Event
+ * @subpackage Events
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -41,7 +41,7 @@
  * token it finds.
  *
  * @package    Gems
- * @subpackage Event
+ * @subpackage Events
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.1

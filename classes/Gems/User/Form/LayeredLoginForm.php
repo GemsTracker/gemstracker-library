@@ -3,7 +3,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,7 +27,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    Gems
- * @subpackage User\Form
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @version    $Id$
@@ -38,7 +38,7 @@
  * hierarchy
  *
  * @package    Gems
- * @subpackage User\Form
+ * @subpackage User
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5.5
@@ -73,7 +73,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
     /**
      * Return array of organizations that are a child of the given parentId
-     * 
+     *
      * @param int $parentId
      * @return array
      */
@@ -98,7 +98,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
         return $organizations;
     }
-    
+
     /**
      * Returns the organization id that should currently be used for this form.
      *
@@ -119,7 +119,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
         if ($request->isPost() && ($orgId = $request->getParam($this->organizationFieldName))) {
             return $orgId;
         }
-        
+
         $orgs = array_keys($this->getChildOrganisations($this->getCurrentTopOrganizationId()));
         $firstId = reset($orgs);
 
@@ -193,7 +193,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
                 $element->setValue($orgId);
             }
         }
-        
+
         return $element;
     }
 
@@ -293,7 +293,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
 
         return $this;
     }
-    
+
     /**
      * Set the label for the child organization element
      *

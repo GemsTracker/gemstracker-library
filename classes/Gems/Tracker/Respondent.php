@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Respondent.php $
+ * @version    $Id: Respondent.php 967 2012-10-02 07:47:36Z mennodekker $
  */
 
 /**
@@ -118,6 +118,16 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         } else {
             $this->respondent = $this->getDefaultRespondent();
         }
+    }
+
+    /**
+     * Get a (single char code for the gender (normally M/F/U))text
+     *
+     * @return MUtil_Date or null
+     */
+    public function getBirthday()
+    {
+        return $this->respondent['grs_birthday'];
     }
 
     protected function getDefaultRespondent()

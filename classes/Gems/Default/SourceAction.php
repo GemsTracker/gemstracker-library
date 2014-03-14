@@ -135,7 +135,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $sourceId = $this->getSourceId();
         $where    = $this->db->quoteInto('gsu_id_source = ?', $sourceId);
 
-        $batch = $this->loader->getTracker()->refreshTokenAttributes('sourceCheck' . $sourceId, $where);
+        $batch = $this->loader->getTracker()->refreshTokenAttributes('attributeCheck' . $sourceId, $where);
 
         $title = sprintf($this->_('Refreshing token attributes for %s source.'),
                     $this->db->fetchOne("SELECT gso_source_name FROM gems__sources WHERE gso_id_source = ?", $sourceId));
@@ -151,7 +151,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
      */
     public function attributesAllAction()
     {
-        $batch = $this->loader->getTracker()->refreshTokenAttributes('sourceCheckAll');
+        $batch = $this->loader->getTracker()->refreshTokenAttributes('attributeCheckAll');
 
         $title = $this->_('Refreshing token attributes for all sources.');
 
