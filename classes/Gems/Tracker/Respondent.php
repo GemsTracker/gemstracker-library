@@ -120,6 +120,16 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Get a (single char code for the gender (normally M/F/U))text
+     *
+     * @return MUtil_Date or null
+     */
+    public function getBirthday()
+    {
+        return $this->respondent['grs_birthday'];
+    }
+
     protected function getDefaultRespondent()
     {
         $select = $this->model->getSelect();
