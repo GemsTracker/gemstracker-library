@@ -106,7 +106,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.source,
     ,pr.survey-maintenance,
     ,pr.token.mail.freetext,
-    ,pr.track-maintenance',
+    ,pr.track-maintenance,pr.track-maintenance.trackperorg',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
 
 INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_parents,

@@ -689,6 +689,10 @@ abstract class Gems_Menu_MenuAbstract
 
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(MUtil_Model::REQUEST_ID);
+        
+        $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
+        $overviewPage->addExcelAction();
+        $overviewPage->addAutofilterAction();
 
         $page->addAction($this->_('Check all assignments'), 'pr.track-maintenance.check-all', 'check-all');
 

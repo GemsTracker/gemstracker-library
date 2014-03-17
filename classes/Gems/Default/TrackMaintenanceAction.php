@@ -310,7 +310,12 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
             $element = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
             $element->setLabel($model->get('gtr_active', 'label'));
             $elements[] = $element;
-
+            
+            $user = $this->loader->getCurrentUser();
+            $options = $user->getRespondentOrganizations();            
+            $element = $this->_createSelectElement('org', $options, $this->_('(all organizations)'));
+            $element->setLabel($model->get('gtr_organizations', 'label'));
+            $elements[] = $element;
         }
 
         return $elements;
@@ -332,6 +337,10 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         if (isset($data['active']) && strlen($data['active'])) {
             $filter['gtr_active'] = $data['active'];
+        }
+        
+        if (isset($data['org']) && strlen($data['org'])) {
+            $filter[] = 'gtr_organizations LIKE "%|' . $data['org'] . '|%"';
         }
 
         return $filter;

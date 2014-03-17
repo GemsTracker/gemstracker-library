@@ -771,3 +771,8 @@ ALTER TABLE `gems__surveys`
   DROP `gsu_id_user_field`,
   DROP `gsu_completion_field`,
   DROP `gsu_followup_field`;
+
+-- GEMS VERSION: 55
+-- PATCH: add new privilege
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.trackperorg')
+    WHERE grl_privileges LIKE '%pr.track-maintenance%' AND grl_privileges NOT LIKE '%pr.track-maintenance.trackperorg%';
