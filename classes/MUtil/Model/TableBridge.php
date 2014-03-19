@@ -195,6 +195,10 @@ class MUtil_Model_TableBridge extends MUtil_Model_TableBridgeAbstract
     {
         $label = $this->_checkLabel($label, $name);
 
+        if ($this->model->get($name, 'noSort')) {
+            return $label;
+        }
+
         $class      = $this->sortAscClass;
         $sortParam  = $this->sortAscParam;
         $nsortParam = $this->sortDescParam;

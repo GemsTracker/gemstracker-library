@@ -68,9 +68,8 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
             $mfor = MUtil_Ra::column($mkey, $data);
 
             // MUtil_Echo::track($mfor);
-
             if ($new) {
-                $sdata = $sub->loadNew();
+                $sdata = array($sub->loadNew());
             } else {
                 $sdata = $sub->load(array($skey => $mfor));
             }
@@ -96,6 +95,7 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
                     $mrow += $empty;
                 }
             }
+            // MUtil_Echo::track($mrow);
         } else {
             // Multi column implementation
             $empty = array_fill_keys($sub->getItemNames(), null);

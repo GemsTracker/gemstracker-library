@@ -284,11 +284,16 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $this->createPageLink($this->pages->previous, $this->pages->first, $args);
     }
 
+    /**
+     * Return the location where to store the cookies for the panel
+     *
+     * @return string
+     */
     protected function getCookieLocation()
     {
         $request = $this->getRequest();
 
-        $front  = $front = Zend_Controller_Front::getInstance();
+        $front  = Zend_Controller_Front::getInstance();
         $result = $request->getBasePath();
 
         $bname = $request->getModuleKey();
@@ -354,26 +359,33 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
         return $this->_currentPageParam;
     }
 
+    /**
+     * Get the current number of items per page from:
+     *  - the baseUrl or
+     *  - the request or
+     *  - a cookie or
+     *  - use the default
+     *
+     * @return int
+     */
     public function getItemCount()
     {
         if (null === $this->_itemCount) {
-            $this->_itemCount = $this->getItemCountDefault();
-
             if ($param_name = $this->getItemCountParam()) {
                 $request = $this->getRequest();
 
                 if (isset($this->_baseUrl[$param_name])) {
                     $this->_itemCount = $this->_baseUrl[$param_name];
-                } elseif ($itemCount = $request->getParam($param_name)) {
-                    $this->_itemCount = $itemCount;
+                } else {
+                    $this->_itemCount = $request->getParam($param_name);
                 }
 
                 if ($this->_itemCount) {
-                    // Store
+                    // Store the current value
                     setcookie($param_name, $this->_itemCount, time() + (30 * 86400), $this->getCookieLocation());
 
                 } elseif ($request instanceof Zend_Controller_Request_Http) {
-                    $this->_itemCount = $request->getCookie($param_name, $this->_itemCount);
+                    $this->_itemCount = $request->getCookie($param_name, $this->getItemCountDefault());
                 }
             }
         }

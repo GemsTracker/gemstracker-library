@@ -355,6 +355,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $data;
     }
 
+    /**
+     * Extract all info about the fields in the table and set them for this model
+     *
+     * @param Zend_Db_Table_Abstract $table
+     */
     protected function _loadTableMetaData(Zend_Db_Table_Abstract $table)
     {
         $table_name = $this->_getTableName($table);

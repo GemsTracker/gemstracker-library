@@ -184,7 +184,7 @@ class MUtil_Ra
      * The next example will get the first passed compatible Zend element (which your code can use to get
      * the id of) or else the first available string parameter.
      * <code>
-     *  array('id' => array('Zend_Form_Element', ''Zend_Form_DisplayGroup', 'Zend_Form', 'is_string'));
+     *  array('id' => array('Zend_Form_Element', 'Zend_Form_DisplayGroup', 'Zend_Form', 'is_string'));
      * </code>
      *
      * ADDING DEFAULTS
