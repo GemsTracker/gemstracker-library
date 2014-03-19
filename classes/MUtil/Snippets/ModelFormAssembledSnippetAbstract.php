@@ -56,6 +56,8 @@ abstract class MUtil_Snippets_ModelFormAssembledSnippetAbstract extends MUtil_Sn
         $model    = $this->getModel();
         $baseform = $this->createForm();
 
+        // MUtil_Echo::track($this->formData);
+
         $ass = $this->model->getFormAssembler($this->formData);
         $ass->setCreatingData($this->createData)
                 ->setForm($baseform);

@@ -32,27 +32,19 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SelectElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: HtmlElementProcessor .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
- *
  *
  * @package    MUtil
  * @subpackage Model
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since MUtil version 1.4
+ * @since      Class available since version 1.5
  */
-class MUtil_Model_Processor_Element_SelectElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
+class MUtil_Model_Processor_Element_HtmlElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
 {
-    /**
-     * Allow use of answers select specific options
-     *
-     * @var boolean
-     */
-    protected $useMultiOptions = true;
-
     /**
      * Processes the input, changing e.g. the result, context or options
      *
@@ -63,12 +55,11 @@ class MUtil_Model_Processor_Element_SelectElementProcessor extends MUtil_Model_P
     {
         $options = $this->getFilteredOptions($input);
 
-        // Is sometimes added automatically, but should not be used here
-        unset($options['maxlength']);
+        if (isset($options['value'])) {
+            $input->setOutput($options['value']);
+            unset($options['value']);
+        }
 
-        $this->_applyElement(
-                $input,
-                new Zend_Form_Element_Select($input->getName(), $options)
-                );
+        $this->_createElement($input, 'Html', $options);
     }
 }

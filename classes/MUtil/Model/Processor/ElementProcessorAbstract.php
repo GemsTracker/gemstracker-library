@@ -98,7 +98,7 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract extends MUtil_Tran
      * @param MUtil_Model_Input $input
      * @param Zend_Form_Element $element
      */
-    protected function applyElement(MUtil_Model_Input $input, Zend_Form_Element $element)
+    protected function _applyElement(MUtil_Model_Input $input, Zend_Form_Element $element)
     {
         $value = $input->getOutput();
 
@@ -169,6 +169,37 @@ abstract class MUtil_Model_Processor_ElementProcessorAbstract extends MUtil_Tran
         if ($validators) {
             $element->addValidators($validators);
         }
+    }
+
+    /**
+     * Apply the standard processing needed and set the element as the output
+     *
+     * @param MUtil_Model_Input $input
+     * @param Zend_Form_Element $element
+     */
+    protected function _createElement(MUtil_Model_Input $input, $elementClass, $options)
+    {
+        if (! $this->hasForm()) {
+            throw new MUtil_Model_Assembler_AssemblerException('Cannot use createElement without a form.');
+        }
+        if (! is_string($elementClass)) {
+            throw new MUtil_Model_Assembler_AssemblerException('The elementClass must be a string.');
+        }
+        $this->form->addElement($elementClass, $input->getName(), $options);
+        $element = $this->form->getElement($input->getName());
+
+        $value = $input->getOutput();
+
+        if (! $value instanceof Zend_Form_Element) {
+            $element->setValue($value);
+        }
+
+        $this->_applyFilters($input, $element);
+        if (! $element instanceof Zend_Form_Element_Hidden) {
+            $this->_applyValidators($input, $element);
+        }
+
+        $input->setOutput($element);
     }
 
     /**

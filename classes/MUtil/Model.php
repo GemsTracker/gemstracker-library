@@ -206,6 +206,16 @@ class MUtil_Model
     }
 
     /**
+     * Returns the plugin loader for dependencies
+     *
+     * @return MUtil_Loader_PluginLoader
+     */
+    public static function getDependencyLoader()
+    {
+        return self::getLoader('Dependency');
+    }
+
+    /**
      * Returns a subClass plugin loader
      *
      * @param string $prefix The prefix to load the loader for. CamelCase and should not contain an '_', '/' or '\'.
@@ -276,6 +286,16 @@ class MUtil_Model
     public static function setAssemblerLoader(MUtil_Loader_PluginLoader $loader)
     {
         self::setLoader($loader, 'Assembler');
+    }
+
+    /**
+     * Sets the plugin loader for dependencies
+     *
+     * @param MUtil_Loader_PluginLoader $loader
+     */
+    public static function setDependencyLoader(MUtil_Loader_PluginLoader $loader)
+    {
+        self::setLoader($loader, 'Dependency');
     }
 
     /**

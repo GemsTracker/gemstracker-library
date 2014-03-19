@@ -63,6 +63,6 @@ class MUtil_Model_Processor_Element_HiddenElementProcessor extends MUtil_Model_P
     {
         $options = $this->getFilteredOptions($input);
 
-        $this->applyElement($input, new Zend_Form_Element_Hidden($input->getName(), $options));
+        $this->_createElement($input, 'Hidden', $options);
     }
 }

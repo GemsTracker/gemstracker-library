@@ -117,6 +117,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     );
 
     /**
+     * Dependencies that transform the model
+     *
+     * @var array order => MUtil_Model_Dependency_DependencyInterface
+     */
+    private $_model_dependencies = array();
+
+    /**
      * An identifying name for the model, used for joining models and sub forms, etc...
      *
      * @var string
@@ -235,32 +242,6 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Processes on load functions
-     *
-     * @see setOnLoad
-     *
-     * @param array $data The row values to load
-     * @param boolean $new True when it is a new item
-     * @return array The possibly adapted array of values
-     */
-    protected function _filterDataAfterLoad(array $data, $new = false)
-    {
-        if (! $this->getMeta(self::LOAD_TRANSFORMER)) {
-            return $data;
-        }
-        $newData = $data;
-        foreach ($this->getCol(self::LOAD_TRANSFORMER) as $name => $call) {
-            if ($call) {
-                $value = isset($newData[$name]) ? $newData[$name] : null;
-
-                $newData[$name] = $this->getOnLoad($value, $new, $name, $data);
-            }
-        }
-
-        return $newData;
-    }
-
-    /**
      * Processes empty strings, filters items that should not be saved
      * according to setSaveWhen() and changes values that have a setOnSave()
      * function.
@@ -345,6 +326,36 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Process on load functions and dependencies
+     *
+     * @see addDependency()
+     * @see setOnLoad()
+     *
+     * @param array $data The row values to load
+     * @param boolean $new True when it is a new item not saved in the model
+     * @return array The possibly adapted array of values
+     */
+    protected function _processRowAfterLoad(array $data, $new = false)
+    {
+        $newData = $data;
+
+        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+            foreach ($this->getCol(self::LOAD_TRANSFORMER) as $name => $call) {
+                if ($call) {
+                    $value = isset($newData[$name]) ? $newData[$name] : null;
+
+                    $newData[$name] = $this->getOnLoad($value, $new, $name, $data);
+                }
+            }
+        }
+        if ($this->_model_dependencies) {
+            $newData = $this->processDependencies($newData, $new);
+        }
+
+        return $newData;
+    }
+
+    /**
      * Save a single model item.
      *
      * @param array $newValues The values to store for a single model item.
@@ -365,6 +376,51 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $this->_changedCount += $add;
 
         return $this;
+    }
+
+    /**
+     * Add a dependency where the value in one field can change settings for the other field
+     *
+     * Dependencies are processed in the order they are added
+     *
+     * @param mixed $dependency MUtil_Model_Dependency_DependencyInterface or string or array to create one
+     * @param mixed $dependsOn Optional string field name or array of fields that do the changing
+     * @param array $effects Optional array of field => array(setting) of settings are changed, array of whatever
+     * the dependency accepts as an addEffects() argument
+     * @param mixed $key A key to identify the specific dependency.
+     * @return int The actual key used.
+     */
+    public function addDependency($dependency, $dependsOn = null, array $effects = null,  $key = null)
+    {
+        if (! $dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+            $loader = MUtil_Model::getDependencyLoader();
+
+            if (is_array($dependency)) {
+                $parameters = $dependency;
+                $className  = array_shift($parameters);
+            } else {
+                $parameters = array();
+                $className  = (string) $dependency;
+            }
+
+            $dependency = $loader->createClass($className, $parameters);
+        }
+        if (null !== $dependsOn) {
+            $dependency->addDependsOn($dependsOn);
+        }
+        if (is_array($effects)) {
+            $dependency->addEffecteds($effects);
+        }
+
+        if (null === $key) {
+            $keys = array_filter(array_keys($this->_model_dependencies), 'is_int');
+
+            $key = ($keys ? max($keys) : 0) + 10;
+        }
+
+        $this->_model_dependencies[$key] = $dependency;
+
+        return $key;
     }
 
     /**
@@ -820,6 +876,60 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Get the dependencies this name has a dependency to at all or on the specific setting
+     *
+     * @param mixed $name Field name or array of fields
+     * @param string $setting Setting name
+     * @return array of Dependencies
+     */
+    public function getDependencies($name, $setting = null)
+    {
+        $names   = (array) $name;
+        $results = array();
+
+        foreach ($this->_model_dependencies as $key => $dependency) {
+            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+                foreach ($names as $name) {
+                    $settings = $dependency->getEffected($name);
+
+                    // MUtil_Echo::track($name, $settings, get_class($dependency));
+                    if ($settings) {
+                        if ((null === $setting) or isset($settings[$setting])) {
+                            $results[$key] = $dependency;
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get the names of the fields of the dependencies this name has a dependency
+     * to at all or on the specific setting
+     *
+     * @param mixed $name Field name or array of fields
+     * @param string $setting Setting name
+     * @return array of name => name
+     */
+    public function getDependentOn($name, $setting = null)
+    {
+        $dependencies = $this->getDependencies($name, $setting);
+        $results      = array();
+
+        foreach ($dependencies as $dependency) {
+            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+                $results = $results + $dependency->getDependsOn();
+            }
+        }
+        // MUtil_Echo::track($name, $results);
+
+        return $results;
+    }
+
+    /**
      * Get the current default filter for save/loade
      * @return array
      */
@@ -916,6 +1026,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function getItemsUsed()
     {
         if ($this->_model_used) {
+            if ($this->_model_dependencies) {
+                return $this->_model_used + $this->getDependentOn($this->_model_used);
+            }
+
             return $this->_model_used;
         } else {
             $names = array_keys($this->_model);
@@ -1173,11 +1287,59 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Does the model have a dependencies?
+     *
+     * @return boolean
+     */
+    public function hasDependencies()
+    {
+        return (boolean) $this->_model_dependencies;
+    }
+
+    /**
+     * Does this name or any of these names have a dependency at all or on the specific setting?
+     *
+     * @param mixed $name Field name or array of fields
+     * @param string $setting Setting name
+     * @return boolean
+     */
+    public function hasDependency($name, $setting = null)
+    {
+        $names = (array) $name;
+
+        foreach ($this->_model_dependencies as $dependency) {
+            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+                foreach ($names as $name) {
+                    $settings = $dependency->getEffected($name);
+
+                    if ($settings) {
+                        if ((null === $setting) or isset($settings[$setting])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Does the model have a filter?
+     *
+     * @return boolean
+     */
     public function hasFilter()
     {
         return $this->hasMeta('filter');
     }
 
+    /**
+     * Does this model track items in use?
+     *
+     * @return boolean
+     */
     public function hasItemsUsed()
     {
         return (boolean) $this->_model_used;
@@ -1190,21 +1352,44 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     abstract public function hasNew();
 
+    /**
+     * Does a certain Meta setting exist?
+     *
+     * @param string $key
+     * @return boolean
+     */
     public function hasMeta($key)
     {
         return isset($this->_model_meta[$key]);
     }
 
+    /**
+     * Does the item have a save transformer?
+     *
+     * @param string $name Item name
+     * @return boolean
+     */
     public function hasOnSave($name)
     {
         return $this->has($name, self::SAVE_TRANSFORMER);
     }
 
+    /**
+     * Does the item have a save when test?
+     *
+     * @param string $name Item name
+     * @return boolean
+     */
     public function hasSaveWhen($name)
     {
         return $this->has($name, self::SAVE_WHEN_TEST);
     }
 
+    /**
+     * Does the model have a sort?
+     *
+     * @return boolean
+     */
     public function hasSort()
     {
         return $this->hasMeta('sort');
@@ -1422,9 +1607,9 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $data = $transformer->transformLoad($this, $data, $new);
         }
 
-        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+        if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
             foreach ($data as $key => $row) {
-                $data[$key] = $this->_filterDataAfterLoad($row, $new);
+                $data[$key] = $this->_processRowAfterLoad($row, $new);
             }
         }
 
@@ -1446,6 +1631,51 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         return $row;
+    }
+
+    /**
+     * Process the changes in the model caused by dependencies, using this data.
+     *
+     * @param array $data The input data
+     * @param boolean $new True when it is a new item not saved in the model
+     * @return array The possibly change input data
+     */
+    public function processDependencies(array $data, $new)
+    {
+        foreach ($this->_model_dependencies as $dependency) {
+            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+
+                $dependsOn = $dependency->getDependsOn();
+                $context   = array_intersect_key($data, $dependsOn);
+
+                // MUtil_Echo::track($context, $dependsOn, get_class($dependency));
+
+                // If there are required fields and all required fields are there
+                if ($dependsOn && (count($context) === count($dependsOn))) {
+
+                    $changes = $dependency->getChanges($context, $new);
+
+                    if ($changes) {
+                        if (MUtil_Model::$verbose) {
+                            MUtil_Echo::r($changes, 'Changes by ' . get_class($dependency));
+                        }
+
+                        // Here we could allow only those changes this dependency claims to change
+                        // or even check all of them are set.
+                        foreach ($changes as $name => $settings) {
+                            $this->set($name, $settings);
+
+                            // Change the actual value
+                            If (isset($settings['value'])) {
+                                $data[$name] = $settings['value'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -1507,8 +1737,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         $resultValues = $this->processAfterSave($resultValues);
 
-        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
-            $resultValues = $this->_filterDataAfterLoad($resultValues, false);
+        if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
+            $resultValues = $this->_processRowAfterLoad($resultValues, false);
         }
 
         return $resultValues;
@@ -1630,6 +1860,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         return $this;
     }
 
+    /**
+     * Update the number of rows changed.
+     *
+     * @param int $changed
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
+     */
     protected function setChanged($changed = 0)
     {
         $this->_changedCount = $changed;

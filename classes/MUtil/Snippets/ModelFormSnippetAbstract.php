@@ -387,13 +387,19 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function loadFormData()
     {
+        $model = $this->getModel();
+
         if ($this->request->isPost()) {
             $this->formData = $this->request->getPost() + $this->formData;
+
+            // Process optional dependencies
+            if ($model->hasDependencies()) {
+                $this->formData = $model->processDependencies($this->formData, $this->createData);
+            }
+
         } else {
             // Assume that if formData is set it is the correct formData
             if (! $this->formData)  {
-                $model = $this->getModel();
-
                 if ($this->createData) {
                     $this->formData = $model->loadNew();
                 } else {

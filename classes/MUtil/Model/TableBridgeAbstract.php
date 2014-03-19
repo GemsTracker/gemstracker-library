@@ -119,8 +119,11 @@ abstract class MUtil_Model_TableBridgeAbstract
 
         $value = $this->getLazy($name);
 
-        if ($multi = $this->model->get($name, 'multiOptions')) {
-            $value = MUtil_Lazy::offsetGet($multi, $value);
+        if ($this->model->get($name, 'multiOptions')) {
+            $value = MUtil_Lazy::offsetGet(
+                    MUtil_Lazy::call(array($this->model, 'get'), $name, 'multiOptions'),
+                    $value
+                    );
         }
 
         if ($function = $this->model->get($name, 'formatFunction')) {
@@ -300,6 +303,9 @@ abstract class MUtil_Model_TableBridgeAbstract
                 $this->repeater = $this->model->loadRepeatable();
                 $this->table->getRepeater($this->repeater);
             }
+        }
+        if (null === $name) {
+            return null;
         }
 
         // We are no longer being lazy.

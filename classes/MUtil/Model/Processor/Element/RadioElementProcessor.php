@@ -42,7 +42,7 @@ class MUtil_Model_Processor_Element_RadioElementProcessor extends MUtil_Model_Pr
         // Is sometimes added automatically, but should not be used here
         unset($options['maxlength']);
 
-        $this->applyElement(
+        $this->_applyElement(
                 $input,
                 new Zend_Form_Element_Radio($input->getName(), $options)
                 );
