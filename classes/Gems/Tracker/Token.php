@@ -114,18 +114,6 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
-     */
-    protected $project;
-
-    /**
-     *
-     * @var Gems_Tracker_RespondentTrack
-     */
-    protected $respTrack;
-
-    /**
-     *
      * @var Gems_Loader
      */
     protected $loader;
@@ -135,6 +123,25 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      * @var Zend_Locale
      */
     protected $locale;
+
+    /**
+     * Logger instance
+     *
+     * @var Gems_Log
+     */
+    protected $logger;
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
+     * @var Gems_Tracker_RespondentTrack
+     */
+    protected $respTrack;
 
     /**
      * The size of the result field, calculated from meta data when null,
@@ -991,8 +998,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         $patientNumber = $this->getPatientNumber();
         $organizationId = $this->getOrganizationId();
 
-        if (    !($this->_respondentObject instanceof Gems_Tracker_Respondent)
-                || $this->_respondentObject->getPatientId() !== $patientNumber
+        if (! ($this->_respondentObject instanceof Gems_Tracker_Respondent)
+                || $this->_respondentObject->getPatientNumber() !== $patientNumber
                 || $this->_respondentObject->getOrganizationId() !== $organizationId) {
             $this->_respondentObject = $this->loader->getRespondent($patientNumber, $organizationId);
         }
@@ -1380,11 +1387,21 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         if ($event = $survey->getSurveyCompletedEvent()) {
 
-            if ($changed = $event->processTokenData($this)) {
+            try {
+                if ($changed = $event->processTokenData($this)) {
 
-                $this->setRawAnswers($changed);
+                    $this->setRawAnswers($changed);
 
-                return $changed;
+                    return $changed;
+                }
+            } catch (Exception $e) {
+                $this->logger->log(sprintf(
+                        "After completion event error for token %s on survey '%s' using event '%s': %s",
+                        $this->_tokenId,
+                        $this->getSurveyName(),
+                        $event->getEventName(),
+                        $e->getMessage()
+                        ), Zend_Log::ERR);
             }
         }
     }
@@ -1402,16 +1419,26 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         if ($event = $survey->getSurveyBeforeAnsweringEvent()) {
 
-            if ($changed = $event->processTokenInsertion($this)) {
+            try {
+                if ($changed = $event->processTokenInsertion($this)) {
 
-                $source = $survey->getSource();
-                $this->setRawAnswers($changed);
+                    $source = $survey->getSource();
+                    $this->setRawAnswers($changed);
 
-                if (Gems_Tracker::$verbose) {
-                    MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                    if (Gems_Tracker::$verbose) {
+                        MUtil_Echo::r($changed, 'Source values for ' . $this->_tokenId . ' changed by event.');
+                    }
+
+                    return $changed;
                 }
-
-                return $changed;
+            } catch (Exception $e) {
+                $this->logger->log(sprintf(
+                        "Before answering event error for token %s on survey '%s' using event '%s': %s",
+                        $this->_tokenId,
+                        $this->getSurveyName(),
+                        $event->getEventName(),
+                        $e->getMessage()
+                        ), Zend_Log::ERR);
             }
         }
     }

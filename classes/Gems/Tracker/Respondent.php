@@ -48,6 +48,12 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 {
     /**
      *
+     * @var array The gems respondent and respondent to org data
+     */
+    protected $_gemsData;
+
+    /**
+     *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
@@ -63,6 +69,12 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      * @var Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var int The highest grs_phone_nr phone number used in this project
+     */
+    protected $maxPhoneNumber = 4;
 
     /**
      *
@@ -83,9 +95,9 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     private $patientId;
 
     /**
-     * @var array Respondent
+     * @var int respondentId
      */
-    protected $respondent;
+    protected $respondentId;
 
     /**
      *
@@ -101,23 +113,29 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @param string $patientId
-     * @param int $organizationId
+     * @param string $patientId   Patient number, you can use $respondentId instead
+     * @param int $organizationId Organization id
+     * @param int $respondentId   Optional respondent id, used when patient id is empty
      */
-	public function __construct($patientId, $organizationId)
+	public function __construct($patientId, $organizationId, $respondentId = null)
     {
-        $this->patientId = $patientId;
+        $this->patientId      = $patientId;
         $this->organizationId = $organizationId;
+        $this->respondentId   = $respondentId;
 	}
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
     public function afterRegistry()
     {
         $this->model = $this->loader->getModels()->getRespondentModel(true);
-        if ($this->patientId && $this->organizationId) {
-            $this->respondent = $this->getRespondent($this->patientId, $this->organizationId);
-        } else {
-            $this->respondent = $this->getDefaultRespondent();
-        }
+
+        // Load the data
+        $this->refresh();
     }
 
     /**
@@ -127,17 +145,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getBirthday()
     {
-        return $this->respondent['grs_birthday'];
-    }
-
-    protected function getDefaultRespondent()
-    {
-        $select = $this->model->getSelect();
-        $result = $this->db->fetchRow($select);
-        if ($result) {
-            $this->exists = true;
-        }
-        return $result;
+        return $this->_gemsData['grs_birthday'];
     }
 
     /**
@@ -146,7 +154,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getEmailAddress()
     {
-        return $this->respondent['grs_email'];
+        return $this->_gemsData['grs_email'];
     }
 
     /**
@@ -155,7 +163,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getFirstName()
     {
-        return $this->respondent['grs_first_name'];
+        return $this->_gemsData['grs_first_name'];
     }
 
     /**
@@ -178,7 +186,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getGender()
     {
-        return $this->respondent['grs_gender'];
+        return $this->_gemsData['grs_gender'];
     }
 
     /**
@@ -195,9 +203,26 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
         return $greeting . ' ' . $this->getLastName();
     }
 
+    /**
+     * Get the propper greeting of respondent
+     * @return string
+     */
+    public function getGreetingNL()
+    {
+        $genderGreetings = $this->util->getTranslated()->getGenderGreeting($this->getLanguage());
+
+        $greeting = $genderGreetings[$this->_gemsData['grs_gender']];
+
+        return $greeting . ' ' . ucfirst($this->getLastName());
+    }
+
+    /**
+     *
+     * @return int The respondent id
+     */
     public function getId()
     {
-        return $this->respondent['grs_id_user'];
+        return $this->respondentId;
     }
 
     /**
@@ -206,7 +231,7 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
      */
     public function getLanguage() {
         if (!isset($this->respondentLanguage)) {
-            $this->respondentLanguage = $this->respondent['grs_iso_lang'];
+            $this->respondentLanguage = $this->_gemsData['grs_iso_lang'];
         }
         return $this->respondentLanguage;
     }
@@ -218,10 +243,10 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     public function getLastName()
     {
         $lastname = '';
-        if (!empty($this->respondent['grs_surname_prefix'])) {
-            $lastname .= $this->respondent['grs_surname_prefix'] . ' ';
+        if (!empty($this->_gemsData['grs_surname_prefix'])) {
+            $lastname .= $this->_gemsData['grs_surname_prefix'] . ' ';
         }
-        $lastname .= $this->respondent['grs_last_name'];
+        $lastname .= $this->_gemsData['grs_last_name'];
         return $lastname;
     }
 
@@ -246,8 +271,10 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get Patient number of respondent
      *
-     * @return int Patient number (not respondent id)
+     * @deprecated since version 1.6.4
+     * @return string
      */
     public function getPatientId()
     {
@@ -255,24 +282,63 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get the respondent with a patientId and organization Id combination
      *
-     * @param  integer $patientId      [description]
-     * @param  integer $organizationId [description]
+     * @return string The respondents patient number
      */
-	protected function getRespondent($patientId, $organizationId)
+    public function getPatientNumber()
     {
-        $this->model->setFilter(array(
-            'gr2o_patient_nr'      => $patientId,
-            'gr2o_id_organization' => $organizationId
-        ));
-        $result = $this->model->loadFirst();
+        return $this->patientId;
+    }
 
-        if ($result) {
-
-            $this->exists = true;
+    /**
+     * Get the first entered phonenumber of the respondent.
+     *
+     * @return string
+     */
+    public function getPhonenumber()
+    {
+        for ($i = 1; $i <= $this->maxPhoneNumber; $i++) {
+            if (isset($this->_gemsData['grs_phone_' . $i]) && ! empty($this->_gemsData['grs_phone_' . $i])) {
+                return $this->_gemsData['grs_phone_' . $i];
+            }
         }
-        return $result;
+
+        return null;
+    }
+
+    /**
+     * Refresh the data
+     */
+	public function refresh()
+    {
+        $default = true;
+        $filter  = array();
+
+        if ($this->patientId) {
+            $filter['gr2o_patient_nr'] = $this->patientId;
+            $default = false;
+        } elseif ($this->respondentId) {
+            $filter['gr2o_id_user'] = $this->respondentId;
+            $default = false;
+        }
+        if ($this->organizationId) {
+            $filter['gr2o_id_organization'] = $this->organizationId;
+        }
+
+        $this->model->setFilter($filter);
+
+        $this->_gemsData = $this->model->loadFirst();
+
+        if ($this->_gemsData) {
+            $this->exists = true;
+
+            $this->patientId      = $this->_gemsData['gr2o_patient_nr'];
+            $this->organizationId = $this->_gemsData['gr2o_id_organization'];
+            $this->respondentId   = $this->_gemsData['gr2o_id_user'];
+        } else {
+            $this->_gemsData = $this->model->loadNew();
+            $this->exists = false;
+        }
 	}
 
     /**

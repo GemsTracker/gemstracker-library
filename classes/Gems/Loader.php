@@ -206,7 +206,7 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
         $loader = $this->getMailLoader();
         return $loader->getMailTargets();
     }
-    
+
     /**
      * Get the project specific menu or general Gems menu otherwise
      *
@@ -260,14 +260,15 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
 
     /**
      * Get a respondent object
-     * 
-     * @param type $patientId
-     * @param type $organization
+     *
+     * @param string $patientId   Patient number, you can use $respondentId instead
+     * @param int $organizationId Organization id
+     * @param int $respondentId   Optional respondent id, used when patient id is empty
      * @return Gems_Tracker_Respondent
      */
-    public function getRespondent($patientId, $organization)
+    public function getRespondent($patientId, $organizationId, $respondentId = null)
     {
-       return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organization));
+       return $this->_loadClass('Tracker_Respondent', true, array($patientId, $organizationId, $respondentId));
     }
 
     /**
