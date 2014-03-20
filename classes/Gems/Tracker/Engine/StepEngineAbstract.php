@@ -546,10 +546,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
         // Calculate valid from
         if ($detailed) {
+            $html = MUtil_Html::create()->h4($this->_('Valid from calculation'));
             $model->set('valid_after',
+                    'default', $html,
                     'label', ' ',
                     'elementClass', 'html',
-                    'value', MUtil_Html::create()->h4($this->_('Valid from calculation'))
+                    'value', $html
                     );
         }
         $model->set('gro_valid_after_source',
@@ -585,10 +587,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     );
 
             // Calculate valid until
+            $html = MUtil_Html::create()->h4($this->_('Valid for calculation'));
             $model->set('valid_for',
                     'label', ' ',
+                    'default', $html,
                     'elementClass', 'html',
-                    'value', MUtil_Html::create()->h4($this->_('Valid for calculation'))
+                    'value', $html
                     );
             $model->set('gro_valid_for_source',
                     'label', $this->_('Date source'),
