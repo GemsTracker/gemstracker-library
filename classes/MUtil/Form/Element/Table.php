@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,11 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -39,23 +39,29 @@
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_Form_Element_SubFocusInterface
 {
     /**
-     * Use formSelect view helper by default
-     * @var string
-     */
-    public $helper = '';
-
-
-    /**
-     * Multiselect is an array of values by default
+     * Table is an array of values by default
+     *
      * @var bool
      */
     protected $_isArray = true;
 
+    /**
+     * The model sub form all others are copied from
+     *
+     * @var Zend_Form
+     */
     protected $_subForm;
+
+    /**
+     * Actual clones of form
+     *
+     * @var array of Zend_Form
+     */
     protected $_subForms;
 
     /**
@@ -66,8 +72,8 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
      * - array: options with which to configure element
      * - Zend_Config: Zend_Config with options for configuring element
      *
+     * @param Zend_Form $subForm
      * @param  string|array|Zend_Config $spec
-     * @return void
      * @throws Zend_Form_Exception if no element name after initialization
      */
     public function __construct(Zend_Form $subForm, $spec, $options = null)
@@ -77,16 +83,28 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
         parent::__construct($spec, $options);
     }
 
+    /**
+     *
+     * return array of elements or subforms
+     */
     public function getSubFocusElements()
     {
         return $this->getSubForms();
     }
 
+    /**
+     *
+     * @return Zend_Form
+     */
     public function getSubForm()
     {
         return $this->_subForm;
     }
 
+    /**
+     *
+     * @return array of Zend_Form
+     */
     public function getSubForms()
     {
         return $this->_subForms;
@@ -110,6 +128,7 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
     {
         $valid = parent::isValid($value, $context);
 
+        // Subforms are set bet setValue() called by parent::isValid()
         if ($this->_subForms) {
             foreach ($value as $id => $data) {
                 $valid = $this->_subForms[$id]->isValid($data) && $valid;
@@ -139,12 +158,24 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
         }
     }
 
+    /**
+     * Change  the sub form later
+     *
+     * @param Zend_Form $subForm
+     * @return \MUtil_Form_Element_Table (continuation pattern)
+     */
     public function setSubForm(Zend_Form $subForm)
     {
         $this->_subForm = $subForm;
         return $this;
     }
 
+    /**
+     * Set element value
+     *
+     * @param  mixed $value
+     * @return \MUtil_Form_Element_Table (continuation pattern)
+     */
     public function setValue($value)
     {
         // $this->setElementsBelongTo($this->getName());

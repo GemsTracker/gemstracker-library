@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Form
+ * @subpackage Form_Decorator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -39,56 +39,37 @@
  * Display a form in a table decorator.
  *
  * @package    MUtil
- * @subpackage Form
+ * @subpackage Form_Decorator
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
 class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
 {
+    /**
+     *
+     * @var array of Zend_Form_Decorator constructors or obhjects
+     */
     protected $_cellDecorators;
-    protected $_options;
-    protected $_subform;
 
     /**
-     * Constructor
+     * Change the current decorators
      *
-     * Accept options during initialization.
-     *
-     * @param  array|Zend_Config $options
-     * @return void
+     * @param Zend_Form_Element $element
+     * @param array $decorators
      */
-    public function __construct($options = null)
-    {
-        if ($options instanceof Zend_Config) {
-            $this->setConfig($options);
-        } elseif (is_array($options)) {
-            $this->setOptions($options);
-        } else {
-            $this->setOptions(array());
-        }
-    }
-
-    private function applyDecorators(Zend_Form_Element $element, array $decorators)
+    private function _applyDecorators(Zend_Form_Element $element, array $decorators)
     {
         $element->clearDecorators();
         foreach ($decorators as $decorator) {
             call_user_func_array(array($element, 'addDecorator'), $decorator);
         }
-
-        return $this;
     }
 
     /**
-     * Clear all options
-     *
-     * @return Zend_Form_Decorator_Interface
+     * Loads Cell decorators if needed.
+     * @return array of Zend_Form_Decorator constructors or obhjects
      */
-    public function clearOptions()
-    {
-        $this->_options = array();
-    }
-
     public function getCellDecorators()
     {
         if (! $this->_cellDecorators) {
@@ -99,38 +80,9 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
     }
 
     /**
-     * Retrieve current element
      *
-     * @return mixed
+     * @return array of Zend_Form_Decorator constructors or obhjects
      */
-    public function getElement()
-    {
-        return $this->_subform;
-    }
-
-    /**
-     * Retrieve a single option
-     *
-     * @param  string $key
-     * @return mixed
-     */
-    public function getOption($key)
-    {
-        if (isset($this->_options[$key])) {
-            return $this->_options[$key];
-        }
-    }
-
-    /**
-     * Retrieve decorator options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->_options;
-    }
-
     public function loadDefaultCellDecorators()
     {
         if (! $this->_cellDecorators) {
@@ -145,17 +97,6 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
     }
 
     /**
-     * Delete a single option
-     *
-     * @param  string $key
-     * @return bool
-     */
-    public function removeOption($key)
-    {
-        unset($this->_options[$key]);
-    }
-
-    /**
      * Render the element
      *
      * @param  string $content Content to decorate
@@ -163,7 +104,8 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
      */
     public function render($content)
     {
-        if ((null === ($element = $this->getElement())) ||
+        $element = $this->getElement();
+        if ((null === $element) ||
             (null === ($view = $element->getView()))) {
             return $content;
         }
@@ -222,7 +164,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
                     $table->tr();
                     foreach ($subform->getElements() as $subelement) {
                         if ($subelement instanceof Zend_Form_Element_Hidden) {
-                            $this->applyDecorators($subelement, array(array('ViewHelper')));
+                            $this->_applyDecorators($subelement, array(array('ViewHelper')));
                             $hidden[] = $subelement;
                         } else {
                             $last_cell = $table->td($hidden);
@@ -256,36 +198,6 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
     }
 
     /**
-     * Set decorator options from a config object
-     *
-     * @param  Zend_Config $config
-     * @return Zend_Form_Decorator_Interface
-     */
-    public function setConfig(Zend_Config $config)
-    {
-        $this->setOptions($config->toArray());
-
-        return $this;
-    }
-
-    /**
-     * Set an element to decorate
-     *
-     * While the name is "setElement", a form decorator could decorate either
-     * an element or a form object.
-     *
-     * @param  mixed $element
-     * @return Zend_Form_Decorator_Interface
-     */
-    public function setElement($element)
-    {
-        $this->_subform = $element;
-
-        return $this;
-    }
-
-
-    /**
      * Set a single option
      *
      * @param  string $key
@@ -303,7 +215,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
                 break;
 
             default:
-                $this->_options[$key] = $value;
+                parent::setOption($key, $value);
                 break;
         }
 

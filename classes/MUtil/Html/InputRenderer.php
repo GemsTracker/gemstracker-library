@@ -327,7 +327,12 @@ class MUtil_Html_InputRenderer implements MUtil_Html_HtmlInterface
 
     public static function renderElement(Zend_View_Abstract $view, $element)
     {
-        return self::renderUntil($view, $element, array('Zend_Form_Decorator_ViewHelper', 'Zend_Form_Decorator_File'));
+        return self::renderUntil($view, $element, array(
+            'Zend_Form_Decorator_ViewHelper',
+            'Zend_Form_Decorator_File',
+            'MUtil_Form_Decorator_Table',
+            'MUtil_Form_Decorator_Subforms'
+            ));
     }
 
     public static function renderExcept(Zend_View_Abstract $view, $element, array $except_decorators)

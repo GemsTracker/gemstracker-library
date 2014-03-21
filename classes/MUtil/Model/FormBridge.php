@@ -311,16 +311,16 @@ class MUtil_Model_FormBridge
 
         return $this->$method($name, $options);
     }
-    
+
     public function addColorPicker($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
-        
+
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS);
-        
-        
+
+
         return $this->_addToForm($name, 'ColorPicker' , $options);
     }
 
@@ -762,6 +762,57 @@ class MUtil_Model_FormBridge
             self::DISPLAY_OPTIONS, self::MULTI_OPTIONS);
 
         return $this->_addToForm($name, 'Select', $options);
+    }
+
+    /**
+     * Adds a form multiple times in a table
+     *
+     * You can add your own 'form' either to the model or here in the parameters.
+     * Otherwise a form of the same class as the parent form will be created.
+     *
+     * All elements not yet added to the form are added using a new FormBridge
+     * instance using the default label / non-label distinction.
+     *
+     * @param string $name Name of element
+     * @param mixed $arrayOrKey1 MUtil_Ra::pairs() name => value array
+     * @return MUtil_Form_Element_Table
+     */
+    public function addSubForm($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        $options = func_get_args();
+        $options = MUtil_Ra::pairs($options, 1);
+
+        $options = $this->_mergeOptions($name, $options,
+            self::SUBFORM_OPTIONS);
+
+        if (isset($options['form'])) {
+            $form = $options['form'];
+            unset($options['form']);
+        } else {
+            $formClass = get_class($this->form);
+            $form = new $formClass();
+        }
+
+        $submodel = $this->model->get($name, 'model');
+        if ($submodel instanceof MUtil_Model_ModelAbstract) {
+            $bridge = new MUtil_Model_FormBridge($submodel, $form);
+
+            foreach ($submodel->getItemsOrdered() as $itemName) {
+                if (! $form->getElement($name)) {
+                    if ($submodel->has($itemName, 'label')) {
+                        $bridge->add($itemName);
+                    } else {
+                        $bridge->addHidden($itemName);
+                    }
+                }
+            }
+        }
+
+        $element = new MUtil_Form_Element_SubForms($form, $name, $options);
+
+        $this->form->addElement($element);
+
+        return $element;
     }
 
     /**

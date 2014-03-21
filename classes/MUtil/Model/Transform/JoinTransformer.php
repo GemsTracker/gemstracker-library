@@ -69,7 +69,7 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
 
             // MUtil_Echo::track($mfor);
             if ($new) {
-                $sdata = array($sub->loadNew());
+                $sdata = $sub->loadNew(1);
             } else {
                 $sdata = $sub->load(array($skey => $mfor));
             }
