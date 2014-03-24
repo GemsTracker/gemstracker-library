@@ -49,6 +49,13 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     implements MUtil_Model_Dependency_DependencyInterface
 {
     /**
+     * The settings array for those effecteds that don't have an effects array
+     *
+     * @var array of setting => setting of setting changed by this dependency
+     */
+    protected $_defaultEffects = array();
+
+    /**
      * Can be overriden in sub class
      *
      * @var array Of name => name of items dependency depends on.
@@ -71,6 +78,11 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
         if ($this->_dependentOn) {
             $this->setDependsOn($this->_dependentOn);
         }
+
+        if ($this->_defaultEffects) {
+            $this->_defaultEffects = array_combine($this->_defaultEffects, $this->_defaultEffects);
+        }
+
         // Make sub class specified effectds confirm to system
         if ($this->_effecteds) {
             $this->setEffecteds($this->_effecteds);
@@ -107,6 +119,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
      */
     public function addEffected($effectedField, $effectedSettings)
     {
+
         foreach ((array) $effectedSettings as $setting) {
             $this->_effecteds[$effectedField][$setting] = $setting;
         }
@@ -125,7 +138,11 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     public final function addEffecteds(array $effecteds)
     {
         foreach ($effecteds as $effectedField => $effectedSettings) {
-            return $this->addEffected($effectedField, $effectedSettings);
+            if (is_int($effectedField) && (! is_array($effectedSettings)) && $this->_defaultEffects) {
+                $this->addEffected($effectedSettings, $this->_defaultEffects);
+            } else {
+                $this->addEffected($effectedField, $effectedSettings);
+            }
         }
 
         return $this;
