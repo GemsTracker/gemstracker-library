@@ -55,6 +55,21 @@
  */
 class MUtil_Lazy
 {
+    /**
+     * Static variable for debuggging purposes. Toggles the echoing of e.g. raised results.
+     *
+     * @var boolean When true Lazy objects should start outputting what is happening in them.
+     */
+    public static $verbose = false;
+
+    /**
+     * Returns a lazy object that alternates through all the parameters used
+     * to call this function. (At least two , but more is allowed.)
+     *
+     * @param mixed $value1
+     * @param mixed $value2
+     * @return \MUtil_Lazy_Alternate
+     */
     public static function alternate($value1, $value2)
     {
         $args = func_get_args();
@@ -165,6 +180,13 @@ class MUtil_Lazy
         return new MUtil_Lazy_Call(array($object, $method), $args);
     }
 
+    /**
+     * Perform a lazy call to an array
+     *
+     * @param mixed $array
+     * @param mixed $offset
+     * @return \MUtil_Lazy_ArrayAccessor
+     */
     public static function offsetGet($array, $offset)
     {
         return new MUtil_Lazy_ArrayAccessor($array, $offset);
@@ -219,19 +241,32 @@ class MUtil_Lazy
      */
     public static function rise($object, $stack = null)
     {
-        $stack = self::toStack($stack, __FUNCTION__);
+        $raised = false;
+        $stack  = self::toStack($stack, __FUNCTION__);
 
         // Resolving when MUtil_Lazy_LazyInterface.
         while ($object instanceof MUtil_Lazy_LazyInterface) {
             $object = $object->__toValue($stack);
+            $raised = true;
         }
 
         if ($object && is_array($object)) {
+            $result = array();
+
             foreach ($object as $key => $val) {
                 $result[$key] = self::rise($val, $stack);
+                $raised = true;
             }
 
+            if ($raised && MUtil_Lazy::$verbose) {
+                MUtil_Echo::header('Lazy array rise');
+                MUtil_Echo::classToName($result);
+            }
             return $result;
+        }
+        if ($raised && MUtil_Lazy::$verbose) {
+            MUtil_Echo::header('Lazy rise');
+            MUtil_Echo::classToName($object);
         }
 
         return $object;

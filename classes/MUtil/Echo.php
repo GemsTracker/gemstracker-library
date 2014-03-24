@@ -86,6 +86,44 @@ class MUtil_Echo
     }
 
     /**
+     * Adds multiple variables to the output, but displays the class name instead of the class itself.
+     *
+     * @param mixed $var_1 Any kind of variable
+     * @param mixed $var_2 Optional, any kind of variable
+     */
+    public static function classToName($var_1, $var_2 = null)
+    {
+        foreach (func_get_args() as $var) {
+            self::r(self::convertClassToName($var));
+        }
+    }
+
+    /**
+     * Shows the class name instead of the class content (and)with __toString output if available
+     *
+     * @param mixed $object
+     * @return array
+     */
+    public static function convertClassToName($object)
+    {
+        if (is_object($object)) {
+            if (method_exists($object, '__toString')) {
+                return 'Object class: <strong>' . get_class($object) . '</strong> to string: <em>' .
+                        $object->__toString() . '</em>';
+            }
+            return 'Object class: <strong>' . get_class($object) . '</strong>';
+        }
+        if (! is_array($object)) {
+            return $object;
+        }
+        $results = array();
+        foreach ($object as $key => $value) {
+            $results[$key] = self::convertClassToName($value);
+        }
+        return $results;
+    }
+
+    /**
      * Returns the current session namespace that stores the content.
      *
      * @staticvar Zend_Session_Namespace $session
@@ -111,6 +149,20 @@ class MUtil_Echo
     {
         $session = self::getSession();
         return isset($session->content);
+    }
+
+    /**
+     * Output text as caption
+     *
+     * @param string $caption
+     */
+    public static function header($caption)
+    {
+        $session = self::getSession();
+
+        if ($caption) {
+            $session->content .= "\n<h6><b>" . $caption . "</b></h6>\n\n";
+        }
     }
 
     /**

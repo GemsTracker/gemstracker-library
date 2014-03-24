@@ -36,6 +36,8 @@
  */
 
 /**
+ * A lazy object for when you want to access an array but either the array
+ * itself and/or the offset is a lazy object.
  *
  * @package    MUtil
  * @subpackage Lazy
@@ -46,9 +48,23 @@
 
 class MUtil_Lazy_ArrayAccessor extends MUtil_Lazy_LazyAbstract
 {
+    /**
+     *
+     * @var mixed Possibly lazy array
+     */
     private $_array;
+
+    /**
+     *
+     * @var mixed Possibly lazy offset
+     */
     private $_offset;
 
+    /**
+     *
+     * @param mixed Possibly lazy array
+     * @param mixed Possibly lazy offset
+     */
     public function __construct($array, $offset)
     {
         $this->_array  = $array;
@@ -65,17 +81,13 @@ class MUtil_Lazy_ArrayAccessor extends MUtil_Lazy_LazyAbstract
      */
     protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
     {
-        $array = $this->_array;
-        while ($array instanceof MUtil_Lazy_LazyInterface) {
-            $array = $array->__toValue($stack);
-        }
+        $array  = MUtil_Lazy::rise($this->_array);
+        $offset = MUtil_Lazy::rise($this->_offset);
 
-        $offset = $this->_offset;
-        while ($offset instanceof MUtil_Lazy_LazyInterface) {
-            $offset = $offset->__toValue($stack);
+        if (MUtil_Lazy::$verbose) {
+            MUtil_Echo::header('Lazy offset get for offset: <em>' . $offset . '</em>');
+            MUtil_Echo::classToName($array);
         }
-
-        // MUtil_Echo::track($array, 'offset', $offset);
 
         if (null === $offset) {
             if (isset($array[''])) {
