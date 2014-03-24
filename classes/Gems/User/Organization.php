@@ -138,7 +138,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
 
     /**
      * Returns true if this is an existing organization
-     * 
+     *
      * @return boolean
      */
     public function exists()
@@ -321,6 +321,16 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
     public function hasEmail()
     {
         return $this->_has('gor_contact_email');
+    }
+
+    /**
+     * Does this organization have a user group?
+     *
+     * @return boolean
+     */
+    public function hasRespondentGroup()
+    {
+        return (boolean) $this->_has('gor_respondent_group');
     }
 
     /**

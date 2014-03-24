@@ -263,6 +263,15 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
 
     /**
      *
+     * @return Gems_User_Organization
+     */
+    public function getOrganization()
+    {
+        return $this->loader->getOrganization($this->organizationId);
+    }
+
+    /**
+     *
      * @return integer Organization ID
      */
     public function getOrganizationId()
