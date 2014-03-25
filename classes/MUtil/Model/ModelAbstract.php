@@ -658,6 +658,37 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Remove all non-used elements from a form by setting the elementClasses to None.
+     *
+     * Checks for dependencies and keys to be included
+     *
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function clearElementClasses()
+    {
+        $labels  = $this->getColNames('label');
+        $options = array_diff($this->getColNames('multiOptions'), $labels);
+
+        // Set element class to text for those with labels without an element class
+        $this->setDefault($options, 'elementClass', 'Select');
+
+        // Set element class to text for those with labels without an element class
+        $this->setDefault($labels, 'elementClass', 'Text');
+
+        // Hide al dependencies plus the keys
+        $elems   = $this->getColNames('elementClass');
+        $depends = $this->getDependentOn($elems) + $this->getKeys();
+        if ($depends) {
+            $this->setDefault($depends, 'elementClass', 'Hidden');
+        }
+
+        // Leave out the rest
+        $this->setDefault('elementClass', 'None');
+
+        return $this;
+    }
+
+    /**
      * Creates a validator that checks that this value is used in no other
      * row in the table of the $name field, except that row itself.
      *
@@ -876,6 +907,33 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Get an array of field names, but only when the value of a certain attribute is set.
+     *
+     * Example:
+     * <code>
+     * $this->getCol('label');
+     * </code>
+     * returns an array of field names where the label is set
+     *
+     * This is a more efficient function than using array_keys($tmoel->getCol())
+     *
+     * @param string $column_name Name of the attribute
+     * @return array
+     */
+    public function getColNames($column_name)
+    {
+        $results = array();
+
+        foreach ($this->_model as $name => $row) {
+            if ($this->has($name, $column_name)) {
+                $results[] = $name;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
      * Get the dependencies this name has a dependency to at all or on the specific setting
      *
      * @param mixed $name Field name or array of fields
@@ -1021,7 +1079,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * The names of the items called using get() since the last
      * call to trackUsage(true).
      *
-     * @return array
+     * @return array name => name
      */
     public function getItemsUsed()
     {
@@ -1492,7 +1550,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         $empty = array();
         foreach ($this->getItemNames() as $name) {
-            $empty[$name] = $this->get($name, 'default');
+            $value = $this->get($name, 'default');
+
+            // Load 'Value' if set
+            if (null === $value) {
+                $value = $this->get($name, 'value');
+            }
+            $empty[$name] = $value;
         }
         $data = $this->processAfterLoad(array($empty), true);
 
@@ -1671,6 +1735,23 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                             }
                         }
                     }
+                } elseif (MUtil_Model::$verbose) {
+                    if ($dependsOn) {
+                        $missing = array_diff_key($dependsOn, $data);
+
+                        if (1 === count($missing)) {
+                            $msg = "Missing field %s for dependency class %s";
+                            $fld = reset($missing);
+                        } else {
+                            $msg = "Missing fields %s for dependency class %s";
+                            $fld = implode(', ', array_keys($missing));
+                        }
+
+                    } else {
+                        $msg = "%s%s dependency is not dependent on any fields.";
+                        $fld = '';
+                    }
+                    MUtil_Echo::r(sprintf($msg, $fld, get_class($dependency)), 'Dependency skipped');
                 }
             }
         }
@@ -1911,6 +1992,53 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         foreach ($names as $name) {
             $this->set($name, $args);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set attributes for all or some fields in the model, but only when those eattributes do not exist (or are null)
+     *
+     * Example 1, all fields:
+     * <code>
+     * $this->setDefaults('save', true) ;
+     * $this->setDefaults(array('save' => true)) ;
+     * </code>
+     * both set the attribute 'save' to true for all fields where it is not null.
+     *
+     * Example 2, some fields:
+     * <code>
+     * $this->setDefaults(array('x', 'y', 'z'), 'save', true) ;
+     * $this->setDefaults(array('x', 'y', 'z'), array('save' => true)) ;
+     * </code>
+     * both set the attribute 'save' to true for the x, y and z fields, unless it was already set to false.
+     *
+     * @param $namesOrKeyArray When array and there is more than one parameter an array of field names
+     * @param string|array $arrayOrKey1 A key => value array or the name of the first key
+     * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
+     * @param string $key2 Optional second key when $arrayOrKey1 is a string
+     * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function setDefault($namesOrKeyArray, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
+    {
+        if (is_array($namesOrKeyArray) && $arrayOrKey1) {
+            $names = $namesOrKeyArray;
+            $skip = 1;
+        } else {
+            $names = array_keys($this->_model);
+            $skip = 0;
+        }
+        $args = func_get_args();
+        $args = MUtil_Ra::pairs($args, $skip);
+
+        foreach ($names as $name) {
+            foreach ($args as $key => $value) {
+                if (! $this->has($name, $key)) {
+                    $this->set($name, $key, $value);
+                }
+            }
         }
 
         return $this;

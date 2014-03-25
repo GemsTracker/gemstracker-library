@@ -110,6 +110,17 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     protected $formData = array();
 
     /**
+     * Output only those elements actually used by the form.
+     *
+     * When false all fields without a label or elementClass are hidden,
+     * when true those are left out, unless they happend to be a key field or
+     * needed for a dependency.
+     *
+     * @var boolean
+     */
+    protected $onlyUsedElements = false;
+
+    /**
      *
      * @var string class attribute for labels
      */
@@ -367,6 +378,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         if (is_null($this->_items)) {
             $model        = $this->getModel();
             $this->_items = $model->getItemsOrdered();
+
+            if ($this->onlyUsedElements) {
+                $model->clearElementClasses();
+            }
         }
     }
 
@@ -390,11 +405,18 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         $model = $this->getModel();
 
         if ($this->request->isPost()) {
-            $this->formData = $this->request->getPost() + $this->formData;
+            // 1 - When posting, posted data is used as a value first
+            // 2 - Then we use any values already set
+            // 3 - And add nulls for multiOptions fields as these are not passed when empty using $_POST
+            $this->formData = $this->request->getPost() +
+                    $this->formData +  // Then already specified values
+                    array_fill_keys($model->getColNames('multiOptions'), null);
 
             // Process optional dependencies
             if ($model->hasDependencies()) {
+                // MUtil_Model::$verbose = true;
                 $this->formData = $model->processDependencies($this->formData, $this->createData);
+                // MUtil_Model::$verbose = false;
             }
 
         } else {
