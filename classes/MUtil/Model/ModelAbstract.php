@@ -667,7 +667,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function clearElementClasses()
     {
         $labels  = $this->getColNames('label');
-        $options = array_diff($this->getColNames('multiOptions'), $labels);
+        $options = array_intersect($this->getColNames('multiOptions'), $labels);
 
         // Set element class to text for those with labels without an element class
         $this->setDefault($options, 'elementClass', 'Select');
@@ -684,6 +684,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         // Leave out the rest
         $this->setDefault('elementClass', 'None');
+
+        // Cascade
+        foreach ($this->getCol('model') as $subModel) {
+            if ($subModel instanceof MUtil_Model_ModelAbstract) {
+                $subModel->clearElementClasses();
+            }
+        }
 
         return $this;
     }
@@ -1659,20 +1666,31 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param array $data Nested array containing rows or iterator
      * @param boolean $new True when it is a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested
      */
-    public function processAfterLoad($data, $new = false)
+    public function processAfterLoad($data, $new = false, $isPostData = false)
     {
-        if (($this->_transformers || $this->getMeta(self::LOAD_TRANSFORMER)) && ($data instanceof Traversable)) {
+        if (($this->_transformers || $isPostData || $this->getMeta(self::LOAD_TRANSFORMER)) &&
+                ($data instanceof Traversable)) {
             $data = iterator_to_array($data, true);
         }
 
         foreach ($this->_transformers as $transformer) {
-            $data = $transformer->transformLoad($this, $data, $new);
+            $data = $transformer->transformLoad($this, $data, $new, $isPostData);
         }
 
+        if ($isPostData) {
+            // Create an array to add a null for any missing multiOptions value
+            $isPostData = array_fill_keys($this->getColNames('multiOptions'), null);
+        }
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
             foreach ($data as $key => $row) {
+                if ($isPostData) {
+                    // Add a null for any missing multiOptions value
+                    $row = $row + $isPostData;
+                }
+
                 $data[$key] = $this->_processRowAfterLoad($row, $new);
             }
         }

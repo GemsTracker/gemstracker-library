@@ -76,6 +76,13 @@ class MUtil_Lazy
         return new MUtil_Lazy_Alternate($args);
     }
 
+    /**
+     * Execute this call later
+     *
+     * @param callable $callable
+     * @param mixed $arg_array All other arguments are used to call the function at a later time
+     * @return \MUtil_Lazy_Call
+     */
     public static function call($callable, $arg_array = null)
     {
         $args = array_slice(func_get_args(), 1);

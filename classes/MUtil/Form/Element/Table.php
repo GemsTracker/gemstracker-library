@@ -35,6 +35,9 @@
  */
 
 /**
+ * Show a table containing a subform repeated for the number of rows set for
+ * this item when rendered.
+ *
  * @package    MUtil
  * @subpackage Form_Element
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -84,12 +87,18 @@ class MUtil_Form_Element_Table extends Zend_Form_Element_Xhtml implements MUtil_
     }
 
     /**
+     * Get the (possibly focusing) elements/dispalygroups/form contained by this element
      *
      * return array of elements or subforms
      */
     public function getSubFocusElements()
     {
-        return $this->getSubForms();
+        // If the subforms have been initialezed return them, otherwise return the (later cloned) parent form
+        if ($this->_subForms) {
+            return $this->_subForms;
+        }
+
+        return $this->_subForm;
     }
 
     /**

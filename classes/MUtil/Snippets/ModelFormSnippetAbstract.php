@@ -407,17 +407,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         if ($this->request->isPost()) {
             // 1 - When posting, posted data is used as a value first
             // 2 - Then we use any values already set
-            // 3 - And add nulls for multiOptions fields as these are not passed when empty using $_POST
-            $this->formData = $this->request->getPost() +
-                    $this->formData +  // Then already specified values
-                    array_fill_keys($model->getColNames('multiOptions'), null);
+            $formData = array($this->request->getPost() + $this->formData);
 
-            // Process optional dependencies
-            if ($model->hasDependencies()) {
-                // MUtil_Model::$verbose = true;
-                $this->formData = $model->processDependencies($this->formData, $this->createData);
-                // MUtil_Model::$verbose = false;
-            }
+            $formData = $model->processAfterLoad($formData, $this->createData, true);
+
+            // Get the first row
+            $this->formData = reset($formData);
 
         } else {
             // Assume that if formData is set it is the correct formData

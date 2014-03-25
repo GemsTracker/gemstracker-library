@@ -564,11 +564,11 @@ class MUtil_Model_FormBridge
 
         $submodel = $this->model->get($name, 'model');
         if ($submodel instanceof MUtil_Model_ModelAbstract) {
-            $bridge = new MUtil_Model_FormBridge($submodel, $form);
+            $bridge = new self($submodel, $form);
 
             foreach ($submodel->getItemsOrdered() as $itemName) {
-                if (! $form->getElement($name)) {
-                    if ($submodel->has($itemName, 'label')) {
+                if (! $form->getElement($itemName)) {
+                    if ($submodel->has($itemName, 'label') || $submodel->has($itemName, 'elementClass')) {
                         $bridge->add($itemName);
                     } else {
                         $bridge->addHidden($itemName);
@@ -795,11 +795,11 @@ class MUtil_Model_FormBridge
 
         $submodel = $this->model->get($name, 'model');
         if ($submodel instanceof MUtil_Model_ModelAbstract) {
-            $bridge = new MUtil_Model_FormBridge($submodel, $form);
+            $bridge = new self($submodel, $form);
 
             foreach ($submodel->getItemsOrdered() as $itemName) {
-                if (! $form->getElement($name)) {
-                    if ($submodel->has($itemName, 'label')) {
+                if (! $form->getElement($itemName)) {
+                    if ($submodel->has($itemName, 'label') || $submodel->has($itemName, 'elementClass')) {
                         $bridge->add($itemName);
                     } else {
                         $bridge->addHidden($itemName);

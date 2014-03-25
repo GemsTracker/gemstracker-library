@@ -50,15 +50,17 @@ class MUtil_Model_Transform_JoinTransformer extends MUtil_Model_SubmodelTransfor
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param MUtil_Model_ModelAbstract $sub
-     * @param array $data
-     * @param array $join
+     * @param MUtil_Model_ModelAbstract $model Parent model
+     * @param MUtil_Model_ModelAbstract $sub Sub model
+     * @param array $data The nested data rows
+     * @param array $join The join array
+     * @param string $name Name of sub model
      * @param boolean $new True when loading a new item
-     * @param string $name
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
-    protected function transformLoadSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name, $new)
+    protected function transformLoadSubModel(
+            MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+            $name, $new, $isPostData)
     {
         if (1 === count($join)) {
             // Suimple implementation

@@ -36,6 +36,8 @@
  */
 
 /**
+ * Show a repeating subform repeated for the number of rows set for this item
+ * when rendered.
  *
  * @package    MUtil
  * @subpackage Form_Element
@@ -93,15 +95,22 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     }
 
     /**
+     * Get the (possibly focusing) elements/dispalygroups/form contained by this element
      *
      * return array of elements or subforms
      */
     public function getSubFocusElements()
     {
-        return $this->getSubForms();
+        // If the subforms have been initialezed return them, otherwise return the (later cloned) parent form
+        if ($this->_subForms) {
+            return $this->_subForms;
+        }
+
+        return $this->_subForm;
     }
 
     /**
+     * Get the (base) form cloned for each repetition
      *
      * @return Zend_Form
      */
@@ -111,6 +120,7 @@ class MUtil_Form_Element_SubForms extends Zend_Form_Element_Xhtml implements MUt
     }
 
     /**
+     * Get the (actual) cloned, repeated forms
      *
      * @return array of Zend_Form
      */

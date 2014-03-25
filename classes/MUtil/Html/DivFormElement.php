@@ -98,6 +98,7 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
         // Make a Lazy repeater for the form elements and set it as the element repeater
         $formrep = new MUtil_Lazy_RepeatableFormElements($form);
         $formrep->setSplitHidden(true); // These are treated separately
+        $formrep->setFlattenSubs(true); // And flatten the output
         $this->setRepeater($formrep);
 
         if (null === $width) {

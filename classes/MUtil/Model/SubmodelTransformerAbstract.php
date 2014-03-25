@@ -149,16 +149,17 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         if (! $data) {
             return $data;
         }
 
         foreach ($this->_subModels as $name => $sub) {
-            $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name, $new);
+            $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name, $new, $isPostData);
         }
         // MUtil_Echo::track($data);
 
@@ -168,15 +169,17 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param MUtil_Model_ModelAbstract $sub
-     * @param array $data
-     * @param array $join
+     * @param MUtil_Model_ModelAbstract $model Parent model
+     * @param MUtil_Model_ModelAbstract $sub Sub model
+     * @param array $data The nested data rows
+     * @param array $join The join array
+     * @param string $name Name of sub model
      * @param boolean $new True when loading a new item
-     * @param string $name
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
-    abstract protected function transformLoadSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join, $name, $new);
+    abstract protected function transformLoadSubModel(
+            MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+            $name, $new, $isPostData);
 
     /**
      * This transform function performs the actual save of the data and is called after

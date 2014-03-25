@@ -45,6 +45,7 @@
 interface MUtil_Form_Element_SubFocusInterface
 {
     /**
+     * Get the (possibly focusing) elements/dispalygroups/form contained by this element
      *
      * return array of elements or subforms
      */
