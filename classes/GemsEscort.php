@@ -630,6 +630,7 @@ class GemsEscort extends MUtil_Application_Escort
         // Initialize view
         $view = new Zend_View();
         $view->addHelperPath('MUtil/View/Helper', 'MUtil_View_Helper');
+        $view->addHelperPath('MUtil/Less/View/Helper', 'MUtil_Less_View_Helper');
         $view->addHelperPath('Gems/View/Helper', 'Gems_View_Helper');
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');

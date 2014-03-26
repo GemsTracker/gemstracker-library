@@ -35,7 +35,7 @@
  * @version    $Id: HeadLink .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
-require_once __DIR__ . '/less.inc.php';
+require_once __DIR__ . '/lessc.inc.php';
 
 /**
  * Make sure each .less css script is compiled to .css
@@ -48,6 +48,49 @@ require_once __DIR__ . '/less.inc.php';
  */
 class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 {
+    /**
+     * Compile a less file
+     *
+     * @param Zend_View $view
+     * @param string $href The less file
+     * @param boolean $always Always compile
+     * @return boolean True when changed
+     */
+    public function compile(Zend_View $view, $href, $always = false)
+    {
+        if (MUtil_String::startsWith($href, 'http', true)) {
+            // When a local url, strip the serverUrl and basepath
+            $base = $view->serverUrl() . $view->baseUrl();
+            if (MUtil_String::startsWith($href, $base, true)) {
+                // Only strip when urls match
+                $href = substr($href, strlen($base));
+            }
+        }
+
+        // Add full path to the webdir
+        $inFile  = dirname($_SERVER["SCRIPT_FILENAME"]) . '/' . $href;
+        $outFile = substr($inFile, 0, -strlen(pathinfo($inFile, PATHINFO_EXTENSION))) . 'css';
+
+        // Try compiling
+        try {
+            // MUtil_Echo::track($inFile, $outFile);
+
+            $lessc = new lessc();
+            if ($always || array_key_exists('compilecss', Zend_Controller_Front::getInstance()->getRequest()->getParams())) {
+                $result = (boolean) $lessc->compileFile($inFile, $outFile);
+            } else {
+                $result = $lessc->checkedCompile($inFile, $outFile);
+            }
+        } catch (Exception $exc) {
+            // If we have an error, present it if not in production
+            if ((APPLICATION_ENV !== 'production') || (APPLICATION_ENV !== 'acceptance')) {
+                MUtil_Echo::pre($exc->getMessage());
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * Create HTML link element from data item
      *
@@ -63,36 +106,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 
             // This is a stylesheet, consider extension and compile .less to .css
             if (($attributes['type'] == 'text/less') || MUtil_String::endsWith($attributes['href'], '.less', true)) {
-                $href = $attributes['href'];
-
-                if (MUtil_String::startsWith($attributes['href'], 'http', true)) {
-                    // When a local url, strip the serverUrl and basepath
-                    $base = $this->view->serverUrl() . $view->baseUrl();
-                    if (MUtil_String::startsWith($href, $base, true)) {
-                        // Only strip when urls match
-                        $href = substr($href, strlen($base));
-                    }
-                }
-
-                // Add full path to the webdir
-                $inFile  = dirname($_SERVER["SCRIPT_FILENAME"]) . $href;
-                $outFile = substr($inFile, 0, -strlen(pathinfo($inFile, PATHINFO_EXTENSION))) . 'css';
-
-                // Try compiling
-                try {
-                    $params = Zend_Controller_Front::getInstance()->getRequest()->getParams();
-                    if (array_key_exists('compilecss', $params)) {
-                        $lessc = new lessc();
-                        $result = $lessc->compileFile($inFile, $outFile);
-                    } else {
-                        $result = lessc::ccompile($inFile, $outFile);
-                    }
-                } catch (Exception $exc) {
-                    // If we have an error, present it if not in production
-                    if ((APPLICATION_ENV !== 'production') || (APPLICATION_ENV !== 'acceptance')) {
-                        MUtil_Echo::pre($exc->getMessage());
-                    }
-                }
+                $this->compile($this->view, $attributes['href'], false);
 
                 // Modify object, not the derived array
                 $item->type = 'text/css';
