@@ -28,52 +28,34 @@
  *
  *
  * @package    MUtil
- * @subpackage Model_Dependency
+ * @subpackage CanEditDependency
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: QueryDependency .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: CanEditDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
+ * Reverse of the Readonly dependency.
+ *
+ * A class for adding dependencies that turn readonly on in the model unless
+ * one of the values the dependency depends on returns a true value.
+ *
+ * Example:
+ * <code>
+ * $model->addDependency('ReadOnlyDependency', array('can_edit'), $model->getColNames('label'));
+ * </code>
+ * Will set readonly=null for all fields with a label when can_edit returns true, otherwise
+ * sets readonly=readonly
  *
  * @package    MUtil
- * @subpackage Model_Dependency
+ * @subpackage CanEditDependency
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_DependencyAbstract
+class MUtil_Model_Dependency_CanEditDependency extends MUtil_Model_Dependency_ReadonlyDependency
 {
-    /**
-     *
-     * @var array
-     */
-    protected $_filter;
-
-    /**
-     *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
-     * @param Zend_Db_Select $select The base select statement
-     * @param array $filter Array of select field => context field, context can be a Zend_Db_Expr
-     */
-    public function __construct(Zend_Db_Select $select, array $filter)
-    {
-        $this->_select = $select;
-        $this->_filter = $filter;
-
-        foreach ($filter as $context) {
-            if (! $context instanceof Zend_Db_Expr) {
-                $this->addDependsOn($context);
-            }
-        }
-    }
-
     /**
      * Returns the changes that must be made in an array consisting of
      *
@@ -96,28 +78,12 @@ class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_Dep
      */
     public function getChanges(array $context, $new)
     {
-        $select = clone $this->_select;
-
-        foreach ($this->_filter as $fieldName => $contextName) {
-            if ($contextName instanceof Zend_Db_Expr) {
-                $select->where($fieldName . ' = ?', $contextName);
-            } elseif (null === $context[$contextName]) {
-                $select->where($fieldName . ' IS NULL');
-            } else {
-                $select->where($fieldName . ' = ?', $context[$contextName]);
+        foreach ($this->_dependentOn as $dependsOn) {
+            if ($context[$dependsOn]) {
+                return $this->_getUneffecteds();
             }
         }
 
-        $options = $this->db->fetchPairs($select);
-
-        MUtil_Echo::track($this->getEffecteds());
-        $results = array();
-        foreach ($this->getEffecteds() as $name => $settings) {
-            foreach ($settings as $setting) {
-                $results[$name][$setting] = $options;
-            }
-        }
-
-        return $results;
+        return $this->_effecteds;
     }
 }

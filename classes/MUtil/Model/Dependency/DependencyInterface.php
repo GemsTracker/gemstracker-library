@@ -98,6 +98,8 @@ interface MUtil_Model_Dependency_DependencyInterface
      *
      * Use the setting 'value' to change a value in the original data.
      *
+     * When a 'model' setting is set, the workings cascade.
+     *
      * @param array $context The current data this object is dependent on
      * @param boolean $new True when the item is a new record not yet saved
      * @return array name => array(setting => value)

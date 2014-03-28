@@ -169,6 +169,46 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Recursively apply the changes from a dependency
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param array $changes
+     * @param array $data Referenced data
+     */
+    protected function _applyDependencyChanges(MUtil_Model_ModelAbstract $model, array $changes, array &$data)
+    {
+        // MUtil_Echo::track($model->getName(), $changes, $data);
+
+        // Here we could allow only those changes this dependency claims to change
+        // or even check all of them are set.
+        foreach ($changes as $name => $settings) {
+            if (isset($settings['model'])) {
+                $submodel = $model->get($name, 'model');
+                // MUtil_Echo::track($name, $settings['model'], $data[$name]);
+                if ($submodel instanceof MUtil_Model_ModelAbstract) {
+                    if (! isset($data[$name])) {
+                        $data[$name] = array();
+                    }
+
+                    foreach ($data[$name] as &$row) {
+                        $submodel->_applyDependencyChanges($submodel, $settings['model'], $row);
+                    }
+                }
+
+                unset($settings['model']);
+            }
+
+            $model->set($name, $settings);
+
+            // Change the actual value
+            If (isset($settings['value'])) {
+                // MUtil_Echo::track($name, $settings['value']);
+                $data[$name] = $settings['value'];
+            }
+        }
+    }
+
+    /**
      * Checks the filter on sematic correctness and replaces the text search filter
      * with the real filter.
      *
@@ -1743,15 +1783,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                         }
 
                         // Here we could allow only those changes this dependency claims to change
-                        // or even check all of them are set.
-                        foreach ($changes as $name => $settings) {
-                            $this->set($name, $settings);
-
-                            // Change the actual value
-                            If (isset($settings['value'])) {
-                                $data[$name] = $settings['value'];
-                            }
-                        }
+                        // but as not specifying this correctly may lead to errors elsewhere
+                        // I think there is enough reason for discipline in this not to perform
+                        // this extra check. (Though I may change my mind in the future
+                        $this->_applyDependencyChanges($this, $changes, $data);
                     }
                 } elseif (MUtil_Model::$verbose) {
                     if ($dependsOn) {
@@ -1773,6 +1808,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 }
             }
         }
+
+        // MUtil_Echo::track($data);
 
         return $data;
     }

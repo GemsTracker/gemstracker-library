@@ -67,23 +67,6 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
     protected $_switches = array();
 
     /**
-     * Construct the switches
-     *
-     * @param array $switches  Optiona array containing the switches
-     * @param mixed $dependsOn Optional depends on values
-     */
-    public function __construct(array $switches = null, $dependsOn = null)
-    {
-        if ($dependsOn) {
-            $this->addDependsOn($dependsOn);
-        }
-
-        if ($switches) {
-            $this->addSwitches($switches);
-        }
-    }
-
-    /**
      * Recursively refresh effected fields
      *
      * @param array $switches Current level of switches array
@@ -158,6 +141,10 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
 
         // When there is no data, return no changes
         if (!array_key_exists($name, $context)) {
+            if (MUtil_Model::$verbose) {
+                $names = array_diff_key($this->_dependentOn, $context);
+                MUtil_Echo::r(implode(', ', $names), 'Name(s) not found in ' . get_class($this));
+            }
             return array();
         }
         $value = $context[$name];
@@ -191,6 +178,13 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
                 }
             }
         }
+        if (MUtil_Model::$verbose) {
+            MUtil_Echo::track($this->_switches, $this->_dependentOn, $this->_effecteds);
+            MUtil_Echo::r(
+                    "Value '$value' not found for field $name among the values: " .
+                        implode(', ', array_keys($switches)),
+                    'Value not found in ' . get_class($this));
+        }
         return array();
     }
 
@@ -207,7 +201,9 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
     public function addEffected($effectedField, $effectedSettings)
     {
         $this->_checked_effected = false;
-        return parent::addEffected($effectedField, $effectedSettings);
+        $this->_switches[$effectedField] = $effectedSettings;
+
+        return $this;
     }
 
     /**
@@ -218,8 +214,11 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
      */
     public function addSwitches(array $switches)
     {
+        $this->_checked_effected = false;
         if ($this->_switches) {
-            $this->_switches = array_merge_recursive($this->_switches, $switches);
+            foreach ($switches as $value => $switch) {
+                $this->addEffected($value, $switch);
+            }
         } else {
             $this->_switches = $switches;
         }
@@ -240,6 +239,8 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
      * values.
      *
      * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
      *
      * @param array $context The current data this object is dependent on
      * @param boolean $new True when the item is a new record not yet saved

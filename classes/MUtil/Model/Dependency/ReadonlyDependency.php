@@ -32,10 +32,20 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: QueryDependency .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: ReadonlyDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
+ * A class for adding dependencies that turn readonly off in the model unless
+ * one of the values the dependency depends on returns a true value.
+ *
+ * Example:
+ * <code>
+ * $model->addDependency('ReadOnlyDependency', array('cannot_edit'), $this->getColNames('label'));
+ * </code>
+ * Will set readonly=readonly for all fields with a label when cannot_edit returns true,
+ * otherwise sets readonly=null
+ *
  *
  * @package    MUtil
  * @subpackage Model_Dependency
@@ -43,35 +53,29 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_DependencyAbstract
+class MUtil_Model_Dependency_ReadonlyDependency extends MUtil_Model_Dependency_DependencyAbstract
 {
     /**
+     * The settings array for those effecteds that don't have an effects array
      *
-     * @var array
+     * @var array of setting => setting of setting changed by this dependency
      */
-    protected $_filter;
+    protected $_defaultEffects = array('readonly');
 
     /**
+     * Array for unsetting the readonly attributes
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @return array
      */
-    protected $db;
-
-    /**
-     *
-     * @param Zend_Db_Select $select The base select statement
-     * @param array $filter Array of select field => context field, context can be a Zend_Db_Expr
-     */
-    public function __construct(Zend_Db_Select $select, array $filter)
+    protected function _getUneffecteds()
     {
-        $this->_select = $select;
-        $this->_filter = $filter;
+        $output = array();
 
-        foreach ($filter as $context) {
-            if (! $context instanceof Zend_Db_Expr) {
-                $this->addDependsOn($context);
-            }
+        foreach ($this->_effecteds as $key => $settings) {
+            $output[$key] = array_fill_keys(array_keys($settings), null);
         }
+
+        return $output;
     }
 
     /**
@@ -96,28 +100,12 @@ class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_Dep
      */
     public function getChanges(array $context, $new)
     {
-        $select = clone $this->_select;
-
-        foreach ($this->_filter as $fieldName => $contextName) {
-            if ($contextName instanceof Zend_Db_Expr) {
-                $select->where($fieldName . ' = ?', $contextName);
-            } elseif (null === $context[$contextName]) {
-                $select->where($fieldName . ' IS NULL');
-            } else {
-                $select->where($fieldName . ' = ?', $context[$contextName]);
+        foreach ($this->_dependentOn as $dependsOn) {
+            if ($context[$dependsOn]) {
+                return $this->_effecteds;
             }
         }
 
-        $options = $this->db->fetchPairs($select);
-
-        MUtil_Echo::track($this->getEffecteds());
-        $results = array();
-        foreach ($this->getEffecteds() as $name => $settings) {
-            foreach ($settings as $setting) {
-                $results[$name][$setting] = $options;
-            }
-        }
-
-        return $results;
+        return $this->_getUneffecteds();
     }
 }

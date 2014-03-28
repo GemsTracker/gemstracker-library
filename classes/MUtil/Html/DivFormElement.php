@@ -90,7 +90,7 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
      * @param string $errorClass Class name to display all errors in
      * @return MUtil_Html_DlElement
      */
-    public function setAsFormLayout(Zend_Form $form, $width = null, $order = array('label', 'element', 'description'), $errorClass = 'errors')
+    public function setAsFormLayout(Zend_Form $form, $width = null, $order = array('label', 'element', 'errors', 'description'), $errorClass = 'errors')
     {
         $this->_repeatTags = true;
         $prependErrors     = $errorClass;
@@ -116,12 +116,14 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
                     $this->label($formrep->element, $attr); // Set label with optional width
                     break;
 
-                case 'error':
+                case 'error':  // Old versions deprecatd
+                case 'errors':
                     $prependErrors = false;
-                    // Intentional fall through
+                    $this->append($formrep->errors);
+                    break;
 
                 case 'description':
-                    $this->append($formrep->$renderer);
+                    $this->append($formrep->description);
                     break;
 
                 default:
@@ -152,7 +154,7 @@ class MUtil_Html_DivFormElement extends MUtil_Html_HtmlElement implements MUtil_
      * @param array $order The display order of the elements
      * @return MUtil_Html_PFormElement
      */
-    public function setAutoWidthFormLayout(Zend_Form $form, $factor = 1, array $order = array('label', 'element', 'description'))
+    public function setAutoWidthFormLayout(Zend_Form $form, $factor = 1, array $order = array('label', 'element', 'errors', 'description'))
     {
         // Lazy call becase the form might not be completed at this stage.
         return $this->setAsFormLayout($form, MUtil_Lazy::call(array('MUtil_Html_DlElement', 'calculateAutoWidthFormLayout'), $form, $factor), $order);

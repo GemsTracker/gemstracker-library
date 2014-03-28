@@ -49,16 +49,20 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     implements MUtil_Model_Dependency_DependencyInterface
 {
     /**
+     * Array of setting => setting of setting changed by this dependency
+     *
      * The settings array for those effecteds that don't have an effects array
      *
-     * @var array of setting => setting of setting changed by this dependency
+     * @var array
      */
     protected $_defaultEffects = array();
 
     /**
+     * Array name => name of items dependency depends on.
+     *
      * Can be overriden in sub class
      *
-     * @var array Of name => name of items dependency depends on.
+     * @var array
      */
     protected $_dependentOn = array();
 
@@ -119,8 +123,10 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
      */
     public function addEffected($effectedField, $effectedSettings)
     {
-
         foreach ((array) $effectedSettings as $setting) {
+            if (is_array($setting)) {
+                MUtil_Echo::track($setting);
+            }
             $this->_effecteds[$effectedField][$setting] = $setting;
         }
 
@@ -159,7 +165,30 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
         return isset($this->_dependentOn[$name]);
     }
 
-    // public function getChanges(array $context, $new);
+    /**
+     * Returns the changes that must be made in an array consisting of
+     *
+     * <code>
+     * array(
+     *  field1 => array(setting1 => $value1, setting2 => $value2, ...),
+     *  field2 => array(setting3 => $value3, setting4 => $value4, ...),
+     * </code>
+     *
+     * By using [] array notation in the setting name you can append to existing
+     * values.
+     *
+     * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
+     *
+     * @param array $context The current data this object is dependent on
+     * @param boolean $new True when the item is a new record not yet saved
+     * @return array name => array(setting => value)
+     * /
+    public function getChanges(array $context, $new)
+    {
+
+    }  // */
 
     /**
      * Return the array of fields this dependecy depends on
