@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
+class Gems_Form extends MUtil_Form
 {
     /**
      * If set this holds the url and targetid for the autosubmit
@@ -50,20 +50,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
      * @var array
      */
     protected $_autosubmit = null;
-
-    /**
-     * This variable holds all the stylesheets attached to this form
-     *
-     * @var array
-     */
-    protected $_css = array();
-
-    /**
-     * This variable holds all the scripts attached to this form
-     *
-     * @var array
-     */
-	protected $_scripts = null;
 
     /**
      * Constructor
@@ -91,26 +77,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         $this->setDisableTranslator(true);
     }
 
-    protected function _activateJQueryView(Zend_View_Interface $view = null)
-    {
-        if ($this->_no_jquery) {
-            return;
-        }
-
-        if (null === $view) {
-            $view = $this->getView();
-            if (null === $view) {
-                return;
-            }
-        }
-
-        parent::_activateJQueryView($view);
-
-        if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
-            $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
-        }
-    }
-
     /**
      * Change all elements into an autosubmit element
      *
@@ -129,32 +95,21 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
         }
     }
 
+    /**
+     * Activate JQuery for this form
+     *
+     * @return \MUtil_Form (continuation pattern)
+     */
     public function activateJQuery()
     {
         if ($this->_no_jquery) {
             parent::activateJQuery();
-            ZendX_JQuery::enableForm($this);
 
             $this->addPrefixPath('Gems_JQuery_Form_Decorator', 'Gems/JQuery/Form/Decorator/', Zend_Form::DECORATOR);
             $this->addPrefixPath('Gems_JQuery_Form_Element', 'Gems/JQuery/Form/Element/', Zend_Form::ELEMENT);
-
-            $this->_activateJQueryView();
-
-            $this->_no_jquery = false;
         }
-    }
 
-    /**
-     * Attach a css file to the form with form-specific css
-     *
-     * Optional media parameter can be used to determine media-type (print, screen etc)
-     *
-     * @param string $file
-     * @param string $media
-     */
-    public function addCss($file, $media = '')
-    {
-    	$this->_css[$file] = $media;
+        return $this;
     }
 
     /**
@@ -189,74 +144,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
     }
 
     /**
-     * Add a script to the head
-     *
-     * @param sring $script name of script, located in baseurl/js/
-     * @return Gems_Form (continuation pattern)
-     */
-    public function addScript($script)
-    {
-    	if (is_array($this->_scripts) && in_array($script, $this->_scripts)) {
-            return $this;
-        }
-    	$this->_scripts[] = $script;
-
-        return $this;
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    { }
-
-    /**
-     * Allows the loader to set resources.
-     *
-     * @param string $name Name of resource to set
-     * @param mixed $resource The resource.
-     * @return boolean True if $resource was OK
-     */
-    public function answerRegistryRequest($name, $resource)
-    {
-        if (MUtil_Registry_Source::$verbose) {
-            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
-                    '("' . $name . '", ' .
-                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
-        }
-        $this->$name = $resource;
-
-        return true;
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required values are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        return true;
-    }
-
-    /**
-     * Filters the names that should not be requested.
-     *
-     * Can be overriden.
-     *
-     * @param string $name
-     * @return boolean
-     */
-    protected function filterRequestNames($name)
-    {
-        return '_' !== $name[0];
-    }
-
-    /**
      * Get the autosubmit arguments (if any)
      *
      * @return array or null
@@ -264,40 +151,6 @@ class Gems_Form extends MUtil_Form implements MUtil_Registry_TargetInterface
     public function getAutoSubmit()
     {
         return $this->_autosubmit;
-    }
-
-    /**
-     * Return form specific css
-     *
-     * @return array
-     */
-    public function getCss()
-    {
-    	return $this->_css;
-    }
-
-    /**
-     * Return form specific javascript
-     *
-     * @return array
-     */
-	public function getScripts() {
-    	return $this->_scripts;
-    }
-
-    /**
-     * Allows the loader to know the resources to set.
-     *
-     * Returns those object variables defined by the subclass but not at the level of this definition.
-     *
-     * Can be overruled.
-     *
-     * @return array of string names
-     */
-    public function getRegistryRequests()
-    {
-        // MUtil_Echo::track(array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames')));
-        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
     }
 
     /**
