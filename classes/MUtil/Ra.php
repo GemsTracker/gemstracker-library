@@ -57,6 +57,12 @@ class MUtil_Ra
     const RELAXED = 0;
     const STRICT  = 1;
 
+    /**
+     * Original list of class converters to convert objects to array using one
+     * of the objects methods to create one.
+     *
+     * @var array
+     */
     private static $_initialToArrayList = array(
         'ArrayObject'                      => 'getArrayCopy',
         'MUtil_Lazy_LazyInterface'         => 'MUtil_Lazy::rise',
@@ -72,8 +78,18 @@ class MUtil_Ra
         'Traversable' => 'iterator_to_array'
         );
 
+    /**
+     * A class list with function that convert data to an array
+     *
+     * @var MUtil_Util_ClassList
+     */
     private static $_toArrayConverter;
 
+    /**
+     * Maximum number of steps to convert to an array (because of loops)
+     *
+     * @var int
+     */
     public static $toArrayConverterLoopLimit = 10;
 
     /**
@@ -453,6 +469,11 @@ class MUtil_Ra
         }
     }
 
+    /**
+     * Get or create the current to ArrayConverter
+     *
+     * @param mxied $converter MUtil_Util_ClassList or something that can be used as input to create one
+     */
     public static function getToArrayConverter()
     {
         if (! self::$_toArrayConverter) {
@@ -637,6 +658,11 @@ class MUtil_Ra
         return $pairs;
     }
 
+    /**
+     * Set the current to ArrayConverter
+     *
+     * @param mxied $converter MUtil_Util_ClassList or something that can be used as input to create one
+     */
     public static function setToArrayConverter($converter)
     {
         if ($converter instanceof MUtil_Util_ClassList) {
@@ -646,13 +672,26 @@ class MUtil_Ra
         }
     }
 
+    /**
+     * Convert object types to an array
+     *
+     * @param mixed $object
+     * @param int $mode RELAXED OR STRICT
+     * @return array
+     * @throws Zend_Exception
+     */
     public static function to($object, $mode = self::STRICT)
     {
         // Allow type chaining => Lazy => Config => array
         $i = 0;
         $converter = self::getToArrayConverter();
         while (is_object($object) && ($function = $converter->get($object))) {
-            $object = call_user_func($function, $object);
+
+            if (method_exists($object, $function)) {
+                $object = call_user_func(array($object, $function));
+            } else {
+                $object = call_user_func($function, $object);
+            }
 
             if (++$i > self::$toArrayConverterLoopLimit) {
                 throw new Zend_Exception('Object of type ' . get_class($object) . ' with loops in array conversion.');

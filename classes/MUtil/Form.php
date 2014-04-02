@@ -47,8 +47,22 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Form extends Zend_Form
+class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
 {
+    /**
+     * This variable holds all the stylesheets attached to this form
+     *
+     * @var array
+     */
+    protected $_css = array();
+
+    /**
+     * This variable holds all the scripts attached to this form
+     *
+     * @var array
+     */
+	protected $_scripts = null;
+
     /**
      * The order in which the element parts should be displayed
      * when using a fixed or dynamic label width.
@@ -62,11 +76,45 @@ class MUtil_Form extends Zend_Form
      */
     protected $_html_element;
 
+    /**
+     * Option value for fixed label width for label elements redered with MUtil_Html_LabelElement
+     *
+     * @see MUtil_Html_LabelElement
+     *
+     * @var int
+     */
     protected $_labelWidth;
+
+    /**
+     * Option value to set the fixed label with for label elements redered with
+     * MUtil_Html_LabelElement by takeing the strlen of the longest label times
+     * this factor
+     *
+     * @see MUtil_Html_LabelElement
+     *
+     * @var float
+     */
     protected $_labelWidthFactor;
+
+    /**
+     * Is Dojo activated for this form?
+     *
+     * @var boolean
+     */
     protected $_no_dojo = true;
+
+    /**
+     * Is JQuery activated for this form?
+     *
+     * @var boolean
+     */
     protected $_no_jquery = true;
 
+    /**
+     * False or a lazy instance of this form
+     *
+     * @var mixed
+     */
     protected $_Lazy = false;
 
     /**
@@ -86,7 +134,13 @@ class MUtil_Form extends Zend_Form
         parent::__construct($options);
     }
 
-    private function _activateDojoView(Zend_View_Interface $view = null)
+    /**
+     * Activate Dojo for the view
+     *
+     * @param Zend_View_Interface $view
+     * @return void
+     */
+    protected function _activateDojoView(Zend_View_Interface $view = null)
     {
         if ($this->_no_dojo) {
             return;
@@ -128,6 +182,11 @@ class MUtil_Form extends Zend_Form
         }
     }
 
+    /**
+     * Activate Dojo for this form
+     *
+     * @return \MUtil_Form (continuation pattern)
+     */
     public function activateDojo()
     {
         if ($this->_no_dojo) {
@@ -137,8 +196,15 @@ class MUtil_Form extends Zend_Form
 
             $this->_no_dojo = false;
         }
+
+        return $this;
     }
 
+    /**
+     * Activate JQuery for this form
+     *
+     * @return \MUtil_Form (continuation pattern)
+     */
     public function activateJQuery()
     {
         if ($this->_no_jquery) {
@@ -151,6 +217,21 @@ class MUtil_Form extends Zend_Form
 
             $this->_no_jquery = false;
         }
+
+        return $this;
+    }
+
+    /**
+     * Attach a css file to the form with form-specific css
+     *
+     * Optional media parameter can be used to determine media-type (print, screen etc)
+     *
+     * @param string $file
+     * @param string $media
+     */
+    public function addCss($file, $media = '')
+    {
+    	$this->_css[$file] = $media;
     }
 
     /**
@@ -194,6 +275,84 @@ class MUtil_Form extends Zend_Form
     }
 
     /**
+     * Add a script to the head
+     *
+     * @param sring $script name of script, located in baseurl/js/
+     * @return Gems_Form (continuation pattern)
+     */
+    public function addScript($script)
+    {
+    	if (is_array($this->_scripts) && in_array($script, $this->_scripts)) {
+            return $this;
+        }
+    	$this->_scripts[] = $script;
+
+        return $this;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    { }
+
+    /**
+     * Allows the loader to set resources.
+     *
+     * @param string $name Name of resource to set
+     * @param mixed $resource The resource.
+     * @return boolean True if $resource was OK
+     */
+    public function answerRegistryRequest($name, $resource)
+    {
+        if (MUtil_Registry_Source::$verbose) {
+            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
+                    '("' . $name . '", ' .
+                    (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
+        }
+        $this->$name = $resource;
+
+        return true;
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return true;
+    }
+
+    /**
+     * Filters the names that should not be requested.
+     *
+     * Can be overriden.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    protected function filterRequestNames($name)
+    {
+        return '_' !== $name[0];
+    }
+
+    /**
+     * Return form specific css
+     *
+     * @return array
+     */
+    public function getCss()
+    {
+    	return $this->_css;
+    }
+
+    /**
      * The order in which the element parts should be displayed
      * when using a fixed or dynamic label width.
      *
@@ -230,11 +389,29 @@ class MUtil_Form extends Zend_Form
     }
 
 
+    /**
+     * Value to set the fixed label with for label elements redered with
+     * MUtil_Html_LabelElement by takeing the strlen of the longest label times
+     * this factor
+     *
+     * @see MUtil_Html_LabelElement
+     *
+     * @var float
+     */
     public function getLabelWidth()
     {
         return $this->_labelWidth;
     }
 
+    /**
+     * Value to set the fixed label with for label elements redered with
+     * MUtil_Html_LabelElement by takeing the strlen of the longest label times
+     * this factor
+     *
+     * @see MUtil_Html_LabelElement
+     *
+     * @var float
+     */
     public function getLabelWidthFactor()
     {
         return $this->_labelWidthFactor;
@@ -281,6 +458,30 @@ class MUtil_Form extends Zend_Form
     }
 
     /**
+     * Return form specific javascript
+     *
+     * @return array
+     */
+	public function getScripts() {
+    	return $this->_scripts;
+    }
+
+     /**
+     * Allows the loader to know the resources to set.
+     *
+     * Returns those object variables defined by the subclass but not at the level of this definition.
+     *
+     * Can be overruled.
+     *
+     * @return array of string names
+     */
+    public function getRegistryRequests()
+    {
+        // MUtil_Echo::track(array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames')));
+        return array_filter(array_keys(get_object_vars($this)), array($this, 'filterRequestNames'));
+    }
+
+   /**
      * Return true when the form is lazy
      *
      * @return boolean

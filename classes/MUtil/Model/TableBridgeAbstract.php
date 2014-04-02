@@ -292,7 +292,7 @@ abstract class MUtil_Model_TableBridgeAbstract
      * Returns the real underlying value. Not the lazy object.
      *
      * @param string $name
-     * @return mxied
+     * @return mixed
      */
     public function getLazyValue($name)
     {

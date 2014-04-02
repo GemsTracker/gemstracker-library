@@ -58,18 +58,20 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     protected $_defaultEffects = array();
 
     /**
-     * Array name => name of items dependency depends on.
+     * Array of name => name of items dependency depends on.
      *
      * Can be overriden in sub class
      *
-     * @var array
+     * @var array Of name => name
      */
     protected $_dependentOn = array();
 
     /**
+     * Array of name => array(setting => setting) of fields with settings changed by this dependency
+     *
      * Can be overriden in sub class
      *
-     * @var array of name => array(setting => setting) of fields with settings changed by this dependency
+     * @var array of name => array(setting => setting)
      */
     protected $_effecteds = array();
 

@@ -56,11 +56,38 @@
 class MUtil_Lazy
 {
     /**
+     * The default stack to use
+     *
+     * @var MUtil_Lazy_StackInterface
+     */
+    private static $_stack;
+
+    /**
      * Static variable for debuggging purposes. Toggles the echoing of e.g. raised results.
      *
      * @var boolean When true Lazy objects should start outputting what is happening in them.
      */
     public static $verbose = false;
+
+    /**
+     * Turns any input into a MUtil_Lazy_StackInterface object.
+     *
+     * @param mixed $stack Value to be turned into stack for evaluation
+     * @param string A string describing where the stack was created.
+     * @return MUtil_Lazy_StackInterface A usable stack
+     */
+    private static function _checkStack($stack, $source)
+    {
+        if ($stack instanceof MUtil_Lazy_StackInterface) {
+            return $stack;
+        }
+
+        if (! self::$_stack instanceof MUtil_Lazy_StackInterface) {
+            self::$_stack = new MUtil_Lazy_Stack_EmptyStack($source);
+        }
+
+        return self::$_stack;
+    }
 
     /**
      * Returns a lazy object that alternates through all the parameters used
@@ -89,6 +116,14 @@ class MUtil_Lazy
         return new MUtil_Lazy_Call($callable, $args);
     }
 
+    /**
+     * Create a lazy comparison operation
+     *
+     * @param mixed $opLeft
+     * @param string $oper The operator to use for this comparison
+     * @param mixed $opRight
+     * @return \MUtil_Lazy_Call
+     */
     public static function comp($opLeft, $oper, $opRight)
     {
         $lambda = create_function('$a, $b', 'return $a ' . $oper . ' $b;');
@@ -188,6 +223,20 @@ class MUtil_Lazy
     }
 
     /**
+     * Get the current stack or none
+     *
+     * @return MUtil_Lazy_StackInterface
+     */
+    public static function getStack()
+    {
+        if (! self::$_stack instanceof MUtil_Lazy_StackInterface) {
+            self::$_stack = new MUtil_Lazy_Stack_EmptyStack(__CLASS__);
+        }
+
+        return self::$_stack;
+    }
+
+    /**
      * Perform a lazy call to an array
      *
      * @param mixed $array
@@ -199,6 +248,13 @@ class MUtil_Lazy
         return new MUtil_Lazy_ArrayAccessor($array, $offset);
     }
 
+    /**
+     * Return a lazy retrieval of an object property
+     *
+     * @param Object $object
+     * @param string $property Property of the object
+     * @return \MUtil_Lazy_Property
+     */
     public static function property($object, $property)
     {
         return new MUtil_Lazy_Property($object, $property);
@@ -218,7 +274,7 @@ class MUtil_Lazy
     public static function raise($object, $stack = null)
     {
         if ($object instanceof MUtil_Lazy_LazyInterface) {
-            return $object->__toValue(self::toStack($stack, __FUNCTION__));
+            return $object->__toValue(self::_checkStack($stack, __FUNCTION__));
         } else {
             return $object;
         }
@@ -249,7 +305,7 @@ class MUtil_Lazy
     public static function rise($object, $stack = null)
     {
         $raised = false;
-        $stack  = self::toStack($stack, __FUNCTION__);
+        $stack  = self::_checkStack($stack, __FUNCTION__);
 
         // Resolving when MUtil_Lazy_LazyInterface.
         while ($object instanceof MUtil_Lazy_LazyInterface) {
@@ -280,18 +336,31 @@ class MUtil_Lazy
     }
 
     /**
-     * Turns any input into a MUtil_Lazy_StackInterface object.
+     * Set the current stack
      *
      * @param mixed $stack Value to be turned into stack for evaluation
-     * @param string A string describing where the stack was created.
-     * @return MUtil_Lazy_StackInterface A usable stack
+     * @return MUtil_Lazy_StackInterface
      */
-    private static function toStack($stack, $source)
+    public static function setStack($stack)
     {
         if ($stack instanceof MUtil_Lazy_StackInterface) {
-            return $stack;
+            self::$_stack = $stack;
+
+        } elseif ($stack instanceof MUtil_Model_TableBridgeAbstract) {
+            self::$_stack = new MUtil_Lazy_Stack_BridgeStack($stack);
+
+        } elseif (MUtil_Ra::is($stack)) {
+            $stack = MUtil_Ra::to($stack);
+
+            self::$_stack = new MUtil_Lazy_Stack_ArrayStack($stack);
+
+        } elseif (is_object($stack)) {
+            self::$_stack = new MUtil_Lazy_Stack_ObjectStack($stack);
+
+        } else {
+            throw new MUtil_Lazy_LazyException("Lazy stack set to invalid scalar type.");
         }
 
-        return new MUtil_Lazy_Stack_EmptyStack($source);
+        return self::$_stack;
     }
 }

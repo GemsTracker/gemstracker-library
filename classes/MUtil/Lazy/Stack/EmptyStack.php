@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,33 +29,37 @@
  */
 
 /**
- * @author Matijs de Jong
- * @since 1.1
- * @version 1.1
- * @package MUtil
- * @subpackage Lazy
+ * @package    MUtil
+ * @subpackage Lazy_Stack
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * Defines a source for variable values in a lazy evaluation. 
- *  
- * As it works as an alternative stack, that is wat we call it.
+ * There is no stack, throw errors when used
  *
- * @package MUtil
- * @subpackage Lazy
+ * Defines a source for variable values in a lazy evaluation.
+ *
+ * @package    MUtil
+ * @subpackage Lazy_Stack
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.1
  */
 class MUtil_Lazy_Stack_EmptyStack implements MUtil_Lazy_StackInterface
 {
-    /** 
+    /**
      * @private A string describing where this object was created.
-     */ 
+     */
     private $_source;
 
-    /** 
-     * The constructor can be used to set a source name. 
-     *  
+    /**
+     * The constructor can be used to set a source name.
+     *
      * Debugging lazy stuff is hard enough, so we can use all the easy help we can get.
-     *  
+     *
      * @param string $source An optional source name to specify where this stack was created.
      */
     public function __construct($source = null)
@@ -63,11 +67,11 @@ class MUtil_Lazy_Stack_EmptyStack implements MUtil_Lazy_StackInterface
         $this->_source = $source;
     }
 
-    /** 
-     * Returns a value for $name 
-     *  
+    /**
+     * Returns a value for $name
+     *
      * @param string $name A name indentifying a value in this stack.
-     * @return A value for $name 
+     * @return A value for $name
      */
     public function lazyGet($name)
     {
