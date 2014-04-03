@@ -192,13 +192,16 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $qaTable = $this->_getAnswersTableName();
             $qTable  = $this->_getQuestionsTableName();
 
-            $sql = 'SELECT a.* FROM ' . $qaTable . ' AS a
+            $sql = 'SELECT a.*, q.other FROM ' . $qaTable . ' AS a
                 LEFT JOIN ' . $qTable . ' AS q ON q.qid = a.qid AND q.language = a.language
                 WHERE q.sid = ? AND q.language = ? ORDER BY a.qid, a.scale_id, sortorder';
 
             if ($rows = $this->lsDb->fetchAll($sql, array($this->sourceSurveyId, $this->language))) {
                 foreach ($rows as $row) {
                     $this->_hardAnswers[$row['qid']][$row['scale_id']][$row['code']] = $row['answer'];
+                    if ($row['other']=='Y') {
+                        $this->_hardAnswers[$row['qid']][$row['scale_id']]['-oth-'] =  $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));;
+                    }
                 }
             } else {
                 $this->_hardAnswers = array();
@@ -296,7 +299,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                             $row['sgq'] .= 'other';
                             $row['sq_title'] = 'other';
                             $row['code'] = $row['title'] . '_' . $row['sq_title'];
-                            $row['sq_question'] = $this->translate->_('Other');
+                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
                             if ($row['type'] === 'P' || $row['type'] === 'M') {
                                 $row['type'] = 'S';
                             }
@@ -344,7 +347,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                             $row['sgq'] .= 'other';
                             $row['code'] .= 'other';
                             $row['sq_title'] = 'other';
-                            $row['sq_question'] = $this->translate->_('Other');
+                            $row['sq_question'] = $this->_getQuestionAttribute($row['qid'], 'other_replace_text', $this->translate->_('Other'));
                             $row['type'] = 'S';
                             $map[$row['sgq']] = $row;
                         }
@@ -705,7 +708,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 // Add the name of the parent item
                 $tmpres['parent_question'] = $parent;
             }
-
+            
             $model->set($name, $tmpres);
 
             $oldfld = $field;
@@ -729,7 +732,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $map    = $this->_getMap();
         $oldfld = null;
         $result = array();
-
+        
         foreach ($map as $name => $field) {
             if ($field['type'] == self::INTERNAL) {
                 continue;
