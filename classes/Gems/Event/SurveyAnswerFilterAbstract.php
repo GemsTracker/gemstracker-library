@@ -148,6 +148,9 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends Gems_Registry_Targe
                     }
                     $lastParent = $parent;
                 }
+            } else {
+                // Make sure a question (without parent) is picked up as parent too
+                $lastParent = $name;
             }
 
             // If already set (as a $parent) this will not
