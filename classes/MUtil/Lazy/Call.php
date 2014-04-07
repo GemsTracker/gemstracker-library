@@ -82,9 +82,9 @@ class MUtil_Lazy_Call extends MUtil_Lazy_LazyAbstract
 
                 } elseif ('if' === strtolower($method)) {
                     if ($object) {
-                        return isset($params [0]) ? $params[0] : null;
+                        return isset($params[0]) ? $params[0] : null;
                     } else {
-                        return isset($params [1]) ? $params[1] : null;
+                        return isset($params[1]) ? $params[1] : null;
                     }
                 }
             }
