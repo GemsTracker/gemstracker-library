@@ -94,15 +94,15 @@ class MUtil_Log extends Zend_Log
         $this->_checkLogOverwrite();
 
         try {
-            $writer = new Zend_Log_Writer_Stream($filename);
+            $writer = new Zend_Log_Writer_Stream($this->_logFileName);
         } catch (Exception $exc) {
             try {
                 // Try to solve the problem, otherwise fail heroically
-                MUtil_File::ensureDir(dirname($filename));
-                $writer = new Zend_Log_Writer_Stream($filename);
+                MUtil_File::ensureDir(dirname($this->_logFileName));
+                $writer = new Zend_Log_Writer_Stream($this->_logFileName);
             } catch (Exception $exc) {
                 $this->bootstrap(array('locale', 'translate'));
-                die(sprintf($this->translate->_('Path %s not writable'), dirname($filename)));
+                die(sprintf($this->translate->_('Path %s not writable'), dirname($this->_logFileName)));
             }
         }
 
