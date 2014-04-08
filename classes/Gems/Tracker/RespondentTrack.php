@@ -990,7 +990,9 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         foreach ($data as $code => $value)
         {
-            if ($index = array_search($code, $fieldMap)) {
+            if (isset($fieldMap[$code])) {
+                $fieldData[$code] = $value;
+            } elseif ($index = array_search($code, $fieldMap)) {
                 $fieldData[$index] = $value;
             }
         }
