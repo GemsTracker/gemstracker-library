@@ -205,6 +205,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true);
 
     /**
+     * Returns an array name => code of all the fields of the type specified
+     *
+     * @param string $fieldType
+     * @return array name => code
+     */
+    public function getFieldsOfType($fieldType);
+    
+    /**
      * Get the round id of the first round
      *
      * @return int Gems id of first round
