@@ -63,6 +63,4 @@ class ModelYesNoDeleteSnippet extends MUtil_Snippets_ModelYesNoDeleteSnippetAbst
     {
         return $this->model;
     }
-
-
 }

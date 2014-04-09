@@ -65,6 +65,13 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     protected $afterSaveRouteUrl;
 
     /**
+     * Optional class for use on buttons
+     *
+     * @var string
+     */
+    protected $buttonClass;
+
+    /**
      * The request parameter used to store the confirmation
      *
      * @var string Required
@@ -193,8 +200,16 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
 
         $footer[] = $this->getQuestion();
         $footer[] = ' ';
-        $footer->a(array($this->confirmParameter => 1), $this->_('Yes'));
+        $footer->a(
+                array($this->confirmParameter => 1),
+                $this->_('Yes'),
+                array('class' => $this->buttonClass)
+                );
         $footer[] = ' ';
-        $footer->a(array($this->request->getActionKey() => $this->abortAction), $this->_('No'));
+        $footer->a(
+                array($this->request->getActionKey() => $this->abortAction),
+                $this->_('No'),
+                array('class' => $this->buttonClass)
+                );
     }
 }

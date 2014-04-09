@@ -283,7 +283,7 @@ class MUtil_Ra
                     // 1: Not yet set && 2: lax types used
                     if ((! isset($args[$name])) &&
                         ($laxTypes || (null === $ntype)) &&
-                        isset($args[$current])) {
+                        array_key_exists($current, $args)) {
 
                         $args[$name] = $args[$current];
                         unset($args[$current]);
