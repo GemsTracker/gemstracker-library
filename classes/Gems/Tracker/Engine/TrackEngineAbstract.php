@@ -361,7 +361,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 }
             }
         }
-        
+
         return trim(implode(' ', $results));
     }
 
@@ -897,6 +897,31 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         }
 
         return $fieldSettings;
+    }
+
+    /**
+     * Returns an array name => code of all the fields of the type specified
+     *
+     * @param string $fieldType
+     * @return array name => code
+     */
+    public function getFieldsOfType($fieldType)
+    {
+        $this->_ensureTrackFields();
+
+        if (! $this->_trackFields) {
+            return array();
+        }
+
+        $output = array();
+
+        foreach ($this->_trackFields as $key => $field) {
+            if ($fieldType == $field['gtf_field_type']) {
+                $output[$key] = $field['gtf_field_code'];
+            }
+        }
+
+        return $output;
     }
 
     /**
