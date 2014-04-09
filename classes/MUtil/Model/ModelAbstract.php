@@ -373,9 +373,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param array $data The row values to load
      * @param boolean $new True when it is a new item not saved in the model
+     * @param boolean $isPost True when passing on post data
      * @return array The possibly adapted array of values
      */
-    protected function _processRowAfterLoad(array $data, $new = false)
+    protected function _processRowAfterLoad(array $data, $new = false, $isPost = false)
     {
         $newData = $data;
 
@@ -384,7 +385,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 if ($call) {
                     $value = isset($newData[$name]) ? $newData[$name] : null;
 
-                    $newData[$name] = $this->getOnLoad($value, $new, $name, $data);
+                    $newData[$name] = $this->getOnLoad($value, $new, $name, $data, $isPost);
                 }
             }
         }
@@ -1228,14 +1229,15 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
      * @return mixed The value to use instead
      */
-    public function getOnLoad($value, $new, $name, array $context = array())
+    public function getOnLoad($value, $new, $name, array $context = array(), $isPost = false)
     {
         $call = $this->get($name, self::LOAD_TRANSFORMER);
         if ($call) {
              if (is_callable($call)) {
-                 $value = call_user_func($call, $value, $new, $name, $context);
+                 $value = call_user_func($call, $value, $new, $name, $context, $isPost);
              } else {
                  $value = $call;
              }
@@ -1722,13 +1724,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         if ($isPostData) {
             // Create an array to add a null for any missing multiOptions value
-            $isPostData = array_fill_keys($this->getColNames('multiOptions'), null);
+            $extraPostData = array_fill_keys($this->getColNames('multiOptions'), null);
         }
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
             foreach ($data as $key => $row) {
                 if ($isPostData) {
                     // Add a null for any missing multiOptions value
-                    $row = $row + $isPostData;
+                    $row = $row + $extraPostData;
                 }
 
                 $data[$key] = $this->_processRowAfterLoad($row, $new);
@@ -2237,7 +2239,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Sets a name to automatically change a value after a load.
      *
      * @param string $name The fieldname
-     * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array())
+     * @param mixed $callableOrConstant A constant or a function of this type:
+     *              callable($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setOnLoad($name, $callableOrConstant)
@@ -2252,7 +2255,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Sets a name to an automatically determined or changed of value before a save.
      *
      * @param string $name The fieldname
-     * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array())
+     * @param mixed $callableOrConstant A constant or a function of this type:
+     *          callable($value, $isNew = false, $name = null, array $context = array())
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setOnSave($name, $callableOrConstant)

@@ -758,33 +758,41 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
      * @return MUtil_Date|Zend_Db_Expr|string
      */
-    public function formatLoadDate($value, $isNew = false, $name = null, array $context = array())
+    public function formatLoadDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         // If not empty or zend_db_expression and not already a zend date, we
         // transform to a Zend_Date using the ISO_8601 format
-        if (! (empty($value) || $value instanceof Zend_Date || $value instanceof Zend_Db_Expr)) {
-            try {
-                $saveFormat = $this->get($name, 'storageFormat');
-                if ($saveFormat && Zend_Date::isDate($value, $saveFormat)) {
-                    return new MUtil_Date($value, $saveFormat);
-                }
-                $dateFormat = $this->get($name, 'dateFormat');
-                if ($dateFormat && Zend_Date::isDate($value, $dateFormat)) {
-                    return new MUtil_Date($value, $dateFormat);
-                }
-                // Last try
-                $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
-
-            } catch (Exception $exc) {
-                // On failure, we use the input value
-                $tmpDate = $value;
-            }
-
-            return $tmpDate;
+        if (empty($value) || $value instanceof Zend_Date || $value instanceof Zend_Db_Expr) {
+            return $value;
         }
-        return $value;
+
+        $formats = array('storageFormat', 'dateFormat');
+        if ($isPost) {
+            // When posting try date format first
+            $formats = array_reverse($formats);
+        }
+
+        foreach ($formats as $formatName) {
+            // When posting try
+            $format = $this->get($name, $formatName);
+            if ($formatName && Zend_Date::isDate($value, $format)) {
+                return new MUtil_Date($value, $format);
+            }
+        }
+
+        try {
+            // Last try
+            $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
+
+        } catch (Exception $exc) {
+            // On failure, we use the input value
+            $tmpDate = $value;
+        }
+
+        return $tmpDate;
     }
 
     /**
