@@ -65,11 +65,25 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
     protected $afterSaveRouteUrl;
 
     /**
-     * Optional class for use on buttons
+     * Optional class for use on buttons, overruled by $buttonNoClass and $buttonYesClass
      *
      * @var string
      */
     protected $buttonClass;
+
+    /**
+     * Optional class for use on No button
+     *
+     * @var string
+     */
+    protected $buttonNoClass;
+
+    /**
+     * Optional class for use on Yes button
+     *
+     * @var string
+     */
+    protected $buttonYesClass;
 
     /**
      * The request parameter used to store the confirmation
@@ -101,6 +115,24 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      * @var boolean True then the route is reset
      */
     public $resetRoute = true;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        if ($this->buttonClass) {
+            if (! $this->buttonNoClass) {
+                $this->buttonNoClass = $this->buttonClass;
+            }
+            if (! $this->buttonYesClass) {
+                $this->buttonYesClass = $this->buttonClass;
+            }
+        }
+    }
 
     /**
      * The delete question.
@@ -203,13 +235,13 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
         $footer->a(
                 array($this->confirmParameter => 1),
                 $this->_('Yes'),
-                array('class' => $this->buttonClass)
+                array('class' => $this->buttonYesClass)
                 );
         $footer[] = ' ';
         $footer->a(
                 array($this->request->getActionKey() => $this->abortAction),
                 $this->_('No'),
-                array('class' => $this->buttonClass)
+                array('class' => $this->buttonNoClass)
                 );
     }
 }
