@@ -1,6 +1,7 @@
 Important changes from 1.6.3 => 1.6.4
 ============================================================
 Errors in token events are less likely to cause the application to halt
+OpenRosa forms can now handle geopoint (location) fields
 
 Important changes from 1.6.2 => 1.6.3
 ============================================================
