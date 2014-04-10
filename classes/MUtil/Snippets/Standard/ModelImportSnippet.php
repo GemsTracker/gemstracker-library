@@ -228,7 +228,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 if ($element->getFileName()) {
                     // Now the filename is still set to the upload filename.
                     $this->formData['extension'] = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
-
+                    MUtil_Echo::track($this->formData['extension']);
                     if (!$element->receive()) {
                         throw new MUtil_Model_ModelException(sprintf(
                             $this->_("Error retrieving file '%s'."),
@@ -543,7 +543,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $model->set('file', 'label', $this->_('Import file'),
                     'count',        1,
                     'elementClass', 'File',
-                    'extension',    'txt,xml',
+                    'extension',    'csv,txt,xml',
                     'required',     true);
 
             if ($this->tempDirectory) {
@@ -679,7 +679,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         $results = array_fill_keys($this->targetModel->getItemsOrdered(), array());
         $minimal = array(); // Array for making sure all fields are there
-        
+
         foreach ($for as $transKey => $transName) {
             if (! isset($this->importTranslators[$transKey])) {
                 throw new Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
