@@ -445,54 +445,57 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     protected function getDateOptionsFor($sourceType, $roundId, $language, $validAfter)
     {
-       switch ($sourceType) {
-           case self::NO_TABLE:
-               return array();
+        switch ($sourceType) {
+            case self::NO_TABLE:
+                return array();
 
-           case self::ANSWER_TABLE:
-               $this->_ensureTrackFields();
-               $surveyId = $this->_rounds[$roundId]['gro_id_survey'];
-               $survey = $this->tracker->getSurvey($surveyId);
-               return $survey->getDatesList($language);
+            case self::ANSWER_TABLE:
+                $this->_ensureTrackFields();
+                if (! isset($this->_rounds[$roundId], $this->_rounds[$roundId]['gro_id_survey'])) {
+                    return array();
+                }
+                $surveyId = $this->_rounds[$roundId]['gro_id_survey'];
+                $survey = $this->tracker->getSurvey($surveyId);
+                return $survey->getDatesList($language);
 
-           case self::APPOINTMENT_TABLE:
-               $this->_ensureTrackFields();
+            case self::APPOINTMENT_TABLE:
+                $this->_ensureTrackFields();
 
-               $results = array();
-               foreach ($this->_trackFields as $id => $field) {
-                   if ('appointment' == $field['gtf_field_type']) {
-                       $results[$id] =  $field['gtf_field_name'];
-                   }
-               }
+                $results = array();
+                foreach ($this->_trackFields as $id => $field) {
+                    if ('appointment' == $field['gtf_field_type']) {
+                        $results[$id] =  $field['gtf_field_name'];
+                    }
+                }
 
-               return $results;
+                return $results;
 
-           case self::RESPONDENT_TRACK_TABLE:
-               $this->_ensureTrackFields();
+            case self::RESPONDENT_TRACK_TABLE:
+                $this->_ensureTrackFields();
 
-               $results = array(
-                   'gr2t_start_date' => $this->_('Track start'),
-                   'gr2t_end_date'   => $this->_('Track end'),
-                   // 'gr2t_created'    => $this->_('Track created'),
-               );
+                $results = array(
+                    'gr2t_start_date' => $this->_('Track start'),
+                    'gr2t_end_date'   => $this->_('Track end'),
+                    // 'gr2t_created'    => $this->_('Track created'),
+                );
 
-               foreach ($this->_trackFields as $id => $field) {
-                   if ('date' == $field['gtf_field_type']) {
-                       $results[$id] =  $field['gtf_field_name'];
-                   }
-               }
+                foreach ($this->_trackFields as $id => $field) {
+                    if ('date' == $field['gtf_field_type']) {
+                        $results[$id] =  $field['gtf_field_name'];
+                    }
+                }
 
-               return $results;
+                return $results;
 
-           case self::TOKEN_TABLE:
-               return array(
-                   'gto_valid_from'      => $this->_('Valid from'),
-                   'gto_valid_until'     => $this->_('Valid until'),
-                   'gto_start_time'      => $this->_('Start time'),
-                   'gto_completion_time' => $this->_('Completion time'),
-                   );
+            case self::TOKEN_TABLE:
+                return array(
+                    'gto_valid_from'      => $this->_('Valid from'),
+                    'gto_valid_until'     => $this->_('Valid until'),
+                    'gto_start_time'      => $this->_('Start time'),
+                    'gto_completion_time' => $this->_('Completion time'),
+                    );
 
-       }
+        }
     }
 
     /**
