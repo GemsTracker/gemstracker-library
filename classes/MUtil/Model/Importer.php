@@ -184,7 +184,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
 
         if (! $batch->hasSessionVariable('iterator')) {
             $iter = $this->getSourceModel()->loadIterator();
-            
+
             if (($iter instanceof Iterator) && ($iter instanceof Serializable)) {
                 $batch->setSessionVariable('iterator', $iter);
             } else {
@@ -456,6 +456,10 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         switch (strtolower($extension)) {
             case 'txt':
                 $model = new MUtil_Model_TabbedTextModel($filename);
+                break;
+
+            case 'csv':
+                $model = new MUtil_Model_CsvModel($filename);
                 break;
 
             case 'xml':
