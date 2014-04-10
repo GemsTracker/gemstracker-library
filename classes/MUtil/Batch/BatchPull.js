@@ -88,6 +88,12 @@ jQuery.widget("ui.pullProgressPanel", {
 
         var form, text;
 
+        if (! data) {
+            data.finished = false;
+            data.percent = 'xx';
+            data.text = 'An error occured, no data was returned, check the error logs.';
+        }
+        
         // console.log(data);
         if (data.finished) {
             data.percent = 100;

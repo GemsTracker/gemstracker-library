@@ -397,6 +397,18 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $user = $this->loader->getCurrentUser();
 
         if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
+
+            // Make sure the filter for grc_success exists
+            $requestCache = $this->util->getRequestCache();
+            $data = $requestCache->getProgramParams();
+
+            if (! isset($data['grc_success'])) {
+                // Add request to cache as otherwise later searches (using autofilter) will miss
+                // this value
+                $data['grc_success'] = 1;
+                $requestCache->setProgramParams($data);
+            }
+
             parent::indexAction();
         } else {
             $this->addSnippet('Organization_ChooseOrganizationSnippet');
