@@ -91,23 +91,4 @@ class Gems_Snippets_RespondentSearchSnippet extends Gems_Snippets_AutosearchForm
 
         return $elements;
     }
-    /**
-     *
-     * @return array The data to fill the form with
-     */
-    protected function getSearchData()
-    {
-        $data = parent::getSearchData();
-
-        if (! isset($data['grc_success'])) {
-            // Add request to cache as otherwise later searches (using autofilter) will miss
-            // this value
-            $cacheData = $this->requestCache->getProgramParams() + array('grc_success' => 1);
-            $this->requestCache->setProgramParams($cacheData);
-
-            $data['grc_success'] = $cacheData['grc_success'];
-        }
-
-        return $data;
-    }
 }
