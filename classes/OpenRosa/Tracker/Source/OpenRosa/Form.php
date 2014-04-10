@@ -87,7 +87,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             throw new Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
         $this->_xml = $xml;
-
+              
         //For working with the namespaces:
         //$xml->children('h', true)->head->children()->model->bind
         //use namespace h children for the root element, and find h:head, then use no namespace children
@@ -163,10 +163,32 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 case 'int':
                     $field['type'] = 'bigint';
                     $field['size'] = '(20)';
+                    $field['size'] = '(' . $field['size'] . ')';
+                    break;
 
                 case 'decimal':
                     $field['type'] = 'float';
                     $field['size'] = '';
+                    $field['size'] = '(' . $field['size'] . ')';
+                    break;
+                
+                case 'geopoint':
+                    // Location split in 4 fields  latitude, longitude, altitude and accuracy.
+                    $field['size'] = '(11,7)';
+                    $field['type'] = 'decimal';
+                    $items         = $this->body[$bindName]['item'];
+                    $answers[$name . '_lat'] = $items[0];
+                    $answers[$name . '_long'] = $items[1];
+                    $answers[$name . '_alt'] = $items[2];
+                    $answers[$name . '_acc'] = $items[3];
+                    $sql .= "  " . $db->quoteIdentifier($name . '_lat') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($name . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($name . '_alt') . " int DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($name . '_acc') . " int DEFAULT 0 NOT NULL,\n";
+                    
+                    //So we don't get an extra field
+                    unset($field['type']);
+                    break;
 
                 default:
                     $field['type'] = 'varchar';
@@ -404,6 +426,15 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             $model->set($multiName, 'multiOptions', $checkBox, 'label', $label);
                         }
                         break;
+                        
+                    case 'geopoint':
+                        // Location split in 4 fields  latitude, longitude, altitude and accuracy.
+                        $label     = sprintf('%s [%s]', $this->body[$bindName]['label'], $value);
+                        $model->set($name . '_lat', 'label', $label . ' [latitude]');
+                        $model->set($name . '_long', 'label', $label . ' [longitude]');
+                        $model->set($name . '_alt', 'label', $label . ' [altitude]');
+                        $model->set($name . '_acc', 'label', $label . ' [accuracy]');
+                        break;                        
 
                     case 'select1':
                         $items         = $this->body[$bindName]['item'];
@@ -488,6 +519,18 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             $answers[$multiName] = 1;
                         }
                         unset($answers[$name]);
+                }
+                
+                if ($bindInfo['type'] == 'geopoint') {
+                    // Location split in 4 fields  latitude, longitude, altitude and accuracy.
+                    $items         = explode(' ', $answers[$name]);
+                    if (count($items) == 4) {
+                        $answers[$name . '_lat'] = $items[0];
+                        $answers[$name . '_long'] = $items[1];
+                        $answers[$name . '_alt'] = $items[2];
+                        $answers[$name . '_acc'] = $items[3];
+                    }
+                    unset($answers[$name]);
                 }
         }
 
