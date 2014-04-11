@@ -181,10 +181,11 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
 
                 if ($id) {
                     $row['gap_id_user'] = $id;
-                } else {
-                    // No user no import
-                    return false;
                 }
+            }
+            if (! isset($row['gap_id_user'])) {
+                // No user no import if still not set
+                return false;
             }
         }
 
