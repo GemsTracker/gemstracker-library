@@ -160,6 +160,10 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
             return false;
         }
 
+        // Set fixed values for import
+        $row['gap_source']      = 'import';
+        $row['gap_manual_edit'] = 0;
+
         // Get the real organization from the provider_id or code if it exists
         if (isset($row['gap_id_organization'], $this->orgTranslations[$row['gap_id_organization']])) {
             $row['gap_id_organization'] = $this->orgTranslations[$row['gap_id_organization']];
