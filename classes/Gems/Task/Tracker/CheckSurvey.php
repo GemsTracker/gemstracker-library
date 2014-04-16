@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +26,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    Gems
- * @subpackage Task_Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
- * @license    New BSD License
- * @version    $Id$
- */
-
-/**
- * Executes any command in a source for a given $sourceId
  *
  * @package    Gems
  * @subpackage Task_Tracker
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.3
- * @deprecated since 1.6.4 No longer in use
+ * @version    $Id: CheckSurvey.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
-class Gems_Task_Tracker_SourceCommand extends MUtil_Task_TaskAbstract
+
+/**
+ *
+ * @package    Gems
+ * @subpackage Task_Tracker
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.6.3
+ */
+class Gems_Task_Tracker_CheckSurvey extends MUtil_Task_TaskAbstract
 {
     /**
      * @var Gems_Loader
      */
-    public $loader;
+    protected $loader;
 
     /**
      * Should handle execution of the task, taking as much (optional) parameters as needed
@@ -55,15 +56,22 @@ class Gems_Task_Tracker_SourceCommand extends MUtil_Task_TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($sourceId = null, $command = null)
+    public function execute($sourceId = null, $sourceSurveyId = null, $surveyId = null, $userId = null)
     {
-        $batch  = $this->getBatch();
-        $params = array_slice(func_get_args(), 2);
-        $source = $this->loader->getTracker()->getSource($sourceId);
+        $batch    = $this->getBatch();
+        $source   = $this->loader->getTracker()->getSource($sourceId);
+        $messages = $source->checkSurvey($sourceSurveyId, $surveyId, $userId);
 
-        if ($messages = call_user_func_array(array($source, $command), $params)) {
-            foreach ($messages as $message) {
-                $batch->addMessage($command . ': ' . $message);
+        $batch->addToCounter('checkedSurveys');
+        $batch->addToCounter('changedSurveys', $messages ? 1 : 0);
+        $batch->setMessage('changedSurveys', sprintf(
+                $this->_('%d of %d surveys changed.'),
+                $batch->getCounter('changedSurveys'),
+                $batch->getCounter('checkedSurveys')));
+
+        if ($messages) {
+            foreach ((array) $messages as $message) {
+                $batch->addMessage($message);
             }
         }
     }

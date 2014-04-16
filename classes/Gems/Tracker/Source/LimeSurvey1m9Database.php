@@ -287,6 +287,23 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     }
 
     /**
+     * Returns all surveys for synchronization
+     *
+     * @return array of sourceId values or false
+     */
+    protected function _getSourceSurveysForSynchronisation()
+    {
+        // Surveys in LS
+        $lsDb = $this->getSourceDatabase();
+
+        $select = $lsDb->select();
+        $select->from($this->_getSurveysTableName(), 'sid')
+                ->order('sid');
+
+        return $lsDb->fetchCol($select);
+    }
+
+    /**
      * The survey languages table contains the survey level texts per survey
      *
      * @return string Name of survey languages table
@@ -391,11 +408,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
     }
 
     /**
-     * Internal function used for source synchronization
+     * Survey source synchronization check function
      *
-     * @param int $sourceSurveyId
+     * @param string $sourceSurveyId
      * @param int $surveyId
      * @param int $userId
+     * @return mixed message string or array of messages
      */
     public function checkSurvey($sourceSurveyId, $surveyId, $userId)
     {
@@ -409,7 +427,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $values['gsu_status'] = 'Survey was removed from source.';
 
             if ($survey->saveSurvey($values, $userId)) {
-                $messages[] = sprintf($this->translate->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
+                $messages[] = sprintf($this->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $survey->getName());
             }
         } else {
             $lsDb = $this->getSourceDatabase();
@@ -441,7 +459,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                     // this requires a manual action as token table only hold minuts while survey table holds seconds
                     // and we might have responses with the same timestamp.
                     $lsDb->query("UPDATE " . $this->_getSurveysTableName() . " SET `" . $this->_anonymizedField . "` = 'N' WHERE sid = ?;", $sourceSurveyId);
-                    $messages[] = sprintf($this->translate->_("Corrected anonymization for survey '%s'"), $surveyor_title);
+                    $messages[] = sprintf($this->_("Corrected anonymization for survey '%s'"), $surveyor_title);
 
                     $lsDb->query("ALTER TABLE " . $this->_getSurveyTableName($sourceSurveyId) . " ADD `token` varchar(36) default NULL;");
             }
@@ -470,17 +488,17 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
                     if ($missingFields) {
                         $sql    = "ALTER TABLE " . $this->_getTokenTableName($sourceSurveyId) . " " . implode(', ', $missingFields);
-                        $fields = implode($this->translate->_(', '), array_keys($missingFields));
+                        $fields = implode($this->_(', '), array_keys($missingFields));
                         // MUtil_Echo::track($missingFields, $sql);
                         try {
                             $lsDb->query($sql);
-                            $messages[] = sprintf($this->translate->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
+                            $messages[] = sprintf($this->_("Added to token table '%s' the field(s): %s"), $surveyor_title, $fields);
                         } catch (Zend_Exception $e) {
                             $surveyor_status .= 'Token attributes could not be created. ';
                             $surveyor_status .= $e->getMessage() . ' ';
 
-                            $messages[] = sprintf($this->translate->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
-                            $messages[] = sprintf($this->translate->_('Required fields: %s', $fields));
+                            $messages[] = sprintf($this->_("Attribute fields not created for token table for '%s'"), $surveyor_title);
+                            $messages[] = sprintf($this->_('Required fields: %s', $fields));
                             $messages[] = $e->getMessage();
 
                             // Maximum reporting for this case
@@ -505,39 +523,39 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 if ($survey->isActiveInSource() != $surveyor_active) {
                     $values['gsu_surveyor_active'] = $surveyor_active ? 1 : 0;
 
-                    $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed.'), $survey->getName());
+                    $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed.'), $survey->getName());
                 }
 
                 // Reset to inactive if the surveyor survey has become inactive.
                 if ($survey->isActive() && $surveyor_status) {
                     $values['gsu_active'] = 0;
-                    $messages[] = sprintf($this->translate->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
+                    $messages[] = sprintf($this->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
                 }
 
                 if (substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
                     if ($surveyor_status) {
                         $values['gsu_status'] = substr($surveyor_status,  0,  127);
-                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
+                        $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } elseif ($survey->getStatus() != 'OK') {
                         $values['gsu_status'] = 'OK';
-                        $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
+                        $messages[] = sprintf($this->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
                     }
                 }
 
                 if ($survey->getName() != $surveyor_title) {
                     $values['gsu_survey_name'] = $surveyor_title;
-                    $messages[] = sprintf($this->translate->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
+                    $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
 
             } else { // New record
                 $values['gsu_survey_name']        = $surveyor_title;
                 $values['gsu_surveyor_active']    = $surveyor_active ? 1 : 0;
                 $values['gsu_active']             = 0;
-                $values['gsu_status']             = $surveyor_status;
+                $values['gsu_status']             = $surveyor_status ? $surveyor_status : 'OK';
                 $values['gsu_surveyor_id']        = $sourceSurveyId;
                 $values['gsu_id_source']          = $this->getId();
 
-                $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
+                $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
             $values['gsu_survey_description'] = strtr(substr(MUtil_Html::removeMarkup($lsSurvey['surveyls_description']), 0, 100), "\xA0\xC2", '  ');
             $survey->saveSurvey($values, $userId);
@@ -805,7 +823,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         }
 
         // Not a question but it is a valid date choice
-        $results['submitdate'] = $this->translate->_('Submitdate');
+        $results['submitdate'] = $this->_('Submitdate');
 
         $results = $results + $this->_getFieldMap($sourceSurveyId, $language)->getQuestionList('D');
 
@@ -1217,7 +1235,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      *
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
-     */
+     * /
     public function synchronizeSurveys($userId)
     {
         // Surveys in LS
@@ -1268,7 +1286,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param bool $updateTokens Wether the tokens should be updated or not, default is true
      * @return array Returns an array of messages
-     */
+     * /
     public function synchronizeSurveysOld($userId, $updateTokens = true)
     {
         $lsDb          = $this->getSourceDatabase();
@@ -1280,7 +1298,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         if ($updateTokens) {
             if ($count = $this->updateTokens($userId)) {
-                $messages[] = sprintf($this->translate->_('Updated %d Gems tokens to new token definition.'), $count);
+                $messages[] = sprintf($this->_('Updated %d Gems tokens to new token definition.'), $count);
             }
         }
 
@@ -1300,7 +1318,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
             $surveyor_sids = array_map('reset', $surveyor_surveys);
 
             foreach($this->_updateGemsSurveyExists($surveyor_sids, $userId) as $surveyId => $title) {
-                $messages[] = sprintf($this->translate->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $title);
+                $messages[] = sprintf($this->_('The \'%s\' survey is no longer active. The survey was removed from LimeSurvey!'), $title);
             }
         }
 
@@ -1359,7 +1377,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
                         $gemsToken = next($gemsTokens);
                     }
-                } // */
+                } // * /
 
                 $surveyor_active = true;
                 try {
@@ -1415,7 +1433,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                                     $surveyor_status .= sprintf('Token attribute field %d is missing. ', $i);
                                 }
                             }
-                        } // */
+                        } // * /
                     }
 
                     if ($updateTokens && (! $surveyor_status)) {
@@ -1435,7 +1453,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                             $lsDb->query($sql);
                             // MUtil_Echo::pre($sql);
 
-                            $messages[] = sprintf($this->translate->plural('Updated %d token to new token definition in survey \'%s\'.', 'Updated %d tokens to new token definition in survey \'%s\'.', $count), $count, $survey->getName());
+                            $messages[] = sprintf($this->plural('Updated %d token to new token definition in survey \'%s\'.', 'Updated %d tokens to new token definition in survey \'%s\'.', $count), $count, $survey->getName());
                         }
                     }
                 } catch (Zend_Exception $e) {
@@ -1453,28 +1471,28 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 if ($survey->isActiveInSource() != $surveyor_active) {
                     $values['gsu_surveyor_active'] = $surveyor_active ? 1 : 0;
 
-                    $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed.'), $survey->getName());
+                    $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed.'), $survey->getName());
                 }
 
                 // Reset to inactive if the surveyor survey has become inactive.
                 if ($survey->isActive() && $surveyor_status) {
                     $values['gsu_active'] = 0;
-                    $messages[] = sprintf($this->translate->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
+                    $messages[] = sprintf($this->_('Survey \'%s\' IS NO LONGER ACTIVE!!!'), $survey->getName());
                 }
 
                 if (substr($surveyor_status,  0,  127) != (string) $survey->getStatus()) {
                     if ($surveyor_status) {
                         $values['gsu_status'] = substr($surveyor_status,  0,  127);
-                        $messages[] = sprintf($this->translate->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
+                        $messages[] = sprintf($this->_('The status of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $values['gsu_status']);
                     } else {
                         $values['gsu_status'] = new Zend_Db_Expr('NULL');
-                        $messages[] = sprintf($this->translate->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
+                        $messages[] = sprintf($this->_('The status warning for the \'%s\' survey was removed.'), $survey->getName());
                     }
                 }
 
                 if ($survey->getName() != $surveyor_title) {
                     $values['gsu_survey_name'] = $surveyor_title;
-                    $messages[] = sprintf($this->translate->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
+                    $messages[] = sprintf($this->_('The name of the \'%s\' survey has changed to \'%s\'.'), $survey->getName(), $surveyor_title);
                 }
 
             } else { // New record
@@ -1484,7 +1502,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
                 $values['gsu_active']             = 0;
                 $values['gsu_status']             = $surveyor_status;
 
-                $messages[] = sprintf($this->translate->_('Imported the \'%s\' survey.'), $surveyor_title);
+                $messages[] = sprintf($this->_('Imported the \'%s\' survey.'), $surveyor_title);
             }
             $survey->saveSurvey($values, $userId);
         }
@@ -1492,7 +1510,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         // TODO: check for token field in survey table.
 
         return $messages;
-    }
+    } // */
 
     /**
      * Updates the consent code of the the token in the source (if needed)

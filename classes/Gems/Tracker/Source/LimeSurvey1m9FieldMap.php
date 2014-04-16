@@ -51,7 +51,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     const ATTRIBUTES_TABLE   = 'question_attributes';
     const GROUPS_TABLE       = 'groups';
     const QUESTIONS_TABLE    = 'questions';
-    
+
     /**
      * Internal type, used for startdate, submitdate, datestamp fields
      */
@@ -359,7 +359,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 'submitdate' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
                 'datestamp' => array('type' => self::INTERNAL, 'qid' => 0, 'gid' => 0),
             ) + $map;
-            
+
             $this->_fieldMap = $map;
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
             $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
@@ -625,7 +625,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     }
                 }
                 return MUtil_Model::TYPE_DATE;
-                
+
             case self::INTERNAL:
                 // Not a limesurvey type, used internally for meta data
                 return MUtil_Model::TYPE_DATETIME;
@@ -649,22 +649,23 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         foreach ($map as $name => $field) {
 
             $tmpres = array();
-            $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
-            $tmpres['group']   = $field['gid'];
-            $tmpres['type']    = $this->_getType($field);
+            $tmpres['thClass']         = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['group']           = $field['gid'];
+            $tmpres['type']            = $this->_getType($field);
+            $tmpres['survey_question'] = true;
 
             if ($tmpres['type'] === MUtil_Model::TYPE_DATE) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy';
                 // $tmpres['formatFunction']
             }
-            
+
             if ($tmpres['type'] === MUtil_Model::TYPE_DATETIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
                 // $tmpres['formatFunction']
             }
-            
+
             if ($tmpres['type'] === MUtil_Model::TYPE_TIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'HH:mm:ss';
@@ -708,7 +709,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 // Add the name of the parent item
                 $tmpres['parent_question'] = $parent;
             }
-            
+
             $model->set($name, $tmpres);
 
             $oldfld = $field;
@@ -732,12 +733,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         $map    = $this->_getMap();
         $oldfld = null;
         $result = array();
-        
+
         foreach ($map as $name => $field) {
             if ($field['type'] == self::INTERNAL) {
                 continue;
             }
-            
+
             $tmpres = array();
             $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group'] = $field['gid'];

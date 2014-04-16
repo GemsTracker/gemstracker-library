@@ -45,13 +45,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAbstract implements Gems_Tracker_Source_SourceInterface
+abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_TranslateableAbstract
+    implements Gems_Tracker_Source_SourceInterface
 {
     /**
      * Holds the current batch if there is any
      *
      * @var Gems_Task_TaskRunnerBatch
-     */
+     * /
     protected $_batch = null;
 
     /**
@@ -96,7 +97,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     /**
      * Returns all surveys for synchronization
      *
-     * @return array Pairs if
+     * @return array Pairs gemsId => sourceId
      */
     protected function _getGemsSurveysForSynchronisation()
     {
@@ -107,6 +108,13 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
 
         return $this->_gemsDb->fetchPairs($select);
     }
+
+    /**
+     * Returns all surveys for synchronization
+     *
+     * @return array of sourceId values or false
+     */
+    abstract protected function _getSourceSurveysForSynchronisation();
 
     /**
      * Creates a where filter statement for tokens that do not
@@ -228,10 +236,10 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
             $this->_sourceData['gso_ls_table_prefix'] .
             $tableName;
     }
-    
+
     /**
      * Extract limit and offset from the filter and add it to a select
-     * 
+     *
      * @param array $filter
      * @param Zend_Db_Select $select
      */
@@ -239,7 +247,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     {
         $limit = null;
         $offset = null;
-        
+
         if (array_key_exists('limit', $filter)) {
             $limit = (int) $filter['limit'];
             unset($filter['limit']);
@@ -268,13 +276,13 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
     {
         return $this->_sourceData['gso_id_source'];
     }
-    
+
     /**
      * Returns the recordcount for a given filter
-     * 
+     *
      * Abstract implementation is not efficient, sources should handle this as efficient
      * as possible.
-     * 
+     *
      * @param array $filter filter array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
@@ -355,10 +363,57 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
      * Returns true if a batch is set
      *
      * @return boolean
-     */
+     * /
     public function hasBatch()
     {
         return ($this->_batch instanceof Gems_Task_TaskRunnerBatch);
+    }
+
+    /**
+     * Updates the gems database with the latest information about the surveys in this source adapter
+     *
+     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @return array Returns an array of messages
+     */
+    public function synchronizeSurveyBatch(Gems_Task_TaskRunnerBatch $batch, $userId)
+    {
+        // Surveys in Gems
+        $select = $this->_gemsDb->select();
+        $select->from('gems__surveys', array('gsu_id_survey', 'gsu_surveyor_id'))
+                ->where('gsu_id_source = ?', $this->getId())
+                ->order('gsu_surveyor_id');
+
+        $gemsSurveys = $this->_gemsDb->fetchPairs($select);
+        if (!$gemsSurveys) {
+            $gemsSurveys = array();
+        }
+
+        // Surveys in Source
+        $sourceSurveys = $this->_getSourceSurveysForSynchronisation();
+        if ($sourceSurveys) {
+            $sourceSurveys = array_combine($sourceSurveys, $sourceSurveys);
+        } else {
+            $sourceSurveys = array();
+        }
+
+        // Always those already in the database
+        foreach ($gemsSurveys as $surveyId => $sourceSurveyId) {
+
+            if (isset($sourceSurveys[$sourceSurveyId])) {
+                $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, $surveyId, $userId);
+                $batch->addTask('Tracker_AddRefreshQuestions', $this->getId(), $sourceSurveyId, $surveyId);
+            } else {
+                // Do not pass the source id when it no longer exists
+                $batch->addTask('Tracker_CheckSurvey', $this->getId(), null, $surveyId, $userId);
+            }
+        }
+
+        // Now add the new ones
+        foreach (array_diff($sourceSurveys, $gemsSurveys) as $sourceSurveyId) {
+            $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, null);
+            $batch->addTask('Tracker_AddRefreshQuestions', $sourceSurveyId, null, $userId);
+        }
     }
 
     /**
@@ -387,9 +442,9 @@ abstract class Gems_Tracker_Source_SourceAbstract extends Gems_Registry_TargetAb
      * Use $this->hasBatch to check for existence
      *
      * @param Gems_Task_TaskRunnerBatch $batch
-     */
+     * /
     public function setBatch(Gems_Task_TaskRunnerBatch $batch)
     {
         $this->_batch = $batch;
-    }
+    } // */
 }

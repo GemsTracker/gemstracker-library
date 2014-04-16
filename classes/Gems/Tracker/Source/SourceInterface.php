@@ -55,6 +55,25 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     public function __construct(array $sourceData, Zend_Db_Adapter_Abstract $gemsDb);
 
     /**
+     * Checks wether this particular source is active or not and should handle updating the gems-db
+     * with the right information about this source
+     *
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @return boolean
+     */
+    public function checkSourceActive($userId);
+
+    /**
+     * Survey source synchronization check function
+     *
+     * @param string $sourceSurveyId
+     * @param int $surveyId
+     * @param int $userId
+     * @return mixed message string or array of messages
+     */
+    public function checkSurvey($sourceSurveyId, $surveyId, $userId);
+
+    /**
      * Inserts the token in the source (if needed) and sets those attributes the source wants to set.
      *
      * @param Gems_Tracker_Token $token
@@ -66,15 +85,6 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      */
     public function copyTokenToSource(Gems_Tracker_Token $token, $language, $surveyId, $sourceSurveyId = null);
 
-
-    /**
-     * Checks wether this particular source is active or not and should handle updating the gems-db
-     * with the right information about this source
-     *
-     * @param int $userId    Id of the user who takes the action (for logging)
-     * @return boolean
-     */
-    public function checkSourceActive($userId);
 
     /**
      * Returns a field from the raw answers as a date object.
@@ -184,10 +194,10 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * @return array Of nested Field => Value arrays indexed by tokenId
      */
     public function getRawTokenAnswerRows(array $filter, $surveyId, $sourceSurveyId = null);
-    
+
     /**
      * Returns the recordcount for a given filter
-     * 
+     *
      * @param array $filter filter array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
@@ -234,7 +244,7 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * Returns true if a batch is set
      *
      * @return boolean
-     */
+     * /
     public function hasBatch();
 
     /**
@@ -263,7 +273,7 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
      * Use $this->hasBatch to check for existence
      *
      * @param Gems_Task_TaskRunnerBatch $batch
-     */
+     * /
     public function setBatch(Gems_Task_TaskRunnerBatch $batch);
 
     /**
@@ -279,9 +289,18 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
+     * @param Gems_Task_TaskRunnerBatch $batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @return array Returns an array of messages
      */
+    public function synchronizeSurveyBatch(Gems_Task_TaskRunnerBatch $batch, $userId);
+
+    /**
+     * Updates the gems database with the latest information about the surveys in this source adapter
+     *
+     * @param int $userId    Id of the user who takes the action (for logging)
+     * @return array Returns an array of messages
+     * /
     public function synchronizeSurveys($userId);
 
     /**

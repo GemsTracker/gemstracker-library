@@ -54,11 +54,10 @@ class Gems_Task_Tracker_SourceSyncSurveys extends MUtil_Task_TaskAbstract
      * The parameters should be optional and failing to provide them should be handled by
      * the task
      */
-    public function execute($id = null, $userId = null)
+    public function execute($sourceId = null, $userId = null)
     {
         $batch  = $this->getBatch();
-        $source = $this->loader->getTracker()->getSource($id);
-        $source->setBatch($batch);
+        $source = $this->loader->getTracker()->getSource($sourceId);
 
         if (is_null($userId)) {
             $userId = $this->loader->getCurrentUser()->getUserId();
@@ -70,10 +69,6 @@ class Gems_Task_Tracker_SourceSyncSurveys extends MUtil_Task_TaskAbstract
                 $surveyCount
                 ));
 
-        if ($messages = $source->synchronizeSurveys($userId)) {
-            foreach ($messages as $message) {
-                $batch->addMessage($message);
-            }
-        }
+        $source->synchronizeSurveyBatch($batch, $userId);
     }
 }
