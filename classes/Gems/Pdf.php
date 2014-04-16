@@ -58,11 +58,46 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     protected $_pdfExportCommand = "";
 
-    protected $pageFont      = Zend_Pdf_Font::FONT_COURIER;
+    /**
+     * Pdf font for token
+     *
+     * @var string
+     */
+    protected $pageFont = Zend_Pdf_Font::FONT_COURIER;
+
+    /**
+     * Font size for token
+     *
+     * @var int
+     */
     protected $pageFontSize  = 12;
+
+    /**
+     * Horizontal position of token
+     *
+     * @var int
+     */
     protected $pageX         = 10;
+
+    /**
+     * Is the horizontal position in pixel from left or right of page
+     *
+     * @var boolean
+     */
     protected $pageXfromLeft = true;
+
+    /**
+     * Vertical position of token
+     *
+     * @var int
+     */
     protected $pageY         = 20;
+
+    /**
+     * Is the vertical position in pixel from top or bottom of page
+     *
+     * @var boolean
+     */
     protected $pageYfromTop  = true;
 
     /**
@@ -77,6 +112,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
      */
     protected $translate;
 
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
     public function afterRegistry()
     {
         parent::afterRegistry();
@@ -87,6 +128,13 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Add the token to every page of a pdf
+     *
+     * @param Zend_Pdf $pdf
+     * @param string $tokenId
+     * @param int $surveyId
+     */
     protected function addTokenToDocument(Zend_Pdf $pdf, $tokenId, $surveyId)
     {
         $token = strtoupper($tokenId);
@@ -103,6 +151,12 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         $pdf->properties['ModDate'] = 'D:' . str_replace(':', "'", date('YmdHisP')) . "'";
     }
 
+    /**
+     * Add the token to a pdf page
+     *
+     * @param Zend_Pdf_Page $page
+     * @param string $tokenId
+     */
     protected function addTokenToPage(Zend_Pdf_Page $page, $tokenId)
     {
         // Set $this->pageFont to false to prevent drawing of tokens on page.
@@ -148,6 +202,13 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         }
     }
 
+    /**
+     * Output the pdf with the right headers.
+     *
+     * @param string $content The content to echo
+     * @param string $filename The filename as reported to the downloader
+     * @param boolean $download Download to file or when false: show in browser
+     */
     public function echoPdfContent($content, $filename, $download = false)
     {
         // MUtil_Echo::track($filename);
@@ -339,7 +400,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
         $pdfContents = file_get_contents($tempOutputFilename);
         @unlink($tempInputFilename);
         @unlink($tempOutputFilename);
-        
+
         if ($pdfContents == '') {
             throw new Exception(sprintf($this->translate->_('Unable to run PDF conversion (%s): "%s"'), $command, $lastLine));
         }
@@ -348,6 +409,7 @@ class Gems_Pdf extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
      * @return boolean
      */
     public function hasPdfExport()

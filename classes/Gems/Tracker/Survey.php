@@ -395,7 +395,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
         $source = $this->getSource();
         return $source->getRawTokenAnswerRows((array) $filter, $this->_surveyId, $this->_gemsSurvey['gsu_surveyor_id']);
     }
-    
+
     /**
      * Returns the number of answers of multiple tokens
      *
@@ -530,7 +530,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
      */
     public function isActive()
     {
-        return (boolean) $this->_gemsSurvey['gsu_active'];
+        return (boolean) isset($this->_gemsSurvey['gsu_active']) && $this->_gemsSurvey['gsu_active'];
     }
 
     /**

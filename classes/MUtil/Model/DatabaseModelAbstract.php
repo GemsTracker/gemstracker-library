@@ -286,8 +286,6 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                 if (array_key_exists($name, $data)) {
                     if ($data[$name] && (! is_array($data[$name])) && ($len = $this->get($name, 'maxlength'))) {
                         $data[$name] = substr($data[$name], 0, $len);
-                    } else {
-                        $data[$name] = $data[$name];
                     }
 
                 } elseif ($this->isAutoSave($name)) {
