@@ -411,7 +411,7 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
 
         // Now add the new ones
         foreach (array_diff($sourceSurveys, $gemsSurveys) as $sourceSurveyId) {
-            $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, null);
+            $batch->addTask('Tracker_CheckSurvey', $this->getId(), $sourceSurveyId, null, $userId);
             $batch->addTask('Tracker_AddRefreshQuestions', $sourceSurveyId, null, $userId);
         }
     }

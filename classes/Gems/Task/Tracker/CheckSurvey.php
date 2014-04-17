@@ -60,6 +60,11 @@ class Gems_Task_Tracker_CheckSurvey extends MUtil_Task_TaskAbstract
     {
         $batch    = $this->getBatch();
         $source   = $this->loader->getTracker()->getSource($sourceId);
+
+        if (null === $userId) {
+            $userId = $this->loader->getCurrentUser()->getUserId();
+       }
+
         $messages = $source->checkSurvey($sourceSurveyId, $surveyId, $userId);
 
         $batch->addToCounter('checkedSurveys');
