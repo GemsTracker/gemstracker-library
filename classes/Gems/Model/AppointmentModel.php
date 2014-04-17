@@ -61,6 +61,12 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
 
     /**
      *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var Gems_Loader
      */
     protected $loader;
@@ -306,6 +312,25 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
      */
     public function save(array $newValues, array $filter = null)
     {
+        // When appointment id is not set, then check for existing instances of
+        // this appointment using the source information
+        if ((!isset($newValues['gap_id_appointment'])) &&
+                isset($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])) {
+
+            $sql = "SELECT gap_id_appointment
+                FROM gems__appointments
+                WHERE gap_id_in_source = ? AND gap_id_organization = ? AND gap_source = ?";
+
+            $id = $this->db->fetchOne(
+                    $sql,
+                    array($newValues['gap_id_in_source'], $newValues['gap_id_organization'], $newValues['gap_source'])
+                    );
+
+            if ($id) {
+                $newValues['gap_id_appointment'] = $id;
+            }
+        }
+
         $oldChanged = $this->getChanged();
 
         $returnValues = parent::save($newValues, $filter);

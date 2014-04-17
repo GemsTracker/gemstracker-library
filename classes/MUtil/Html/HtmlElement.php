@@ -39,19 +39,20 @@
  * HtmlElement is a simple to use, extensible interface to output HTML.
  *
  * The design specifications for HtmlElement were:
- *  - it must be easier to use than concatenating strings,
- *  - the program must echo the underlying structure of the Html output,
- *  - usuable for the Html version you use without any adaptations,
- *  - only minimal knowledge of the element required for use.
+ *
+ * - it must be easier to use than concatenating strings,
+ * - the program must echo the underlying structure of the Html output,
+ * - usuable for the Html version you use without any adaptations,
+ * - only minimal knowledge of the element required for use.
  *
  *
  * BASIC WORKINGS
  *
- *  - at creation you specify a $tagName and a mix of content and attributes,
- *  - the content of the element are the array items of the element,
- *  - new child elements can be created with their tagName as function name: e.g. $this->br();
- *  - the attributes are treated as properties,
- *  - certain types are always used in a fixed manner (e.g. Zend_View -> setView()).
+ * - at creation you specify a $tagName and a mix of content and attributes,
+ * - the content of the element are the array items of the element,
+ * - new child elements can be created with their tagName as function name: e.g. $this->br();
+ * - the attributes are treated as properties,
+ * - certain types are always used in a fixed manner (e.g. Zend_View -> setView()).
  *
  * Evil but usefull functionality includes the possibility of changing the $tagName at
  * a later stage.
@@ -61,16 +62,17 @@
  *
  * At creation, after the tag name, all other parameters are treated as a mix
  * of content an attributes, the class discerns the difference in this matter:
- *  - attributes are specified in nested array with the attribute name as key,
- *  - content is specified either as top-level parameter or in a nested array
- *    with numerical index,
- *  - MUtil_Html_AttributeInterface objects will always be added as attributes,
- *  - MUtil_Html_ElementInterface objects will always be added as content,
- *  - classes like Zend_View and Zend_Paginator get special treatment.
+ * - attributes are specified in nested array with the attribute name as key,
+ * - content is specified either as top-level parameter or in a nested array
+ *   with numerical index,
+ * - MUtil_Html_AttributeInterface objects will always be added as attributes,
+ * - MUtil_Html_ElementInterface objects will always be added as content,
+ * - classes like Zend_View and Zend_Paginator get special treatment.
  *
  *
  * Most of the times element are constructed using the MUtil_Html static helper class.
  * These six examples are all equivalent:
+ *
  * <code>
  * 1: $div = new MUtil_Html_HtmlElement('div', 'some content', array('class' => 'some class'));
  * 2: $div = new MUtil_Html_HtmlElement('div', array('some content', 'class' => 'some class'));
@@ -81,12 +83,14 @@
  * 5: $div = MUtil_Html::create()->div('some content', array('class' => 'some class'));
  * 6: $div = MUtil_Html::create()->div(array('some content', 'class' => 'some class'));
  * </code>
+ *
  * As a style guide: use option 5 unless there is a reason to use another method.
  *
  *
  * ATTRIBUTES
  *
  * These examples result in the same attribute value:
+ *
  * <code>
  * $div->class = 'some class another class';
  * $div->setAttrib('class', 'some class another class');

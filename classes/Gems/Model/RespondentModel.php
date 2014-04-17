@@ -450,7 +450,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                         '0' => $this->_('No'),
                     )
                 );
-        
+
         $this->setIfExists('grs_first_name', 'filter', $ucfirst);
         $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
         $this->setIfExists('grs_partner_last_name',  'filter', new Zend_Filter_Callback('ucfirst'));
@@ -646,6 +646,57 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      */
     public function save(array $newValues, array $filter = null, array $saveTables = null)
     {
+        // If the respondent id is not set, check using the
+        // patient number and then the ssn
+        if (! isset($newValues['grs_id_user'])) {
+            $id = false;
+
+            if (isset($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization'])) {
+                $sql = 'SELECT gr2o_id_user
+                        FROM gems__respondent2org
+                        WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
+
+                $id = $this->db->fetchOne($sql, array($newValues['gr2o_patient_nr'], $newValues['gr2o_id_organization']));
+            }
+
+            if ((!$id) &&
+                    isset($newValues['grs_ssn']) &&
+                    ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE)) {
+
+                if (Gems_Model_RespondentModel::SSN_HASH === $this->hashSsn) {
+                    $search = $this->saveSSN($newValues['grs_ssn']);
+                } else {
+                    $search = $newValues['grs_ssn'];
+                }
+
+                $sql = 'SELECT grs_id_user FROM gems__respondents WHERE grs_ssn = ?';
+
+                $id = $this->db->fetchOne($sql, $search);
+
+                // Check for change in patient ID
+                if ($id &&
+                        isset($newValues['gr2o_id_organization']) &&
+                        $this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
+
+                    $sql = 'SELECT gr2o_patient_nr
+                            FROM gems__respondent2org
+                            WHERE gr2o_id_user = ? AND gr2o_id_organization = ?';
+
+                    $patientId = $this->db->fetchOne($sql, array($id, $newValues['gr2o_id_organization']));
+
+                    if ($patientId) {
+                        $copyId             = $this->getKeyCopyName('gr2o_patient_nr');
+                        $newValues[$copyId] = $patientId;
+                    }
+                }
+            }
+
+            if ($id) {
+                $newValues['grs_id_user']  = $id;
+                $newValues['gr2o_id_user'] = $id;
+            }
+        }
+
         $result = parent::save($newValues, $filter, $saveTables);
 
         if (isset($result['gr2o_id_organization']) && isset($result['grs_id_user'])) {
