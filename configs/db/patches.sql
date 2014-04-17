@@ -776,3 +776,7 @@ ALTER TABLE `gems__surveys`
 -- PATCH: add new privilege
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.trackperorg')
     WHERE grl_privileges LIKE '%pr.track-maintenance%' AND grl_privileges NOT LIKE '%pr.track-maintenance.trackperorg%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.survey-maintenance.answer-import')
+    WHERE grl_privileges LIKE '%pr.track-maintenance%' AND
+        grl_privileges NOT LIKE '%pr.survey-maintenance.answer-import%';

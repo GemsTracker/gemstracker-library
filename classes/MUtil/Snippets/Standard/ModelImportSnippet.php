@@ -525,7 +525,8 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             // $model = new MUtil_Model_TableModel
             $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
-            $model->set('trans', 'label', $this->_('Choose a translation definition'),
+            $model->set('trans', 'label', $this->_('Translation definition'),
+                    'description', $this->_('See import field definitions table'),
                     'multiOptions', $this->getTranslatorDescriptions(),
                     'required', true,
                     'elementClass', 'Radio',
@@ -667,6 +668,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function getTranslatorTable($for = null)
     {
+        if (! $this->targetModel) {
+            return array();
+        }
+
         if (null === $for) {
             $for = $this->getTranslatorDescriptions();
         } elseif (!is_array($for)) {
@@ -707,7 +712,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
             if ($resultRow) {
                 if ($this->targetModel->has($name, 'label')) {
-                    $label = $this->targetModel->get($name, 'label');
+                    $label = (string) $this->targetModel->get($name, 'label');
                 } else {
                     $label = $name;
                 }
@@ -716,7 +721,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 switch ($this->targetModel->get($name, 'type')) {
                     case MUtil_Model::TYPE_NOVALUE:
                         unset($results[$name]);
-                        continue;;
+                        continue 2;
 
                     case MUtil_Model::TYPE_NUMERIC:
                         $maxlength = $this->targetModel->get($name, 'maxlength');
@@ -770,10 +775,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 $required = $this->targetModel->get($name, 'required');
 
-                $resultRow[$this->_('Field description')]    = $label;
-                $resultRow[$this->_('Content')]  = $type;
+                $resultRow[$this->_('Field description')] = $label ? $label : $this->_('<<no description>>');
+                $resultRow[$this->_('Content')]           = $type;
+
                 // Prepend the 'required' row
-                $resultRow = array($this->_('Required') =>$required ? $this->_('Yes') : ' ') + $resultRow;
+                $resultRow = array($this->_('Required') => $required ? $this->_('Yes') : ' ') + $resultRow;
 
                 $output[$name] = $resultRow + $minimal;
             }

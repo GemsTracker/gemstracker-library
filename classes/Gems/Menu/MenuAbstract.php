@@ -504,7 +504,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAction($this->_('Session'),    null, 'session');
         $page->addButtonOnly($this->_('Maintenance mode'), 'pr.maintenance.maintenance-mode', 'project-information', 'maintenance');
         $page->addButtonOnly($this->_('Clean cache'), 'pr.maintenance.clean-cache', 'project-information', 'cacheclean');
-        
+
         $templates = $page->addPage($this->_('Templates'), 'pr.templates', 'template');
         $templates->addAutofilterAction();
         $templates->addEditAction();
@@ -637,11 +637,17 @@ abstract class Gems_Menu_MenuAbstract
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
         $showPage->addAction($this->_('Check is answered'), 'pr.survey-maintenance.check', 'check')
-                ->addParameters(MUtil_Model::REQUEST_ID);
+                ->addParameters(MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gsu_active', 1);
+        $showPage->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-import')
+                ->addParameters(MUtil_Model::REQUEST_ID)
+                ->setParameterFilter('gsu_active', 1);
         $showPage->addPdfButton($this->_('PDF'), 'pr.survey-maintenance')
                 ->addParameters(MUtil_Model::REQUEST_ID)
                 ->setParameterFilter('gsu_has_pdf', 1);
+        // Multi survey
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
+        $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-import');
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');
@@ -689,7 +695,7 @@ abstract class Gems_Menu_MenuAbstract
 
         $showPage->addAction($this->_('Check assignments'), 'pr.track-maintenance.check', 'check-track')
                 ->addParameters(MUtil_Model::REQUEST_ID);
-        
+
         $overviewPage = $page->addPage($this->_('Tracks per org'), 'pr.track-maintenance.trackperorg', 'track-overview', 'index');
         $overviewPage->addExcelAction();
         $overviewPage->addAutofilterAction();

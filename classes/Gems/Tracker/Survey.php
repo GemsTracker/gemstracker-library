@@ -513,6 +513,15 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @return boolean True if the survey has a pdf
+     */
+    public function hasPdf()
+    {
+        return (boolean) isset($this->_gemsSurvey['gsu_survey_pdf']) && $this->_gemsSurvey['gsu_survey_pdf'];
+    }
+
+    /**
      * Checks whether the token is in the source.
      *
      * @param Gems_Tracker_Token $token Gems token object

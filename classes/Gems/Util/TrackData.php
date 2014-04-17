@@ -98,6 +98,30 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
 
     /**
+     * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
+     * that are active
+     *
+     * @return array
+     */
+    public function getActiveSurveys()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = "SELECT gsu_id_survey, gsu_survey_name
+            FROM gems__surveys
+            WHERE gsu_active = 1
+            ORDER BY gsu_survey_name";
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys'));
+        return $results;
+    }
+
+    /**
      * Returns array (id => name) of all ronds in all tracks, sorted by order
      *
      * @return array
@@ -123,7 +147,6 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name
      *
-     * @staticvar array $surveys
      * @return array
      */
     public function getAllSurveys()
@@ -144,7 +167,6 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     /**
      * Retrieve an array of key/value pairs for gsu_id_survey and gsu_survey_name plus gsu_survey_description
      *
-     * @staticvar array $surveys
      * @return array
      */
     public function getAllSurveysAndDescriptions()

@@ -262,6 +262,23 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     }
 
     /**
+     * Import answers to a survey
+     */
+    public function answerImportAction()
+    {
+        $controller   = 'answers';
+        $importLoader = $this->loader->getImportLoader();
+
+        $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
+        $params['formatBoxClass']          = 'browser';
+        $params['importer']                = $importLoader->getImporter($controller);
+        $params['tempDirectory']           = $importLoader->getTempDirectory();
+        $params['importTranslators']       = $importLoader->getTranslators($controller);
+
+        $this->addSnippets('Survey_AnswerImportSnippet', $params);
+    }
+
+    /**
      *
      * @param array $data The data that will be saved.
      * @param boolean $isNew
@@ -622,6 +639,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
     {
         $source = $this->menu->getParameterSource();
         $source->offsetSet('gsu_has_pdf', $data['gsu_survey_pdf'] ? 1 : 0);
+        $source->offsetSet('gsu_active', $data['gsu_active'] ? 1 : 0);
         $source->offsetSet(MUtil_Model::REQUEST_ID, $data['gsu_id_survey']);
 
         return $this;
