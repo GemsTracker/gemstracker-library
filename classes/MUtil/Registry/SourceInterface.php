@@ -38,8 +38,8 @@
 /**
  * Standard Source interface for MUtil_Registry_TargetInterface objects.
  *
- * This allows sources of values, e.g. the Zend_Registry, to be set automatically
- * in a Target Object by calling $this->applySource().
+ * This allows sources of values, e.g. the Zend_Registry, to be injected
+ *  automatically in a Target Object by calling $this->applySource().
  *
  * @see MUtil_Registry_TargetInterface
  *

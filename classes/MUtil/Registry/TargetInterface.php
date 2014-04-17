@@ -36,10 +36,11 @@
  */
 
 /**
- * The TargetInterface enables an object to specify values that can be set.
+ * The TargetInterface is a lightweight dependency injection framework that enables an
+ * object to tell which central variables can/must be set.
  *
- * This allows sources of values, e.g. the Zend_Registry, to be set automatically
- * in the TargetObject.
+ * This allows sources containing variables, e.g. the Zend_Registry, to have their values
+ * automatically injected into the TargetObject.
  *
  * @see MUtil_Registry_Source
  *

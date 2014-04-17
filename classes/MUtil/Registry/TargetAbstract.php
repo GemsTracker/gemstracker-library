@@ -36,13 +36,13 @@
  */
 
 /**
- * MUtil_Registry_TargetAbstract is a default target object, that requests values
+ * MUtil_Registry_TargetAbstract is a default target object, that requests variables
  * for all defined instance variables with names not starting with '_'.
  *
  * I.e. variables in a class inheriting from MUtil_Registry_TargetAbstract can be
  * initialized by a source even when they are protected or private.
  *
- * Also usafull to copy the code to implement your own version of this class.
+ * This object is also usefull to copy the code to implement your own version of this class.
  *
  * @package    MUtil
  * @subpackage Registry

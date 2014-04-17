@@ -101,7 +101,7 @@ class Gems_Task_Tracker_RefreshQuestion extends MUtil_Task_TaskAbstract
             $questionModel->save($question);
         } catch (Exception $e) {
             $batch->addMessage(sprintf(
-                    $this->_('Save failed for survey %s, field %s: %s'),
+                    $this->_('Save failed for survey %s, question %s: %s'),
                     $survey->getName(),
                     $questionId,
                     $e->getMessage()
@@ -136,7 +136,7 @@ class Gems_Task_Tracker_RefreshQuestion extends MUtil_Task_TaskAbstract
                     $optionModel->save($option);
                 } catch (Exception $e) {
                     $batch->addMessage(sprintf(
-                            $this->_('Save failed for survey %s, field %s, option "%s" => "%s": %s'),
+                            $this->_('Save failed for survey %s, question %s, option "%s" => "%s": %s'),
                             $survey->getName(),
                             $questionId,
                             $key,

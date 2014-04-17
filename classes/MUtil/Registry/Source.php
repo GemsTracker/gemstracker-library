@@ -38,8 +38,12 @@
 /**
  * Standard Source for MUtil_Registry_TargetInterface objects.
  *
- * This allows sources of values, e.g. the Zend_Registry, to be set automatically
- * in a Target Object by calling $this->applySource().
+ * The source can be loaded with multiple objects or array's and
+ * the public properties and the keys of an array are used as
+ * sourced for the named variables requested by the target.
+ *
+ * This allows sources of values, e.g. the Zend_Registry, to be injected
+ * automatically in a Target Object by calling $this->applySource().
  *
  * @see MUtil_Registry_TargetInterface
  *
