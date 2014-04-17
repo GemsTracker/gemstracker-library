@@ -406,7 +406,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
             //Now we have the table, let's add some multi options etc.
             $checkBox[1] = $this->translate->_('Checked');
-            $checkbox[0]  = $this->translate->_('Not checked');
+            $checkBox[0] = $this->translate->_('Not checked');
             foreach ($this->instance as $name => $element) {
                 $bindName = str_replace('_', '/', '_data_' . $name);
                 if (array_key_exists($bindName, $this->bind)) {
