@@ -163,13 +163,11 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 case 'int':
                     $field['type'] = 'bigint';
                     $field['size'] = '(20)';
-                    $field['size'] = '(' . $field['size'] . ')';
                     break;
 
                 case 'decimal':
                     $field['type'] = 'float';
-                    $field['size'] = '';
-                    $field['size'] = '(' . $field['size'] . ')';
+                    $field['size'] = '(12,4)';
                     break;
                 
                 case 'geopoint':
