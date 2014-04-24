@@ -559,7 +559,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
             $select->from('gems__openrosaforms')
                     ->where('gof_id = ?', $sourceSurveyId);
 
-            $openRosaSurvey = $db->getchRow($select);
+            $openRosaSurvey = $db->fetchRow($select);
         } else {
             $openRosaSurvey = false;
         }
