@@ -128,7 +128,10 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
      */
     protected function _getSourceSurveysForSynchronisation()
     {
-        // Surveys in OpenRose
+        // First scan for new definitions
+        $this->_scanForms();
+        
+        // Surveys in OpenRosa
         $db = $this->getSourceDatabase();
 
         $select = $db->select();
