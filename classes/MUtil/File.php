@@ -169,20 +169,24 @@ class MUtil_File
     public static function getTemporaryIn($dir = null, $prefix = null, $keepFor = 86400)
     {
         if (null === $dir) {
-            return tempnam(sys_get_temp_dir(), $prefix);
-        }
+            $output = tempnam(sys_get_temp_dir(), $prefix);
+        } else {
 
-        self::ensureDir($dir);
+            self::ensureDir($dir);
 
-        if ($keepFor) {
-            // Clean up old temporaries
-            foreach (glob($dir . '/*', GLOB_NOSORT) as $filename) {
-                if ((!is_dir($filename)) && (filemtime($filename) + $keepFor < time())) {
-                    @unlink($filename);
+            if ($keepFor) {
+                // Clean up old temporaries
+                foreach (glob($dir . '/*', GLOB_NOSORT) as $filename) {
+                    if ((!is_dir($filename)) && (filemtime($filename) + $keepFor < time())) {
+                        @unlink($filename);
+                    }
                 }
             }
-        }
 
-        return tempnam($dir, $prefix);
+            $output = tempnam($dir, $prefix);
+        }
+        chmod($output, 0777);
+
+        return $output;
     }
 }
