@@ -48,6 +48,12 @@
 class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
 {
     /**
+     *
+     * @var string
+     */
+    protected $_orgCode;
+
+    /**
      * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
@@ -208,6 +214,25 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get the organization name/code used by the long term filename
+     *
+     * @return string
+     */
+    public function getOrganizationCode()
+    {
+        if (! $this->_orgCode) {
+            $user = $this->loader->getCurrentUser();
+            $this->_orgCode = $user->getCurrentOrganization()->getCode();
+            if (! $this->_orgCode) {
+                $this->_orgCode = MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
+            }
+
+        }
+
+        return $this->_orgCode;
+    }
+
+    /**
      * The file name to use for final storage, minus the extension
      *
      * @param string $controller Name of controller (or other id)
@@ -215,15 +240,13 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
      */
     public function getLongtermFileName($controller)
     {
-        $user    = $this->loader->getCurrentUser();
-        $orgCode = $user->getCurrentOrganization()->getCode();
-        $orgId   = $orgCode ? $orgCode : MUtil_File::cleanupName($user->getCurrentOrganization()->getName());
-        $date    = new MUtil_Date();
+        $user   = $this->loader->getCurrentUser();
+        $date   = new MUtil_Date();
 
-        $name[]  = $controller;
-        $name[]  = $date->toString('YYYY-MM-ddTHH-mm-ss');
-        $name[]  = preg_replace('/[^a-zA-Z0-9_]/', '', $user->getLoginName());
-        $name[]  = $orgId;
+        $name[] = $controller;
+        $name[] = $date->toString('YYYY-MM-ddTHH-mm-ss');
+        $name[] = preg_replace('/[^a-zA-Z0-9_]/', '', $user->getLoginName());
+        $name[] = $this->getOrganizationCode();
 
         return implode('.', array_filter($name));
     }
@@ -294,5 +317,17 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
         $this->applySource($trs);
 
         return array('default' => $trs);
+    }
+
+    /**
+     * Set the organization name/code used by the long term filename
+     *
+     * @param string $code
+     * @return \Gems_Import_ImportLoader (continuation pattern)
+     */
+    public function setOrganizationCode($code)
+    {
+        $this->_orgCode = $code;
+        return $this;
     }
 }
