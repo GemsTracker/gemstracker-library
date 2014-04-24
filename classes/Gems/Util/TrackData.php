@@ -314,6 +314,33 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get all the tracks for a certain survey
+     *
+     * @param int $surveyId
+     * @return array survey id => survey name
+     */
+    public function getTracksBySurvey($surveyId)
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__ . '_' . $surveyId;
+
+        if ($results = $this->cache->load($cacheId)) {
+            return $results;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__tracks', array('gtr_id_track', 'gtr_track_name'))
+                ->joinInner('gems__rounds', 'gtr_id_track = gro_id_track', array())
+                ->where("gro_id_survey = ?", $surveyId)
+                ->where("gtr_active = 1")
+                ->where("gro_active = 1")
+                ->order('gtr_track_name');
+
+        $results = $this->db->fetchPairs($select);
+        $this->cache->save($results, $cacheId, array('surveys', 'tracks'));
+        return $results;
+    }
+
+    /**
      * Returns array (id => name) of all track date fields, sorted alphabetically
      *
      * @return array

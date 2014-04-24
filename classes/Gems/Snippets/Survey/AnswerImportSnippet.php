@@ -96,7 +96,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
      */
     protected function addStep1(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->addItems($bridge, 'survey', 'trans', 'mode');
+        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track');
     }
 
     /**
@@ -125,9 +125,13 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                 $this->_survey            = $this->loader->getTracker()->getSurvey($surveyId);
                 $surveys[$surveyId]       = $this->_survey->getName();
                 $elementClass             = 'Exhibitor';
+                $tracks                   = $this->util->getTranslated()->getEmptyDropdownArray() +
+                        $this->util->getTrackData()->getTracksBySurvey($surveyId);
             } else {
-                $surveys      = $this->util->getTranslated()->getEmptyDropdownArray() +
-                        $this->util->getTrackData()->getActiveSurveys();
+                $empty        = $this->util->getTranslated()->getEmptyDropdownArray();
+                $trackData    = $this->util->getTrackData();
+                $surveys      = $empty + $trackData->getActiveSurveys();
+                $tracks       = $empty + $trackData->getAllTracks();
                 $elementClass = 'Select';
             }
 
@@ -141,6 +145,12 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                     'onchange', 'this.form.submit();',
                     'order', $order,
                     'required', true);
+
+            $this->importModel->set('track', 'label', $this->_('Track'),
+                    'description', $this->_('Optionally assign answers only within a single track'),
+                    'multiOptions', $tracks,
+                    'onchange', 'this.form.submit();'
+                    );
         }
         return $this->importModel;
     }
