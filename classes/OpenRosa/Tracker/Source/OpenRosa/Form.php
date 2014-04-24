@@ -398,7 +398,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             try {
                 $model = new Gems_Model_JoinModel($this->getFormID(), $this->getTableName(), 'orf');
             } catch (Exception $exc) {
-                //Failed, now create the table as it obviously doesn't exists
+                //Failed, now create the table as it obviously doesn't exist
                 $model = $this->createTable();
             }
 

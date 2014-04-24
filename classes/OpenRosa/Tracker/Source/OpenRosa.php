@@ -419,6 +419,12 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
 
     }
 
+    /**
+     * 
+     * @param type $surveyId
+     * @param type $sourceSurveyId
+     * @return \OpenRosa_Tracker_Source_OpenRosa_Form
+     */
     public function getSurvey($surveyId, $sourceSurveyId = null)
     {
         if (is_null($sourceSurveyId)) {
@@ -580,6 +586,8 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
             if (!$surveyId) {
                 // New
                 $values['gsu_active']      = 0;
+                $values['gsu_id_source']   = $this->getId();
+                $values['gsu_surveyor_id'] = $sourceSurveyId;
                 $created = true;
             }
         } else {
