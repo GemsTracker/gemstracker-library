@@ -3223,7 +3223,7 @@ msgid ""
 "At the moment this survey can only be assigned to respondents as part of an "
 "existing track."
 msgstr ""
-"At the moment this survey can only be assigned to paitents as part of an "
+"At the moment this survey can only be assigned to patients as part of an "
 "existing track."
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:297
@@ -3584,7 +3584,7 @@ msgstr "Add track"
 
 #: classes/Gems/Default/TrackAction.php:610
 msgid "This respondent does not yet have an active track. Add one here."
-msgstr "This paitent does not yet have an active track. Add one here."
+msgstr "This patient does not yet have an active track. Add one here."
 
 #: classes/Gems/Default/TrackActionAbstract.php:121
 msgid "No tracks found"
@@ -7155,7 +7155,7 @@ msgstr "This track can be assigned since %s."
 #~ "After answering the survey you will return to the respondent overview "
 #~ "screen."
 #~ msgstr ""
-#~ "After answering the survey you will return to the paitent overview screen."
+#~ "After answering the survey you will return to the patient overview screen."
 
 #~ msgid ""
 #~ "To set a new password for the [b]{organization}[/b] site [b]{project}[/"

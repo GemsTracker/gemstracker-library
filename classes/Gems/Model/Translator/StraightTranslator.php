@@ -55,5 +55,4 @@ class Gems_Model_Translator_StraightTranslator extends MUtil_Model_Translator_St
     {
         return new Gems_Form();
     }
-
 }

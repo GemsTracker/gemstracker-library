@@ -647,7 +647,7 @@ abstract class Gems_Menu_MenuAbstract
                 ->setParameterFilter('gsu_has_pdf', 1);
         // Multi survey
         $page->addAction($this->_('Check all is answered'), 'pr.survey-maintenance.check-all', 'check-all');
-        $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-import');
+        $page->addAction($this->_('Import answers'), 'pr.survey-maintenance.answer-import', 'answer-imports');
 
         // TRACK MAINTENANCE CONTROLLER
         $page = $setup->addBrowsePage($this->_('Tracks'), 'pr.track-maintenance', 'track-maintenance');

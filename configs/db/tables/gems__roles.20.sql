@@ -113,7 +113,7 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
         grl_privileges,
         grl_changed, grl_changed_by, grl_created, grl_created_by)
     VALUES
-    (808, 'super', 'super', '801,803,804,805,806',
+    (808, 'super', 'super', '801,803,804,805,806,807',
     'pr.agenda-activity,pr.agenda-activity.create,pr.agenda-activity.delete,pr.agenda-activity.edit,
     ,pr.agenda-procedure,pr.agenda-procedure.create,pr.agenda-procedure.delete,pr.agenda-procedure.edit,
     ,pr.agenda-staff,pr.agenda-staff.create,pr.agenda-staff.delete,pr.agenda-staff.edit,

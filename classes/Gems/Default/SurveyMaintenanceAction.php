@@ -279,6 +279,14 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     }
 
     /**
+     * Import answers to any survey
+     */
+    public function answerImportsAction()
+    {
+        $this->answerImportAction();
+    }
+
+    /**
      *
      * @param array $data The data that will be saved.
      * @param boolean $isNew
