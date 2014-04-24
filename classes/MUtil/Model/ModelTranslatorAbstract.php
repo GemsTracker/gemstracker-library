@@ -289,6 +289,11 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                 $value = new MUtil_Date($value, $format, $this->dateLocale);
                 return;
             }
+
+            $options = $this->_targetModel->get($key, 'multiOptions');
+            if ($options && (! isset($options[$value])) && in_array($value, $options)) {
+                $value = array_search($value, $options);
+            }
         }
 
         if (is_string($value)) {

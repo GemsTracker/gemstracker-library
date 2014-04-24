@@ -303,20 +303,35 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
 
         switch ($controller) {
             case 'respondent':
-                $trs = new Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
+                $output['default'] = new Gems_Model_Translator_RespondentTranslator($translator->_('Direct import'));
                 break;
 
             case 'calendar':
-                $trs = new Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                $output['default'] = new Gems_Model_Translator_AppointmentTranslator($translator->_('Direct import'));
+                break;
+
+            case 'answers':
+                $output['default'] = new Gems_Model_Translator_TokenAnswerTranslator(
+                        $translator->_('By token (replace existing answers)')
+                        );
+                $output['resp']    = new Gems_Model_Translator_RespondentAnswerTranslator(
+                        $translator->_('By patient id (fill unanswered by order)')
+                        );
+                $output['date']    = new Gems_Model_Translator_DateAnswerTranslator(
+                        $translator->_('Use patient id and match completion date')
+                        );
                 break;
 
             default:
-                $trs = new Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
+                $output['default'] = new Gems_Model_Translator_StraightTranslator($translator->_('Direct import'));
                 break;
         }
-        $this->applySource($trs);
 
-        return array('default' => $trs);
+        foreach ($output as $trs) {
+            $this->applySource($trs);
+        }
+
+        return $output;
     }
 
     /**

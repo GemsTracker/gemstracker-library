@@ -185,6 +185,27 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     public $view;
 
     /**
+     * Helper function to sort translator table by model order
+     *
+     * @param string $a
+     * @param string $b
+     * @return int
+     */
+    protected function _sortTranslatorTable($a, $b)
+    {
+        $ao = $this->targetModel->getOrder($a);
+        $bo = $this->targetModel->getOrder($b);
+
+        if ($ao < $bo) {
+            return -1;
+        } elseif ($ao > $bo) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * Add the elements from the model to the bridge for the current step
      *
      * @param MUtil_Model_FormBridge $bridge
@@ -228,7 +249,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 if ($element->getFileName()) {
                     // Now the filename is still set to the upload filename.
                     $this->formData['extension'] = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
-                    MUtil_Echo::track($this->formData['extension']);
+                    // MUtil_Echo::track($this->formData['extension']);
                     if (!$element->receive()) {
                         throw new MUtil_Model_ModelException(sprintf(
                             $this->_("Error retrieving file '%s'."),
@@ -526,6 +547,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
             $model->set('trans', 'label', $this->_('Translation definition'),
+                    'default', $this->defaultImportTranslator,
                     'description', $this->_('See import field definitions table'),
                     'multiOptions', $this->getTranslatorDescriptions(),
                     'required', true,
@@ -533,6 +555,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     'separator', ' ');
 
             $model->set('mode', 'label', $this->_('Choose work mode'),
+                    'default', 'file',
                     'multiOptions', array(
                         'file'     => $this->_('Upload a file'),
                         'textarea' => $this->_('Copy and paste into a text field'),
@@ -554,7 +577,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
             // Storage for local copy of the file, kept through process
             $model->set('localfile');
-            $model->set('extension');
+            $model->set('extension', 'default', 'txt');
 
             $model->set('content', 'label', $this->_('Import text - user header line - separate fields using tabs'),
                     'description', $this->_('Empty fields remove any existing values. Add a field only when used.'),
@@ -762,7 +785,32 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                         break;
 
                 }
-                if ($options = $this->targetModel->get($name, 'multiOptions')) {
+                $options = $this->targetModel->get($name, 'multiOptions');
+                if ($options) {
+                    $cutoff      = 6;
+                    $i           = 0;
+                    $optionDescr = '';
+                    $separator   = $this->_(', ');
+                    foreach($options as $key => $value) {
+                        $optionDescr .= $separator . $key;
+                        $i++;
+                        if ($key != $value) {
+                            $optionDescr .= sprintf($this->_(', %s'), $value);
+                            $i++;
+                        }
+                        if ($i > $cutoff) {
+                            break;
+                        }
+                    }
+                    $optionDescr = substr($optionDescr, strlen($separator));
+
+                    if ($i < $cutoff) {
+                        // $type .= $this->_('; one of: ') . implode($this->_(', '), array_keys($options));
+                        $type .= sprintf($this->_('; one of: %s'), $optionDescr);
+                    } else {
+                        $type .= sprintf($this->_('; e.g. one of: %s, ...'), $optionDescr);
+                    }
+                    /*
                     $cutoff = 8;
                     if (count($options) < $cutoff) {
                         $type .= $this->_('; one of: ') . implode($this->_(', '), array_keys($options));
@@ -771,6 +819,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                                 implode($this->_(', '), array_slice(array_keys($options), 0, $cutoff - 1)) .
                                 $this->_(', ...');
                     }
+                    // */
+                }
+
+                $typeDescr = $this->targetModel->get($name, 'import_descr');
+                if ($typeDescr) {
+                    $type .= $this->_('; ') . $typeDescr;
                 }
 
                 $required = $this->targetModel->get($name, 'required');
@@ -779,11 +833,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 $resultRow[$this->_('Content')]           = $type;
 
                 // Prepend the 'required' row
-                $resultRow = array($this->_('Required') => $required ? $this->_('Yes') : ' ') + $resultRow;
+                $resultRow = array($this->_('Required') => $required ? $this->_('Yes') : ' ') +
+                    array_merge($minimal, $resultRow);;
 
-                $output[$name] = $resultRow + $minimal;
+                $output[$name] = $resultRow;
             }
         }
+        uksort($output, array($this, '_sortTranslatorTable'));
 
         return $output;
     }
@@ -833,24 +889,23 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         if ($this->request->isPost()) {
             $this->formData = $this->request->getPost() + $this->formData;
         } else {
-
-            // I assume that if formData is set it is the correct formData
-            if (! $this->formData)  {
-
-                // B.t.w. we do not use the model for the initial data
-                $this->formData['extension'] = 'txt';
-                $this->formData['localfile'] = MUtil_File::createTemporaryIn(
-                        $this->tempDirectory,
-                        $this->request->getControllerName() . '_'
-                        );
-                $this->formData['trans']     = $this->defaultImportTranslator;
+            foreach ($this->importModel->getColNames('default') as $name) {
+                if (!(isset($this->formData[$name]) && $this->formData[$name])) {
+                    $this->formData[$name] = $this->importModel->get($name, 'default');
+                }
             }
         }
 
-        // Must always exists
-        if (!(isset($this->formData['mode']) && $this->formData['mode'])) {
-            $this->formData['mode'] = 'file';
+        if (isset($this->formData[$this->stepFieldName]) &&
+                $this->formData[$this->stepFieldName] > 1 &&
+                (!(isset($this->formData['localfile']) && $this->formData['localfile']))) {
+            $this->formData['localfile'] = MUtil_File::createTemporaryIn(
+                    $this->tempDirectory,
+                    $this->request->getControllerName() . '_'
+                    );
         }
+
+        // Must always exists
         $this->fileMode = 'file' === $this->formData['mode'];
 
         // Set the translator
