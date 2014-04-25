@@ -100,6 +100,10 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
             $storageFormat = isset($attribs['storageFormat']) ? $attribs['storageFormat'] : null;
 
             $result = MUtil_Date::format($result, $dateFormat, $storageFormat);
+
+            if ($value instanceof Zend_Date) {
+                $value = $value->toString($dateFormat);
+            }
         }
 
         if (isset($attribs['itemDisplay'])) {
