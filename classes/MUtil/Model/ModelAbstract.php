@@ -1733,7 +1733,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                     $row = $row + $extraPostData;
                 }
 
-                $data[$key] = $this->_processRowAfterLoad($row, $new);
+                $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData);
             }
         }
 
