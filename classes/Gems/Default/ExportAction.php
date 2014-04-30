@@ -46,6 +46,13 @@
 class Gems_Default_ExportAction extends Gems_Controller_Action
 {
     /**
+     * Defines the value used for 'no round description'
+     * 
+     * It this value collides with a used round description, change it to something else
+     */
+    const NoRound = '-1';
+            
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
@@ -138,6 +145,49 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             //$filter['organizationid'] = '-1';
         }
         $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
+        
+        if (isset($data['rounds']) && !empty($data['rounds'])) {
+            $select = $this->loader->getTracker()->getTokenSelect(array('gto_id_token'));
+            
+            // Only get positive receptioncodes
+            $select->andReceptionCodes(array())
+                   ->onlySucces();
+            
+            // Apply track filter
+            if (isset($data['tid']) && !empty($data['tid'])) {                
+                $select->forWhere('gto_id_track = ?', (int) $data['tid']);
+            }
+
+            // Apply survey filter
+            if (isset($data['sid']) && !empty($data['sid'])) {
+                $select->forSurveyId((int) $data['sid']);
+            }
+            
+            // Apply organization filter
+            if (isset($data['oid'])) {
+                $select->forWhere('gto_id_organization in (?)', $data['oid']);
+            }
+        
+            // Apply round description filter
+            if ($data['rounds'] == self::NoRound) {
+                $select->forWhere('gto_round_description IS NULL OR gto_round_description = ""');
+            } else {
+                $select->forWhere('gto_round_description = ?', $data['rounds']);
+            }
+                        
+            $tokens = array();
+            $result = $select->getSelect()->query();
+            while ($row = $result->fetch(Zend_Db::FETCH_NUM)) {
+                $tokens[] = $row[0];
+            }
+            
+            if (empty($tokens)) {
+                // Add invalid filter
+                $filter['organizationid'] = -1;
+            }
+             
+            $filter['token'] = $tokens;
+        }
 
         // Gems_Tracker::$verbose = true;
         return $filter;
@@ -202,8 +252,10 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     public function getForm(&$data)
     {
         $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
+        $noRound       = array (self::NoRound => $this->_('No round description'));
         $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
         $surveys       = $empty + $this->util->getDbLookup()->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
+        $rounds        = $empty + $noRound + $this->util->getDbLookup()->getRoundsForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['sid']) ? $data['sid'] : null);
         $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
         $types         = $this->export->getExportClasses();
 
@@ -227,6 +279,11 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element = new Zend_Form_Element_Select('sid');
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
+        $elements[] = $element;
+        
+        $element = new Zend_Form_Element_Select('rounds');
+        $element->setLabel($this->_('Round description'))
+            ->setMultiOptions($rounds);
         $elements[] = $element;
 
         if ($this->project->hasResponseDatabase()) {

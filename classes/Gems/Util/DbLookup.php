@@ -436,6 +436,37 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $roles;
     }
+    
+    /**
+     * Get all round descriptions for exported
+     *
+     * @param int $trackId Optional track id
+     * @param int $surveyId Optional survey id
+     * @return array
+     */
+    public function getRoundsForExport($trackId = null, $surveyId = null)
+    {
+        // Read some data from tables, initialize defaults...
+        $select = $this->db->select();
+
+        // Fetch all round descriptions
+        $select->from('gems__tokens', array('gto_round_description', 'gto_round_description'))
+            ->distinct()
+            ->where('gto_round_description IS NOT NULL AND gto_round_description != ""')
+            ->order(array('gto_round_description'));
+
+        if (!empty($trackId)) {
+            $select->where('gto_id_track = ?', (int) $trackId);
+        }
+        
+        if (!empty($surveyId)) {
+            $select->where('gto_id_survey = ?', (int) $surveyId);
+        }
+
+        $result = $this->db->fetchPairs($select);
+
+        return $result;
+    }
 
     /**
      * Return key/value pairs of all staff members, currently active or not
