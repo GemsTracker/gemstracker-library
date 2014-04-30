@@ -150,6 +150,42 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     }
 
     /**
+     * When this method returns something other than an empty array it will try
+     * to add fields to a newly created track
+     * 
+     * @return array Should be an array or arrays, containing the default fields
+     */
+    public function getDefaultFields()
+    {
+        /*
+        $defaultFields = array(
+            array(
+                'gtf_field_name'        => 'Treatment',
+                'gtf_field_code'        => 'treatment',
+                'gtf_field_description' => 'Enter the shorthand code for the treatment here',
+                'gtf_field_values'      => null,
+                'gtf_field_type'        => 'text',
+                'gtf_required'          => 1,
+                'gtf_readonly'          => 0
+            ),
+            array(
+                'gtf_field_name'        => 'Physician',
+                'gtf_field_code'        => 'physicion',
+                'gtf_field_description' => '',
+                'gtf_field_values'      => null,
+                'gtf_field_type'        => 'text',
+                'gtf_required'          => 0,
+                'gtf_readonly'          => 0
+            )
+        );
+        */
+        
+        $defaultFields = array();
+        
+        return $defaultFields;
+    }
+
+    /**
      * Returns a translate adaptor
      *
      * @return Zend_Translate_Adapter
@@ -166,5 +202,37 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
         }
 
         return $this->translate;
+    }
+
+    public function save(array $newValues, array $filter = null) {
+        // Allow to add default fields to any new track
+        if ($defaultFields = $this->getDefaultFields()) {
+            $keys = $this->getKeys();
+            $keys = array_flip($keys);
+            $missing = array_diff_key($keys, $newValues);     // On copy track the key exists but is null
+
+            $newValues = parent::save($newValues, $filter);
+            if (!empty($missing)) {
+                // We have an insert!
+                $foundKeys = array_intersect_key($newValues, $missing);
+                // Now get the fieldmodel
+                $engine     = $this->loader->getTracker()->getTrackEngine($foundKeys['gtr_id_track']);
+                $fieldmodel = $engine->getFieldsMaintenanceModel(true, 'create', array());
+                $lastOrder  = 0;
+                foreach ($defaultFields as $field) {
+                    // Load defaults
+                    $record = $fieldmodel->loadNew();
+                    $record['gtf_id_order'] = $lastOrder + 10;
+                    
+                    $record = $field + $record;             // Add defaults to the new field
+                    $record = $fieldmodel->save($record);
+                    $lastOrder = $record['gtf_id_order'];   // Save order for next record
+                }
+            }
+        } else {
+            $newValues = parent::save($newValues, $filter);
+        }
+
+        return $newValues;
     }
 }
