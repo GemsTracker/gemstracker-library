@@ -882,16 +882,18 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Get/load the bridge for the specific idenitifier
+     * Create the bridge for the specific idenitifier
+     *
+     * This will always be a new bridge because otherwise you get
+     * instabilities as bridge objects are shared without knowledge
      *
      * @param string $identifier
-     * @param mixed $arg1 Optional first of extra arguments, specifying arguments means a new class will created
+     * @param mixed $arg1 Optional first of extra arguments
      * @return MUtil_Model_Bridge_BridgeAbstract
      */
     public function getBridgeFor($identifier, $arg1 = null)
     {
         $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
-        $create  = func_num_args() > 1;
 
         if (! $bridges) {
             $bridges = MUtil_Model::getDefaultBridges();
@@ -904,21 +906,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
 
         if ($bridges[$identifier] instanceof MUtil_Model_Bridge_BridgeInterface) {
-            if ($create) {
-                $bridges[$identifier] = get_class($bridges[$identifier]);
-            } else {
-                return $bridges[$identifier];
-            }
+            return clone $bridges[$identifier];
         }
 
         // First parameter is always the model, using + replaces that value
         $params = array($this) + func_get_args();
         $loader = MUtil_Model::getBridgeLoader();
         $bridge = $loader->createClass($bridges[$identifier], $params);
-
-        if (! $create) {
-            $this->setBridgeFor($identifier, $bridge);
-        }
 
         return $bridge;
     }

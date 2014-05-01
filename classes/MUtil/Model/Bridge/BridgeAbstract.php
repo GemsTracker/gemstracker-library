@@ -63,6 +63,12 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     const MODE_SINGLE_ROW = 2;
 
     /**
+     *
+     * @var MUtil_Model_Bridge_BridgeAbstract
+     */
+    protected $_chainedBridge;
+
+    /**
      * Field name => compiled result, i.e. array of functions to call with only the value as parameter
      *
      * @var array
@@ -125,17 +131,23 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     /**
      * Checks name for being a key id field and in that case returns the real field name
      *
-     * @param string $name
-     * @return string
+     * @param string $name The field name or key name
+     * @param boolean $throwError By default we throw an error until rendering
+     * @return string The real name and not e.g. the key id
+     * @throws MUtil_Model_ModelException
      */
-    protected function _checkName(&$name)
+    protected function _checkName($name, $throwError = true)
     {
+        if ($this->model->has($name)) {
+            return $name;
+        }
+
         $modelKeys = $this->model->getKeys();
         if (isset($modelKeys[$name])) {
             return $modelKeys[$name];
         }
 
-        if (! $this->model->has($name)) {
+        if ($throwError) {
             throw new MUtil_Model_ModelException(
                     sprintf('Request for unknown item %s from model %s.', $name, $this->model->getName())
                     );
@@ -165,7 +177,14 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     public function format($name, $value)
     {
         if (!array_key_exists($name, $this->_compilations)) {
-            $this->_compilations[$name] = $this->_compile($name);
+            if ($this->_chainedBridge) {
+                $this->_compilations[$name] = array_merge(
+                        $this->_chainedBridge->_compile($name),
+                        $this->_compile($name)
+                        );
+            } else {
+                $this->_compilations[$name] = $this->_compile($name);
+            }
         }
 
         foreach ($this->_compilations[$name] as $function) {
@@ -185,17 +204,23 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
      */
     public function getFormatted($name)
     {
-        $name = $this->_checkName($name);
+        if (isset($this->$name)) {
+            return $this->$name;
+        }
 
-        if (! isset($this->$name)) {
-            // Make sure the field is in the used list
+        $fieldName = $this->_checkName($name);
+
+        // Make sure the field is in the trackUsage fields list
+        $this->model->get($fieldName);
+
+        if ((self::MODE_SINGLE_ROW === $this->mode) && isset($this->_data[$fieldName])) {
+            $this->$name = $this->format($fieldName, $this->_data[$fieldName]);
+        } else {
+            $this->$name = MUtil_Lazy::call(array($this, 'format'), $fieldName, $this->getLazy($fieldName));
+        }
+        if ($fieldName !== $name) {
             $this->model->get($name);
-
-            if ((self::MODE_SINGLE_ROW === $this->mode) && isset($this->_data[$name])) {
-                $this->$name = $this->format($name, $this->_data[$name]);
-            } else {
-                $this->$name = MUtil_Lazy::call(array($this, 'format'), $name, $this->getLazy($name));
-            }
+            $this->$fieldName = $this->$name;
         }
 
         return $this->$name;
@@ -204,12 +229,32 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     /**
      * Return the lazy value without any processing.
      *
-     * @param string $name
+     * @param string $name The field name or key name
      * @return MUtil_Lazy_Call
      */
     public function getLazy($name)
     {
-        return MUtil_Lazy::call(array($this, 'getRepeaterNameValue'), $name);
+        return MUtil_Lazy::call(array($this, 'getLazyValue'), $name);
+    }
+
+    /**
+     * Get the repeater result for
+     *
+     * @param string $name The field name or key name
+     * @return mixed The result for name
+     */
+    public function getLazyValue($name)
+    {
+        $name = $this->_checkName($name, false);
+
+        if (! $this->_repeater) {
+            $this->getRepeater();
+        }
+
+        $current = $this->_repeater->__current();
+        if ($current && isset($current->$name)) {
+            return $current->$name;
+        }
     }
 
     /**
@@ -239,28 +284,14 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     public function getRepeater()
     {
         if (! $this->_repeater) {
-            $this->setRepeater($this->model->loadRepeatable());
+            if ($this->_chainedBridge && $this->_chainedBridge->hasRepeater()) {
+                $this->setRepeater($this->_chainedBridge->getRepeater());
+            } else {
+                $this->setRepeater($this->model->loadRepeatable());
+            }
         }
 
         return $this->_repeater;
-    }
-
-    /**
-     * Get the repeater result for
-     *
-     * @param string $name The real name and not e.g. the key id
-     * @return mixed The result for name
-     */
-    public function getRepeaterNameValue($name)
-    {
-        if (! $this->_repeater) {
-            $this->getRepeater();
-        }
-
-        $current = $this->_repeater->__current();
-        if ($current && isset($current->$name)) {
-            return $current->$name;
-        }
     }
 
     /**
@@ -310,7 +341,23 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
             return $this->_data[$name];
         }
 
-        return $this->getLazy();
+        return $this->getLazy($name);
+    }
+
+    /**
+     * Returns true if name is in the model
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function has($name)
+    {
+        if ($this->model->has($name)) {
+            return true;
+        }
+
+        $modelKeys = $this->model->getKeys();
+        return (boolean) isset($modelKeys[$name]);
     }
 
     /**
@@ -320,7 +367,8 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
      */
     public function hasRepeater()
     {
-        return $this->_repeater instanceof MUtil_Lazy_RepeatableInterface;
+        return $this->_repeater instanceof MUtil_Lazy_RepeatableInterface ||
+                ($this->_chainedBridge && $this->_chainedBridge->hasRepeater());
     }
 
     /**
@@ -334,6 +382,11 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     {
         if (($mode == $this->mode) || (self::MODE_LAZY == $this->mode)) {
             $this->mode = $mode;
+
+            if ($this->_chainedBridge) {
+                $this->_chainedBridge->mode = $this->mode;
+            }
+
             return $this;
         }
 
@@ -349,6 +402,9 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     public function setRepeater(MUtil_Lazy_RepeatableInterface $repeater)
     {
         $this->_repeater = $repeater;
+        if ($this->_chainedBridge) {
+            $this->_chainedBridge->_repeater = $repeater;
+        }
 
         return $this;
     }
@@ -373,6 +429,9 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
         }
 
         $this->_data = $row;
+        if ($this->_chainedBridge) {
+            $this->_chainedBridge->_data = $this->_data;
+        }
 
         $this->setRepeater(new MUtil_Lazy_Repeatable(array($this->_data)));
 
@@ -391,7 +450,11 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
         $this->setMode(self::MODE_ROWS);
 
         if (null === $rows) {
-            $rows = $this->model->load();
+            if ($this->_repeater) {
+                $rows = $this->_repeater->__getRepeatable();
+            } else {
+                $rows = $this->model->load();
+            }
 
             if (! $rows) {
                 $rows = array();
@@ -399,6 +462,9 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
         }
 
         $this->_data = $rows;
+        if ($this->_chainedBridge) {
+            $this->_chainedBridge->_data = $this->_data;
+        }
 
         $this->setRepeater(new MUtil_Lazy_Repeatable($this->_data));
 

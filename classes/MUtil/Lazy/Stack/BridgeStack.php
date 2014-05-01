@@ -82,12 +82,6 @@ class MUtil_Lazy_Stack_BridgeStack implements MUtil_Lazy_StackInterface
     }
 
     /**
-     * Should we throw an exception on a missing value?
-     *
-     * @var boolean
-     */
-
-    /**
      * Set this stack to throw an exception
      *
      * @param mixed $throw boolean
