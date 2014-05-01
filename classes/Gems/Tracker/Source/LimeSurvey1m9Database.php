@@ -827,6 +827,12 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
 
         $results = $results + $this->_getFieldMap($sourceSurveyId, $language)->getQuestionList('D');
 
+        // Prevent html output in date lists
+        foreach($results as $key => &$value)
+        {
+            $value = MUtil_Html::raw($value);
+        }
+        
         return $results;
     }
 
