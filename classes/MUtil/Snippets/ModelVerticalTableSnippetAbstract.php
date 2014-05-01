@@ -148,7 +148,7 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      */
     public function getShowTable(MUtil_Model_ModelAbstract $model)
     {
-        $bridge = $model->getBridgeFor('itemTable');
+        $bridge = $model->getBridgeFor('itemTable', array('class' => $this->class));
         $bridge->setColumnCount($this->bridgeColumns)
                 ->setMode($this->bridgeMode);
 
