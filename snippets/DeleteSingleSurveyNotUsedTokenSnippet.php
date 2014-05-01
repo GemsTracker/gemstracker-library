@@ -54,15 +54,6 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
     protected $_route;
 
     /**
-     * Restored to grandparent: the PHP class used to create the VerticalTableBridge.
-     *
-     * Must be instanceof MUtil_Model_VerticalTableBridge.
-     *
-     * @var string Class name
-     */
-    protected $bridgeClass = 'MUtil_Model_VerticalTableBridge';
-
-    /**
      * Variable to either keep or throw away the request data
      * not specified in the route.
      *
@@ -128,6 +119,20 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
         $bridge->tfrow($this->getMenuList(), array('class' => 'centerAlign'));
     }
 
+    /**
+     * Creates the model
+     *
+     * @return MUtil_Model_ModelAbstract
+     */
+    protected function createModel()
+    {
+        $model = parent::getModel();
+        
+        $model->setBridgeFor('itemTable', 'MUtil_Model_VerticalTableBridge');
+        
+        return $model;
+    }
+    
     /**
      *
      * @return Gems_Menu_MenuList

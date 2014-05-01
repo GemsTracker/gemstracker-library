@@ -421,14 +421,14 @@ abstract class MUtil_Model_Bridge_TableBridgeAbstract extends MUtil_Model_Bridge
     /**
      * Set the repeater source for the lazy data
      *
-     * @param \MUtil_Lazy_RepeatableInterface $repeater
+     * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @return \MUtil_Model_Format_DisplayFormatter (continuation pattern)
      */
-    public function setRepeater(MUtil_Lazy_RepeatableInterface $repeater)
+    public function setRepeater($repeater)
     {
         parent::setRepeater($repeater);
 
-        $this->table->setRepeater($repeater);
+        $this->table->setRepeater($this->_repeater);
 
         return $this;
     }

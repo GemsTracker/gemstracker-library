@@ -51,20 +51,18 @@
 abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
 {
     /**
-     * The PHP class used to create the VerticalTableBridge.
-     *
-     * Must be instanceof MUtil_Model_VerticalTableBridge.
-     *
-     * @var string Class name
-     */
-    protected $bridgeClass = 'MUtil_Model_VerticalTableBridge';
-
-    /**
      *
      * @var int The number of columns used in the table bridge.
      */
     protected $bridgeColumns = 1;
 
+    /**
+     * One of the MUtil_Model_Bridge_BridgeAbstract MODE constants
+     * 
+     * @var int 
+     */
+    protected $bridgeMode = MUtil_Model_Bridge_BridgeAbstract::MODE_LAZY;
+    
     /**
      * Shortfix to add class attribute
      *
@@ -150,8 +148,9 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
      */
     public function getShowTable(MUtil_Model_ModelAbstract $model)
     {
-        $bridge = new $this->bridgeClass($model);
-        $bridge->setColumnCount($this->bridgeColumns);
+        $bridge = $model->getBridgeFor('itemTable');
+        $bridge->setColumnCount($this->bridgeColumns)
+                ->setMode($this->bridgeMode);
 
         $this->setShowTableHeader($bridge, $model);
         $this->setShowTableFooter($bridge, $model);

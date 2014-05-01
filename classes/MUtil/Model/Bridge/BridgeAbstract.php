@@ -396,11 +396,14 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
     /**
      * Set the repeater source for the lazy data
      *
-     * @param \MUtil_Lazy_RepeatableInterface $repeater
+     * @param mixed $repeater MUtil_Lazy_RepeatableInterface or something that can be made into one.
      * @return \MUtil_Model_Format_DisplayFormatter (continuation pattern)
      */
-    public function setRepeater(MUtil_Lazy_RepeatableInterface $repeater)
+    public function setRepeater($repeater)
     {
+        if (! $repeater instanceof MUtil_Lazy_RepeatableInterface) {
+            $repeater = new MUtil_Lazy_Repeatable($repeater);
+        }
         $this->_repeater = $repeater;
         if ($this->_chainedBridge) {
             $this->_chainedBridge->_repeater = $repeater;
@@ -433,7 +436,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
             $this->_chainedBridge->_data = $this->_data;
         }
 
-        $this->setRepeater(new MUtil_Lazy_Repeatable(array($this->_data)));
+        $this->setRepeater(array($this->_data));
 
         return $this;
     }
@@ -466,7 +469,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
             $this->_chainedBridge->_data = $this->_data;
         }
 
-        $this->setRepeater(new MUtil_Lazy_Repeatable($this->_data));
+        $this->setRepeater($this->_data);
 
         return $this;
     }

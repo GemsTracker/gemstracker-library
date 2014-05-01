@@ -47,15 +47,6 @@
 abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snippets_ModelVerticalTableSnippetAbstract
 {
     /**
-     * The PHP class used to create the VerticalTableBridge.
-     *
-     * Must be instanceof MUtil_Model_VerticalTableBridge.
-     *
-     * @var string Class name
-     */
-    protected $bridgeClass = 'Gems_Model_ThreeColumnTableBridge';
-
-    /**
      * Shortfix to add class attribute
      *
      * @var string
@@ -135,6 +126,8 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
         } else {
             $model->set('gto_id_token', 'formatFunction', 'strtoupper');
         }
+        $model->setBridgeFor('itemTable', 'Gems_Model_ThreeColumnTableBridge');
+        
         return $model;
     }
 
