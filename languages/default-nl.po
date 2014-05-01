@@ -2280,7 +2280,7 @@ msgstr "Ongeldige taal instelling."
 #: classes/Gems/Default/OrganizationAction.php:176
 msgid "Checked organizations see this organizations respondents."
 msgstr ""
-"Geselecteerde organizaties kunnen de patiënten van deze organisatie bekijken."
+"Geselecteerde organisaties kunnen de patiënten van deze organisatie bekijken."
 
 #: classes/Gems/Default/LocationAction.php:131
 msgid "Location url"
