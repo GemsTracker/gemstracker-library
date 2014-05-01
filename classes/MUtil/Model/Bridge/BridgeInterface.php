@@ -28,47 +28,37 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
- * @license    New BSD License
- * @version    $Id: SelectElementProcessor.php 203 2012-01-01t 12:51:32Z matijs $
+ * @copyright  Copyright (c) 2014 J-POP Foundation
+ * @license    no free license, do not use without permission
+ * @version    $id: FormatterInterface.php 203 2013-01-01t 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Model
- * @copyright  Copyright (c) 2014 Erasmus MC
- * @license    New BSD License
- * @since      Class available since MUtil version 1.4
+ * @subpackage Model_Bridge
+ * @copyright  Copyright (c) 2014 J-POP Foundation
+ * @license    no free license, do not use without permission
+ * @since      Class available since 2014 $(date} 22:00:30
  */
-class MUtil_Model_Processor_Element_SelectElementProcessor extends MUtil_Model_Processor_ElementProcessorAbstract
+interface MUtil_Model_Bridge_BridgeInterface
 {
     /**
-     * Allow use of answers select specific options
+     * Construct the bridge while setting the model.
      *
-     * @var boolean
+     * Extra parameters can be added in subclasses, but the first parameter
+     * must remain the model.
+     *
+     * @param MUtil_Model_ModelAbstract $model
      */
-    protected $useMultiOptions = true;
+    public function __construct(MUtil_Model_ModelAbstract $model);
 
     /**
-     * Processes the input, changing e.g. the result, context or options
      *
-     * @param MUtil_Model_Input $input
-     * @return void
+     * @return MUtil_Model_ModelAbstract
      */
-    public function process(MUtil_Model_Input $input)
-    {
-        $options = $this->getFilteredOptions($input);
-
-        // Is sometimes added automatically, but should not be used here
-        unset($options['maxlength']);
-
-        $this->_applyElement(
-                $input,
-                new Zend_Form_Element_Select($input->getName(), $options)
-                );
-    }
+    #public function getModel();
 }

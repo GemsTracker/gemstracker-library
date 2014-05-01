@@ -51,14 +51,9 @@
 class MUtil_Model
 {
     /**
-     * Indentifier for form (meta) assemblers and (field) processors
+     * Indentifier for bridges meta key
      */
-    const FORM = 'form';
-
-    /**
-     * Indentifier for assemblers meta key
-     */
-    const META_ASSEMBLERS = 'assemblers';
+    const META_BRIDGES = 'bridges';
 
     /**
      * In order to keep the url's short and to hide any field names from
@@ -138,6 +133,18 @@ class MUtil_Model
     const TYPE_CHILD_MODEL  = 6;
 
     /**
+     * The default bridges for each new model
+     *
+     * @var array string => bridge class
+     */
+    private static $_bridges = array(
+        'display'   => 'DisplayBridge',
+        'form'      => 'MUtil_Model_FormBridge',
+        'itemTable' => 'MUtil_Model_VerticalTableBridge',
+        'table'     => 'MUtil_Model_TableBridge',
+    );
+
+    /**
      *
      * @var array of MUtil_Loader_PluginLoader
      */
@@ -195,14 +202,24 @@ class MUtil_Model
     }
 
     /**
-     * Returns the plugin loader for assemblers
+     * Returns the plugin loader for bridges
      *
      * @return MUtil_Loader_PluginLoader
      */
-    public static function getAssemblerLoader()
+    public static function getBridgeLoader()
     {
-        return self::getLoader('Assembler');
-        // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+        return self::getLoader('Bridge');
+    }
+
+    /**
+     * Returns an arrat of bridge type => class name for
+     * getting the default bridge classes for a model.
+     *
+     * @return array
+     */
+    public static function getDefaultBridges()
+    {
+        return self::$_bridges;
     }
 
     /**
@@ -218,18 +235,18 @@ class MUtil_Model
     /**
      * Returns a subClass plugin loader
      *
-     * @param string $prefix The prefix to load the loader for. CamelCase and should not contain an '_', '/' or '\'.
+     * @param string $prefix The prefix to load the loader for. Is CamelCased and should not contain an '_', '/' or '\'.
      * @return MUtil_Loader_PluginLoader
      */
-    public static function getLoader($subClass)
+    public static function getLoader($prefix)
     {
-        if (! isset(self::$_loaders[$subClass])) {
+        if (! isset(self::$_loaders[$prefix])) {
             $loader = new MUtil_Loader_SourcePluginLoader();
 
             foreach (self::$_nameSpaces as $nameSpace) {
                 $loader->addPrefixPath(
-                        $nameSpace . '_Model_' . $subClass,
-                        $nameSpace . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . $subClass);
+                        $nameSpace . '_Model_' . ucfirst($prefix),
+                        $nameSpace . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . ucfirst($prefix));
             }
             $loader->addFallBackPath();
 
@@ -237,21 +254,10 @@ class MUtil_Model
                 $loader->setSource(self::$_source);
             }
 
-            self::$_loaders[$subClass] = $loader;
+            self::$_loaders[$prefix] = $loader;
         }
 
-        return self::$_loaders[$subClass];
-    }
-
-    /**
-     * Returns the plugin loader for processors.
-     *
-     * @return MUtil_Loader_PluginLoader
-     */
-    public static function getProcessorLoader()
-    {
-        return self::getLoader('Processor');
-        // maybe add interface def to plugin loader: MUtil_Model_AssemblerInterface
+        return self::$_loaders[$prefix];
     }
 
     /**
@@ -279,13 +285,13 @@ class MUtil_Model
     }
 
     /**
-     * Sets the plugin loader for assemblers
+     * Sets the plugin loader for bridges
      *
      * @param MUtil_Loader_PluginLoader $loader
      */
-    public static function setAssemblerLoader(MUtil_Loader_PluginLoader $loader)
+    public static function setBridgeLoader(MUtil_Loader_PluginLoader $loader)
     {
-        self::setLoader($loader, 'Assembler');
+        self::setLoader($loader, 'Bridge');
     }
 
     /**
@@ -299,23 +305,14 @@ class MUtil_Model
     }
 
     /**
-     * Sets the plugin loader for assemblers
+     * Sets the plugin loader for a subclass
      *
      * @param MUtil_Loader_PluginLoader $loader
+     * @param string $prefix The prefix to set  the loader for. Is CamelCased and should not contain an '_', '/' or '\'.
      */
-    public static function setLoader(MUtil_Loader_PluginLoader $loader, $subClass)
+    public static function setLoader(MUtil_Loader_PluginLoader $loader, $prefix)
     {
-        self::$_loaders[$subClass] = $loader;
-    }
-
-    /**
-     * Sets the plugin loader for processors.
-     *
-     * @param MUtil_Loader_PluginLoader $loader
-     */
-    public static function setProcessorLoader(MUtil_Loader_PluginLoader $loader)
-    {
-        self::setLoader($loader, 'Processor');
+        self::$_loaders[$prefix] = $loader;
     }
 
     /**

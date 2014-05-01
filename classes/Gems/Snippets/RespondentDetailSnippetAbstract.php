@@ -223,7 +223,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        $bridge = new MUtil_Model_VerticalTableBridge($this->model, array('class' => 'displayer'));
+        $bridge = $this->model->getBridgeFor('itemTable', array('class' => 'displayer'));
         $bridge->setRepeater($this->repeater);
         $bridge->setColumnCount(2); // May be overruled
 

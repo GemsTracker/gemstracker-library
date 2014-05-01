@@ -27,19 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.0
- * @version 1.1
- * @package MUtil
- * @subpackage Model
+ * @package    MUtil
+ * @subpackage Model_Bridge
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package MUtil
- * @subpackage Model
+ * 
+ * @package    MUtil
+ * @subpackage Model_Bridge
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-class MUtil_Model_VerticalTableBridge extends MUtil_Model_TableBridgeAbstract
+class MUtil_Model_VerticalTableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
 {
     protected $columnCount   = 1;
     protected $columnCounts  = array();

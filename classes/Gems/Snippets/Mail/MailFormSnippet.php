@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbstract 
+class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbstract
 {
     protected $afterSendRouteUrl;
 
@@ -61,7 +61,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      * @var string
      */
     protected $formClass = 'formTable';
-    
+
     protected $formData = array();
 
     public $formTitle;
@@ -77,19 +77,19 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected $labelClass = 'label';
 
     /**
-     * 
+     *
      * @var Gems_Loader
      */
     protected $loader;
 
     /**
-     * 
+     *
      * @var Gems_Mail_MailElements
      */
     protected $mailElements;
 
     /**
-     * The mailtarget 
+     * The mailtarget
      * @var string
      */
     protected $mailTarget;
@@ -103,7 +103,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected $model;
 
     /**
-     * 
+     *
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
@@ -116,7 +116,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected $routeAction = 'index';
 
     /**
-     * 
+     *
      * @var Zend_Session
      */
     protected $session;
@@ -144,7 +144,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
-        
+
         $bridge->addHtml('to', 'label', $this->_('To'));
         $bridge->addHtml('prefered_language', 'label', $this->_('Prefered Language'));
 
@@ -164,19 +164,19 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
             $mailBody->config['extraPlugins'] .= ',availablefields';
             $mailBody->config['toolbar'][] = array('availablefields');
         }
-        if (!$this->templateOnly) { 
+        if (!$this->templateOnly) {
             $bridge->addFakeSubmit('preview', array('label' => $this->_('Preview')));
         }
 
         $bridge->addElement($this->createFromSelect('from', $this->_('From')));
 
         $bridge->addElement($this->mailElements->createSubmitButton('send', $this->_('Send')));
-        
+
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
         if (!$this->templateOnly) {
             $bridge->addHtml('available_fields', array('label' => $this->_('Available fields')));
-        }        
+        }
     }
 
     protected function beforeDisplay()
@@ -325,7 +325,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
         $element->addValidator('InArray', false, array('haystack' => $valid));
         return $element;
-    }   
+    }
 
     /**
      * Create the snippets content
@@ -414,7 +414,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         if (parent::hasHtmlOutput()) {
             if ($this->mailer->getDataLoaded()) {
-                return $this->processForm();    
+                return $this->processForm();
             } else {
                 $this->addMessage($this->mailer->getMessages());
                 return true;
@@ -429,11 +429,11 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         $form = $this->createForm();
 
-        $bridge   = new MUtil_Model_FormBridge($this->model, $form);
+        $bridge = $this->model->getBridgeFor('form', $form);
 
         $this->addFormElements($bridge, $this->model);
 
-        $this->form =  $bridge->getForm();
+        $this->form = $bridge->getForm();
     }
 
     /**
@@ -450,7 +450,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
         if (empty($this->formData['preview']) && !isset($this->formData['send'])) {
             if (isset($this->formData['select_template']) && !empty($this->formData['select_template'])) {
-                
+
                 if ($template = $this->mailer->getTemplate($this->formData['select_template'])) {
                     $this->formData['subject'] = $template['gctt_subject'];
                     $this->formData['body'] = $template['gctt_body'];
@@ -478,8 +478,8 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
         $this->formData['preview_html'] = $htmlView;
         $this->formData['preview_text'] = $textView;
-        
-        
+
+
 
         $this->formData = array_merge($this->formData, $presetTargetData);
 
@@ -490,7 +490,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         $this->loadForm();
 
         $this->loadFormData();
-        
+
         if ($this->request->isPost()) {
             if (!empty($this->formData['preview'])) {
                 $this->addMessage($this->_('Preview updated'));
@@ -513,7 +513,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         $this->mailer->send();
     }
 
-    /** 
+    /**
      * Set the route destination after the mail is sent
      */
     protected function setAfterSendRoute()

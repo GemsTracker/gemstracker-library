@@ -116,7 +116,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
                 'action'                 => 'index',
                 MUtil_Model::TEXT_FILTER => $searchText);
 
-            $bridge     = new MUtil_Model_TableBridge($model, array('class' => 'browser'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser'));
             $bridge->setBaseUrl($baseUrl);
             $bridge->setOnEmpty($this->_('No tracks found'));
             $bridge->getOnEmpty()->class = 'centerAlign';
@@ -182,7 +182,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $this->setTitle(sprintf($this->_('Token answers: %s'), strtoupper($tokenId)));
         $this->addSnippets($token->getAnswerSnippetNames(), 'token', $token, 'tokenId', $tokenId);
     }
-    
+
     public function answerExportAction()
     {
         $tokenId = $this->_getIdParam();
@@ -191,10 +191,10 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $export = $this->loader->getRespondentExport($this);
         $export->trackFilter = array(array('resptrackid'=>$token->getRespondentTrackId())); // Only the current track, no other tracks
         $export->tokenFilter = array(array('tokenid'=>$token->getTokenId()));               // Only the current token
-        
+
         $patNr = $token->getPatientNumber();
         $orgId = $token->getOrganizationId();
-        
+
         $export->render(array(array('gr2o_id_organization'=>$orgId, 'gr2o_patient_nr'=>$patNr)), true, 'pdf');
     }
 

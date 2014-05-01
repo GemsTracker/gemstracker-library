@@ -258,7 +258,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
         $this->useTabbedForms = false;
-        $bridge = new MUtil_Model_FormBridge($model, $this->createForm());
+        $bridge = $model->getBridgeFor('form', $this->createForm());
         $bridge->addSelect('gr2o_reception_code',
             'label', $this->_('Rejection code'),
             'multiOptions', $options,

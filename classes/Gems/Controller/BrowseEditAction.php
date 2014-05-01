@@ -761,7 +761,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $baseform = $this->createForm();
 
         if ($this->useMultiRowForm) {
-            $bridge    = new MUtil_Model_FormBridge($model, new Gems_Form_SubForm());
+            $bridge    = $model->getBridgeFor('form', new Gems_Form_SubForm());
             $newData   = $this->addFormElements($bridge, $model, $data, $new);
             $formtable = new MUtil_Form_Element_Table($bridge->getForm(), $model->getName(), array('class' => $this->editTableClass));
 
@@ -771,7 +771,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
             $form = $baseform;
         } else {
-            $bridge  = new MUtil_Model_FormBridge($model, $baseform);
+            $bridge  = $model->getBridgeFor('form', $baseform);
             $newData = $this->addFormElements($bridge, $model, $data, $new);
             $form    = $bridge->getForm();
         }

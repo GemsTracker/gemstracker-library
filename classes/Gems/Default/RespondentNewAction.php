@@ -174,7 +174,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
-        $bridge = new MUtil_Model_FormBridge($model, new Gems_Form());
+        $bridge = $model->getBridgeFor('form', new Gems_Form());
         $bridge->addSelect('gr2o_reception_code',
             'label', $this->_('Rejection code'),
             'multiOptions', $options,

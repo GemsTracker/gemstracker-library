@@ -63,11 +63,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         // Row with dates and patient data
         $bridge->gtr_track_type; // Data needed for buttons
 
+        $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr = $bridge->tr();
         $tr->appendAttrib('class', $bridge->row_class);
         $tr->appendAttrib('title', $bridge->gto_comment);
 
-        $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
@@ -279,7 +279,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $orgId = $user->getCurrentOrganizationId();
             $orgWhere = "INSTR(gtr_organizations, '|$orgId|') > 0";
         }
-        
+
         // Add track selection
         if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
             $sql = "SELECT gtr_id_track, gtr_track_name

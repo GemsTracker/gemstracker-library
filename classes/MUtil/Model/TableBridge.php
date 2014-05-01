@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -38,12 +38,12 @@
 /**
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_TableBridge extends MUtil_Model_TableBridgeAbstract
+class MUtil_Model_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
 {
     public $paginateClass    = 'centerAlign';
     public $sortAsc          = true;

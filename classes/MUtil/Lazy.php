@@ -346,7 +346,7 @@ class MUtil_Lazy
         if ($stack instanceof MUtil_Lazy_StackInterface) {
             self::$_stack = $stack;
 
-        } elseif ($stack instanceof MUtil_Model_TableBridgeAbstract) {
+        } elseif ($stack instanceof MUtil_Model_Bridge_TableBridgeAbstract) {
             self::$_stack = new MUtil_Lazy_Stack_BridgeStack($stack);
 
         } elseif (MUtil_Ra::is($stack)) {

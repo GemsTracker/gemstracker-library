@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -38,13 +38,19 @@
 /**
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Model_TableBridgeAbstract
+abstract class MUtil_Model_Bridge_TableBridgeAbstract implements MUtil_Model_Bridge_BridgeInterface
 {
+    /**
+     *
+     * @var MUtil_Model_Bridge_BridgeAbstract
+     */
+    protected $_displayBridge;
+
     /**
      *
      * @var MUtil_Model_ModelAbstract
@@ -109,6 +115,9 @@ abstract class MUtil_Model_TableBridgeAbstract
      */
     public function __get($name)
     {
+        $this->$name = $this->_displayBridge->$name;
+        return $this->$name;
+        /*
         $this->_checkName($name);
 
         if (! $this->model->has($name)) {
@@ -144,6 +153,7 @@ abstract class MUtil_Model_TableBridgeAbstract
         $this->$name = $value;
 
         return $value;
+        // */
     }
 
     /**
@@ -280,9 +290,15 @@ abstract class MUtil_Model_TableBridgeAbstract
             $this->repeater = $this->table->getRepeater();
 
             if (! $this->repeater) {
-                // Wait with
-                return MUtil_Lazy::method($this, 'getLazyValue', $name);
+                if ($this->_displayBridge->hasRepeater()) {
+                    $this->repeater = $this->_displayBridge->getRepeater();
+                } else {
+                    // Wait with
+                    return MUtil_Lazy::method($this, 'getLazyValue', $name);
+                }
             }
+
+            $this->_displayBridge->setRepeater($this->repeater);
         }
 
         return $this->repeater->$name;
@@ -296,13 +312,23 @@ abstract class MUtil_Model_TableBridgeAbstract
      */
     public function getLazyValue($name)
     {
+        if ($this->repeater && $this->_displayBridge->hasRepeater()) {
+            //if ($this->repeater !== $this->_displayBridge->getRepeater()) {
+            //    MUtil_Echo::track('Chakka!');
+            //}
+        }
         if (! $this->repeater) {
             $this->repeater = $this->table->getRepeater();
 
             if (! $this->repeater) {
-                $this->repeater = $this->model->loadRepeatable();
-                $this->table->getRepeater($this->repeater);
+                if ($this->_displayBridge->hasRepeater()) {
+                    $this->repeater = $this->_displayBridge->getRepeater();
+                } else {
+                    $this->repeater = $this->model->loadRepeatable();
+                    $this->table->setRepeater($this->repeater);
+                }
             }
+            $this->_displayBridge->setRepeater($this->repeater);
         }
         if (null === $name) {
             return null;
@@ -321,6 +347,15 @@ abstract class MUtil_Model_TableBridgeAbstract
         }
     }
 
+    /**
+     * Get the repeater source for the lazy data
+     *
+     * @return \MUtil_Lazy_RepeatableInterface
+     */
+    public function getRepeater()
+    {
+        return $this->_displayBridge->getRepeater();
+    }
     /**
      * Get the actual table
      *
@@ -355,11 +390,12 @@ abstract class MUtil_Model_TableBridgeAbstract
      * Set the model to use in the tablebridge
      *
      * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Model_TableBridgeAbstract
+     * @return MUtil_Model_Bridge_TableBridgeAbstract (continaution pattern)
      */
     public function setModel(MUtil_Model_ModelAbstract $model)
     {
-        $this->model     = $model;
+        $this->model          = $model;
+        $this->_displayBridge = $model->getBridgeFor('display');
 
         return $this;
     }

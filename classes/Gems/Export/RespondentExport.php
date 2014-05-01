@@ -71,25 +71,25 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * @var Zend_Translate_Adapter
      */
     public $translate;
-    
+
     /**
      * Holds the optional token filter.
-     * 
-     * When set, a token needs to have all elements in the tokenFilter in order to have _isTokenInFilter 
+     *
+     * When set, a token needs to have all elements in the tokenFilter in order to have _isTokenInFilter
      * return true. The tokenFilter is an array containing an array with one or more of the following elements:
      * <pre>
      *  code            The track code
      *  surveyid        The survey ID
      *  tokenid         the token ID
      * </pre>
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public $tokenFilter = array();
-    
+
     /**
      * Holds the optional track filter.
-     * 
+     *
      * When set, a track needs to have all elements in the trackFilter in order to have _isTrackInFilter return true.
      * The trackFilter is an array containing an array with one or more of the following elements:
      * <pre>
@@ -98,8 +98,8 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      *  resptrackid     The respondent-track ID
      *  respid          The respondent ID
      * </pre>
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public $trackFilter = array();
 
@@ -164,12 +164,12 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected function _isTokenInFilter(Gems_Tracker_Token $token)
     {
         $result = false;
-        
+
         // Only if token has a success code
         if ($token->getReceptionCode()->isSuccess()) {
             $result = true;
         }
-        
+
         if ($result) {
             $tokenInfo = array(
                 'code'     => $token->getSurvey()->getCode(),
@@ -196,7 +196,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 
         return $result;
     }
-    
+
     /**
      * Determines if this particular track should be included
      * in the report
@@ -205,7 +205,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * @return boolean This dummy implementation always returns true
      */
     protected function _isTrackInFilter(Gems_Tracker_RespondentTrack $track)
-    {   
+    {
         $result    = false;
         $trackInfo = array(
             'code'        => $track->getCode(),
@@ -213,7 +213,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             'resptrackid' => $track->getRespondentTrackId(),
             'respid'      => $track->getRespondentId(),
         );
-        
+
         if (empty($this->trackFilter)) {
             $result = true;
         } else {
@@ -226,7 +226,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                 }
             }
         }
-        
+
         // Only if track has a success code
         if ($result && $track->getReceptionCode()->isSuccess()) {
             return true;
@@ -296,14 +296,14 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                     'grouped'        => $groupSurveys);
 
                 $snippets = $token->getAnswerSnippetNames();
-                
+
                 if (!is_array($snippets)) {
                     $snippets = array($snippets);
                 }
 
                 list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
                 $params = $params + $snippetParams;
-                
+
                 $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
 
                 foreach($snippets as $snippet) {
@@ -346,7 +346,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 
         $this->html->h3($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
-        $bridge = new MUtil_Model_VerticalTableBridge($trackModel, array('class' => 'browser'));
+        $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
@@ -372,7 +372,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     protected function _exportRespondent($respondentId)
     {
         $respondentModel = $this->loader->getModels()->getRespondentModel(false);
-                
+
         //Insert orgId when set
         if (is_array($respondentId) && isset($respondentId['gr2o_id_organization'])) {
             $filter['gr2o_id_organization'] = $respondentId['gr2o_id_organization'];
@@ -445,9 +445,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     public function render($respondents, $group = true, $format = 'html')
     {
         $this->_group = $group;
-        $this->_format = $format;        
+        $this->_format = $format;
         $this->html = new MUtil_Html_Sequence();
-        
+
         $this->html->snippet($this->_reportHeader);
 
         $respondentCount = count($respondents);

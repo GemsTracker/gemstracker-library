@@ -49,7 +49,7 @@ class MUtil_Lazy_Stack_BridgeStack implements MUtil_Lazy_StackInterface
     /**
      * The oibject to get properties from
      *
-     * @var MUtil_Model_TableBridgeAbstract
+     * @var MUtil_Model_Bridge_TableBridgeAbstract
      */
     protected $_object;
 
@@ -64,7 +64,7 @@ class MUtil_Lazy_Stack_BridgeStack implements MUtil_Lazy_StackInterface
      *
      * @param Object $object
      */
-    public function __construct(MUtil_Model_TableBridgeAbstract $object)
+    public function __construct(MUtil_Model_Bridge_TableBridgeAbstract $object)
     {
         $this->_object = $object;
     }

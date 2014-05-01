@@ -411,13 +411,13 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
         if ($baseform instanceof MUtil_Form) {
             $table = new MUtil_Html_TableElement();
             $table->setAsFormLayout($baseform, true, true);
-            
+
             // There is only one row with formLayout, so all in output fields get class.
             $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
         }
         $baseform->setAttrib('class', $this->class);
 
-        $bridge   = new MUtil_Model_FormBridge($model, $baseform);
+        $bridge = $model->getBridgeFor('form', $baseform);
 
         $this->_items = null;
         $this->initItems();

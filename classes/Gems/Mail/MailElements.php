@@ -114,7 +114,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $parentForm = $parentBridge->getForm();
         $submodel = $parentBridge->getModel()->get($name, 'model');
         if ($submodel instanceof MUtil_Model_ModelAbstract) {
-            $bridge = new MUtil_Model_FormBridge($submodel, $form);
+            $bridge = $submodel->getBridgeFor('form', $form);
             $subItemNumber = 0;
             foreach ($submodel->getItemsOrdered() as $itemName) {
                 if (! $form->getElement($name)) {

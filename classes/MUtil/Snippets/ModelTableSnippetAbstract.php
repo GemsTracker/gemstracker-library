@@ -162,7 +162,8 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
      */
     public function getBrowseTable(MUtil_Model_ModelAbstract $model)
     {
-        $bridge = new MUtil_Model_TableBridge($model);
+        $bridge = $model->getBridgeFor('table');
+
         if ($this->caption) {
             $bridge->caption($this->caption);
         }

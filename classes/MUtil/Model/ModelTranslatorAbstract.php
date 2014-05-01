@@ -193,7 +193,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         $form = $this->_createTargetForm();
         $form->setTranslator($this->translate);
 
-        $bridge = new MUtil_Model_FormBridge($this->_targetModel, $form);
+        $bridge = $this->_targetModel->getBridgeFor('form', $form);
 
         foreach($this->getFieldsTranslations() as $sourceName => $targetName) {
             if ($this->_targetModel->get($targetName, 'label')) {

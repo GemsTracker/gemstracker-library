@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -76,7 +76,7 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
             return $html;
         }
 
-        $bridge = new MUtil_Model_VerticalTableBridge($respondentModel, array('class' => 'browser'));
+        $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($respondentData)));
         $bridge->th($this->_('Respondent information'), array('colspan' => 4));
         $bridge->setColumnCount(2);
@@ -92,5 +92,5 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
 
         return $html;
     }
-    
+
 }

@@ -174,7 +174,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
             $model  = $this->getModel();
         }
 
-        $bridge = new MUtil_Model_TableBridge($model);
+        $bridge = $model->getBridgeFor('table');
         $bridge->getOnEmpty()->raw('&hellip;');
         if ($baseUrl) {
             $bridge->setBaseUrl($baseUrl);
@@ -227,7 +227,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
     {
         $model = $this->getModel();
 
-        $bridge = new MUtil_Model_FormBridge($model, $this->createForm());
+        $bridge = $model->getBridgeFor('form', $this->createForm());
 
         $this->addFormElements($bridge, $model, $data, $new);
 
@@ -247,7 +247,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
         $model = $this->getModel();
         // QUE $model->applyRequest($request);
 
-        $bridge = new MUtil_Model_VerticalTableBridge($model);
+        $bridge = $model->getBridgeFor('itemTable');
         $bridge->setColumnCount($columns);
 
         foreach($model->getItemsOrdered() as $name) {

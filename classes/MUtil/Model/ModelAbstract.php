@@ -110,11 +110,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @var array
      */
-    private $_model_meta = array(
-        MUtil_Model::META_ASSEMBLERS => array(
-            MUtil_Model::FORM => 'FormAssembler',
-            ),
-    );
+    private $_model_meta = array();
 
     /**
      * Dependencies that transform the model
@@ -886,37 +882,45 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Get/load the assembler for the specific idenitifier
+     * Get/load the bridge for the specific idenitifier
      *
      * @param string $identifier
-     * @param array $data Optional array with data.
-     * @return MUtil_Model_AssemblerInterface
+     * @param mixed $arg1 Optional first of extra arguments, specifying arguments means a new class will created
+     * @return MUtil_Model_Bridge_BridgeAbstract
      */
-    public function getAssemblerFor($identifier, array $data = null)
+    public function getBridgeFor($identifier, $arg1 = null)
     {
-        $assemblers = $this->getMeta(MUtil_Model::META_ASSEMBLERS);
+        $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
+        $create  = func_num_args() > 1;
 
-        if (! isset($assemblers[$identifier])) {
+        if (! $bridges) {
+            $bridges = MUtil_Model::getDefaultBridges();
+            $this->setMeta(MUtil_Model::META_BRIDGES, $bridges);
+        }
+
+        if (! isset($bridges[$identifier])) {
             // We cannot create when noting is specified
-            return null;
+            throw new MUtil_Model_ModelException("Request for unknown bridge tpye $identifier.");
         }
 
-        if ($assemblers[$identifier] instanceof MUtil_Model_AssemblerInterface) {
-            return $assemblers[$identifier];
+        if ($bridges[$identifier] instanceof MUtil_Model_Bridge_BridgeInterface) {
+            if ($create) {
+                $bridges[$identifier] = get_class($bridges[$identifier]);
+            } else {
+                return $bridges[$identifier];
+            }
         }
 
-        $loader    = MUtil_Model::getAssemblerLoader();
-        $assembler = $loader->createClass($assemblers[$identifier]);
-        $assembler->setModel($this);
+        // First parameter is always the model, using + replaces that value
+        $params = array($this) + func_get_args();
+        $loader = MUtil_Model::getBridgeLoader();
+        $bridge = $loader->createClass($bridges[$identifier], $params);
 
-        if (null !== $data) {
-            $assembler->setRow($data);
+        if (! $create) {
+            $this->setBridgeFor($identifier, $bridge);
         }
 
-        $assemblers[$identifier] = $assembler;
-        $this->setMeta(MUtil_Model::META_ASSEMBLERS, $assemblers);
-
-        return $assembler;
+        return $bridge;
     }
 
     /**
@@ -1042,17 +1046,6 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function getFilter()
     {
         return $this->getMeta('filter', array());
-    }
-
-    /**
-     * Get/load the assembler for forms
-     *
-     * @param array $data Optional array with data.
-     * @return MUtil_Model_Assembler_FormAssembler
-     */
-    public function getFormAssembler(array $data = null)
-    {
-        return $this->getAssemblerFor(MUtil_Model::FORM, $data);
     }
 
     /**
@@ -1996,6 +1989,24 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         $this->set($name, self::AUTO_SAVE, $value);
         return $this;
+    }
+
+    /**
+     * Set the bridge for the specific identifier
+     *
+     * @param string $identifier
+     * @param mixed $bridge MUtil_Model_Bridge_BridgeInterface or class name
+     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     */
+    public function setBridgeFor($identifier, $bridge)
+    {
+        $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
+
+        if (! $bridges) {
+            $bridges = MUtil_Model::getDefaultBridges();
+        }
+        $bridges[$identifier] = $bridge;
+        $this->setMeta(MUtil_Model::META_BRIDGES, $bridges);
     }
 
     /**

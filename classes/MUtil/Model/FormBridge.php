@@ -28,7 +28,7 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -43,12 +43,12 @@
  * @see MUtil_Model_ModelAbstract
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Bridge
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_FormBridge
+class MUtil_Model_FormBridge implements MUtil_Model_Bridge_BridgeInterface
 {
     const AUTO_OPTIONS       = 'auto';
     const CHECK_OPTIONS      = 'check';
@@ -101,10 +101,25 @@ class MUtil_Model_FormBridge
         self::TEXTAREA_OPTIONS   => array('cols', 'rows', 'wrap', 'decorators'),
         );
 
-    public function __construct(MUtil_Model_ModelAbstract $model, Zend_Form $form)
+    /**
+     * Construct the bridge while setting the model.
+     *
+     * Extra parameters can be added in subclasses, but the first parameter
+     * must remain the model.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @param Zend_Form $form Rquired
+     */
+    public function __construct(MUtil_Model_ModelAbstract $model, Zend_Form $form = null)
     {
         $this->model = $model;
-        $this->form = $form;
+        $this->form  = $form;
+
+        if (! $form instanceof Zend_Form) {
+            throw new MUtil_Model_ModelException(
+                    "No form specified while create a form bridge for model " . $model->getName()
+                    );
+        }
 
         if (! $form->getName()) {
             $form->setName($model->getName());

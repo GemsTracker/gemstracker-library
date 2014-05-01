@@ -319,7 +319,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     {
         $model    = $this->getModel();
         $baseform = $this->createForm();
-        $bridge   = new MUtil_Model_FormBridge($model, $baseform);
+        $bridge   = $model->getBridgeFor('form', $baseform);
 
         $this->addFormElements($bridge, $model);
 

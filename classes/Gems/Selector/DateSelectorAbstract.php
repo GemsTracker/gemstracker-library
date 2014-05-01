@@ -496,8 +496,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     public function getTable($baseurl)
     {
         $model    = $this->getModel();
-        $repeater = $model->loadRepeatable();
-        $bridge   = new MUtil_Model_TableBridge($model, array('class' => 'timeTable'));
+        $bridge   = $model->getBridgeFor('table', array('class' => 'timeTable'));
+        $repeater = $bridge->getRepeater();
 
         $bridge->setBaseUrl(array($this->_actionKey => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
 

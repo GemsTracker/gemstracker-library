@@ -485,7 +485,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $this->html->h4($this->plural('Are you sure you want to create it?', 'Are you sure you want to create them all?', $oCount));
 
             $model->set('name', 'itemDisplay', array(__CLASS__, 'createShowLink'), 'tableDisplay', 'em');
-            $bridge = new MUtil_Model_TableBridge($model, array('class' => 'browser'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser'));
             $bridge->setRepeater($objects);
             foreach (array('order', 'group', 'type', 'name', 'location') as $key) {
                 $bridge->add($key);

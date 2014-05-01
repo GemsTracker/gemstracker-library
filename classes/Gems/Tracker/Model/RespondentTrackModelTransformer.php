@@ -74,9 +74,10 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
      * @param MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         $empty = false;
 
