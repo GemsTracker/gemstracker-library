@@ -109,7 +109,11 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
         }
 
         $bridge->addItem('gro_active');
-        $bridge->addItem('gro_changed_event');
+        // Preven empty row when no changed events exist
+        if ($label = $model->get('gro_changed_event', 'label')) {
+            $bridge->addItem('gro_changed_event');
+        }
+        $bridge->addItem('gro_code');
 
         $menuItem = $this->menu->find(array(
             $this->request->getControllerKey() => $this->request->getControllerName(),

@@ -82,6 +82,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * @var int The gems__respondent2track id
      */
     protected $_respTrackId;
+    
+    /**
+     *
+     * @var array The gems__rounds data 
+     */
+    protected $_rounds = null;
 
     /**
      *
@@ -234,6 +240,23 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             } else {
                 $trackId = $this->_respTrackId;
                 throw new Gems_Exception("Respondent data missing for track $trackId.");
+            }
+        }
+    }
+    
+    /**
+     * Makes sure the rounds info is loaded
+     * 
+     * @param boolean $reload
+     */
+    protected function _ensureRounds($reload = false)
+    {
+        if ((null === $this->_rounds) || $reload) {
+            $rounds = $this->getTrackEngine()->getRoundModel(true, 'index')->load(array('gro_id_track'=>$this->getTrackId()));
+
+            $this->_rounds = array();
+            foreach($rounds as $round) {
+                $this->_rounds[$round['gro_id_round']] = $round;
             }
         }
     }
@@ -788,6 +811,24 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     {
         return $this->_respTrackId;
     }
+    
+    /**
+     * Return the round code for a given roundId
+     * 
+     * @param int $roundId
+     * @return string|null Null when RoundId not found
+     */
+    public function getRoundCode($roundId)
+    {
+        $this->_ensureRounds();
+        $roundCode = null;
+        
+        if (array_key_exists($roundId, $this->_rounds) && array_key_exists('gro_code', $this->_rounds[$roundId])) {
+            $roundCode = $this->_rounds[$roundId]['gro_code'];
+        }
+        
+        return $roundCode;
+    }
 
     /**
      * The start date of this track
@@ -956,6 +997,8 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         }
 
         $this->_ensureFieldData(true);
+        
+        $this->_rounds = null;
 
         return $this;
     }

@@ -1129,6 +1129,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             $model->set('gro_display_event',     'label', $this->_('Answer display'), 'multiOptions', $list);
         }
         $model->set('gro_active',            'label', $this->_('Active'),         'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
+        $model->setIfExists('gro_code',          'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
 
         $model->addColumn(
             "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",

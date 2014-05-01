@@ -30,6 +30,7 @@ CREATE TABLE if not exists gems__rounds (
         gro_valid_for_length   int not null default 0,
 
         gro_active             boolean not null default 1,
+        gro_code               varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 
         gro_changed            timestamp not null default current_timestamp on update current_timestamp,
         gro_changed_by         bigint unsigned not null,

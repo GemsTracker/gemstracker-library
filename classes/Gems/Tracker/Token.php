@@ -1113,6 +1113,22 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->_gemsData['gto_return_url'];
     }
+    
+    /**
+     * Get the round code for this token
+     * 
+     * @return string|null Null when no round id is present or round no longer exists
+     */
+    public function getRoundCode()
+    {
+        $roundCode = null;
+        $roundId = $this->getRoundId();
+        if ($roundId > 0) {
+            $roundCode = $this->getRespondentTrack()->getRoundCode($roundId);
+        }
+        
+        return $roundCode;
+    }
 
     /**
      *

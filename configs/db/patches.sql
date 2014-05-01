@@ -780,3 +780,6 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-mainten
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.survey-maintenance.answer-import')
     WHERE grl_privileges LIKE '%pr.track-maintenance%' AND
         grl_privileges NOT LIKE '%pr.survey-maintenance.answer-import%';
+
+-- PATCH: add round code
+ALTER TABLE gems__rounds ADD gro_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_active
