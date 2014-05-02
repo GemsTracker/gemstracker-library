@@ -332,9 +332,6 @@ class Gems_TabForm extends Gems_Form
 
         if ($this->_view !== $view) {
             $this->activateJQuery();
-            if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
-                $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
-            }
         }
 
         return $this;
