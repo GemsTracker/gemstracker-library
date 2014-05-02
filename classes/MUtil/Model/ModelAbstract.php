@@ -905,10 +905,6 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             throw new MUtil_Model_ModelException("Request for unknown bridge tpye $identifier.");
         }
 
-        if ($bridges[$identifier] instanceof MUtil_Model_Bridge_BridgeInterface) {
-            return clone $bridges[$identifier];
-        }
-
         // First parameter is always the model, using + replaces that value
         $params = array($this) + func_get_args();
         $loader = MUtil_Model::getBridgeLoader();
@@ -1986,19 +1982,24 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Set the bridge for the specific identifier
+     * Set the bridge class for the specific identifier
      *
      * @param string $identifier
-     * @param mixed $bridge MUtil_Model_Bridge_BridgeInterface or class name
+     * @param string $bridge Class name for a MUtil_Model_Bridge_BridgeInterface, optioanlly loaded using *_Model_Bridge_*
      * @return MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setBridgeFor($identifier, $bridge)
     {
+        if (! is_string($bridge)) {
+            throw new MUtil_Model_ModelException("Non string bridge class specified for $identifier.");
+        }
+
         $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
 
         if (! $bridges) {
             $bridges = MUtil_Model::getDefaultBridges();
         }
+
         $bridges[$identifier] = $bridge;
         $this->setMeta(MUtil_Model::META_BRIDGES, $bridges);
     }
