@@ -128,6 +128,17 @@ class MUtil_Html_JavascriptArrayAttribute extends MUtil_Html_ArrayAttribute
     }
 
     /**
+     * Add a print command
+     *
+     * @return MUtil_Html_JavascriptArrayAttribute (continuation pattern)
+     */
+    public function addPrint()
+    {
+        $this->add('window.print();');
+        return $this;
+    }
+
+    /**
      * Add a form submit
      *
      * @param string $condition Optional condition for submit
