@@ -123,7 +123,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
         if (null === $this->currentTab) {
             $this->currentTab = $this->request->getParam($this->getParameterKey());
         }
-        
+
         // Param can exist and be empty or can have a false value
         if (! ($this->currentTab && isset($tabs[$this->currentTab])))  {
             $this->currentTab = $this->defaultTab;
@@ -145,13 +145,13 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
         $tabs = $this->getTabs();
 
         if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
-            // Let loose
-            if (isset($parameters['baseurl']) && is_array($this->baseurl)) {
-                $this->href = $this->href + $this->baseurl;
-            }
-
             // Set the correct parameters
             $this->getCurrentTab($tabs);
+
+            // Let loose
+            if (is_array($this->baseUrl)) {
+                $this->href = $this->href + $this->baseUrl;
+            }
 
             $tabRow = MUtil_Html::create()->div();
 

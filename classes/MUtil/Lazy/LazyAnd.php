@@ -28,69 +28,100 @@
  *
  *
  * @package    MUtil
- * @subpackage Snippets_Bootstrap
+ * @subpackage Lazy
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: BootstrapTabSnippetAbstract.php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: LazyAnd.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
+ * Lazy logical AND
  *
  * @package    MUtil
- * @subpackage Snippets_Bootstrap
+ * @subpackage Lazy
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Snippets_Bootstrap_BootstrapTabSnippetAbstract extends MUtil_Snippets_TabSnippetAbstract
+class MUtil_Lazy_LazyAnd extends MUtil_Lazy_LazyAbstract implements Countable
 {
     /**
+     * All the values to test
      *
-     * @var string Class attribute for all tabs
+     * @var array
      */
-    protected $tabClass = 'nav navtabs';
+    private $_values = array();
 
     /**
-     * Create the snippets content
+     * Initializes the functions with all the parameters as AND values.
      *
-     * This is a stub function either override getHtmlOutput() or override render()
+     * Array parameters are added using addArray(), all other objects using add()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param mixed $value1
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function __construct($value1 = null)
     {
-        $tabs = $this->getTabs();
-
-        if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
-            // Set the correct parameters
-            $this->getCurrentTab($tabs);
-
-            // Let loose
-            if (is_array($this->baseUrl)) {
-                $this->href = $this->href + $this->baseUrl;
+        foreach (func_get_args() as $value) {
+            if (is_array($value)) {
+                $this->addArray($value);
+            } else {
+                $this->add($value);
             }
-
-            $tabRow = MUtil_Html::create()->ul();
-            $tabRow->class = $this->tabClass;
-
-            foreach ($tabs as $tabId => $content) {
-
-                $li = $tabRow->li();
-
-                $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
-
-                if ($this->currentTab == $tabId) {
-                    $li->appendAttrib('class', $this->tabActiveClass);
-                }
-            }
-
-            return $tabRow;
-        } else {
-            return null;
         }
     }
 
+    /**
+     * Add a test value to this And object
+     *
+     * @param mixed $value
+     * @return \MUtil_Lazy_LazyAnd (continuation pattern)
+     */
+    public function add($value)
+    {
+        $this->_values[] = $value;
+        return $this;
+    }
 
+    /**
+     * Add an arrya of test values to this And object
+     *
+     * @param mixed $value
+     * @return \MUtil_Lazy_LazyAnd (continuation pattern)
+     */
+    public function addArray(array $values)
+    {
+        foreach ($values as $val) {
+            $this->_values[] = $val;
+        }
+        return $this;
+    }
+
+    /**
+     * Return the number of conditions
+     * 
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->_values);
+    }
+
+    /**
+     * The functions that returns the value.
+     *
+     * Returning an instance of MUtil_Lazy_LazyInterface is allowed.
+     *
+     * @param MUtil_Lazy_StackInterface $stack A MUtil_Lazy_StackInterface object providing variable data
+     * @return mixed
+     */
+    protected function _getLazyValue(MUtil_Lazy_StackInterface $stack)
+    {
+        foreach ($this->_values as $value) {
+            if (! MUtil_Lazy::rise($value, $stack)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
