@@ -380,7 +380,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     }
 
     /**
-     * Changes the display of gro_valid_after_field into something readable
+     * Changes the display of gro_valid_[after|for]_field into something readable
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
@@ -390,38 +390,39 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     public function displayDateCalculation($value, $new, $name, array $context = array())
     {
-        $validAfter = true;
+        $fieldBase = substr($name, 0, -5);  // Strip field
+        $validAfter = (bool) strpos($fieldBase, 'after');
 
         $fields = $this->getDateOptionsFor(
-                $context['gro_valid_after_source'],
-                $context['gro_valid_after_id'],
+                $context[$fieldBase . 'source'],
+                $context[$fieldBase . 'id'],
                 $this->locale->getLanguage(),
                 $validAfter
                 );
 
-        if (isset($fields[$context['gro_valid_after_field']])) {
-            $field = $fields[$context['gro_valid_after_field']];
+        if (isset($fields[$context[$fieldBase . 'field']])) {
+            $field = $fields[$context[$fieldBase . 'field']];
         } else {
-            $field = $context['gro_valid_after_field'];
+            $field = $context[$fieldBase . 'field'];
         }
 
-        if ($context['gro_valid_after_length'] > 0) {
+        if ($context[$fieldBase . 'length'] > 0) {
             $format = $this->_('%s plus %s %s');
-        } elseif($context['gro_valid_after_length'] < 0) {
+        } elseif($context[$fieldBase . 'length'] < 0) {
             $format = $this->_('%s minus %s %s');
         } else {
             $format = $this->_('%s');
         }
-
+        
         $units = $this->getDateUnitsList($validAfter);
-        if (isset($units[$context['gro_valid_after_unit']])) {
-            $unit = $units[$context['gro_valid_after_unit']];
+        if (isset($units[$context[$fieldBase . 'unit']])) {
+            $unit = $units[$context[$fieldBase . 'unit']];
         } else {
-            $unit = $context['gro_valid_after_unit'];
+            $unit = $context[$fieldBase . 'unit'];
         }
 
         // MUtil_Echo::track(func_get_args());
-        return sprintf($format, $field, abs($context['gro_valid_after_length']), $unit);
+        return sprintf($format, $field, abs($context[$fieldBase . 'length']), $unit);
     }
     
     /**
@@ -592,7 +593,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 'label', $this->_('Round used'),
                 'onchange', 'this.form.submit();'
                 );
-
+        
         if ($detailed) {
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
@@ -610,7 +611,17 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'multiOptions',
                     $this->getDateUnitsList(true)
                     );
-
+        } else {
+            $model->set('gro_valid_after_source', 'tableDisplay', 'small');
+            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small');
+            $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
+            $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
+            $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
+            $model->set('gro_valid_after_length');
+            $model->set('gro_valid_after_unit');
+        } 
+        
+        if ($detailed) {
             // Calculate valid until
             $html = MUtil_Html::create()->h4($this->_('Valid for calculation'));
             $model->set('valid_for',
@@ -619,19 +630,24 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'elementClass', 'html',
                     'value', $html
                     );
-            $model->set('gro_valid_for_source',
-                    'label', $this->_('Date source'),
-                    'default', self::TOKEN_TABLE,
-                    'elementClass', 'Radio',
-                    'escape', false,
-                    'required', true,
-                    'onchange', 'this.form.submit();'
-                    );
-            $model->set('gro_valid_for_id',
-                    'label', $this->_('Round used'),
-                    'default', '',
-                    'onchange', 'this.form.submit();'
-                    );
+        }   
+        
+        $model->set('gro_valid_for_source',
+                'label', $this->_('Date source'),
+                'default', self::TOKEN_TABLE,
+                'elementClass', 'Radio',
+                'escape', false,
+                'required', true,
+                'onchange', 'this.form.submit();',
+                'multiOptions', $this->getSourceList(false, false, false)
+                );
+        $model->set('gro_valid_for_id',
+                'label', $this->_('Round used'),
+                'default', '',
+                'onchange', 'this.form.submit();'
+                );
+
+        if ($detailed) {            
             $model->set('gro_valid_for_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
@@ -652,12 +668,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set('gro_active');
             $model->set('gro_changed_event');
         } else {
-            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations());
-            $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
-            $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'));
-            $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
-            $model->set('gro_valid_after_length');
-            $model->set('gro_valid_after_unit');
+            $model->set('gro_valid_for_source', 'tableDisplay', 'small');
+            $model->set('gro_valid_for_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small');
+            $model->setOnLoad('gro_valid_for_id', array($this, 'displayRoundId'));
+            $model->set('gro_valid_for_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
+            $model->setOnLoad('gro_valid_for_field', array($this, 'displayDateCalculation'));
+            $model->set('gro_valid_for_length');
+            $model->set('gro_valid_for_unit');
         }
 
         return $model;

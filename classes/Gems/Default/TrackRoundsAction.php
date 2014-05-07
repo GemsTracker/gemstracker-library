@@ -52,6 +52,39 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     protected $trackEngine;
 
     public $sortKey = array('gro_id_order' => SORT_ASC);
+    
+    public function addBrowseTableColumns(\MUtil_Model_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) {
+        if ($model->has('row_class')) {
+            $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
+        }
+
+        // Add edit button if allowed, otherwise show, again if allowed
+        if ($menuItem = $this->findAllowedMenuItem('show')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+        
+        $added = false;
+
+        foreach($model->getItemsOrdered() as $name) {
+
+            if ($label = $model->get($name, 'label')) {
+                if (strpos($name, 'valid') !== false) {
+                    if ($added === false) {
+                        $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', MUtil_Html::raw(' '), 'gro_valid_after_source', MUtil_Html::raw(' '), 'gro_valid_after_id');
+                        $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', MUtil_Html::raw(' '), 'gro_valid_for_source', MUtil_Html::raw(' '), 'gro_valid_for_id');
+                        $added = true;
+                    }
+                } else {
+                    $bridge->addSortable($name, $label);
+                }
+            }
+        }
+
+        // Add edit button if allowed, otherwise show, again if allowed
+        if ($menuItem = $this->findAllowedMenuItem('edit')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
+        }
+    }
 
     /**
      * Hook to perform action after a record (with changes) was saved

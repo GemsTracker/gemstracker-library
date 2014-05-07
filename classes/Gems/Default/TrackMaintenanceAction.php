@@ -87,10 +87,29 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         $menuItem = $this->menu->find(array($contrKey => $controller, $actionKey => 'edit'));
 
-        foreach($model->getItemsOrdered() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                $bridge->addSortable($name, $label);
+        if ($model->getName() == 'rounds') {
+            $added = false;
+
+            foreach($model->getItemsOrdered() as $name) {
+
+                if ($label = $model->get($name, 'label')) {
+                    if (strpos($name, 'valid') !== false) {
+                        if ($added === false) {
+                            $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', MUtil_Html::raw(' '), 'gro_valid_after_source', MUtil_Html::raw(' '), 'gro_valid_after_id');
+                            $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', MUtil_Html::raw(' '), 'gro_valid_for_source', MUtil_Html::raw(' '), 'gro_valid_for_id');
+                            $added = true;
+                        }
+                    } else {
+                        $bridge->addSortable($name, $label);
+                    }
+                }
             }
+        } else {            
+            foreach($model->getItemsOrdered() as $name) {
+                if ($label = $model->get($name, 'label')) {
+                    $bridge->addSortable($name, $label);
+                }
+            }            
         }
 
         if ($menuItem) {
