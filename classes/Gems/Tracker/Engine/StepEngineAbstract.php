@@ -423,6 +423,28 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         // MUtil_Echo::track(func_get_args());
         return sprintf($format, $field, abs($context['gro_valid_after_length']), $unit);
     }
+    
+    /**
+     * Changes the display of gro_valid_[for|after]_id into something readable
+     * 
+     * Makes it empty when not applicable
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return string The value to use
+     */
+    public function displayRoundId($value, $new, $name, array $context = array())
+    {
+        $fieldSource = substr($name, 0, -2) . 'source';
+        
+        if (!$this->_sourceUsesSurvey($context[$fieldSource])) {
+            return '';
+        }
+        
+        return $value;
+    }
 
     /**
      * An array of snippet names for displaying the answers to a survey.
@@ -631,6 +653,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set('gro_changed_event');
         } else {
             $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations());
+            $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
             $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'));
             $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
             $model->set('gro_valid_after_length');
