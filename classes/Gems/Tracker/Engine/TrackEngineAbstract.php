@@ -924,9 +924,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
            throw new Gems_Exception_Coding("Requested non existing previous round id for round $roundId.");
 
        } elseif ($this->_rounds) {
-           end($this->_rounds);
-           return key($this->_rounds);
-       }
+            end($this->_rounds);
+            $key = key($this->_rounds);
+            if (empty($key) && !is_null($key)) {
+                // The last round (with empty index) is the current round, step back one more round
+                prev($this->_rounds);
+            }
+            return key($this->_rounds);
+        }
     }
 
     /**
