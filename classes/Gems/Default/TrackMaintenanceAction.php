@@ -69,11 +69,11 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $request = $this->getRequest();
 

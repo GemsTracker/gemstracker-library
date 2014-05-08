@@ -126,8 +126,8 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
         } else {
             $model->set('gto_id_token', 'formatFunction', 'strtoupper');
         }
-        $model->setBridgeFor('itemTable', 'Gems_Model_ThreeColumnTableBridge');
-        
+        $model->setBridgeFor('itemTable', 'ThreeColumnTableBridge');
+
         return $model;
     }
 

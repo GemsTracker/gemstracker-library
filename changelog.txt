@@ -5,8 +5,11 @@ OpenRosa forms can now handle geopoint (location) fields, has support for displa
 Default fields can be added to a new track by adapting the TrackModel in your own project and changing the getDefaultFields() method
 Export results can now be filtered by round description too
 Form and table bridges have changed. Perform the following search & replaces on your code:
-    MUtil_Model_FormBridge:: => MUtil_Model_Bridge_FormBridge::
-    MUtil_Model_FormBridge => MUtil_Model_Bridge_FormBridgeInterface
+    MUtil_Model_FormBridge::          => MUtil_Model_Bridge_FormBridge::
+    MUtil_Model_FormBridge            => MUtil_Model_Bridge_FormBridgeInterface
+    MUtil_Model_VerticalTableBridge   => MUtil_Model_Bridge_VerticalTableBridge
+    MUtil_Model_TableBridge           => MUtil_Model_Bridge_TableBridge
+    Gems_Model_ThreeColumnTableBridge => Gems_Model_Bridge_ThreeColumnTableBridge
 
 Important changes from 1.6.2 => 1.6.3
 ============================================================

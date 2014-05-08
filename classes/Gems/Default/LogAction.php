@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -24,6 +25,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * 
+ * @package    Gems
+ * @subpackage Controller
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -46,7 +55,16 @@ class Gems_Default_LogAction extends Gems_Controller_BrowseEditAction {
     public $maxPeriod = 1;
     public $minPeriod = -15;
 
-    public function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    public function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Add edit button if allowed, otherwise show, again if allowed
         if ($menuItem = $this->findAllowedMenuItem('edit', 'show')) {

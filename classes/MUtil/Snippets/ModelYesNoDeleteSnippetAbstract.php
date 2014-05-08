@@ -222,11 +222,11 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $footer = $bridge->tfrow();
 

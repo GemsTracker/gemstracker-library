@@ -32,12 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MailLogBrowseSnippet$
+ * @version    $Id: MailLogBrowseSnippet $
  */
 
 /**
- * Add complex column layout to display.
- *
  *
  * @package    Gems
  * @subpackage Snippets\Mail\Log
@@ -59,11 +57,11 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTab
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         if ($menuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));

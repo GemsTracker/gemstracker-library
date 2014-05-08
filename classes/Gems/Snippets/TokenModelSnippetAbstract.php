@@ -54,7 +54,7 @@ class Gems_Snippets_TokenModelSnippetAbstract extends Gems_Snippets_ModelTableSn
      */
     public $loader;
 
-    protected function addTokenLinks(MUtil_Model_TableBridge $bridge)
+    protected function addTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
     {
         $title = MUtil_Html::create()->strong($this->_('+'));
 

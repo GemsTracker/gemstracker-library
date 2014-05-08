@@ -84,11 +84,11 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Add edit button if allowed, otherwise show, again if allowed
         if ($menuItem = $this->findAllowedMenuItem('show')) {

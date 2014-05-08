@@ -54,7 +54,16 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
         'gto_round_order'         => SORT_ASC,
         );
 
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $bridge->gtr_track_type; // Data needed for edit button
         $bridge->gr2t_id_respondent_track; // Data needed for edit button

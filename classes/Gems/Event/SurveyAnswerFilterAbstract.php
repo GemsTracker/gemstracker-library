@@ -65,7 +65,7 @@ abstract class Gems_Event_SurveyAnswerFilterAbstract extends Gems_Registry_Targe
      */
     protected $translate;
 
-    // public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames);
+    // public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames);
 
     /**
      * Function that returns the snippets to use for this display.

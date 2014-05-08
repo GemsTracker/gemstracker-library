@@ -52,12 +52,12 @@ class Gems_Event_Survey_Display_Reverse extends Gems_Event_SurveyAnswerFilterAbs
      *
      * @see Gems_Tracker_Snippets_AnswerModelSnippetGeneric
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
         return $this->restoreHeaderPositions($model, array_reverse($currentNames));
     }

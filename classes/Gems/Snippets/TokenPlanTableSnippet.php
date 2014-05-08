@@ -29,7 +29,7 @@
  * @subpackage Snippets
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 215 2011-07-12 08:52:54Z michiel $
+ * @version    $Id: TokenPlanTableSnippet.php 215 2011-07-12 08:52:54Z michiel $
  */
 
 /**
@@ -50,7 +50,17 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
      */
     public $escort;
 
-    public function addBrowseTableColumns(\MUtil_Model_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Overrule this function to add different columns to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $model->set('gr2o_patient_nr',       'label', $this->_('Respondent'));
         $model->set('gto_round_description', 'label', $this->_('Round / Details'));
@@ -90,7 +100,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         $bridge->addSortable('assigned_by');
     }
 
-    public function getActionLinks(MUtil_Model_TableBridge $bridge)
+    public function getActionLinks(MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => array('email', 'answer'), 'allowed' => true))) {
@@ -115,7 +125,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         return $buttons;
     }
 
-    public function getTokenLinks(MUtil_Model_TableBridge $bridge)
+    public function getTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => 'show', 'allowed' => true))) {

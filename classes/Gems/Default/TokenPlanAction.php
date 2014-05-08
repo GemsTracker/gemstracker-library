@@ -56,7 +56,16 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         'gto_round_order'         => SORT_ASC,
         );
 
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $HTML  = MUtil_Html::create();
 
@@ -192,7 +201,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
     }
 
-    public function getActionLinks(MUtil_Model_TableBridge $bridge)
+    public function getActionLinks(MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => array('email', 'answer'), 'allowed' => true))) {
@@ -505,7 +514,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         );
     }
 
-    public function getTokenLinks(MUtil_Model_TableBridge $bridge)
+    public function getTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => 'show', 'allowed' => true))) {

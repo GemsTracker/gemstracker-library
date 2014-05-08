@@ -63,7 +63,7 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
      */
     protected $trackUsage = false;
 
-    private function _addIf(array $names, MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    private function _addIf(array $names, MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         foreach ($names as $name) {
             if ($model->has($name, 'label')) {
@@ -77,11 +77,11 @@ class ShowRoundStepSnippet extends Gems_Tracker_Snippets_ShowRoundSnippetAbstrac
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $this->_roundData = $model->loadFirst();
 

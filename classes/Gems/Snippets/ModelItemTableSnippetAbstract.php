@@ -102,11 +102,11 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         if ($menuItem = $this->getEditMenuItem()) {
             // Add click to edit
@@ -181,11 +181,11 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      * Overrule this function to set the header differently, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function setShowTableFooter(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function setShowTableFooter(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         if ($this->displayMenu) {
             if (! $this->menuList) {

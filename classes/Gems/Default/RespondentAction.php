@@ -70,11 +70,11 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
         $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');

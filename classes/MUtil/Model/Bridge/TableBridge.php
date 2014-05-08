@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: TableBridge.php 1916 2014-05-01 12:49:14Z matijsdejong $
  */
 
 /**
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Model_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
+class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
 {
     public $paginateClass    = 'centerAlign';
     public $sortAsc          = true;
@@ -298,7 +298,7 @@ class MUtil_Model_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
      * Set the model to be used by the tablebridge
      *
      * @param MUtil_Model_ModelAbstract $model
-     * @return MUtil_Model_TableBridge
+     * @return MUtil_Model_Bridge_TableBridge
      */
     public function setModel(MUtil_Model_ModelAbstract $model)
     {
@@ -321,7 +321,7 @@ class MUtil_Model_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstract
      * Set the sortorder
      *
      * @param string|array              $sort
-     * @return MUtil_Model_TableBridge
+     * @return MUtil_Model_Bridge_TableBridge
      */
     public function setSort($sort)
     {

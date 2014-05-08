@@ -26,24 +26,24 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * File description of ShowTrackUsageSnippet
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @since 1.4
- * @version 1.4
- * @package Gems
+ *
+ * @package    Gems
  * @subpackage Snippets
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Class description of ShowTrackUsageSnippet
  *
- * @author Matijs de Jong <mjong@magnafacta.nl>
- * @package Gems
+ * @package    Gems
  * @subpackage Snippets
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.4
  */
 class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
 {
@@ -53,11 +53,11 @@ class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Signal the bridge that we need these values
         $bridge->gtr_track_type;

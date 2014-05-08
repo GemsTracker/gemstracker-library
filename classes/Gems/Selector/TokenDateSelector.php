@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -145,7 +144,7 @@ class Gems_Selector_TokenDateSelector extends Gems_Selector_DateSelectorAbstract
         $select->join('gems__reception_codes', 'gto_reception_code = grc_id_reception_code', array());
     }
 
-    protected function setTableBody(MUtil_Model_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         // $bridge->setAlternateRowClass('even', 'even', 'odd');
 

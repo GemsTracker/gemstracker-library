@@ -58,11 +58,11 @@ class Gems_Snippets_Agenda_AppointmentShowSnippet extends Gems_Snippets_ModelIte
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      * /
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         parent::addShowTableRows($bridge, $model);
     }

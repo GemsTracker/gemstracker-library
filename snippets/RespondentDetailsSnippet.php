@@ -49,10 +49,10 @@ class RespondentDetailsSnippet extends Gems_Snippets_RespondentDetailSnippetAbst
     /**
      * Place to set the data to display
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @return void
      */
-    protected function addTableCells(MUtil_Model_VerticalTableBridge $bridge)
+    protected function addTableCells(MUtil_Model_Bridge_VerticalTableBridge $bridge)
     {
         $HTML = MUtil_Html::create();
 

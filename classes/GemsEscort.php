@@ -155,6 +155,7 @@ class GemsEscort extends MUtil_Application_Escort
         foreach ($this->_loaderDirs as $prefix => $path) {
             if ($prefix) {
                 $autoloader->registerNamespace($prefix . '_');
+                MUtil_Model::addNameSpace($prefix);
             }
         }
 

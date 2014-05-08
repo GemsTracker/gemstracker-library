@@ -70,11 +70,11 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $bridge->gr2t_id_respondent_track; //For show and edit button
 

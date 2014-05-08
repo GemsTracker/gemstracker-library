@@ -76,11 +76,11 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addShowTableRows(MUtil_Model_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addShowTableRows(MUtil_Model_Bridge_VerticalTableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         $question = $this->_('Are you sure?');
         $bridge->caption($question);
@@ -127,12 +127,12 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
     protected function createModel()
     {
         $model = parent::getModel();
-        
-        $model->setBridgeFor('itemTable', 'MUtil_Model_VerticalTableBridge');
-        
+
+        $model->setBridgeFor('itemTable', 'VerticalTableBridge');
+
         return $model;
     }
-    
+
     /**
      *
      * @return Gems_Menu_MenuList

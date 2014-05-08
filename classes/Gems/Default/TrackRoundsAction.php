@@ -52,8 +52,17 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
     protected $trackEngine;
 
     public $sortKey = array('gro_id_order' => SORT_ASC);
-    
-    public function addBrowseTableColumns(\MUtil_Model_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) {
+
+    /**
+     * Adds columns from the model to the bridge that creates the browse table.
+     *
+     * Adds a button column to the model, if such a button exists in the model.
+     *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     * @return void
+     */
+    public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model) {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
@@ -62,7 +71,7 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
         if ($menuItem = $this->findAllowedMenuItem('show')) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
         }
-        
+
         $added = false;
 
         foreach($model->getItemsOrdered() as $name) {

@@ -140,8 +140,8 @@ class MUtil_Model
     private static $_bridges = array(
         'display'   => 'DisplayBridge',
         'form'      => 'FormBridge',
-        'itemTable' => 'MUtil_Model_VerticalTableBridge',
-        'table'     => 'MUtil_Model_TableBridge',
+        'itemTable' => 'VerticalTableBridge',
+        'table'     => 'TableBridge',
     );
 
     /**
@@ -184,7 +184,7 @@ class MUtil_Model
      * @param string $nameSpace The namespace without any trailing _
      * @return boolean True when the namespace is new
      */
-    public static function addNameSpacee($nameSpace)
+    public static function addNameSpace($nameSpace)
     {
         if (!in_array($nameSpace, self::$_nameSpaces)) {
             self::$_nameSpaces[] = $nameSpace;

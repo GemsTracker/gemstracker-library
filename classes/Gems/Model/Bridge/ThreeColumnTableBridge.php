@@ -11,7 +11,7 @@
  *    * Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of Erasmus MC nor the
+ *    * Neither the name of the Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
@@ -27,8 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    MUtil
- * @subpackage Model_Bridge
+ * @package    Gems
+ * @subpackage Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -36,18 +36,49 @@
  */
 
 /**
- * The FormBridge contains utility classes to enable the quick construction of
- * a form using a model.
+ * Special vertical table bridge with an extra third column,
  *
- * @see Zend_Form
- * @see MUtil_Model_ModelAbstract
- *
- * @package    MUtil
- * @subpackage Model_Bridge
+ * @package    Gems
+ * @subpackage Model
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.0
- * @deprecated since version 1.5
+ * @since      Class available since version 1.1
  */
-class MUtil_Model_FormBridge extends MUtil_Model_Bridge_FormBridge
-{ }
+class Gems_Model_Bridge_ThreeColumnTableBridge extends MUtil_Model_Bridge_VerticalTableBridge
+{
+    public function addMarkerRow()
+    {
+        $this->table->tr()->td(array('colspan' => 3));
+    }
+
+    public function add($items, $colspan = 1.5)
+    {
+        // 1.5 because only three total and some math later on
+
+        foreach ((array) $items as $item) {
+            $this->addItem($item, null, array('colspan' => $colspan));
+        }
+    }
+
+    public function addWithThird($items_array)
+    {
+        $items = func_get_args();
+
+        if ((count($items) == 1) && is_array($items[0])) {
+            $items = $items[0];
+        }
+
+        if ($with = array_pop($items)) {
+            $colspan = 1;
+            $rowspan = count($items);
+            $first   = array_shift($items);
+
+            $this->addItem($first, null);
+            $this->td($with, array('rowspan' => $rowspan));
+        } else {
+            $colspan = 1.5;
+        }
+
+        $this->add($items, $colspan);
+    }
+}

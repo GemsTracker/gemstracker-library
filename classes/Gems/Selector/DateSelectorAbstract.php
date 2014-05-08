@@ -562,7 +562,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     protected function processSelect(Zend_Db_Select $select)
     {  }
 
-    protected function setTableBody(MUtil_Model_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableBody(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
         $onEmpty = $this->_('-');
@@ -586,7 +586,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         }
     }
 
-    protected function setTableFooter(MUtil_Model_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableFooter(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 
@@ -608,7 +608,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         $tf->setRepeatTags(true);
     }
 
-    protected function setTableHeader(MUtil_Model_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
+    protected function setTableHeader(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Lazy_RepeatableInterface $repeater, $columnClass)
     {
         $baseurl = $bridge->getBaseUrl();
 

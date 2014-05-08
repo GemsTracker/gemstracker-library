@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ComplianceTableSnippet.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: SummaryTableSnippet.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
 /**
@@ -52,11 +52,11 @@ class Gems_Snippets_Tracker_Summary_SummaryTableSnippet extends Gems_Snippets_Mo
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // $bridge->getTable()->setAlternateRowClass('odd', 'odd', 'even', 'even');
 

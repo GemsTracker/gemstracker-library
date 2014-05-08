@@ -119,18 +119,18 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // make sure search results are highlighted
         $this->applyTextMarker();
 
         parent::addBrowseTableColumns($bridge, $model);
 
-        $bridge->getTable()->addColumn(null,$this->_('Action'));        
+        $bridge->getTable()->addColumn(null,$this->_('Action'));
         $td = $bridge->getTable()->tbody()->getLast()->getLast();
         $td->class = 'fileAction';
 
@@ -149,13 +149,13 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      *
      * @staticvar MUtil_Html_HtmlElement $blank What to display when blank
      * @param MUtil_Html_HtmlElement $td      The element / cell to add the conditional link
-     * @param MUtil_Model_TableBridge $bridge
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @param string $icon                    Name of icon file
      * @param Gems_Menu_SubMenuItem $menuItem The menu item to add
      * @param mixed $options                  Other values for for link (not used for blank)
      * @return void
      */
-    protected function addFileImage(MUtil_Html_HtmlElement $td, MUtil_Model_TableBridge $bridge, $icon, Gems_Menu_SubMenuItem $menuItem = null, $options = null)
+    protected function addFileImage(MUtil_Html_HtmlElement $td, MUtil_Model_Bridge_TableBridge $bridge, $icon, Gems_Menu_SubMenuItem $menuItem = null, $options = null)
     {
         static $blank;
 
@@ -283,9 +283,10 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
     /**
      * Get the file icons
      *
+     * @param MUtil_Model_Bridge_TableBridge $bridge
      * @return array $icon => $menuItem or array($menuItem, $other)
      */
-    protected function getFileIcons(MUtil_Model_TableBridge $bridge)
+    protected function getFileIcons(MUtil_Model_Bridge_TableBridge $bridge)
     {
         $onDelete = new MUtil_Html_OnClickArrayAttribute();
         $onDelete->addConfirm(MUtil_Lazy::call(

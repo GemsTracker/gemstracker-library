@@ -114,10 +114,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
 
     /**
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @return void
      */
-    protected function addButtons(MUtil_Model_VerticalTableBridge $bridge)
+    protected function addButtons(MUtil_Model_Bridge_VerticalTableBridge $bridge)
     {
         if ($this->buttons) {
             $bridge->tfrow($this->buttons, array('class' => 'centerAlign'));
@@ -131,10 +131,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
 
     /**
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @return void
      */
-    protected function addOnClick(MUtil_Model_VerticalTableBridge $bridge)
+    protected function addOnClick(MUtil_Model_Bridge_VerticalTableBridge $bridge)
     {
         if ($this->onclick) {
             $bridge->tbody()->onclick = array('location.href=\'', $this->onclick, '\';');
@@ -144,10 +144,10 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
     /**
      * Place to set the data to display
      *
-     * @param MUtil_Model_VerticalTableBridge $bridge
+     * @param MUtil_Model_Bridge_VerticalTableBridge $bridge
      * @return void
      */
-    abstract protected function addTableCells(MUtil_Model_VerticalTableBridge $bridge);
+    abstract protected function addTableCells(MUtil_Model_Bridge_VerticalTableBridge $bridge);
 
     /**
      * Check if we have the 'Unknown' consent, and present a warning. The project default consent is
