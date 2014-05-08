@@ -612,8 +612,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     $this->getDateUnitsList(true)
                     );
         } else {
-            $model->set('gro_valid_after_source', 'tableDisplay', 'small');
-            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small');
+            $model->set('gro_valid_after_source', 'tableDisplay', 'small', 'label', $this->_('Source'));
+            $model->set('gro_valid_after_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small', 'label', $this->_('Round'));
             $model->setOnLoad('gro_valid_after_id', array($this, 'displayRoundId'));
             $model->set('gro_valid_after_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
             $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
@@ -668,8 +668,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->set('gro_active');
             $model->set('gro_changed_event');
         } else {
-            $model->set('gro_valid_for_source', 'tableDisplay', 'small');
-            $model->set('gro_valid_for_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small');
+            $model->set('gro_valid_for_source', 'tableDisplay', 'small', 'label', $this->_('Source'));
+            $model->set('gro_valid_for_id', 'multiOptions', $this->getRoundTranslations(), 'tableDisplay', 'small', 'label', $this->_('Round'));
             $model->setOnLoad('gro_valid_for_id', array($this, 'displayRoundId'));
             $model->set('gro_valid_for_field', 'label', $this->_('Date calculation'), 'tableHeaderDisplay', 'small');
             $model->setOnLoad('gro_valid_for_field', array($this, 'displayDateCalculation'));

@@ -293,6 +293,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $this->addPage(null, null, 'openrosa', 'formList'); //mind the capital L here
             $this->addPage(null, null, 'openrosa', 'download');
             $this->addPage(null, null, 'openrosa', 'barcode'); // For barcode rendering
+            $this->addPage(null, 'pr.islogin', 'openrosa', 'image'); // For image rendering
         }
     }
 

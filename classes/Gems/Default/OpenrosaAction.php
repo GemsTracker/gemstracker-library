@@ -46,6 +46,13 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
     protected $authActions = array('formlist', 'submission', 'download');
     
     /**
+     * The id to the last processed received form (gof_id)
+     * 
+     * @var int
+     */
+    protected $openrosaFormID = null;
+    
+    /**
      * This can be used to generate barcodes, use the action 
      * 
      * /openrosa/barcode/code/<tokenid>
@@ -169,6 +176,63 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
 
         return $xml;
     }
+    
+    public function imageAction() {
+        $request = $this->getRequest();             
+        $formId      = $request->getParam('id');
+        $formVersion = $request->getParam('version');
+        $resp        = $request->getParam('resp');
+        $field       = $request->getParam('field');
+        $model       = $this->getModel();
+
+        $filter = array(
+            //'gof_form_active'       => 1,
+            'gof_form_id'      => $formId,
+            'gof_form_version' => $formVersion,
+        );
+
+        if ($formData = $model->loadFirst($filter)) {
+            $this->openrosaFormID = $formData['gof_id'];
+            // Now find the file in the response table and serve the file
+                        
+            $file = $this->responseDir . 'forms/' . $this->openrosaFormID . '/' . $resp . '_' . str_replace('_', '.', $field);
+            
+            Zend_Layout::getMvcInstance()->disableLayout();
+            $this->_helper->viewRenderer->setNoRender();           
+
+            if (file_exists($file)) {
+                $size = getimagesize($file);
+
+                $fp = fopen($file, 'rb');
+
+                if ($size and $fp) {
+                    // Optional never cache
+                    //  header('Cache-Control: no-cache, no-store, max-age=0, must-revalidate');
+                    //  header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+                    //  header('Pragma: no-cache');
+                    // Optional cache if not changed
+                    header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
+                    // Optional send not modified
+                    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and
+                            filemtime($file) == strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+                        header('HTTP/1.1 304 Not Modified');
+                        exit;
+                    }
+
+                    header('Content-Type: ' . $size['mime']);
+                    header('Content-Length: ' . filesize($file));
+
+                    fpassthru($fp);
+
+                    exit;
+                }
+            } 
+            header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+            exit;
+        } else {
+            return false;
+        }
+    }
 
     public function init()
     {
@@ -213,6 +277,7 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
             'gof_form_version' => $formVersion,
         );
         if ($formData          = $model->loadFirst($filter)) {
+            $this->openrosaFormID = $formData['gof_id'];
             $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
             $answers = $form->saveAnswer($answerXmlFile);
             return $answers['orf_id'];
@@ -363,6 +428,8 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
                 } else {                
                     //$log->log(print_r($files, true), Zend_Log::ERR);
                     //$log->log($deviceId, Zend_Log::ERR);
+                    MUtil_File::ensureDir($this->responseDir . 'forms/' . (int) $this->openrosaFormID . '/');
+                    $upload->setDestination($this->responseDir . 'forms/' . (int) $this->openrosaFormID . '/');
                     foreach ($upload->getFileInfo() as $file => $info) {
                         if ($info['received'] != 1) {
                             //Rename to responseid_filename

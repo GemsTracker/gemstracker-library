@@ -229,7 +229,16 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
      */
     public function getAnswerDateTime($fieldName, Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
+        $answers = $token->getRawAnswers();
 
+        if (isset($answers[$fieldName]) && $answers[$fieldName]) {
+            if (Zend_Date::isDate($answers[$fieldName], Zend_Date::ISO_8601)) {
+                return new MUtil_Date($answers[$fieldName], Zend_Date::ISO_8601);
+            }
+            if (Gems_Tracker::$verbose)  {
+                MUtil_Echo::r($answers[$fieldName], 'Missed answer date value:');
+            }
+        }
     }
 
     /**
@@ -246,7 +255,14 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
      */
     public function getCompletionTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
-
+        $survey = $this->getSurvey($surveyId, $sourceSurveyId);
+        $model  = $survey->getModel();
+        
+        if ($name = $model->getMeta('start')) {
+            return $this->getAnswerDateTime($name, $token, $surveyId);
+        }
+        
+        return null;
     }
 
     /**
@@ -261,6 +277,21 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
      */
     public function getDatesList($language, $surveyId, $sourceSurveyId = null)
     {
+        $result = array();
+        
+        $survey = $this->getSurvey($surveyId, $sourceSurveyId);
+        $model  = $survey->getModel();
+        
+        $dateItems = $model->getItemsFor('type', Mutil_model::TYPE_DATETIME) + $model->getItemsFor('type', Mutil_model::TYPE_DATE);
+       
+        foreach ($dateItems as $name)
+        {
+            if ($label = $model->get($name, 'label')) {
+                $result[$name] = $label;
+            }
+        }        
+        
+        return $result;
 
     }
 
@@ -414,9 +445,28 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         return $select;
     }
 
+    /**
+     * Gets the time the survey was started according to the source.
+     *
+     * A source always return null when it does not know this time (or does not know
+     * it well enough). In the case Gems_Tracker_Token will do it's best to keep
+     * track by itself.
+     *
+     * @param Gems_Tracker_Token $token Gems token object
+     * @param int $surveyId Gems Survey Id
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     * @return MUtil_Date date time or null
+     */
     public function getStartTime(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId = null)
     {
-
+        $survey = $this->getSurvey($surveyId, $sourceSurveyId);
+        $model  = $survey->getModel();
+        
+        if ($name = $model->getMeta('start')) {
+            return $this->getAnswerDateTime($name, $token, $surveyId);
+        }
+        
+        return null;
     }
 
     /**

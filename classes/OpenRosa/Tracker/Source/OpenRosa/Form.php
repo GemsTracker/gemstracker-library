@@ -2,7 +2,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +13,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -24,7 +24,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * Helper for OpenRosa forms
  *
  * It supports a subset of OpenRosa forms and provides a bridge between GemsTracker
@@ -53,7 +53,7 @@
 class OpenRosa_Tracker_Source_OpenRosa_Form
 {
     /**
-     * @var Gems_Model_JoinModel 
+     * @var Gems_Model_JoinModel
      */
     private $model;
     private $bind;
@@ -87,7 +87,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             throw new Gems_Exception_Coding(sprintf($this->translate->_('Could not read form definition for form %s'), $file));
         }
         $this->_xml = $xml;
-              
+
         //For working with the namespaces:
         //$xml->children('h', true)->head->children()->model->bind
         //use namespace h children for the root element, and find h:head, then use no namespace children
@@ -109,7 +109,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         foreach ($this->instance as $name => $element) {
             $bindName = str_replace('_', '/', '_data_' . $name);
             if (array_key_exists($bindName, $this->bind)) {
-                $bindInfo = $this->bind[$bindName];    
+                $bindInfo = $this->bind[$bindName];
             } else {
                 $bindInfo['type'] = 'string';
             }
@@ -127,7 +127,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $field['size'] = 32;
                     $field['type'] = 'varchar';
                     $field['size'] = '(' . $field['size'] . ')';
-                    
+
                 case 'string':
                     // Always make it text
                     $field['type'] = 'text';
@@ -169,7 +169,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $field['type'] = 'float';
                     $field['size'] = '(12,4)';
                     break;
-                
+
                 case 'geopoint':
                     // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                     $field['size'] = '(11,7)';
@@ -183,7 +183,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $sql .= "  " . $db->quoteIdentifier($name . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
                     $sql .= "  " . $db->quoteIdentifier($name . '_alt') . " int DEFAULT 0 NOT NULL,\n";
                     $sql .= "  " . $db->quoteIdentifier($name . '_acc') . " int DEFAULT 0 NOT NULL,\n";
-                    
+
                     //So we don't get an extra field
                     unset($field['type']);
                     break;
@@ -280,6 +280,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $rawItem                     = $this->flattenBody($element, $elementContext);
                     $rawItem['context']          = $elementContext;
                     $rawItem['name']             = $element->getName();
+                    $rawItem['attribs']          = $element->attributes();
                     $result[$rawItem['context']] = $rawItem;
                     break;
 
@@ -368,7 +369,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         return $this->formID;
     }
-    
+
     /**
      * Returns the formVersion from the instance element version attribute
      *
@@ -402,19 +403,55 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 $model = $this->createTable();
             }
 
+            // Add submit date, this is the date the form was uploaded
+            $model->set('orf_created', 'label', $this->translate->_('Date received'));
+
             //Now we have the table, let's add some multi options etc.
             $checkBox[1] = $this->translate->_('Checked');
             $checkBox[0] = $this->translate->_('Not checked');
             foreach ($this->instance as $name => $element) {
                 $bindName = str_replace('_', '/', '_data_' . $name);
                 if (array_key_exists($bindName, $this->bind)) {
-                    $bindInfo = $this->bind[$bindName];    
+                    $bindInfo = $this->bind[$bindName];
                 } else {
                     $bindInfo['type'] = 'string';
                 }
-                
+
 
                 switch ($bindInfo['type']) {
+                    case 'date':
+                    case 'dateTime':
+                        $label = null;
+                        $label = $name;
+
+                        // Now check some special fields
+                        if (array_key_exists('jr', $bindInfo)) {
+                            $keys = array('preload', 'preloadParams');
+                            $found = array_intersect_key($bindInfo['jr'], array_flip($keys));
+
+                            if (count($found) == count($keys) && $found['preload'] == 'timestamp') {
+                                if ($found['preloadParams'] == 'start') {
+                                    $label = $this->translate->_('Start date');
+                                    $model->setMeta('start', $name);
+                                } elseif ($found['preloadParams'] == 'end') {
+                                    $label = $this->translate->_('Completion date');
+                                    $model->setMeta('end', $name);
+                                }
+                            }
+                        }
+
+                        if (array_key_exists($bindName, $this->body)) {
+                            if (array_key_exists('label', $this->body[$bindName])) {
+                                $label = $this->body[$bindName]['label'];
+                                if (array_key_exists('hint', $this->body[$bindName])) {
+                                    $label = sprintf('%s (%s)', $label, $this->body[$bindName]['hint']);
+                                }
+                            }
+                        }
+                        $model->set($name, 'label', $label);
+                        break;
+
+
                     case 'select':
                         //A multi select
                         $items         = $this->body[$bindName]['item'];
@@ -424,7 +461,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             $model->set($multiName, 'multiOptions', $checkBox, 'label', $label);
                         }
                         break;
-                        
+
                     case 'geopoint':
                         // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                         $label     = sprintf('%s [%s]', $this->body[$bindName]['label'], $value);
@@ -432,11 +469,24 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                         $model->set($name . '_long', 'label', $label . ' [longitude]');
                         $model->set($name . '_alt', 'label', $label . ' [altitude]');
                         $model->set($name . '_acc', 'label', $label . ' [accuracy]');
-                        break;                        
+                        break;
 
                     case 'select1':
                         $items         = $this->body[$bindName]['item'];
                         $model->set($name, 'multiOptions', $items);
+
+                    case 'string':
+                        // Now determine mediatype
+                        if (array_key_exists($bindName, $this->body)) {
+                            $bodyElement = $this->body[$bindName];
+                            if (isset($bodyElement['name']) && $bodyElement['name'] == 'upload') {
+                                $mediaType = (string) $bodyElement['attribs']->mediatype;
+                                if (substr($mediaType, 0, 5) == 'image') {
+                                    $model->setOnLoad($name, array($this,'formatImg'));
+                                }
+                            }
+                        }
+
                     default:
                         $label = null;
                         if (array_key_exists($bindName, $this->body)) {
@@ -453,7 +503,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             }
             $this->model = $model;
         }
-        
+
         return $this->model;
     }
 
@@ -495,13 +545,13 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             //Can not save to this object as it is a different form!
             throw new Gems_Exception_Coding(sprintf($this->translate->_('Response is for a different formId: %s <-> %s'), $formId, $this->getFormID()));
         }
-        
+
         $answers = $this->flattenInstance($xml);
         //Now we should parse the response, extract the options given for a (multi)select
         foreach ($this->instance as $name => $element) {
                 $bindName = str_replace('_', '/', '_data_' . $name);
                 if (array_key_exists($bindName, $this->bind)) {
-                    $bindInfo = $this->bind[$bindName];    
+                    $bindInfo = $this->bind[$bindName];
                 } else {
                     $bindInfo['type'] = 'string';
                 }
@@ -518,7 +568,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                         }
                         unset($answers[$name]);
                 }
-                
+
                 if ($bindInfo['type'] == 'geopoint') {
                     // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                     $items         = explode(' ', $answers[$name]);
@@ -549,5 +599,26 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         }
 
         return $answers;
+    }
+
+    public function formatImg($value, $new, $name, array $context = array())
+    {
+        // TODO: Find a way to build an url that identifies the form so we can download the attachted image
+        //       and still check if one is logged in
+        if (!empty($value)) {
+            return MUtil_Html_ImgElement::img(array(
+                        'src' => array(
+                            'controller' => 'openrosa',
+                            'action'     => 'image',
+                            'id'         => $this->formID,
+                            'version'    => $this->formVersion,
+                            'resp'       => $context['orf_id'],
+                            'field'      => str_replace('.', '_', $value)
+                            ),
+                        'width' => '350px;'
+                ));
+        } else {
+            return $value;
+        }
     }
 }
