@@ -112,7 +112,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gcj_id_track',        'label', $this->_('Track'), 'multiOptions', $empty + $dbTracks->getAllTracks());
 
         $defaultRounds = $empty + $this->db->fetchPairs('SELECT gro_round_description, gro_round_description FROM gems__rounds WHERE gro_round_description IS NOT NULL AND gro_round_description != "" GROUP BY gro_round_description');
-        $model->set('gcj_round_description',         'label', $this->_('Round'), 'multiOptions', $defaultRounds, 
+        $model->set('gcj_round_description',         'label', $this->_('Round'), 'multiOptions', $defaultRounds,
                     'variableSelect', array(
                         'source' => 'gcj_id_track',
                         'baseQuery' => $this->roundDescriptionQuery,
@@ -124,7 +124,7 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
 
         if ($detailed) {
-            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'), 'validators[]', 'Digits');
+            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders, 1 means the reminder is send the next day'), 'validators[]', 'Digits');
             $model->set('gcj_filter_max_reminders','label', $this->_('Maximum number of reminders'), 'validators[]', 'Digits');
             $model->set('gcj_id_organization', 'label', $this->_('Organization'), 'multiOptions', $empty + $dbLookup->getOrganizations());
         }
