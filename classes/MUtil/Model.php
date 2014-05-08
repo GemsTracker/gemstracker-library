@@ -139,7 +139,7 @@ class MUtil_Model
      */
     private static $_bridges = array(
         'display'   => 'DisplayBridge',
-        'form'      => 'MUtil_Model_FormBridge',
+        'form'      => 'FormBridge',
         'itemTable' => 'MUtil_Model_VerticalTableBridge',
         'table'     => 'MUtil_Model_TableBridge',
     );

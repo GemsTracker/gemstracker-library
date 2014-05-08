@@ -705,74 +705,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Returns the fields required for editing a track of this type.
-     *
-     * @return array of Zend_Form_Element
-     * /
-    public function getFieldsElements()
-    {
-        $this->_ensureTrackFields();
-
-        $elements = array();
-
-        if ($this->_trackFields) {
-            $empty = $this->util->getTranslated()->getEmptyDropdownArray();
-
-            foreach ($this->_trackFields as $name => $field) {
-
-                // Get the field
-                $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
-                $multi = array_combine($multi, $multi);
-
-                if ($field['gtf_readonly']) {
-                    $element = new MUtil_Form_Element_Exhibitor($name);
-
-                } else {
-                    switch ($field['gtf_field_type']) {
-                        case "multiselect":
-                            $element = new Zend_Form_Element_MultiCheckbox($name);
-                            $element->setMultiOptions($multi);
-                            break;
-
-                        case "select":
-                            $element = new Zend_Form_Element_Select($name);
-                            $element->setMultiOptions($empty + $multi);
-                            break;
-
-                        case "date":
-                            $options = array();
-                            MUtil_Model_FormBridge::applyFixedOptions('date', $options);
-
-                            $element = new Gems_JQuery_Form_Element_DatePicker($name, $options);
-                            $element->setStorageFormat('yyyy-MM-dd');
-                            break;
-
-                        case "appointment":
-                            /*
-                            $multi   = $this->
-                            $element = new Zend_Form_Element_Select($name);
-                            $element->setMultiOptions($empty + $multi);
-                            break;
-                            // * /
-
-                        default:
-                            $element = new Zend_Form_Element_Text($name);
-                            $element->setAttrib('size', 40);
-                            break;
-                    }
-                }
-                $element->setLabel($field['gtf_field_name'])
-                        ->setRequired($field['gtf_required'])
-                        ->setDescription($field['gtf_field_description']);
-
-                $elements[$name] = $element;
-            }
-        }
-
-        return $elements;
-    }
-
-    /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
@@ -1297,7 +1229,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     $value = MUtil_Date::format(
                             $value,
                             'yyyy-MM-dd',
-                            MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat')
+                            MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat')
                             );
                 } else {
                     $value = null;

@@ -1257,15 +1257,12 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         // CHECK ON SOMEONES BIRTHDAY
         // Birthdays are usually not defined for staff but the do exist for respondents
         if ($value = $this->_getVar('user_birthday')) {
-            $formData = Zend_Registry::get(MUtil_Model_FormBridge::REGISTRY_KEY);
             $label    = $this->translate->_('Your birthday');
 
             $birthdayElem = new Gems_JQuery_Form_Element_DatePicker('birthday');
-            $birthdayElem->setLabel($label);
-            if (isset($formData['date'])) {
-                $birthdayElem->setOptions($formData['date']);
-            }
-            $birthdayElem->setStorageFormat(Zend_Date::ISO_8601);
+            $birthdayElem->setLabel($label)
+                    ->setOptions(MUtil_Model_Bridge_FormBridge::getFixedOptions('date'))
+                    ->setStorageFormat(Zend_Date::ISO_8601);
 
             if ($format = $birthdayElem->getDateFormat()) {
                 $valueFormatted = MUtil_Date::format($value, $format, $birthdayElem->getStorageFormat());

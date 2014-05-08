@@ -67,9 +67,9 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      */
-    public function appendConfigFields(MUtil_Model_FormBridge $bridge)
+    public function appendConfigFields(MUtil_Model_Bridge_FormBridgeInterface $bridge)
     {
         $model = $this->getConfigModel();
 
@@ -162,7 +162,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
 
             $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'));
             $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'));
-            $model->setIfExists('grcfg_secret', 
+            $model->setIfExists('grcfg_secret',
                 'label', $this->translate->_('Shared secret'),
                 'elementClass', 'password',
                 'required', false,

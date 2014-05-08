@@ -48,9 +48,9 @@ interface Gems_User_UserDefinitionConfigurableInterface
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      */
-    public function appendConfigFields(MUtil_Model_FormBridge $bridge);
+    public function appendConfigFields(MUtil_Model_Bridge_FormBridgeInterface $bridge);
 
     /**
      * Should return the number of changed records for the save performed

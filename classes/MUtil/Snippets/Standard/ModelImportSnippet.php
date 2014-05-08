@@ -208,10 +208,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addStep1(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep1(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $this->addItems($bridge, 'trans', 'mode');
     }
@@ -219,10 +219,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addStep2(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep2(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $translator = $this->importer->getImportTranslator();
         if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
@@ -288,10 +288,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addStep3(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep3(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         if ($this->loadSourceModel()) {
             $this->displayHeader($bridge, $this->_('Upload successful!'));
@@ -321,10 +321,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addStep4(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep4(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $this->nextDisabled = true;
 
@@ -370,10 +370,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addStep5(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep5(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $this->nextDisabled = true;
 
@@ -425,11 +425,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $step)
+    protected function addStepElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step)
     {
         $this->displayHeader(
                 $bridge,
@@ -593,10 +593,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Display the errors
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param array Errors to display
      */
-    protected function displayErrors(MUtil_Model_FormBridge $bridge, $errors = null)
+    protected function displayErrors(MUtil_Model_Bridge_FormBridgeInterface $bridge, $errors = null)
     {
         if (null === $errors) {
             $errors = $this->_errors;
@@ -613,11 +613,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Display a header
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(MUtil_Model_FormBridge $bridge, $header, $tagName = 'h2')
+    protected function displayHeader(MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
         $element = new MUtil_Form_Element_Html('step_header');
         $element->$tagName($header);

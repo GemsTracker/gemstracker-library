@@ -58,13 +58,13 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $in_gems = $this->_('Leave empty for the Gems database.');
 

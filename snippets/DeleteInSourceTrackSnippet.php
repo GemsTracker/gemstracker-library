@@ -63,10 +63,10 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $bridge->addHidden(   'gr2t_id_respondent_track');
         $bridge->addHidden(   'gr2t_id_user');
@@ -89,7 +89,7 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
 
         // The edit element
         $bridge->addList('gr2t_reception_code');
-        
+
         // Comment text
         $bridge->addTextarea('gr2t_comment', 'rows', 3, 'cols', 50);
 
@@ -107,7 +107,7 @@ class DeleteInSourceTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetA
         $model = parent::createModel();
 
         $options = $this->util->getReceptionCodeLibrary()->getTrackDeletionCodes();
-        
+
         $model->set('gr2t_reception_code',
             'label',        $this->_('Rejection code'),
             'multiOptions', $options,

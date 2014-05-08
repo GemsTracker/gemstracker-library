@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Sample.php 203 2011-07-07 12:51:32Z matijs $
+ * @version    $Id: OrganizationEditSnippet.php 203 2011-07-07 12:51:32Z matijs $
  */
 
 /**
@@ -64,10 +64,10 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         //Get all elements in the model if not already done
         $this->initItems();

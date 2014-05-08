@@ -235,7 +235,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
                     $edit
                     );
         }
-        
+
         $this->set('gr2t_track_info',   'label', $this->_('Description'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
@@ -389,7 +389,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
             $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
             if ( ! $displayFormat) {
-                $displayFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+                $displayFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
             }
 
             // Of course do not do so when we got a time format

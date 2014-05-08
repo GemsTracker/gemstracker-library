@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,24 +25,26 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package Gems
+ *
+ *
+ * @package    Gems
  * @subpackage Default
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.1
  */
-
-/**
- * 
- * @author Matijs de Jong
- * @package Gems
- * @subpackage Default
- */
-class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
 {
     /**
      * Adds elements from the model to the bridge that creates the form.
@@ -51,13 +52,13 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(MUtil_Model_FormBridgeMUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $bridge->addHidden('ggp_id_group');
         $bridge->addText('ggp_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
@@ -120,8 +121,8 @@ class Gems_Default_GroupAction  extends Gems_Controller_BrowseEditAction
         $model->set('ggp_group_active', 'label', $this->_('Active'), 'multiOptions', $yesNo);
         $model->set('ggp_staff_members', 'label', $this->_('Staff'), 'multiOptions', $yesNo);
         $model->set('ggp_respondent_members', 'label', $this->_('Respondents'), 'multiOptions', $yesNo);
-        
-        $model->set('ggp_allowed_ip_ranges', 
+
+        $model->set('ggp_allowed_ip_ranges',
             'label', $this->_('Allowed IP Ranges'),
             'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)')
             );

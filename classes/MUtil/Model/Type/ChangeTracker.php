@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ChangeTracker .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: ChangeTracker.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 /**
@@ -215,7 +215,7 @@ class MUtil_Model_Type_ChangeTracker
             if ($this->_model->has($trackedField, 'dateFormat')) {
                 $secondFormat = $this->_model->get($trackedField, 'dateFormat');
             } else {
-                $secondFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+                $secondFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
             }
             if (! Zend_Date::isDate($context[$trackedField], $secondFormat)) {
                 // Cannot compare, do nothing

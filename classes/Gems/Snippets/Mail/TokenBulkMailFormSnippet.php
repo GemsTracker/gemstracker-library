@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TokenMailFormSnippet.php $
+ * @version    $Id: TokenBulkMailFormSnippet.php $
  */
 
 /**
@@ -60,16 +60,25 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
         //MUtil_Echo::track($this->multipleTokenData);
         $this->identifier = $this->getSingleTokenData();
 
-        parent::afterRegistry();    
+        parent::afterRegistry();
     }
 
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         $bridge->addElement($this->createToElement());
         $bridge->addElement($this->mailElements->createMethodElement());
 
         parent::addFormElements($bridge,$model);
-        
+
         $bridge->addHidden('to');
     }
 
@@ -125,7 +134,7 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
         } else {
             $title = null;
         }
-        
+
         $mailer = $this->loader->getMailLoader()->getMailer($this->mailTarget, $tokenData);
         /* @var $mailer Gems_Mail_TokenMailer */
         $token = $mailer->getToken();
@@ -178,8 +187,8 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                     $this->formData['token_select'][] = $tokenData['gto_id_token'];
                 }
             }
-        
-        
+
+
             $this->formData['multi_method'] = 'O';
         }
     }
@@ -195,9 +204,9 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                 /* @var $mailer Gems_Mail_TokenMailer */
                 $token = $mailer->getToken();
                 $email = $token->getEmail();
-                
+
                 if (!empty($email)) {
-                    if ($this->formData['multi_method'] == 'M') {   
+                    if ($this->formData['multi_method'] == 'M') {
                         $mailer->setFrom($this->fromOptions[$this->formData['from']]);
                         $mailer->setSubject($this->formData['subject']);
                         $mailer->setBody($this->formData['body']);
@@ -224,8 +233,8 @@ class Gems_Snippets_Mail_TokenBulkMailFormSnippet extends Gems_Snippets_Mail_Mai
                 }
             }
         }
-        
+
         $this->addMessage(sprintf($this->_('Sent %d e-mails, updated %d tokens.'), $mails, $updates));
-        
+
     }
 }

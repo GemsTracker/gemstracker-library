@@ -50,7 +50,16 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
 
     public $sortKey = array('grc_id_reception_code' => SORT_ASC);
 
-    public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    public function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $model->set('desc1', 'elementClass', 'Html', 'order', 55, 'label', $this->_('Can be assigned to'));
         $model->set('desc2', 'elementClass', 'Html', 'order', 85, 'label', $this->_('Additional action'));

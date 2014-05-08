@@ -117,10 +117,10 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         if (! $bridge->getForm() instanceof Gems_TabForm) {
             parent::addFormElements($bridge, $model);
@@ -131,11 +131,11 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         $this->initItems();
 
         // Add 'tooltip' to the allowed displayoptions
-        $displayOptions = $bridge->getAllowedOptions(MUtil_Model_FormBridge::DISPLAY_OPTIONS);
+        $displayOptions = $bridge->getAllowedOptions(MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS);
         if (!array_search('tooltip', $displayOptions)) {
             $displayOptions[] = 'tooltip';
+            $bridge->setAllowedOptions(MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS, $displayOptions);
         }
-        $bridge->setAllowedOptions(MUtil_Model_FormBridge::DISPLAY_OPTIONS, $displayOptions);
 
         $tab    = 0;
         $group  = 0;

@@ -167,7 +167,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             }
         }
         $options['label'] = $fromLabel;
-        MUtil_Model_FormBridge::applyFixedOptions($type, $options);
+        MUtil_Model_Bridge_FormBridge::applyFixedOptions($type, $options);
 
         $elements['datefrom'] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
@@ -421,7 +421,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $outFormat = 'yyyy-MM-dd';
         }
         if (null === $inFormat) {
-            $inFormat  = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+            $inFormat  = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         $isFrom  = isset($data['datefrom'])  && $data['datefrom']  && MUtil_Date::isDate($data['datefrom'],  $inFormat);

@@ -104,12 +104,12 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                     }
                 }
             }
-        } else {            
+        } else {
             foreach($model->getItemsOrdered() as $name) {
                 if ($label = $model->get($name, 'label')) {
                     $bridge->addSortable($name, $label);
                 }
-            }            
+            }
         }
 
         if ($menuItem) {
@@ -140,13 +140,13 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $bridge->addHidden(  'gtr_id_track');
         $bridge->addText(    'gtr_track_name', 'size', 30, 'minlength', 4, 'validator', $model->createUniqueValidator('gtr_track_name'));
@@ -329,9 +329,9 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
             $element = $this->_createSelectElement('active', $this->util->getTranslated()->getYesNo(), $this->_('(both)'));
             $element->setLabel($model->get('gtr_active', 'label'));
             $elements[] = $element;
-            
+
             $user = $this->loader->getCurrentUser();
-            $options = $user->getRespondentOrganizations();            
+            $options = $user->getRespondentOrganizations();
             $element = $this->_createSelectElement('org', $options, $this->_('(all organizations)'));
             $element->setLabel($model->get('gtr_organizations', 'label'));
             $elements[] = $element;
@@ -357,7 +357,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         if (isset($data['active']) && strlen($data['active'])) {
             $filter['gtr_active'] = $data['active'];
         }
-        
+
         if (isset($data['org']) && strlen($data['org'])) {
             $filter[] = 'gtr_organizations LIKE "%|' . $data['org'] . '|%"';
         }

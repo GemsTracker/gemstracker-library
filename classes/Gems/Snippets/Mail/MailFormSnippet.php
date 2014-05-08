@@ -142,7 +142,16 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         parent::afterRegistry();
     }
 
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
 
         $bridge->addHtml('to', 'label', $this->_('To'));

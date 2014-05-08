@@ -1333,7 +1333,7 @@ class GemsEscort extends MUtil_Application_Escort
             'timeJsUrl'   => $jstUrl,
         );
 
-        Zend_Registry::set(MUtil_Model_FormBridge::REGISTRY_KEY, array(
+        MUtil_Model_Bridge_FormBridge::setFixedOptions(array(
             'date'     => $dateFormOptions,
             'datetime' => $datetimeFormOptions,
             'time'     => $timeFormOptions,

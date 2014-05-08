@@ -24,6 +24,14 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * 
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
@@ -35,12 +43,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-
 class Gems_Default_LogMaintenanceAction extends Gems_Controller_BrowseEditAction {
 
     public $sortKey = array('glac_name' => SORT_ASC);
 
-    public function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false) {
+    /**
+     * Adds elements from the model to the bridge that creates the form.
+     *
+     * Overrule this function to add different elements to the browse table, without
+     * having to recode the core table building code.
+     *
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    public function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false) {
         $model->set('glac_name', 'elementClass', 'exhibitor');
         $model->set('glac_log', 'elementClass', 'checkBox');
         parent::addFormElements($bridge, $model, $data, $new);

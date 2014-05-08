@@ -252,7 +252,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         $options = array();
         $options['label'] = $this->_('from');
-        MUtil_Model_FormBridge::applyFixedOptions('date', $options);
+        MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $options);
         $elements[] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
@@ -494,7 +494,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
     public function getDefaultSearchData()
     {
-        $inFormat = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+        $inFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         $now      = new MUtil_Date();
 
         return array(

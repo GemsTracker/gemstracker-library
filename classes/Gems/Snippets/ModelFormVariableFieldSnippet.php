@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelFormSnippetGeneric.php 956 2012-09-25 15:34:45Z matijsdejong $
+ * @version    $Id: ModelFormVariableFieldSnippet.php 956 2012-09-25 15:34:45Z matijsdejong $
  */
 
 /**
@@ -52,7 +52,7 @@
  *
  *
  * TODO:
- * - Make it work for different target elements (besides a select) 
+ * - Make it work for different target elements (besides a select)
  *
  * @package    Gems
  * @subpackage Snippets
@@ -68,7 +68,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
 
 	protected $util;
 
-    protected function addFormElements(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
         parent::addFormElements($bridge, $model);
 
@@ -91,7 +91,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
 						$bridge->addSelect($name, 'multiOptions', $targetOptions);
 					} else {
 						if (isset($selectOptions['disabledEmpty']) && $selectOptions['disabledEmpty']) {
-							$bridge->addSelect($name, 'disabled', true);	
+							$bridge->addSelect($name, 'disabled', true);
 						}
 					}
 
@@ -144,7 +144,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
             $script .= '
                 }
             );';
-    		
+
     		$this->ajaxEvents[] = $script;
     	}
     }
@@ -170,7 +170,7 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-    	
+
     	if ($script = $this->getAjaxEventScript()) {
 	    	ZendX_JQuery::enableView($view);
 	    	$view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.getSelectOptions.js');

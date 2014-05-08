@@ -262,11 +262,11 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addFormElementsFor(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $step)
+    protected function addFormElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step)
     {
         //Get all elements in the model if not already done
         $this->initItems();
@@ -299,12 +299,12 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     /**
      * Add items in hidden form to the bridge, and remove them from the items array
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param string $element1
      *
      * @return void
      */
-    protected function addItemsHidden(MUtil_Model_FormBridge $bridge, $element1)
+    protected function addItemsHidden(MUtil_Model_Bridge_FormBridgeInterface $bridge, $element1)
     {
         $args = func_get_args();
         if (count($args)<2) {
@@ -367,11 +367,11 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_FormBridge $bridge
+     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    abstract protected function addStepElementsFor(MUtil_Model_FormBridge $bridge, MUtil_Model_ModelAbstract $model, $step);
+    abstract protected function addStepElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step);
 
     /**
      * Perform some actions on the form, right before it is displayed but already populated

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CalendarAction.php$
+ * @version    $Id: CalendarAction.php $
  */
 
 /**
@@ -104,7 +104,7 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
 
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = MUtil_Model_FormBridge::getFixedOption('date', 'dateFormat');
+            $format = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         return $format;
