@@ -58,7 +58,7 @@ class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_FormBridgeMUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $bridge->addHidden('ggp_id_group');
         $bridge->addText('ggp_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
