@@ -112,7 +112,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
      */
     public function __construct(MUtil_Model_ModelAbstract $model)
     {
-        $this->model = $model;
+        $this->setModel($model);
     }
 
     /**
@@ -391,6 +391,21 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
         }
 
         throw new MUtil_Model_ModelException("Illegal bridge mode set after mode had already been set.");
+    }
+
+    /**
+     * Set the model to be used by the bridge.
+     *
+     * This method exist to allow overruling in implementation classes
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     * @return MUtil_Model_Bridge_BridgeAbstract (continuation pattern)
+     */
+    public function setModel(MUtil_Model_ModelAbstract $model)
+    {
+        $this->model = $model;
+
+        return $this;
     }
 
     /**

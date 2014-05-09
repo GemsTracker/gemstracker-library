@@ -295,7 +295,9 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
     }
 
     /**
-     * Set the model to be used by the tablebridge
+     * Set the model to be used by the bridge.
+     *
+     * This method exist to allow overruling in implementation classes
      *
      * @param MUtil_Model_ModelAbstract $model
      * @return MUtil_Model_Bridge_TableBridge
