@@ -44,10 +44,10 @@
  * @since      Class available since version 1.6.1
  */
 class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswerFilterAbstract
-{
+{    
      public $IncludeLength = 5;
      public $IncludeStarts = array('score');
-
+     
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
@@ -61,7 +61,7 @@ class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswe
      */
     public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
-
+        
         $repeater = $model->loadRepeatable();
         $table    = $bridge->getTable();
         $table->setRepeater($repeater);
@@ -71,13 +71,13 @@ class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswe
         if (! $repeater->__start()) {
             return $currentNames;
         }
-
+        
         $keys = array();
         if ($requestFullAnswers !== false) {
             // No filtering
             return $model->getItemsOrdered();
-
-        } else {
+            
+        } else {            
             foreach ($model->getItemNames() as $name) {
                 $start = substr(strtolower($name),0,$this->IncludeLength);
                 if (in_array($start, $this->IncludeStarts)) {
@@ -85,9 +85,15 @@ class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswe
                 }
             }
         }
-
-        $results = array_intersect($currentNames, array_keys($keys), array_keys($this->token->getRawAnswers()));
-
+        
+        $answers = $this->token->getRawAnswers();
+        // Prevent errors when no answers present
+        if (!empty($answers)) {
+            $results = array_intersect($currentNames, array_keys($keys), array_keys($answers));
+        } else {
+            $results = array_intersect($currentNames, array_keys($keys));
+        }            
+        
         $results = $this->restoreHeaderPositions($model, $results);
 
         if ($results) {
@@ -96,12 +102,12 @@ class Gems_Event_Survey_Display_CompactFullToggle extends Gems_Event_SurveyAnswe
 
         return $this->getHeaders($model, $currentNames);
     }
-
+    
     public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token) {
         $snippets = parent::getAnswerDisplaySnippets($token);
-
+        
         array_unshift($snippets, 'Survey_Display_FullAnswerToggleSnippet');
-
+        
         return $snippets;
     }
 
