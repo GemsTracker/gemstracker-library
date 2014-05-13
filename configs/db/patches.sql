@@ -782,4 +782,11 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.survey-mainte
         grl_privileges NOT LIKE '%pr.survey-maintenance.answer-import%';
 
 -- PATCH: add round code
-ALTER TABLE gems__rounds ADD gro_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_active
+ALTER TABLE gems__rounds ADD gro_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_active;
+
+-- PATCH: updates to survey_questions table
+ALTER TABLE  `gems__survey_questions` 
+    CHANGE  `gsq_label`  `gsq_label` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+    CHANGE  `gsq_description`  `gsq_description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    CHANGE  `gsq_name`         `gsq_name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+    CHANGE  `gsq_name_parent`  `gsq_name_parent` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
