@@ -80,6 +80,17 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     protected $translate;
 
     /**
+     * Function to load survey specific impor translators
+     *
+     * @param Gems_Tracker_Survey $survey
+     * @return array name => translator
+     */
+    public function getAnswerImporters(Gems_Tracker_Survey $survey)
+    {
+        return array();
+    }
+
+    /**
      * The model to use with a controller
      *
      * @param string $controller Name of controller (or other id)

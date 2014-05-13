@@ -54,6 +54,12 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
     /**
      *
+     * @var Gems_Import_ImportLoader
+     */
+    protected $importLoader;
+
+    /**
+     *
      * @var Gems_Loader
      */
     protected $loader;
@@ -151,6 +157,8 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                     'multiOptions', $tracks,
                     'onchange', 'this.form.submit();'
                     );
+
+            $this->importModel->set('trans', 'separator', '<br/>');
         }
         return $this->importModel;
     }
@@ -171,6 +179,18 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                 (! $this->_survey instanceof Gems_Tracker_Survey)) {
 
             $this->_survey = $this->loader->getTracker()->getSurvey($this->formData['survey']);
+        }
+        
+        if ($this->_survey instanceof Gems_Tracker_Survey) {
+            // Add (optional) survey specific translators
+            $extraTrans  = $this->importLoader->getAnswerImporters($this->_survey);
+            if ($extraTrans) {
+                $this->importTranslators = $extraTrans + $this->importTranslators;
+
+                $this->_translatorDescriptions = false;
+
+                $this->importModel->set('trans', 'multiOptions', $this->getTranslatorDescriptions());
+            }
         }
 
         if ($this->_survey instanceof Gems_Tracker_Survey) {

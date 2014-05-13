@@ -272,6 +272,7 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
         $params['formatBoxClass']          = 'browser';
         $params['importer']                = $importLoader->getImporter($controller);
+        $params['importLoader']            = $importLoader;
         $params['tempDirectory']           = $importLoader->getTempDirectory();
         $params['importTranslators']       = $importLoader->getTranslators($controller);
 

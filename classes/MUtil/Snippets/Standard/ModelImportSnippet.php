@@ -67,7 +67,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      *
      * @var array
      */
-    private $_translatorDescriptions;
+    protected $_translatorDescriptions;
 
     /**
      * Array key of the default import translator
