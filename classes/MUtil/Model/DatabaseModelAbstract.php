@@ -812,15 +812,21 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                         ($value instanceof Zend_Db_Expr) ||
                         MUtil_String::startsWith($value, 'current_', true))
                 )) {
-            if ($saveFormat = $this->get($name, 'storageFormat')) {
+            $saveFormat = $this->getWithDefault($name, 'storageFormat', Zend_Date::ISO_8601);
 
-                if ($value instanceof Zend_Date) {
-                    return $value->toString($saveFormat);
+            if ($value instanceof Zend_Date) {
+                return $value->toString($saveFormat);
 
-                } else {
-                    $displayFormat = $this->get($name, 'dateFormat');
+            } else {
+                $displayFormat = $this->get($name, 'dateFormat');
 
+                try {
                     return MUtil_Date::format($value, $saveFormat, $displayFormat);
+                } catch (Zend_Exception $e) {
+                    if (Zend_Date::isDate($value, $saveFormat)) {
+                        return $value;
+                    }
+                    throw $e;
                 }
             }
         }

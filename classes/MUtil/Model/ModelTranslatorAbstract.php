@@ -49,6 +49,12 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     implements MUtil_Model_ModelTranslatorInterface
 {
     /**
+     *
+     * @var array Names of date elements
+     */
+    protected $_dateElementNames;
+
+    /**
      * A description that enables users to choose the transformer they need.
      *
      * @var string
@@ -156,6 +162,32 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
+     * Check the form and it's sub elements, currently just for date elements
+     *
+     * @param array $elements Of name => element
+     */
+    protected function _checkForm(array $elements)
+    {
+        foreach ($elements as $name => $element) {
+            if ($element instanceof MUtil_JQuery_Form_Element_DatePicker) {
+                $this->_dateElementNames[] = $name;
+            } elseif (($element instanceof Zend_Form_DisplayGroup) || ($element instanceof Zend_Form)) {
+                $this->_checkForm($element->getElements());
+            }
+        }
+    }
+
+    /**
+     * Create an empty form for filtering and validation
+     *
+     * @return \MUtil_Form
+     */
+    protected function _createTargetForm()
+    {
+        return new MUtil_Form();
+    }
+
+    /**
      *
      * @return array
      */
@@ -170,16 +202,6 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                 $filters,
                 $this->_targetModel->getCol('filters')
                 );
-    }
-
-    /**
-     * Create an empty form for filtering and validation
-     *
-     * @return \MUtil_Form
-     */
-    protected function _createTargetForm()
-    {
-        return new MUtil_Form();
     }
 
     /**
@@ -254,6 +276,20 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         }
 
         return $row;
+    }
+
+    /**
+     * Add the current row to a (possibly separate) batch that does the importing.
+     *
+     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param string $key The current iterator key
+     * @param array $row translated and validated row
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row)
+    {
+        $importBatch->setTask('Import_SaveToModel', 'import-' . $key, $row);
+        return $this;
     }
 
     /**
@@ -438,6 +474,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     public function setTargetForm(Zend_Form $form)
     {
         $this->targetForm = $form;
+
+        $this->_dateElementNames = array();
+        $this->_checkForm($form->getElements());
+
         return $this;
     }
 
@@ -586,10 +626,18 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
             }
         }
 
-        // $this->targetForm->populate($row);
+        // MUtil_Echo::track($row);
 
-        // Notice: this vchanges all dates back to string, making the batch easier
+        // Notice: this changes all dates back to string
         $row = array_intersect_key($this->targetForm->getValues(), $row) + $row;
+
+        // Restore the dates as date objects
+        foreach ($this->_dateElementNames as $name) {
+            $element = $this->targetForm->getElement($name);
+            if ($element instanceof MUtil_JQuery_Form_Element_DatePicker) {
+                $row[$name] = $element->getDateValue();
+            }
+        }
         // MUtil_Echo::track($row);
 
         return $row;

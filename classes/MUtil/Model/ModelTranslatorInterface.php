@@ -48,6 +48,16 @@
 interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInterface
 {
     /**
+     * Add the current row to a (possibly separate) batch that does the importing.
+     *
+     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param string $key The current iterator key
+     * @param array $row translated and validated row
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row);
+
+    /**
      * Returns a description of the translator to enable users to choose
      * the translator they need.
      *
@@ -77,7 +87,7 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
      * @return array of String messages
      */
     public function getRowErrors($row);
-    
+
     /**
      * Get the source model, where the data is coming from.
      *

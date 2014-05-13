@@ -167,7 +167,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
     protected function getBasicImportBatch($idPart, MUtil_Task_TaskBatch $batch = null)
     {
         if (null === $batch) {
-            $batch = new MUtil_Task_TaskBatch(__CLASS__ . '_check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
+            $batch = new MUtil_Task_TaskBatch('check_' . basename($this->sourceModel->getName()) . '_' . $idPart);
             $this->registrySource->applySource($batch);
             $batch->setSource($this->registrySource);
         }

@@ -121,10 +121,11 @@ class MUtil_Task_Import_ImportCheckTask extends MUtil_Task_IteratorTaskAbstract
         // MUtil_Echo::track($key, $row, $errors);
 
         if (0 === $errorCount) {
+            // Do not report empty rows
             if ($row) {
-                // Do not report empty rows
                 if ($this->addImport && $this->importBatch) {
-                    $this->importBatch->setTask('Import_SaveToModel', 'import-' . $key, $row);
+                    // Let the translator decide how to save the row
+                    $this->modelTranslator->addSaveTask($this->importBatch, $key, $row);
                 }
                 $batch->setMessage('check_status', sprintf($this->_('%s, no problems found.'), $checkMsg));
             }
