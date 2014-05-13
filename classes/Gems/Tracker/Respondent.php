@@ -139,9 +139,9 @@ class Gems_Tracker_Respondent extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Get a (single char code for the gender (normally M/F/U))text
+     * Get the birthdate
      *
-     * @return MUtil_Date or null
+     * @return MUtil_Date|null
      */
     public function getBirthday()
     {
