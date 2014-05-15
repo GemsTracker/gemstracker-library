@@ -436,7 +436,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         return $roles;
     }
-    
+
     /**
      * Get all round descriptions for exported
      *
@@ -458,7 +458,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         if (!empty($trackId)) {
             $select->where('gto_id_track = ?', (int) $trackId);
         }
-        
+
         if (!empty($surveyId)) {
             $select->where('gto_id_survey = ?', (int) $surveyId);
         }
@@ -532,6 +532,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
+            ->where('gsu_surveyor_active = 1')
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
