@@ -303,6 +303,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
     {
         //*
         $batch = $this->loader->getTracker()->synchronizeSources(null, $this->loader->getCurrentUser()->getUserId());
+        $batch->minimalStepDurationMs = 3000;
 
         $title = $this->_('Synchronize all sources.');
         $this->_helper->batchRunner($batch, $title);

@@ -1084,16 +1084,22 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @return MUtil_Model_ModelAbstract
      */
     public function getSurveyAnswerModel(Gems_Tracker_Survey $survey, $language = null, $sourceSurveyId = null)
-    {
+ {
+        static $cache = array();        // working with 'real' cache produces out of memory error
+
         if (null === $sourceSurveyId) {
             $sourceSurveyId = $this->_getSid($survey->getSurveyId());
         }
-        $language   = $this->_getLanguage($sourceSurveyId, $language);
+        $language = $this->_getLanguage($sourceSurveyId, $language);
+        $cacheId  = $sourceSurveyId . strtr($language, '-.', '__');
 
-        $model    = $this->tracker->getSurveyModel($survey, $this);
-        $fieldMap = $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
+        if (!array_key_exists($cacheId, $cache)) {
+            $model           = $this->tracker->getSurveyModel($survey, $this);
+            $fieldMap        = $this->_getFieldMap($sourceSurveyId, $language)->applyToModel($model);
+            $cache[$cacheId] = $model;
+        }
 
-        return $model;
+        return $cache[$cacheId];
     }
 
     /**
