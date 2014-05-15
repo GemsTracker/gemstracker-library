@@ -102,7 +102,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
      */
     protected function addStep1(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track');
+        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track', 'tokenTreatment');
     }
 
     /**
@@ -154,13 +154,55 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
             $this->importModel->set('track', 'label', $this->_('Track'),
                     'description', $this->_('Optionally assign answers only within a single track'),
-                    'multiOptions', $tracks,
-                    'onchange', 'this.form.submit();'
+                    'multiOptions', $tracks //,
+                    // 'onchange', 'this.form.submit();'
+                    );
+
+            $tokenTreatments = array(
+                Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE =>
+                    $this->_('Delete old token and create new'),
+                Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_DOUBLE =>
+                    $this->_('Create new extra token'),
+                Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
+                    $this->_('Abort the import'),
+            );
+
+            $this->importModel->set('tokenTreatment', 'label', $this->_('On double answers'),
+                    'default', Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+                    'description', $this->_('What to do when a linked token is already answered or there is no token'),
+                    'elementClass', 'Radio',
+                    'multiOptions', $tokenTreatments //,
+                    // 'onchange', 'this.form.submit();'
                     );
 
             $this->importModel->set('trans', 'separator', '<br/>');
         }
+
         return $this->importModel;
+    }
+
+    /**
+     * Try to get the current translator
+     *
+     * @return MUtil_Model_ModelTranslatorInterface or false if none is current
+     */
+    protected function getImportTranslator()
+    {
+        $translator = parent::getImportTranslator();
+
+        if ($translator instanceof Gems_Model_Translator_AnswerTranslatorAbstract) {
+            // Set answer specific options
+            $tokenTreatment = isset($this->formData['tokenTreatment']) ?
+                    $this->formData['tokenTreatment'] :
+                    Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
+
+            $trackId = isset($this->formData['track']) ? $this->formData['track'] : null;
+
+            $translator->setTokenTreatment($tokenTreatment);
+            $translator->setTrackId($trackId);
+        }
+
+        return $translator;
     }
 
     /**
@@ -180,7 +222,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
             $this->_survey = $this->loader->getTracker()->getSurvey($this->formData['survey']);
         }
-        
+
         if ($this->_survey instanceof Gems_Tracker_Survey) {
             // Add (optional) survey specific translators
             $extraTrans  = $this->importLoader->getAnswerImporters($this->_survey);

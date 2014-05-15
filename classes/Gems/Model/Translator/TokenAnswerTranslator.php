@@ -53,6 +53,22 @@ class Gems_Model_Translator_TokenAnswerTranslator extends Gems_Model_Translator_
     protected $loader;
 
     /**
+     * Find the token id using the passed row data and
+     * the other translator parameters.
+     *
+     * @param array $row
+     * @return string|null
+     */
+    protected function findTokenFor(array $row)
+    {
+        if (isset($row['token']) && $row['token']) {
+            return $row['token'];
+        }
+
+        return null;
+    }
+
+    /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName

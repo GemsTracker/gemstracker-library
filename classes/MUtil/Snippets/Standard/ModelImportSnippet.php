@@ -57,13 +57,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     private $_errors = array();
 
     /**
-     * Marker for communicating a succesfull save of the data
-     *
-     * @var boolean
-     */
-    private $_saved = false;
-
-    /**
      *
      * @var array
      */
@@ -909,10 +902,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         $this->fileMode = 'file' === $this->formData['mode'];
 
         // Set the translator
-        if (isset($this->formData['trans'], $this->importTranslators[$this->formData['trans']]) &&
-                $this->importTranslators[$this->formData['trans']] instanceof MUtil_Model_ModelTranslatorInterface) {
-
-            $this->importer->setImportTranslator($this->importTranslators[$this->formData['trans']]);
+        $translator = $this->getImportTranslator();
+        if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+            $this->importer->setImportTranslator($translator);
         }
 
         // MUtil_Echo::track($_POST, $_FILES, $this->formData);

@@ -162,6 +162,33 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
+     * Register additional errors
+     *
+     * @param array $messages or single string message
+     * @param mixed $key Row key
+     * @param array $row Optional for filtering errors not in the import
+     */
+    protected function _addErrors($messages, $key, array $row = null)
+    {
+        if (is_array($messages)) {
+            if (is_array($row)) {
+                // Remove errors for elements not in the import
+                $messages = array_intersect_key($messages, $row);
+            }
+        } elseif ($messages) {
+            $messages = (array) $messages;
+        }
+
+        if ($messages) {
+            if (isset($this->_errors[$key])) {
+                $this->_errors[$key] = array_merge($this->_errors[$key], $messages);
+            } else {
+                $this->_errors[$key] = $messages;
+            }
+        }
+    }
+
+    /**
      * Check the form and it's sub elements, currently just for date elements
      *
      * @param array $elements Of name => element
@@ -614,18 +641,8 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         if (! $this->targetForm->isValid($row)) {
             $messages = $this->targetForm->getMessages(null, true);
 
-            // Remove errors for elements not in the import
-            $messages = array_intersect_key($messages, $row);
-
-            if ($messages) {
-                if (isset($this->_errors[$key])) {
-                    $this->_errors[$key] = array_merge($this->_errors[$key], $messages);
-                } else {
-                    $this->_errors[$key] = $messages;
-                }
-            }
+            $this->_addErrors($messages, $key, $row);
         }
-
         // MUtil_Echo::track($row);
 
         // Notice: this changes all dates back to string

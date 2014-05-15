@@ -44,8 +44,37 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3 24-apr-2014 16:08:57
  */
-class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Model_ModelTranslatorAbstract
+abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Model_ModelTranslatorAbstract
 {
+    /**
+     * Constant for creating an extra token when a token was already filled in.
+     */
+    const TOKEN_DOUBLE = 'double';
+
+    /**
+     * Constant for generating an error when a token does not exist or is already filled in.
+     */
+    const TOKEN_ERROR = 'error';
+
+    /**
+     * Constant for creating a new token, while disabling the existing token
+     */
+    const TOKEN_OVERWRITE = 'overwrite';
+
+    /**
+     * One f the TOKEN_ constants.
+     *
+     * @var string
+     */
+    protected $_tokenTreatment = self::TOKEN_ERROR;
+
+    /**
+     * The id of the track to import to or null
+     *
+     * @var int
+     */
+    protected $_trackId;
+
     /**
      * Create an empty form for filtering and validation
      *
@@ -55,6 +84,29 @@ class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Model_ModelTr
     {
         return new Gems_Form();
     }
+
+    /**
+     * Add the current row to a (possibly separate) batch that does the importing.
+     *
+     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param string $key The current iterator key
+     * @param array $row translated and validated row
+     * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
+     */
+    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row)
+    {
+        $importBatch->setTask('Import_SaveAnswerTask', 'import-' . $key, $row, $this->_trackId);
+        return $this;
+    }
+
+    /**
+     * Find the token id using the passed row data and
+     * the other translator parameters.
+     *
+     * @param array $row
+     * @return string|null
+     */
+    abstract protected function findTokenFor(array $row);
 
     /**
      * Get information on the field translations
@@ -73,5 +125,83 @@ class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Model_ModelTr
         }
 
         return $fieldList;
+    }
+
+    /**
+     * Get the treatment for answered or double tokens
+     *
+     * @return string $tokenTreatment One f the TOKEN_ constants.
+     */
+    public function getTokenTreatment()
+    {
+        return $this->_tokenTreatment;
+    }
+
+    /**
+     * Get the id of the track to import to or null
+     *
+     * @return int $trackId
+     */
+    public function getTrackId()
+    {
+        return $this->_trackId;
+    }
+
+    /**
+     * Set the treatment for answered or double tokens
+     *
+     * @param string $tokenTreatment One f the TOKEN_ constants.
+     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     */
+    public function setTokenTreatment($tokenTreatment)
+    {
+        $this->_tokenTreatment = $tokenTreatment;
+        return $this;
+    }
+
+    /**
+     * Set the id of the track to import to or null
+     *
+     * @param int $trackId
+     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     */
+    public function setTrackId($trackId)
+    {
+        $this->_trackId = $trackId;
+        return $this;
+    }
+
+    /**
+     * Perform any translations necessary for the code to work
+     *
+     * @param mixed $row array or Traversable row
+     * @param scalar $key
+     * @return mixed Row array or false when errors occurred
+     */
+    public function translateRowValues($row, $key)
+    {
+        $row = parent::translateRowValues($row, $key);
+
+        $row['token'] = $this->findTokenFor($row);
+
+        return $row;
+    }
+
+    /**
+     * Validate the data against the target form
+     *
+     * @param array $row
+     * @param scalar $key
+     * @return mixed Row array or false when errors occurred
+     */
+    public function validateRowValues(array $row, $key)
+    {
+        $row = parent::validateRowValues($row, $key);
+
+        if (! (isset($row['token']) && $row['token'])) {
+            $this->_addErrors(sprintf($this->_('No token found for row %s.'), $key), $key);
+        }
+
+        return $row;
     }
 }

@@ -80,7 +80,9 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
     protected $translate;
 
     /**
-     * Function to load survey specific impor translators
+     * Function to load survey specific import translators,
+     * as opposed to the generic answer translators loaded
+     * using $this->getTranslators('answers')
      *
      * @param Gems_Tracker_Survey $survey
      * @return array name => translator
@@ -323,13 +325,13 @@ class Gems_Import_ImportLoader extends Gems_Loader_TargetLoaderAbstract
 
             case 'answers':
                 $output['default'] = new Gems_Model_Translator_TokenAnswerTranslator(
-                        $translator->_('By token (replace existing answers)')
+                        $translator->_('Link by token id')
                         );
                 $output['resp']    = new Gems_Model_Translator_RespondentAnswerTranslator(
-                        $translator->_('By patient id (fill unanswered by order)')
+                        $translator->_('Link by patient id')
                         );
                 $output['date']    = new Gems_Model_Translator_DateAnswerTranslator(
-                        $translator->_('Use patient id and match completion date')
+                        $translator->_('Link by patient id and completion date')
                         );
                 break;
 

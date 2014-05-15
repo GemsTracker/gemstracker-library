@@ -53,6 +53,22 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends Gems_Model_Transl
     protected $util;
 
     /**
+     * Find the token id using the passed row data and
+     * the other translator parameters.
+     *
+     * @param array $row
+     * @return string|null
+     */
+    protected function findTokenFor(array $row)
+    {
+        if (isset($row['token']) && $row['token']) {
+            return $row['token'];
+        }
+
+        return null;
+    }
+
+    /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
@@ -63,7 +79,7 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends Gems_Model_Transl
         if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
             throw new MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
         }
-        MUtil_Echo::track($this->_targetModel->getItemNames());
+        // MUtil_Echo::track($this->_targetModel->getItemNames());
 
         $this->_targetModel->set('patient_id', 'label', $this->_('Patient ID'),
                 'order', 5,
