@@ -130,7 +130,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
     {
         // First scan for new definitions
         $this->_scanForms();
-        
+
         // Surveys in OpenRosa
         $db = $this->getSourceDatabase();
 
@@ -257,11 +257,11 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        
+
         if ($name = $model->getMeta('start')) {
             return $this->getAnswerDateTime($name, $token, $surveyId);
         }
-        
+
         return null;
     }
 
@@ -278,19 +278,19 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
     public function getDatesList($language, $surveyId, $sourceSurveyId = null)
     {
         $result = array();
-        
+
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        
+
         $dateItems = $model->getItemsFor('type', Mutil_model::TYPE_DATETIME) + $model->getItemsFor('type', Mutil_model::TYPE_DATE);
-       
+
         foreach ($dateItems as $name)
         {
             if ($label = $model->get($name, 'label')) {
                 $result[$name] = $label;
             }
-        }        
-        
+        }
+
         return $result;
 
     }
@@ -461,16 +461,16 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
     {
         $survey = $this->getSurvey($surveyId, $sourceSurveyId);
         $model  = $survey->getModel();
-        
+
         if ($name = $model->getMeta('start')) {
             return $this->getAnswerDateTime($name, $token, $surveyId);
         }
-        
+
         return null;
     }
 
     /**
-     * 
+     *
      * @param type $surveyId
      * @param type $sourceSurveyId
      * @return \OpenRosa_Tracker_Source_OpenRosa_Form
@@ -667,7 +667,20 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         return sprintf($message, $survey->getName());;
     }
 
-    /**
+     /**
+     * Sets the completion time.
+     *
+     * @param Gems_Tracker_Token $token Gems token object
+     * @param Zend_Date|null $completionTime Zend_Date or null
+     * @param int $surveyId Gems Survey Id (actually required)
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     */
+    public function setTokenCompletionTime(Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
+    {
+        // Nothing to do, time is kept in Gems
+    }
+
+   /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
      * @param int $userId    Id of the user who takes the action (for logging)

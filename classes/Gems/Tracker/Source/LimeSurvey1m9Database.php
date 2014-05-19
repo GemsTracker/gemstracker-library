@@ -832,7 +832,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         {
             $value = MUtil_Html::raw($value);
         }
-        
+
         return $results;
     }
 
@@ -1111,7 +1111,8 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * @param array $fields
      * @return type
      */
-    public function getTokenInfo(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId, array $fields = null) {
+    public function getTokenInfo(Gems_Tracker_Token $token, $surveyId, $sourceSurveyId, array $fields = null)
+    {
         if (! $token->cacheHas(self::CACHE_TOKEN_INFO)) {
             if (null === $sourceSurveyId) {
                 $sourceSurveyId = $this->_getSid($surveyId);
@@ -1206,7 +1207,7 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
      * Sets the answers passed on.
      *
      * @param Gems_Tracker_Token $token Gems token object
-     * @param $answers array Field => Value array
+     * @param array $answers Field => Value array
      * @param int $surveyId Gems Survey Id
      * @param string $sourceSurveyId Optional Survey Id used by source
      */
@@ -1233,13 +1234,69 @@ class Gems_Tracker_Source_LimeSurvey1m9Database extends Gems_Tracker_Source_Sour
         } else {
             $current = new MUtil_Db_Expr_CurrentTimestamp();
 
-            $answers['token'] = $lsTokenId;
+            $answers['token']         = $lsTokenId;
             $answers['startlanguage'] = $this->locale->getLanguage();
-            $answers['datestamp'] = $current;
-            $answers['startdate'] = $current;
+            $answers['datestamp']     = $current;
+            $answers['startdate']     = $current;
 
             $lsDb->insert($lsTab, $answers);
         }
+    }
+
+    /**
+     * Sets the completion time.
+     *
+     * @param Gems_Tracker_Token $token Gems token object
+     * @param Zend_Date|null $completionTime Zend_Date or null
+     * @param int $surveyId Gems Survey Id (actually required)
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     */
+    public function setTokenCompletionTime(Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null)
+    {
+        if (null === $sourceSurveyId) {
+            $sourceSurveyId = $this->_getSid($surveyId);
+        }
+
+        $lsDb      = $this->getSourceDatabase();
+        $lsTabSurv = $this->_getSurveyTableName($sourceSurveyId);
+        $lsTabTok  = $this->_getTokenTableName($sourceSurveyId);
+        $lsTokenId = $this->_getToken($token->getTokenId());
+        $where     = $lsDb->quoteInto("token = ?", $lsTokenId);
+        $current   = new MUtil_Db_Expr_CurrentTimestamp();
+
+        if ($completionTime instanceof Zend_Date) {
+            $answers['submitdate']  = $completionTime->toString(self::LS_DB_DATETIME_FORMAT);
+            $tokenData['completed'] = $completionTime->toString(self::LS_DB_COMPLETION_FORMAT);
+        } else {
+            $answers['submitdate']  = null;
+            $tokenData['completed'] = 'N';
+        }
+
+        // Set for the survey
+        if ($lsDb->fetchOne("SELECT token FROM $lsTabSurv WHERE token = ?", $lsTokenId)) {
+            $lsDb->update($lsTabSurv, $answers, $where);
+
+        } elseif ($completionTime instanceof Zend_Date) {
+            $answers['token']         = $lsTokenId;
+            $answers['startlanguage'] = $this->locale->getLanguage();
+            $answers['datestamp']     = $current;
+            $answers['startdate']     = $current;
+
+            $lsDb->insert($lsTabSurv, $answers);
+        }
+
+        // Set for the token
+        if ($lsDb->fetchOne("SELECT token FROM $lsTabTok WHERE token = ?", $lsTokenId)) {
+            $lsDb->update($lsTabTok, $tokenData, $where);
+
+        } elseif ($completionTime instanceof Zend_Date) {
+
+            $tokenData['token'] = $lsTokenId;
+            $tokenData = $tokenData + $this->_fillAttributeMap($token);
+
+            $lsDb->insert($lsTabTok, $tokenData);
+        }
+        $token->cacheReset();
     }
 
     /**

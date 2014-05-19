@@ -73,15 +73,7 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
         if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
             throw new MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
         }
-        // MUtil_Echo::track($this->_targetModel->getItemNames());
-        $this->_targetModel->set('submitdate', 'label', $this->_('Completion date')
-                // , 'required', true
-                );
 
-        $result = parent::getFieldsTranslations();
-        unset($result['submitdate']);
-        return array(
-            'completion_date' => 'submitdate',
-            ) + $result;
-    }
+        return parent::getFieldsTranslations();
+    } 
 }

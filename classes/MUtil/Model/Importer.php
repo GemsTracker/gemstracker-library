@@ -64,7 +64,7 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
      *
      * @var MUtil_Task_TaskBatch
      */
-    private $_importBatch;
+    protected $_importBatch;
 
     /**
      * The final directory for when the data could not be imported.

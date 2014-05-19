@@ -62,11 +62,18 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     const TOKEN_OVERWRITE = 'overwrite';
 
     /**
-     * One f the TOKEN_ constants.
+     * One of the TOKEN_ constants telling what to do when no token exists
      *
      * @var string
      */
-    protected $_tokenTreatment = self::TOKEN_ERROR;
+    protected $_noToken = self::TOKEN_ERROR;
+
+    /**
+     * One of the TOKEN_ constants telling what to do when the token is completed
+     *
+     * @var string
+     */
+    protected $_tokenCompleted = self::TOKEN_ERROR;
 
     /**
      * The id of the track to import to or null
@@ -74,6 +81,12 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
      * @var int
      */
     protected $_trackId;
+
+    /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
 
     /**
      * Create an empty form for filtering and validation
@@ -95,7 +108,14 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
      */
     public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row)
     {
-        $importBatch->setTask('Import_SaveAnswerTask', 'import-' . $key, $row, $this->_trackId);
+        $importBatch->setTask(
+                'Import_SaveAnswerTask',
+                'import-' . $key,
+                $row,
+                $this->getNoToken(),
+                $this->getTokenCompleted()
+                );
+
         return $this;
     }
 
@@ -116,7 +136,12 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
      */
     public function getFieldsTranslations()
     {
-        $fieldList   = array();
+        $this->_targetModel->set('completion_date', 'label', $this->_('Completion date'),
+                'order', 9,
+                'type', MUtil_Model::TYPE_DATETIME
+                );
+
+        $fieldList = array('completion_date' => 'completion_date');
 
         foreach ($this->_targetModel->getCol('survey_question') as $name => $use) {
             if ($use) {
@@ -128,13 +153,23 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     }
 
     /**
-     * Get the treatment for answered or double tokens
+     * Get the treatment when no token exists
      *
-     * @return string $tokenTreatment One f the TOKEN_ constants.
+     * @return string One of the TOKEN_ constants.
      */
-    public function getTokenTreatment()
+    public function getNoToken()
     {
-        return $this->_tokenTreatment;
+        return $this->_noToken;
+    }
+
+    /**
+     * Get the treatment for completed tokens
+     *
+     * @return string One of the TOKEN_ constants.
+     */
+    public function getTokenCompleted()
+    {
+        return $this->_tokenCompleted;
     }
 
     /**
@@ -148,14 +183,26 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     }
 
     /**
+     * Get the treatment when no token exists
+     *
+     * @param string $noToken One of the TOKEN_ constants.
+     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     */
+    public function setNoToken($noToken)
+    {
+        $this->_noToken = $noToken;
+        return $this;
+    }
+
+    /**
      * Set the treatment for answered or double tokens
      *
      * @param string $tokenTreatment One f the TOKEN_ constants.
      * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
      */
-    public function setTokenTreatment($tokenTreatment)
+    public function setTokenCompleted($tokenCompleted)
     {
-        $this->_tokenTreatment = $tokenTreatment;
+        $this->_tokenCompleted = $tokenCompleted;
         return $this;
     }
 
@@ -182,7 +229,8 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     {
         $row = parent::translateRowValues($row, $key);
 
-        $row['token'] = $this->findTokenFor($row);
+        $row['track_id'] = $this->getTrackId();
+        $row['token']    = strtolower($this->findTokenFor($row));
 
         return $row;
     }
@@ -198,8 +246,20 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     {
         $row = parent::validateRowValues($row, $key);
 
-        if (! (isset($row['token']) && $row['token'])) {
-            $this->_addErrors(sprintf($this->_('No token found for row %s.'), $key), $key);
+        $token = $this->loader->getTracker()->getToken($row['token']);
+
+        if ($token->exists) {
+            if ($token->isCompleted() && (self::TOKEN_ERROR == $this->getTokenCompleted())) {
+                $this->_addErrors(sprintf(
+                        $this->_('Token %s is completed.'),
+                        $token->getTokenId()
+                        ), $key);
+            }
+        } elseif (self::TOKEN_ERROR == $this->getNoToken()) {
+            $this->_addErrors(sprintf(
+                    $this->_('No token found for %s.'),
+                    implode(" / ", $row)
+                    ), $key);
         }
 
         return $row;

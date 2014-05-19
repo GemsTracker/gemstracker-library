@@ -287,6 +287,16 @@ interface Gems_Tracker_Source_SourceInterface extends MUtil_Registry_TargetInter
     public function setRawTokenAnswers(Gems_Tracker_Token $token, array $answers, $surveyId, $sourceSurveyId = null);
 
     /**
+     * Sets the completion time.
+     *
+     * @param Gems_Tracker_Token $token Gems token object
+     * @param Zend_Date|null $completionTime Zend_Date or null
+     * @param int $surveyId Gems Survey Id (actually required)
+     * @param string $sourceSurveyId Optional Survey Id used by source
+     */
+    public function setTokenCompletionTime(Gems_Tracker_Token $token, $completionTime, $surveyId, $sourceSurveyId = null);
+
+    /**
      * Updates the gems database with the latest information about the surveys in this source adapter
      *
      * @param Gems_Task_TaskRunnerBatch $batch

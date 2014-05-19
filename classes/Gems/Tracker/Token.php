@@ -1113,10 +1113,10 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     {
         return $this->_gemsData['gto_return_url'];
     }
-    
+
     /**
      * Get the round code for this token
-     * 
+     *
      * @return string|null Null when no round id is present or round no longer exists
      */
     public function getRoundCode()
@@ -1126,7 +1126,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
         if ($roundId > 0) {
             $roundCode = $this->getRespondentTrack()->getRoundCode($roundId);
         }
-        
+
         return $roundCode;
     }
 
@@ -1579,6 +1579,38 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
             }
         }
         $this->exists = isset($this->_gemsData['gto_id_token']);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string|MUtil_Date $completionTime Completion time as a date or null
+     * @param int $userId The current user
+     * @return Gems_Tracker_Token (continuation pattern)
+     */
+    public function setCompletionTime($completionTime, $userId)
+    {
+        if (null !== $completionTime) {
+            if (! $completionTime instanceof Zend_Date) {
+                if (MUtil_Date::isDate($completionTime, Gems_Tracker::DB_DATETIME_FORMAT)) {
+                    $completionTime = new MUtil_Date($completionTime, Gems_Tracker::DB_DATETIME_FORMAT);
+                } elseif (MUtil_Date::isDate($completionTime, Gems_Tracker::DB_DATE_FORMAT)) {
+                    $completionTime = new MUtil_Date($completionTime, Gems_Tracker::DB_DATE_FORMAT);
+                } else {
+                    $completionTime = new MUtil_Date($completionTime);
+                }
+            }
+        }
+        $values['gto_completion_time'] = $completionTime->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+        $changed = $this->_updateToken($values, $userId);
+
+        $survey = $this->getSurvey();
+        $source = $survey->getSource();
+        $source->setTokenCompletionTime($this, $completionTime, $survey->getSurveyId(), $survey->getSourceSurveyId());
+
+        $this->refresh();
+        $this->checkTokenCompletion($userId);
 
         return $this;
     }

@@ -102,7 +102,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
      */
     protected function addStep1(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track', 'tokenTreatment');
+        $this->addItems($bridge, 'survey', 'trans', 'mode', 'track', 'tokenCompleted', 'noToken');
     }
 
     /**
@@ -158,21 +158,33 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                     // 'onchange', 'this.form.submit();'
                     );
 
-            $tokenTreatments = array(
+            $tokenCompleted = array(
                 Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE =>
                     $this->_('Delete old token and create new'),
                 Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_DOUBLE =>
-                    $this->_('Create new extra token'),
+                    $this->_('Create new extra set of answers'),
                 Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
                     $this->_('Abort the import'),
             );
 
-            $this->importModel->set('tokenTreatment', 'label', $this->_('On double answers'),
+            $this->importModel->set('tokenCompleted', 'label', $this->_('When token completed'),
                     'default', Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
-                    'description', $this->_('What to do when a linked token is already answered or there is no token'),
+                    'description', $this->_('What to do when an imported token is already answered'),
                     'elementClass', 'Radio',
-                    'multiOptions', $tokenTreatments //,
-                    // 'onchange', 'this.form.submit();'
+                    'multiOptions', $tokenCompleted
+                    );
+
+            $tokenTreatments = array(
+                Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_DOUBLE =>
+                    $this->_('Create new token'),
+                Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
+                    $this->_('Abort the import'),
+            );
+            $this->importModel->set('noToken', 'label', $this->_('Token does not exist'),
+                    'default', Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+                    'description', $this->_('What to do when no token exist to import to'),
+                    'elementClass', 'Radio',
+                    'multiOptions', $tokenTreatments
                     );
 
             $this->importModel->set('trans', 'separator', '<br/>');
@@ -192,13 +204,17 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
         if ($translator instanceof Gems_Model_Translator_AnswerTranslatorAbstract) {
             // Set answer specific options
-            $tokenTreatment = isset($this->formData['tokenTreatment']) ?
-                    $this->formData['tokenTreatment'] :
+            $tokenCompleted = isset($this->formData['tokenCompleted']) ?
+                    $this->formData['tokenCompleted'] :
+                    Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
+            $noToken = isset($this->formData['noToken']) ?
+                    $this->formData['noToken'] :
                     Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
 
             $trackId = isset($this->formData['track']) ? $this->formData['track'] : null;
 
-            $translator->setTokenTreatment($tokenTreatment);
+            $translator->setTokenCompleted($tokenCompleted);
+            $translator->setNoToken($noToken);
             $translator->setTrackId($trackId);
         }
 
@@ -237,6 +253,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
         if ($this->_survey instanceof Gems_Tracker_Survey) {
             $this->targetModel = $this->_survey->getAnswerModel($this->locale->toString());
+            $this->importer->setTargetModel($this->targetModel);
 
             $source = $this->menu->getParameterSource();
             $source->offsetSet('gsu_has_pdf', $this->_survey->hasPdf() ? 1 : 0);
