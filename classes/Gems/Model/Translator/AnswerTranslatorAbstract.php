@@ -69,6 +69,13 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     protected $_noToken = self::TOKEN_ERROR;
 
     /**
+     * The Gems id of the survey to import to
+     *
+     * @var int
+     */
+    protected $_surveyId;
+
+    /**
      * One of the TOKEN_ constants telling what to do when the token is completed
      *
      * @var string
@@ -120,6 +127,14 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     }
 
     /**
+     * If the token can be created find the respondent track for the token
+     *
+     * @param array $row
+     * @return int|null
+     */
+    abstract protected function findRespondentTrackFor(array $row);
+
+    /**
      * Find the token id using the passed row data and
      * the other translator parameters.
      *
@@ -163,6 +178,16 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     }
 
     /**
+     * Get the id of the survey to import to
+     *
+     * @return int $surveyId
+     */
+    public function getSurveyId()
+    {
+        return $this->_surveyId;
+    }
+
+    /**
      * Get the treatment for completed tokens
      *
      * @return string One of the TOKEN_ constants.
@@ -191,6 +216,18 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     public function setNoToken($noToken)
     {
         $this->_noToken = $noToken;
+        return $this;
+    }
+
+    /**
+     * Set the id of the survey to import to
+     *
+     * @param int $surveyId
+     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     */
+    public function setSurveyId($surveyId)
+    {
+        $this->_surveyId = $surveyId;
         return $this;
     }
 
@@ -260,6 +297,17 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
                     $this->_('No token found for %s.'),
                     implode(" / ", $row)
                     ), $key);
+        } else {
+            $respTrack = $this->findRespondentTrackFor($row);
+
+            if ($respTrack) {
+                $row['resp_track_id'] == $respTrack;
+            } else {
+                $this->_addErrors(sprintf(
+                        $this->_('No track for inserting found for %s.'),
+                        implode(" / ", $row)
+                        ), $key);
+            }
         }
 
         return $row;

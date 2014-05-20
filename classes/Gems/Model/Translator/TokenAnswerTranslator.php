@@ -53,6 +53,17 @@ class Gems_Model_Translator_TokenAnswerTranslator extends Gems_Model_Translator_
     protected $loader;
 
     /**
+     * If the token can be created find the respondent track for the token
+     *
+     * @param array $row
+     * @return int|null
+     */
+    protected function findRespondentTrackFor(array $row)
+    {
+        return null;
+    }
+
+    /**
      * Find the token id using the passed row data and
      * the other translator parameters.
      *

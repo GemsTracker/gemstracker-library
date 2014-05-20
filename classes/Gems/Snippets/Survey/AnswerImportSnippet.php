@@ -204,6 +204,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
         if ($translator instanceof Gems_Model_Translator_AnswerTranslatorAbstract) {
             // Set answer specific options
+            $surveyId = isset($this->formData['survey']) ? $this->formData['survey'] : null;
             $tokenCompleted = isset($this->formData['tokenCompleted']) ?
                     $this->formData['tokenCompleted'] :
                     Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR;
@@ -213,6 +214,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
             $trackId = isset($this->formData['track']) ? $this->formData['track'] : null;
 
+            $translator->setSurveyId($surveyId);
             $translator->setTokenCompleted($tokenCompleted);
             $translator->setNoToken($noToken);
             $translator->setTrackId($trackId);

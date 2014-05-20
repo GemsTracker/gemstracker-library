@@ -64,6 +64,12 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
     protected $targetModel;
 
     /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -83,12 +89,15 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
      *
      * @param array $row Row to save
      */
-    public function execute($row = null, $noToken = 'error', $tokenCompletion = 'error')
+    public function execute($row = null,
+            $noToken = Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
+            $tokenCompletion = Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR)
     {
         // MUtil_Echo::track($row);
         if ($row) {
             $answers = $row;
             $double  = false;
+            $token   = null;
             $tracker = $this->loader->getTracker();
             $userId  = $this->loader->getCurrentUser()->getUserId();
 
@@ -105,9 +114,9 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
             if (isset($row['token']) && $row['token']) {
                 $token = $tracker->getToken($row['token']);
 
-                if ($token->isCompleted()) {
+                if ($token->exists && $token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
                     $currentAnswers = $token->getRawAnswers();
-                    $usedAnswers    = array_intersect_key($answers, $answers);
+                    $usedAnswers    = array_intersect_key($answers, $currentAnswers);
                     // MUtil_Echo::track($currentAnswers, $answers, $answers);
 
                     if ($usedAnswers) {
@@ -118,17 +127,89 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                             } elseif (! ((null === $value) || ($value == $this->targetModel->get($name, 'default')))) {
                                 // The value was already set
                                 $double = true;
+                                // But no break because of previous unsets
+                                // break;
                             }
                         }
                     }
                 }
-            } else {
+            }
+            if (! ($token && $token->exists)) {
+                if (! (isset($row['track_id']) && $row['track_id'])) {
+
+                }
                 // create token?
             }
 
-            if ($double) {
+            if ($answers) {
+                if ($double) {
+                    if (Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_OVERWRITE == $tokenCompletion) {
+                        $code = $this->util->getReceptionCode('redo');
 
-            } elseif ($answers) {
+                        $oldComment = "";
+                        if ($token->getComment()) {
+                            $oldComment .= "\n\n";
+                            $oldComment .= $this->_('Previous comments:');
+                            $oldComment .= "\n";
+                            $oldComment .= $token->getComment();
+                        }
+                        $newComment = sprintf($this->_('Token %s overwritten by import.'), $token->getTokenId());
+
+                        $replacementTokenId = $token->createReplacement($newComment . $oldComment, $userId);
+
+                        $count = $batch->addToCounter('overwritten', 1);
+                        $batch->setMessage('overwritten', sprintf(
+                                $this->plural('%d token overwrote an existing token.',
+                                        '%d tokens overwrote existing tokens.',
+                                        $count),
+                                $count));
+
+                        $oldToken = $token;
+                        $token = $tracker->getToken($replacementTokenId);
+
+                        // Add the old answers to the new answer set as the new answers OVERWRITE the old data
+                        $answers = $answers + $currentAnswers;
+
+                        // Make sure the Next token is set right
+                        $oldToken->setNextToken($token);
+
+                        $oldToken->setReceptionCode(
+                                $code,
+                                sprintf($this->_('Token %s overwritten by import.'), $token->getTokenId()) . $oldComment,
+                                $userId
+                                );
+                    } else {
+                        $oldComment = "";
+                        if ($token->getComment()) {
+                            $oldComment .= "\n\n";
+                            $oldComment .= $this->_('Previous comments:');
+                            $oldComment .= "\n";
+                            $oldComment .= $token->getComment();
+                        }
+                        $newComment = sprintf($this->_('More answwers for token %s by import.'), $token->getTokenId());
+
+                        $replacementTokenId = $token->createReplacement($newComment . $oldComment, $userId);
+
+                        $count = $batch->addToCounter('addedAnswers', 1);
+                        $batch->setMessage('addedAnswers', sprintf(
+                                $this->plural('%d token was imported as a new extra token.',
+                                        '%d tokens were imported as a new extra token.',
+                                        $count),
+                                $count));
+
+                        $oldToken = $token;
+                        $token = $tracker->getToken($replacementTokenId);
+
+                        // Make sure the Next token is set right
+                        $oldToken->setNextToken($token);
+                        $oldToken->setReceptionCode(
+                                $oldToken->getReceptionCode(),
+                                sprintf($this->_('Additional ansers in imported token %s.'), $token->getTokenId()) . $oldComment,
+                                $userId
+                                );
+                    }
+                }
+
                 // There are still answers left to save
 
                 // Make sure the token is known
@@ -141,11 +222,14 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                 } elseif (! $token->isCompleted()) {
                     $token->setCompletionTime(new MUtil_Date(), $userId);
                 }
+
+                $count = $batch->addToCounter('changed', 1);
+                $batch->setMessage('changed', sprintf(
+                        $this->plural('%d token imported.',
+                                '%d tokens imported.',
+                                $count),
+                        $count));
             }
-
-            // $this->targetModel->save($row);
-
-            $batch->addToCounter('changed', 1);
         }
     }
 }

@@ -55,8 +55,49 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
      */
     protected function findTokenFor(array $row)
     {
-        if (isset($row['token']) && $row['token']) {
-            return $row['token'];
+        if (isset($row['patient_id'], $row['organization_id'], $row['completion_date']) &&
+                $row['patient_id'] &&
+                $row['organization_id'] &&
+                $row['completion_date']) {
+
+            if ($row['completion_date'] instanceof Zend_Date) {
+                $compl = $row['completion_date']->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+            } else {
+                $compl = $row['completion_date'];
+            }
+
+
+            $select = $this->db->select();
+            $select->from('gems__tokens', array('gto_id_token'))
+                    ->joinInner(
+                            'gems__respondent2org',
+                            'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
+                            array()
+                            )
+                    ->where('gr2o_patient_nr = ?', $row['patient_id'])
+                    ->where('gr2o_id_organization = ?', $row['organization_id'])
+                    ->where('gto_id_survey = ?', $this->getSurveyId())
+                    ->where('gto_valid_from =< ?', $compl)
+                    ->where('(gto_valid_until >= ? OR gto_valid_until IS NULL)', $compl);
+
+            $trackId = $this->getTrackId();
+            if ($trackId) {
+                $select->where('gto_id_track = ?', $trackId);
+            }
+
+            $select->order(new Zend_Db_Expr("CASE
+                WHEN gto_completion_time IS NULL AND gto_valid_from IS NOT NULL THEN 1
+                WHEN gto_completion_time IS NULL AND gto_valid_from IS NULL THEN 2
+                ELSE 3 END ASC"))
+                    ->order('gto_completion_time DESC')
+                    ->order('gto_valid_from ASC')
+                    ->order('gto_round_order');
+
+            $token = $this->db->fetchOne($select);
+
+            if ($token) {
+                return $token;
+            }
         }
 
         return null;
@@ -75,5 +116,5 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
         }
 
         return parent::getFieldsTranslations();
-    } 
+    }
 }

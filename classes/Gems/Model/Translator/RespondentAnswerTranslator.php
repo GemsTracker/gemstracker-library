@@ -48,9 +48,61 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends Gems_Model_Transl
 {
     /**
      *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
      * @var Gems_Util
      */
     protected $util;
+
+    /**
+     * If the token can be created find the respondent track for the token
+     *
+     * @param array $row
+     * @return int|null
+     */
+    protected function findRespondentTrackFor(array $row)
+    {
+        if (! (isset($row['patient_id'], $row['organization_id']) && $row['patient_id'] && $row['organization_id'])) {
+            return null;
+        }
+
+        $trackId = $this->getTrackId();
+        if (! $trackId) {
+            return null;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__respondent2track', array('gr2t_id_respondent_track'))
+                ->joinInner(
+                        'gems__respondent2org',
+                        'gr2t_id_user = gr2o_id_user AND gr2t_id_organization = gr2o_id_organization',
+                        array()
+                        )
+                ->where('gr2o_patient_nr = ?', $row['patient_id'])
+                ->where('gr2o_id_organization = ?', $row['organization_id'])
+                ->where('gr2t_id_track = ?');
+
+
+        $select->order(new Zend_Db_Expr("CASE
+            WHEN gr2t_start_date IS NOT NULL AND gr2t_end_date IS NULL THEN 1
+            WHEN gr2t_start_date IS NOT NULL AND gr2t_end_date IS NOT NULL THEN 2
+            ELSE 3 END ASC"))
+                ->order('gr2t_start_date DESC')
+                ->order('gr2t_end_date DESC')
+                ->order('gr2t_created');
+
+        $respTrack = $this->db->fetchOne($select);
+
+        if ($respTrack) {
+            return $respTrack;
+        }
+
+        return null;
+    }
 
     /**
      * Find the token id using the passed row data and
@@ -61,8 +113,41 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends Gems_Model_Transl
      */
     protected function findTokenFor(array $row)
     {
-        if (isset($row['token']) && $row['token']) {
-            return $row['token'];
+        if (! (isset($row['patient_id'], $row['organization_id']) &&
+                $row['patient_id'] &&
+                $row['organization_id'] &&
+                $this->getSurveyId())) {
+            return null;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__tokens', array('gto_id_token'))
+                ->joinInner(
+                        'gems__respondent2org',
+                        'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
+                        array()
+                        )
+                ->where('gr2o_patient_nr = ?', $row['patient_id'])
+                ->where('gr2o_id_organization = ?', $row['organization_id'])
+                ->where('gto_id_survey = ?', $this->getSurveyId());
+
+        $trackId = $this->getTrackId();
+        if ($trackId) {
+            $select->where('gto_id_track = ?', $trackId);
+        }
+
+        $select->order(new Zend_Db_Expr("CASE
+            WHEN gto_completion_time IS NULL AND gto_valid_from IS NOT NULL THEN 1
+            WHEN gto_completion_time IS NULL AND gto_valid_from IS NULL THEN 2
+            ELSE 3 END ASC"))
+                ->order('gto_completion_time DESC')
+                ->order('gto_valid_from ASC')
+                ->order('gto_round_order');
+
+        $token = $this->db->fetchOne($select);
+
+        if ($token) {
+            return $token;
         }
 
         return null;
