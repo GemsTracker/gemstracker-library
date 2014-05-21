@@ -280,12 +280,20 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $citysep  = MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
 
         $user = $this->loader->getCurrentUser();
+
+        $data = $this->util->getRequestCache()->getProgramParams();
+
         if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
-            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_id_organization');
+            $column2 = 'gr2o_id_organization';
         } else {
             $model->addFilter(array('gr2o_id_organization' => $user->getCurrentOrganizationId()));
-            $columns[10] = array('gr2o_patient_nr', $br, 'gr2o_opened');
+            $column2 = 'gr2o_opened';
         }
+        if (isset($data['grc_success']) && (! $data['grc_success'])) {
+            $model->set('grc_description', 'label', $this->_('Rejection code'));
+            $column2 = 'grc_description';
+        }
+        $columns[10] = array('gr2o_patient_nr', $br, $column2);
         $columns[20] = array('name',            $br, 'grs_email');
         $columns[30] = array('grs_address_1',   $br, 'grs_zipcode', $citysep, 'grs_city');
         $columns[40] = array('grs_birthday',    $br, $phonesep, 'grs_phone_1');
