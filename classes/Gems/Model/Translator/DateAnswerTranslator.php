@@ -66,7 +66,6 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
                 $compl = $row['completion_date'];
             }
 
-
             $select = $this->db->select();
             $select->from('gems__tokens', array('gto_id_token'))
                     ->joinInner(
@@ -77,7 +76,7 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
                     ->where('gr2o_patient_nr = ?', $row['patient_id'])
                     ->where('gr2o_id_organization = ?', $row['organization_id'])
                     ->where('gto_id_survey = ?', $this->getSurveyId())
-                    ->where('gto_valid_from =< ?', $compl)
+                    ->where('gto_valid_from <= ?', $compl)
                     ->where('(gto_valid_until >= ? OR gto_valid_until IS NULL)', $compl);
 
             $trackId = $this->getTrackId();

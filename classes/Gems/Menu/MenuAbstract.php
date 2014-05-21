@@ -400,7 +400,7 @@ abstract class Gems_Menu_MenuAbstract
     {
         $import = $this->addContainer($label);
 
-        // EXPORT TO HTML
+        $page = $import->addPage($this->_('Answers'), 'pr.survey-maintenance.answer-import', 'file-import', 'answers-import');
         $page = $import->addFilePage($this->_('Importable'), 'pr.file-import', 'file-import');
         // $page->addButtonOnly($this->_('Auto import'), 'pr.file-import.auto', 'file-import', 'auto');
         $page->addImportAction('pr.file-import.import', array('label' => $this->_('Import file')))

@@ -180,10 +180,11 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
                 Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR =>
                     $this->_('Abort the import'),
             );
+
             $this->importModel->set('noToken', 'label', $this->_('Token does not exist'),
                     'default', Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
                     'description', $this->_('What to do when no token exist to import to'),
-                    'elementClass', 'Radio',
+                    'elementClass', 'Hidden',  // 'Radio',
                     'multiOptions', $tokenTreatments
                     );
 

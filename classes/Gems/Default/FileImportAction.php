@@ -54,6 +54,24 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
     public $recursive = true;
 
     /**
+     * Import answers to a survey
+     */
+    public function answersImportAction()
+    {
+        $controller   = 'answers';
+        $importLoader = $this->loader->getImportLoader();
+
+        $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
+        $params['formatBoxClass']          = 'browser';
+        $params['importer']                = $importLoader->getImporter($controller);
+        $params['importLoader']            = $importLoader;
+        $params['tempDirectory']           = $importLoader->getTempDirectory();
+        $params['importTranslators']       = $importLoader->getTranslators($controller);
+
+        $this->addSnippets('Survey_AnswerImportSnippet', $params);
+    }
+
+    /**
      * Action for automaticaly loading all ready files
      * /
     public function autoAction()
