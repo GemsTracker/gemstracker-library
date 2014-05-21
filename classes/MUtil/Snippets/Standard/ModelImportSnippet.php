@@ -220,7 +220,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         $translator = $this->importer->getImportTranslator();
         if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
             $element = new MUtil_Form_Element_Html('trans_header');
-            $element->span($this->_('Choosen translation definition: '));
+            $element->span($this->_('Choosen import definition: '));
             $element->strong($translator->getDescription());
             $element->setDecorators(array('Tooltip', 'ViewHelper'));
             $bridge->addElement($element);
@@ -539,7 +539,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             // $model = new MUtil_Model_TableModel
             $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
-            $model->set('trans', 'label', $this->_('Translation definition'),
+            $model->set('trans', 'label', $this->_('Import definition'),
                     'default', $this->defaultImportTranslator,
                     'description', $this->_('See import field definitions table'),
                     'multiOptions', $this->getTranslatorDescriptions(),
@@ -626,17 +626,17 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     protected function getImportTranslator()
     {
         if (! (isset($this->formData['trans']) && $this->formData['trans'])) {
-            $this->_errors[] = $this->_('No translation definition specified');
+            $this->_errors[] = $this->_('No import definition specified');
             return false;
         }
 
         if (! isset($this->importTranslators[$this->formData['trans']])) {
-            $this->_errors[] = sprintf($this->_('Translation definition %s does not exist.'), $this->formData['trans']);
+            $this->_errors[] = sprintf($this->_('Import definition %s does not exist.'), $this->formData['trans']);
             return false;
         }
 
         if (! $this->importTranslators[$this->formData['trans']] instanceof MUtil_Model_ModelTranslatorInterface) {
-            $this->_errors[] = sprintf($this->_('%s is not a valid translation definition.'), $this->formData['trans']);
+            $this->_errors[] = sprintf($this->_('%s is not a valid import definition.'), $this->formData['trans']);
             return false;
         }
 

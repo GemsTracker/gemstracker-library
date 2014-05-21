@@ -169,7 +169,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
 
             $this->importModel->set('tokenCompleted', 'label', $this->_('When token completed'),
                     'default', Gems_Model_Translator_AnswerTranslatorAbstract::TOKEN_ERROR,
-                    'description', $this->_('What to do when an imported token is already answered'),
+                    'description', $this->_('What to do when an imported token has already been completed'),
                     'elementClass', 'Radio',
                     'multiOptions', $tokenCompleted
                     );

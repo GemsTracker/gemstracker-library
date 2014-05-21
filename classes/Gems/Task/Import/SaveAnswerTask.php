@@ -186,7 +186,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                             $oldComment .= "\n";
                             $oldComment .= $token->getComment();
                         }
-                        $newComment = sprintf($this->_('More answwers for token %s by import.'), $token->getTokenId());
+                        $newComment = sprintf($this->_('More answers for token %s by import.'), $token->getTokenId());
 
                         $replacementTokenId = $token->createReplacement($newComment . $oldComment, $userId);
 
@@ -204,7 +204,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                         $oldToken->setNextToken($token);
                         $oldToken->setReceptionCode(
                                 $oldToken->getReceptionCode(),
-                                sprintf($this->_('Additional ansers in imported token %s.'), $token->getTokenId()) . $oldComment,
+                                sprintf($this->_('Additional answers in imported token %s.'), $token->getTokenId()) . $oldComment,
                                 $userId
                                 );
                     }
