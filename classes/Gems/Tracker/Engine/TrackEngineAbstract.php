@@ -172,13 +172,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
             $for    = array('gtf_id_track' => $this->_trackId);
             $model  = $this->getFieldsMaintenanceModel(false, 'index', $for);
-            $fields = $model->load($for);
+            $fields = $model->load($for, array('gtf_id_order' => SORT_ASC));
 
             $this->_trackFields = array();
             if (is_array($fields)) {
                 foreach ($fields as $field) {
                     $this->_trackFields[$field['sub'] . self::FIELD_KEY_SEPARATOR . $field['gtf_id_field']] = $field;
                 }
+                // MUtil_Echo::track($this->_trackFields);
             }
         }
     }
@@ -657,6 +658,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             return $defaults;
         }
 
+        $this->_ensureTrackFields();
+
         $sql     = "
             SELECT CONCAT(?, ?, gr2t2a_id_app_field) AS gr2t2f_id_field, gr2t2a_id_appointment AS gr2t2f_value
                 FROM gems__respondent2track2appointment
@@ -825,6 +828,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                         $fieldSettings[$name]['size']         = 40;
                         break;
                 }
+            }
+            if (isset($field['field_model_info'])) {
+                // MUtil_Echo::track($name, array_keys($field['field_model_info']));
+                $fieldSettings[$name] = MUtil_Lazy::rise($field['field_model_info']) + $fieldSettings[$name];
             }
         }
 
@@ -1209,20 +1216,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function setFieldsData($respTrackId, array $data)
     {
-        $element         = null;
-        $newAppointments = array();
-        $newFields       = array();
-
         $this->_ensureTrackFields();
 
         // Clean up any keys not in fields
-        $data = array_intersect_key($data, $this->_trackFields);
+        $data       = array_intersect_key($data, $this->_trackFields);
+        $saveModels = array();
+
         // MUtil_Echo::track($data);
 
         foreach ($data as $key => $value) {
-
-            list($sub, $id) = explode(self::FIELD_KEY_SEPARATOR, $key);
-
+            // Perform generic pre-save transformations on the value
             if (is_array($value)) {
                 $value = implode(self::FIELD_SEP, $value);
             }
@@ -1241,41 +1244,43 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 }
             }
 
-            if (Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $sub) {
-                $newAppointments[] = array(
-                    'gr2t2a_id_respondent_track' => $respTrackId,
-                    'gr2t2a_id_app_field'        => $id,
-                    'gr2t2a_id_appointment'      => $value,
-                );
-            } elseif (Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME === $sub) {
-                $newFields[]= array(
-                    'gr2t2f_id_respondent_track' => $respTrackId,
-                    'gr2t2f_id_field'            => $id,
-                    'gr2t2f_value'               => $value,
-                );
+            $table  = 'gems__respondent2track2field';
+            $prefix = 'gr2t2f';
+            $row    = array(
+                'gr2t2f_id_respondent_track' => $respTrackId,
+                'gr2t2f_id_field'            => $this->_trackFields[$key]['gtf_id_field'],
+                'gr2t2f_value'               => $value,
+            );
+
+            if (isset($this->_trackFields[$key]['field_save_info'])) {
+                if (isset($this->_trackFields[$key]['field_save_info']['table'])) {
+                    $table  = $this->_trackFields[$key]['field_save_info']['table'];
+                }
+                if (isset($this->_trackFields[$key]['field_save_info']['prefix'])) {
+                    $prefix = $this->_trackFields[$key]['field_save_info']['prefix'];
+                }
+                if (isset($this->_trackFields[$key]['field_save_info']['saveMap'])) {
+                    $map = $this->_trackFields[$key]['field_save_info']['saveMap'];
+                    foreach ($row as $field => $value) {
+                        if (isset($map[$field])) {
+                            $row[$map[$field]] = $value;
+                            unset($row[$field]);
+                        }
+                    }
+                }
             }
+            if (! isset($saveModels[$table])) {
+                $saveModels[$table] = new MUtil_Model_TableModel($table);
+
+                Gems_Model::setChangeFieldsByPrefix($saveModels[$table], $prefix);
+            }
+            $saveModels[$table]->save($row);
         }
 
         $changed = 0;
-        if ($newAppointments) {
-            $model = new MUtil_Model_TableModel('gems__respondent2track2appointment');
-
-            Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2a');
-
-            $model->saveAll($newAppointments);
-
-            $changed = $changed + $model->getChanged();
+        foreach ($saveModels as $saveModel) {
+            $changed = $changed + $saveModel->getChanged();
         }
-        if ($newFields) {
-            $model = new MUtil_Model_TableModel('gems__respondent2track2field');
-
-            Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2f');
-
-            $model->saveAll($newFields);
-
-            $changed = $changed + $model->getChanged();
-        }
-
         return $changed;
     }
 

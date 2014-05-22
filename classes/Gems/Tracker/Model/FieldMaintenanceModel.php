@@ -89,7 +89,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
+        $nullExpr = new Zend_Db_Expr("NULL");
+
         $model = new MUtil_Model_TableModel('gems__track_fields');
+        $model->addColumn($nullExpr, 'field_model_info');
+        $model->addColumn($nullExpr, 'field_save_info');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
@@ -103,13 +107,23 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
 
         $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
-        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn($nullExpr, 'gtf_field_values');
+        $model->setOnload('field_save_info', array(
+            'table'   => 'gems__respondent2track2appointment',
+            'prefix'  => 'gr2t2a',
+            'saveMap' => array(
+                    'gr2t2f_id_respondent_track' => 'gr2t2a_id_respondent_track',
+                    'gr2t2f_id_field'            => 'gr2t2a_id_app_field',
+                    'gr2t2f_value'               => 'gr2t2a_id_appointment',
+                    ),
+            ));
 
         $this->setKeys(array(
             Gems_Model::FIELD_ID => 'gtf_id_field',
             MUtil_Model::REQUEST_ID => 'gtf_id_track',
             ));
         $this->setClearableKeys(array(Gems_Model::FIELD_ID => 'gtf_id_field'));
+        $this->setSort(array('gtf_id_order' => SORT_ASC));
     }
 
     /**

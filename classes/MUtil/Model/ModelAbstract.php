@@ -367,29 +367,29 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @see addDependency()
      * @see setOnLoad()
      *
-     * @param array $data The row values to load
+     * @param array $row The row values to load
      * @param boolean $new True when it is a new item not saved in the model
      * @param boolean $isPost True when passing on post data
      * @return array The possibly adapted array of values
      */
-    protected function _processRowAfterLoad(array $data, $new = false, $isPost = false)
+    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false)
     {
-        $newData = $data;
+        $newRow = $row;
 
         if ($this->getMeta(self::LOAD_TRANSFORMER)) {
             foreach ($this->getCol(self::LOAD_TRANSFORMER) as $name => $call) {
                 if ($call) {
-                    $value = isset($newData[$name]) ? $newData[$name] : null;
+                    $value = isset($newRow[$name]) ? $newRow[$name] : null;
 
-                    $newData[$name] = $this->getOnLoad($value, $new, $name, $data, $isPost);
+                    $newRow[$name] = $this->getOnLoad($value, $new, $name, $row, $isPost);
                 }
             }
         }
         if ($this->_model_dependencies) {
-            $newData = $this->processDependencies($newData, $new);
+            $newRow = $this->processDependencies($newRow, $new);
         }
 
-        return $newData;
+        return $newRow;
     }
 
     /**

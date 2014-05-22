@@ -82,10 +82,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * @var int The gems__respondent2track id
      */
     protected $_respTrackId;
-    
+
     /**
      *
-     * @var array The gems__rounds data 
+     * @var array The gems__rounds data
      */
     protected $_rounds = null;
 
@@ -243,10 +243,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             }
         }
     }
-    
+
     /**
      * Makes sure the rounds info is loaded
-     * 
+     *
      * @param boolean $reload
      */
     protected function _ensureRounds($reload = false)
@@ -811,10 +811,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     {
         return $this->_respTrackId;
     }
-    
+
     /**
      * Return the round code for a given roundId
-     * 
+     *
      * @param int $roundId
      * @return string|null Null when RoundId not found
      */
@@ -822,11 +822,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     {
         $this->_ensureRounds();
         $roundCode = null;
-        
+
         if (array_key_exists($roundId, $this->_rounds) && array_key_exists('gro_code', $this->_rounds[$roundId])) {
             $roundCode = $this->_rounds[$roundId]['gro_code'];
         }
-        
+
         return $roundCode;
     }
 
@@ -997,7 +997,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         }
 
         $this->_ensureFieldData(true);
-        
+
         $this->_rounds = null;
 
         return $this;
@@ -1031,12 +1031,15 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $fieldMap  = $engine->getFields();
         $fieldData = array();
 
-        foreach ($data as $code => $value)
+        foreach ($data as $key => $value)
         {
-            if (array_key_exists($code, $fieldMap)) {
-                $fieldData[$code] = $value;
-            } elseif ($index = array_search($code, $fieldMap)) {
-                $fieldData[$index] = $value;
+            if (array_key_exists($key, $fieldMap)) {
+                $fieldData[$key] = $value;
+            } else {
+                $index = array_search($key, $fieldMap);
+                if ($index !== false) {
+                    $fieldData[$index] = $value;
+                }
             }
         }
         $changeCount = $engine->setFieldsData($this->_respTrackId, $fieldData);
