@@ -124,9 +124,14 @@ class Gems_Default_CommJobAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gcj_id_survey',       'label', $this->_('Survey'), 'multiOptions', $empty + $dbTracks->getAllSurveys());
 
         if ($detailed) {
-            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders, 1 means the reminder is send the next day'), 'validators[]', 'Digits');
-            $model->set('gcj_filter_max_reminders','label', $this->_('Maximum number of reminders'), 'validators[]', 'Digits');
-            $model->set('gcj_id_organization', 'label', $this->_('Organization'), 'multiOptions', $empty + $dbLookup->getOrganizations());
+            $model->set('gcj_filter_days_between', 'label', $this->_('Days between reminders'),
+                    'description', $this->_('1 day means the reminder is send the next day'),
+                    'validators[]', 'Digits');
+            $model->set('gcj_filter_max_reminders','label', $this->_('Maximum reminders'),
+                    'description', $this->_('1 means only one reminder will be send'),
+                    'validators[]', 'Digits');
+            $model->set('gcj_id_organization', 'label', $this->_('Organization'),
+                    'multiOptions', $empty + $dbLookup->getOrganizations());
         }
 
         return $model;

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-21 15:28+0100\n"
+"POT-Creation-Date: 2014-05-22 13:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -303,7 +303,7 @@ msgstr ""
 #: classes/Gems/Default/AgendaActivityAction.php:98
 #: classes/Gems/Default/AgendaProcedureAction.php:98
 #: classes/Gems/Default/AgendaStaffAction.php:99
-#: classes/Gems/Default/CommJobAction.php:129
+#: classes/Gems/Default/CommJobAction.php:133
 #: classes/Gems/Default/ConsentPlanAction.php:150
 #: classes/Gems/Default/ExportAction.php:309
 #: classes/Gems/Default/IndexAction.php:229
@@ -697,41 +697,49 @@ msgid "Filter for"
 msgstr "Filter for"
 
 #: classes/Gems/Default/CommJobAction.php:127
-msgid "Days between reminders, 1 means the reminder is send the next day"
-msgstr "Days between reminders, 1 means the reminder is send the next day"
+#: classes/Gems/Default/MailJobAction.php:94
+msgid "Days between reminders"
+msgstr "Days between reminders"
 
 #: classes/Gems/Default/CommJobAction.php:128
-#: classes/Gems/Default/MailJobAction.php:95
-msgid "Maximum number of reminders"
-msgstr "Maximum number of reminders"
+msgid "1 day means the reminder is send the next day"
+msgstr "1 day means the reminder is send the next day"
 
-#: classes/Gems/Default/CommJobAction.php:143
+#: classes/Gems/Default/CommJobAction.php:130
+msgid "Maximum reminders"
+msgstr "Maximum reminders"
+
+#: classes/Gems/Default/CommJobAction.php:131
+msgid "1 means only one reminder will be send"
+msgstr "1 means only one reminder will be send"
+
+#: classes/Gems/Default/CommJobAction.php:148
 #: classes/Gems/Default/MailJobAction.php:114
 msgid "First mail"
 msgstr "First mail"
 
-#: classes/Gems/Default/CommJobAction.php:144
+#: classes/Gems/Default/CommJobAction.php:149
 #: classes/Gems/Default/MailJobAction.php:115
 msgid "Reminder"
 msgstr "Reminder"
 
-#: classes/Gems/Default/CommJobAction.php:155
+#: classes/Gems/Default/CommJobAction.php:160
 #: classes/Gems/Default/MailJobAction.php:126
 msgid "Use organizational from address"
 msgstr "Use organizational from address"
 
-#: classes/Gems/Default/CommJobAction.php:158
+#: classes/Gems/Default/CommJobAction.php:163
 #: classes/Gems/Default/MailJobAction.php:129
 #, php-format
 msgid "Use site %s address"
 msgstr "Use site %s address"
 
-#: classes/Gems/Default/CommJobAction.php:161
+#: classes/Gems/Default/CommJobAction.php:166
 #: classes/Gems/Default/MailJobAction.php:132
 msgid "Use the 'By staff member' address"
 msgstr "Use the 'By staff member' address"
 
-#: classes/Gems/Default/CommJobAction.php:162
+#: classes/Gems/Default/CommJobAction.php:167
 #: classes/Gems/Default/MailJobAction.php:133
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:203
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:302
@@ -741,30 +749,30 @@ msgstr "Use the 'By staff member' address"
 msgid "Other"
 msgstr "Other"
 
-#: classes/Gems/Default/CommJobAction.php:174
+#: classes/Gems/Default/CommJobAction.php:179
 #: classes/Gems/Default/MailJobAction.php:145
 msgid "Automatic mail jobs"
 msgstr "Automatic mail jobs"
 
-#: classes/Gems/Default/CommJobAction.php:185
+#: classes/Gems/Default/CommJobAction.php:190
 #: classes/Gems/Default/MailJobAction.php:156
 msgid "automatic mail job"
 msgid_plural "automatic mail jobs"
 msgstr[0] "automatic mail job"
 msgstr[1] "automatic mail jobs"
 
-#: classes/Gems/Default/CommJobAction.php:195
+#: classes/Gems/Default/CommJobAction.php:200
 #: classes/Gems/Default/MailJobAction.php:175
 #, php-format
 msgid "Automatic mails have been turned off since %s."
 msgstr "Automatic mails have been turned off since %s."
 
-#: classes/Gems/Default/CommJobAction.php:199
+#: classes/Gems/Default/CommJobAction.php:204
 #: classes/Gems/Default/MailJobAction.php:179
 msgid "Turn Automatic Mail Jobs ON"
 msgstr "Turn Automatic Mail Jobs ON"
 
-#: classes/Gems/Default/CommJobAction.php:205
+#: classes/Gems/Default/CommJobAction.php:210
 #: classes/Gems/Default/MailJobAction.php:185
 msgid ""
 "With automatic mail jobs and a cron job on the server, mails can be sent "
@@ -1533,7 +1541,7 @@ msgstr "Staff"
 #: classes/Gems/Default/OrganizationAction.php:163
 #: classes/Gems/Default/ReceptionAction.php:100
 #: classes/Gems/Default/RespondentAction.php:457
-#: classes/Gems/Default/RespondentNewAction.php:322 classes/Gems/Menu.php:665
+#: classes/Gems/Default/RespondentNewAction.php:330 classes/Gems/Menu.php:665
 msgid "Respondents"
 msgstr "Patients"
 
@@ -1921,9 +1929,9 @@ msgstr "Log action"
 msgid "Log maintenance"
 msgstr "Log maintenance"
 
-#: classes/Gems/Default/MailJobAction.php:94
-msgid "Days between reminders"
-msgstr "Days between reminders"
+#: classes/Gems/Default/MailJobAction.php:95
+msgid "Maximum number of reminders"
+msgstr "Maximum number of reminders"
 
 #: classes/Gems/Default/MailJobAction.php:170
 #: classes/Gems/Default/MailTemplateAction.php:114
@@ -2228,7 +2236,7 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Login"
 
@@ -2676,6 +2684,7 @@ msgstr "Treatment"
 
 #: classes/Gems/Default/RespondentAction.php:263
 #: classes/Gems/Default/RespondentNewAction.php:179
+#: classes/Gems/Default/RespondentNewAction.php:293
 #: classes/Gems/Default/TrackAction.php:138
 #: classes/Gems/Default/TrackAction.php:560
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:287
@@ -2712,7 +2721,7 @@ msgid "Export respondent archive"
 msgstr "Export patient archive"
 
 #: classes/Gems/Default/RespondentAction.php:452
-#: classes/Gems/Default/RespondentNewAction.php:388
+#: classes/Gems/Default/RespondentNewAction.php:396
 msgid "respondent"
 msgid_plural "respondents"
 msgstr[0] "patient"
@@ -4568,7 +4577,6 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:579
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 

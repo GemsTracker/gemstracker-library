@@ -785,8 +785,12 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.survey-mainte
 ALTER TABLE gems__rounds ADD gro_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gro_active;
 
 -- PATCH: updates to survey_questions table
-ALTER TABLE  `gems__survey_questions` 
+ALTER TABLE  `gems__survey_questions`
     CHANGE  `gsq_label`  `gsq_label` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
     CHANGE  `gsq_description`  `gsq_description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
     CHANGE  `gsq_name`         `gsq_name` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
     CHANGE  `gsq_name_parent`  `gsq_name_parent` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
+
+-- PATCH: The number of reminders should not include the original mail
+UPDATE gems__comm_jobs SET gcj_filter_max_reminders = gcj_filter_max_reminders - 1
+    WHERE gcj_filter_mode = 'R' and gcj_filter_max_reminders > 1;

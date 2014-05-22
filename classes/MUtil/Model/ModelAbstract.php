@@ -473,13 +473,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function addFilter(array $value)
     {
+        if (MUtil_Model::$verbose) {
+            MUtil_Echo::r($value, 'New filter');
+        }
         if ($old = $this->getFilter()) {
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($value, 'New filter');
-                MUtil_Echo::r($old, 'Old filter');
-                MUtil_Echo::r(array_merge($value, $old), 'Merged filter');
-            }
-
             foreach ($value as $key => $filter) {
                 if (is_integer($key)) {
                     // Integer key filters are just added as is,
@@ -488,7 +485,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                         $old[] = $filter;
                     }
                 } else {
-                    if (isset($old[$key]) && $old[$key]) {
+                    if (isset($old[$key])) {
                         if ($filter !== $old[$key]) {
                             // Filter exists and is different.
                             //
@@ -508,6 +505,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                         $old[$key] = $filter;
                     }
                 }
+            }
+            if (MUtil_Model::$verbose) {
+                MUtil_Echo::r($value, 'New filter');
+                MUtil_Echo::r($this->getFilter(), 'Old filter');
+                MUtil_Echo::r($old, 'Merged filter');
             }
             $this->setFilter($old);
         } else {
@@ -557,7 +559,14 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         $value = $this->_checkSortValue($value);
 
+        if (MUtil_Model::$verbose) {
+            MUtil_Echo::r($value, 'New sort');
+        }
         if ($old = $this->getSort()) {
+            if (MUtil_Model::$verbose) {
+                MUtil_Echo::r($old, 'Old sort');
+                MUtil_Echo::r($old + $value, 'Merged sort');
+            }
             $this->setSort($old + $value);
         } else {
             $this->setSort($value);

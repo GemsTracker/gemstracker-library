@@ -178,11 +178,11 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
         if ($this->extraFilter) {
             $model->addFilter($this->extraFilter);
         }
-        if ($this->_fixedSort) {
-            $model->addSort($this->_fixedSort);
-        }
         if ($this->extraSort) {
             $model->addSort($this->extraSort);
+        }
+        if ($this->_fixedSort) {
+            $model->addSort($this->_fixedSort);
         }
     }
 

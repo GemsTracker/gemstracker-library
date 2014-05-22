@@ -10,6 +10,7 @@ Form and table bridges have changed. Perform the following search & replaces on 
     MUtil_Model_VerticalTableBridge   => MUtil_Model_Bridge_VerticalTableBridge
     MUtil_Model_TableBridge           => MUtil_Model_Bridge_TableBridge
     Gems_Model_ThreeColumnTableBridge => Gems_Model_Bridge_ThreeColumnTableBridge
+The number of reminders no longer includes the first non-reminder mail
 
 Important changes from 1.6.2 => 1.6.3
 ============================================================

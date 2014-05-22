@@ -239,7 +239,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
 
         if ($job['gcj_filter_mode'] == 'R') {
             $filter[] = 'gto_mail_sent_date <= DATE_SUB(CURRENT_DATE, INTERVAL ' . $job['gcj_filter_days_between'] . ' DAY)';
-            $filter[] = 'gto_mail_sent_num < ' . $job['gcj_filter_max_reminders'];
+            $filter[] = 'gto_mail_sent_num <= ' . $job['gcj_filter_max_reminders'];
         } else {
             $filter['gto_mail_sent_date'] = NULL;
         }
