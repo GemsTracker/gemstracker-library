@@ -47,28 +47,11 @@
 abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_TranslateableAbstract implements Gems_Tracker_Engine_TrackEngineInterface
 {
     /**
-     * Field key separator
-     */
-    const FIELD_KEY_SEPARATOR = '__';
-
-    /**
-     * Option seperator for fields
-     */
-    const FIELD_SEP = '|';
-
-    /**
-     * Stores the models for each action
+     * Stores how the fields are define for this track
      *
-     * @var array
+     * @var Gems_Tracker_Engine_FieldsDefinition
      */
-    protected $_fieldModels = array();
-
-    /**
-     * Cache for appointment fields check
-     *
-     * @var boolean
-     */
-    private $_hasAppointmentFields = null;
+    protected $_fieldsDefinition;
 
     /**
      *
@@ -81,13 +64,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * @var array
      */
     protected $_trackData;
-
-    /**
-     * Can be an empty array.
-     *
-     * @var array The gems__track_fields + gems__track_appointments data
-     */
-    protected $_trackFields = false;
 
     /**
      *
@@ -164,27 +140,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Loads the $this->_trackFields array, if not already there
-     */
-    protected function _ensureTrackFields()
-    {
-        if (! is_array($this->_trackFields)) {
-
-            $for    = array('gtf_id_track' => $this->_trackId);
-            $model  = $this->getFieldsMaintenanceModel(false, 'index', $for);
-            $fields = $model->load($for, array('gtf_id_order' => SORT_ASC));
-
-            $this->_trackFields = array();
-            if (is_array($fields)) {
-                foreach ($fields as $field) {
-                    $this->_trackFields[$field['sub'] . self::FIELD_KEY_SEPARATOR . $field['gtf_id_field']] = $field;
-                }
-                // MUtil_Echo::track($this->_trackFields);
-            }
-        }
-    }
-
-    /**
      * Returns a list of available icons under 'htdocs/pulse/icons'
      * @return string[]
      */
@@ -254,12 +209,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
-        $this->_ensureTrackFields();
-
-        if ($this->_trackFields) {
+        if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
             $transformer = new Gems_Tracker_Model_RespondentTrackModelTransformer(
-                    $this,
+                    $this->_fieldsDefinition,
                     $respondentId,
                     $organizationId,
                     $patientNr,
@@ -323,6 +276,19 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->_fieldsDefinition = $this->tracker->createTrackClass('Engine_FieldsDefinition', $this->_trackId);
+    }
+
+    /**
      * Set menu parameters from this track engine
      *
      * @param Gems_Menu_ParameterSource $source
@@ -344,26 +310,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function calculateFieldsInfo($respTrackId, array $data)
     {
-        $this->_ensureTrackFields();
-
-        if (! $this->_trackFields) {
-            return null;
-        }
-
-        $results = array();
-        foreach ($this->_trackFields as $key => $field) {
-            if (isset($data[$key]) && (is_array($data[$key]) || strlen($data[$key]))) {
-                if ("appointment" !== $field['gtf_field_type']) {
-                    if (is_array($data[$key])) {
-                        $results = array_merge($results, $data[$key]);
-                    } else {
-                        $results[] = $data[$key];
-                    }
-                }
-            }
-        }
-
-        return trim(implode(' ', $results));
+        return $this->_fieldsDefinition->calculateFieldsInfo($respTrackId, $data);
     }
 
     /**
@@ -611,15 +558,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFieldNames()
     {
-        $this->_ensureTrackFields();
-
-        $fields = array();
-
-        foreach ($this->_trackFields as $key => $field) {
-            $fields[$key] = $field['gtf_field_name'];
-        }
-
-        return $fields;
+        return $this->_fieldsDefinition->getFieldNames();
     }
 
     /**
@@ -630,15 +569,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFields()
     {
-        $this->_ensureTrackFields();
-
-        $fields = array();
-
-        foreach ($this->_trackFields as $key => $field) {
-            $fields[$key] = $field['gtf_field_code'];
-        }
-
-        return $fields;
+        return $this->_fieldsDefinition->getFieldCodes();
     }
 
     /**
@@ -649,62 +580,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFieldsData($respTrackId)
     {
-        $this->_ensureTrackFields();
-
-        $defaults = array_fill_keys(array_keys($this->_trackFields), null);
-
-        if (! $respTrackId) {
-            // Return empty array as we do not store default values for fields
-            return $defaults;
-        }
-
-        $this->_ensureTrackFields();
-
-        $sql     = "
-            SELECT CONCAT(?, ?, gr2t2a_id_app_field) AS gr2t2f_id_field, gr2t2a_id_appointment AS gr2t2f_value
-                FROM gems__respondent2track2appointment
-                WHERE gr2t2a_id_respondent_track = ?
-            UNION ALL
-            SELECT CONCAT(?, ?, gr2t2f_id_field) AS gr2t2f_id_field, gr2t2f_value
-                FROM gems__respondent2track2field
-                WHERE gr2t2f_id_respondent_track = ?";
-
-        $results = $this->db->fetchPairs($sql, array(
-            Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
-            self::FIELD_KEY_SEPARATOR,
-            $respTrackId,
-            Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME,
-            self::FIELD_KEY_SEPARATOR,
-            $respTrackId,
-            ));
-
-        // MUtil_Echo::track($respTrackId, $sql, $results);
-
-        if ($results) {
-            $this->_ensureTrackFields();
-
-            foreach ($results as $field => $result) {
-                if (isset($this->_trackFields[$field])) {
-                    switch ($this->_trackFields[$field]['gtf_field_type']) {
-                        case 'multiselect':
-                            $results[$field] = explode(self::FIELD_SEP, $result);
-                            break;
-
-                        case 'date':
-                            if (empty($result)) {
-                                $results[$field] = null;
-                            } else {
-                                $results[$field] = new MUtil_Date($result, Zend_Date::ISO_8601);
-                            }
-
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-
-        return $results + $defaults;
+        return $this->_fieldsDefinition->getFieldsDataFor($respTrackId);
     }
 
     /**
@@ -717,43 +593,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFieldsMaintenanceModel($detailed, $action, array $data)
     {
-        if (isset($this->_fieldModels[$action])) {
-            return $this->_fieldModels[$action];
-        }
-
-        $model = $this->tracker->createTrackClass('Model_FieldMaintenanceModel');
-
-        if ($detailed) {
-            if (('edit' === $action) || ('create' === $action)) {
-                $model->applyEditSettings($this->_trackId, $data);
-
-                if ('create' === $action) {
-                    $model->set('gtf_id_track', 'default', $this->_trackId);
-
-                    // Set the default round order
-
-                    // Load last row
-                    $row = $model->loadFirst(
-                            array('gtf_id_track' => $this->_trackId),
-                            array('gtf_id_order' => SORT_DESC)
-                            );
-
-                    if ($row && isset($row['gtf_id_order'])) {
-                        $new_order = $row['gtf_id_order'] + 10;
-                        $model->set('gtf_id_order', 'default', $new_order);
-                    }
-                }
-            } else {
-                $model->applyDetailSettings($this->_trackId, $data);
-            }
-
-        } else {
-            $model->applyBrowseSettings();
-        }
-
-        $this->_fieldModels[$action] = $model;
-
-        return $model;
+        return $this->_fieldsDefinition->getMaintenanceModel($detailed, $action, $data);
     }
 
     /**
@@ -767,75 +607,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true)
     {
-        $this->_ensureTrackFields();
-
-        if (! $this->_trackFields) {
-            return array();
-        }
-
-        $fieldSettings = array();
-        $appointments  = null;
-        $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
-
-        foreach ($this->_trackFields as $name => $field) {
-
-            $fieldSettings[$name] = array(
-                'label'       => $field['gtf_field_name'],
-                'required'    => $field['gtf_required'],
-                'description' => $field['gtf_field_description'],
-                );
-
-            if ($field['gtf_readonly']) {
-                $fieldSettings[$name]['elementClass'] = 'Exhibitor';
-
-            } else {
-                switch ($field['gtf_field_type']) {
-                    case "multiselect":
-                        $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
-                        $multi = array_combine($multi, $multi);
-
-                        $fieldSettings[$name]['elementClass']   = 'MultiCheckbox';
-                        $fieldSettings[$name]['multiOptions']   = $multi;
-                        $fieldSettings[$name]['formatFunction'] = array($this, 'formatMultiField');
-
-                        break;
-
-                    case "select":
-                        $multi = explode(self::FIELD_SEP, $field['gtf_field_values']);
-                        $multi = array_combine($multi, $multi);
-
-                        $fieldSettings[$name]['elementClass'] = 'Select';
-                        $fieldSettings[$name]['multiOptions'] = $empty + $multi;
-                        break;
-
-                    case "date":
-                        $fieldSettings[$name]['elementClass']  = 'Date';
-                        $fieldSettings[$name]['storageFormat'] = 'yyyy-MM-dd';
-                        break;
-
-                    case "appointment":
-                        if (! $appointments) {
-                            $agenda       = $this->loader->getAgenda();
-                            $appointments = $agenda->getActiveAppointments($respondentId, $organizationId, $patientNr);
-                            // MUtil_Echo::track($appointments);
-                        }
-                        $fieldSettings[$name]['elementClass'] = 'Select';
-                        $fieldSettings[$name]['multiOptions'] = $empty + $appointments;
-                        break;
-
-                    default:
-                        $fieldSettings[$name]['elementClass'] = 'Text';
-                        $fieldSettings[$name]['size']         = 40;
-                        break;
-                }
-            }
-            if (isset($field['field_model_info'])) {
-                // MUtil_Echo::track($name, array_keys($field['field_model_info']));
-                $fieldSettings[$name] = MUtil_Lazy::rise($field['field_model_info']) + $fieldSettings[$name];
-            }
-        }
-
-        return $fieldSettings;
+        return $this->_fieldsDefinition->getDataEditModelSettings($respondentId, $organizationId, $patientNr, $edit);
     }
 
     /**
@@ -846,21 +618,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function getFieldsOfType($fieldType)
     {
-        $this->_ensureTrackFields();
-
-        if (! $this->_trackFields) {
-            return array();
-        }
-
-        $output = array();
-
-        foreach ($this->_trackFields as $key => $field) {
-            if ($fieldType == $field['gtf_field_type']) {
-                $output[$key] = $field['gtf_field_code'];
-            }
-        }
-
-        return $output;
+        return $this->_fieldsDefinition->getFieldCodesOfType($fieldType);
     }
 
     /**
@@ -1164,25 +922,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * True when this track contains appointment fields
+     * Is the field an appointment type
      *
+     * @param string $fieldName
      * @return boolean
      */
-    protected function hasAppointmentFields()
+    public function isAppointmentField($fieldName)
     {
-        if (null === $this->_hasAppointmentFields) {
-            $this->_ensureTrackFields();
-            $this->_hasAppointmentFields = false;
-
-            foreach ($this->_trackFields as $field) {
-                if ('appointment' == $field['gtf_field_type']) {
-                    $this->_hasAppointmentFields = true;
-                    break;
-                }
-            }
-        }
-
-        return $this->_hasAppointmentFields;
+        return $this->_fieldsDefinition->isAppointment($fieldName);
     }
 
     /**
@@ -1216,72 +963,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function setFieldsData($respTrackId, array $data)
     {
-        $this->_ensureTrackFields();
-
-        // Clean up any keys not in fields
-        $data       = array_intersect_key($data, $this->_trackFields);
-        $saveModels = array();
-
-        // MUtil_Echo::track($data);
-
-        foreach ($data as $key => $value) {
-            // Perform generic pre-save transformations on the value
-            if (is_array($value)) {
-                $value = implode(self::FIELD_SEP, $value);
-            }
-
-            // Do the hard work for storing dates
-            if (isset($this->_trackFields[$key]['gtf_field_type']) &&
-                    ('date' == $this->_trackFields[$key]['gtf_field_type'])) {
-                if (! empty($value)) {
-                    $value = MUtil_Date::format(
-                            $value,
-                            'yyyy-MM-dd',
-                            MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat')
-                            );
-                } else {
-                    $value = null;
-                }
-            }
-
-            $table  = 'gems__respondent2track2field';
-            $prefix = 'gr2t2f';
-            $row    = array(
-                'gr2t2f_id_respondent_track' => $respTrackId,
-                'gr2t2f_id_field'            => $this->_trackFields[$key]['gtf_id_field'],
-                'gr2t2f_value'               => $value,
-            );
-
-            if (isset($this->_trackFields[$key]['field_save_info'])) {
-                if (isset($this->_trackFields[$key]['field_save_info']['table'])) {
-                    $table  = $this->_trackFields[$key]['field_save_info']['table'];
-                }
-                if (isset($this->_trackFields[$key]['field_save_info']['prefix'])) {
-                    $prefix = $this->_trackFields[$key]['field_save_info']['prefix'];
-                }
-                if (isset($this->_trackFields[$key]['field_save_info']['saveMap'])) {
-                    $map = $this->_trackFields[$key]['field_save_info']['saveMap'];
-                    foreach ($row as $field => $value) {
-                        if (isset($map[$field])) {
-                            $row[$map[$field]] = $value;
-                            unset($row[$field]);
-                        }
-                    }
-                }
-            }
-            if (! isset($saveModels[$table])) {
-                $saveModels[$table] = new MUtil_Model_TableModel($table);
-
-                Gems_Model::setChangeFieldsByPrefix($saveModels[$table], $prefix);
-            }
-            $saveModels[$table]->save($row);
-        }
-
-        $changed = 0;
-        foreach ($saveModels as $saveModel) {
-            $changed = $changed + $saveModel->getChanged();
-        }
-        return $changed;
+        $this->_fieldsDefinition->setFieldsData($respTrackId, $data);
     }
 
     /**

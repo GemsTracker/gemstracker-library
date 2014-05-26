@@ -624,10 +624,8 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
             if (isset($this->_fieldData[$fieldName])) {
                 $date   = $this->_fieldData[$fieldName];
-                $needle = Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME .
-                        Gems_Tracker_Engine_TrackEngineAbstract::FIELD_KEY_SEPARATOR;
 
-                if (MUtil_String::startsWith($fieldName, $needle)) {
+                if ($this->getTrackEngine()->isAppointmentField($fieldName)) {
                     $appointment = $this->tracker->getAppointment($date);
                     if ($appointment->isActive()) {
                         $date = $appointment->getAdmissionTime();

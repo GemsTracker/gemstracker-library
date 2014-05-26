@@ -413,7 +413,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         } else {
             $format = $this->_('%s');
         }
-        
+
         $units = $this->getDateUnitsList($validAfter);
         if (isset($units[$context[$fieldBase . 'unit']])) {
             $unit = $units[$context[$fieldBase . 'unit']];
@@ -424,10 +424,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         // MUtil_Echo::track(func_get_args());
         return sprintf($format, $field, abs($context[$fieldBase . 'length']), $unit);
     }
-    
+
     /**
      * Changes the display of gro_valid_[for|after]_id into something readable
-     * 
+     *
      * Makes it empty when not applicable
      *
      * @param mixed $value The value being saved
@@ -439,11 +439,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     public function displayRoundId($value, $new, $name, array $context = array())
     {
         $fieldSource = substr($name, 0, -2) . 'source';
-        
+
         if (!$this->_sourceUsesSurvey($context[$fieldSource])) {
             return '';
         }
-        
+
         return $value;
     }
 
@@ -473,7 +473,6 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 return array();
 
             case self::ANSWER_TABLE:
-                $this->_ensureTrackFields();
                 if (! isset($this->_rounds[$roundId], $this->_rounds[$roundId]['gro_id_survey'])) {
                     return array();
                 }
@@ -482,33 +481,19 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 return $survey->getDatesList($language);
 
             case self::APPOINTMENT_TABLE:
-                $this->_ensureTrackFields();
-
-                $results = array();
-                foreach ($this->_trackFields as $id => $field) {
-                    if ('appointment' == $field['gtf_field_type']) {
-                        $results[$id] =  $field['gtf_field_name'];
-                    }
-                }
-
-                return $results;
+                return $this->_fieldsDefinition->getFieldLabelsOfType(
+                        Gems_Tracker_Engine_FieldsDefinition::TYPE_APPOINTMENT
+                        );
 
             case self::RESPONDENT_TRACK_TABLE:
-                $this->_ensureTrackFields();
-
                 $results = array(
                     'gr2t_start_date' => $this->_('Track start'),
                     'gr2t_end_date'   => $this->_('Track end'),
                     // 'gr2t_created'    => $this->_('Track created'),
                 );
 
-                foreach ($this->_trackFields as $id => $field) {
-                    if ('date' == $field['gtf_field_type']) {
-                        $results[$id] =  $field['gtf_field_name'];
-                    }
-                }
-
-                return $results;
+                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(
+                        Gems_Tracker_Engine_FieldsDefinition::TYPE_DATE);
 
             case self::TOKEN_TABLE:
                 return array(
@@ -593,7 +578,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 'label', $this->_('Round used'),
                 'onchange', 'this.form.submit();'
                 );
-        
+
         if ($detailed) {
             $model->set('gro_valid_after_field',
                     'label', $this->_('Date used'),
@@ -619,8 +604,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $model->setOnLoad('gro_valid_after_field', array($this, 'displayDateCalculation'));
             $model->set('gro_valid_after_length');
             $model->set('gro_valid_after_unit');
-        } 
-        
+        }
+
         if ($detailed) {
             // Calculate valid until
             $html = MUtil_Html::create()->h4($this->_('Valid for calculation'));
@@ -630,8 +615,8 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                     'elementClass', 'html',
                     'value', $html
                     );
-        }   
-        
+        }
+
         $model->set('gro_valid_for_source',
                 'label', $this->_('Date source'),
                 'default', self::TOKEN_TABLE,
@@ -647,7 +632,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 'onchange', 'this.form.submit();'
                 );
 
-        if ($detailed) {            
+        if ($detailed) {
             $model->set('gro_valid_for_field',
                     'label', $this->_('Date used'),
                     'default', 'gto_valid_from',
@@ -718,7 +703,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         if (! ($validAfter && $firstRound)) {
             $results[self::ANSWER_TABLE] = array($this->_('Answers'), $this->_('Use an answer from a survey.'));
         }
-        if ($this->hasAppointmentFields()) {
+        if ($this->_fieldsDefinition->hasAppointmentFields()) {
             $results[self::APPOINTMENT_TABLE] = array(
                 $this->_('Appointment'),
                 $this->_('Use an appointment linked to this track.'),

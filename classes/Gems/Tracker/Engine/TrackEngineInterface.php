@@ -211,7 +211,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return array name => code
      */
     public function getFieldsOfType($fieldType);
-    
+
     /**
      * Get the round id of the first round
      *
@@ -377,6 +377,14 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return string 'T' or 'S'
      */
     public function getTrackType();
+
+    /**
+     * Is the field an appointment type
+     *
+     * @param string $fieldName
+     * @return boolean
+     */
+    public function isAppointmentField($fieldName);
 
     /**
      * True if the user can create this kind of track in TrackMaintenanceAction.

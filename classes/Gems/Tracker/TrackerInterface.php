@@ -141,7 +141,7 @@ interface Gems_Tracker_TrackerInterface
      * @return \Gems_Agenda_Appointment
      */
     public function getAppointment($appointmentData);
-    
+
     /**
      * Returns a form to ask for a token
      *

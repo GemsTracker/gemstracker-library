@@ -48,23 +48,23 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
 {
     /**
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var Gems_Tracker_Engine_FieldsDefinition
      */
-    protected $trackEngine;
+    protected $fieldsDefinition;
 
     /**
      *
-     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
+     * @param \Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      */
-    public function __construct(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function __construct(\Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
-        $this->trackEngine = $trackEngine;
+        $this->fieldsDefinition = $fieldsDefinition;
 
-        $this->_fields = $trackEngine->getFieldsModelSettings($respondentId, $organizationId, $patientNr, $edit);
+        $this->_fields = $fieldsDefinition->getDataEditModelSettings($respondentId, $organizationId, $patientNr, $edit);
     }
 
     /**
@@ -83,10 +83,10 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
 
         foreach ($data as $key => $row) {
             if (isset($row['gr2t_id_respondent_track']) && $row['gr2t_id_respondent_track']) {
-                $fields = $this->trackEngine->getFieldsData($row['gr2t_id_respondent_track']);
+                $fields = $this->fieldsDefinition->getFieldsDataFor($row['gr2t_id_respondent_track']);
             } else {
                 if (! $empty) {
-                    $empty = array_fill_keys(array_keys($this->trackEngine->getFieldNames()), null);
+                    $empty = array_fill_keys(array_keys($this->fieldsDefinition->getFieldNames()), null);
                 }
                 $fields = $empty;
             }
@@ -108,7 +108,7 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
     public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
     {
         if (isset($row['gr2t_id_respondent_track']) && $row['gr2t_id_respondent_track']) {
-            $changed = $this->trackEngine->setFieldsData($row['gr2t_id_respondent_track'], $row);
+            $changed = $this->fieldsDefinition->setFieldsData($row['gr2t_id_respondent_track'], $row);
 
             if ($changed && (!$model->getChanged())) {
                 $model->addChanged(1);

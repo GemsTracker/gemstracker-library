@@ -429,9 +429,9 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
         $fields = $this->db->fetchPairs($sql, array(
             Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
-            Gems_Tracker_Engine_TrackEngineAbstract::FIELD_KEY_SEPARATOR,
+            Gems_Tracker_Engine_FieldsDefinition::FIELD_KEY_SEPARATOR,
             Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME,
-            Gems_Tracker_Engine_TrackEngineAbstract::FIELD_KEY_SEPARATOR,
+            Gems_Tracker_Engine_FieldsDefinition::FIELD_KEY_SEPARATOR,
         ));
 
         if (! $fields) {
