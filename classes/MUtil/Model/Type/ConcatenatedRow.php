@@ -91,7 +91,7 @@ class MUtil_Model_Type_ConcatenatedRow
     }
 
     /**
-     * If this field is saved as an array value, use
+     * Use this function for a default application of this type to the model
      *
      * @param MUtil_Model_ModelAbstract $model
      * @param string $name The field to set the seperator character
@@ -125,6 +125,21 @@ class MUtil_Model_Type_ConcatenatedRow
         } else {
             return $value;
         }
+    }
+
+    /**
+     * If this field is saved as an array value, use
+     *
+     * @return array Containing settings for model item
+     */
+    public function getSettings()
+    {
+        $output['formatFunction'] = array($this, 'format');
+        $output[MUtil_Model_ModelAbstract::LOAD_TRANSFORMER] = array($this, 'loadValue');
+        $output[MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'saveValue');
+        $output[MUtil_Model_DatabaseModelAbstract::TEXTFILTER_TRANSFORMER] = array($this, 'textFilter');
+
+        return $this;
     }
 
     /**

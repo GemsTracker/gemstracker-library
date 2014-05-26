@@ -68,6 +68,23 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
     }
 
     /**
+     * If the transformer add's fields, these should be returned here.
+     * Called in $model->AddTransformer(), so the transformer MUST
+     * know which fields to add by then (optionally using the model
+     * for that).
+     *
+     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @return array Of filedname => set() values
+     */
+    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    {
+        // Many definitions use load transformers
+        $model->setMeta(MUtil_Model_ModelAbstract::LOAD_TRANSFORMER, true);
+
+        return parent::getFieldInfo($model);
+    }
+
+    /**
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
@@ -117,5 +134,15 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
 
         // No changes
         return $row;
+    }
+
+    /**
+     * When true, the on save functions are triggered before passing the data on
+     *
+     * @return boolean
+     */
+    public function triggerOnSaves()
+    {
+        return true;
     }
 }

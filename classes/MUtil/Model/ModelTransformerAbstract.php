@@ -222,4 +222,14 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
         // No changes
         return $row;
     }
+
+    /**
+     * When true, the on save functions are triggered before passing the data on
+     *
+     * @return boolean
+     */
+    public function triggerOnSaves()
+    {
+        return false;
+    }
 }

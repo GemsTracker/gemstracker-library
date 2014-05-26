@@ -81,13 +81,6 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
     protected $_unionMapsFrom;
 
     /**
-     * Name of the field used for temporary storage of the text filter
-     *
-     * @var string
-     */
-    public $textFilterField = self::TEXT_FILTER;
-
-    /**
      * Contains a map to the fields names of a sub model from the fields names
      * of this model.
      *
@@ -101,6 +94,13 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      * @var array of $name => MUtil_Model_ModelAbstract
      */
     protected $_unionModels;
+
+    /**
+     * Name of the field used for temporary storage of the text filter
+     *
+     * @var string
+     */
+    public $textFilterField = self::TEXT_FILTER;
 
     /**
      *
@@ -157,6 +157,18 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
 
                 $modelFilter = $this->_map($filter, $name, false, true);
 
+                if (isset($this->_unionMapsTo[$name]) && $this->_unionMapsTo[$name]) {
+                    // Translate the texts filters
+                    foreach ($modelFilter as $key => $value) {
+                        if (is_numeric($key) && is_string($value)) {
+                            $modelFilter[$key] = strtr($value, $this->_unionMapsTo[$name]);
+                        }
+                    }
+                }
+
+                if (MUtil_Model::$verbose) {
+                    MUtil_Echo::r($modelFilter, "Filter for model $name.");
+                }
                 if ($textFilter) {
                     // Text filter is always on visible fields and uses multiOptions
                     if (isset($this->_unionMapsTo[$name]) && $this->_unionMapsTo[$name]) {
@@ -200,7 +212,7 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      *
      * @param array $row The row of values to map
      * @param string $name Union sub model name
-     * @param boolean $from When true map from the fields names if the sub model to the fields names of this model
+     * @param boolean $from When true map from the fields names in the sub model to the fields names of this model
      * @param boolean $recursive When true sub arrays are mapped as well (only used for filter renaming)
      * @return array
      */

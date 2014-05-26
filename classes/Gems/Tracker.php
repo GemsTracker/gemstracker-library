@@ -418,26 +418,16 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function getAllCodeFields()
     {
-        $sql = "SELECT CONCAT(?, ?, gtap_id_app_field) AS field, gtap_field_code AS code
-                    FROM gems__track_appointments
-                    WHERE gtap_field_code IS NOT NULL
-            UNION ALL
-                SELECT CONCAT(?, ?, gtf_id_field) AS field, gtf_field_code AS code
-                    FROM gems__track_fields
-                    WHERE gtf_field_code IS NOT NULL
-            ORDER BY code";
+        $fields = array();
+        $model  = $this->createTrackClass('Model_FieldMaintenanceModel');
+        $rows   = $model->load(array('gtf_field_code IS NOT NULL'), array('gtf_field_code' => SORT_ASC));
 
-        $fields = $this->db->fetchPairs($sql, array(
-            Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
-            Gems_Tracker_Engine_FieldsDefinition::FIELD_KEY_SEPARATOR,
-            Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME,
-            Gems_Tracker_Engine_FieldsDefinition::FIELD_KEY_SEPARATOR,
-        ));
-
-        if (! $fields) {
-            return array();
+        if ($rows) {
+            foreach ($rows as $row) {
+                $key = Gems_Tracker_Engine_FieldsDefinition::makeKey($row['sub'], $row['gtf_id_field']);
+                $fields[$key] = $row['gtf_field_code'];
+            }
         }
-
         return $fields;
     }
 

@@ -107,4 +107,11 @@ interface MUtil_Model_ModelTransformerInterface
      * @return array Row array containing (optionally) transformed data
      */
     public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row);
+
+    /**
+     * When true, the on save functions are triggered before passing the data on
+     *
+     * @return boolean
+     */
+    public function triggerOnSaves();
 }

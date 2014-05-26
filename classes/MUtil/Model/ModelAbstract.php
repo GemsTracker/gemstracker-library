@@ -1742,7 +1742,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function processAfterSave(array $row)
     {
         foreach ($this->_transformers as $transformer) {
-            $row = $transformer->transformRowAfterSave($this, $row);
+            if ($transformer->triggerOnSaves()) {
+                $row = $transformer->transformRowAfterSave($this, $this->_filterDataForSave($row));
+            } else {
+                $row = $transformer->transformRowAfterSave($this, $row);
+            }
             $this->addChanged($transformer->getChanged());
         }
 

@@ -239,4 +239,13 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
         return $sort;
     }
 
+    /**
+     * When true, the on save functions are triggered before passing the data on
+     *
+     * @return boolean
+     */
+    public function triggerOnSaves()
+    {
+        return false;
+    }
 }

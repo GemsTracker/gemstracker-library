@@ -57,10 +57,21 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     const FIELDS_NAME = 'f';
 
     /**
+     * Option seperator for fields
+     */
+    const FIELD_SEP = '|';
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     *
+     * @var Gems_Loader
+     */
+    protected $loader;
 
     /**
      *
@@ -89,11 +100,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $nullExpr = new Zend_Db_Expr("NULL");
-
         $model = new MUtil_Model_TableModel('gems__track_fields');
-        $model->addColumn($nullExpr, 'field_model_info');
-        $model->addColumn($nullExpr, 'field_save_info');
         Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
@@ -107,16 +114,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
 
         $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
-        $model->addColumn($nullExpr, 'gtf_field_values');
-        $model->setOnload('field_save_info', array(
-            'table'   => 'gems__respondent2track2appointment',
-            'prefix'  => 'gr2t2a',
-            'saveMap' => array(
-                    'gr2t2f_id_respondent_track' => 'gr2t2a_id_respondent_track',
-                    'gr2t2f_id_field'            => 'gr2t2a_id_app_field',
-                    'gr2t2f_value'               => 'gr2t2a_id_appointment',
-                    ),
-            ));
+        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
 
         $this->setKeys(array(
             Gems_Model::FIELD_ID => 'gtf_id_field',
@@ -331,6 +329,99 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     }
 
     /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a Zend_Date format
+     *
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function formatLoadDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        // If not empty or zend_db_expression and not already a zend date, we
+        // transform to a Zend_Date using the ISO_8601 format
+        if (empty($value) || $value instanceof Zend_Date || $value instanceof Zend_Db_Expr) {
+            return $value;
+        }
+
+        $formats = array(
+            Gems_Tracker::DB_DATE_FORMAT,
+            MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat'),
+            );
+
+        if ($isPost) {
+            // When posting try date format first
+            $formats = array_reverse($formats);
+        }
+
+        foreach ($formats as $format) {
+            if (Zend_Date::isDate($value, $format)) {
+                return new MUtil_Date($value, $format);
+            }
+        }
+
+        try {
+            // Last try
+            $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
+
+        } catch (Exception $exc) {
+            // On failure, we use the input value
+            $tmpDate = $value;
+        }
+
+        return $tmpDate;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns the input
+     * date as a valid date.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return Zend_Date
+     */
+    public function formatSaveDate($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ((null === $value) ||
+                ($value instanceof Zend_Db_Expr) ||
+                MUtil_String::startsWith($value, 'current_', true)) {
+            return $value;
+        }
+
+        $saveFormat = Gems_Tracker::DB_DATE_FORMAT;
+
+        if ($value instanceof Zend_Date) {
+            return $value->toString($saveFormat);
+
+        } else {
+            $displayFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+
+            try {
+                return MUtil_Date::format($value, $saveFormat, $displayFormat);
+            } catch (Zend_Exception $e) {
+                if (Zend_Date::isDate($value, $saveFormat)) {
+                    return $value;
+                }
+                throw $e;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
      * Put each value on a separate line
      *
      * @param string $values
@@ -369,6 +460,122 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             return self::APPOINTMENTS_NAME;
         }
         return self::FIELDS_NAME;
+    }
+
+    /**
+     * Setting function for date select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForAppointment($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $agenda       = $this->loader->getAgenda();
+        $appointments = $agenda->getActiveAppointments($respondentId, $organizationId, $patientNr);
+
+        if ($edit) {
+            $output['elementClass']  = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $appointments;
+
+        return $output;
+    }
+
+    /**
+     * Setting function for date select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForDate($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        if ($edit) {
+            $output['elementClass']  = 'Date';
+        }
+        $output['dateFormat']    = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        $output['storageFormat'] = Gems_Tracker::DB_DATE_FORMAT;
+
+        $output[MUtil_Model_ModelAbstract::LOAD_TRANSFORMER] = array($this, 'formatLoadDate');
+        $output[MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'formatSaveDate');
+
+        return $output;
+    }
+
+    /**
+     * Setting function for multi select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForMultiSelect($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $concatter = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
+        $multi     = explode(self::FIELD_SEP, $values);
+        $output    = $concatter->getSettings();
+
+        if ($edit) {
+            $output['elementClass'] = 'MultiCheckbox';
+        }
+        $output['multiOptions'] = array_combine($multi, $multi);
+
+        return $output;
+    }
+
+    /**
+     * Setting function for single select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForSelect($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $multi = explode(self::FIELD_SEP, $values);
+        $multi = array_combine($multi, $multi);
+
+        if ($edit) {
+            $output['elementClass'] = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $multi;
+
+        return $output;
+    }
+
+    /**
+     * Catch all function for setting types
+     *
+     * @param string $type The type
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForType($type, $values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        if ($edit) {
+            $output['elementClass'] = 'Text';
+        }
+
+        $output['size'] = 40;
+
+        return $output;
     }
 
     /**

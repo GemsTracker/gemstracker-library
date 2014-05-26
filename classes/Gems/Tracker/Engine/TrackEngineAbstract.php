@@ -517,22 +517,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Displays the content spaced
-     *
-     * @param string $value
-     * @return string
-     */
-    public function formatMultiField($value)
-    {
-        // MUtil_Echo::track($value);
-        if (is_array($value)) {
-            return implode(' ', $value);
-        } else {
-            return $value;
-        }
-    }
-
-    /**
      * Returns a list of classnames this track engine can be converted into.
      *
      * Should always contain at least the class itself.
