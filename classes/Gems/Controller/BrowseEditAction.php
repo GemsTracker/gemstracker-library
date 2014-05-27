@@ -735,6 +735,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 }
                 return $results;
             } else {
+                $result = array();
                 foreach ($headings as $key => $value) {
                     $result[$key] = $emptyMsg;
                 }
@@ -814,6 +815,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $importLoader = $this->loader->getImportLoader();
         $model        = $this->getModel();
 
+        $params = array();
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
         $params['formatBoxClass']          = 'browser';
         $params['importer']                = $importLoader->getImporter($controller, $model);
