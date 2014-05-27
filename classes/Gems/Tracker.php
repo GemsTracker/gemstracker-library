@@ -1033,6 +1033,10 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
             foreach ($sources as $source) {
                 $batch->addTask('Tracker_SourceSyncSurveys', $source, $userId);
+                // Reset cache after basic synch
+                $batch->addTask('CleanCache');
+                // Reset cache after field synch
+                $batch->addTask('AddTask', 'CleanCache');
             }
         }
 
