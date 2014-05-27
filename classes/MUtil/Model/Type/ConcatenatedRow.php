@@ -139,7 +139,7 @@ class MUtil_Model_Type_ConcatenatedRow
         $output[MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'saveValue');
         $output[MUtil_Model_DatabaseModelAbstract::TEXTFILTER_TRANSFORMER] = array($this, 'textFilter');
 
-        return $this;
+        return $output;
     }
 
     /**

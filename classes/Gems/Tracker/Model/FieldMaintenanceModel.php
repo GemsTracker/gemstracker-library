@@ -445,6 +445,8 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             'appointment' => $this->_('Appointment'),
             'date'        => $this->_('Date'),
             'text'        => $this->_('Free text'),
+            'location'    => $this->_('Location'),
+            'caretaker'   => $this->_('Caretaker'),
             );
     }
 
@@ -463,7 +465,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     }
 
     /**
-     * Setting function for date select
+     * Setting function for appointment select
      *
      * @param string $values The content of the gtf_field_values field
      * @param int $respondentId When null $patientNr is required
@@ -481,6 +483,29 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             $output['elementClass']  = 'Select';
         }
         $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $appointments;
+
+        return $output;
+    }
+
+    /**
+     * Setting function for caretaker select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForCaretaker($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $agenda     = $this->loader->getAgenda();
+        $caretakers = $agenda->getHealthcareStaff($organizationId);
+
+        if ($edit) {
+            $output['elementClass']  = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $caretakers;
 
         return $output;
     }
@@ -505,6 +530,29 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         $output[MUtil_Model_ModelAbstract::LOAD_TRANSFORMER] = array($this, 'formatLoadDate');
         $output[MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'formatSaveDate');
+
+        return $output;
+    }
+
+    /**
+     * Setting function for location select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForLocation($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $agenda    = $this->loader->getAgenda();
+        $locations = $agenda->getLocations($organizationId);
+
+        if ($edit) {
+            $output['elementClass']  = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $locations;
 
         return $output;
     }
