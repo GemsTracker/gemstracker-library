@@ -794,3 +794,7 @@ ALTER TABLE  `gems__survey_questions`
 -- PATCH: The number of reminders should not include the original mail
 UPDATE gems__comm_jobs SET gcj_filter_max_reminders = gcj_filter_max_reminders - 1
     WHERE gcj_filter_mode = 'R' and gcj_filter_max_reminders > 1;
+
+-- PATCH: Automaticall fill track fields
+ALTER TABLE gems__track_fields ADD gtf_calculate_using varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+    AFTER gtf_field_values;

@@ -169,7 +169,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
     protected function createModel()
     {
         $model = $this->loader->getTracker()->getTrackModel();
-        $model->applyFormatting(true);
+        $model->applyFormatting(true, true);
 
         return $model;
     }

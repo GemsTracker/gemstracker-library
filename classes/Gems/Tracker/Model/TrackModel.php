@@ -90,12 +90,18 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
      * Sets the labels, format functions, etc...
      *
      * @param boolean $detailed True when shopwing detailed information
+     * @param boolean $edit When true use edit settings
      * @return Gems_Tracker_Model_TrackModel
      */
-    public function applyFormatting($detailed = false)
+    public function applyFormatting($detailed = false, $edit = false)
     {
         $translated = $this->util->getTranslated();
         $translator = $this->getTranslateAdapter();
+        if ($edit) {
+            $dateFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        } else {
+            $dateFormat = $translated->dateFormatString;
+        }
 
         $this->resetOrder();
 
@@ -107,10 +113,10 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
         $this->set('gtr_active',        'label', $translator->_('Active'),
                 'multiOptions', $translated->getYesNo());
         $this->set('gtr_date_start',    'label', $translator->_('From'),
-                'dateFormat', $translated->dateFormatString,
+                'dateFormat', $dateFormat,
                 'formatFunction', $translated->formatDate);
         $this->set('gtr_date_until',    'label', $translator->_('Use until'),
-                'dateFormat', $translated->dateFormatString,
+                'dateFormat', $dateFormat,
                 'formatFunction', $translated->formatDateForever);
 
         $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
@@ -152,7 +158,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     /**
      * When this method returns something other than an empty array it will try
      * to add fields to a newly created track
-     * 
+     *
      * @return array Should be an array or arrays, containing the default fields
      */
     public function getDefaultFields()
@@ -179,9 +185,9 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
             )
         );
         */
-        
+
         $defaultFields = array();
-        
+
         return $defaultFields;
     }
 
@@ -223,7 +229,7 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
                     // Load defaults
                     $record = $fieldmodel->loadNew();
                     $record['gtf_id_order'] = $lastOrder + 10;
-                    
+
                     $record = $field + $record;             // Add defaults to the new field
                     $record = $fieldmodel->save($record);
                     $lastOrder = $record['gtf_id_order'];   // Save order for next record

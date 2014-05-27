@@ -155,6 +155,16 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Get the DB id of the attending by person
+     *
+     * @return int
+     */
+    public function getAttendedById()
+    {
+        return $this->_gemsData['gap_id_attended_by'];
+    }
+
+    /**
      * Return the appointment id
      *
      * @return int
@@ -162,6 +172,16 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     public function getId()
     {
         return $this->_appointmentId;
+    }
+
+    /**
+     * Get the DB id of the location
+     *
+     * @return int
+     */
+    public function getLocationId()
+    {
+        return $this->_gemsData['gap_id_location'];
     }
 
     /**
@@ -253,6 +273,7 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
             foreach ($respTracks as $respTrackId) {
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
+                $respTrack->setFieldData($respTrack->getFieldData());
                 $tokenChanges += $respTrack->checkTrackTokens($userId);
             }
         }

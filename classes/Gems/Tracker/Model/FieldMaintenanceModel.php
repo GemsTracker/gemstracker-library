@@ -68,6 +68,13 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     protected $db;
 
     /**
+     * The fields that can be calculated using an appointment as input
+     *
+     * @var array
+     */
+    protected $fromAppointments = array('caretaker', 'location');
+
+    /**
      *
      * @var Gems_Loader
      */
@@ -90,6 +97,13 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * @var Gems_Util
      */
     protected $util;
+
+    /**
+     * The fields that use the values TextArea
+     *
+     * @var array
+     */
+    protected $valuesFields = array('multiselect', 'select');
 
     /**
      *
@@ -115,6 +129,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
         $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_calculate_using');
 
         $this->setKeys(array(
             Gems_Model::FIELD_ID => 'gtf_id_field',
@@ -224,10 +239,30 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             $data[$this->_modelField] = $this->getModelNameForRow($data);
         }
 
-        if ($data['gtf_field_type'] === 'select' || $data['gtf_field_type'] === 'multiselect') {
+        if (in_array($data['gtf_field_type'], $this->valuesFields)) {
             $this->set('gtf_field_values', 'label', $this->_('Values'),
                     'description', $this->_('Separate multiple values with a vertical bar (|)'),
                     'formatFunction', array($this, 'formatValues'));
+        }
+        if ($trackId && in_array($data['gtf_field_type'], $this->fromAppointments)) {
+            $appFields = $this->db->fetchPairs("
+                SELECT gtap_id_app_field, gtap_field_name
+                    FROM gems__track_appointments
+                    WHERE gtap_id_track = ?
+                    ORDER BY gtap_id_order", $trackId);
+
+            if ($appFields) {
+                $options = $this->util->getTranslated()->getEmptyDropdownArray();
+                foreach ($appFields as $id => $label) {
+                    $key = Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
+                    $options[$key] = $label;
+                }
+
+                $this->set('gtf_calculate_using', 'label', $this->_('Fill'),
+                        'description', $this->_('Automatically fill this field using another field'),
+                        'multiOptions', $options
+                        );
+            }
         }
     }
 

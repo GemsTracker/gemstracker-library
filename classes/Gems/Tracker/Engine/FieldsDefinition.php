@@ -175,7 +175,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
     }
 
     /**
-     * Calculate the track info from the fields
+     * Calculate the content for the track info field using the other fields
      *
      * @param int $respTrackId Gems respondent track id or null when new
      * @param array $data The values to save
@@ -486,16 +486,29 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
         $data  = array_intersect_key($data, $this->_trackFields);
         $model = $this->getDataStorageModel();
         $saves = array();
-        
-        // MUtil_Echo::track($data);
 
+        // MUtil_Echo::track($data);
         foreach ($data as $key => $value) {
-            $saves[] = array(
-                'sub'                        => $this->_trackFields[$key]['sub'],
-                'gr2t2f_id_respondent_track' => $respTrackId,
-                'gr2t2f_id_field'            => $this->_trackFields[$key]['gtf_id_field'],
-                'gr2t2f_value'               => $value,
-            );
+            if (isset($this->_trackFields[$key])) {
+                $field = $this->_trackFields[$key];
+
+                // Perform automatic calculation
+                if (isset($field['gtf_calculate_using'], $data[$field['gtf_calculate_using']]) &&
+                        $data[$field['gtf_calculate_using']]) {
+
+                    $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
+                    if (method_exists($model, $typeFunction)) {
+                        $value = $model->$typeFunction($data[$field['gtf_calculate_using']], $data);
+                    }
+                }
+
+                $saves[] = array(
+                    'sub'                        => $field['sub'],
+                    'gr2t2f_id_respondent_track' => $respTrackId,
+                    'gr2t2f_id_field'            => $field['gtf_id_field'],
+                    'gr2t2f_value'               => $value,
+                );
+            }
         }
         $model->saveAll($saves);
 

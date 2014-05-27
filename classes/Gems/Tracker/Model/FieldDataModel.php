@@ -47,6 +47,12 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
 {
     /**
      *
+     * @var Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @param string $modelName Hopefully unique model name
      * @param string $modelField The name of the field used to store the sub model
      */
@@ -67,5 +73,43 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
         $map['gr2t2a_id_appointment'] = 'gr2t2f_value';
 
         $this->addUnionModel($model, $map, Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param mixed $value The value being saved
+     * @param array $context Optional, the other values being saved
+     * @return mixed the new value
+     */
+    public function calculateOnSaveCaretaker($value, array $context = array())
+    {
+        $agenda      = $this->loader->getAgenda();
+        $appointment = $agenda->getAppointment($value);
+
+        if ($appointment->exists) {
+            return $appointment->getAttendedById();
+        }
+
+        return $value;
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param mixed $value The value being saved
+     * @param array $context Optional, the other values being saved
+     * @return mixed the new value
+     */
+    public function calculateOnSaveLocation($value, array $context = array())
+    {
+        $agenda      = $this->loader->getAgenda();
+        $appointment = $agenda->getAppointment($value);
+
+        if ($appointment->exists) {
+            return $appointment->getLocationId();
+        }
+
+        return $value;
     }
 }
