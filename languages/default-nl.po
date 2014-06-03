@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-27 17:58+0100\n"
+"POT-Creation-Date: 2014-06-03 18:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -149,13 +149,13 @@ msgstr "Geen %s gevonden"
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:857
+#: classes/Gems/Controller/BrowseEditAction.php:859
 #: classes/Gems/Default/TrackRoundsAction.php:281
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:85
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:873
+#: classes/Gems/Controller/BrowseEditAction.php:875
 #: classes/Gems/Default/DatabaseAction.php:173
 #: classes/Gems/Default/DatabaseAction.php:495
 #: classes/Gems/Default/StaffAction.php:306
@@ -174,7 +174,7 @@ msgstr "Weet u het zeker?"
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:874
+#: classes/Gems/Controller/BrowseEditAction.php:876
 #: classes/Gems/Default/DatabaseAction.php:174
 #: classes/Gems/Default/DatabaseAction.php:496
 #: classes/Gems/Default/StaffAction.php:307
@@ -194,7 +194,7 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:927
+#: classes/Gems/Controller/BrowseEditAction.php:929
 #: classes/Gems/Default/RespondentAction.php:251
 #: classes/Gems/Default/RespondentAction.php:334
 #: classes/Gems/Default/RespondentAction.php:538
@@ -203,12 +203,12 @@ msgstr "Nee"
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:950
+#: classes/Gems/Controller/BrowseEditAction.php:952
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:958
+#: classes/Gems/Controller/BrowseEditAction.php:960
 #: classes/Gems/Email/MailTemplateForm.php:118
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:198
 #: classes/Gems/User/Form/ChangePasswordForm.php:348
@@ -216,30 +216,30 @@ msgstr "Nieuwe %1$s..."
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:994
+#: classes/Gems/Controller/BrowseEditAction.php:996
 #: classes/Gems/Default/MailTemplateAction.php:133
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:220
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:997
+#: classes/Gems/Controller/BrowseEditAction.php:999
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:1006
+#: classes/Gems/Controller/BrowseEditAction.php:1008
 #: classes/Gems/Default/RespondentAction.php:302
 #: classes/Gems/Default/RespondentNewAction.php:221
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1034
+#: classes/Gems/Controller/BrowseEditAction.php:1036
 #: classes/Gems/Default/SurveyMaintenanceAction.php:665
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1041
+#: classes/Gems/Controller/BrowseEditAction.php:1043
 #: classes/Gems/Default/SurveyMaintenanceAction.php:674
 #, php-format
 msgid "Unknown %s."
@@ -1114,7 +1114,7 @@ msgstr "Groep"
 #: classes/Gems/Default/OrganizationAction.php:134
 #: classes/Gems/Model/AppointmentModel.php:203
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:483
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:488
 msgid "Location"
 msgstr "Locatie"
 
@@ -1889,7 +1889,7 @@ msgstr "Alle acties"
 #: classes/Gems/Default/LogAction.php:208
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:102
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:189
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:481
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:486
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:490
 msgid "Date"
 msgstr "Datum"
@@ -4722,7 +4722,7 @@ msgstr "Mag gemaild worden"
 #: classes/Gems/Model/AppointmentModel.php:194
 #: classes/Gems/Model/AppointmentModel.php:225
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:708
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:485
 msgid "Appointment"
 msgstr "Afspraak"
 
@@ -5596,28 +5596,28 @@ msgstr "Waarden"
 msgid "Separate multiple values with a vertical bar (|)"
 msgstr "Scheidt meerdere waarden met verticale streep (|)"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:261
-msgid "Fill"
-msgstr "Vul"
-
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
-msgid "Automatically fill this field using another field"
-msgstr "Vul dit veld automatisch vanuit een ander veld"
+msgid "Calculate from"
+msgstr "Bereken met"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:263
+msgid "Automatically calculate this field using other fields"
+msgstr "Bereken dit veld automatisch vanuit een ander veld"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:483
 msgid "Select one"
 msgstr "Kies één"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:484
 msgid "Select multiple"
 msgstr "Meerkeuze vraag"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:482
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:487
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:505
 msgid "Free text"
 msgstr "Vrije tekst"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:484
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:489
 msgid "Caretaker"
 msgstr "Behandelaar"
 
@@ -7229,6 +7229,9 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
+
+#~ msgid "Fill"
+#~ msgstr "Vul"
 
 #~ msgid "Translation definition"
 #~ msgstr "Import methode"

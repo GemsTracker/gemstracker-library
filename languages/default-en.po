@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-27 17:58+0100\n"
+"POT-Creation-Date: 2014-06-03 18:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -149,13 +149,13 @@ msgstr "No %s found"
 msgid "No %s found."
 msgstr "No %s found."
 
-#: classes/Gems/Controller/BrowseEditAction.php:857
+#: classes/Gems/Controller/BrowseEditAction.php:859
 #: classes/Gems/Default/TrackRoundsAction.php:281
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:85
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:873
+#: classes/Gems/Controller/BrowseEditAction.php:875
 #: classes/Gems/Default/DatabaseAction.php:173
 #: classes/Gems/Default/DatabaseAction.php:495
 #: classes/Gems/Default/StaffAction.php:306
@@ -174,7 +174,7 @@ msgstr "Are you sure?"
 msgid "Yes"
 msgstr "Yes"
 
-#: classes/Gems/Controller/BrowseEditAction.php:874
+#: classes/Gems/Controller/BrowseEditAction.php:876
 #: classes/Gems/Default/DatabaseAction.php:174
 #: classes/Gems/Default/DatabaseAction.php:496
 #: classes/Gems/Default/StaffAction.php:307
@@ -194,7 +194,7 @@ msgstr "Yes"
 msgid "No"
 msgstr "No"
 
-#: classes/Gems/Controller/BrowseEditAction.php:927
+#: classes/Gems/Controller/BrowseEditAction.php:929
 #: classes/Gems/Default/RespondentAction.php:251
 #: classes/Gems/Default/RespondentAction.php:334
 #: classes/Gems/Default/RespondentAction.php:538
@@ -203,12 +203,12 @@ msgstr "No"
 msgid "Unknown %s requested"
 msgstr "Unknown %s requested"
 
-#: classes/Gems/Controller/BrowseEditAction.php:950
+#: classes/Gems/Controller/BrowseEditAction.php:952
 #, php-format
 msgid "New %1$s..."
 msgstr "New %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:958
+#: classes/Gems/Controller/BrowseEditAction.php:960
 #: classes/Gems/Email/MailTemplateForm.php:118
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:198
 #: classes/Gems/User/Form/ChangePasswordForm.php:348
@@ -216,30 +216,30 @@ msgstr "New %1$s..."
 msgid "Save"
 msgstr "Save"
 
-#: classes/Gems/Controller/BrowseEditAction.php:994
+#: classes/Gems/Controller/BrowseEditAction.php:996
 #: classes/Gems/Default/MailTemplateAction.php:133
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:220
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s saved"
 
-#: classes/Gems/Controller/BrowseEditAction.php:997
+#: classes/Gems/Controller/BrowseEditAction.php:999
 msgid "No changes to save."
 msgstr "No changes to save."
 
-#: classes/Gems/Controller/BrowseEditAction.php:1006
+#: classes/Gems/Controller/BrowseEditAction.php:1008
 #: classes/Gems/Default/RespondentAction.php:302
 #: classes/Gems/Default/RespondentNewAction.php:221
 msgid "Input error! No changes saved!"
 msgstr "Input error! No changes saved!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1034
+#: classes/Gems/Controller/BrowseEditAction.php:1036
 #: classes/Gems/Default/SurveyMaintenanceAction.php:665
 #, php-format
 msgid "Show %s"
 msgstr "Show %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1041
+#: classes/Gems/Controller/BrowseEditAction.php:1043
 #: classes/Gems/Default/SurveyMaintenanceAction.php:674
 #, php-format
 msgid "Unknown %s."
@@ -1111,7 +1111,7 @@ msgstr "Group"
 #: classes/Gems/Default/OrganizationAction.php:134
 #: classes/Gems/Model/AppointmentModel.php:203
 #: classes/Gems/Model/AppointmentModel.php:242
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:483
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:488
 msgid "Location"
 msgstr "Location"
 
@@ -1878,7 +1878,7 @@ msgstr "All actions"
 #: classes/Gems/Default/LogAction.php:208
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:102
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:189
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:481
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:486
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:490
 msgid "Date"
 msgstr "Date"
@@ -4681,7 +4681,7 @@ msgstr "May be mailed"
 #: classes/Gems/Model/AppointmentModel.php:194
 #: classes/Gems/Model/AppointmentModel.php:225
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:708
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:480
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:485
 msgid "Appointment"
 msgstr "Appointment"
 
@@ -5548,28 +5548,28 @@ msgstr "Values"
 msgid "Separate multiple values with a vertical bar (|)"
 msgstr "Separate multiple values with a vertical bar (|)"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:261
-msgid "Fill"
-msgstr "Fill"
-
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
-msgid "Automatically fill this field using another field"
-msgstr "Automatically fill this field using another field"
+msgid "Calculate from"
+msgstr "Calculate from"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:478
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:263
+msgid "Automatically calculate this field using other fields"
+msgstr "Automatically calculate this field using other fields"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:483
 msgid "Select one"
 msgstr "Select one"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:479
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:484
 msgid "Select multiple"
 msgstr "Select multiple"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:482
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:487
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:505
 msgid "Free text"
 msgstr "Free text"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:484
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:489
 msgid "Caretaker"
 msgstr "Caretaker"
 
@@ -7157,6 +7157,9 @@ msgstr "This survey can be assigned since %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#~ msgid "Fill"
+#~ msgstr "Fill"
 
 #~ msgid "Translation definition"
 #~ msgstr "Translation definition"
