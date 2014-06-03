@@ -201,7 +201,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * Set those settings needed for the detailed display
      *
      * @param int $trackId The current track id
-     * @param int $data The currently known data
+     * @param array $data The currently known data
      * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
      */
     public function applyDetailSettings($trackId, array &$data)
@@ -270,7 +270,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * Set those values needed for editing
      *
      * @param int $trackId The current track id
-     * @param int $data The currently known data
+     * @param array $data The currently known data
      * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
      */
     public function applyEditSettings($trackId, array $data)

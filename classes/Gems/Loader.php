@@ -325,6 +325,8 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
      */
     public function getTaskRunnerBatch($id, MUtil_Batch_Stack_Stackinterface $stack = null)
     {
+        $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
+
         if ((null == $stack) && isset($this->_containers[0]->cache)) {
             $cache = $this->_containers[0]->cache;
 

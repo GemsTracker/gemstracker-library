@@ -147,6 +147,9 @@ class MUtil_Loader_PluginLoader extends Zend_Loader_PluginLoader
             $className = $this->load($className);
         }
 
+        // Toss out all names
+        $arguments = array_values($arguments);
+
         switch (count($arguments)) {
             case 0:
                 return new $className();

@@ -260,7 +260,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $id = preg_replace('/[^a-zA-Z0-9_]/', '', $id);
 
         if (isset(self::$_idStack[$id])) {
-            throw new MUtil_Batch_BatchException("Duplicate batch id created: $id");
+            throw new MUtil_Batch_BatchException("Duplicate batch id created: '$id'");
         }
         self::$_idStack[$id] = $id;
 

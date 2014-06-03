@@ -65,8 +65,6 @@ class MUtil_Model_Type_ConcatenatedRow
      *
      * Makes it easier to filter.
      *
-     * @see $seperatorChar
-     *
      * @var boolean
      */
     protected $valuePad = true;
