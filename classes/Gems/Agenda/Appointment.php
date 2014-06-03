@@ -139,6 +139,39 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the description of the current ativity
+     *
+     * @return string or null when not found
+     */
+    public function getActivityDescription()
+    {
+        if (! (isset($this->_gemsData['gap_id_activity']) && $this->_gemsData['gap_id_activity'])) {
+            return null;
+        }
+        if (!array_key_exists('gaa_name', $this->_gemsData)) {
+            $sql = "SELECT gaa_name FROM gems__agenda_activities WHERE gaa_id_activity = ?";
+
+            $this->_gemsData['gaa_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_activity']);
+
+            // Cleanup db result
+            if (false === $this->_gemsData['gaa_name']) {
+                $this->_gemsData['gaa_name'] = null;
+            }
+        }
+        return $this->_gemsData['gaa_name'];
+    }
+
+    /**
+     * Return the id of the current activity
+     *
+     * @return int
+     */
+    public function getActivityId()
+    {
+        return $this->_gemsData['gap_id_activity'];
+    }
+
+    /**
      * Return the admission time
      *
      * @return MUtil_Date Admission time as a date or null
@@ -204,6 +237,40 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
         }
 
         return $this->_gemsData['gr2o_patient_nr'];
+    }
+
+    /**
+     * Return the description of the current procedure
+     *
+     * @return string or null when not found
+     * /
+    public function getProcedureDescription()
+    {
+        // NOT TESTED!
+        if (! (isset($this->_gemsData['gap_id_procedure']) && $this->_gemsData['gap_id_procedure'])) {
+            return null;
+        }
+        if (!array_key_exists('gapr_name', $this->_gemsData)) {
+            $sql = "SELECT gapr_name FROM gems__agenda_procedures WHERE gapr_id_procedure = ?";
+
+            $this->_gemsData['gapr_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_procedure']);
+
+            // Cleanup db result
+            if (false === $this->_gemsData['gapr_name']) {
+                $this->_gemsData['gapr_name'] = null;
+            }
+        }
+        return $this->_gemsData['gapr_name'];
+    }
+
+    /**
+     * Return the id of the current procedure
+     *
+     * @return int
+     */
+    public function getProcedureId()
+    {
+        return $this->_gemsData['gap_id_procedure'];
     }
 
     /**

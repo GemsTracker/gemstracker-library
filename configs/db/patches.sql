@@ -796,5 +796,5 @@ UPDATE gems__comm_jobs SET gcj_filter_max_reminders = gcj_filter_max_reminders -
     WHERE gcj_filter_mode = 'R' and gcj_filter_max_reminders > 1;
 
 -- PATCH: Automaticall fill track fields
-ALTER TABLE gems__track_fields ADD gtf_calculate_using varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+ALTER TABLE gems__track_fields ADD gtf_calculate_using varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
     AFTER gtf_field_values;

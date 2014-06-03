@@ -54,6 +54,13 @@ class MUtil_Model_Type_ConcatenatedRow
     protected $displaySeperator = ' ';
 
     /**
+     * Optional multi options to use
+     *
+     * @var array
+     */
+    protected $options;
+
+    /**
      * The character used to separate values when storing.
      *
      * @var string
@@ -105,6 +112,7 @@ class MUtil_Model_Type_ConcatenatedRow
             $model->setOnTextFilter($name, array($this, 'textFilter'));
         }
 
+        $this->options = $model->get($name, 'multiOptions');
         return $this;
     }
 
@@ -119,10 +127,19 @@ class MUtil_Model_Type_ConcatenatedRow
     {
         // MUtil_Echo::track($value);
         if (is_array($value)) {
+            if ($this->options) {
+                foreach ($value as &$val) {
+                    if (isset($this->options[$val])) {
+                        $val = $this->options[$val];
+                    }
+                 }
+            }
             return implode($this->displaySeperator, $value);
-        } else {
-            return $value;
         }
+        if (isset($this->options[$value])) {
+            return $this->options[$value];
+        }
+        return $value;
     }
 
     /**

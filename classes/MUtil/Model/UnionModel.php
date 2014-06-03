@@ -241,6 +241,8 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      */
     protected function _save(array $newValues, array $filter = null)
     {
+        $newValues = $this->_filterDataForSave($newValues);
+
         $newName = $this->getModelNameForRow($newValues);
 
         if (isset($filter[$this->_modelField])) {

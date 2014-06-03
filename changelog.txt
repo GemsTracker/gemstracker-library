@@ -2,7 +2,9 @@ Important changes from 1.6.3 => 1.6.4
 ============================================================
 Errors in token events are less likely to cause the application to halt
 OpenRosa forms can now handle geopoint (location) fields, has support for displaying uploaded images and provides a datelist to use in tracks
-Default fields can be added to a new track by adapting the TrackModel in your own project and changing the getDefaultFields() method
+Default track fields can be added to a new track by adapting the TrackModel in your own project and changing the getDefaultFields() method
+Projects can define project specific track field types
+Added the new track field types: location and caretaker. These fields can be filled automatically using one or more appointments
 Export results can now be filtered by round description too
 Form and table bridges have changed. Perform the following search & replaces on your code:
     MUtil_Model_FormBridge::          => MUtil_Model_Bridge_FormBridge::

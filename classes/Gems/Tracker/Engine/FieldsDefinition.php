@@ -51,11 +51,6 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
     const FIELD_KEY_SEPARATOR = '__';
 
     /**
-     * Option seperator for fields
-     */
-    const FIELD_SEP = '|';
-
-    /**
      * Appointment type
      */
     const TYPE_APPOINTMENT = 'appointment';
@@ -492,13 +487,28 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
             if (isset($this->_trackFields[$key])) {
                 $field = $this->_trackFields[$key];
 
-                // Perform automatic calculation
-                if (isset($field['gtf_calculate_using'], $data[$field['gtf_calculate_using']]) &&
-                        $data[$field['gtf_calculate_using']]) {
+                $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
+                if (method_exists($model, $typeFunction)) {
+                    // Perform automatic calculation
+                    if (isset($field['gtf_calculate_using'])) {
+                        $sources = explode(
+                                Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
+                                $field['gtf_calculate_using']
+                                );
 
-                    $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
-                    if (method_exists($model, $typeFunction)) {
-                        $value = $model->$typeFunction($data[$field['gtf_calculate_using']], $data);
+                        $calcUsing = array();
+                        foreach ($sources as $source) {
+                            if (isset($data[$source]) && $data[$source]) {
+                                $calcUsing[$source] = $data[$source];
+                            } else {
+                                $calcUsing[$source] = null;
+                            }
+                        }
+
+                        $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
+                        if (method_exists($model, $typeFunction)) {
+                            $value = $model->$typeFunction($calcUsing, $data);
+                        }
                     }
                 }
 

@@ -78,17 +78,20 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
     /**
      * On save calculation function
      *
-     * @param mixed $value The value being saved
+     * @param array $values The values for the checked calculate from fields
      * @param array $context Optional, the other values being saved
      * @return mixed the new value
      */
-    public function calculateOnSaveCaretaker($value, array $context = array())
+    public function calculateOnSaveCaretaker(array $values, array $context = array())
     {
-        $agenda      = $this->loader->getAgenda();
-        $appointment = $agenda->getAppointment($value);
+        $agenda = $this->loader->getAgenda();
 
-        if ($appointment->exists) {
-            return $appointment->getAttendedById();
+        foreach (array_reverse(array_filter($values)) as $value) {
+            $appointment = $agenda->getAppointment($value);
+
+            if ($appointment->exists) {
+                return $appointment->getAttendedById();
+            }
         }
 
         return $value;
@@ -97,17 +100,20 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
     /**
      * On save calculation function
      *
-     * @param mixed $value The value being saved
+     * @param array $values The values for the checked calculate from fields
      * @param array $context Optional, the other values being saved
      * @return mixed the new value
      */
-    public function calculateOnSaveLocation($value, array $context = array())
+    public function calculateOnSaveLocation(array $values, array $context = array())
     {
-        $agenda      = $this->loader->getAgenda();
-        $appointment = $agenda->getAppointment($value);
+        $agenda = $this->loader->getAgenda();
 
-        if ($appointment->exists) {
-            return $appointment->getLocationId();
+        foreach (array_reverse(array_filter($values)) as $value) {
+            $appointment = $agenda->getAppointment($value);
+
+            if ($appointment->exists) {
+                return $appointment->getLocationId();
+            }
         }
 
         return $value;

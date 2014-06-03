@@ -244,6 +244,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                     'description', $this->_('Separate multiple values with a vertical bar (|)'),
                     'formatFunction', array($this, 'formatValues'));
         }
+        
         if ($trackId && in_array($data['gtf_field_type'], $this->fromAppointments)) {
             $appFields = $this->db->fetchPairs("
                 SELECT gtap_id_app_field, gtap_field_name
@@ -252,16 +253,20 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                     ORDER BY gtap_id_order", $trackId);
 
             if ($appFields) {
-                $options = $this->util->getTranslated()->getEmptyDropdownArray();
+                $options = array();
                 foreach ($appFields as $id => $label) {
                     $key = Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
                     $options[$key] = $label;
                 }
 
-                $this->set('gtf_calculate_using', 'label', $this->_('Fill'),
-                        'description', $this->_('Automatically fill this field using another field'),
+                $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
+                        'description', $this->_('Automatically calculate this field using other fields'),
+                        'elementClass', 'MultiCheckbox',
                         'multiOptions', $options
                         );
+
+                $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
+                $contact->apply($this, 'gtf_calculate_using');
             }
         }
     }
