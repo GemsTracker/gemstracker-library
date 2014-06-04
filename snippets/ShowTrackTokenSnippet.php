@@ -101,7 +101,7 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
 
         // E-MAIL
         $button = $links->getActionLink($controller, 'email', true);
-        $bridge->addWithThird('gto_mail_sent_date', $button);
+        $bridge->addWithThird('gto_mail_sent_date', 'gto_mail_sent_num', $button);
 
         // COMPLETION DATE
         $fields = array();

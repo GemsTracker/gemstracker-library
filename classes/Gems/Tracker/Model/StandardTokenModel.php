@@ -269,6 +269,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         $this->set('gto_mail_sent_date',    'label', $this->translate->_('Last contact'),
                 'formatFunction', $translated->formatDateNever,
                 'tdClass', 'date');
+        $this->set('gto_mail_sent_num',     'label', $this->translate->_('Number of contact moments'));
         $this->set('gto_completion_time',   'label', $this->translate->_('Completed'),
                 'formatFunction', $translated->formatDateNa,
                 'tdClass', 'date');

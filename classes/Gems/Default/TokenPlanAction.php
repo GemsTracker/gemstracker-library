@@ -81,14 +81,17 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 
-        $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');
+        $bridge->addSortable('gto_completion_time')->rowspan = 2;
+
+        $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');;
         $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
 
         $tr = $bridge->tr();
         $tr->appendAttrib('class', $bridge->row_class);
         $tr->appendAttrib('title', $bridge->gto_comment);
         $bridge->addSortable('gto_mail_sent_date');
-        $bridge->addSortable('gto_completion_time');
+        $bridge->addSortable('gto_mail_sent_num');
+        
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
             $bridge->addMultiSort('calc_round_description', $HTML->raw('; '), 'gsu_survey_name');
