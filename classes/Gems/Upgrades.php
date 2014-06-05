@@ -68,6 +68,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->register(array($this, 'Upgrade16to161'),  'Upgrade from 1.6 to 1.6.1');
         $this->register(array($this, 'Upgrade161to162'), 'Upgrade from 1.6.1 to 1.6.2');
         $this->register(array($this, 'Upgrade162to163'), 'Upgrade from 1.6.2 to 1.6.3');
+        $this->register(array($this, 'Upgrade163to164'), 'Upgrade from 1.6.3 to 1.6.4');
 
         /**
          * To have the new_project updated to the highest level, update
@@ -78,7 +79,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
          * it will start counting at 1.
          */
     }
-
+    
 
     /**
      * To upgrade from 143 to 15 we need to do some work:
@@ -217,7 +218,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     }
 
     /**
-     * To upgrade to 1.6.2 just execute patchlevel 53
+     * To upgrade to 1.6.3 just execute patchlevel 54
      */
     public function Upgrade162to163()
     {
@@ -225,6 +226,20 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->_batch->addTask('Db_AddPatches', 54);
         $this->_batch->addTask('Updates_UpdateRoleIds');
 
+        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+
+        return true;
+    }
+    
+    /**
+     * To upgrade to 1.6.4 just execute patchlevel 55
+     */
+    public function Upgrade163to164()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 54);
+        $this->_batch->addTask('Updates_CompileTemplates');
+        
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
         return true;
