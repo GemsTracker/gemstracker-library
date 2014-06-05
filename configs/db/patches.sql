@@ -419,7 +419,7 @@ UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.respondent.m
 ALTER TABLE `gems__surveys` ADD gsu_code varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL AFTER gsu_duration;
 
 -- PATCH: Assign deletion of track parts to super role
-UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.delete') WHERE grl_privileges NOT LIKE '%pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.track-maintenance.delete%';
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.track-maintenance.delete') WHERE grl_privileges LIKE '%pr.track-maintenance.edit%' AND grl_privileges NOT LIKE '%pr.track-maintenance.delete%';
 
 -- PATCH: Add track completion event
 ALTER TABLE `gems__tracks` ADD gtr_completed_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null;
@@ -798,3 +798,8 @@ UPDATE gems__comm_jobs SET gcj_filter_max_reminders = gcj_filter_max_reminders -
 -- PATCH: Automaticall fill track fields
 ALTER TABLE gems__track_fields ADD gtf_calculate_using varchar(50) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
     AFTER gtf_field_values;
+
+-- PATCH: Fix incorrect rights for no-login accounts due to error in level 48
+update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.track-maintenance.delete', grl_privileges)-1), right(grl_privileges, char_length(grl_privileges) - locate(',pr.track-maintenance.delete', grl_privileges)-27)) WHERE grl_privileges LIKE '%,pr.track-maintenance.delete%' AND grl_privileges NOT LIKE '%,pr.track-maintenance,%';
+update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.track-maintenance.trackperorg', grl_privileges)-1), right(grl_privileges, char_length(grl_privileges) - locate(',pr.track-maintenance.trackperorg', grl_privileges)-32)) WHERE grl_privileges LIKE '%,pr.track-maintenance.trackperorg%' AND grl_privileges NOT LIKE '%,pr.track-maintenance,%';
+update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.survey-maintenance.answer-import', grl_privileges)-1), right(grl_privileges, char_length(grl_privileges) - locate(',pr.survey-maintenance.answer-import', grl_privileges)-37)) WHERE grl_privileges LIKE '%,pr.survey-maintenance.answer-import%' AND grl_privileges NOT LIKE '%,pr.track-maintenance,%';
