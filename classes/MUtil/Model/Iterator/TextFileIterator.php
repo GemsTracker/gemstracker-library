@@ -94,6 +94,12 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
     protected $_splitFunction;
 
     /**
+     *
+     * @var boolean
+     */
+    protected $_valid = true;
+
+    /**
      * Initiate this line by line file iterator
      *
      * @param string $filename
@@ -172,7 +178,7 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             $this->_openFile();
         }
 
-        if (! (($this->_file instanceof SplFileObject) && $this->_file->valid())) {
+        if (! ($this->_file instanceof SplFileObject && $this->_valid)) {
             return false;
         }
 
@@ -240,10 +246,12 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
                 $this->_file->next();
                 $this->_filepos = $this->_file->ftell();
                 if ($this->_accept()) {
+                    $this->_valid = true;
                     return;
                 }
             }
         }
+        $this->_valid = false;
     }
 
     /**
@@ -319,6 +327,6 @@ class MUtil_Model_Iterator_TextFileIterator implements Iterator, Serializable
             $this->_openFile();
         }
 
-        return $this->_file && $this->_file->valid();
+        return $this->_file && $this->_valid;
     }
 }

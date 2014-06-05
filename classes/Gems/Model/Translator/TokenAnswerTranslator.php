@@ -53,6 +53,27 @@ class Gems_Model_Translator_TokenAnswerTranslator extends Gems_Model_Translator_
     protected $loader;
 
     /**
+     *
+     * @var Gems_Tracker_Token_TokenLibrary
+     */
+    protected $tokenLibrary;
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if (! $this->tokenLibrary instanceof Gems_Tracker_Token_TokenLibrary) {
+            $this->tokenLibrary = $this->loader->getTracker()->getTokenLibrary();
+        }
+    }
+
+    /**
      * If the token can be created find the respondent track for the token
      *
      * @param array $row
@@ -73,7 +94,7 @@ class Gems_Model_Translator_TokenAnswerTranslator extends Gems_Model_Translator_
     protected function findTokenFor(array $row)
     {
         if (isset($row['token']) && $row['token']) {
-            return $row['token'];
+            return $this->tokenLibrary->filter($row['token']);
         }
 
         return null;
