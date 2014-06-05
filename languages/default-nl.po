@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-04 18:39+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Jasper van Gestel <jvangestel@gmail.com>\n"
+"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.6.5\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/Gems/AccessLog.php:234
@@ -5598,10 +5598,9 @@ msgstr "Scheidt meerdere waarden met verticale streep (|)"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
 msgid "Calculate from"
-msgstr "Berekening traject opnieuw"
+msgstr "Berekenen met"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:263
-#, fuzzy
 msgid "Automatically calculate this field using other fields"
 msgstr "Vul dit veld automatisch vanuit een ander veld"
 

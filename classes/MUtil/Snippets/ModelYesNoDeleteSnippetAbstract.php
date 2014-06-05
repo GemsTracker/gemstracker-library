@@ -124,6 +124,8 @@ abstract class MUtil_Snippets_ModelYesNoDeleteSnippetAbstract extends MUtil_Snip
      */
     public function afterRegistry()
     {
+        parent::afterRegistry();
+        
         if ($this->buttonClass) {
             if (! $this->buttonNoClass) {
                 $this->buttonNoClass = $this->buttonClass;

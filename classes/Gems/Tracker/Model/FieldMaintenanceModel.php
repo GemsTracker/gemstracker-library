@@ -156,6 +156,32 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     }
 
     /**
+     * Get an options list of all the appointment fields
+     *
+     * @param type $trackId
+     * @return array field_id => field_name
+     */
+    protected function _loadAppointments($trackId)
+    {
+        $appFields = $this->db->fetchPairs("
+            SELECT gtap_id_app_field, gtap_field_name
+                FROM gems__track_appointments
+                WHERE gtap_id_track = ?
+                ORDER BY gtap_id_order", $trackId);
+
+        $options = array();
+
+        if ($appFields) {
+            foreach ($appFields as $id => $label) {
+                $key = Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
+                $options[$key] = $label;
+            }
+        }
+
+        return $options;
+    }
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
@@ -178,13 +204,15 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     public function applyBrowseSettings()
     {
         $yesNo = $this->util->getTranslated()->getYesNo();
+        $types = $this->getFieldTypes();
+        asort($types);
 
         $this->set('gtf_id_order',     'label', $this->_('Order'));
         $this->set('gtf_field_name',   'label', $this->_('Name'));
         $this->set('gtf_field_code',   'label', $this->_('Code Name'),
                 'description', $this->_('Optional extra name to link the field to program code.'));
         $this->set('gtf_field_type',   'label', $this->_('Type'),
-                'multiOptions', $this->getFieldTypes(),
+                'multiOptions', $types,
                 'default', 'text',
                 'order', $this->getOrder('gtf_id_track') + 5
                 );
@@ -244,29 +272,30 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                     'description', $this->_('Separate multiple values with a vertical bar (|)'),
                     'formatFunction', array($this, 'formatValues'));
         }
-        
-        if ($trackId && in_array($data['gtf_field_type'], $this->fromAppointments)) {
-            $appFields = $this->db->fetchPairs("
-                SELECT gtap_id_app_field, gtap_field_name
-                    FROM gems__track_appointments
-                    WHERE gtap_id_track = ?
-                    ORDER BY gtap_id_order", $trackId);
 
-            if ($appFields) {
-                $options = array();
-                foreach ($appFields as $id => $label) {
-                    $key = Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
-                    $options[$key] = $label;
+        if ($trackId) { // && in_array($data['gtf_field_type'], $this->fromAppointments)) {
+            $method = 'loadOptionsFor' . ucfirst($data['gtf_field_type']);
+            if (!method_exists($this, $method)) {
+                if (in_array($data['gtf_field_type'], $this->fromAppointments)) {
+                    $method = '_loadAppointments';
+                } else {
+                    $method = false;
                 }
+            }
 
-                $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
-                        'description', $this->_('Automatically calculate this field using other fields'),
-                        'elementClass', 'MultiCheckbox',
-                        'multiOptions', $options
-                        );
+            if ($method) {
+                $options = call_user_func(array($this, $method), $trackId);
 
-                $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
-                $contact->apply($this, 'gtf_calculate_using');
+                if ($options) {
+                    $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
+                            'description', $this->_('Automatically calculate this field using other fields'),
+                            'elementClass', 'MultiCheckbox',
+                            'multiOptions', $options
+                            );
+
+                    $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
+                    $contact->apply($this, 'gtf_calculate_using');
+                }
             }
         }
     }
