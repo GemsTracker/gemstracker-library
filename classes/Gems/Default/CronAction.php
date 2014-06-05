@@ -114,6 +114,11 @@ class Gems_Default_CronAction extends Gems_Controller_Action
         $tracker    = $this->loader->getTracker();
         $model      = $tracker->getTokenModel();
 
+        // Fix for #680: token with the valid from the longest in the past should be the
+        // used as first token and when multiple rounds start at the same date the
+        // lowest round order should be used.
+        $model->setSort(array('gto_valid_from' => SORT_ASC, 'gto_round_order' => SORT_ASC));
+
         // Check for unprocessed tokens
         $tracker->processCompletedTokens(null, $user->getUserId());
 
