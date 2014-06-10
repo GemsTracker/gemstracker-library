@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Respondent.php 967 2012-10-02 07:47:36Z mennodekker $
+ * @version    $Id$
  */
 
 /**

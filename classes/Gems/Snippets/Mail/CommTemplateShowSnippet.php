@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CommTemplateShowSnippet.php 1733 2014-02-13 17:58:34Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

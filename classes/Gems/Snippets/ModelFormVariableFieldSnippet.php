@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jvangestel@gmail.com>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelFormVariableFieldSnippet.php 956 2012-09-25 15:34:45Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

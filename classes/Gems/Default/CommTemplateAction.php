@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CommTemplateAction.php 972 2012-10-08 09:35:02Z mennodekker $
+ * @version    $Id$
  */
 
 /**

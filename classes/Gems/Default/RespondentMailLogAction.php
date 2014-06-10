@@ -33,7 +33,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: MailLogAction.php 1753 2014-02-20 14:34:22Z mennodekker $
+ * @version    $Id$
  */
 
 /**

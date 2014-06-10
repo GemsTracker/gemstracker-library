@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SingleTokenAnswerModelSnippet.php 685 2012-05-16 15:11:59Z michieltcs $
+ * @version    $Id$
  */
 
 /**

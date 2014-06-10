@@ -32,7 +32,7 @@
  * @author     Jasper van Gestel <jvangestl@gmail.com>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: HorizontalScrollMenuSnippetAbstract.php.php 1323 2013-07-16 17:39:34Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

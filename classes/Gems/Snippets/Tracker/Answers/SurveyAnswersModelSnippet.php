@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SurveyAnswersModelSnippet.php 946 2012-09-19 13:08:21Z mennodekker $
+ * @version    $Id$
  */
 
 /**

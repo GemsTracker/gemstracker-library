@@ -31,7 +31,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AutosearchFormSnippet.php 1280 2013-06-20 16:36:42Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

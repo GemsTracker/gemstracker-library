@@ -30,7 +30,7 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ExportCommand.php $
+ * @version    $Id$
  */
 
 /**

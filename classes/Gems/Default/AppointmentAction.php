@@ -37,8 +37,8 @@
 
 /**
  *
- *
- * @package    Default
+ * @package    Gems
+ * @subpackage Default
  * @subpackage AppointmentAction
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License

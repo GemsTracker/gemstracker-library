@@ -29,7 +29,7 @@
  * @subpackage Task
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CheckTokenCompletion.php 1653 2013-11-21 17:18:03Z matijsdejong $
+ * @version    $Id$
  */
 
 /**

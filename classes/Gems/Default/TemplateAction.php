@@ -32,7 +32,7 @@
  * @author     Menno Dekker <menno.dekker@erasmusmc.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: OrganizationAction.php 1560 2013-11-03 21:51:43Z jvangestel $
+ * @version    $Id$
  */
 
 /**

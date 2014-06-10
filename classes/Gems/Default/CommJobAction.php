@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id: CommJobAction.php 972 2012-10-08 09:35:02Z mennodekker $
+ * @version    $Id$
  */
 
 /**

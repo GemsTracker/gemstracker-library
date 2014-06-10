@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackAllAnswersSnippet .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id$
  */
 
 /**
