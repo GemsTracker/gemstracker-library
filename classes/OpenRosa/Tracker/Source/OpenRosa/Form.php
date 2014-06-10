@@ -338,7 +338,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         if (empty($this->deviceIdField)) {
             foreach ($this->_xml->children('h', true)->head->children()->model->bind as $bind) {
                 if ($presets = $bind->attributes('jr', true)) {
-                    foreach ($presets as $key => $value) {
+                    foreach ($presets as $value) {
                         if ($value == 'deviceid') {
                             $this->deviceIdField = $bind->attributes()->nodeset;
                             break;
@@ -359,7 +359,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     public function getFormID()
     {
         if (empty($this->formID)) {
-            foreach ($this->_xml->children('h', true)->head->children()->model->instance->children() as $name => $element) {
+            foreach ($this->_xml->children('h', true)->head->children()->model->instance->children() as $element) {
                 if (!empty($element->attributes()->id)) {
                     $this->formID = $element->attributes()->id;
                     break;
@@ -378,7 +378,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
     public function getFormVersion()
     {
         if (empty($this->formVersion)) {
-            foreach ($this->_xml->children('h', true)->head->children()->model->instance->children() as $name => $element) {
+            foreach ($this->_xml->children('h', true)->head->children()->model->instance->children() as $element) {
                 if (!empty($element->attributes()->version)) {
                     $this->formVersion = $element->attributes()->version;
                     break;
@@ -421,7 +421,6 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 switch ($bindInfo['type']) {
                     case 'date':
                     case 'dateTime':
-                        $label = null;
                         $label = $name;
 
                         // Now check some special fields
