@@ -552,8 +552,12 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
                     if ($nested === false) {
                         $nested = true;
-                        $relatedModel = new Gems_Model_JoinModel($this->body[$bindName]['repeat'], $this->getRelatedTableName(), 'orfr');
-                        $model->addModel($relatedModel, array('orf_id' => 'orfr_response_id'));
+                        $nestedName = $this->body[$bindName]['repeat'];
+                        $relatedModel = new Gems_Model_JoinModel($nestedName, $this->getRelatedTableName(), 'orfr');
+                        
+                        // Add some meta information to make export a little easier
+                        $model->setMeta('nested', true);
+                        $model->setMeta('nestedName', $nestedName);
                     }
                     $modelToUse = $relatedModel;
                 }
@@ -639,6 +643,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                         }
                         break;
                 }
+            }
+            if ($nested) {
+                $model->addModel($relatedModel, array('orf_id' => 'orfr_response_id'));
             }
             $this->model = $model;
         }

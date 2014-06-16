@@ -67,6 +67,10 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
                     // Remove unsuited data
                     unset($data[$name]['table'], $data[$name]['column_expression']);
                     unset($data[$name]['label'], $data[$name]['elementClass']);
+                    
+                    // Remove the submodel's own transformers to prevent changed/created to show up in the data array instead of only in the nested info
+                    unset($data[$name][MUtil_Model_ModelAbstract::LOAD_TRANSFORMER]);
+                    unset($data[$name][MUtil_Model_ModelAbstract::SAVE_TRANSFORMER]);
                 }
             }
         }

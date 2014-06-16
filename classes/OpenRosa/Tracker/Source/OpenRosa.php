@@ -347,6 +347,16 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
                 $result[$name] = $label;
             }
         }
+        
+        if ($model->getMeta('nested', false)) {
+            // We have a nested model, add the nested questions
+            $nestedModel = $model->get($model->getMeta('nestedName'), 'model');
+            foreach($nestedModel->getItemsOrdered() as $name) {  
+                if ($label = $nestedModel->get($name, 'label')) {
+                    $result[$name] = $label;
+                }
+            }
+        }
 
         return $result;
     }
@@ -400,6 +410,36 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
         $data = $select->query()->fetchAll();
         if (is_array($data)) {
             $data = $this->getSurvey($surveyId, $sourceSurveyId)->getModel()->processAfterLoad($data);
+            
+            // Check for nested answers
+            $model  = $this->getSurvey($surveyId, $sourceSurveyId)->getModel();
+            $nested = $model->getMeta('nested', false);
+            
+            if ($nested) {
+                $nestedName  = $model->getMeta('nestedName');
+                $oldData     = $data;
+                $data        = array();
+                $nestedModel = $model->get($nestedName, 'model');
+                $nestedKeys  = array();
+                foreach ($nestedModel->getItemsOrdered() as $name)
+                {
+                    if ($label = $nestedModel->get($name, 'label')) {
+                        $nestedKeys[$name]= $name;
+                    }
+                }
+                foreach ($oldData as $idx => $row)
+                {
+                    if (array_key_exists($nestedName, $row)) {
+                        $nestedRows = $row[$nestedName];
+                        unset($row[$nestedName]);
+                        foreach ($nestedRows as $idx2 => $nestedRow) {                            
+                            $data[$idx . '_' . $idx2] = $row + array_intersect_key($nestedRow, $nestedKeys);
+                        }
+                    } else {
+                        $data[$idx] = $row;
+                    }
+                }
+            }
         }
 
         if ($data) {
@@ -532,7 +572,7 @@ class OpenRosa_Tracker_Source_OpenRosa extends Gems_Tracker_Source_SourceAbstrac
             //Should also do something to get the better titles...
             $model->set($item, $options);
         }
-
+        
         return $model;
     }
 
