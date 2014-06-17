@@ -97,6 +97,22 @@ abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstra
     }
     
     /**
+     * Creates a valid filename for a survey
+     * 
+     * @param Gems_Tracker_Survey $survey
+     * @param string $extension Extension, including the dot
+     * @return string
+     */
+    protected function getFilename($survey, $extension = '.dat')
+    {
+        // Change all slashes, colons and spaces to underscores
+        $filename = str_replace(array('/', '\\', ':', ' '), '_', $survey->getName());
+        // Remove dot if it starts with one
+        $filename = trim($filename, '.');
+        return $filename . $extension;
+    }
+    
+    /**
      * Set the batch to be used by this source
      *
      * Use $this->hasBatch to check for existence

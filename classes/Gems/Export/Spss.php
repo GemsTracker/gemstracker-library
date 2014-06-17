@@ -78,7 +78,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
     {
         return array('file' => 'data');
     }
-
+    
     public function getFormElements(&$form, &$data)
     {
         $element    = new MUtil_Form_Element_Exhibitor('help');
@@ -274,7 +274,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
 
         $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', 'a');
              
-        $filenameDat = $survey->getName() . '.dat';
+        $filenameDat = $this->getFilename($survey, '.dat');
 
         //first output our script
         fwrite($f, 
@@ -376,13 +376,13 @@ GET DATA
     public function handleExportBatchFinalize($data, $file)
     {
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
-        $filename    = $survey->getName() . '.zip';
+        $filename    = $this->getFilename($survey, '.zip');
         $zipFile     = 'export-' . md5(time() . rand());
         
         $zipArchive = new ZipArchive();
         $zipArchive->open( GEMS_ROOT_DIR . '/var/tmp/' . $zipFile, ZipArchive::CREATE);
-        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', $survey->getName() . '.dat');
-        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', $survey->getName() . '.sps');
+        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat', $this->getFilename($survey, '.dat'));
+        $zipArchive->addFile(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps', $this->getFilename($survey, '.sps'));
         $zipArchive->close();
         unlink(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.dat');
         unlink(GEMS_ROOT_DIR . '/var/tmp/' . $file . '.sps');

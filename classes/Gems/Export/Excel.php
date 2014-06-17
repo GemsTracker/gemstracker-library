@@ -127,7 +127,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
         $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
         $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>0) + $filter); // Limit to one response
-        $filename    = $survey->getName() . '.xls';
+        $filename    = $this->getFilename($survey, '.xls');
         
         if (count($answers) === 0) {
             $noData = sprintf($this->_('No %s found.'), $this->_('data'));
