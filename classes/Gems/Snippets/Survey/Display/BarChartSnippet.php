@@ -240,8 +240,8 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         
         $this->doRulers($chart);
         
-        foreach ($data as $row) {            
-            $token = $this->loader->getTracker()->getToken($row);
+        foreach ($data as $row) {
+            $token = $this->loader->getTracker()->getToken($row['gto_id_token']);
             if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
                 $answers = $token->getRawAnswers();              
                 foreach ($questionCodes as $idx => $questionCode)
@@ -375,7 +375,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         if (!empty($this->data)) {
             $firstRow = reset($this->data);
             if (array_key_exists('gto_id_token', $firstRow)) {
-                $this->token = $this->loader->getTracker()->getToken($firstRow);
+                $this->token = $this->loader->getTracker()->getToken($firstRow['gto_id_token']);
             }
         }
     }
