@@ -330,7 +330,7 @@ class Gems_User_Organization extends Gems_Registry_CachedArrayTargetAbstract
      */
     public function hasRespondentGroup()
     {
-        return (boolean) $this->_has('gor_respondent_group');
+        return $this->_has('gor_respondent_group');
     }
 
     /**
