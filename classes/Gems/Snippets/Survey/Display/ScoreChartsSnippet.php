@@ -58,7 +58,7 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
 
         // Find the first token with answers
         foreach($data as $tokenData) {
-            $token = $this->loader->getTracker()->getToken($tokenData);
+            $token = $this->loader->getTracker()->getToken($tokenData)->refresh();
             $tokenAnswers = $token->getRawAnswers();
             if (!empty($tokenAnswers)) {
                 break;
@@ -79,19 +79,19 @@ class Gems_Snippets_Survey_Display_ScoreChartsSnippet extends Gems_Snippets_Trac
                 }
             }
         }
-        
+
         // Set the default options
         $defaultOptions = array(
             'data'=>$data,
             'showHeaders' => false,
             'showButtons' => false
             );
-        
+
         // Add all configured charts
         foreach ($config as $chartOptions) {
             $chartOptions = $chartOptions + $defaultOptions;
             $snippets[] = $this->loader->getSnippetLoader($this)->getSnippet('Survey_Display_BarChartSnippet', $chartOptions);
-        }        
+        }
 
         // Clear the floats
         $snippets[] = MUtil_Html::create()->p(array('class'=>'chartfooter'));

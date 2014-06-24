@@ -36,14 +36,14 @@
 
 /**
  * The BarChart snippet provides a single dimension barchart based on one question_code for all surveys using a specific survey_code
- * 
+ *
  * Options are:
  *      $min / $max             for min and max values for the chart
  *      $showButtons            show buttons underneath the chart for cancel / print
  *      $showHeaders            show a header for the overview (chart always has a header)
  *      $question_code          single question code or array of questioncodes to get a grouped barchart
  *      $survey_code
- * 
+ *
  *
  * @package    Gems
  * @subpackage Snippets\Survey\Display
@@ -53,7 +53,7 @@
  * @version    $Id$
  */
 class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_SnippetAbstract {
-    
+
     /**
      * Switch to put the display of the cancel and print buttons.
      *
@@ -67,83 +67,83 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
      * @var boolean
      */
     protected $showHeaders = true;
-    
+
     /**
      * The maximum value
-     * 
+     *
      * @var int
      */
     protected $max = 100;
-    
+
     /**
      * Minimum value
-     * 
+     *
      * @var int
      */
     protected $min = 0;
-    
+
     /**
      * The question code to use for the chart
-     * 
+     *
      * @var string
      */
     public $question_code = null;
-    
+
     /**
      * The question text to use for the chart
-     * 
+     *
      * @var string
      */
     public $question_text = null;
-    
+
     /**
      * The survey code to select on
-     * 
+     *
      * @var string
      */
     public $survey_code = null;
-    
+
     /**
      *
      * @var Gems_Loader
      */
     public $loader;
-    
+
     /**
      * @var Zend_Controller_Request_Abstract
-     */    
+     */
     public $request;
-    
+
     public $data;
-    
+
     /**
      * Array of rulers, defaults to each 10% a ruler
-     * 
+     *
      * percentage (0-100)
      * value      (between min/max)
      * class       positive/negative for green/red color
-     * 
+     *
      * @var array
      */
     public $rulers = array();
-    
+
     /**
      * Show gridlines every 10%
      *
      * @var boolean
      */
     public $grid = true;
-    
+
     /**
      *
      * @var Gems_Tracker_Token
-     */       
+     */
     public $token;
-    
+
     protected function doRulers($chart)
     {
         $html = MUtil_Html::create();
-        
+
         if ($this->grid) {
             $rulers = array_merge(
             array(
@@ -156,13 +156,13 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                 array('percentage' => 70),
                 array('percentage' => 80),
                 array('percentage' => 90)
-            ), 
+            ),
             $this->rulers
             );
         } else {
             $rulers = $this->rulers;
         }
-        
+
         foreach ($rulers as $ruler)
         {
             $defaults = array('value'=>0, 'class'=>'');
@@ -172,37 +172,37 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             } else {
                 $position = 100 - $ruler['percentage'];
             }
-                
+
             // Only draw rulers that are in the visible range
             if ($position >= 0 && $position <= 100) {
                 if (array_key_exists('label', $ruler) && !empty($ruler['label'])) {
-                    $chart[] = $html->div($ruler['label'], array('style'=>sprintf('top: %s%%;', $position), 'class'=>'label', 'renderClosingTag'=>true));    
+                    $chart[] = $html->div($ruler['label'], array('style'=>sprintf('top: %s%%;', $position), 'class'=>'label', 'renderClosingTag'=>true));
                 }
                 $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
             }
         }
     }
-       
+
     public function getChart()
-    {       
+    {
         $token = $this->token;
         $data = $this->data;
-        
+
         $questions = $token->getSurvey()->getQuestionList($this->loader->getCurrentUser()->getLocale());
         $surveyName = $token->getSurveyName();
-                
+
         // Convert questioncode to array if not already so
         $questionCodes = $this->question_code;
         if (! is_array($questionCodes)) {
             $questionCodes = (array) $questionCodes;
         }
-        
+
         if (count($questionCodes)>1) {
             $grouped = true;
         } else {
-            $grouped = false;            
+            $grouped = false;
         }
-        
+
         if (empty($this->question_text)) {
             if ($grouped) {
                 $question = join(', ', $questionCodes);
@@ -212,7 +212,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         } else {
             $question = $this->question_text;
         }
-        
+
         $html = MUtil_Html::create();
         $wrapper = $html->div(null, array('class'=>'barchart-wrapper'));
         $wrapper->div('', array('class'=>'header'))
@@ -220,7 +220,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                 ->append($html->br())
                 ->append($html->i($question));
         $chart = $wrapper->div(null, array('class'=>'barchart'));
-        
+
         // the legend, only for printing since it is a hover for screen
         $legend = $html->div('', array('class'=>'legend'));
         $legendrow = $html->div('', array('class'=>'legendrow header'));
@@ -231,27 +231,27 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
         }
         $legendrow[] = $html->div($this->_('Value'), array('class'=> 'value', 'renderClosingTag'=>true));
         $legend[] = $legendrow;
-       
+
         $range = $this->max - $this->min;
 
         $maxcols = 5;
         $chart[] = $html->div($this->max, array('class'=>'max'));
         $chart[] = $html->div($this->min, array('class'=>'min'));
-        
+
         $this->doRulers($chart);
-        
+
         foreach ($data as $row) {
-            $token = $this->loader->getTracker()->getToken($row['gto_id_token']);
+            $token = $this->loader->getTracker()->getToken($row)->refresh();
             if ($token->getReceptionCode()->isSuccess() && $token->isCompleted()) {
-                $answers = $token->getRawAnswers();              
+                $answers = $token->getRawAnswers();
                 foreach ($questionCodes as $idx => $questionCode)
-                {              
+                {
                     if (array_key_exists($questionCode, $answers)) {
                         $value = (float) $answers[$questionCode];        // Cast to number
                         $height = max(min($this->getPercentage($value), 100),10);    // Add some limits
-                        
+
                         $valueBar = $html->div('', array(
-                            'class' => 'bar col'.(($idx % $maxcols) + 1), 
+                            'class' => 'bar col'.(($idx % $maxcols) + 1),
                             'style' => sprintf('height: %s%%;', $height),
                             // onclick can be usability issue for touch devices
                             'onclick' => 'location.href=\'' . new MUtil_Html_HrefArrayAttribute(array('controller'=>'track', 'action'=>'answer', MUtil_Model::REQUEST_ID => $token->getTokenId() )) . '\';'
@@ -273,7 +273,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                         $legendrow[] = $html->div($date, array('class'=> 'date', 'renderClosingTag'=>true));
                         $legendrow[] = $html->div($token->getRoundDescription(), array('class'=> 'round', 'renderClosingTag'=>true));
                         if ($grouped) {
-                            $legendrow[] = $html->div($questionCode, array('class'=> 'code', 'renderClosingTag'=>true));    
+                            $legendrow[] = $html->div($questionCode, array('class'=> 'code', 'renderClosingTag'=>true));
                         }
                         $legendrow[] = $html->div($answers[$questionCode], array('class'=> 'value', 'renderClosingTag'=>true));
                         $legend[] = $legendrow;
@@ -292,26 +292,26 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
                     $class = 'spacer wide bar';
                 } else {
                     $class = 'spacer bar';
-                }                
+                }
                 $chart[] = $html->div(Mutil_Html::raw('&nbsp;'), array('class' => $class));
             }
         }
         $wrapper[] = $legend;
-        
+
         return $wrapper;
     }
-    
+
     /**
      * Copied from parent, but insert chart instead of table after commented out part
-     * 
+     *
      * @param \Zend_View_Abstract $view
      * @return type
      */
     public function getHtmlOutput(\Zend_View_Abstract $view) {
-        //$view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');            
+        //$view->headLink()->prependStylesheet($view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath() . '/gems/css/barchart.less', 'screen,print');
 
         $htmlDiv   = MUtil_Html::create()->div(' ', array('class'=>'barchartcontainer'));
-        
+
         if ($this->showHeaders) {
             if (isset($this->token)) {
                 $htmlDiv->h3(sprintf($this->_('Overview for patient number %s'), $this->token->getPatientNumber()));
@@ -336,27 +336,27 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             $buttonDiv->actionLink(array(), $this->_('Back'), array('onclick' => 'window.history.go(-1); return false;'));
             $buttonDiv->actionLink(array(), $this->_('Print'), array('onclick' => 'window.print();'));
         }
-        
+
         // Make vertically resizable
         $view = Zend_Layout::getMvcInstance()->getView();
         ZendX_JQuery::enableView($view);
-        
+
         // We need width 100% otherwise it will look strange in print output
-        $view->jQuery()->addOnLoad("$('.barchart').resizable({ 
+        $view->jQuery()->addOnLoad("$('.barchart').resizable({
             handles: 's',
             resize: function( event, ui ) { ui.element.css({ width: '100%'}); },
             minHeight: 150
             });");
-        
+
         return $htmlDiv;
     }
-    
+
     public function afterRegistry() {
         parent::afterRegistry();
-        
+
         $orgId     = $this->request->getParam(MUtil_Model::REQUEST_ID2);
         $patientNr = $this->request->getParam(MUtil_Model::REQUEST_ID1);
-        
+
         if (! $this->data) {
             $data = $this->loader->getTracker()->getTokenSelect()
                     ->andRespondentOrganizations()
@@ -371,25 +371,25 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
 
             $this->data = $data;
         }
-        
+
         if (!empty($this->data)) {
             $firstRow = reset($this->data);
             if (array_key_exists('gto_id_token', $firstRow)) {
-                $this->token = $this->loader->getTracker()->getToken($firstRow['gto_id_token']);
+                $this->token = $this->loader->getTracker()->getToken($firstRow)->refresh();
             }
         }
     }
-    
+
     /**
      * Return the percentage in the range between min and max for this chart
-     * 
+     *
      * @param number $value
      * @return float
      */
     private function getPercentage($value)
     {
         $percentage = ($value - $this->min) / ($this->max - $this->min) * 100;
-        
+
         return $percentage;
     }
 }
