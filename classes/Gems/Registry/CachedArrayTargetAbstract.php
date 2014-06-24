@@ -106,6 +106,17 @@ abstract class Gems_Registry_CachedArrayTargetAbstract extends Gems_Registry_Tar
     }
 
     /**
+     * array access test helper function.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    protected function _has($name)
+    {
+        return (boolean) isset($this->_data[$name]);
+    }
+    
+    /**
      * Changes a value and signals the cache.
      *
      * @param string $name

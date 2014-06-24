@@ -674,9 +674,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 $id = $this->db->fetchOne($sql, $search);
 
                 // Check for change in patient ID
-                if ($id &&
-                        isset($newValues['gr2o_id_organization']) &&
-                        $this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
+                if ($id && isset($newValues['gr2o_id_organization'])) {
 
                     $sql = 'SELECT gr2o_patient_nr
                             FROM gems__respondent2org

@@ -517,10 +517,22 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $fieldInfo = null;
         }
 
-        if ($fieldInfo) {
-            $table = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
+        if ($fieldInfo) {           
+            // Slow
+            //$table1 = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
+            //$table1->appendAttrib('class', $this->formatBoxClass);
+            
+            // Fast
+            $table = MUtil_Html_TableElement::table();
+            $table->caption($this->_('Import field definitions'));
             $table->appendAttrib('class', $this->formatBoxClass);
-
+            $repeater = new MUtil_Lazy_Repeatable($fieldInfo);
+            $table->setRepeater($repeater);
+            foreach (reset($fieldInfo) as $title => $element)
+            {
+                $table->addColumn($repeater->$title, $title);
+            }
+            
             $element = new MUtil_Form_Element_Html('transtable');
             $element->setValue($table);
 
@@ -827,13 +839,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 // Prepend the 'required' row
                 $resultRow = array($this->_('Required') => $required ? $this->_('Yes') : ' ') +
-                    array_merge($minimal, $resultRow);;
+                    array_merge($minimal, $resultRow);
 
                 $output[$name] = $resultRow;
             }
         }
         uksort($output, array($this, '_sortTranslatorTable'));
-
+ 
         return $output;
     }
 
