@@ -507,7 +507,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
                         $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
                         if (method_exists($model, $typeFunction)) {
-                            $value = $model->$typeFunction($calcUsing, $data);
+                            $value = $model->$typeFunction($calcUsing, $data, $respTrackId);
                         }
                     }
                 }

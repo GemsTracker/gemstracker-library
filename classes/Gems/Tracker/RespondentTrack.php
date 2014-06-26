@@ -476,7 +476,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * Returns a token with a success reception code for this round or null
      *
      * @param type $roundId Gems round id
-     * @param Gems_Tracker_Token $token
+     * @param Gems_Tracker_Token $token Optional token to add as a round (for speed optimization)
      * @return Gems_Tracker_Token
      */
     public function getActiveRoundToken($roundId, Gems_Tracker_Token $token = null)
@@ -486,7 +486,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             //
             // WARNING: This may cause bugs for tracks where two tokens exists
             // with this roundId and a success reception code, but this does speed
-            // this function witrh track engines where that should not occur.
+            // this function with track engines where that should not occur.
             $this->_activeTokens[$token->getRoundId()] = $token;
         }
 
