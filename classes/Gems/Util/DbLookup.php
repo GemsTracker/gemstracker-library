@@ -532,7 +532,7 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
         $select->from('gems__surveys')
             ->join('gems__sources', 'gsu_id_source = gso_id_source')
             ->where('gso_active = 1')
-            ->where('gsu_surveyor_active = 1')
+            //->where('gsu_surveyor_active = 1')    // Leave inactive surveys, we toss out the inactive ones for limesurvey as it is no problem for OpenRosa to have them in
             ->order(array('gsu_active DESC', 'gsu_survey_name'));
 
         if ($trackId) {
