@@ -59,7 +59,7 @@ class Gems_JQuery_View_Helper_ColorPicker extends ZendX_JQuery_View_Helper_Color
 
         $this->jquery->addOnLoad($js);
         
-        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath() . '/';
+        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath();
         $this->view->headScript()->appendFile($baseUrl . '/gems/spectrum/spectrum.js');
         $this->view->headLink()->appendStylesheet($baseUrl . '/gems/spectrum/spectrum.css');
         //$z = new Zend_View_Helper_HeadStyle()->append($baseUrl)
