@@ -208,7 +208,7 @@ class Gems_User_Form_LayeredLoginForm extends Gems_User_Form_LoginForm
     public function getTopOrganisations()
     {
         try {
-            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND gor_accessible_by IS NULL ORDER BY gor_name');
+            $organizations = $this->db->fetchPairs('SELECT gor_id_organization, gor_name FROM gems__organizations WHERE gor_active=1 AND gor_has_login=1 AND (gor_accessible_by IS NULL OR gor_accessible_by = "::") ORDER BY gor_name');
         } catch (Exception $e) {
             try {
                 // 1.4 fallback
