@@ -189,6 +189,7 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
 
         foreach ($this->_compilations[$name] as $function) {
             $value = call_user_func($function, $value);
+            $value = MUtil_Lazy::rise($value);      // Quickfix for string conversion error
         }
 
         return $value;
