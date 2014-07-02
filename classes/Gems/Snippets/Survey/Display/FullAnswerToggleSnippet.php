@@ -51,6 +51,12 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
      */
     protected $request;
     
+    /**
+     *
+     * @var Gems_Menu
+     */
+    public $menu;
+    
     public function getHtmlOutput(\Zend_View_Abstract $view) {
         $html = $this->getHtmlSequence();
 
@@ -69,12 +75,14 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
             'action' => $request->getActionName(),
             'routereset' => true) + $params;
         $html->a($url, $this->_('Toggle'), array('class' => 'actionlink'));
+
+        // Now add the menulist all buttons under answer
+        $menuList = $this->menu->getMenuList();
+        $menuList->addParameterSources($this->menu->getParameterSource())
+                 ->addCurrentChildren();
         
-        $url = array('controller' => $request->getControllerName(),
-            'action' => 'answer-export',
-            'routereset' => true) + $state;
-        $html->a($url, $this->_('PDF export'), array('class' => 'actionlink'));
-        $html->hr(array('class'=>'noprint'));
+        $html[] = $menuList;
+        $html->hr(array('class'=>'noprint'));       
 
         return $html;
     }

@@ -467,11 +467,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
-            $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
+            $answers = $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
                     ->set('target', MUtil_Model::REQUEST_ID);
-            $tkPage->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
+            $answers->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
                     ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
                     ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
                     ->set('target', MUtil_Model::REQUEST_ID);
