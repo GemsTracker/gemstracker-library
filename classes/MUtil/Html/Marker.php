@@ -27,41 +27,87 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version    $Id$
  * @package    MUtil
  * @subpackage Html
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
+ * Class to mark text in HTML content, e.g. to nmark the result of a search statement
+ *
  * @package    MUtil
  * @subpackage Html
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @since      Class available since version 1.0
  */
 class MUtil_Html_Marker
 {
+    /**
+     * Marker for tags in
+     */
     const TAG_MARKER = "\0";
 
+    /**
+     *
+     * @var string Any other attributes to add to the tag
+     */
     private $_attributes = null;
+
+    /**
+     *
+     * @var string The encoding used
+     */
     private $_encoding = 'UTF-8';
+
+    /**
+     *
+     * @var array Calculated array containing the texts to replace
+     */
     private $_replaces;
+
+    /**
+     *
+     * @var array Calculated array containing the texts to search for
+     */
     private $_searches;
+
+    /**
+     *
+     * @var string The element name for the tagged parts
+     */
     private $_tag;
 
+    /**
+     * Create the marker
+     *
+     * @param array $searches The texts parts to mark
+     * @param string $tag The element name for the tagged parts
+     * @param string $encoding The encoding used
+     * @param string $attributes Any other attributes to add to the tag
+     */
     public function __construct($searches, $tag, $encoding, $attributes = 'class="marked"')
     {
         $this->setEncoding($encoding);
+
         $this->_tag      = $tag;
+        $this->_searches = (array) $searches;
 
         if ($attributes) {
             $this->_attributes = ' ' . trim($attributes) . ' ';
         }
 
-        $this->_searches = (array) $searches;
     }
 
+    /**
+     * Replace the tag markers with the actual tag
+     *
+     * @param string $text
+     * @return string
+     */
     private function _fillTags($text)
     {
         return str_replace(
@@ -70,16 +116,34 @@ class MUtil_Html_Marker
                 $text);
     }
 
+    /**
+     * Find and replace the actual texts
+     *
+     * @param string $text
+     * @return string
+     */
     private function _findTags($text)
     {
         return str_ireplace($this->_searches, $this->_replaces, $text);
     }
 
+    /**
+     * Generic html output escape function
+     *
+     * @param string $value
+     * @return string
+     */
     public function escape($value)
     {
         return htmlspecialchars($value, ENT_COMPAT, $this->_encoding);
     }
 
+    /**
+     * Mark the searches in $value
+     * 
+     * @param mixed $value Lazy, Html, Raw or string
+     * @return \MUtil_Html_Raw
+     */
     public function mark($value)
     {
         if (! $this->_replaces) {
@@ -97,6 +161,10 @@ class MUtil_Html_Marker
                 $this->_searches[] = $searchHtml;
                 $this->_replaces[] = $topen . $searchHtml . $tclose;
             }
+        }
+
+        if ($value instanceof MUtil_Lazy_LazyInterface) {
+            $value = MUtil_Lazy::rise($value);
         }
 
         if ($value instanceof MUtil_Html_Raw) {
@@ -147,7 +215,9 @@ class MUtil_Html_Marker
      */
     public function setEncoding($encoding)
     {
-        $this->_encoding = $encoding;
+        if ($encoding) {
+            $this->_encoding = $encoding;
+        }
 
         return $this;
     }

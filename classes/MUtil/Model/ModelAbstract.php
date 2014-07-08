@@ -911,7 +911,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         if (! isset($bridges[$identifier])) {
             // We cannot create when noting is specified
-            throw new MUtil_Model_ModelException("Request for unknown bridge tpye $identifier.");
+            throw new MUtil_Model_ModelException("Request for unknown bridge type $identifier.");
         }
 
         // First parameter is always the model, using + replaces that value

@@ -47,6 +47,23 @@
  */
 class MUtil_Html_AElement extends MUtil_Html_HtmlElement
 {
+    /**
+     * Most elements must be rendered even when empty, others should - according to the
+     * xhtml specifications - only be rendered when the element contains some content.
+     *
+     * $renderWithoutContent controls this rendering. By default an element tag is output
+     * but when false the tag will only be present if there is some content in it.
+     *
+     * Some examples of elements rendered without content are:
+     *   a, br, hr, img
+     *
+     * Some examples of elements NOT rendered without content are:
+     *   dd, dl, dt, label, li, ol, table, tbody, tfoot, thead and ul
+     *
+     * @see $_repeater
+     *
+     * @var boolean The element is rendered even without content when true.
+     */
     public $renderWithoutContent = true;
 
     /**
@@ -104,7 +121,13 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
         return new self($args);
     }
 
-
+    /**
+     * Return a mailto: link object
+     *
+     * @param mixed $email
+     * @param mixed $arg_array
+     * @return \self
+     */
     public static function email($email, $arg_array = null)
     {
         $args = MUtil_Ra::args(func_get_args(), 1);
@@ -125,18 +148,45 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
         return new self($href, $email, $args);
     }
 
+    /**
+     * Return a link object when $iff is true
+     *
+     * @param MUtil_Lazy $iff The test
+     * @param mixed $aArgs Arguments when the test is true
+     * @param mixed $spanArgs Arguments when the test is false
+     * @return mixed
+     */
     public static function iflink($iff, $aArgs, $spanArgs = null)
     {
-        if ($spanArgs) {
-            return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs), MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false)));
-        } else {
-            return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs));
+        if ($iff instanceof MUtil_Lazy) {
+            if ($spanArgs) {
+                return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs), MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false)));
+            } else {
+                return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs));
+            }
+        }
+        if ($iff) {
+            return MUtil_Html::create('a', $aArgs);
+        } elseif ($spanArgs) {
+            return MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false));
         }
     }
 
+    /**
+     * Return a mailto link if $email exists and other wise return nothing.
+     *
+     * @param mixed $email
+     * @param mixed $arg_array
+     * @return mixed
+     */
     public static function ifmail($email, $arg_array = null)
     {
         $args = func_get_args();
-        return MUtil_Lazy::iff($email, call_user_func_array(array(__CLASS__, 'email'), $args));
+        if ($email instanceof MUtil_Lazy) {
+            return MUtil_Lazy::iff($email, call_user_func_array(array(__CLASS__, 'email'), $args));
+        }
+        if ($email) {
+            return self::email($args);
+        }
     }
 }
