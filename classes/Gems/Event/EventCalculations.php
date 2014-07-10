@@ -149,7 +149,7 @@ class Gems_Event_EventCalculations
 
         foreach($values as $name => $result) {
             $result = intval($result);
-            if (($tokenAnswers[$name] != $result) && ($tokenAnswers[$name] !== null)) {
+            if (($tokenAnswers[$name] != $result) || ($tokenAnswers[$name] === null)) {
                 $results[$name] = $result;
             }
         }
