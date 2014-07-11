@@ -319,9 +319,14 @@ class Gems_Default_OpenrosaAction extends Gems_Controller_BrowseEditAction
         );
         if ($formData          = $model->loadFirst($filter)) {
             $this->openrosaFormID = $formData['gof_id'];
-            $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
-            $answers = $form->saveAnswer($answerXmlFile);
-            return $answers['orf_id'];
+            // Safeguard for when the form definition no longer exists
+            try {
+                $form = new OpenRosa_Tracker_Source_OpenRosa_Form($this->formDir . $formData['gof_form_xml']);
+                $answers = $form->saveAnswer($answerXmlFile);
+                return $answers['orf_id'];                
+            } catch (Exception $exc) {
+                return false;
+            }
         } else {
             return false;
         }

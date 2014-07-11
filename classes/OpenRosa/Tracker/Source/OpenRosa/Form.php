@@ -148,6 +148,8 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         switch ($type) {
             case 'dateTime':
+                // A null value will sometimes be empty, causing errors in Zend_Date
+                if (empty($value)) {$value = null;}
                 $output[$key] = new Zend_Date($value, Zend_Date::ISO_8601);
                 break;
 
@@ -739,8 +741,8 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         if ($model->getChanged() && $remove) {
             $log     = Gems_Log::getLogger();
-            $log->log($file .  '-->' .  substr($file, 0, -3) . 'bak', Zend_Log::ERR);
-            rename($file, substr($file, 0, -3) . 'bak');
+            $log->log($file .  '-->' .  substr($file, 0, -4) . '.bak', Zend_Log::ERR);
+            rename($file, substr($file, 0, -4) . '.bak');
         }
         // @@TODO: make hook for respondentID lookup too
         if (isset($answers['token'])) {
