@@ -49,6 +49,61 @@ require_once __DIR__ . '/lessc.inc.php';
 class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 {
     /**
+     * Utility function to base64 encode gradients for use in IE
+     * 
+     * @param type $args
+     * @return type
+     */
+    public function base64encode($args)
+    {
+        list($type, $value, $unit) = $args;
+        
+        $unit = array(base64_encode( $this->compileValue($args)));
+        
+        return array('string', '"', $unit);
+    }
+    
+    /**
+     * Copied mostly from less.inc.php
+     * 
+     * Needed since it is protected
+     * 
+     * @param type $value
+     * @return type
+     */
+    protected function compileValue($value)
+    {
+		switch ($value[0]) {
+		case 'list':
+			// [1] - delimiter
+			// [2] - array of values
+			return implode($value[1], array_map(array($this, 'compileValue'), $value[2]));
+		case 'keyword':
+			// [1] - the keyword
+			return $value[1];
+		case 'number':
+			list(, $num, $unit) = $value;
+			// [1] - the number
+			// [2] - the unit
+			if ($this->numberPrecision !== null) {
+				$num = round($num, $this->numberPrecision);
+			}
+			return $num . $unit;
+		case 'string':
+			// [1] - contents of string (includes quotes)
+			list(, $delim, $content) = $value;
+			foreach ($content as &$part) {
+				if (is_array($part)) {
+					$part = $this->compileValue($part);
+				}
+			}
+			return $delim . implode($content) . $delim;
+		default: // assumed to be unit
+			$this->throwError("unknown value type: $value[0]");
+		}
+    }
+    
+    /**
      * Compile a less file
      *
      * @param Zend_View $view
@@ -76,6 +131,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
             // MUtil_Echo::track($inFile, $outFile);
 
             $lessc = new lessc();
+            $lessc->registerFunction('base64encode', array($this, 'base64encode'));
             if ($always || array_key_exists('compilecss', Zend_Controller_Front::getInstance()->getRequest()->getParams())) {
                 $result = (boolean) $lessc->compileFile($inFile, $outFile);
             } else {
