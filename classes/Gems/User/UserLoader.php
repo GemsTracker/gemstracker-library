@@ -656,21 +656,36 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
                 ->where('gor_id_organization = ?', $organization)
                 ->order('tolerance');
         }
+        $wheres[] = $this->db->quoteInto('gul_login = ?', $login_name);
+        $isEmail  = MUtil_String::contains($login_name, '@');
 
-        $ids[] = 'gul_login';
-
-        if ($this->allowStaffEmailLogin) {
-            $select->joinLeft('gems__staff', 'gul_login = gsf_login AND gul_id_organization = gsf_id_organization', array());
-            $ids[] = 'gsf_email';
+        if ($isEmail && $this->allowStaffEmailLogin) {
+            $rows = $this->db->fetchAll(
+                    "SELECT gsf_login, gsf_id_organization FROM gems__staff WHERE gsf_email = ?",
+                    $login_name
+                    );
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $wheres[] = $this->db->quoteInto('gul_login = ? AND ', $row['gsf_login'])
+                            . $this->db->quoteInto('gul_id_organization = ?', $row['gsf_id_organization']);
+                }
+            }
         }
-        if ($this->allowRespondentEmailLogin) {
-            $select->joinLeft('gems__respondent2org', 'gul_login = gr2o_patient_nr AND gul_id_organization = gr2o_id_organization', array())
-                ->joinLeft('gems__respondents', 'gr2o_id_user = grs_id_user', array());
-            $ids[] = 'grs_email';
+        if ($isEmail && $this->allowRespondentEmailLogin) {
+            $rows = $this->db->fetchAll(
+                    "SELECT gr2o_patient_nr, gr2o_id_organization FROM gems__respondent2org  "
+                    . "INNER JOIN gems__respondents WHERE gr2o_id_user = grs_id_user AND grs_email = ?",
+                    $login_name
+                    );
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $wheres[] = $this->db->quoteInto('gul_login = ? AND ', $row['gr2o_patient_nr'])
+                            . $this->db->quoteInto('gul_id_organization = ?', $row['gr2o_id_organization']);
+                }
+            }
         }
         // Add search fields
-        $select->where('(' . implode(' = ? OR ', $ids) . ' = ?)', $login_name);
-
+        $select->where('(' . implode(') OR (', $wheres) . ')');
         // MUtil_Echo::track($select->__toString());
 
         return $select;
