@@ -92,7 +92,14 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
         foreach ($this->_rounds as $roundId => $round) {
             $rounds[$roundId] = $this->getRoundDescription($round);
         }
-        $rounds[$itemData['gro_id_round']] = $this->_('This round');
+
+        if (!empty($itemData['gro_id_round'])) {
+            $rounds[$itemData['gro_id_round']] = $this->_('This round');
+        } else {
+            // For new rounds we use 0. The snippet will update this on save
+            // to the new roundid
+            $rounds['0'] = $this->_('This round');
+        }
         return $this->_applyOptions($model, 'gro_valid_for_id', $rounds, $itemData);
     }
 
@@ -155,6 +162,43 @@ class Gems_Tracker_Engine_AnyStepEngine extends Gems_Tracker_Engine_StepEngineAb
     public function getName()
     {
         return $this->_('Previous Survey');
+    }
+    
+    /**
+     * Get the defaults for a new round
+     *
+     * @return array Of fieldname => default
+     */
+    public function getRoundDefaults() {
+        $defaults = parent::getRoundDefaults();
+                
+        // Now check if the valid for depends on the same round
+        if(count($defaults)>1) {
+            $lastRound = end($this->_rounds);   // We need the ID to compare
+            if ($defaults['gro_valid_for_source'] == 'tok'
+             && $defaults['gro_valid_for_field']  == 'gto_valid_from'
+             && $defaults['gro_valid_for_id']     == $lastRound['gro_id_round']) {
+                $defaults['gro_valid_for_id'] = 0;  // Will be updated on save
+            }
+        }
+        
+        return $defaults;
+    }
+    
+    /**
+     * Returns a model that can be used to retrieve or save the data.
+     *
+     * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
+     * @param string $action The current action
+     * @return MUtil_Model_ModelAbstract
+     */
+    public function getRoundModel($detailed, $action) {
+        $model = parent::getRoundModel($detailed, $action);
+        
+        $model->set('gro_valid_for_id',
+                'default', '0');
+        
+        return $model;
     }
 
     /**

@@ -206,6 +206,19 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         if ($this->createData && (! $this->roundId)) {
             $this->roundId = $this->formData['gro_id_round'];
         }
+
+
+        if ($this->formData['gro_valid_for_source'] == 'tok'
+         && $this->formData['gro_valid_for_field']  == 'gto_valid_from'
+         && empty($this->formData['gro_valid_for_id'])) {
+            // Special case we should insert the current roundID here
+            $this->formData['gro_valid_for_id'] = $this->roundId;
+
+            // Now save, don't call saveData again to keep changed message as is
+            $model          = $this->getModel();
+            $this->formData = $model->save($this->formData);
+        }
+
         $this->trackEngine->updateRoundCount($this->userId);
     }
 }
