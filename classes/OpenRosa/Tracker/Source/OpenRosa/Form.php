@@ -107,7 +107,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      */
     protected function _getBindName($name)
     {
-        return str_replace('_', '/', '_data_' . $name);
+        return '/data/' . $name;
     }
 
     /**
@@ -204,6 +204,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             } else {
                 $bindInfo['type'] = 'string';
             }
+            
+            // Now convert $name including / to _
+            $mysqlName = str_replace('/', '_', $name);
 
             $field = array();
             switch ($bindInfo['type']) {
@@ -231,7 +234,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $field['type'] = 'int';
                     $items         = $this->body[$bindName]['item'];
                     foreach ($items as $key => $value) {
-                        $multiName = $name . '_' . $key;
+                        $multiName = $mysqlName . '_' . $key;
                         $sql .= "  " . $db->quoteIdentifier($multiName) . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
                     }
                     //So we don't get an extra field
@@ -266,14 +269,14 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     $field['size'] = '(11,7)';
                     $field['type'] = 'decimal';
                     $items         = $this->body[$bindName]['item'];
-                    $answers[$name . '_lat'] = $items[0];
-                    $answers[$name . '_long'] = $items[1];
-                    $answers[$name . '_alt'] = $items[2];
-                    $answers[$name . '_acc'] = $items[3];
-                    $sql .= "  " . $db->quoteIdentifier($name . '_lat') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($name . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($name . '_alt') . " int DEFAULT 0 NOT NULL,\n";
-                    $sql .= "  " . $db->quoteIdentifier($name . '_acc') . " int DEFAULT 0 NOT NULL,\n";
+                    $answers[$mysqlName . '_lat'] = $items[0];
+                    $answers[$mysqlName . '_long'] = $items[1];
+                    $answers[$mysqlName . '_alt'] = $items[2];
+                    $answers[$mysqlName . '_acc'] = $items[3];
+                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_lat') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_long') . " {$field['type']}{$field['size']} DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_alt') . " int DEFAULT 0 NOT NULL,\n";
+                    $sql .= "  " . $db->quoteIdentifier($mysqlName . '_acc') . " int DEFAULT 0 NOT NULL,\n";
 
                     //So we don't get an extra field
                     unset($field['type']);
@@ -286,7 +289,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             }
 
             if (isset($field['type'])) {
-                $sql .= "  " . $db->quoteIdentifier($name) . " {$field['type']}{$field['size']} DEFAULT NULL,\n";
+                $sql .= "  " . $db->quoteIdentifier($mysqlName) . " {$field['type']}{$field['size']} DEFAULT NULL,\n";
             }
 
             if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
@@ -444,7 +447,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
         $output = array();
         foreach ($xml as $name => $element) {
             if (!empty($parent)) {
-                $elementName = $parent . '_' . $name;
+                $elementName = $parent . '/' . $name;
             } else {
                 $elementName = $name;
             }
@@ -550,6 +553,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 } else {
                     $bindInfo['type'] = 'string';
                 }
+                
+                // Now convert $name including / to _
+                $modelName = str_replace('/', '_', $name);
 
                 if (array_key_exists($bindName, $this->body) && array_key_exists('repeat', $this->body[$bindName])) { // CHECK NESTED
                     if ($nested === false) {
@@ -567,7 +573,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 switch ($bindInfo['type']) {
                     case 'date':
                     case 'dateTime':
-                        $label = $name;
+                        $label = $modelName;
 
                         // Now check some special fields
                         if (array_key_exists('jr', $bindInfo)) {
@@ -577,10 +583,10 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             if (count($found) == count($keys) && $found['preload'] == 'timestamp') {
                                 if ($found['preloadParams'] == 'start') {
                                     $label = $this->translate->_('Start date');
-                                    $modelToUse->setMeta('start', $name);
+                                    $modelToUse->setMeta('start', $modelName);
                                 } elseif ($found['preloadParams'] == 'end') {
                                     $label = $this->translate->_('Completion date');
-                                    $modelToUse->setMeta('end', $name);
+                                    $modelToUse->setMeta('end', $modelName);
                                 }
                             }
                         }
@@ -593,7 +599,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                                 }
                             }
                         }
-                        $modelToUse->set($name, 'label', $label);
+                        $modelToUse->set($modelName, 'label', $label);
                         break;
 
 
@@ -601,7 +607,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                         //A multi select
                         $items         = $this->body[$bindName]['item'];
                         foreach ($items as $key => $value) {
-                            $multiName = $name . '_' . $key;
+                            $multiName = $modelName . '_' . $key;
                             $label     = sprintf('%s [%s]', $this->body[$bindName]['label'], $value);
                             $modelToUse->set($multiName, 'multiOptions', $checkBox, 'label', $label);
                         }
@@ -610,15 +616,15 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                     case 'geopoint':
                         // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                         $label = $this->body[$bindName]['label'];
-                        $modelToUse->set($name . '_lat', 'label', $label . ' [latitude]');
-                        $modelToUse->set($name . '_long', 'label', $label . ' [longitude]');
-                        $modelToUse->set($name . '_alt', 'label', $label . ' [altitude]');
-                        $modelToUse->set($name . '_acc', 'label', $label . ' [accuracy]');
+                        $modelToUse->set($modelName . '_lat', 'label', $label . ' [latitude]');
+                        $modelToUse->set($modelName . '_long', 'label', $label . ' [longitude]');
+                        $modelToUse->set($modelName . '_alt', 'label', $label . ' [altitude]');
+                        $modelToUse->set($modelName . '_acc', 'label', $label . ' [accuracy]');
                         break;
 
                     case 'select1':
                         $items         = $this->body[$bindName]['item'];
-                        $modelToUse->set($name, 'multiOptions', $items);
+                        $modelToUse->set($modelName, 'multiOptions', $items);
 
                     case 'string':
                         // Now determine mediatype
@@ -627,7 +633,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                             if (isset($bodyElement['name']) && $bodyElement['name'] == 'upload') {
                                 $mediaType = (string) $bodyElement['attribs']->mediatype;
                                 if (substr($mediaType, 0, 5) == 'image') {
-                                    $modelToUse->setOnLoad($name, array($this,'formatImg'));
+                                    $modelToUse->setOnLoad($modelName, array($this,'formatImg'));
                                 }
                             }
                         }
@@ -640,7 +646,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                                 if (array_key_exists('hint', $this->body[$bindName])) {
                                     $label = sprintf('%s (%s)', $label, $this->body[$bindName]['hint']);
                                 }
-                                $modelToUse->set($name, 'label', $label);
+                                $modelToUse->set($modelName, 'label', $label);
                             }
                         }
                         break;
