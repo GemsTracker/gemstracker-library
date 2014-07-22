@@ -95,7 +95,7 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
             }
         }
 
-        return $value;
+        return null;
     }
 
     /**
@@ -118,6 +118,6 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
             }
         }
 
-        return $value;
+        return null;
     }
 }
