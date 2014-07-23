@@ -116,4 +116,16 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
 
         return parent::getFieldsTranslations();
     }
+
+    /**
+     * Returns an array of the field names that are required
+     *
+     * @return array of fields sourceName => targetName
+     */
+    public function getRequiredFields()
+    {
+        return parent::getRequiredFields() + array(
+            'completion_date'      => 'completion_date',
+            );
+    }
 }

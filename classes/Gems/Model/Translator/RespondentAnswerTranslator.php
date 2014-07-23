@@ -183,4 +183,17 @@ class Gems_Model_Translator_RespondentAnswerTranslator extends Gems_Model_Transl
             'organization_id' => 'organization_id',
             ) + parent::getFieldsTranslations();
     }
+
+    /**
+     * Returns an array of the field names that are required
+     *
+     * @return array of fields sourceName => targetName
+     */
+    public function getRequiredFields()
+    {
+        return array(
+            'patient_id'      => 'patient_id',
+            'organization_id' => 'organization_id',
+            );
+    }
 }
