@@ -221,7 +221,7 @@ $(document).ready(function() {
 
         $container = $this->creator->div(array('class' => 'scrollContainer', 'renderClosingTag' => true));
         $container->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
-        $cva       = $container->div(array('class' => 'cvacontainer'));
+        $cva       = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
 
         $data        = $this->getModel()->loadPaginator();
         $lastDate    = null;
