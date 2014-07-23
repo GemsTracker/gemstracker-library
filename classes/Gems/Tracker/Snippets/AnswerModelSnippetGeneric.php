@@ -206,6 +206,15 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
     }
+    
+    public function afterRegistry() {
+        parent::afterRegistry();
+        
+        // If loaded inline by Ajax request, disable the buttons
+        if ($this->request->isXmlHttpRequest()) {
+            $this->showButtons = false;
+        }
+    }
 
     /**
      * Creates the model
