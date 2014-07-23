@@ -175,7 +175,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
 
         foreach($answerNames as $name) {
             $label = $model->get($name, 'label');
-            if (!is_null($label)) {     // Was strlen($label), but this ruled out empty sub-questions
+            if (null !== $label) {     // Was strlen($label), but this ruled out empty sub-questions
                 $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
 
@@ -194,11 +194,11 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
             $source->offsetSet('can_be_taken', $bridge->can_be_taken);
 
             $link = $menuItem->toActionLink($source);
-            
+
             if ($link) {
                 $link->title = array($this->_('Token'), $tokenUpper);
             }
-            
+
             $td = $bridge->tdh($bridge->can_be_taken->if($link, $tokenUpper));
         } else {
             $td = $bridge->tdh($tokenUpper);
@@ -206,10 +206,10 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
         $td->appendAttrib('class', $selectedClass);
         $td->appendAttrib('class', $bridge->row_class);
     }
-    
+
     public function afterRegistry() {
         parent::afterRegistry();
-        
+
         // If loaded inline by Ajax request, disable the buttons
         if ($this->request->isXmlHttpRequest()) {
             $this->showButtons = false;

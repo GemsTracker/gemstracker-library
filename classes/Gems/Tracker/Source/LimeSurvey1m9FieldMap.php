@@ -626,6 +626,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 }
                 return MUtil_Model::TYPE_DATE;
 
+            case 'X':
+                return MUtil_Model::TYPE_NOVALUE;
+
             case self::INTERNAL:
                 // Not a limesurvey type, used internally for meta data
                 return MUtil_Model::TYPE_DATETIME;
@@ -687,7 +690,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = MUtil_Html::raw(sprintf($this->translate->_('%s: %s'), $this->removeMarkup($field['sq_question']), $this->removeMarkup($field['sq_question1'])));
+                    $tmpres['label'] = MUtil_Html::raw(sprintf(
+                            $this->translate->_('%s: %s'),
+                            $this->removeMarkup($field['sq_question']),
+                            $this->removeMarkup($field['sq_question1'])
+                            ));
                 } else {
                     $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['sq_question']));
                 }

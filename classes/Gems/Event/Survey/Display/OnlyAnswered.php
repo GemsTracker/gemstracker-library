@@ -89,19 +89,15 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
      */
     public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
     {
-        $repeater = $model->loadRepeatable();
-        $table    = $bridge->getTable();
-        $table->setRepeater($repeater);
-
-        if (! $repeater->__start()) {
+        $rows = $bridge->getRows();
+        if (! $rows) {
             return $currentNames;
         }
 
         $keys = array();
-        while ($row = $repeater->__next()) {
+        foreach ($rows as $row) {
             // Add the keys that contain values.
-            // We don't care about the values in the array.
-            $keys += $this->array_filter($row->getArrayCopy(), $model);
+            $keys += $this->array_filter($row, $model);
         }
 
         $results = array_intersect($currentNames, array_keys($keys), array_keys($this->token->getRawAnswers()));
