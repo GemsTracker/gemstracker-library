@@ -517,11 +517,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $fieldInfo = null;
         }
 
-        if ($fieldInfo) {           
+        if ($fieldInfo) {
             // Slow
             //$table1 = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
             //$table1->appendAttrib('class', $this->formatBoxClass);
-            
+
             // Fast
             $table = MUtil_Html_TableElement::table();
             $table->caption($this->_('Import field definitions'));
@@ -532,7 +532,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             {
                 $table->addColumn($repeater->$title, $title);
             }
-            
+
             $element = new MUtil_Form_Element_Html('transtable');
             $element->setValue($table);
 
@@ -710,8 +710,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $for = array($for => $descriptors[$for]);
         }
 
-        $results = array_fill_keys($this->targetModel->getItemsOrdered(), array());
-        $minimal = array(); // Array for making sure all fields are there
+        $requiredKey = $this->_('Required');
+        $minimal     = array($requiredKey => ' '); // Array for making sure all fields are there
+        $results     = array_fill_keys($this->targetModel->getItemsOrdered(), array());
+        $transCount  = count($for);
 
         foreach ($for as $transKey => $transName) {
             if (! isset($this->importTranslators[$transKey])) {
@@ -723,13 +725,23 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 $translator->setTargetModel($this->targetModel);
                 $translations = $translator->getFieldsTranslations();
+                $requireds    = $translator->getRequiredFields();
 
                 $minimal[$transName] = ' ';
 
                 foreach ($translations as $source => $target) {
                     // Skip numeric fields
                     if (! is_int($source)) {
-                        $results[$target][$transName] = $source;
+                        $required = isset($requireds[$source]);
+
+                        // Add required row
+                        $results[$target][$requiredKey][$transName] = $required;
+
+                        if (trim($required)) {
+                            $results[$target][$transName] = new MUtil_Html_HtmlElement('strong', $source);
+                        } else {
+                            $results[$target][$transName] = $source;
+                        }
                     }
                 }
             }
@@ -737,10 +749,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         $output = array();
         foreach ($results as $name => $resultRow) {
+            if (count($resultRow) > 1) {
+                // Always first
+                $requireds = count(array_filter($resultRow[$requiredKey]));
+                $resultRow[$requiredKey] = $requireds ? ($requireds == $transCount ? $this->_('Yes') : $this->_('For bold')) : ' ';
 
-            if ($resultRow) {
                 if ($this->targetModel->has($name, 'label')) {
-                    $label = (string) $this->targetModel->get($name, 'label');
+                    $label = $this->targetModel->get($name, 'label');
                 } else {
                     $label = $name;
                 }
@@ -815,16 +830,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     } else {
                         $type .= sprintf($this->_('; e.g. one of: %s, ...'), $optionDescr);
                     }
-                    /*
-                    $cutoff = 8;
-                    if (count($options) < $cutoff) {
-                        $type .= $this->_('; one of: ') . implode($this->_(', '), array_keys($options));
-                    } else {
-                        $type .= $this->_('; e.g. one of: ') .
-                                implode($this->_(', '), array_slice(array_keys($options), 0, $cutoff - 1)) .
-                                $this->_(', ...');
-                    }
-                    // */
                 }
 
                 $typeDescr = $this->targetModel->get($name, 'import_descr');
@@ -832,20 +837,17 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     $type .= $this->_('; ') . $typeDescr;
                 }
 
-                $required = $this->targetModel->get($name, 'required');
-
-                $resultRow[$this->_('Field description')] = $label ? $label : $this->_('<<no description>>');
+                $resultRow[$this->_('Field description')] = (string) $label ? $label : $this->_('<<no description>>');
                 $resultRow[$this->_('Content')]           = $type;
 
-                // Prepend the 'required' row
-                $resultRow = array($this->_('Required') => $required ? $this->_('Yes') : ' ') +
-                    array_merge($minimal, $resultRow);
+                // Make sure all fields are there
+                $resultRow = array_merge($minimal, $resultRow);
 
                 $output[$name] = $resultRow;
             }
         }
         uksort($output, array($this, '_sortTranslatorTable'));
- 
+
         return $output;
     }
 

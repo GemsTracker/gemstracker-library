@@ -81,6 +81,13 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     public function getFieldsTranslations();
 
     /**
+     * Returns an array of the field names that are required
+     *
+     * @return array of fields sourceName => targetName
+     */
+    public function getRequiredFields();
+
+    /**
      * Returns a description of the translator errors for the row specified.
      *
      * @param mixed $row

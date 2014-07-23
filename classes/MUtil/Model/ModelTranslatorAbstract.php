@@ -379,6 +379,34 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     }
 
     /**
+     * Get information on the field translations
+     *
+     * @return array of fields sourceName => targetName
+     * @throws MUtil_Model_ModelException
+     */
+    // public function getFieldsTranslations();
+
+    /**
+     * Returns an array of the field names that are required
+     *
+     * @return array of fields sourceName => targetName
+     */
+    public function getRequiredFields()
+    {
+        $trans  = $this->getFieldsTranslations();
+        $keys   = array_fill_keys($this->_targetModel->getKeys(), true);
+
+        $output = array();
+        foreach ($trans as $input => $source) {
+            if (isset($keys[$source])) {
+                $output[$input] = $source;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
      * Returns a description of the translator errors.
      *
      * @return array of String messages
