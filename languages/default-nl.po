@@ -6643,7 +6643,7 @@ msgstr "%s is geen geldig import definitie."
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:766
 msgid "For bold"
-msgstr "Als ver"
+msgstr "Als vet"
 
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:785
 #, php-format
