@@ -285,7 +285,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
 
         // Other items
         $this->set('ggp_name',              'label', $this->translate->_('Assigned to'));
-        $this->set('grc_description',       'label', $this->translate->_('Rejection code'), 'formatFunction', array($this->translate, '_'));
+        $this->set('grc_description',       'label', $this->translate->_('Reception code'), 'formatFunction', array($this->translate, '_'));
         $this->set('gr2o_patient_nr',       'label', $this->translate->_('Respondent nr'));
         $this->set('gr2t_track_info',       'label', $this->translate->_('Description'));
         $this->set('gsu_survey_name',       'label', $this->translate->_('Survey'));
