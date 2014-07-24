@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
- * @version    $Id: Importer.php$
+ * @version    $Id: Importer.php $
  */
 
 /**
@@ -182,7 +182,18 @@ class MUtil_Model_Importer extends MUtil_Translate_TranslateableAbstract
         $importTranslator->startImport();
         $batch->setVariable('modelTranslator', $importTranslator);
 
-        if (! $batch->hasSessionVariable('iterator')) {
+        // Load the iterator when it is not loaded OR
+        // the iterator itself is no lnger valid!
+        if ($batch->hasSessionVariable('iterator')) {
+            $iter = $batch->getSessionVariable('iterator');
+            if ($iter instanceof Iterator) {
+                $loadIter = ! $iter->valid();
+            }
+        } else {
+            $loadIter = true;
+        }
+
+        if ($loadIter) {
             $iter = $this->getSourceModel()->loadIterator();
 
             if (($iter instanceof Iterator) && ($iter instanceof Serializable)) {

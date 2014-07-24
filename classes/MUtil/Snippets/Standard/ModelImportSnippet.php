@@ -217,7 +217,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function addStep2(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $translator = $this->importer->getImportTranslator();
+        $translator = $this->getImportTranslator();
         if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
             $element = new MUtil_Form_Element_Html('trans_header');
             $element->span($this->_('Choosen import definition: '));
@@ -266,7 +266,6 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 if (!$content) {
                     // Add a default content if empty
-                    $translator = $this->importer->getImportTranslator();
                     $fields = array_filter(array_keys($translator->getFieldsTranslations()), 'is_string');
 
                     $content = implode("\t", $fields) . "\n" .
@@ -647,12 +646,24 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             return false;
         }
 
-        if (! $this->importTranslators[$this->formData['trans']] instanceof MUtil_Model_ModelTranslatorInterface) {
+        $translator = $this->importTranslators[$this->formData['trans']];
+        if (! $translator instanceof MUtil_Model_ModelTranslatorInterface) {
             $this->_errors[] = sprintf($this->_('%s is not a valid import definition.'), $this->formData['trans']);
             return false;
         }
 
-        return $this->importTranslators[$this->formData['trans']];
+        // Store/set relevant variables
+        if ($this->importer instanceof MUtil_Model_Importer) {
+            $this->importer->setImportTranslator($translator);
+        }
+        if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
+            $translator->setTargetModel($this->targetModel);
+            if ($this->importer instanceof MUtil_Model_Importer) {
+                $this->importer->setTargetModel($this->targetModel);
+            }
+        }
+
+        return $translator;
     }
 
     /**
@@ -932,6 +943,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     protected function loadSourceModel()
     {
         try {
+            // Make sure the translator is loaded and activated
+            $this->getImportTranslator();
+
             if (! $this->sourceModel) {
                 $this->importer->setSourceFile($this->formData['localfile'], $this->formData['extension']);
                 $this->sourceModel = $this->importer->getSourceModel();
