@@ -487,6 +487,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
             if (isset($this->_trackFields[$key])) {
                 $field = $this->_trackFields[$key];
 
+                $calcUsing    = array();
                 $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
                 if (method_exists($model, $typeFunction)) {
                     // Perform automatic calculation
@@ -496,7 +497,6 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
                                 $field['gtf_calculate_using']
                                 );
 
-                        $calcUsing = array();
                         foreach ($sources as $source) {
                             if (isset($data[$source]) && $data[$source]) {
                                 $calcUsing[$source] = $data[$source];
@@ -504,12 +504,8 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
                                 $calcUsing[$source] = null;
                             }
                         }
-
-                        $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
-                        if (method_exists($model, $typeFunction)) {
-                            $value = $model->$typeFunction($calcUsing, $data, $respTrackId);
-                        }
                     }
+                    $value = $model->$typeFunction($value, $calcUsing, $data, $respTrackId);
                 }
 
                 $saves[] = array(
