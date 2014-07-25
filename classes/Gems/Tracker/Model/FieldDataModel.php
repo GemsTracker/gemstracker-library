@@ -78,12 +78,13 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
     /**
      * On save calculation function
      *
+     * @param array $currentValue The current value
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
      * @return mixed the new value
      */
-    public function calculateOnSaveCaretaker(array $values, array $context, $respTrackId)
+    public function calculateOnSaveCaretaker($currentValue, array $values, array $context, $respTrackId)
     {
         $agenda = $this->loader->getAgenda();
 
@@ -95,18 +96,19 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
             }
         }
 
-        return null;
+        return $currentValue;
     }
 
     /**
      * On save calculation function
      *
+     * @param array $currentValue The current value
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
      * @return mixed the new value
      */
-    public function calculateOnSaveLocation(array $values, array $context, $respTrackId)
+    public function calculateOnSaveLocation($currentValue, array $values, array $context, $respTrackId)
     {
         $agenda = $this->loader->getAgenda();
 
@@ -118,6 +120,6 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
             }
         }
 
-        return null;
+        return $currentValue;
     }
 }
