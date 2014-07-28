@@ -72,7 +72,7 @@ $(document).ready(function() {
             element.removeClass("ui-icon-triangle-1-s" );
         };
         $(this).children(".progress").toggle();
-        $(this).children(".token").slideToggle(150);
+        $(this).children(".token").toggle();
     });
 
     $(".doelgroep").children(".token").toggle();
@@ -252,7 +252,7 @@ $(document).ready(function() {
                     $day       = $cva->div(array('class' => $class));
                     $dayheader = $day->div(array('class' => 'dayheader'));
 
-                    $dayheader[] = $this->creator->h2(ucfirst($row['gto_round_description']));
+                    $dayheader[] = $this->creator->div(ucfirst($row['gto_round_description']), array('class' => 'roundDescription', 'renderClosingTag' => true));
                     $dayheader[] = $date;
 
                     $doelgroep = null;
