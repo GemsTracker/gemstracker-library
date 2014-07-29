@@ -29,9 +29,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     public $translated      = null;
     protected $_fixedSort   = array(
         'gtr_track_name'        => SORT_ASC,
+        'gto_valid_from'        => SORT_ASC,
         'gto_round_description' => SORT_ASC,
-        'ggp_name'              => SORT_ASC,
-        'gto_valid_from'        => SORT_ASC);
+        'ggp_name'              => SORT_ASC);
     protected $_fixedFilter = array(
         'gto_valid_from <= NOW()'
     );
@@ -77,7 +77,7 @@ $(document).ready(function() {
 
     $(".doelgroep").children(".token").toggle();
     
-    if ($("day.today").length != 0) {
+    if ($(".day.today").length != 0) {
         // And show all tokens (maybe only the current group?)
         $(".day.today .doelgroep").click();
         // Scroll to today if present
@@ -223,7 +223,7 @@ $(document).ready(function() {
         $container->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
         $cva       = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
 
-        $data        = $this->getModel()->loadPaginator();
+        $data        = $this->getModel()->load();
         $lastDate    = null;
         $doelgroep   = null;
         $today       = new MUtil_Date();

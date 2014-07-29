@@ -297,9 +297,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      *
      * @param type $surveyId    the gsu_id of the survey to add
      * @param type $surveyData
+     * @param int $userId
+     * @param boolean $checkTrack Should the track be checked? Set to false when adding more then one and check manually
      * @return Gems_Tracker_Token
      */
-    public function addSurveyToTrack($surveyId, $surveyData, $userId)
+    public function addSurveyToTrack($surveyId, $surveyData, $userId, $checkTrack = true )
     {
         //Do something to get a token and add it
         $tokenLibrary = $this->tracker->getTokenLibrary();
@@ -313,11 +315,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         $tokenId = $tokenLibrary->createToken($surveyData, $userId);
 
-        //Now refresh the track to include the survey we just added (easiest way as order may change)
-        $this->getTokens(true);
+        if ($checkTrack === true) {
+            //Now refresh the track to include the survey we just added (easiest way as order may change)
+            $this->getTokens(true);
 
-        // Update the track counter
-        $this->_checkTrackCount($userId);
+            $this->checkTrackTokens($userId, $this->_tokens[$tokenId]);
+            // Update the track counter            
+            //$this->_checkTrackCount($userId);
+        }
 
         return $this->_tokens[$tokenId];
     }
@@ -327,9 +332,11 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      *
      * @param type $surveyId    the gsu_id of the survey to add
      * @param type $surveyData
+     * @param int $userId
+     * @param boolean $checkTrack Should the track be checked? Set to false when adding more then one and check manually
      * @return Gems_Tracker_Token
      */
-    public function addTokenToTrack(Gems_Tracker_Token $token, $tokenData, $userId)
+    public function addTokenToTrack(Gems_Tracker_Token $token, $tokenData, $userId, $checkTrack = true)
     {
         //Now make sure the data to add is correct:
         $tokenData['gto_id_respondent_track'] = $this->_respTrackId;
@@ -344,11 +351,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
         $token->refresh();
 
-        //Now refresh the track to include the survey we just added (easiest way as order may change)
-        $this->getTokens(true);
+        if ($checkTrack === true) {
+            //Now refresh the track to include the survey we just added (easiest way as order may change)
+            $this->getTokens(true);
 
-        // Update the track counter
-        $this->_checkTrackCount($userId);
+            $this->checkTrackTokens($userId, $token);
+            // Update the track counter            
+            //$this->_checkTrackCount($userId);
+        }
 
         return $token;
     }
@@ -997,6 +1007,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $this->_ensureFieldData(true);
 
         $this->_rounds = null;
+        $this->_tokens = null;
 
         return $this;
     }

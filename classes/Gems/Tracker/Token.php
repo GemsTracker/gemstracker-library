@@ -1689,6 +1689,20 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         return $changed;
     }
+    
+    /**
+     * Set a round description for the token
+     * 
+     * @param  string The new round description
+     * @param int $userId The current user
+     * @return int 1 if data changed, 0 otherwise
+     */
+    public function setRoundDescription($description, $userId)
+    {
+        $values = $this->_gemsData;
+        $values['gto_round_description'] = $description;
+        return $this->_updateToken($values, $userId);
+    }
 
     /**
      *
