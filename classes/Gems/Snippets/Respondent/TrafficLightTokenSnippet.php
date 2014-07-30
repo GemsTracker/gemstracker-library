@@ -3,7 +3,7 @@
 /**
  * Description of TrafficLightTokenSnippet
  *
- * Show the track in a different way, ordered by round and group showing 
+ * Show the track in a different way, ordered by round and group showing
  * traffic light color indicating the status of a token and uses inline
  * answer display.
  *
@@ -28,6 +28,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
      */
     public $translated      = null;
     protected $_fixedSort   = array(
+        'gr2t_start_date'         => SORT_DESC,
         'gto_id_respondent_track' => SORT_DESC,
         'gto_valid_from'          => SORT_ASC,
         'gto_round_description'   => SORT_ASC,
@@ -41,9 +42,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
 
     /**
      * Initialize the view
-     * 
+     *
      * Make sure the needed javascript is loaded
-     * 
+     *
      * @param Zend_View $view
      */
     protected function _initView($view) {
@@ -74,12 +75,17 @@ $(document).ready(function() {
         $(this).children(".progress").toggle();
         $(this).children(".token").toggle();
     });
-    
+
 $(".trackheader").click(function(){
         element = $(this).children(".ui-icon").first();
         if ( element.hasClass("ui-icon-triangle-1-e") ) {
             element.addClass("ui-icon-triangle-1-s" );
             element.removeClass("ui-icon-triangle-1-e" );
+            $(this).next().find(".day.today").each(function(){
+            $(this).children(".doelgroep").click();
+            // Scroll to today
+            $(this).parent().parent().scrollTo($(this),0, { offset: $(this).width()-$(this).parent().parent().width()} );    /* today is rightmost block */
+            });
         } else {
             element.addClass("ui-icon-triangle-1-e" );
             element.removeClass("ui-icon-triangle-1-s" );
@@ -89,40 +95,34 @@ $(".trackheader").click(function(){
 
     $(".doelgroep").children(".token").toggle();
     
-    if ($(".day.today").length != 0) {
-        // And show all tokens (maybe only the current group?)
-        $(".day.today").each(function(){
-            $(this).children(".doelgroep").click(); 
-            // Scroll to today
-            $(this).parent().parent().scrollTo($(this),0, { offset: -170} );
-            });        
-    }
-        
+    $(".trackheader").click();
+    $(".trackheader").first().click();
+
     // Extends the dialog widget with a new option.
     $.widget("app.dialog", $.ui.dialog, {
-    
+
         options: {
             iconButtons: []
         },
-    
+
         _create: function() {
-    
+
             // Call the default widget constructor.
             this._super();
-    
+
             // The dialog titlebar is the button container.
             var $titlebar = this.uiDialog.find( ".ui-dialog-titlebar" );
-    
+
             // Iterate over the iconButtons array, which defaults to
             // and empty array, in which case, nothing happens.
             $.each( this.options.iconButtons, function( i, v ) {
-    
+
                 // Finds the last button added. This is actually the
                 // left-most button.
                 var $button = $( "<a/>" ).text( this.text ),
                     right = $titlebar.find( "[role=\'button\']:last" )
                                      .css( "right" );
-    
+
                 // Creates the button widget, adding it to the titlebar.
                 $button.button( { icons: { primary: this.icon }, text: false } )
                        .addClass( "ui-dialog-titlebar-close" )
@@ -131,21 +131,21 @@ $(".trackheader").click(function(){
                        .css( "right", ( parseInt( right ) + 22) + "px" )
                        .click( this.click )
                        .appendTo( $titlebar );
-    
+
             });
-    
+
         }
-    
+
     });
-    
+
     $("a.actionlink[target=\'inline\']").click(function(e){
         e.preventDefault();
         // Now open a new div, not #menu and bring it to the front
         // Add a close button to it, maybe the available tooltip can help here
         $("div#modalpopup").html("<div class=\'loading\'></div>"); // Make sure we show no old information
         $("div#modalpopup").load($(this).attr(\'href\'));
-        $("div#modalpopup").dialog({ 
-            modal: true, 
+        $("div#modalpopup").dialog({
+            modal: true,
             width: 500,
             position:{ my: "left top", at: "left top", of: "#main" },
             iconButtons: [
@@ -226,7 +226,17 @@ $(".trackheader").click(function(){
         $model = parent::createModel();
 
         $model->addColumn('gems__groups.ggp_name', 'forgroup');
-                
+
+        return $model;
+    }
+
+    public function getHtmlOutput(Zend_View_Abstract $view) {
+        $this->_initView($view);
+
+        $main = $this->creator->div(array('class' => 'wrapper', 'renderClosingTag' => true));
+        $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
+
+        $model = $this->getModel();
         $model->trackUsage();
         $items = array(
             'gto_id_respondent_track',
@@ -238,28 +248,20 @@ $(".trackheader").click(function(){
             'gto_round_description',
             'forgroup',
             'gtr_track_type'
-            );
-        foreach($items as $item) {
+        );
+        foreach ($items as $item)
+        {
             $model->get($item);
         }
 
-        return $model;
-    }
-
-    public function getHtmlOutput(Zend_View_Abstract $view) {
-        $this->_initView($view);
-
-        $main = $this->creator->div(array('class' => 'wrapper', 'renderClosingTag' => true));
-        $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
-
-        $data        = $this->getModel()->load();
+        $data        = $model->load(true, $this->_fixedSort);
         $lastDate    = null;
         $doelgroep   = null;
         $today       = new MUtil_Date();
         $today       = $this->translated->formatDate($today);
         $progressDiv = null;
         $respTrackId = 0;
-        
+
         // The normal loop
         foreach ($data as $row)
         {
@@ -326,5 +328,35 @@ $(".trackheader").click(function(){
 
         return;
     }
+     /**
+     * Overrule to implement snippet specific filtering and sorting.
+     *
+     * @param MUtil_Model_ModelAbstract $model
+     */
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    {
+        $model->setFilter($this->_fixedFilter);
+        $filter['gto_id_respondent']   = $this->respondentData['grs_id_user'];
+        if (is_array($this->forOtherOrgs)) {
+            $filter['gto_id_organization'] = $this->forOtherOrgs;
+        } elseif (true !== $this->forOtherOrgs) {
+            $filter['gto_id_organization'] = $this->respondentData['gr2o_id_organization'];
+        }
 
+        // Filter for valid track reception codes
+        $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
+        $filter['grc_success'] = 1;
+        $filter['gro_active']  = 1;
+        $filter['gsu_active']  = 1;
+
+        /*if ($tabFilter = $this->model->getMeta('tab_filter')) {
+            $model->addFilter($tabFilter);
+        }*/
+
+        $model->addFilter($filter);
+
+        // MUtil_Echo::track($model->getFilter());
+
+        //$this->processSortOnly($model);
+    }
 }
