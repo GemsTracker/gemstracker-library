@@ -28,10 +28,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
      */
     public $translated      = null;
     protected $_fixedSort   = array(
-        'gtr_track_name'        => SORT_ASC,
-        'gto_valid_from'        => SORT_ASC,
-        'gto_round_description' => SORT_ASC,
-        'ggp_name'              => SORT_ASC);
+        'gto_id_respondent_track' => SORT_DESC,
+        'gto_valid_from'          => SORT_ASC,
+        'gto_round_description'   => SORT_ASC,
+        'ggp_name'                => SORT_ASC);
     protected $_fixedFilter = array(
         'gto_valid_from <= NOW()'
     );
@@ -74,14 +74,28 @@ $(document).ready(function() {
         $(this).children(".progress").toggle();
         $(this).children(".token").toggle();
     });
+    
+$(".trackheader").click(function(){
+        element = $(this).children(".ui-icon").first();
+        if ( element.hasClass("ui-icon-triangle-1-e") ) {
+            element.addClass("ui-icon-triangle-1-s" );
+            element.removeClass("ui-icon-triangle-1-e" );
+        } else {
+            element.addClass("ui-icon-triangle-1-e" );
+            element.removeClass("ui-icon-triangle-1-s" );
+        };
+        $(this).each(function(){$(this).next().toggle();});
+    });
 
     $(".doelgroep").children(".token").toggle();
     
     if ($(".day.today").length != 0) {
         // And show all tokens (maybe only the current group?)
-        $(".day.today .doelgroep").click();
-        // Scroll to today if present
-        $(".scrollContainer").scrollTo($(".today"),400);
+        $(".day.today").each(function(){
+            $(this).children(".doelgroep").click(); 
+            // Scroll to today
+            $(this).parent().parent().scrollTo($(this),0, { offset: -170} );
+            });        
     }
         
     // Extends the dialog widget with a new option.
@@ -154,7 +168,7 @@ $(document).ready(function() {
     }
 
     public function addToken($tokenData) {
-        $token = $this->loader->getTracker()->getToken($tokenData);
+        $token = $this->loader->getTracker()->getToken($tokenData['gto_id_token']);
 
         $tokenDiv = $this->creator->div(array('class' => 'token', 'renderClosingTag' => true));
 
@@ -181,10 +195,10 @@ $(document).ready(function() {
             } else {
                 $this->_open++;
                 $tokenDiv->appendAttrib('class', ' open');
-                $tokenLink->target = $tokenData['gto_id_token'];
+                $tokenLink->target = $token->getTokenId();
             }
             $tokenLink[] = $this->creator->br();
-            $tokenLink[] = $tokenData['gsu_survey_name'];
+            $tokenLink[] = $token->getSurveyName();
             $tokenDiv[]  = $tokenLink;
         } else {
             $this->_missed++;
@@ -193,7 +207,7 @@ $(document).ready(function() {
             $tokenLink   = $tokenDiv->a('#', $status);
             $tokenLink->appendAttrib('class', ' actionlink');
             $tokenLink[] = $this->creator->br();
-            $tokenLink[] = $tokenData['gsu_survey_name'];
+            $tokenLink[] = $token->getSurveyName();
         }
         return $tokenDiv;
     }
@@ -212,6 +226,22 @@ $(document).ready(function() {
         $model = parent::createModel();
 
         $model->addColumn('gems__groups.ggp_name', 'forgroup');
+                
+        $model->trackUsage();
+        $items = array(
+            'gto_id_respondent_track',
+            'gto_valid_from',
+            'gr2t_start_date',
+            'gtr_track_name',
+            'gr2t_track_info',
+            'gto_id_token',
+            'gto_round_description',
+            'forgroup',
+            'gtr_track_type'
+            );
+        foreach($items as $item) {
+            $model->get($item);
+        }
 
         return $model;
     }
@@ -219,9 +249,8 @@ $(document).ready(function() {
     public function getHtmlOutput(Zend_View_Abstract $view) {
         $this->_initView($view);
 
-        $container = $this->creator->div(array('class' => 'scrollContainer', 'renderClosingTag' => true));
-        $container->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
-        $cva       = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
+        $main = $this->creator->div(array('class' => 'wrapper', 'renderClosingTag' => true));
+        $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
         $data        = $this->getModel()->load();
         $lastDate    = null;
@@ -229,51 +258,59 @@ $(document).ready(function() {
         $today       = new MUtil_Date();
         $today       = $this->translated->formatDate($today);
         $progressDiv = null;
-
-        // For development, add a little loop so we see something
-        for ($index = 0; $index < 1; $index++)
+        $respTrackId = 0;
+        
+        // The normal loop
+        foreach ($data as $row)
         {
-            // The normal loop
-            foreach ($data as $row)
-            {
-                $date = $row['gto_valid_from'];
-                if ($date instanceof Zend_Date) {
-                    $date = $this->translated->formatDate($date);
-                } else {
-                    continue;
-                }
-                if ($date !== $lastDate) {
-                    $progressDiv = $this->finishGroup($progressDiv);
-                    $lastDate    = $date;
-                    $class       = 'day';
-                    if ($date == $today) {
-                        $class .= ' today';
-                    }
-                    $day       = $cva->div(array('class' => $class));
-                    $dayheader = $day->div(array('class' => 'dayheader'));
-
-                    $dayheader[] = $this->creator->div(ucfirst($row['gto_round_description']), array('class' => 'roundDescription', 'renderClosingTag' => true));
-                    $dayheader[] = $date;
-
-                    $doelgroep = null;
-                }
-
-                if ($doelgroep !== $row['forgroup']) {
-                    $progressDiv  = $this->finishGroup($progressDiv);
-                    $doelgroep    = $row['forgroup'];
-                    $doelgroepDiv = $day->div(array('class' => 'doelgroep'));
-                    //$progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
-                    $doelgroepDiv->span('.', array('class' => 'ui-icon ui-button ui-icon-triangle-1-e'));
-                    $doelgroepDiv->span($doelgroep, array('class' => 'title'));
-                    $progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
-                }
-
-                $doelgroepDiv[] = $this->addToken($row);
+            if ($respTrackId !== $row['gto_id_respondent_track']) {
+                $lastDate    = null;
+                $doelgroep   = null;
+                $respTrackId = $row['gto_id_respondent_track'];
+                $track       = $main->div(array('class' => 'trackheader'));
+                $track->div($row['gtr_track_name'], array('class' => 'tracktitle', 'renderClosingTag' => true));
+                $track->div($row['gr2t_track_info'], array('class' => 'trackinfo', 'renderClosingTag' => true));
+                $track->div($this->translated->formatDate($row['gr2t_start_date']), array('class' => 'trackdate', 'renderClosingTag' => true));
+                $container   = $main->div(array('class' => 'scrollContainer', 'renderClosingTag' => true));
+                $cva         = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
             }
-            $progressDiv = $this->finishGroup($progressDiv);
-        }
+            $date = $row['gto_valid_from'];
+            if ($date instanceof Zend_Date) {
+                $date = $this->translated->formatDate($date);
+            } else {
+                continue;
+            }
+            if ($date !== $lastDate) {
+                $progressDiv = $this->finishGroup($progressDiv);
+                $lastDate    = $date;
+                $class       = 'day';
+                if ($date == $today) {
+                    $class .= ' today';
+                }
+                $day       = $cva->div(array('class' => $class));
+                $dayheader = $day->div(array('class' => 'dayheader'));
 
-        return $container;
+                $dayheader[] = $this->creator->div(ucfirst($row['gto_round_description']), array('class' => 'roundDescription', 'renderClosingTag' => true));
+                $dayheader[] = $date;
+
+                $doelgroep = null;
+            }
+
+            if ($doelgroep !== $row['forgroup']) {
+                $progressDiv  = $this->finishGroup($progressDiv);
+                $doelgroep    = $row['forgroup'];
+                $doelgroepDiv = $day->div(array('class' => 'doelgroep'));
+                //$progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
+                $doelgroepDiv->span('.', array('class' => 'ui-icon ui-button ui-icon-triangle-1-e'));
+                $doelgroepDiv->span($doelgroep, array('class' => 'title'));
+                $progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
+            }
+
+            $doelgroepDiv[] = $this->addToken($row);
+        }
+        $progressDiv = $this->finishGroup($progressDiv);
+
+        return $main;
     }
 
     protected function finishGroup($progressDiv) {
