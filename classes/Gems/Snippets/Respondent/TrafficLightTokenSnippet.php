@@ -77,23 +77,19 @@ $(document).ready(function() {
     });
 
 $(".trackheader").click(function(){
-        element = $(this).children(".ui-icon").first();
-        if ( element.hasClass("ui-icon-triangle-1-e") ) {
-            element.addClass("ui-icon-triangle-1-s" );
-            element.removeClass("ui-icon-triangle-1-e" );
-            $(this).next().find(".day.today").each(function(){
-            $(this).children(".doelgroep").click();
+        $(this).next().toggle();
+        if($(this).next().is(":visible")) {
             // Scroll to today
-            $(this).parent().parent().scrollTo($(this),0, { offset: $(this).width()-$(this).parent().parent().width()} );    /* today is rightmost block */
-            });
-        } else {
-            element.addClass("ui-icon-triangle-1-e" );
-            element.removeClass("ui-icon-triangle-1-s" );
-        };
-        $(this).each(function(){$(this).next().toggle();});
+            $(this).next().find(".day.today").each(function(){
+                // Open current day
+                $(this).children(".doelgroep").each(function(){if ( $(this).find(".progress").is(":visible") ) { $(this).click(); }}); 
+                // Scroll to today
+                $(this).parent().parent().scrollTo($(this),0, { offset: $(this).width()-$(this).parent().parent().width()} );    /* today is rightmost block */
+            });            
+        }        
     });
 
-    $(".doelgroep").children(".token").toggle();
+    $(".doelgroep").children(".token").toggle(false);
     
     $(".trackheader").click();
     $(".trackheader").first().click();
