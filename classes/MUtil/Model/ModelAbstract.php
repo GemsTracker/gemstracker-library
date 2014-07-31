@@ -370,21 +370,31 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param array $row The row values to load
      * @param boolean $new True when it is a new item not saved in the model
      * @param boolean $isPost True when passing on post data
+     * @param array $transformColumns
      * @return array The possibly adapted array of values
      */
-    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false)
+    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
     {
         $newRow = $row;
 
-        if ($this->getMeta(self::LOAD_TRANSFORMER)) {
-            foreach ($this->getCol(self::LOAD_TRANSFORMER) as $name => $call) {
-                if ($call) {
-                    $value = isset($newRow[$name]) ? $newRow[$name] : null;
-
-                    $newRow[$name] = $this->getOnLoad($value, $new, $name, $row, $isPost);
-                }
+        if (empty($transformColumns)) {
+            if ($this->getMeta(self::LOAD_TRANSFORMER)) {
+                $transformColumns = $this->getCol(self::LOAD_TRANSFORMER);
             }
+        }        
+        
+        foreach ($transformColumns as $name => $call) {
+            $value = isset($newRow[$name]) ? $newRow[$name] : null;
+            
+            // Don't use getOnLoad to prevent additional overhead since we have the
+            // callable already
+            if (is_callable($call)) {
+                 $newRow[$name] = call_user_func($call, $value, $new, $name, $row, $isPost);
+             } else {
+                 $newRow[$name] = $call;
+             }
         }
+        
         if ($this->_model_dependencies) {
             $newRow = $this->processDependencies($newRow, $new);
         }
@@ -1574,7 +1584,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $this->_checkFilterUsed($filter),
                 $this->_checkSortUsed($sort)
                 );
-
+        
         if (is_array($data)) {
             $data = $this->processAfterLoad($data);
         }
@@ -1717,18 +1727,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if ($isPostData) {
             // Create an array to add a null for any missing multiOptions value
             $extraPostData = array_fill_keys($this->getColNames('multiOptions'), null);
-        }
+        }       
+              
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
+            // Create empty array, will be filled after first row to speed up performance
+            $transformColumns = array();
+            
             foreach ($data as $key => $row) {
                 if ($isPostData) {
                     // Add a null for any missing multiOptions value
                     $row = $row + $extraPostData;
                 }
-
-                $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData);
+                
+                $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData, $transformColumns);
             }
         }
-
+        
         return $data;
     }
 

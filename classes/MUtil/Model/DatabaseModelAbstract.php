@@ -775,9 +775,19 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
         foreach ($formats as $formatName) {
             // When posting try
-            $format = $this->get($name, $formatName);
-            if ($formatName && Zend_Date::isDate($value, $format)) {
-                return new MUtil_Date($value, $format);
+            $format = $this->_getKeyValue($name, $formatName);
+            
+            if ($format) {
+                try {
+                    $date = new MUtil_Date($value, $format);
+                    // When string representation of the created date is the same as the input we accept it
+                    // This helps fix reversed day/month problems where month 13 will be 1st month of the next year
+                    if ($date->get($format) === $value) {
+                        return $date;
+                    }
+                } catch (Exception $exc) {
+                    // Silently fail and try next one
+                }
             }
         }
 
