@@ -158,7 +158,7 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
      */
     public static function iflink($iff, $aArgs, $spanArgs = null)
     {
-        if ($iff instanceof MUtil_Lazy) {
+        if ($iff instanceof MUtil_Lazy_LazyInterface) {
             if ($spanArgs) {
                 return MUtil_Lazy::iff($iff, MUtil_Html::create('a', $aArgs), MUtil_Html::create('span', $spanArgs, array('renderWithoutContent' => false)));
             } else {
@@ -182,7 +182,7 @@ class MUtil_Html_AElement extends MUtil_Html_HtmlElement
     public static function ifmail($email, $arg_array = null)
     {
         $args = func_get_args();
-        if ($email instanceof MUtil_Lazy) {
+        if ($email instanceof MUtil_Lazy_LazyInterface) {
             return MUtil_Lazy::iff($email, call_user_func_array(array(__CLASS__, 'email'), $args));
         }
         if ($email) {
