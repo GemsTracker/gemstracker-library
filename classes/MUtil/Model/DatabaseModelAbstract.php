@@ -767,16 +767,27 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             return $value;
         }
 
-        $formats = array('storageFormat', 'dateFormat');
+        $formats = array('storageFormat');
         if ($isPost) {
-            // When posting try date format first
+            // Formbridge uses a different format... quick & dirty fix is to duplicate that here:
+            $formats['time'] = 'time';
+            $formats['datetime'] = 'datetime';
+            $formats['date'] ='date';
+                       
+            // When posting try fixed formats first
             $formats = array_reverse($formats);
         }
 
-        foreach ($formats as $formatName) {
-            // When posting try
-            $format = $this->_getKeyValue($name, $formatName);
-            
+        foreach ($formats as $key => $formatName)
+        {
+            if (is_numeric($key)) {
+                // Get from the model
+                $format = $this->_getKeyValue($name, $formatName);
+            } else {
+                // We use the fixed format
+                $format = MUtil_Model_Bridge_FormBridge::getFixedOption($key, 'dateFormat');
+            }
+
             if ($format) {
                 try {
                     $date = new MUtil_Date($value, $format);
