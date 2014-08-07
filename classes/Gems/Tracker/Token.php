@@ -1079,7 +1079,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentName()
     {
-        $this->getRespondent()->getName();
+        return $this->getRespondent()->getName();
     }
 
     /**
