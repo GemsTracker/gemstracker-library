@@ -1079,7 +1079,7 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      */
     public function getRespondentName()
     {
-        $this->getRespondent()->getName();
+        return $this->getRespondent()->getName();
     }
 
     /**
@@ -1689,10 +1689,10 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
 
         return $changed;
     }
-    
+
     /**
      * Set a round description for the token
-     * 
+     *
      * @param  string The new round description
      * @param int $userId The current user
      * @return int 1 if data changed, 0 otherwise
