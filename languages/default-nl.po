@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-24 17:57+0100\n"
+"POT-Creation-Date: 2014-08-07 18:10+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -86,7 +86,7 @@ msgid "Nothing to do."
 msgstr "Niets te doen."
 
 #: classes/Gems/Controller/BrowseEditAction.php:369
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:279
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:288
 #: classes/Gems/Default/StaffAction.php:258
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:328
 #, php-format
@@ -94,7 +94,7 @@ msgid "New %s..."
 msgstr "Nieuwe %s..."
 
 #: classes/Gems/Controller/BrowseEditAction.php:402
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:309
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:318
 #: classes/Gems/Default/TrackRoundsAction.php:207
 #, php-format
 msgid "Delete %s"
@@ -116,7 +116,7 @@ msgid "Edit %s %s"
 msgstr "Bewerk %s %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:425
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:319
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:328
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:330
 #, php-format
 msgid "Edit %s"
@@ -259,26 +259,26 @@ msgstr "%s is onbekend."
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:299
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:308
 #, php-format
 msgid "Do you want to delete this %s?"
 msgstr "Weet u zeker dat deze %s verwijderd moet worden?"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:332
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:341
 msgid "No data found."
 msgstr "Geen gegevens gevonden."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:427
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:436
 #, php-format
 msgid "No %s found..."
 msgstr "Geen %s gevonden..."
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:437
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:446
 #, php-format
 msgid "Showing %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/ModelSnippetActionAbstract.php:473
+#: classes/Gems/Controller/ModelSnippetActionAbstract.php:482
 #: classes/Gems/Default/OptionAction.php:246
 #: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:352
 #: classes/MUtil/Snippets/WizardFormSnippetAbstract.php:448
@@ -443,7 +443,7 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/SourceAction.php:210
 #: classes/Gems/Default/StaffAction.php:358
 #: classes/Gems/Default/SurveyMaintenanceAction.php:469
-#: classes/Gems/Default/TokenPlanAction.php:132 classes/Gems/Model.php:302
+#: classes/Gems/Default/TokenPlanAction.php:136 classes/Gems/Model.php:302
 #: classes/Gems/Model/RespondentModel.php:262
 #: classes/Gems/Model/TemplateModel.php:67
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:144
@@ -477,26 +477,31 @@ msgid_plural "healthcare staff"
 msgstr[0] "zorgverlener"
 msgstr[1] "zorgverleners"
 
-#: classes/Gems/Default/AppointmentAction.php:180 classes/Gems/Menu.php:329
+#: classes/Gems/Default/AppointmentAction.php:200
+#, php-format
+msgid "Appointments for patient number %s: %s"
+msgstr "Afspraken voor patiëntnummer %s: %s"
+
+#: classes/Gems/Default/AppointmentAction.php:212 classes/Gems/Menu.php:329
 msgid "Appointments"
 msgstr "Afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:191
+#: classes/Gems/Default/AppointmentAction.php:223
 msgid "appointment"
 msgid_plural "appointments"
 msgstr[0] "afspraak"
 msgstr[1] "afspraken"
 
-#: classes/Gems/Default/AppointmentAction.php:232
+#: classes/Gems/Default/AppointmentAction.php:264
 msgid "Requested agenda data not available!"
 msgstr "Verzochte afspraak gegevens niet gevonden!"
 
-#: classes/Gems/Default/AppointmentAction.php:241
+#: classes/Gems/Default/AppointmentAction.php:273
 #, php-format
 msgid "You have no access to %s appointments!"
 msgstr "U heeft geen toegang %s afspraken!"
 
-#: classes/Gems/Default/AppointmentAction.php:244
+#: classes/Gems/Default/AppointmentAction.php:276
 msgid "Organization does not exist."
 msgstr "Organisatie bestaat niet."
 
@@ -566,7 +571,7 @@ msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 #: classes/Gems/Default/MailJobAction.php:99
 #: classes/Gems/Default/MailLogAction.php:128
 #: classes/Gems/Default/ProjectTracksAction.php:64
-#: classes/Gems/Default/RespondentMailLogAction.php:155
+#: classes/Gems/Default/RespondentMailLogAction.php:168
 #: classes/Gems/Default/TrackAction.php:337
 #: classes/Gems/Email/OneMailForm.php:54
 #: classes/Gems/Export/RespondentExport.php:335
@@ -605,7 +610,7 @@ msgstr "Ronde"
 #: classes/Gems/Default/MailJobAction.php:100
 #: classes/Gems/Default/MailLogAction.php:129
 #: classes/Gems/Default/ProjectSurveysAction.php:67
-#: classes/Gems/Default/RespondentMailLogAction.php:156
+#: classes/Gems/Default/RespondentMailLogAction.php:169
 #: classes/Gems/Default/SummaryAction.php:110
 #: classes/Gems/Default/SurveyAction.php:201
 #: classes/Gems/Email/OneMailForm.php:57
@@ -654,7 +659,7 @@ msgstr[1] "Chart configuraties"
 #: classes/Gems/Default/CommJobAction.php:91
 #: classes/Gems/Default/MailJobAction.php:78
 #: classes/Gems/Default/MailLogAction.php:134
-#: classes/Gems/Default/RespondentMailLogAction.php:162
+#: classes/Gems/Default/RespondentMailLogAction.php:175
 #: classes/Gems/Email/EmailFormAbstract.php:308
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:160
 msgid "Template"
@@ -794,7 +799,7 @@ msgstr "Bron mail gegevens"
 #: classes/Gems/Default/CommTemplateAction.php:79
 #: classes/Gems/Default/MailLogAction.php:127
 #: classes/Gems/Default/MailTemplateAction.php:62
-#: classes/Gems/Default/RespondentMailLogAction.php:154
+#: classes/Gems/Default/RespondentMailLogAction.php:167
 #: classes/Gems/Email/EmailFormAbstract.php:349
 #: classes/Gems/Model/AppointmentModel.php:246
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:165
@@ -1120,7 +1125,7 @@ msgstr "Locatie"
 
 #: classes/Gems/Default/DatabaseAction.php:129
 #: classes/Gems/Default/MailLogAction.php:130
-#: classes/Gems/Default/RespondentMailLogAction.php:157
+#: classes/Gems/Default/RespondentMailLogAction.php:170
 #: classes/Gems/Default/SourceAction.php:225
 #: classes/Gems/Export/RespondentExport.php:254
 #: classes/Gems/Model/AppointmentModel.php:233
@@ -1827,13 +1832,13 @@ msgstr ""
 "zijn voor elke organisatie."
 
 #: classes/Gems/Default/LogAction.php:96
-#: classes/Gems/Default/TokenPlanAction.php:266
+#: classes/Gems/Default/TokenPlanAction.php:270
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:145
 msgid "from"
 msgstr "vanaf"
 
 #: classes/Gems/Default/LogAction.php:101
-#: classes/Gems/Default/TokenPlanAction.php:270
+#: classes/Gems/Default/TokenPlanAction.php:274
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:174
 msgid "until"
 msgstr "tot"
@@ -1902,7 +1907,7 @@ msgid "Action"
 msgstr "Actie"
 
 #: classes/Gems/Default/LogAction.php:216
-#: classes/Gems/Default/TokenPlanAction.php:127
+#: classes/Gems/Default/TokenPlanAction.php:131
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:65
 #: snippets/RespondentDetailsSnippet.php:80
 #: snippets/RespondentDetailsWithAssignmentsSnippet.php:148
@@ -1955,34 +1960,34 @@ msgid "Go to Setup -> Communication -> Automatic mail for the replacement."
 msgstr "Ga naar Beheer -> Communicatie -> Automatische mail voor de vervanging"
 
 #: classes/Gems/Default/MailLogAction.php:121
-#: classes/Gems/Default/RespondentMailLogAction.php:148
+#: classes/Gems/Default/RespondentMailLogAction.php:161
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:84
 #: classes/Gems/Snippets/Mail/Log/RespondentMailLogSearchSnippet.php:84
 msgid "Date sent"
 msgstr "Verzend datum"
 
 #: classes/Gems/Default/MailLogAction.php:122
-#: classes/Gems/Default/RespondentMailLogAction.php:149
+#: classes/Gems/Default/RespondentMailLogAction.php:162
 msgid "Receiver"
 msgstr "Ontvanger"
 
 #: classes/Gems/Default/MailLogAction.php:123
-#: classes/Gems/Default/RespondentMailLogAction.php:150
+#: classes/Gems/Default/RespondentMailLogAction.php:163
 msgid "To address"
 msgstr "Adres aan"
 
 #: classes/Gems/Default/MailLogAction.php:124
-#: classes/Gems/Default/RespondentMailLogAction.php:151
+#: classes/Gems/Default/RespondentMailLogAction.php:164
 msgid "Sender"
 msgstr "Verzender"
 
 #: classes/Gems/Default/MailLogAction.php:125
-#: classes/Gems/Default/RespondentMailLogAction.php:152
+#: classes/Gems/Default/RespondentMailLogAction.php:165
 msgid "From address"
 msgstr "Adres van"
 
 #: classes/Gems/Default/MailLogAction.php:126
-#: classes/Gems/Default/RespondentMailLogAction.php:153
+#: classes/Gems/Default/RespondentMailLogAction.php:166
 #: classes/Gems/Default/TrackAction.php:535
 #: classes/Gems/Export/RespondentExport.php:253 classes/Gems/Menu.php:263
 #: classes/Gems/Menu.php:364 classes/Gems/Menu.php:416
@@ -2010,7 +2015,7 @@ msgid "Mail Activity Log"
 msgstr "Logboek Mail Activiteit"
 
 #: classes/Gems/Default/MailLogAction.php:167
-#: classes/Gems/Default/RespondentMailLogAction.php:200
+#: classes/Gems/Default/RespondentMailLogAction.php:217
 msgid "mail activity"
 msgid_plural "mail activities"
 msgstr[0] "mail activiteit"
@@ -2090,7 +2095,7 @@ msgstr "Email servers"
 #: classes/Gems/Default/RespondentAction.php:381
 #: classes/Gems/Default/StaffAction.php:365
 #: classes/Gems/Default/StaffAction.php:439
-#: classes/Gems/Default/TokenPlanAction.php:359
+#: classes/Gems/Default/TokenPlanAction.php:363
 #: classes/Gems/Default/TrackMaintenanceAction.php:335
 #: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:70
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:105
@@ -2750,14 +2755,14 @@ msgstr ""
 "Scheid verschillende patiënten met een comma (,), spatie, tab of een nieuwe "
 "regel"
 
-#: classes/Gems/Default/RespondentMailLogAction.php:166
+#: classes/Gems/Default/RespondentMailLogAction.php:179
 msgid "Fill out by"
 msgstr "In te vullen door"
 
-#: classes/Gems/Default/RespondentMailLogAction.php:189
+#: classes/Gems/Default/RespondentMailLogAction.php:204
 #, php-format
-msgid "Mail Activity Log for %s"
-msgstr "Logboek Mail Activiteit voor %s"
+msgid "Mail Activity Log for patient number %s: %s"
+msgstr "Mail log voor patiëntnummer %s: %s."
 
 #: classes/Gems/Default/RespondentPlanAction.php:76
 #: classes/Gems/Default/SurveyAction.php:181
@@ -3120,7 +3125,7 @@ msgstr[0] "medewerker"
 msgstr[1] "medewerkers"
 
 #: classes/Gems/Default/StaffAction.php:530
-#: classes/Gems/Default/TokenPlanAction.php:165
+#: classes/Gems/Default/TokenPlanAction.php:169
 #, php-format
 msgid "Send mail to: %s"
 msgstr "Email verzenden naar: %s"
@@ -3161,7 +3166,7 @@ msgstr ""
 "organisatie niveau"
 
 #: classes/Gems/Default/SummaryAction.php:111
-#: classes/Gems/Default/TokenPlanAction.php:336
+#: classes/Gems/Default/TokenPlanAction.php:340
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:137
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:163
 #: classes/Gems/Util/TokenData.php:67
@@ -3169,7 +3174,7 @@ msgid "Answered"
 msgstr "Beantwoord"
 
 #: classes/Gems/Default/SummaryAction.php:112
-#: classes/Gems/Default/TokenPlanAction.php:337
+#: classes/Gems/Default/TokenPlanAction.php:341
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:127
 #: classes/Gems/Snippets/Respondent/TrafficLightTokenSnippet.php:192
 #: classes/Gems/Tracker/Token.php:1201
@@ -3178,7 +3183,7 @@ msgid "Missed"
 msgstr "Gemist"
 
 #: classes/Gems/Default/SummaryAction.php:113
-#: classes/Gems/Default/TokenPlanAction.php:330
+#: classes/Gems/Default/TokenPlanAction.php:334
 #: classes/Gems/Tracker/Token.php:1207
 msgid "Open"
 msgstr "Open"
@@ -3192,7 +3197,7 @@ msgid "Summary"
 msgstr "Samenvatting"
 
 #: classes/Gems/Default/SummaryAction.php:232
-#: classes/Gems/Default/TokenPlanAction.php:533
+#: classes/Gems/Default/TokenPlanAction.php:537
 #: classes/Gems/Default/TrackAction.php:526
 #: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:142
 msgid "token"
@@ -3443,13 +3448,17 @@ msgid_plural "templates"
 msgstr[0] "sjabloon"
 msgstr[1] "sjablonen"
 
-#: classes/Gems/Default/TokenPlanAction.php:128
+#: classes/Gems/Default/TokenPlanAction.php:97
+msgid "Contact moments"
+msgstr "Contact momenten"
+
+#: classes/Gems/Default/TokenPlanAction.php:132
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:66
 msgid "Round / Details"
 msgstr "Ronde / Details"
 
-#: classes/Gems/Default/TokenPlanAction.php:129
-#: classes/Gems/Default/TokenPlanAction.php:255
+#: classes/Gems/Default/TokenPlanAction.php:133
+#: classes/Gems/Default/TokenPlanAction.php:259
 #: classes/Gems/Default/TrackMaintenanceAction.php:98
 #: classes/Gems/Default/TrackRoundsAction.php:82
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:67
@@ -3458,8 +3467,8 @@ msgstr "Ronde / Details"
 msgid "Valid from"
 msgstr "Geldig vanaf"
 
-#: classes/Gems/Default/TokenPlanAction.php:130
-#: classes/Gems/Default/TokenPlanAction.php:256
+#: classes/Gems/Default/TokenPlanAction.php:134
+#: classes/Gems/Default/TokenPlanAction.php:260
 #: classes/Gems/Default/TrackMaintenanceAction.php:99
 #: classes/Gems/Default/TrackRoundsAction.php:83
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:68
@@ -3469,94 +3478,94 @@ msgstr "Geldig vanaf"
 msgid "Valid until"
 msgstr "Geldig tot"
 
-#: classes/Gems/Default/TokenPlanAction.php:131
+#: classes/Gems/Default/TokenPlanAction.php:135
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:69
 msgid "Contact date"
 msgstr "Contactdatum"
 
-#: classes/Gems/Default/TokenPlanAction.php:203
+#: classes/Gems/Default/TokenPlanAction.php:207
 msgid "No tokens found."
 msgstr "Geen kenmerken gevonden."
 
-#: classes/Gems/Default/TokenPlanAction.php:252
+#: classes/Gems/Default/TokenPlanAction.php:256
 msgid "Is valid during"
 msgstr "Is geldig gedurende"
 
-#: classes/Gems/Default/TokenPlanAction.php:254
+#: classes/Gems/Default/TokenPlanAction.php:258
 msgid "Is valid within"
 msgstr "Is geldig tijdens"
 
-#: classes/Gems/Default/TokenPlanAction.php:257
+#: classes/Gems/Default/TokenPlanAction.php:261
 msgid "E-Mailed on"
 msgstr "Email verstuurd op"
 
-#: classes/Gems/Default/TokenPlanAction.php:258
+#: classes/Gems/Default/TokenPlanAction.php:262
 #: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:154
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:582
 msgid "Completion date"
 msgstr "Datum ingevuld op"
 
-#: classes/Gems/Default/TokenPlanAction.php:262
+#: classes/Gems/Default/TokenPlanAction.php:266
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:136
 msgid "For date"
 msgstr "Met datum"
 
-#: classes/Gems/Default/TokenPlanAction.php:285
+#: classes/Gems/Default/TokenPlanAction.php:289
 msgid "Select:"
 msgstr "Selecteren:"
 
-#: classes/Gems/Default/TokenPlanAction.php:301
+#: classes/Gems/Default/TokenPlanAction.php:305
 msgid "(all tracks)"
 msgstr "(alle trajecten)"
 
-#: classes/Gems/Default/TokenPlanAction.php:312
+#: classes/Gems/Default/TokenPlanAction.php:316
 msgid "(all rounds)"
 msgstr "(alle rondes)"
 
-#: classes/Gems/Default/TokenPlanAction.php:326
+#: classes/Gems/Default/TokenPlanAction.php:330
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:100
 msgid "(all surveys)"
 msgstr "(alle vragenlijsten)"
 
-#: classes/Gems/Default/TokenPlanAction.php:329
+#: classes/Gems/Default/TokenPlanAction.php:333
 msgid "(all actions)"
 msgstr "(alle acties)"
 
-#: classes/Gems/Default/TokenPlanAction.php:331
+#: classes/Gems/Default/TokenPlanAction.php:335
 msgid "Not emailed"
 msgstr "Niet gemaild"
 
-#: classes/Gems/Default/TokenPlanAction.php:332
+#: classes/Gems/Default/TokenPlanAction.php:336
 msgid "To email"
 msgstr "Te mailen"
 
-#: classes/Gems/Default/TokenPlanAction.php:333
+#: classes/Gems/Default/TokenPlanAction.php:337
 msgid "Needs reminder"
 msgstr "Herinnering nodig"
 
-#: classes/Gems/Default/TokenPlanAction.php:334
+#: classes/Gems/Default/TokenPlanAction.php:338
 msgid "Missing email"
 msgstr "Email ontbreekt"
 
-#: classes/Gems/Default/TokenPlanAction.php:335
+#: classes/Gems/Default/TokenPlanAction.php:339
 msgid "Yet to Answer"
 msgstr "Nog te beantwoorden"
 
-#: classes/Gems/Default/TokenPlanAction.php:338
+#: classes/Gems/Default/TokenPlanAction.php:342
 msgid "Removed"
 msgstr "Verwijderd"
 
-#: classes/Gems/Default/TokenPlanAction.php:352
+#: classes/Gems/Default/TokenPlanAction.php:356
 #: classes/Gems/Snippets/Tracker/Compliance/ComplianceSearchFormSnippet.php:97
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:99
 msgid "(all fillers)"
 msgstr "(alle invullers)"
 
-#: classes/Gems/Default/TokenPlanAction.php:378
+#: classes/Gems/Default/TokenPlanAction.php:382
 msgid "(all staff)"
 msgstr "(alle medewerkers)"
 
-#: classes/Gems/Default/TokenPlanAction.php:524
+#: classes/Gems/Default/TokenPlanAction.php:528
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:80
 #: classes/Gems/Snippets/Respondent/MailLogSnippet.php:80
 #: classes/Gems/Snippets/TokenModelSnippetAbstract.php:59
@@ -3566,7 +3575,7 @@ msgstr "(alle medewerkers)"
 msgid "+"
 msgstr "+"
 
-#: classes/Gems/Default/TokenPlanAction.php:538
+#: classes/Gems/Default/TokenPlanAction.php:542
 msgid "Token planning"
 msgstr "Per kenmerk plannen"
 
@@ -7243,6 +7252,9 @@ msgstr "Deze vragenlijst kan sinds %s aan een patiënt toegewezen worden."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "Dit traject kan sinds %s aan een patiënt toegewezen worden."
+
+#~ msgid "Mail Activity Log for %s"
+#~ msgstr "Logboek Mail Activiteit voor %s"
 
 #~ msgid "Fill"
 #~ msgstr "Vul"
