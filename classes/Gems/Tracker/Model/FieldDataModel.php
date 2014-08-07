@@ -79,6 +79,23 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      * On save calculation function
      *
      * @param array $currentValue The current value
+     * @param array $context The other values loaded so far
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateOnLoadDate($currentValue, array $context, $respTrackId)
+    {
+        if (empty($currentValue)) {
+            return null;
+        }
+
+        return new MUtil_Date($currentValue, Zend_Date::ISO_8601);
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param array $currentValue The current value
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id

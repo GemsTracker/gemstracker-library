@@ -368,16 +368,19 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
             foreach ($rows as $row) {
                 $key = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
 
-                if ((! empty($row['gr2t2f_value'])) &&
-                        isset($this->_trackFields[$key], $this->_trackFields[$key]['gtf_field_type']) &&
-                        ('date' === $this->_trackFields[$key]['gtf_field_type'])) {
-                    $output[$key] = new MUtil_Date($row['gr2t2f_value'], Zend_Date::ISO_8601);
-                } else {
-                    $output[$key] = $row['gr2t2f_value'];
+                $value = $row['gr2t2f_value'];
+
+                if (isset($this->_trackFields[$key], $this->_trackFields[$key]['gtf_field_type'])) {
+                    $typeFunction = 'calculateOnLoad' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
+                    if (method_exists($model, $typeFunction)) {
+                        $value = $model->$typeFunction($value, $output, $respTrackId);
+                    }
                 }
+
+                $output[$key] = $value;
             }
         }
-        MUtil_Echo::track($output, $this->_trackFields);
+        // MUtil_Echo::track($output);
 
         return $output;
     }
