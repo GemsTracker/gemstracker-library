@@ -71,6 +71,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         'formatBoxClass'   => 'browser',
         'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
+        'topicCallable'    => 'getTopic',
         );
 
     /**
@@ -166,8 +167,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function createAction()
     {
-        $this->createEditParameters['formTitle']     = $this->getCreateTitle();
-        $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
+        if (! isset($this->createEditParameters['formTitle'])) {
+            $this->createEditParameters['formTitle']     = $this->getCreateTitle();
+        }
+        if (! isset($this->createEditParameters['topicCallable'])) {
+            $this->createEditParameters['topicCallable'] = array($this, 'getTopic');
+        }
 
         parent::createAction();
     }
@@ -177,8 +182,12 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function deleteAction()
     {
-        $this->deleteParameters['displayTitle']   = $this->getDeleteTitle();
-        $this->deleteParameters['deleteQuestion'] = $this->getDeleteQuestion();
+        if (! isset($this->deleteParameters['displayTitle'])) {
+            $this->deleteParameters['displayTitle']   = $this->getDeleteTitle();
+        }
+        if (! isset($this->deleteParameters['deleteQuestion'])) {
+            $this->deleteParameters['deleteQuestion'] = $this->getDeleteQuestion();
+        }
 
         parent::deleteAction();
     }
@@ -478,8 +487,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function importAction()
     {
-        $this->_importExtraParameters['topicCallable'] = array($this, 'getTopic');
-
         $this->importParameters = $this->importParameters + $this->_importExtraParameters;
 
         parent::importAction();
@@ -491,7 +498,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public function indexAction()
     {
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
-        $this->indexParameters['contentTitle'] = $this->getIndexTitle();
+        if (! isset($this->indexParameters['contentTitle'])) {
+            $this->indexParameters['contentTitle'] = $this->getIndexTitle();
+        }
 
         return parent::indexAction();
     }
@@ -525,7 +534,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      */
     public function showAction()
     {
-        $this->showParameters['contentTitle'] = $this->getShowTitle();
+        if (! isset($this->showParameters['contentTitle'])) {
+            $this->showParameters['contentTitle'] = $this->getShowTitle();
+        }
 
         parent::showAction();
     }
