@@ -69,6 +69,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
     {
         $HTML  = MUtil_Html::create();
 
+        $model->set('gto_id_token', 'formatFunction', 'strtoupper');
+
         // Row with dates and patient data
         $bridge->gtr_track_type; // Data needed for buttons
 
@@ -81,7 +83,8 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
 
-        $bridge->addSortable('gto_completion_time')->rowspan = 2;
+        $bridge->addSortable('gto_id_token');
+        // $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'))->rowspan = 2;
 
         $bridge->addMultiSort('gr2o_patient_nr', $HTML->raw('; '), 'respondent_name');;
         $bridge->addMultiSort('ggp_name', array($this->getActionLinks($bridge)));
@@ -90,8 +93,9 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $tr->appendAttrib('class', $bridge->row_class);
         $tr->appendAttrib('title', $bridge->gto_comment);
         $bridge->addSortable('gto_mail_sent_date');
-        $bridge->addSortable('gto_mail_sent_num');
-        
+        $bridge->addSortable('gto_completion_time');
+        $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
+
 
         if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
             $bridge->addMultiSort('calc_round_description', $HTML->raw('; '), 'gsu_survey_name');
@@ -100,7 +104,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $model->set('calc_round_description', 'tableDisplay', 'smallData');
             $bridge->addMultiSort(
                 'calc_track_name', 'calc_track_info',
-                $bridge->calc_track_name->if($HTML->raw(' &raquo; ')),
+                array($bridge->calc_track_name->if($HTML->raw(' &raquo; ')), ' '),
                 'gsu_survey_name', 'calc_round_description');
         }
 
