@@ -63,6 +63,7 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
     public function exhibitor($name, $value = null, $attribs = null)
     {
         $result = $value;
+        MUtil_Echo::track($result);
 
         if (isset($attribs['default'])) {
             if (null === $result) {
@@ -142,6 +143,9 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
         if (isset($attribs['nohidden']) && $attribs['nohidden'] || is_array($value)) {
             return $result;
         } else {
+            if ($value instanceof Zend_Date) {
+                $value = $value->toString(Zend_Date::ISO_8601);
+            }
             return $this->_hidden($name, $value) . $result;
         }
     }
