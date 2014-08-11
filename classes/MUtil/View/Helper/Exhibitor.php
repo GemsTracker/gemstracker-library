@@ -63,7 +63,6 @@ class MUtil_View_Helper_Exhibitor extends Zend_View_Helper_FormElement
     public function exhibitor($name, $value = null, $attribs = null)
     {
         $result = $value;
-        MUtil_Echo::track($result);
 
         if (isset($attribs['default'])) {
             if (null === $result) {
