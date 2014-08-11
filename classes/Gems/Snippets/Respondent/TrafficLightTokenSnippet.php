@@ -21,12 +21,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     /**
      * @var MUtil_Html_Creator
      */
-    public $creator = null;
-
-    /**
-     * @var Gems_Util_Translated
-     */
-    public $translated      = null;
+    public $creator         = null;
     protected $_fixedSort   = array(
         'gr2t_start_date'         => SORT_DESC,
         'gto_id_respondent_track' => SORT_DESC,
@@ -39,6 +34,31 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     protected $_completed   = 0;
     protected $_open        = 0;
     protected $_missed      = 0;
+
+    /**
+     * The display format for the date
+     * 
+     * @var string
+     */
+    protected $_dateFormat;
+
+    /**
+     * 
+     * @var Gems_Menu_SubMenuItem
+     */
+    protected $_surveyAnswer;
+
+    /**
+     * 
+     * @var Gems_Menu_SubMenuItem
+     */
+    protected $_trackAnswer;
+
+    /**
+     * 
+     * @var Gems_Menu_SubMenuItem
+     */
+    protected $_takeSurvey;
 
     /**
      * Initialize the view
@@ -82,15 +102,15 @@ $(".trackheader").click(function(){
             // Scroll to today
             $(this).next().find(".day.today").each(function(){
                 // Open current day
-                $(this).children(".doelgroep").each(function(){if ( $(this).find(".progress").is(":visible") ) { $(this).click(); }}); 
+                $(this).children(".doelgroep").each(function(){if ( $(this).find(".progress").is(":visible") ) { $(this).click(); }});
                 // Scroll to today
                 $(this).parent().parent().scrollTo($(this),0, { offset: $(this).width()-$(this).parent().parent().width()} );    /* today is rightmost block */
-            });            
-        }        
+            });
+        }
     });
 
     $(".doelgroep").children(".token").toggle(false);
-    
+
     $(".trackheader").click();
     $(".trackheader").first().click();
 
@@ -161,40 +181,52 @@ $(".trackheader").click(function(){
         });
     });
 });');
+        // find the menu items only once for more efficiency
+        $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
+        $this->_surveyAnswer = $this->findMenuItem('survey', 'answer');
+        $this->_takeSurvey   = $this->findMenuItem('ask', 'take');
+    }
+
+    /**
+     * Copied from Gems_Token, to save overhead of loading a token just for this check
+     * 
+     * @param array $tokenData
+     * @return boolean
+     */
+    protected function _isCompleted($tokenData) {
+        return isset($tokenData['gto_completion_time']) && $tokenData['gto_completion_time'];
     }
 
     public function addToken($tokenData) {
-        $token = $this->loader->getTracker()->getToken($tokenData['gto_id_token']);
-
+        // We add all data we need so no database calls needed to load the token
         $tokenDiv = $this->creator->div(array('class' => 'token', 'renderClosingTag' => true));
 
-        $tokenLinks = array();
-        if ($token->isCompleted()) {
-            $status       = $this->creator->span($this->translate->_('Answered'), array('class' => 'answered'));
-            $tokenLinks[] = $this->createMenuLink($tokenData, 'track', 'answer', $status);
-            $tokenLinks[] = $this->createMenuLink($tokenData, 'survey', 'answer', $status);
+        $tokenLink = null;
+
+        if ($this->_isCompleted($tokenData)) {
+            $status = $this->creator->span($this->translate->_('Answered'), array('class' => 'answered'));
+            if ($tokenData['gtr_track_type'] == 'T') {
+                $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', $status, $this->_trackAnswer);
+            } else {
+                $tokenLink = $this->createMenuLink($tokenData, 'survey', 'answer', $status, $this->_surveyAnswer);
+            }
         } else {
-            $status       = $this->creator->span($this->translate->_('Fill in'), array('class' => 'open'));
-            $tokenLinks[] = $this->createMenuLink($tokenData, 'ask', 'take', $status);
+            $status    = $this->creator->span($this->translate->_('Fill in'), array('class' => 'open'));
+            $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', $status, $this->_takeSurvey);
         }
 
-        $tokenLinks = array_filter($tokenLinks);
-        $tokenLink  = reset($tokenLinks);
-
-
-
-        if (!empty($tokenLinks)) {
-            if ($token->isCompleted()) {
+        if (!empty($tokenLink)) {
+            if ($this->_isCompleted($tokenData)) {
                 $this->_completed++;
                 $tokenDiv->appendAttrib('class', ' answered');
                 $tokenLink->target = 'inline';
             } else {
                 $this->_open++;
                 $tokenDiv->appendAttrib('class', ' open');
-                $tokenLink->target = $token->getTokenId();
+                $tokenLink->target = $tokenData['gto_id_token'];
             }
             $tokenLink[] = $this->creator->br();
-            $tokenLink[] = $token->getSurveyName();
+            $tokenLink[] = $tokenData['gsu_survey_name'];
             $tokenDiv[]  = $tokenLink;
         } else {
             $this->_missed++;
@@ -203,7 +235,7 @@ $(".trackheader").click(function(){
             $tokenLink   = $tokenDiv->a('#', $status);
             $tokenLink->appendAttrib('class', ' actionlink');
             $tokenLink[] = $this->creator->br();
-            $tokenLink[] = $token->getSurveyName();
+            $tokenLink[] = $tokenData['gsu_survey_name'];
         }
         return $tokenDiv;
     }
@@ -211,11 +243,28 @@ $(".trackheader").click(function(){
     public function afterRegistry() {
         parent::afterRegistry();
 
-        if (is_null($this->translated)) {
-            $this->translated = $this->loader->getUtil()->getTranslated();
-        }
+        // Load the display dateformat
+        $dateOptions       = MUtil_Model_Bridge_FormBridge::getFixedOptions('date');
+        $this->_dateFormat = $dateOptions['dateFormat'];
 
         $this->creator = Gems_Html::init();
+    }
+
+    /**    
+     * Copied, optimised to we use the optional $menuItem we stored in _initView instead
+     * of doing the lookup again and again
+     * 
+     * @param type $parameterSource
+     * @param type $controller
+     * @param type $action
+     * @param type $label
+     * @param type $menuItem
+     * @return type
+     */
+    public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null) {
+        if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
+            return $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
+        }
     }
 
     public function createModel() {
@@ -243,7 +292,9 @@ $(".trackheader").click(function(){
             'gto_id_token',
             'gto_round_description',
             'forgroup',
-            'gtr_track_type'
+            'gtr_track_type',
+            'gsu_survey_name',
+            'gto_completion_time'
         );
         foreach ($items as $item)
         {
@@ -254,7 +305,7 @@ $(".trackheader").click(function(){
         $lastDate    = null;
         $doelgroep   = null;
         $today       = new MUtil_Date();
-        $today       = $this->translated->formatDate($today);
+        $today       = $today->get($this->_dateFormat);
         $progressDiv = null;
         $respTrackId = 0;
 
@@ -268,13 +319,13 @@ $(".trackheader").click(function(){
                 $track       = $main->div(array('class' => 'trackheader'));
                 $track->div($row['gtr_track_name'], array('class' => 'tracktitle', 'renderClosingTag' => true));
                 $track->div($row['gr2t_track_info'], array('class' => 'trackinfo', 'renderClosingTag' => true));
-                $track->div($this->translated->formatDate($row['gr2t_start_date']), array('class' => 'trackdate', 'renderClosingTag' => true));
+                $track->div($row['gr2t_start_date']->get($this->_dateFormat), array('class' => 'trackdate', 'renderClosingTag' => true));
                 $container   = $main->div(array('class' => 'scrollContainer', 'renderClosingTag' => true));
                 $cva         = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
             }
             $date = $row['gto_valid_from'];
             if ($date instanceof Zend_Date) {
-                $date = $this->translated->formatDate($date);
+                $date = $date->get($this->_dateFormat);
             } else {
                 continue;
             }
@@ -324,15 +375,15 @@ $(".trackheader").click(function(){
 
         return;
     }
-     /**
+
+    /**
      * Overrule to implement snippet specific filtering and sorting.
      *
      * @param MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    {
+    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model) {
         $model->setFilter($this->_fixedFilter);
-        $filter['gto_id_respondent']   = $this->respondentData['grs_id_user'];
+        $filter['gto_id_respondent'] = $this->respondentData['grs_id_user'];
         if (is_array($this->forOtherOrgs)) {
             $filter['gto_id_organization'] = $this->forOtherOrgs;
         } elseif (true !== $this->forOtherOrgs) {
@@ -340,19 +391,19 @@ $(".trackheader").click(function(){
         }
 
         // Filter for valid track reception codes
-        $filter[] = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
+        $filter[]              = 'gr2t_reception_code IN (SELECT grc_id_reception_code FROM gems__reception_codes WHERE grc_success = 1)';
         $filter['grc_success'] = 1;
         $filter['gro_active']  = 1;
         $filter['gsu_active']  = 1;
 
-        /*if ($tabFilter = $this->model->getMeta('tab_filter')) {
-            $model->addFilter($tabFilter);
-        }*/
+        /* if ($tabFilter = $this->model->getMeta('tab_filter')) {
+          $model->addFilter($tabFilter);
+          } */
 
         $model->addFilter($filter);
 
         // MUtil_Echo::track($model->getFilter());
-
         //$this->processSortOnly($model);
     }
+
 }
