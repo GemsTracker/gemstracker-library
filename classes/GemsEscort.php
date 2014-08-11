@@ -1652,7 +1652,7 @@ class GemsEscort extends MUtil_Application_Escort
      * @return void
      */
     public function postDispatch(Zend_Controller_Request_Abstract $request)
-    {
+    {            
         if ($request->isDispatched()) {
 
             // Only when we need to render the layout, we run the layout prepare
@@ -1734,6 +1734,9 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
+        if ($request instanceof Zend_Controller_Request_Http && $request->isXmlHttpRequest()) {
+            Zend_Layout::getMvcInstance()->disableLayout();
+        }
         $staticSession = $this->getStaticSession();
         if ($this->session->user_id && $previousRequestParameters = $staticSession->previousRequestParameters) {
             unset($previousRequestParameters['save_button']);

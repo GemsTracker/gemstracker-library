@@ -171,9 +171,9 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     public function answerAction()
     {
         // If loaded inline by Ajax request, disable the layout
-        if ($this->getRequest()->isXmlHttpRequest()) {
+        /*if ($this->getRequest()->isXmlHttpRequest()) {
             Zend_Layout::getMvcInstance()->disableLayout();
-        }
+        }*/
         
         // Set menu OFF
         $this->menu->setVisible(false);
