@@ -76,6 +76,44 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
     }
 
     /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateFieldInfoAppointment($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        return null;
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateFieldInfoDate($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        if ($currentValue instanceof Zend_Date) {
+            $value = $currentValue->toString();
+        } elseif ($currentValue instanceof DateTime) {
+            $value = date('j M Y', $currentValue->getTimestamp());
+        } else {
+            $value = $currentValue;
+        }
+
+        return array($fieldData['gtf_field_name'], $value);
+    }
+
+    /**
      * On save calculation function
      *
      * @param array $currentValue The current value
