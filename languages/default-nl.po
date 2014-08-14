@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-07 18:10+0100\n"
+"POT-Creation-Date: 2014-08-14 18:14+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -2203,7 +2203,6 @@ msgstr "Ontoegankelijke of onbekende organisatie."
 #: classes/Gems/Default/OrganizationAction.php:113
 #: classes/Gems/Default/StaffAction.php:348
 #: classes/Gems/Model/HiddenOrganizationModel.php:113
-#: classes/GemsEscort.php:1946
 #, php-format
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot deze pagina. Uw huidige rol is: %s."
@@ -3096,7 +3095,7 @@ msgstr ""
 "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account "
 "opnieuw activeren?"
 
-#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1944
+#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1945
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
@@ -5338,7 +5337,7 @@ msgstr "De datum van %2$d kenmerken is aangepast in %1$d trajecten."
 msgid "Checked %d tracks."
 msgstr "%d trajecten gecontroleerd."
 
-#: classes/Gems/Task/Tracker/ProcessTokenCompletion.php:71
+#: classes/Gems/Task/Tracker/ProcessTokenCompletion.php:72
 #: classes/Gems/Tracker/ChangeTracker.php:78
 #, php-format
 msgid "%d token round completion events caused changed to %d tokens."
@@ -6421,15 +6420,20 @@ msgstr "Systeem is in onderhoudsmodus"
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1929 classes/GemsEscort.php:1986
+#: classes/GemsEscort.php:1929 classes/GemsEscort.php:1990
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1970 classes/GemsEscort.php:1984
+#: classes/GemsEscort.php:1947
+#, php-format
+msgid "Access to the %s/%s page is not allowed for current role: %s."
+msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige rol is: %s."
+
+#: classes/GemsEscort.php:1974 classes/GemsEscort.php:1988
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1971
+#: classes/GemsEscort.php:1975
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
