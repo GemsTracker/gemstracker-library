@@ -201,7 +201,7 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
                     $patientId,
                     $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
                 );
-            return sprintf($this->_('Mail Activity Log for patient number %s: %s'), $patientId, $respondent->getName());
+            return sprintf($this->_('Mail Activity Log for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
     }

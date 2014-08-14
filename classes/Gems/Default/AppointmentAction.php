@@ -197,7 +197,7 @@ class Gems_Default_AppointmentAction extends Gems_Controller_ModelSnippetActionA
                     $patientId,
                     $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
                 );
-            return sprintf($this->_('Appointments for patient number %s: %s'), $patientId, $respondent->getName());
+            return sprintf($this->_('Appointments for respondent number %s: %s'), $patientId, $respondent->getName());
         }
         return $this->getIndexTitle();
     }
