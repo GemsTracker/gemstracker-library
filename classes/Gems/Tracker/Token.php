@@ -1400,11 +1400,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     public function handleAfterCompletion()
     {
         $survey = $this->getSurvey();
+        $event  = $survey->getSurveyCompletedEvent();
 
-        if ($event = $survey->getSurveyCompletedEvent()) {
-
+        if ($event) {
             try {
-                if ($changed = $event->processTokenData($this)) {
+                $changed = $event->processTokenData($this);
+                if ($changed && is_array($changed)) {
 
                     $this->setRawAnswers($changed);
 
@@ -1432,11 +1433,12 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
     public function handleBeforeAnswering()
     {
         $survey = $this->getSurvey();
+        $event  = $survey->getSurveyBeforeAnsweringEvent();
 
-        if ($event = $survey->getSurveyBeforeAnsweringEvent()) {
-
+        if ($event) {
             try {
-                if ($changed = $event->processTokenInsertion($this)) {
+                $changed = $event->processTokenInsertion($this);
+                if ($changed && is_array($changed)) {
 
                     $source = $survey->getSource();
                     $this->setRawAnswers($changed);
@@ -1636,7 +1638,8 @@ class Gems_Tracker_Token extends Gems_Registry_TargetAbstract
      *
      * @param array $answers
      */
-    public function setRawAnswers($answers) {
+    public function setRawAnswers($answers)
+    {
         $survey = $this->getSurvey();
         $source = $survey->getSource();
 
