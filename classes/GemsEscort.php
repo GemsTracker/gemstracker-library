@@ -1906,9 +1906,9 @@ class GemsEscort extends MUtil_Application_Escort
                 //Still allow logoff so we can relogin as master
                 if (!('index' == $request->getControllerName() && 'logoff' == $request->getActionName())) {
                     $this->setError(
-                        $this->_('Please check back later.'),
-                        401,
-                        $this->_('System is in maintenance mode'));
+                            $this->_('Please check back later.'),
+                            401,
+                            $this->_('System is in maintenance mode'));
                 }
                 $user->unsetAsCurrentUser();
             } else {
@@ -1924,9 +1924,10 @@ class GemsEscort extends MUtil_Application_Escort
             // Instead Gems routes to the first available menu item when this is the request target
             if (! $user->gotoStartPage($this->menu, $request)) {
                 $this->setError(
-                    $this->_('No access to site.'),
-                    401,
-                    $this->_('You have no access to this site.'));
+                        $this->_('No access to site.'),
+                        401,
+                        $this->_('You have no access to this site.'),
+                        true);
                 return;
             }
 
@@ -1939,12 +1940,15 @@ class GemsEscort extends MUtil_Application_Escort
             // Display error when not having the right priviliges
             if (! ($menuItem && $menuItem->get('allowed'))) {
                 // When logged in
-                if ($this->session->user_id) {
+                if ($user->getUserId()) {
                     $this->setError(
-                        $this->_('No access to page'),
-                        403,
-                        sprintf($this->_('Access to this page is not allowed for current role: %s.'), $user->getRole())
-                        );
+                            $this->_('No access to page'),
+                            403,
+                            sprintf($this->_('Access to the %s/%s page is not allowed for current role: %s.'),
+                                    $request->getControllerName(),
+                                    $request->getActionName(),
+                                    $user->getRole()),
+                            true);
 
                 } else { // No longer logged in
 
@@ -1954,8 +1958,8 @@ class GemsEscort extends MUtil_Application_Escort
                                 401,
                                 sprintf('Controller "%s" action "%s" is not accessible.',
                                         $request->getControllerName(),
-                                        $request->getActionName())
-                                );
+                                        $request->getActionName()),
+                                true);
                         return;
                     }
 
@@ -1981,9 +1985,10 @@ class GemsEscort extends MUtil_Application_Escort
 
                     } else {
                         $this->setError(
-                            $this->_('You are no longer logged in.'),
-                            401,
-                            $this->_('You have no access to this site.'));
+                                $this->_('You are no longer logged in.'),
+                                401,
+                                $this->_('You have no access to this site.'),
+                                true);
                         return;
                     }
                 }
@@ -2018,12 +2023,33 @@ class GemsEscort extends MUtil_Application_Escort
         }
     }
 
-
-    public function setError($message, $code = 200, $info = null)
+    /**
+     * Create an exception for the error, depending on processing position we either
+     * set the response exception or throw the exception if the response is
+     *
+     * @param string $message
+     * @param int $code
+     * @param string $info
+     * @param boolean $isSecurity
+     * @throws exception
+     */
+    public function setError($message, $code = 200, $info = null, $isSecurity = false)
     {
-        $this->setException(new Gems_Exception($message, $code, null, $info));
+        if ($isSecurity) {
+            $e = new Gems_Exception_Security($message, $code, null, $info);
+        } else {
+            $e = new Gems_Exception($message, $code, null, $info);
+        }
+        $this->setException($e);
     }
 
+    /**
+     * Handle the exception depending on processing position we either
+     * set the response exception or throw the exception if the response is
+     *
+     * @param exception $e
+     * @throws exception
+     */
     public function setException(exception $e)
     {
         if (isset($this->response)) {

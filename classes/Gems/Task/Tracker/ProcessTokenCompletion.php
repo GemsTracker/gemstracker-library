@@ -63,6 +63,7 @@ class Gems_Task_Tracker_ProcessTokenCompletion extends MUtil_Task_TaskAbstract
 
         if ($token->isCompleted()) {
             $respTrack = $token->getRespondentTrack();
+            $userId    = $userId ? $userId : $this->loader->getCurrentUser()->getUserId();
 
             if ($result = $respTrack->handleRoundCompletion($token, $userId)) {
                 $a = $batch->addToCounter('roundCompletionCauses');
