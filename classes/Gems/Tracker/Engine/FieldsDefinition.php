@@ -182,27 +182,22 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
             return null;
         }
 
+        $model   = $this->getDataStorageModel();
         $results = array();
+
         foreach ($this->_trackFields as $key => $field) {
-            if (isset($data[$key]) && (is_array($data[$key]) || strlen($data[$key]))) {
-                switch ($field['gtf_field_type']) {
-                    case 'appointment':
-                        // Do nothing for this field
-                        continue;
-                        break;
+            if (array_key_exists($key, $data)) {
+                $typeFunction = 'calculateFieldInfo' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
+                if (method_exists($model, $typeFunction)) {
+                    $value = $model->$typeFunction($data[$key], $key, $data, $field, $respTrackId);
+                } else {
+                    $value = $data[$key];
+                }
 
-                    case 'date':
-                        // Add the fieldname in front of the formatted date value
-                        $results[] = $field['gtf_field_name'] . ' ' . $data[$key];
-                        break;
-
-                    default:
-                        if (is_array($data[$key])) {
-                            $results = array_merge($results, $data[$key]);
-                        } else {
-                            $results[] = $data[$key];
-                        }
-                        break;
+                if (is_array($value)) {
+                    $results = array_merge($results, array_filter($value));
+                } elseif ($value || ($value == 0)) {
+                    $results[] = $value;
                 }
             }
         }
