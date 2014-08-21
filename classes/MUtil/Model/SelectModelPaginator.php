@@ -132,6 +132,10 @@ class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_Prefet
      */
     public function getItems($offset, $itemCountPerPage)
     {
+        // Cast to integers, as $itemCountPerPage can be string sometimes and that would fail later checks
+        $offset = (int) $offset;
+        $itemCountPerPage = (int) $itemCountPerPage;
+
         if (1 === $offset) {
             $offset = 0;
         }
