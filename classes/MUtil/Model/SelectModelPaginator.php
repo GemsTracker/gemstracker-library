@@ -136,10 +136,6 @@ class MUtil_Model_SelectModelPaginator implements MUtil_Paginator_Adapter_Prefet
         $offset = (int) $offset;
         $itemCountPerPage = (int) $itemCountPerPage;
 
-        if (1 === $offset) {
-            $offset = 0;
-        }
-
         if (($this->_lastOffset === $offset) && ($this->_lastItemCount === $itemCountPerPage)) {
             return $this->_lastItems;
         }

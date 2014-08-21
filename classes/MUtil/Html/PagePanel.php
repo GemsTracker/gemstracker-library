@@ -227,7 +227,8 @@ class MUtil_Html_PagePanel extends MUtil_Html_Sequence implements MUtil_Lazy_Pro
                 // Recently found trick, can save a complicated database query
                 $adapter = $this->_paginator->getAdapter();
                 if ($adapter instanceof MUtil_Paginator_Adapter_PrefetchInterface) {
-                    $adapter->getItems($this->_currentPage, $this->_itemCount);
+                    $offset = ($this->_currentPage -1) * $this->_itemCount; // Calculate correct offset
+                    $adapter->getItems($offset, $this->_itemCount);
                 }
                 $this->_paginator->setItemCountPerPage($this->_itemCount);
             }
