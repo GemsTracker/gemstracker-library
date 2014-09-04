@@ -246,10 +246,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             FROM gems__rounds
             WHERE gro_id_track = ? AND
                 gro_active = 1 AND
-                gro_id_round NOT IN (SELECT gto_id_round FROM gems__tokens WHERE gto_id_respondent_track = ?)
+                gro_id_round NOT IN (SELECT gto_id_round FROM gems__tokens WHERE gto_id_respondent_track = ?) AND
+                (gro_organizations IS NULL OR gro_organizations LIKE CONCAT('%|',?,'|%'))
             ORDER BY gro_id_order";
 
-        $newRounds = $this->db->fetchAll($sql, array($this->_trackId, $respTrackId));
+        $newRounds = $this->db->fetchAll($sql, array($this->_trackId, $respTrackId, $orgId));
 
         foreach ($newRounds as $round) {
 
@@ -365,9 +366,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     (gto_round_description IS NULL AND gro_round_description IS NOT NULL) OR
                     (gto_round_description IS NOT NULL AND gro_round_description IS NULL)
                 ) AND
-                gto_id_respondent_track = ?";
+                gto_id_respondent_track = ?
+                AND (gro_organizations IS NULL OR gro_organizations LIKE CONCAT('%|',?,'|%'))";
 
-        $stmt = $this->db->query($sql, $respTrackId);
+        $stmt = $this->db->query($sql, array($respTrackId, $qOrgId));
 
         return $stmt->rowCount();
     }
@@ -820,7 +822,22 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $model->addColumn(
             "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",
             'row_class');
+        $model->addColumn(
+            "CASE WHEN gro_organizations IS NULL THEN 0 ELSE 1 END",
+            'org_specific_round');
+        $model->addColumn('gro_organizations', 'organizations');
 
+        $model->set('organizations', 'label', $this->_('Organizations'),
+                'elementClass', 'MultiCheckbox',
+                'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                'data-source', 'org_specific_round'
+                );
+        $tp = new MUtil_Model_Type_ConcatenatedRow('|', ', ');
+        $tp->apply($model, 'organizations');
+
+
+
+        
         switch ($action) {
             case 'create':
                 $this->_ensureRounds();
@@ -828,10 +845,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 if ($this->_rounds && ($round = end($this->_rounds))) {
                     $model->set('gro_id_order', 'default', $round['gro_id_order'] + 10);
                 }
+
                 // Intentional fall through
                 // break;
             case 'edit':
             	$model->set('gro_icon_file', 'multiOptions', $this->util->getTranslated()->getEmptyDropdownArray() + $this->_getAvailableIcons());
+                $model->set('org_specific_round', 
+                'label', $this->_('Organization specific round'),
+                'multiOptions', $this->util->getTranslated()->getYesNo(),
+                'elementClass', 'radio');
+    
                 break;
 
             default:

@@ -234,6 +234,14 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     { }
 
     /**
+     * Perform some actions to the data before it is saved to the database
+     * 
+     */
+    
+    protected function beforeSave()
+    { }
+
+    /**
      * Simple default function for making sure there is a $this->_saveButton.
      *
      * As the save button is not part of the model - but of the interface - it
@@ -518,6 +526,8 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function saveData()
     {
+        $this->beforeSave();
+
         // Perform the save
         $model          = $this->getModel();
         $this->formData = $model->save($this->formData);

@@ -251,6 +251,12 @@ class Gems_Default_TrackRoundsAction  extends Gems_Controller_BrowseEditAction
         $menuSource->setRequestId($trackId); // Tell the menu we're using track id as request id
 
         $this->addSnippets($trackEngine->getRoundEditSnippetNames(), 'roundId', $this->_getParam(Gems_Model::ROUND_ID), 'trackEngine', $trackEngine, 'trackId', $trackId, 'userId', $this->session->user_id);
+        
+        $this->view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.showOnChecked.js');
+        $this->view->headScript()->appendScript("jQuery(document).ready(function($) {
+            $('input[name=\"organizations[]\"]').closest('tr').showOnChecked( { showInput: $('#org_specific_round-1') });
+        });");
+
     }
 
     public function getTopic($count = 1)

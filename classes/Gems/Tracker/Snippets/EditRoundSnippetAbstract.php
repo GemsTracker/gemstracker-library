@@ -98,6 +98,15 @@ class Gems_Tracker_Snippets_EditRoundSnippetAbstract extends Gems_Snippets_Model
         return $this->loader && parent::checkRegistryRequestsAnswers();
     }
 
+    protected function beforeSave()
+    {
+        if (isset($this->formData['org_specific_round']) && $this->formData['org_specific_round'] == 1) {
+            $this->formData['gro_organizations'] = '|' . implode('|', $this->formData['organizations']) . '|';
+        } else {
+            $this->formData['gro_organizations'] = null;
+        }
+    }
+
     /**
      * Creates the model
      *

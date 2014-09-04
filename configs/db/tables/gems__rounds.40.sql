@@ -29,6 +29,9 @@ CREATE TABLE if not exists gems__rounds (
         gro_valid_for_unit     char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',
         gro_valid_for_length   int not null default 0,
 
+        -- Yes, quick and dirty, will correct later (probably)
+        gro_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+
         gro_active             boolean not null default 1,
         gro_code               varchar(64)  CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null default null,
 

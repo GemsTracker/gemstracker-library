@@ -808,3 +808,8 @@ update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.
 ALTER TABLE `gems__comm_template_translations` 
     CHANGE `gctt_subject` `gctt_subject` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, 
     CHANGE `gctt_body` `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+-- GEMS VERSION: 56
+-- PATCH: Add organizations to Rounds
+ALTER TABLE gems__rounds ADD gro_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+    AFTER gro_valid_for_length;
