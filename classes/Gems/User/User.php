@@ -831,6 +831,7 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         $result['last_name']      = ltrim($this->_getVar('user_surname_prefix') . ' ') . $this->_getVar('user_last_name');
         $result['login_url']      = $orgResults['organization_login_url'];
         $result['name']           = $this->getFullName();
+        $result['login_name']     = $this->getLoginName();
 
         $result = $result + $orgResults + $projResults;
 
