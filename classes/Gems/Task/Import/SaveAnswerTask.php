@@ -230,6 +230,7 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
                 } elseif (! $token->isCompleted()) {
                     $token->setCompletionTime(new MUtil_Date(), $userId);
                 }
+                $token->getRespondentTrack()->checkTrackTokens($userId, $token);
 
                 $count = $batch->addToCounter('changed', 1);
                 $batch->setMessage('changed', sprintf(
