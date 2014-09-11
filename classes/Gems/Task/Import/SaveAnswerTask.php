@@ -108,16 +108,24 @@ class Gems_Task_Import_SaveAnswerTask extends MUtil_Task_TaskAbstract
 
             // Remove all "non-answer" fields
             unset($answers['token'], $answers['patient_id'], $answers['organization_id'], $answers['track_id'],
-                    $answers['completion_date'], $answers['gto_id_token']);
+                    $answers['survey_id'], $answers['completion_date'], $answers['gto_id_token']);
 
-            // MUtil_Echo::track($row);
+            if (isset($row['survey_id'])) {
+                $model = $tracker->getSurvey($row['survey_id'])->getAnswerModel('en');
+                foreach ($answers as $key => &$value) {
+                    if ($value instanceof Zend_Date) {
+                        $value = $value->toString($model->getWithDefault($key, 'storageFormat', 'yyyy-MM-dd HH:mm:ss'));
+                    }
+                }
+            }
+
             if (isset($row['token']) && $row['token']) {
                 $token = $tracker->getToken($row['token']);
 
                 if ($token->exists && $token->isCompleted() && $token->getReceptionCode()->isSuccess()) {
                     $currentAnswers = $token->getRawAnswers();
                     $usedAnswers    = array_intersect_key($answers, $currentAnswers);
-                    // MUtil_Echo::track($currentAnswers, $answers, $answers);
+                    // MUtil_Echo::track($currentAnswers, $answers, $usedAnswers);
 
                     if ($usedAnswers) {
                         foreach ($usedAnswers as $name => $value) {
