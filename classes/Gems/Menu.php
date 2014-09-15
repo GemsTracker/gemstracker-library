@@ -61,6 +61,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     private $_currentMenuItem;
 
     private $_hiddenPrivileges = array();
+
+    private $_menuUlClass = 'navigation nav nav-stacked';
+
     private $_onlyActiveBranchVisible = false;
 
     /**
@@ -788,7 +791,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      */
     protected function renderFirst()
     {
-        return MUtil_Html::create()->ul(array('class' => 'navigation'));
+        return MUtil_Html::create()->ul(array('class' => $this->_menuUlClass));
     }
 
     /**
@@ -824,7 +827,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 }
 
                 if (isset($item['pages']) && is_array($item['pages'])) {
-                    $this->renderItems($li->ul(), $item['pages']);
+                    $this->renderItems($li->ul(array('class' => 'subnav '. $this->_menuUlClass)), $item['pages']);
                 }
             }
         }

@@ -56,6 +56,7 @@ class Gems_TabForm extends Gems_Form
 
     public function __construct($options = null)
     {
+        $options['class'] = 'form-horizontal';
         parent::__construct($options);
 
         /**
@@ -79,10 +80,17 @@ class Gems_TabForm extends Gems_Form
         /**
          * This script handles saving the tab to our hidden input when a new tab is showed
          */
-        $js = sprintf('%1$s("#tabContainer").bind( "tabsshow", function(event, ui) {
-            var $tabs = %1$s("#tabContainer").tabs();
-            var selected = $tabs.tabs("option", "selected"); // => 0
-            %1$s("#%2$s input#tab").val(selected);
+
+        $js = sprintf('
+            var listItem = %1$s(".active");
+            var tabs = %1$s("#tabContainer .nav-tabs li");
+            var activeTab = tabs.index(listItem);
+            %1$s("#%2$s #tab").val(activeTab);
+
+            tabs.find("a").on("click", function(e) {
+                var liContainer = %1$s(this).parent();
+                var activeTab = tabs.index(liContainer);
+                %1$s("#%2$s #tab").val(activeTab);
             });',
             ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
             $this->getAttrib('id')

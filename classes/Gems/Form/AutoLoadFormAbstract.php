@@ -102,9 +102,8 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
 
         if (! $element) {
             // Submit knop
-            $element = new Zend_Form_Element_Submit($this->_submitFieldName);
+            $element = $this->createElement('submit', $this->_submitFieldName);
             $element->setLabel($this->getSubmitButtonLabel());
-            $element->setAttrib('class', 'button');
 
             $this->addElement($element);
         }

@@ -162,7 +162,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
             $element->setValue($orgId);
 
         } elseif (! $element instanceof Zend_Form_Element_Select) {
-            $element = new Zend_Form_Element_Select($this->organizationFieldName);
+            $element = $this->createElement('select', $this->organizationFieldName);
             $element->setLabel($this->translate->_('Organization'));
             $element->setRegisterInArrayValidator(true);
             $element->setRequired(true);
@@ -228,7 +228,7 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
 
         if (! $element) {
             // Veld inlognaam
-            $element = new Zend_Form_Element_Text($this->usernameFieldName);
+            $element = $this->createElement('text', $this->usernameFieldName);
             $element->setLabel($this->translate->_('Username'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);

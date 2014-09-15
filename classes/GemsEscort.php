@@ -92,12 +92,18 @@ class GemsEscort extends MUtil_Application_Escort
     private $_startFirebird;
 
     /**
+     * Set to true for bootstrap projects. Needs html5 set to true as well
+     * @var boolean
+     */
+    public static $useBootstrap = false;
+
+    /**
      * Set to true for html 5 projects
      *
      * @var boolean
      */
-    public $useHtml5 = false;
-
+    public static $useHtml5 = false;
+    
     /**
      * The menu variable
      *
@@ -638,8 +644,8 @@ class GemsEscort extends MUtil_Application_Escort
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
         $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
 
-        if ($this->useHtml5) {
-            $view->doctype(Zend_View_Helper_Doctype::XHTML5);
+        if (self::$useHtml5) {
+            $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
             $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
         }
@@ -754,19 +760,33 @@ class GemsEscort extends MUtil_Application_Escort
                     $tag = 'div';
                 }
 
-                $div = MUtil_Html::create($tag, $args + array('id' => 'crumbs'));
-                $content = $div->seq();
-                $content->setGlue(MUtil_Html::raw($this->_(' > ')));
-
-                // Add request to existing menu parameter sources
                 $source = array($this->menu->getParameterSource(), $this->request);
 
-                foreach ($path as $menuItem) {
-                    $content->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
-                }
+                if (self::$useBootstrap && !isset($args['tag'])) {
+                    $div = MUtil_Html::create('ol', $args + array('id' => 'crumbs', 'class' => 'breadcrumb'));
+                    
+                    foreach ($path as $menuItem) {
+                        $div->li()->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
+                    }
 
-                if ($last) {
-                    $content->append($last->get('label'));
+                    if ($last) {
+                        $div->li(array('class' => 'active'))->append($last->get('label'));
+                    }
+
+                } else {
+                    $div = MUtil_Html::create($tag, $args + array('id' => 'crumbs'));    
+                    
+                    $content = $div->seq();
+                    $content->setGlue(MUtil_Html::raw($this->_(' > ')));
+                    // Add request to existing menu parameter sources
+
+                    foreach ($path as $menuItem) {
+                        $content->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
+                    }
+
+                    if ($last) {
+                        $content->append($last->get('label'));
+                    }
                 }
 
                 return $div;
@@ -1015,32 +1035,7 @@ class GemsEscort extends MUtil_Application_Escort
         // Do not trust $messenger being set in the view,
         // after a reroute we have to reinitiate te $messenger.
         $messenger = $this->getMessenger();
-
-        if ($messenger->hasMessages()) {
-            $messages = $messenger->getMessages();
-        } else {
-            $messages = array();
-        }
-
-        if ($messenger->hasCurrentMessages()) {
-            $messages = array_merge($messages, $messenger->getCurrentMessages());
-        }
-
-        if ($messages) {
-            foreach ($messages as &$message) {
-                // Make sure html is preserved
-                if (is_string($message) && strlen($message) &&
-                        ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
-                    $message = MUtil_Html::raw($message);
-                }
-            }
-
-            $ul = MUtil_Html::create()->ul($args + array('class' => 'errors'), $messages);
-
-            $messenger->clearCurrentMessages();
-
-            return $ul;
-        }
+        return $this->view->messenger->showMessages();
     }
 
     /**
@@ -1085,13 +1080,13 @@ class GemsEscort extends MUtil_Application_Escort
      * @return mixed If null nothing is set, otherwise the name of
      * the function is used as Zend_View variable name.
      */
-    protected function _layoutOrganizationSwitcher() // Gems_Project_Organization_MultiOrganizationInterface
+    protected function _layoutOrganizationSwitcher(array $args = null) // Gems_Project_Organization_MultiOrganizationInterface
     {
         $user = $this->getLoader()->getCurrentUser();
         if ($user->isActive() && ($orgs = $user->getAllowedOrganizations())) {
             if (count($orgs) > 1) {
                 // Organization switcher
-                $orgSwitch  = MUtil_Html::create('div', array('id' => 'organizations'));
+                $orgSwitch  = MUtil_Html::create('div', $args, array('id' => 'organizations'));
                 $currentId  = $user->getCurrentOrganizationId();
                 $params     = $this->request->getparams();
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
@@ -1114,7 +1109,7 @@ class GemsEscort extends MUtil_Application_Escort
                             'value' => base64_encode($currentUri))
                         );
 
-                $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();"));
+                $select = $formDiv->select(array('name' => "org", 'onchange' => "javascript:this.form.submit();", 'class' => 'form-control'));
                 foreach ($orgs as $id => $org) {
                     $selected = '';
                     if ($id == $currentId) {
@@ -1496,7 +1491,7 @@ class GemsEscort extends MUtil_Application_Escort
     public function getMessenger()
     {
         if (! isset($this->view->messenger)) {
-            $this->view->messenger = new Zend_Controller_Action_Helper_FlashMessenger();
+            $this->view->messenger = $this->loader->getMessenger();
         }
         return $this->view->messenger;
     }
@@ -1828,8 +1823,8 @@ class GemsEscort extends MUtil_Application_Escort
         // by classes using jQuery
         $jquery = MUtil_JQuery::jQuery();
 
-        $jqueryVersion   = '1.8.3';
-        $jqueryUiVersion = '1.9.2';
+        $jqueryVersion   = '1.11.1';
+        $jqueryUiVersion = '1.11.1';
         $jquery->setVersion($jqueryVersion);
         $jquery->setUiVersion($jqueryUiVersion);
 

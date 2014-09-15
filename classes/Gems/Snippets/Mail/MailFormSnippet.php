@@ -153,7 +153,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      */
     protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
-
+        $this->mailElements->setForm($bridge->getForm());
         $bridge->addHtml('to', 'label', $this->_('To'));
         $bridge->addHtml('prefered_language', 'label', $this->_('Prefered Language'));
 

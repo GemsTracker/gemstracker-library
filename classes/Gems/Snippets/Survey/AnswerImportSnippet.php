@@ -195,6 +195,37 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
     }
 
     /**
+     * Creates from the model a Zend_Form using createForm and adds elements
+     * using addFormElements().
+     *
+     * @param int $step The current step
+     * @return Zend_Form
+     */
+    protected function getFormFor($step)
+    {
+        $model    = $this->getModel();
+        $baseform = $this->createForm();
+
+        if ((gemsEscort::$useBootstrap !== true) && ($baseform instanceof MUtil_Form)) {
+            $table = new MUtil_Html_TableElement();
+            $table->setAsFormLayout($baseform, true, true);
+
+            // There is only one row with formLayout, so all in output fields get class.
+            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+        }
+        $baseform->setAttrib('class', $this->class);
+
+        $bridge = $model->getBridgeFor('form', $baseform);
+
+        $this->_items = null;
+        $this->initItems();
+
+        $this->addFormElementsFor($bridge, $model, $step);
+
+        return $baseform;
+    }
+
+    /**
      * Try to get the current translator
      *
      * @return MUtil_Model_ModelTranslatorInterface or false if none is current

@@ -308,7 +308,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_BrowseEditAction
         $title = $this->_('Synchronize all sources.');
         $this->_helper->batchRunner($batch, $title);
 
-        $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'));
+        $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'), array('class' => 'btn-danger'));
 
         $this->addSynchronizationInformation();
     }

@@ -260,28 +260,33 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $types         = $this->export->getExportClasses();
 
         //Create the basic form
-        $form = new Gems_Form_TableForm();
+        if (GemsEscort::$useBootstrap) {
+            $form = new Gems_Form();
+        } else {
+            $form = new Gems_Form_TableForm();
+        }
+        
         $form->getDecorator('AutoFocus')->setSelectall(false);
 
         //Start adding elements
-        $element = new Zend_Form_Element_Textarea('ids');
+        $element = $form->createElement('textarea', 'ids');
         $element->setLabel($this->_('Respondent id\'s'))
                 ->setAttrib('cols', 60)
                 ->setAttrib('rows', 4)
                 ->setDescription($this->_('Not respondent nr, but respondent id as exported here.'));
         $elements[] = $element;
 
-        $element = new Zend_Form_Element_Select('tid');
+        $element = $form->createElement('select', 'tid');
         $element->setLabel($this->_('Tracks'))
             ->setMultiOptions($tracks);
         $elements[] = $element;
 
-        $element = new Zend_Form_Element_Select('sid');
+        $element = $form->createElement('select', 'sid');
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
         $elements[] = $element;
         
-        $element = new Zend_Form_Element_Select('rounds');
+        $element = $form->createElement('select', 'rounds');
         $element->setLabel($this->_('Round description'))
             ->setMultiOptions($rounds);
         $elements[] = $element;
@@ -300,12 +305,12 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             //$recordCount = count($answers);
             $recordCount = $survey->getRawTokenAnswerRowsCount($filter);
 
-            $element = new MUtil_Form_Element_Exhibitor('records');
+            $element = $form->createElement('exhibitor', 'records');
             $element->setValue(sprintf($this->_('%s records found.'), $recordCount));
             $elements[] = $element;
         }
 
-        $element = new Zend_Form_Element_MultiCheckbox('oid');
+        $element = $form->createElement('multiCheckbox', 'oid');
         $element->setLabel($this->_('Organization'))
                 ->setMultiOptions($organizations);
         $elements[] = $element;
@@ -314,7 +319,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Toggle'));
         $elements[] = $element;
 
-        $element = new Zend_Form_Element_Select('type');
+        $element = $form->createElement('select', 'type');
         $element->setLabel($this->_('Export to'))
                 ->setMultiOptions($types);
         $elements[] = $element;
@@ -343,9 +348,8 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         }
 
         //Finally create a submit button and add to the form
-        $element = new Zend_Form_Element_Submit('export');
-        $element->setLabel('Export')
-                ->setAttrib('class', 'button');
+        $element = $form->createElement('submit', 'export');
+        $element->setLabel('Export');
         $form->addElement($element);
 
         return $form;

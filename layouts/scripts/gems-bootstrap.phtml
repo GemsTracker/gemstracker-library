@@ -1,0 +1,82 @@
+<?php echo $this->doctype(); ?>
+
+<html <?php echo 'xmlns="http://www.w3.org/1999/xhtml" xml:lang="'.$this->locale.'"' ?> lang="<?php echo $this->locale; ?>">
+<head>
+    <meta charset="utf-8">
+    <?php echo $this->headMeta(); ?>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php echo $this->headTitle(); ?>
+
+<!-- Bootstrap CSS CDN link, recommended for production!   
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> 
+-->
+    <link rel="stylesheet" type="text/css" href="/gemstracker_trunk/bootstrap/bootstrap.min.css">
+    <?php echo $this->headLink(); ?>
+    
+    
+    <?php echo $this->headStyle(); ?>
+
+</head>
+<body>
+    <div id="all" class="container-fluid">
+        <div id="header" class="row"><?php if ($this->header) { echo $this->header->render($this); }?></div>
+        <div id="header_bar" class="row"><?php if ($this->header_bar) { echo $this->header_bar->render($this); } ?></div>
+<?php
+    
+?>
+        <div class="row">
+            <div id="main" class="col-sm-9 col-sm-push-3">
+            <?php
+                    if ($this->main) {
+                        echo $this->main->render($this);
+                    }
+                    echo $this->layout()->content; ?>
+
+            </div>
+            <div class="col-sm-3 col-sm-pull-9 navbar navbar-default" role="navigation">
+            
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                
+                <div class="collapse navbar-collapse">
+                    <?php
+                echo $this->navigation()->menu();
+                echo $this->menuHtml; ?>
+                    
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <div id="footer" class="row"><?php
+        if ($this->footer) {
+            echo $this->footer->render($this);
+        }
+        ?>
+        </div>
+    </div>
+
+
+<?php if ($this->jQuery) {
+        echo $this->jQuery();
+    }
+?>
+<!-- Bootstrap and Jquery Javascript CDN links, recommended for production.    
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+-->
+
+    <script src="/gemstracker_trunk/bootstrap/js/bootstrap.min.js"></script>
+<?php
+echo MUtil_Echo::out();
+echo $this->headScript();
+echo $this->inlineScript();
+?>
+</body>
+</html>

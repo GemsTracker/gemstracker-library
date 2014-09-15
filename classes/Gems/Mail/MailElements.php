@@ -58,6 +58,9 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
      */
     protected $db;
 
+    protected $_form;
+
+
     /**
      *
      * @var Zend_Loader
@@ -179,7 +182,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $options['required']  = $required;
         $options['size']      = 50;
 
-        $element = new Zend_Form_Element_Text($name, $options);
+        $element = $this->_form->createElement('text', $name, $options);
 
         if ($multi) {
             $element->addValidator('SimpleEmails');
@@ -197,13 +200,14 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
      */
     public function createMethodElement()
     {
-        $options = $this->util->getTranslated()->getBulkMailProcessOptions();
-
-        return new Zend_Form_Element_Radio('multi_method', array(
+        $multiOptions = $this->util->getTranslated()->getBulkMailProcessOptions();
+        $options = array(
             'label'        => $this->translate->_('Method'),
             'multiOptions' => $options,
             'required'     => true,
-            ));
+        );
+
+        return $this->_form->createElement('radio', 'multi_method', $options);
     }
 
     /**
@@ -221,7 +225,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         }
         $options['nohidden']    = true;
 
-        return new MUtil_Form_Element_Exhibitor('preview_html', $options);
+        return $this->_form->createElement('exhibitor', 'preview_text', $options);
     }
 
     /**
@@ -234,13 +238,12 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $options['label']       = $this->translate->_('Preview text');
         $options['nohidden']    = true;
 
-        return new MUtil_Form_Element_Exhibitor('preview_text', $options);
+        return $this->_form->createElement('exhibitor', 'preview_text', $options);
     }
 
     public function createSubmitButton($name, $label)
     {
-    	$button = new Zend_Form_Element_Submit($name, $label);
-    	$button->setAttrib('class', $this->buttonClass);
+        $button = $form->createElement('submit', 'save_button', $label);
         return $button;
     }
 
@@ -275,7 +278,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
             $options['size'] = min(count($options['multiOptions']) + 1, 7);
         }
 
-        return new Zend_Form_Element_Select($name, $options);
+        return $this->_form->createElement('select', $name, $options);
     }
 
 
@@ -291,10 +294,12 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
     public function displayMailFields($mailFields)
     {
     	$mailFieldsRepeater = new MUtil_Lazy_RepeatableByKeyValue($mailFields);
-        $mailFieldsHtml     = new MUtil_Html_TableElement($mailFieldsRepeater);
+        $mailFieldsHtml     = new MUtil_Html_TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->value, $this->translate->_('Value'));
-        return $mailFieldsHtml;
+        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container[] = $mailFieldsHtml;
+        return $container;
     }
 
     public function getEmailOption(array $requestData, $name, $email, $extra = null, $disabledTitle = false, $menuFind = false)
@@ -350,5 +355,9 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
             $templates = array('' => '') + $templates;
         }
         return $templates;
+    }
+
+    public function setForm($form) {
+        $this->_form = $form;
     }
 }

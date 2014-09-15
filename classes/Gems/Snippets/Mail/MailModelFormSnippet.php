@@ -88,6 +88,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
      */
     protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
+        $this->mailElements->setForm($bridge->getForm());
         $this->initItems();
         $this->addItems($bridge, 'gct_name');
         $this->addItems($bridge, 'gct_id_template', 'gct_target');
@@ -126,7 +127,7 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         $bridge->addHidden('send_language');
         $bridge->addFakeSubmit('sendtest', array('label' => $this->_('Send (test)')));
 
-        $bridge->addElement($this->getSaveButton());
+        $bridge->addElement($this->getSaveButton($bridge->getForm()));
 
         $bridge->addElement($this->mailElements->createPreviewHtmlElement('Preview HTML'));
         $bridge->addElement($this->mailElements->createPreviewTextElement('Preview Text'));
@@ -192,13 +193,12 @@ class Gems_Snippets_Mail_MailModelFormSnippet extends Gems_Snippets_ModelFormSni
         return array('html' => $htmlView, 'text' => $textView);
     }
 
-    protected function getSaveButton()
+    protected function getSaveButton($form)
     {
-        return new Zend_Form_Element_Submit('save_button',
-            array('label' => $this->_('Save'),
+        $options = array('label' => $this->_('Save'),
                   'attribs' => array('class' => $this->buttonClass)
-                )
-            );
+                );
+        return $form->createElement('submit', 'save_button', $options);
     }
 
     /**

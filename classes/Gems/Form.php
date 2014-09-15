@@ -75,8 +75,17 @@ class Gems_Form extends MUtil_Form
         $this->addElementPrefixPath('Gems_Validate',        'Gems/Validate/',        Zend_Form_Element::VALIDATE);
 
         $this->setDisableTranslator(true);
+
+        $this->activateBootstrap();
     }
     
+
+    public function activateBootstrap() {
+        if (GemsEscort::$useBootstrap === true) {
+            parent::activateBootstrap();
+        }
+    }
+
     protected function _activateJQueryView(\Zend_View_Interface $view = null) {
         parent::_activateJQueryView($view);
         

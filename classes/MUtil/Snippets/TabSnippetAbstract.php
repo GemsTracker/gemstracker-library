@@ -59,7 +59,7 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
      *
      * @var string
      */
-    protected $class = 'tabrow';
+    protected $class = 'tabrow nav nav-tabs';
 
     /**
      *
@@ -153,16 +153,16 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
                 $this->href = $this->href + $this->baseUrl;
             }
 
-            $tabRow = MUtil_Html::create()->div();
+            $tabRow = MUtil_Html::create()->ul();
 
             foreach ($tabs as $tabId => $content) {
 
-                $div = $tabRow->div(array('class' => $this->tabClass));
+                $li = $tabRow->li(array('class' => $this->tabClass));
 
-                $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+                $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
 
                 if ($this->currentTab == $tabId) {
-                    $div->appendAttrib('class', $this->tabActiveClass);
+                    $li->appendAttrib('class', $this->tabActiveClass);
                 }
             }
 

@@ -218,7 +218,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
                     $this->addMessage($this->_('Choose a reception code to delete.'));
                 }
             } else {
-                $this->addMessage($this->_('Input error! No changes saved!'));
+                $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
             }
         }
         $form->populate($data);

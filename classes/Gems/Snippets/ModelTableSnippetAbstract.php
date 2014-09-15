@@ -60,7 +60,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      *
      * @var string
      */
-    protected $class = 'browser';
+    protected $class = 'browser table table-striped table-bordered table-hover';
 
     /**
      *

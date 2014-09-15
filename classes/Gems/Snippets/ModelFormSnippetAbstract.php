@@ -223,8 +223,11 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     {
         if ($this->_form instanceof Gems_TabForm) {
             if ($links = $this->getMenuList()) {
-                $element = new MUtil_Form_Element_Html('formLinks');
-                $element->setValue($links)
+                $linkContainer = MUtil_Html::create()->div(array('class' => 'col-sm-offset-2 col-sm-10'));
+                $linkContainer[] = $links;
+
+                $element = $this->_form->createElement('html', 'formLinks');
+                $element->setValue($linkContainer)
                         ->setOrder(999)
                         ->removeDecorator('HtmlTag')
                         ->removeDecorator('Label')
@@ -240,16 +243,23 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 }
             }
         } else {
-            $table = new MUtil_Html_TableElement(array('class' => $this->class));
-            $table->setAsFormLayout($this->_form, true, true);
+            if (GemsEscort::$useBootstrap !== true) {
+                $table = new MUtil_Html_TableElement(array('class' => $this->class));
+                $table->setAsFormLayout($this->_form, true, true);
 
-            // There is only one row with formLayout, so all in output fields get class.
-            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+                // There is only one row with formLayout, so all in output fields get class.
+                $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
 
-            if ($links = $this->getMenuList()) {
-                $table->tf(); // Add empty cell, no label
-                $table->tf($links);
-            }
+                if ($links = $this->getMenuList()) {
+                    $table->tf(); // Add empty cell, no label
+                    $table->tf($links);
+                }
+            } elseif($links = $this->getMenuList()) {
+                $element = $form->createElement('html', 'menuLinks');
+                $element->setValue($links);
+                $element->setOrder(999);
+                $form->addElement($element);
+            }   
         }
     }
 

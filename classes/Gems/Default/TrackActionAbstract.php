@@ -116,7 +116,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
                 'action'                 => 'index',
                 MUtil_Model::TEXT_FILTER => $searchText);
 
-            $bridge = $model->getBridgeFor('table', array('class' => 'browser'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover'));
             $bridge->setBaseUrl($baseUrl);
             $bridge->setOnEmpty($this->_('No tracks found'));
             $bridge->getOnEmpty()->class = 'centerAlign';
@@ -139,7 +139,9 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             }
 
             $result[] = MUtil_Html::create()->h3($this->_('Available tracks'));
-            $result[] = $bridge->getTable();
+            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+            $tableContainer[] = $bridge->getTable();
+            $result[] = $tableContainer;
         }
 
         return $result;

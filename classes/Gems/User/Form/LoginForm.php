@@ -81,6 +81,16 @@ class Gems_User_Form_LoginForm extends Gems_User_Form_OrganizationFormAbstract
      */
     protected $showToken = true;
 
+    public function __construct($options = null)
+    {
+        if (isset($options['class'])) {
+            $options['class'] .= ' col-sm-4';
+        } else {
+            $options['class'] = 'col-sm-4';
+        }
+        parent::__construct($options);
+    }
+
     /**
      * Returns/sets a link to the reset password page
      *
@@ -123,7 +133,7 @@ class Gems_User_Form_LoginForm extends Gems_User_Form_OrganizationFormAbstract
 
         if (! $element) {
             // Veld password
-            $element = new Zend_Form_Element_Password($this->passwordFieldName);
+            $element = $this->createElement('password', $this->passwordFieldName);
             $element->setLabel($this->translate->_('Password'));
             $element->setAttrib('size', 40);
             $element->setRequired(true);
@@ -162,7 +172,7 @@ class Gems_User_Form_LoginForm extends Gems_User_Form_OrganizationFormAbstract
 
         if (! $element) {
             // Veld token
-            $element = new MUtil_Form_Element_Html($this->_tokenFieldName);
+            $element = $this->createElement('html', $this->_tokenFieldName);
             // $element->br();
             $element->setValue($this->getTokenLink());
 

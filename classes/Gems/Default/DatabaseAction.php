@@ -87,13 +87,15 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
         $table = MUtil_Html_TableElement::createArray($paginator->getCurrentItems(), $caption, true);
         if ($table instanceof MUtil_Html_TableElement) {
-            $table->class = 'browser';
+            $table->class = 'browser table table-striped table-bordered table-hover';
             $table->tfrow()->pagePanel($paginator, $this->getRequest(), $this->translate);
         } else {
             $table = MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
         }
 
-        return $table;
+        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container[] = $table;
+        return $container;
     }
 
     /**
@@ -285,16 +287,16 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $form = $this->createForm();
         $form->setName('database_patcher');
 
-        $form->addElement(new MUtil_Form_Element_Exhibitor('app_level', array('label' => $this->_('Gems build'))));
-        $form->addElement(new MUtil_Form_Element_Exhibitor('db_level',  array('label' => $this->_('Database build'))));
+        $form->addElement($form->createElement('exhibitor', 'app_level', array('label' => $this->_('Gems build'))));
+        $form->addElement($form->createElement('exhibitor', 'db_level', array('label' => $this->_('Database build'))));
 
-        $level = new Zend_Form_Element_Text('level', array('label' => $this->_('Execute level')));
+        $level = $form->createElement('text', 'level', array('label' => $this->_('Execute level')));
         $level->addValidator(new Zend_Validate_Digits());
         $form->addElement($level);
 
-        $form->addElement(new Zend_Form_Element_Checkbox('completed', array('label' => $this->_('Ignore finished'))));
-        $form->addElement(new Zend_Form_Element_Checkbox('executed', array('label' => $this->_('Ignore executed'))));
-        $form->addElement(new Zend_Form_Element_Submit('show_button',   array('label' => $this->_('Show patches'), 'class' => 'button')));
+        $form->addElement($form->createElement('checkbox', 'completed', array('label' => $this->_('Ignore finished'))));
+        $form->addElement($form->createElement('checkbox', 'executed', array('label' => $this->_('Ignore executed'))));
+        $form->addElement($form->createElement('submit', 'show_button',   array('label' => $this->_('Show patches'), 'class' => 'button')));
         // $execute = new Zend_Form_Element_Submit('save_button',   array('label' => $this->_('Execute'), 'class' => 'button'));
         // $form->addElement($execute);
 
@@ -349,20 +351,20 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $form->populate($data);
         }
 
-        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
-        $table->setAsFormLayout($form, true, true);
-        $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+        //$table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        //$table->setAsFormLayout($form, true, true);
+        //$table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
         if ($links = $this->createMenuLinks(1)) {
-            $table->tf(); // Add empty cell, no label
-            $linksCell = $table->tf($links);
+            //$table->tf(); // Add empty cell, no label
+            //$linksCell = $table->tf($links);
         }
 
         $this->html[] = $form;
 
         if ($data = $this->db->fetchAll($tableSql)) {
             $table = MUtil_Html_TableElement::createArray($data, $this->_('Patch overview'), true);
-            $table->class = 'browser';
+            $table->class = 'browser table table-striped table-bordered table-hover';
             $this->html[] = $table;
         }
     }
@@ -485,7 +487,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $this->html->h4($this->plural('Are you sure you want to create it?', 'Are you sure you want to create them all?', $oCount));
 
             $model->set('name', 'itemDisplay', array(__CLASS__, 'createShowLink'), 'tableDisplay', 'em');
-            $bridge = $model->getBridgeFor('table', array('class' => 'browser'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover'));
             $bridge->setRepeater($objects);
             foreach (array('order', 'group', 'type', 'name', 'location') as $key) {
                 $bridge->add($key);
@@ -507,14 +509,14 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
          *************/
         $form = $this->createForm();
 
-        $element = new Zend_Form_Element_Textarea('script');
+        $element = $form->createElement('textarea', 'script');
         $element->setDescription($this->_('Separate multiple commands with semicolons (;).'));
         $element->setLabel('SQL:');
         $element->setRequired(true);
         $form->addElement($element);
 
-        $element = new Zend_Form_Element_Submit('submit');
-        $element->setAttrib('class', 'button');
+        //$element = new Zend_Form_Element_Submit('submit');
+        $element = $form->createElement('submit', 'submit');
         $element->setLabel($this->_('Run'));
         $form->addElement($element);
 

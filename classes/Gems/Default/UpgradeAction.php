@@ -132,7 +132,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
             $data[] = $row;
 
         }
-        $this->addSnippet('SelectiveTableSnippet', 'data', $data, 'class', 'browser', 'columns', $displayColumns);
+        $this->addSnippet('SelectiveTableSnippet', 'data', $data, 'class', 'browser table table-striped table-bordered table-hover', 'columns', $displayColumns);
     }
 
     /**

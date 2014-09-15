@@ -81,7 +81,7 @@ class Gems_Export_Spss extends Gems_Export_ExportAbstract implements Gems_Export
     
     public function getFormElements(&$form, &$data)
     {
-        $element    = new MUtil_Form_Element_Exhibitor('help');
+        $element = $form->createElement('exhibitor', 'help');
         $element->setValue($this->_('Extract both syntax and data file form the archive. Open the syntax file in SPSS and modify the line /FILE="filename.dat" to include the full path to your data file. Then choose Run -> All to execute the syntax.'));
         $elements[] = $element;
 

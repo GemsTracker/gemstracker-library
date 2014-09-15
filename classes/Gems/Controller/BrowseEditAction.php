@@ -137,7 +137,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             if (null !== $empty) {
                 $options = array('' => $empty) + $options;
             }
-            $element = new Zend_Form_Element_Select($name, array('multiOptions' => $options));
+            $element = $this->form->createElement('select', $name, array('multiOptions' => $options));
 
             return $element;
         }
@@ -321,8 +321,11 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         if ($this->useTabbedForms || $form instanceof Gems_Form_TableForm) {
             //If needed, add a row of link buttons to the bottom of the form
             if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                $element = new MUtil_Form_Element_Html('formLinks');
-                $element->setValue($links);
+                $linkContainer = MUtil_Html::create()->div(array('class' => 'col-sm-offset-2 col-sm-10'));
+                $linkContainer[] = $links;
+
+                $element = $this->_form->createElement('html', 'formLinks');
+                $element->setValue($linkContainer);
                 $element->setOrder(999);
                 if ($form instanceof Gems_TabForm)  {
                     $form->resetContext();
@@ -331,13 +334,20 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 $form->addDisplayGroup(array('formLinks'), 'form_buttons');
             }
         } else {
-            $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
-            $table->setAsFormLayout($form, true, true);
-            $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
+            if (GemsEscort::$useBootstrap !== true) {
+                $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+                $table->setAsFormLayout($form, true, true);
+                $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
-            if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                $table->tf(); // Add empty cell, no label
-                $linksCell = $table->tf($links);
+                if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
+                    $table->tf(); // Add empty cell, no label
+                    $linksCell = $table->tf($links);
+                }
+            } elseif ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
+                $element = $form->createElement('html', 'menuLinks');
+                $element->setValue($links);
+                $element->setOrder(999);
+                $form->addElement($element);
             }
         }
 
@@ -403,7 +413,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $model   = $this->getModel();
             $deleted = $model->delete();
 
-            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted));
+            $this->addMessage(sprintf($this->_('%2$u %1$s deleted'), $this->getTopic($deleted), $deleted), 'success');
             $this->_reroute(array('action' => 'index'), true);
         }
     }
@@ -543,16 +553,17 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $model = $this->getModel();
             $data  = $this->getCachedRequestData();
 
+            $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form')); // Assign a name so autosubmit will only work on this form (when there are others)
             $elements = $this->getAutoSearchElements($model, $data);
 
             if ($elements) {
-                $form = $this->createForm(array('name' => 'autosubmit')); // Assign a name so autosubmit will only work on this form (when there are others)
+                //$form = $this->createForm(array('name' => 'autosubmit')); // Assign a name so autosubmit will only work on this form (when there are others)
                 $form->setHtml('div');
 
                 $div = $form->getHtml();
                 $div->class = 'search';
 
-                $span = $div->div(array('class' => 'inputgroup'));
+                $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
                 $elements[] = $this->getAutoSearchSubmit($model, $form);
 
@@ -569,7 +580,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                         // TODO: Elementen automatisch toevoegen in MUtil_Form
                         $form->addElement($element);
                     } elseif (null === $element) {
-                        $span = $div->div(array('class' => 'inputgroup'));
+                        $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
                     } else {
                         $span[] = $element;
                     }
@@ -577,7 +588,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
                 if ($this->_request->isPost()) {
                     if (! $form->isValid($data)) {
-                        $this->addMessage($form->getErrorMessages());
+                        $this->addMessage($form->getErrorMessages(), 'danger');
                         $this->addMessage($form->getMessages());
                     }
                 } else {
@@ -607,7 +618,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         if ($menuItem = $this->menu->getCurrent()) {
             $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
-
+            //$link->appendAttrib('class', 'btn-xs');
             $element = new MUtil_Form_Element_Html('reset');
             $element->setValue($link);
 
@@ -617,7 +628,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     protected function getAutoSearchSubmit(MUtil_Model_ModelAbstract $model, MUtil_Form $form)
     {
-        return new Zend_Form_Element_Submit(self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
+        return $form->createElement('submit', self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
+
+        //return new Zend_Form_Element_Submit(self::SEARCH_BUTTON, array('label' => $this->_('Search'), 'class' => 'button small'));
     }
 
     /**
@@ -632,7 +645,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getBrowseTable($baseUrl, $sort, $model);
 
-        $table->class = 'browser';
+        $table->class = 'browser table table-striped table-bordered table-hover';
         $table->setOnEmpty(sprintf($this->_('No %s found'), $this->getTopic(0)));
         $table->getOnEmpty()->class = 'centerAlign';
 
@@ -801,7 +814,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getShowTable($columns, $filter, $sort);
 
-        $table->class = 'displayer';
+        $table->class = 'displayer table table-striped table-bordered table-hover';
 
         return $table;
     }
@@ -817,7 +830,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         $params = array();
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
-        $params['formatBoxClass']          = 'browser';
+        $params['formatBoxClass']          = 'browser table table-striped table-bordered table-hover';
         $params['importer']                = $importLoader->getImporter($controller, $model);
         $params['model']                   = $model;
         $params['tempDirectory']           = $importLoader->getTempDirectory();
@@ -872,8 +885,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         $table->setRepeater($repeater);
 
         $footer = $table->tfrow($question, ' ', array('class' => 'centerAlign'));
-        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'));
-        $footer->actionLink(array('action' => 'show'), $this->_('No'));
+        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'), array('class' => 'btn-success'));
+        $footer->actionLink(array('action' => 'show', 'class' => 'btn-warning'), $this->_('No'), array('class' => 'btn-danger'));
 
         $this->html[] = $table;
         $this->html->buttonDiv($this->createMenuLinks());
@@ -947,7 +960,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         //Handle insert button on multirow forms
         if ($this->useMultiRowForm) {
             if ($this->hasNew()) {
-                $form->addElement(new MUtil_Form_Element_FakeSubmit(array(
+                $form->addElement($form->createElement('fakeSubmit', array(
                     'name' => 'insert_button',
                     'label' => sprintf($this->_('New %1$s...'), $this->getTopic()))));
             }
@@ -960,8 +973,8 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 $saveLabel = $this->_('Save');
             }
 
-            $saveButton = new Zend_Form_Element_Submit('save_button', $saveLabel);
-            $saveButton->setAttrib('class', 'button');
+            $saveButton = $form->createElement('submit', 'save_button', array('label' => $saveLabel));
+            $saveButton->setAttrib('class', 'button btn btn-success');
             $form->addElement($saveButton);
         }
 
@@ -993,7 +1006,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                         //Now check if there were changes
                         if (($changed = $model->getChanged())) {
                             if ($this->afterSave($data, $isNew)) {
-                                $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed));
+                                $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed), 'success');
                             }
                         } else {
                             $this->addMessage($this->_('No changes to save.'));
@@ -1005,7 +1018,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                         }
                     }
                 } else {
-                    $this->addMessage($this->_('Input error! No changes saved!'));
+                    $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
                 }
             } else {
                 //The default save button was NOT used, so we have a fakesubmit button

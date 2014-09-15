@@ -56,7 +56,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
      */
     public function getFormElements(&$form, &$data)
     {
-        $element = new Zend_Form_Element_MultiCheckbox('format');
+        $element = $form->createElement('multiCheckbox', 'format');
         $element->setLabel($this->_('Excel options'))
             ->setMultiOptions(array(
                 'formatVariable' => $this->_('Export questions instead of variable names'),

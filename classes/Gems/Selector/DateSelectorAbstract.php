@@ -496,7 +496,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
     public function getTable($baseurl)
     {
         $model    = $this->getModel();
-        $bridge   = $model->getBridgeFor('table', array('class' => 'timeTable'));
+        $bridge   = $model->getBridgeFor('table', array('class' => 'timeTable table table-condensed table-bordered'));
         $repeater = $bridge->getRepeater();
 
         $bridge->setBaseUrl(array($this->_actionKey => 'index', 'reset' => null) + $baseurl); // + $model->getFilter();
@@ -602,8 +602,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         $tf = $bridge->tf();
         $tf->class = array($this->dataCellClass, $columnClass);
         $tf->iflink($repeater->df_link->strlen(),
-            array('href' => $href, $repeater->df_label, 'class' => 'browselink'),
-            array($repeater->df_label, 'class' => 'browselink disabled'));
+            array('href' => $href, $repeater->df_label, 'class' => 'browselink btn btn-default btn-xs'),
+            array($repeater->df_label, 'class' => 'browselink btn btn-primary btn-xs disabled'));
         $tf->setRepeater($repeater);
         $tf->setRepeatTags(true);
     }
@@ -624,11 +624,11 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
                 $content = strtolower($this->_($letter));
             }
             if ($letter == $this->dateType) {
-                $thdiv->span($content, array('class' => 'browselink disabled'));
+                $thdiv->span($content, array('class' => 'browselink btn btn-primary btn-xs disabled'));
             } else {
                 $thdiv->a(array(self::DATE_TYPE => $letter, self::DATE_FACTOR => $this->dateFactorChanges[$letter]) + $baseurl,
                         $content,
-                        array('class' => 'browselink', 'title' => $title));
+                        array('class' => 'browselink btn btn-default btn-xs', 'title' => $title));
             }
         }
 

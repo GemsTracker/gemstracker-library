@@ -199,7 +199,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             if (null !== $empty) {
                 $options = array('' => $empty) + $options;
             }
-            $element = new $class($name, array('multiOptions' => $options));
+            $element = $this->form->createElement($class, $name, array('multiOptions' => $options));
 
             return $element;
         }
@@ -217,7 +217,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function _createRadioElement($name, $options, $empty = null)
     {
-        return $this->_createMultiElement('Zend_Form_Element_Radio', $name, $options, $empty);
+        return $this->_createMultiElement('radio', $name, $options, $empty);
     }
 
     /**
@@ -232,7 +232,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function _createSelectElement($name, $options, $empty = null)
     {
-        return $this->_createMultiElement('Zend_Form_Element_Select', $name, $options, $empty);
+        return $this->_createMultiElement('select', $name, $options, $empty);
     }
 
     /**
@@ -279,8 +279,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     protected function getAutoSearchElements(array $data)
     {
         // Search text
-        $element = new Zend_Form_Element_Text($this->model->getTextFilter(), array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
-
+        $element = $this->form->createElement('text', $this->model->getTextFilter(), array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
         return array($element);
     }
 
@@ -293,17 +292,17 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     {
         $data = $this->getSearchData();
 
+        $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
+
         $elements = $this->getAutoSearchElements($data);
 
         if ($elements) {
             // Assign a name so autosubmit will only work on this form (when there are others)
-            $form = $this->createForm(array('name' => 'autosubmit'));
             $form->setHtml('div');
-
             $div = $form->getHtml();
             $div->class = 'search';
 
-            $span = $div->div(array('class' => 'inputgroup'));
+            $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
 
             $elements[] = $this->getAutoSearchSubmit();
 
@@ -332,7 +331,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                     // TODO: Elementen automatisch toevoegen in MUtil_Form
                     $form->addElement($element);
                 } elseif (null === $element) {
-                    $span = $div->div(array('class' => 'inputgroup'));
+                    $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
                 } else {
                     $span[] = $element;
                 }
@@ -387,7 +386,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function getAutoSearchSubmit()
     {
-        return new Zend_Form_Element_Submit($this->searchButtonId, array('label' => $this->_('Search'), 'class' => 'button small'));
+        return $this->form->createElement('submit', $this->searchButtonId, array('label' => $this->_('Search'), 'class' => 'button small'));
     }
 
     /**

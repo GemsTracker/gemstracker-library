@@ -151,7 +151,7 @@ abstract class MUtil_Snippets_SnippetAbstract extends MUtil_Translate_Translatea
     protected function getMessenger()
     {
         if (! isset($this->_messenger)) {
-            $this->_messenger = new Zend_Controller_Action_Helper_FlashMessenger();
+            $this->_messenger = new MUtil_Controller_Action_Helper_FlashMessenger();
         }
         return $this->_messenger;
     }

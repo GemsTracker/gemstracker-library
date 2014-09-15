@@ -83,7 +83,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      *
      * @var string class attribute for buttons
      */
-    protected $buttonClass = 'button';
+    protected $buttonClass = 'button btn btn-primary';
 
     /**
      * True when the form should edit a new model item.
@@ -264,10 +264,13 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                     $this->saveLabel = $this->_('Save');
                 }
 
-                $this->_saveButton = new Zend_Form_Element_Submit($this->saveButtonId, $this->saveLabel);
+                $options = array('label' => $this->saveLabel);
                 if ($this->buttonClass) {
-                    $this->_saveButton->setAttrib('class', $this->buttonClass);
+                    $options['class'] = $this->buttonClass;
                 }
+
+                $this->_saveButton = $this->_form->createElement('submit', $this->saveButtonId, $options);
+                
                 $this->_form->addElement($this->_saveButton);
             }
         }
@@ -292,7 +295,6 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function createForm($options = null)
     {
-        // $form = new Zend_Form($options);
         $form = new MUtil_Form($options);
 
         return $form;

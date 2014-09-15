@@ -153,6 +153,8 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      */
     public function render($content)
     {
+        $useBootstrap = GemsEscort::$useBootstrap;
+
         if ((null === ($element = $this->getElement())) ||
             (null === ($view = $element->getView()))) {
             return $content;
@@ -175,20 +177,23 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
             $activeTabs = false;
             if (count($subforms) > 1) {
                 $activeTabs = true;
+                if (!$useBootstrap) {
+                    $jquery = $view->jQuery();
 
-                $jquery = $view->jQuery();
+                    $js = sprintf('%1$s("#tabElement").tabs();', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
 
-                $js = sprintf('%1$s("#tabElement").tabs();', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler());
-
-                if ($selectedTabElement = $this->getOption('selectedTabElement')) {
-                    $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
+                    if ($selectedTabElement = $this->getOption('selectedTabElement')) {
+                        $js .= sprintf('%1$s("#tabElement").on("tabsactivate", function(event, ui) { console.log(ui.newTab.text()); %1$s("#%2$s").val(ui.newTab.text()) });', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $selectedTabElement);    
+                    }
+                    
+                    $jquery->addOnLoad($js);
                 }
-                
-                $jquery->addOnLoad($js);
 
-                $list = $containerDiv->ul();
+                $list = $containerDiv->ul(array('class' => 'nav nav-tabs', 'role' => 'tablist'));
             }
             $tabNumber = 0;
+
+            $tabContainerDiv = $containerDiv->div(array('class' => 'tab-content'));//MUtil_Html::create()->div(array('class' => 'tab-content'));
 
             $active = $this->getOption('active');
             foreach($subforms as $subform) {
@@ -200,35 +205,58 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                         $element = reset($elements);
                         $tabName = $element->getValue();
                     }
+                    $tabId = $tabName.'-tab';
                     
+                    $liOptions = array();
+                    $tabPaneOptions = array('id' => $tabId,'class' => 'tab-pane');
                     if ($active && $active == $tabName) {
-                        $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
-                        $jquery->addOnLoad($js);
+                        if (!$useBootstrap) {
+                            $js = sprintf('%1$s("#tabElement").tabs({ selected: %2$d});', ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(), $tabNumber);
+                            $jquery->addOnLoad($js);
+                        }
+                        $liOptions['class'] = 'active';
+                        $tabPaneOptions['class'] .= ' active';
                     }
                     $tabNumber++;
 
-                    $tabId = $tabName.'-tab';
-                    $list->li()->a('#'.$tabId, $tabName);
-                    $subtable = $containerDiv->div(array('id' => $tabId))->table(array('class' => 'formTable'));
+                    $list->li($liOptions)->a('#'.$tabId, $tabName, array('role' => 'tab', 'data-toggle' => 'tab'));
+
+                    $subContainer = $tabContainerDiv->div($tabPaneOptions);
+                    if (!$useBootstrap) {
+                        $subContainer->table(array('class' => 'formTable'));
+                    }
                 } else {
-                    $subtable = $containerDiv->table(array('class' => 'formTable'));
+                    if($useBootstrap) {
+                        $subContainer = $tabContainerDiv;
+                    } else {
+                        $subContainer = $tabContainerDiv->table(array('class' => 'formTable'));
+                    }
                 }
                 foreach ($subform->getElements() as $subelement) {
 
                     if ($subelement instanceof Zend_Form_Element_Hidden) {
                         $this->applyDecorators($subelement, array(array('ViewHelper')));
-                        $subtable[] = $subelement;
+                        $subContainer[] = $subelement;
                     } else {
-                        $row = $subtable->tr();
-                        $label = $row->td()->label(array('for' => $subelement->getId()));
+                        if ($useBootstrap) {
+                            $subgroup = $subContainer->div(array('class' => 'form-group'));
 
-                        $label[] = $subelement->getLabel();
-                        
-                        //MUtil_Echo::track($subelement);
+                            $label = $subgroup->div(array('class' => 'col-sm-2'))->label(array('for' => $subelement->getId()));
+                            $label[] = $subelement->getLabel();
 
-                        $column = $row->td();
+                            $divContainer = $subgroup->div(array('class' => 'col-sm-10'));
+
+                            $divContainer[] = $subelement;
+                        } else {
+                            $row = $subContainer->tr();
+                            $label = $row->td()->label(array('for' => $subelement->getId()));
+
+                            $label[] = $subelement->getLabel();
+
+                            $column = $row->td();
+                            $column[] = $subelement;
+                        }    
                         
-                        $column[] = $subelement;
                     }
                 }
             }

@@ -464,8 +464,8 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 self::MULTI_OPTIONS
                 );
 
-        $element = new MUtil_Form_Element_Exhibitor($name, $options);
-
+        $element = $this->form->createElement('exhibitor', $name, $options);
+        
         $this->form->addElement($element);
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 
@@ -487,12 +487,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 self::FAKESUBMIT_OPTIONS
                 );
 
-        $element = new MUtil_Form_Element_FakeSubmit($name, $options);
-
-        $this->form->addElement($element);
-        // MUtil_Echo::r($element->getOrder(), $element->getName());
-
-        return $element;
+        return $this->_addToForm($name, 'fakeSubmit', $options);
     }
 
     public function addFile($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -604,11 +599,8 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $options = func_get_args();
         $options = MUtil_Ra::pairs($options, 1);
 
-        $element = new Zend_Form_Element_Hidden($name, $options);
 
-        $this->form->addElement($element);
-
-        return $element;
+        return $this->_addToForm($name, 'Hidden', $options);
     }
 
     public function addHiddenMulti($name_args)
@@ -628,11 +620,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS);
 
-        $element = new MUtil_Form_Element_Html($name, $options);
-
-        $this->form->addElement($element);
-
-        return $element;
+        return $this->_addToForm($name, 'html', $options);
     }
 
     public function addList($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -728,7 +716,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             $repeatName = $name . '__repeat';
         }
 
-        $element = new Zend_Form_Element_Password($name, $options);
+        $element = $this->form->createElement('password', $name, $options);
         $this->_applyFilters($name, $element);
         $this->_applyValidators($name, $element);
         $this->form->addElement($element);
@@ -738,7 +726,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         }
 
         if (isset($repeatLabel)) {
-            $repeatElement = new Zend_Form_Element_Password($repeatName, $repeatOptions);
+            $repeatElement = $this->form->createElement('password', $repeatName, $repeatOptions);
             $this->form->addElement($repeatElement);
             $this->_applyFilters($name, $repeatElement);
 

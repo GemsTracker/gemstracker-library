@@ -62,7 +62,7 @@ class Gems_Html
 
         $element = MUtil_Html::createArray('a', $args);
 
-        $element->appendAttrib('class', 'actionlink'); // Keeps existing classes
+        $element->appendAttrib('class', 'actionlink btn btn-primary'); // Keeps existing classes
         return $element;
     }
 
@@ -158,7 +158,11 @@ class Gems_Html
 
         // MUtil_Echo::track($args);
         // MUtil_Echo::track($panel_args['baseUrl']);
-        $pager = new MUtil_Html_PagePanel($panel_args);
+        if (GemsEscort::$useBootstrap) {
+            $pager = new MUtil_Bootstrap_Html_PagePanel($panel_args);
+        } else {
+            $pager = new MUtil_Html_PagePanel($panel_args);
+        }
 
         $pager[] = $pager->pageLinks(
             array($translator->_('<< First'),   'class' => new MUtil_Html_ClassArrayAttribute('browselink', 'keyHome')),
@@ -171,12 +175,12 @@ class Gems_Html
             $pager->uptoOffDynamic(
                 $translator->_('to'),
                 $translator->_('of'),
-                array('-', 'class' => new MUtil_Html_ClassArrayAttribute('browselink', 'keyCtrlUp')),
-                array('+', 'class' => new MUtil_Html_ClassArrayAttribute('browselink', 'keyCtrlDown')),
+                array('-', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-default btn-xs', 'keyCtrlUp')),
+                array('+', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-default btn-xs', 'keyCtrlDown')),
                 null,
                 ' ',
                 $args),
-            array('class' => 'rightFloat'));
+            array('class' => 'pagination-index rightFloat pull-right'));
 
         return $pager;
     }

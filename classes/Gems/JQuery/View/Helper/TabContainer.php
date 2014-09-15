@@ -69,34 +69,61 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             return $this;
         }
 
+        $useBootstrap = GemsEscort::$useBootstrap;
+
         if(!isset($attribs['id'])) {
             $attribs['id'] = $id;
         }
 
         //Inserted: take care of the selected tab
+        $selected = false;
+        $firstSelected = true;
         if(isset($attribs['selected'])) {
             $selected = $attribs['selected'];
             unset($attribs['selected']);
+            $firstSelected = false;
         }
 
         $content = "";
         if(isset($this->_tabs[$id])) {
-            $list = '<ul class="ui-tabs-nav">'.PHP_EOL;
-            $html = '';
+
+            if ($useBootstrap) {
+                $list = '<ul class="nav nav-tabs">'.PHP_EOL;
+            } else {
+                $list = '<ul class="ui-tabs-nav">'.PHP_EOL;
+            }
+            $html = '<div class="tab-content">';
             $fragment_counter = 1;
             foreach($this->_tabs[$id] AS $k => $v) {
                 $frag_name = sprintf('%s-frag-%d', $attribs['id'], $fragment_counter++);
                 $opts = $v['options'];
-                $class = isset($opts['class']) ? ' ' . $opts['class'] : '';
+
+                $class = '';
+                if (!$useBootstrap) {
+                    $class = 'ui-tabs-nav-item ';
+                }
+                $active = '';
+                if (isset($opts['class'])) {
+                  $class .= $opts['class'];
+                }
+                if ($firstSelected || $fragment_counter == $selected) {
+                  $class .= ' active';
+                  $active = ' active';
+                  $firstSelected = false;
+                }
+                if ($class) {
+                  $class = ' class="'.$class.'"';
+                }
                 if(isset($opts['contentUrl'])) {
-                    $list .= '<li class="ui-tabs-nav-item' . $class . '"><a href="'.$opts['contentUrl'].'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
+                    $list .= '<li'.$class.'><a role="tab" data-toggle="tab" href="'.$opts['contentUrl'].'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
                 } else {
-                    $list .= '<li class="ui-tabs-nav-item' . $class . '"><a href="#'.$frag_name.'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
+                    $list .= '<li'.$class.'><a role="tab" data-toggle="tab" href="#'.$frag_name.'"><span>'.$v['name'].'</span></a></li>'.PHP_EOL;
                     $html .= '<h3 class="print-only">' . $v['name'] . '</h3>'; /* For printing of tab forms */
-                    $html .= '<div id="'.$frag_name.'" class="ui-tabs-panel">'.$v['content'].'</div>'.PHP_EOL;
+                    $html .= '<div id="'.$frag_name.'" class="tab-pane'.$active.'">'.$v['content'].'</div>'.PHP_EOL;
                 }
             }
             $list .= '</ul>'.PHP_EOL;
+            $html .= '</div>'.PHP_EOL;
 
             $content = $list.$html;
             unset($this->_tabs[$id]);
@@ -108,26 +135,27 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             $params = '{}';
         }
 
-        $js = sprintf('%s("#%s").tabs(%s);',
-            ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-            $attribs['id'],
-            $params
-        );
-        $this->jquery->addOnLoad($js);
-
         $html = '<div'
               . $this->_htmlAttribs($attribs)
               . '>'.PHP_EOL
               . $content
               . '</div>'.PHP_EOL;
 
-        //Added: load the selected tab
-        if (isset($selected)) {
-            $js = sprintf('%s("#%s").tabs("select", %d);',
+        //Load the selected tab if jQuery UI tabs
+        if (!$useBootstrap) {
+            $js = sprintf('%s("#%s").tabs(%s);',
                 ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $attribs['id'],
-                $selected
-            );
+                $params
+            ); 
+            if (isset($selected)) {
+                $js .= sprintf('
+                    %s("#%s").tabs("select", %d);',
+                    ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                    $attribs['id'],
+                    $selected
+                );
+            }
             $this->jquery->addOnLoad($js);
         }
 

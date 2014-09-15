@@ -71,8 +71,14 @@ abstract class Gems_Controller_ModelActionAbstract extends MUtil_Controller_Mode
      */
     public $util;
 
-    protected function createForm($options = null)
+    protected function createForm($options = array())
     {
+        if (!isset($options['class'])) {
+            $options['class'] = 'form-horizontal';
+        }
+        if (!isset($options['role'])) {
+            $options['role'] = 'form';
+        }
         $form = new Gems_Form($options);
 
         return $form;

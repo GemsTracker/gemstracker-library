@@ -96,6 +96,8 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     const PUSH = 'Push';
 
+    protected $_buttonClass = 'btn btn-primary';
+
     /**
      *
      * @var float The timer for _checkReport()
@@ -643,7 +645,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
                     ),
             new MUtil_Html_Raw('";} this.disabled = true; event.cancelBubble=true;'));
 
-        return new MUtil_Html_HtmlElement('button', $args);
+        $button = new MUtil_Html_HtmlElement('button', $args);
+        $button->appendAttrib('class', $this->_buttonClass.' btn-succes');
+
+        return $button;
     }
 
     /**
@@ -709,7 +714,10 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
         $args['onclick'] = 'if (! this.disabled) {' . $this->getFunctionPrefix() .
                 'Start();} this.disabled = true; event.cancelBubble=true;';
 
-        return new MUtil_Html_HtmlElement('button', $args);
+        $button = new MUtil_Html_HtmlElement('button', $args);
+        $button->appendAttrib('class', $this->_buttonClass.' btn-succes');
+
+        return $button;
     }
 
     /**

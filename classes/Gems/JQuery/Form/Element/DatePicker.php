@@ -56,4 +56,26 @@ class Gems_JQuery_Form_Element_DatePicker extends MUtil_JQuery_Form_Element_Date
     {
         $this->setJQueryParam('onSelect', new Zend_Json_Expr('function(dateText, inst) {jQuery(this).trigger(jQuery.Event("keyup"));}'));
     }
+
+    /**
+     * Load default decorators
+     *
+     * @return Zend_Form_Element
+     */
+    public function loadDefaultDecorators()
+    {
+        parent::loadDefaultDecorators();
+        if (GemsEscort::$useBootstrap === true) {
+            $this->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
+                 ->addDecorator('HtmlTag', array(
+                     'tag' => 'div',
+                     'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
+                     'class' => 'col-sm-10'
+                 ))
+                 ->addDecorator('Label', array('class' => 'col-sm-2'))
+                 ->addDecorator('BootstrapRow');
+        }
+        return $this;
+    }
+
 }

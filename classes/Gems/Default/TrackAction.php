@@ -154,7 +154,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         // MUtil_Echo::r($filter);
         if ($data = $model->load($filter, $sort)) {
-            $bridge  = $model->getBridgeFor('table', array('class' => 'browser'));
+            $bridge  = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover'));
             $bridge->setBaseUrl($baseUrl);
             $bridge->setRepeater($data);
             $bridge->setSort($sort);
@@ -179,7 +179,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             }
 
             $this->html->h3(sprintf($this->_('Assignments of this track to %s: %s'), $respId, $this->getRespondentName()));
-            $this->html[] = $bridge->getTable();
+            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+            $tableContainer[] = $bridge->getTable();
+            $this->html[] = $tableContainer;
 
             return true;
         }

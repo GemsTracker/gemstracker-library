@@ -223,7 +223,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        $bridge = $this->model->getBridgeFor('itemTable', array('class' => 'displayer'));
+        $bridge = $this->model->getBridgeFor('itemTable', array('class' => 'displayer table table-condensed'));
         $bridge->setRepeater($this->repeater);
         $bridge->setColumnCount(2); // May be overruled
 
@@ -231,7 +231,9 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 
-        return $bridge->getTable();
+        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container[] = $bridge->getTable();
+        return $container;
     }
 
     /**

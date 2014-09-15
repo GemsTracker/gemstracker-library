@@ -269,7 +269,7 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
                 /**
                  * Ready
                  */
-                $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()));
+                $this->addMessage(sprintf($this->_('Login successful, welcome %s.'), $user->getFullName()), 'success');
 
                 /**
                  * Log the login

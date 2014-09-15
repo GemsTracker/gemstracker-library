@@ -66,7 +66,7 @@ class Gems_Snippets_Tracker_TokenStatusLegenda extends MUtil_Snippets_SnippetAbs
 
         $repeater = new MUtil_Lazy_RepeatableByKeyValue($tUtil->getEveryStatus());
         $table    = new MUtil_Html_TableElement();
-        $table->class = 'compliance timeTable rightFloat';
+        $table->class = 'compliance timeTable rightFloat table table-condensed';
         $table->setRepeater($repeater);
 
         $table->throw($this->_('Legend'));

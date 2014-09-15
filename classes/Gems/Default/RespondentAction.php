@@ -299,7 +299,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
                     $this->addMessage($this->_('Choose a reception code to delete.'));
                 }
             } else {
-                $this->addMessage($this->_('Input error! No changes saved!'));
+                $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
             }
         }
         $form->populate($data);

@@ -104,6 +104,13 @@ class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
     protected $_no_dojo = true;
 
     /**
+     * Is Bootstrap activated for this form?
+     *
+     * @var boolean
+     */
+    protected $_no_bootstrap = true;
+
+    /**
      * Is JQuery activated for this form?
      *
      * @var boolean
@@ -133,6 +140,23 @@ class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
 
         parent::__construct($options);
     }
+
+    /**
+     * Activate Bootstrap for this form
+     *
+     * @return \MUtil_Form (continuation pattern)
+     */
+    public function activateBootstrap()
+    {
+        if ($this->_no_bootstrap) {
+
+            $this->addPrefixPath('MUtil_Bootstrap_Form_Element', 'MUtil/Bootstrap/Form/Element/', Zend_Form::ELEMENT);
+            $this->_no_bootstrap = false;
+        }
+
+        return $this;
+    }
+
 
     /**
      * Activate Dojo for the view

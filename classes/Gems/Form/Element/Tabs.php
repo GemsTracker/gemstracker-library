@@ -74,9 +74,7 @@ class Gems_Form_Element_Tabs extends MUtil_Form_Element_Table
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('Tabs', $this->_decoratorOptions)
-                ->addDecorator('HtmlTag', array('tag' => 'dd',
-                                                'id'  => $this->getName() . '-element'))
-                ->addDecorator('Label', array('tag' => 'dt'));
+                ->addDecorator('Label');
         }
     }
 }

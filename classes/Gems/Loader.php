@@ -227,6 +227,11 @@ class Gems_Loader extends Gems_Loader_LoaderAbstract
         return $this->_getClass('importLoader', 'Import_ImportLoader');
     }
 
+    public function getMessenger()
+    {
+        return $this->_getClass('flashMessenger', 'Controller_Action_Helper_FlashMessenger');
+    }
+
     /**
      *
      * @return Gems_Model

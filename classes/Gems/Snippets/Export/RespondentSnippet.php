@@ -76,7 +76,7 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
             return $html;
         }
 
-        $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser'));
+        $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser table table-striped table-bordered table-hover'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($respondentData)));
         $bridge->th($this->_('Respondent information'), array('colspan' => 4));
         $bridge->setColumnCount(2);
@@ -86,8 +86,11 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
             }
         }
 
+        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $tableContainer[] = $bridge->getTable();
+
         $html->h2($this->_('Respondent information') . ': ' . $respondentId);
-        $html[] = $bridge->getTable();
+        $html[] = $tableContainer;
         $html->hr();
 
         return $html;

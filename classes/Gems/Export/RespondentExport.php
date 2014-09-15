@@ -247,7 +247,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $engine       = $track->getTrackEngine();
         $surveys      = array();
 
-        $table = $this->html->table(array('class' => 'browser'));
+        $table = $this->html->table(array('class' => 'browser table table-striped table-bordered table-hover'));
         $table->th($this->_('Survey'))
               ->th($this->_('Round'))
               ->th($this->_('Token'))
@@ -346,7 +346,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 
         $this->html->h3($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
-        $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser'));
+        $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table table-striped table-bordered table-hover'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
@@ -356,7 +356,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             }
         }
 
-        $this->html[] = $bridge->getTable();
+        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $tableContainer[] = $bridge->getTable();
+        $this->html[] = $tableContainer;
         $this->html->br();
 
         $this->_exportTrackTokens($track);
