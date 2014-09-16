@@ -102,7 +102,9 @@ abstract class Gems_Form_AutoLoadFormAbstract extends Gems_Form
 
         if (! $element) {
             // Submit knop
-            $element = $this->createElement('submit', $this->_submitFieldName);
+            $options = array('class' => 'button');
+
+            $element = $this->createElement('submit', $this->_submitFieldName, $options);
             $element->setLabel($this->getSubmitButtonLabel());
 
             $this->addElement($element);
