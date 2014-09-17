@@ -954,7 +954,7 @@ class MUtil_Html_HtmlElement extends Zend_View_Helper_HtmlElement
             if ($element instanceof MUtil_Html_Raw) {
                 $element = $element->getValue();
             }
-            if (is_string($element)) {
+            if (is_string($element) && (strlen($element) > 2)) {
                 if ('<' === $element[0]) {
                     if (preg_match('/^<([a-zA-Z]+)[\\s>]*/', $element, $matches)) {
                         return strtolower($matches[1]);
