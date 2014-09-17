@@ -255,10 +255,10 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                     $table->tf($links);
                 }
             } elseif($links = $this->getMenuList()) {
-                $element = $form->createElement('html', 'menuLinks');
+                $element = $this->_form->createElement('html', 'menuLinks');
                 $element->setValue($links);
                 $element->setOrder(999);
-                $form->addElement($element);
+                $this->_form->addElement($element);
             }   
         }
     }
