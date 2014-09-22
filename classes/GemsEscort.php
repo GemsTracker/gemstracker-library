@@ -91,6 +91,8 @@ class GemsEscort extends MUtil_Application_Escort
      */
     private $_startFirebird;
 
+
+
     /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
@@ -648,6 +650,11 @@ class GemsEscort extends MUtil_Application_Escort
             $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
             $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
+        }
+
+        // Always load jquery when using bootstrap
+        if (self::$useBootstrap) {
+            $view->addHelperPath("ZendX/JQuery/View/Helper", "ZendX_JQuery_View_Helper");
         }
 
         // Add it to the ViewRenderer
