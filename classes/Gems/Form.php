@@ -184,6 +184,28 @@ class Gems_Form extends MUtil_Form
     }
 
     /**
+     * Load the default decorators
+     *
+     * @return void
+     */
+    public function loadDefaultDecorators()
+    {
+        if ($this->loadDefaultDecoratorsIsDisabled()) {
+            return;
+        }
+
+        $decorators = $this->getDecorators();
+        if (empty($decorators)) {
+            $this->addDecorator('AutoFocus')
+                 ->addDecorator('FormElements');
+            if (!GemsEscort::$useBootstrap) {
+                $this->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form'));
+            }
+            $this->addDecorator('Form');
+        }
+    }
+
+    /**
      * Change the form into an autosubmit form
      *
      * @param mixed $submitUrl Url as MUtil_Html_UrlArrayAttribute, array or string
