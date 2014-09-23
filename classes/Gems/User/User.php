@@ -1479,6 +1479,18 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Set the locale for this user..
+     *
+     * @param string $locale
+     * @return Gems_User_User (continuation pattern)
+     */
+    public function setLocale($locale)
+    {
+        $this->_setVar('user_locale', (string) $locale);
+        return $this;
+    }
+
+    /**
      * Set the password, if allowed for this user type.
      *
      * @param string $password

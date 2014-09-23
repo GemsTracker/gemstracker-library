@@ -36,7 +36,7 @@
 
 /**
  * Allows the user to switch interface language.
- * 
+ *
  * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -52,9 +52,14 @@ class Gems_Default_LanguageAction  extends Gems_Controller_Action
         $lang = strtolower($request->getParam('language'));
         $url  = base64_decode($request->getParam('current_uri'));
 
+        if ((! $url) || ('/' !== $url[0])) {
+            throw new Exception($this->_('Illegal language redirect url.'));
+        }
+
         if (in_array($lang, $this->view->project->locales)) {
 
-            $this->session->user_locale = $lang;
+            $this->loader->getCurrentUser()->setLocale($lang);
+            
             if (Gems_Cookies::setLocale($lang, $this->basepath->getBasePath())) {
                 if ($url) {
                     $this->getResponse()->setRedirect($url);
