@@ -535,7 +535,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         if ($model->hasTextSearchFilter()) {
             // Search text
-            $element = new Zend_Form_Element_Text(MUtil_Model::TEXT_FILTER, array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
+            $element = $this->form->createElement('text', MUtil_Model::TEXT_FILTER, array('label' => $this->_('Free search text'), 'size' => 20, 'maxlength' => 30));
 
             return array($element);
         }

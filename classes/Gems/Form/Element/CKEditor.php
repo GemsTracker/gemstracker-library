@@ -80,11 +80,88 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
         )
     );
 
+    /**
+     * Bootstrap class for an input tag. Remove if you want the normal layout.
+     * @var string
+     */
+    protected $_elementClass = 'form-control';
+
+    /**
+     * Constructor
+     *
+     * $spec may be:
+     * - string: name of element
+     * - array: options with which to configure element
+     * - Zend_Config: Zend_Config with options for configuring element
+     *
+     * @param  string|array|Zend_Config $spec
+     * @param  array|Zend_Config $options
+     * @return void
+     * @throws Zend_Form_Exception if no element name after initialization
+     */
+    public function __construct($spec, $options = null)
+    {
+        parent::__construct($spec, $options);
+        if (GemsEscort::$useBootstrap) {
+            $this->addClass($this->_elementClass);
+        }
+    }
+
+    /** 
+     * Add a class to an existing class, taking care of spacing
+     * @param string $targetClass  The existing class 
+     * @param string $addClass    the Class or classes to add, seperated by spaces
+     */
+    protected function addClass($addClass) {
+        $targetClass = $this->getAttrib('class');
+        if(!empty($targetClass) && (strpos($targetClass, $addClass) === false)) {
+            $targetClass .= " {$addClass}";
+        } else {
+            $targetClass = $addClass;
+        }
+        $this->setAttrib('class', $targetClass);
+        return $this;
+    }
+
     public function init() {
         // If basepath not set, try a default
         if (empty($this->basePath)) {
             $this->setBasePath(GEMS_WEB_DIR . '/gems/ckeditor');
         }
+    }
+
+    /**
+     * Load default decorators
+     *
+     * @return Zend_Form_Element
+     */
+    public function loadDefaultDecorators()
+    {
+        if ($this->loadDefaultDecoratorsIsDisabled()) {
+            return $this;
+        }
+
+        $htmlTagOptions = array(
+                'tag' => 'div',
+                'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
+        );
+        $labelOptions = array();
+        if (GemsEscort::$useBootstrap) {
+            $htmlTagOptions['class'] = 'col-sm-10';
+            $labelOptions['class'] = 'col-sm-2';
+        }
+
+
+        $decorators = $this->getDecorators();
+        if (empty($decorators)) {
+            $this->addDecorator('ViewHelper')
+                 ->addDecorator('Errors')
+                 ->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
+                 ->addDecorator('HtmlTag', $htmlTagOptions)
+                 ->addDecorator('Label', $labelOptions)
+                 ->addDecorator('BootstrapRow');
+        }
+        return $this;
     }
 
     /**

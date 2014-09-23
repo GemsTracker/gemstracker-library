@@ -53,7 +53,7 @@ class MUtil_Bootstrap_Form_Element_Hidden extends Zend_Form_Element_Hidden
      */
     public function loadDefaultDecorators()
     {
-    if ($this->loadDefaultDecoratorsIsDisabled()) {
+        if ($this->loadDefaultDecoratorsIsDisabled()) {
             return $this;
         }
 

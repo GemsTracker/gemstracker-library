@@ -52,7 +52,7 @@ abstract class Gems_Snippets_ModelItemTableSnippetAbstract extends MUtil_Snippet
      *
      * @var string
      */
-    protected $class = 'displayer';
+    protected $class = 'displayer table table-striped table-bordered table-hover';
 
     /**
      * When true the menu is displayed

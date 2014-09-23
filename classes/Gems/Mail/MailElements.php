@@ -243,7 +243,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
 
     public function createSubmitButton($name, $label)
     {
-        $button = $form->createElement('submit', 'save_button', $label);
+        $button = $this->_form->createElement('submit', 'save_button', $label);
         return $button;
     }
 

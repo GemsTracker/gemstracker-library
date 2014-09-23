@@ -165,7 +165,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
             $bridge->addText('subject', 'label', $this->_('Subject'), 'size', 50);
         }
 
-        $mailBody = $bridge->addElement($this->mailElements->createBodyElement('body', $this->_('Message'), $model->get('gctt_body', 'required'), $this->templateOnly));
+        $mailBody = $bridge->addElement($this->mailElements->createBodyElement('mailBody', $this->_('Message'), $model->get('gctt_body', 'required'), $this->templateOnly));
         if ($mailBody instanceof Gems_Form_Element_CKEditor) {
             $mailBody->config['availablefields'] = $this->mailer->getMailFields();
             $mailBody->config['availablefieldsLabel'] = $this->_('Fields');
@@ -190,11 +190,13 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     protected function beforeDisplay()
     {
-        $table = new MUtil_Html_TableElement(array('class' => $this->formClass));
-        $table->setAsFormLayout($this->form, true, true);
+        if (!GemsEscort::$useBootstrap) {
+            $table = new MUtil_Html_TableElement(array('class' => $this->formClass));
+            $table->setAsFormLayout($this->form, true, true);
 
-        // There is only one row with formLayout, so all in output fields get class.
-        $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+            // There is only one row with formLayout, so all in output fields get class.
+            $table['tbody'][0][0]->appendAttrib('class', $this->labelClass);
+        }
     }
 
     /**
@@ -204,7 +206,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected function createForm()
     {
         if (!$this->form) {
-            $this->form = new Gems_Form();
+            $this->form = new Gems_Form(array('class' => 'form-horizontal', 'role' => 'form'));
         }
         return $this->form;
     }
@@ -323,7 +325,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
         }
 
         $firstSelectable = reset($valid);
-        $element = new Zend_Form_Element_Radio($elementName, array(
+        $element = $this->form->createElement('radio', $elementName, array(
             'disable'      => $invalid,
             'escape'       => (!$this->view),
             'label'        => $label,
@@ -454,7 +456,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         $presetTargetData = $this->mailer->getPresetTargetData();
         if ($this->request->isPost()) {
-            $this->formData = $this->request->getPost() + $this->formData;
+            $requestData = $this->request->getPost();
+            foreach($requestData as $key=>$value) {
+                $this->formData[$key] = htmlspecialchars($value);
+            }
         }
 
         if (empty($this->formData['preview']) && !isset($this->formData['send'])) {
@@ -462,20 +467,20 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
                 if ($template = $this->mailer->getTemplate($this->formData['select_template'])) {
                     $this->formData['subject'] = $template['gctt_subject'];
-                    $this->formData['body'] = $template['gctt_body'];
+                    $this->formData['mailBody'] = $template['gctt_body'];
                 }
             }
         }
 
         $this->formData['available_fields'] = $this->mailElements->displayMailFields($this->mailer->getMailFields());
 
-        if (!empty($this->formData['subject']) || !empty($this->formData['body'])) {
+        if (!empty($this->formData['subject']) || !empty($this->formData['mailBody'])) {
             $content = '[b]';
             $content .= $this->_('Subject:');
             $content .= '[/b] [i]';
             $content .= $this->mailer->applyFields($this->formData['subject']);
             $content .= "[/i]\n\n";
-            $content .= $this->mailer->applyFields($this->formData['body']);
+            $content .= $this->mailer->applyFields($this->formData['mailBody']);
         } else {
             $content = ' ';
         }
@@ -491,7 +496,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
 
         $this->formData = array_merge($this->formData, $presetTargetData);
-
     }
 
     protected function processForm()
@@ -517,7 +521,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     protected function sendMail() {
         $this->mailer->setFrom($this->fromOptions[$this->formData['from']]);
         $this->mailer->setSubject($this->formData['subject']);
-        $this->mailer->setBody($this->formData['body']);
+        $this->mailer->setBody($this->formData['mailBody']);
         $this->mailer->setTemplateId($this->formData['select_template']);
         $this->mailer->send();
     }

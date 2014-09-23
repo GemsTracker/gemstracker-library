@@ -51,7 +51,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
      *
      * @var string
      */
-    protected $class = 'displayer';
+    protected $class = 'displayer table table-bordered';
 
     /**
      * Required

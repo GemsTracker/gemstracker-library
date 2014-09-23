@@ -304,6 +304,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
             'fieldlist', array('grs_last_name', 'grs_first_name', 'grs_surname_prefix'));
 
         $model->setIfExists('grs_address_1',      'label', $this->translate->_('Street'));
+        $model->setIfExists('grs_address_2',      'label', ' ');
         $model->setIfExists('grs_zipcode',        'label', $this->translate->_('Zipcode'));
         $model->setIfExists('grs_city',           'label', $this->translate->_('City'));
 
