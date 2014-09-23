@@ -454,7 +454,10 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         $presetTargetData = $this->mailer->getPresetTargetData();
         if ($this->request->isPost()) {
-            $this->formData = $this->request->getPost() + $this->formData;
+            $requestData = $this->request->getPost();
+            foreach($requestData as $key=>$value) {
+                $this->formData[$key] = htmlspecialchars($value);
+            }
         }
 
         if (empty($this->formData['preview']) && !isset($this->formData['send'])) {
