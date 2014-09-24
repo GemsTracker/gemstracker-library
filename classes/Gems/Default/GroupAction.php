@@ -44,83 +44,21 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_GroupAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * The snippets used for the create and edit actions.
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
+     * @var mixed String or array of snippets name
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        // $this->menu->getParameterSource()->offsetSet('ggp_role', $data['ggp_role']);
-        $user      = $this->loader->getCurrentUser();
-        $roles     = $model->get('ggp_role', 'multiOptions');
-        $userRoles = $user->getAllowedRoles();
+    protected $createEditSnippets = 'Group_GroupFormSnippet';
 
-        MUtil_Echo::track($userRoles, $roles);
-        // Make sure we get the roles as they are labeled
-        foreach ($roles as $role => $label) {
-            if (! isset($userRoles[$role])) {
-                unset($roles[$role]);
-            }
-        }
-
-        if ($data['ggp_role'] && (! isset($roles[$data['ggp_role']]))) {
-            if ('create' === $this->getRequest()->getActionName()) {
-                $data['ggp_role'] = reset($roles);
-            } else {
-                $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
-                $router = new Zend_Controller_Action_Helper_Redirector();
-                $router->gotoRouteAndExit(array('action' => 'show'), null, false);
-                return;
-            }
-        }
-
-        $bridge->addHidden('ggp_id_group');
-        $bridge->addText('ggp_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
-        $bridge->addText('ggp_description', 'size', 40);
-        $bridge->addSelect('ggp_role', 'multiOptions', $roles);
-        $bridge->addCheckbox('ggp_group_active');
-        $options = array(
-            '1'=>$model->get('ggp_staff_members', 'label'),
-            '2'=>$model->get('ggp_respondent_members', 'label')
-            );
-        $bridge->addRadio('staff_respondent', 'label', $this->_('Can be assigned to'), 'multiOptions', $options);
-        if (!isset($data['staff_respondent'])) {
-            if (isset($data['ggp_staff_members']) && $data['ggp_staff_members'] == 1) {
-                $data['staff_respondent'] = 1;
-            } else if (isset($data['ggp_respondent_members']) && $data['ggp_respondent_members'] == 1) {
-                $data['staff_respondent'] = 2;
-            }
-        }
-        $bridge->addText('ggp_allowed_ip_ranges', 'size', 50, 'validator', new Gems_Validate_IPRanges(), 'maxlength', 500);
-
-        return $data;
-    }
-
-    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
-    {
-        $data['ggp_staff_members'] = 0;
-        $data['ggp_respondent_members'] = 0;
-        if (isset($data['staff_respondent'])) {
-            if ($data['staff_respondent'] == 1) {
-                $data['ggp_staff_members'] = 1;
-            } elseif ($data['staff_respondent'] == 2) {
-                $data['ggp_respondent_members'] = 1;
-            }
-            unset($data['staff_respondent']);
-        }
-
-        return parent::beforeSave($data, $isNew, $form);
-    }
+    /**
+     * The snippets used for the delete action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $deleteSnippets = 'Group_GroupDeleteSnippet';
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -137,19 +75,21 @@ class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
     {
         $model = new MUtil_Model_TableModel('gems__groups');
 
-        $model->set('ggp_name', 'label', $this->_('Name'));
-        $model->set('ggp_description', 'label', $this->_('Description'));
+        $model->set('ggp_name', 'label', $this->_('Name'), 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
+        $model->set('ggp_description', 'label', $this->_('Description'), 'size', 40);
         $model->set('ggp_role', 'label', $this->_('Role'), 'multiOptions', $this->util->getDbLookup()->getRoles());
 
         $yesNo = $this->util->getTranslated()->getYesNo();
-        $model->set('ggp_group_active', 'label', $this->_('Active'), 'multiOptions', $yesNo);
-        $model->set('ggp_staff_members', 'label', $this->_('Staff'), 'multiOptions', $yesNo);
-        $model->set('ggp_respondent_members', 'label', $this->_('Respondents'), 'multiOptions', $yesNo);
+        $model->set('ggp_group_active', 'label', $this->_('Active'), 'multiOptions', $yesNo, 'elementClass', 'Checkbox');
+        $model->set('ggp_staff_members', 'label', $this->_('Staff'), 'multiOptions', $yesNo, 'elementClass', 'Checkbox');
+        $model->set('ggp_respondent_members', 'label', $this->_('Respondents'), 'multiOptions', $yesNo, 'elementClass', 'Checkbox');
 
         $model->set('ggp_allowed_ip_ranges',
-            'label', $this->_('Allowed IP Ranges'),
-            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)')
-            );
+                'label', $this->_('Allowed IP Ranges'),
+                'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+                'size', 50,
+                'validator', new Gems_Validate_IPRanges(),
+                'maxlength', 500);
 
         Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
 

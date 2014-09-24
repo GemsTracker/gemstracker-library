@@ -136,8 +136,17 @@ class Gems_Util_DbLookup extends Gems_Registry_TargetAbstract
      */
     public function getAllowedRespondentGroups()
     {
-        return $this->util->getTranslated()->getEmptyDropdownArray() +
-            $this->db->fetchPairs('SELECT ggp_id_group, ggp_name FROM gems__groups WHERE ggp_group_active=1 AND ggp_respondent_members=1 ORDER BY ggp_name');
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+        $results = $this->cache->load($cacheId);
+        if (! $results) {
+            $select = 'SELECT ggp_id_group, ggp_name '
+                    . 'FROM gems__groups WHERE ggp_group_active=1 AND ggp_respondent_members=1 ORDER BY ggp_name';
+
+            $results = $this->db->fetchPairs($select);
+
+            $this->cache->save($results, $cacheId, array('roles'));
+        }
+        return $this->util->getTranslated()->getEmptyDropdownArray() + $results;
     }
 
     /**

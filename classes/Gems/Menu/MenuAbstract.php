@@ -391,6 +391,41 @@ abstract class Gems_Menu_MenuAbstract
     }
 
     /**
+     * Add a roles browse edit page to the menu,
+     *
+     * @param string $label
+     * @param array $other
+     * @return Gems_Menu_SubMenuItem
+     */
+    public function addGroupsPage($label, array $other = array())
+    {
+        $page  = $this->addBrowsePage($label, 'pr.group', 'group', $other);
+        $user  = $this->escort->loader->getCurrentUser();
+        $roles = array();
+
+        if ($user instanceof Gems_User_User) {
+            if ($user->hasPrivilege('pr.group')) {
+                $roles = $user->getAllowedRoles();
+            }
+        }
+        // MUtil_Echo::track($roles);
+
+        // Now limit changes to allowed roles
+        foreach ($page->getChildren() as $showpage) {
+            if ($showpage instanceof Gems_Menu_SubMenuItem) {
+                if ('show' === $showpage->get('action')) {
+                    foreach ($showpage->getChildren() as $subpage) {
+                        $subpage->addParameterFilter('ggp_role', $roles);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return $page;
+    }
+
+    /**
      * Shortcut function to create the import container.
      *
      * @param string $label Label for the container
@@ -590,7 +625,6 @@ abstract class Gems_Menu_MenuAbstract
 
         return $page;
     }
-
 
     /**
      * Add a Trackbuilder menu tree to the menu

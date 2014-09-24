@@ -563,6 +563,15 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
         return $this;
     }
 
+    public function addParameterFilter($arrayOrKey1 = null, $value1 = null)
+    {
+        $filter = MUtil_Ra::pairs(func_get_args());
+
+        $this->_parameterFilter = $filter + (array) $this->_parameterFilter;
+
+        return $this;
+    }
+
     public function addParameters($arrayOrKey1 = null, $key2 = null)
     {
         $param = MUtil_Ra::args(func_get_args());

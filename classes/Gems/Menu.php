@@ -210,7 +210,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $page->addAction($this->_('Assigned'),   null, 'overview');
         $page->addAction($this->_('Privileges'), null, 'privilege');
         // GROUPS CONTROLLER
-        $cont->addBrowsePage($this->_('Groups'), 'pr.group', 'group');
+        $cont->addGroupsPage($this->_('Groups'));
         // ORGANIZATIONS CONTROLLER
         $cont->addBrowsePage($this->_('Organizations'),'pr.organization', 'organization');
         // STAFF CONTROLLER
