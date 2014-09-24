@@ -1533,7 +1533,7 @@ msgstr "Bestanden die klaarstaan om te importeren"
 
 #: classes/Gems/Default/GroupAction.php:65
 msgid "You do not have sufficient privilege to edit this group."
-msgstr "U heeft niet voldoende rechten om deze rol te wijzigen."
+msgstr "U heeft niet voldoende rechten om deze groep te wijzigen."
 
 #: classes/Gems/Default/GroupAction.php:86
 #: classes/Gems/Default/ReceptionAction.php:64
@@ -1721,7 +1721,7 @@ msgstr "Uitnodigen"
 
 #: classes/Gems/Default/LanguageAction.php:56
 msgid "Illegal language redirect url."
-msgstr "Ongeldige taal doorverwijzingslink"
+msgstr "Ongeldige taal doorverwijzingslink."
 
 #: classes/Gems/Default/LanguageAction.php:72
 msgid "Cookies must be enabled for setting the language."
