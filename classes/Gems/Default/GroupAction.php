@@ -60,10 +60,12 @@ class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
      */
     protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        // $this->menu->getParameterSource()->offsetSet('ggp_role', $data['ggp_role']);
         $user      = $this->loader->getCurrentUser();
         $roles     = $model->get('ggp_role', 'multiOptions');
         $userRoles = $user->getAllowedRoles();
 
+        MUtil_Echo::track($userRoles, $roles);
         // Make sure we get the roles as they are labeled
         foreach ($roles as $role => $label) {
             if (! isset($userRoles[$role])) {
@@ -71,7 +73,7 @@ class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
             }
         }
 
-        if ($data['ggp_role'] && (! $user->hasRole($data['ggp_role']))) {
+        if ($data['ggp_role'] && (! isset($roles[$data['ggp_role']]))) {
             if ('create' === $this->getRequest()->getActionName()) {
                 $data['ggp_role'] = reset($roles);
             } else {
