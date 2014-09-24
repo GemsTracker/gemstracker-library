@@ -60,10 +60,32 @@ class Gems_Default_GroupAction extends Gems_Controller_BrowseEditAction
      */
     protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
+        $user      = $this->loader->getCurrentUser();
+        $roles     = $model->get('ggp_role', 'multiOptions');
+        $userRoles = $user->getAllowedRoles();
+
+        // Make sure we get the roles as they are labeled
+        foreach ($roles as $role => $label) {
+            if (! isset($userRoles[$role])) {
+                unset($roles[$role]);
+            }
+        }
+
+        if ($data['ggp_role'] && (! $user->hasRole($data['ggp_role']))) {
+            if ('create' === $this->getRequest()->getActionName()) {
+                $data['ggp_role'] = reset($roles);
+            } else {
+                $this->addMessage($this->_('You do not have sufficient privilege to edit this group.'));
+                $router = new Zend_Controller_Action_Helper_Redirector();
+                $router->gotoRouteAndExit(array('action' => 'show'), null, false);
+                return;
+            }
+        }
+
         $bridge->addHidden('ggp_id_group');
         $bridge->addText('ggp_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
         $bridge->addText('ggp_description', 'size', 40);
-        $bridge->addSelect('ggp_role');
+        $bridge->addSelect('ggp_role', 'multiOptions', $roles);
         $bridge->addCheckbox('ggp_group_active');
         $options = array(
             '1'=>$model->get('ggp_staff_members', 'label'),
