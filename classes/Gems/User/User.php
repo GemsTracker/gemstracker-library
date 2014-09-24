@@ -592,6 +592,35 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     }
 
     /**
+     * Returns the current roles a user may set.
+     *
+     * NOTE! A user can set a role, unless it <em>requires a higher role level</em>.
+     *
+     * I.e. an admin is not allowed to set a super role as super inherits and expands admin. But it is
+     * allowed to set the nologin and respondent roles that are not inherited by the admin as they are
+     * in a different hierarchy.
+     *
+     * An exception is the role master as it is set by the system. You gotta be a master to set the master
+     * role.
+     *
+     * @return array With identical keys and values roleId => roleId
+     */
+    public function getAllowedRoles()
+    {
+        $userRole = $this->getRole();
+        $output   = array($userRole => $userRole);
+        foreach ($this->acl->getRoles() as $role) {
+            if (! $this->acl->inheritsRole($role, $userRole, true)) {
+                $output[$role] = $role;
+            }
+        }
+        if ($userRole !== 'master') {
+            unset($output['master']);
+        }
+        return $output;
+    }
+
+    /**
      * Returns the original (not the current) organization used by this user.
      *
      * @return Gems_User_Organization
