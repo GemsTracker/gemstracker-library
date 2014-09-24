@@ -608,15 +608,18 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
     public function getAllowedRoles()
     {
         $userRole = $this->getRole();
-        $output   = array($userRole => $userRole);
+        if ($userRole === 'master') {
+            $output = $this->acl->getRoles();
+            return array_combine($output, $output);
+        }
+
+        $output = array($userRole => $userRole);
         foreach ($this->acl->getRoles() as $role) {
             if (! $this->acl->inheritsRole($role, $userRole, true)) {
                 $output[$role] = $role;
             }
         }
-        if ($userRole !== 'master') {
-            unset($output['master']);
-        }
+        unset($output['master']);
         return $output;
     }
 

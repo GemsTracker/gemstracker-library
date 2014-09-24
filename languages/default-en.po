@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-14 18:13+0100\n"
+"POT-Creation-Date: 2014-09-24 18:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.9\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/Gems/AccessLog.php:234
@@ -379,7 +379,7 @@ msgstr "Only for programmers."
 #: classes/Gems/Default/AgendaProcedureAction.php:114
 #: classes/Gems/Default/AgendaStaffAction.php:112
 #: classes/Gems/Default/CommJobAction.php:95
-#: classes/Gems/Default/GroupAction.php:121
+#: classes/Gems/Default/GroupAction.php:145
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Default/MailJobAction.php:82
 #: classes/Gems/Default/OrganizationAction.php:160
@@ -435,7 +435,7 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/CommTemplateAction.php:73
 #: classes/Gems/Default/DatabaseAction.php:121
 #: classes/Gems/Default/DatabaseAction.php:321
-#: classes/Gems/Default/GroupAction.php:116
+#: classes/Gems/Default/GroupAction.php:140
 #: classes/Gems/Default/OrganizationAction.php:133
 #: classes/Gems/Default/RoleAction.php:253
 #: classes/Gems/Default/SourceAction.php:210
@@ -624,7 +624,7 @@ msgstr "Survey code"
 
 #: classes/Gems/Default/ChartconfigAction.php:64
 #: classes/Gems/Default/ConsentAction.php:68
-#: classes/Gems/Default/GroupAction.php:117
+#: classes/Gems/Default/GroupAction.php:141
 #: classes/Gems/Default/ReceptionAction.php:90
 #: classes/Gems/Default/RoleAction.php:254
 #: classes/Gems/Default/SurveyMaintenanceAction.php:214
@@ -1526,24 +1526,28 @@ msgstr "Checks this file for validity and then performs an import."
 msgid "Files ready for import"
 msgstr "Files ready for import"
 
-#: classes/Gems/Default/GroupAction.php:72
+#: classes/Gems/Default/GroupAction.php:80
+msgid "You do not have sufficient privilege to edit this group."
+msgstr "You do not have sufficient privilege to edit this group."
+
+#: classes/Gems/Default/GroupAction.php:96
 #: classes/Gems/Default/ReceptionAction.php:64
 msgid "Can be assigned to"
 msgstr "Can be assigned to"
 
-#: classes/Gems/Default/GroupAction.php:118
+#: classes/Gems/Default/GroupAction.php:142
 #: classes/Gems/Default/LogAction.php:219
 #: classes/Gems/Default/RoleAction.php:465
 msgid "Role"
 msgstr "Role"
 
-#: classes/Gems/Default/GroupAction.php:122
+#: classes/Gems/Default/GroupAction.php:146
 #: classes/Gems/Default/LogAction.php:211
 #: classes/Gems/Default/StaffAction.php:504 classes/Gems/Menu.php:214
 msgid "Staff"
 msgstr "Staff"
 
-#: classes/Gems/Default/GroupAction.php:123
+#: classes/Gems/Default/GroupAction.php:147
 #: classes/Gems/Default/OrganizationAction.php:163
 #: classes/Gems/Default/ReceptionAction.php:100
 #: classes/Gems/Default/RespondentAction.php:457
@@ -1551,25 +1555,25 @@ msgstr "Staff"
 msgid "Respondents"
 msgstr "Patients"
 
-#: classes/Gems/Default/GroupAction.php:126
+#: classes/Gems/Default/GroupAction.php:150
 #: classes/Gems/Default/OrganizationAction.php:189
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
-#: classes/Gems/Default/GroupAction.php:127
+#: classes/Gems/Default/GroupAction.php:151
 #: classes/Gems/Default/OrganizationAction.php:190
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
 msgstr ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
 
-#: classes/Gems/Default/GroupAction.php:137
+#: classes/Gems/Default/GroupAction.php:161
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "group"
 msgstr[1] "groups"
 
-#: classes/Gems/Default/GroupAction.php:142
+#: classes/Gems/Default/GroupAction.php:166
 msgid "Administrative groups"
 msgstr "Administrative groups"
 
@@ -1707,11 +1711,15 @@ msgstr ""
 msgid "Invite"
 msgstr "Invite"
 
-#: classes/Gems/Default/LanguageAction.php:67
+#: classes/Gems/Default/LanguageAction.php:56
+msgid "Illegal language redirect url."
+msgstr "Illegal language redirect url."
+
+#: classes/Gems/Default/LanguageAction.php:72
 msgid "Cookies must be enabled for setting the language."
 msgstr "Cookies must be enabled for setting the language."
 
-#: classes/Gems/Default/LanguageAction.php:70
+#: classes/Gems/Default/LanguageAction.php:75
 msgid "Invalid language setting."
 msgstr "Invalid language setting."
 
@@ -2241,7 +2249,7 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:151
+#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
 msgid "Login"
 msgstr "Login"
 
@@ -3081,7 +3089,7 @@ msgstr "No access to page"
 
 #: classes/Gems/Default/StaffAction.php:357
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
-#: classes/Gems/User/User.php:1279
+#: classes/Gems/User/User.php:1311
 msgid "Username"
 msgstr "Username"
 
@@ -3128,7 +3136,7 @@ msgstr "Reset password mail"
 
 #: classes/Gems/Default/StaffAction.php:584
 #: classes/Gems/Default/StaffAction.php:595
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:508
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:511
 msgid "Mail sent"
 msgstr "Mail sent"
 
@@ -3931,7 +3939,7 @@ msgid "Input error! No changes made!"
 msgstr "Input error! No changes made!"
 
 #: classes/Gems/Email/EmailFormAbstract.php:446
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:474
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:477
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:178
 msgid "Subject:"
 msgstr "Subject:"
@@ -4591,6 +4599,7 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:579
+#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -4799,17 +4808,17 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "Compiled %s file(s)"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:291
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:292
 #, php-format
 msgid "Token %s is completed."
 msgstr "Token %s is completed."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:297
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:298
 #, php-format
 msgid "No token found for %s."
 msgstr "No token found for %s."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:307
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:308
 #, php-format
 msgid "No track for inserting found for %s."
 msgstr "No track for inserting found for %s."
@@ -5070,7 +5079,7 @@ msgstr "Prefered Language"
 msgid "Email to: "
 msgstr "Email to: "
 
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:505
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:508
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:261
 msgid "Preview updated"
 msgstr "Preview updated"
@@ -5215,42 +5224,42 @@ msgstr "Adding patchlevel %d"
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) executed."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:152
-#: classes/Gems/Task/Import/SaveAnswerTask.php:185
+#: classes/Gems/Task/Import/SaveAnswerTask.php:160
+#: classes/Gems/Task/Import/SaveAnswerTask.php:193
 msgid "Previous comments:"
 msgstr "Previous comments:"
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:156
-#: classes/Gems/Task/Import/SaveAnswerTask.php:178
+#: classes/Gems/Task/Import/SaveAnswerTask.php:164
+#: classes/Gems/Task/Import/SaveAnswerTask.php:186
 #, php-format
 msgid "Token %s overwritten by import."
 msgstr "Token %s overwritten by import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:162
+#: classes/Gems/Task/Import/SaveAnswerTask.php:170
 #, php-format
 msgid "%d token overwrote an existing token."
 msgid_plural "%d tokens overwrote existing tokens."
 msgstr[0] "%d token overwrote an existing token."
 msgstr[1] "%d tokens overwrote existing tokens."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:189
+#: classes/Gems/Task/Import/SaveAnswerTask.php:197
 #, php-format
 msgid "More answers for token %s by import."
 msgstr "More answers for token %s by import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:195
+#: classes/Gems/Task/Import/SaveAnswerTask.php:203
 #, php-format
 msgid "%d token was imported as a new extra token."
 msgid_plural "%d tokens were imported as a new extra token."
 msgstr[0] "%d token was imported as a new extra token."
 msgstr[1] "%d tokens were imported as a new extra token."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:207
+#: classes/Gems/Task/Import/SaveAnswerTask.php:215
 #, php-format
 msgid "Additional answers in imported token %s."
 msgstr "Additional answers in imported token %s."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:228
+#: classes/Gems/Task/Import/SaveAnswerTask.php:237
 #, php-format
 msgid "%d token imported."
 msgid_plural "%d tokens imported."
@@ -5946,7 +5955,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Trying upgrade for %s to level %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:170
-#: classes/Gems/User/User.php:1274
+#: classes/Gems/User/User.php:1306
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is not correct."
@@ -6097,15 +6106,15 @@ msgstr[1] "Your account is temporarily blocked, please wait %d minutes."
 msgid "You are not allowed to login from this location."
 msgstr "You are not allowed to login from this location."
 
-#: classes/Gems/User/User.php:1260
+#: classes/Gems/User/User.php:1292
 msgid "Your birthday"
 msgstr "Your birthday"
 
-#: classes/Gems/User/User.php:1359
+#: classes/Gems/User/User.php:1391
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Trying to send a password reset to a user that cannot be reset."
 
-#: classes/Gems/User/User.php:1387
+#: classes/Gems/User/User.php:1419
 msgid "Unable to send e-mail."
 msgstr "Unable to send e-mail."
 

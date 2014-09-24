@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-14 18:14+0100\n"
+"POT-Creation-Date: 2014-09-24 18:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.9\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/Gems/AccessLog.php:234
@@ -379,7 +379,7 @@ msgstr "Uitsluitend voor programmeurs."
 #: classes/Gems/Default/AgendaProcedureAction.php:114
 #: classes/Gems/Default/AgendaStaffAction.php:112
 #: classes/Gems/Default/CommJobAction.php:95
-#: classes/Gems/Default/GroupAction.php:121
+#: classes/Gems/Default/GroupAction.php:145
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Default/MailJobAction.php:82
 #: classes/Gems/Default/OrganizationAction.php:160
@@ -437,7 +437,7 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/CommTemplateAction.php:73
 #: classes/Gems/Default/DatabaseAction.php:121
 #: classes/Gems/Default/DatabaseAction.php:321
-#: classes/Gems/Default/GroupAction.php:116
+#: classes/Gems/Default/GroupAction.php:140
 #: classes/Gems/Default/OrganizationAction.php:133
 #: classes/Gems/Default/RoleAction.php:253
 #: classes/Gems/Default/SourceAction.php:210
@@ -629,7 +629,7 @@ msgstr "Vragenlijst code"
 
 #: classes/Gems/Default/ChartconfigAction.php:64
 #: classes/Gems/Default/ConsentAction.php:68
-#: classes/Gems/Default/GroupAction.php:117
+#: classes/Gems/Default/GroupAction.php:141
 #: classes/Gems/Default/ReceptionAction.php:90
 #: classes/Gems/Default/RoleAction.php:254
 #: classes/Gems/Default/SurveyMaintenanceAction.php:214
@@ -1531,24 +1531,28 @@ msgstr "Controleer dit bestand op geldigheid en ga vervolgens importeren."
 msgid "Files ready for import"
 msgstr "Bestanden die klaarstaan om te importeren"
 
-#: classes/Gems/Default/GroupAction.php:72
+#: classes/Gems/Default/GroupAction.php:80
+msgid "You do not have sufficient privilege to edit this group."
+msgstr "U heeft niet voldoende rechten om deze groep l te wijzigen."
+
+#: classes/Gems/Default/GroupAction.php:96
 #: classes/Gems/Default/ReceptionAction.php:64
 msgid "Can be assigned to"
 msgstr "Kan toegewezen worden aan"
 
-#: classes/Gems/Default/GroupAction.php:118
+#: classes/Gems/Default/GroupAction.php:142
 #: classes/Gems/Default/LogAction.php:219
 #: classes/Gems/Default/RoleAction.php:465
 msgid "Role"
 msgstr "Rol"
 
-#: classes/Gems/Default/GroupAction.php:122
+#: classes/Gems/Default/GroupAction.php:146
 #: classes/Gems/Default/LogAction.php:211
 #: classes/Gems/Default/StaffAction.php:504 classes/Gems/Menu.php:214
 msgid "Staff"
 msgstr "Medewerkers"
 
-#: classes/Gems/Default/GroupAction.php:123
+#: classes/Gems/Default/GroupAction.php:147
 #: classes/Gems/Default/OrganizationAction.php:163
 #: classes/Gems/Default/ReceptionAction.php:100
 #: classes/Gems/Default/RespondentAction.php:457
@@ -1556,12 +1560,12 @@ msgstr "Medewerkers"
 msgid "Respondents"
 msgstr "Patiënten"
 
-#: classes/Gems/Default/GroupAction.php:126
+#: classes/Gems/Default/GroupAction.php:150
 #: classes/Gems/Default/OrganizationAction.php:189
 msgid "Allowed IP Ranges"
 msgstr "Toegestane IP adres reeksen"
 
-#: classes/Gems/Default/GroupAction.php:127
+#: classes/Gems/Default/GroupAction.php:151
 #: classes/Gems/Default/OrganizationAction.php:190
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
@@ -1569,13 +1573,13 @@ msgstr ""
 "Scheiden met | voorbeeld: 10.0.0.0-10.0.0.255 (subnet masks worden niet "
 "ondersteund)"
 
-#: classes/Gems/Default/GroupAction.php:137
+#: classes/Gems/Default/GroupAction.php:161
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "groep"
 msgstr[1] "groepen"
 
-#: classes/Gems/Default/GroupAction.php:142
+#: classes/Gems/Default/GroupAction.php:166
 msgid "Administrative groups"
 msgstr "Beheer groepen"
 
@@ -1715,11 +1719,15 @@ msgstr ""
 msgid "Invite"
 msgstr "Uitnodigen"
 
-#: classes/Gems/Default/LanguageAction.php:67
+#: classes/Gems/Default/LanguageAction.php:56
+msgid "Illegal language redirect url."
+msgstr "Ongeldige taal doorverwijzingslink."
+
+#: classes/Gems/Default/LanguageAction.php:72
 msgid "Cookies must be enabled for setting the language."
 msgstr "Zonder cookies kan de taal niet ingesteld worden."
 
-#: classes/Gems/Default/LanguageAction.php:70
+#: classes/Gems/Default/LanguageAction.php:75
 msgid "Invalid language setting."
 msgstr "Ongeldige taal instelling."
 
@@ -2254,7 +2262,7 @@ msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:151
+#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
 msgid "Login"
 msgstr "Inloggen"
 
@@ -3101,7 +3109,7 @@ msgstr "Geen toegang tot pagina"
 
 #: classes/Gems/Default/StaffAction.php:357
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
-#: classes/Gems/User/User.php:1279
+#: classes/Gems/User/User.php:1311
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -3148,7 +3156,7 @@ msgstr "Wijzig wachtwoord mail"
 
 #: classes/Gems/Default/StaffAction.php:584
 #: classes/Gems/Default/StaffAction.php:595
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:508
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:511
 msgid "Mail sent"
 msgstr "Mail verzonden"
 
@@ -3967,7 +3975,7 @@ msgid "Input error! No changes made!"
 msgstr "Invoer fout! Veranderingen niet uitgevoerd!"
 
 #: classes/Gems/Email/EmailFormAbstract.php:446
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:474
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:477
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:178
 msgid "Subject:"
 msgstr "Onderwerp:"
@@ -4632,6 +4640,7 @@ msgid "Clean cache"
 msgstr "Cache opruimen"
 
 #: classes/Gems/Menu/MenuAbstract.php:579
+#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Wijzig wachtwoord"
 
@@ -4840,17 +4849,17 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "%s bestand(en) gecompileerd"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:291
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:292
 #, php-format
 msgid "Token %s is completed."
 msgstr "Kenmerk %s is al ingevuld."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:297
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:298
 #, php-format
 msgid "No token found for %s."
 msgstr "Geen kenmerk gevonden voor %s."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:307
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:308
 #, php-format
 msgid "No track for inserting found for %s."
 msgstr "Geen traject gevonden om %s toe te voegen."
@@ -5111,7 +5120,7 @@ msgstr "Voorkeurstaal"
 msgid "Email to: "
 msgstr "Email naar:"
 
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:505
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:508
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:261
 msgid "Preview updated"
 msgstr "Tekstvoorbeeld bijgewerkt"
@@ -5256,42 +5265,42 @@ msgstr "Patchniveau %d wordt toegevoegd"
 msgid "%d patch(es) executed."
 msgstr "%d patch(es) uitgevoerd."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:152
-#: classes/Gems/Task/Import/SaveAnswerTask.php:185
+#: classes/Gems/Task/Import/SaveAnswerTask.php:160
+#: classes/Gems/Task/Import/SaveAnswerTask.php:193
 msgid "Previous comments:"
 msgstr "Vorige opmerkingen:"
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:156
-#: classes/Gems/Task/Import/SaveAnswerTask.php:178
+#: classes/Gems/Task/Import/SaveAnswerTask.php:164
+#: classes/Gems/Task/Import/SaveAnswerTask.php:186
 #, php-format
 msgid "Token %s overwritten by import."
 msgstr "Kenmerk %s overschreven door import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:162
+#: classes/Gems/Task/Import/SaveAnswerTask.php:170
 #, php-format
 msgid "%d token overwrote an existing token."
 msgid_plural "%d tokens overwrote existing tokens."
 msgstr[0] "%d kenmerk overschreef een bestaand kenmerk."
 msgstr[1] "%d kenmerken overschreven bestaande kenmerken."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:189
+#: classes/Gems/Task/Import/SaveAnswerTask.php:197
 #, php-format
 msgid "More answers for token %s by import."
 msgstr "Meer antwoorden voor kenmerk %s middels import."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:195
+#: classes/Gems/Task/Import/SaveAnswerTask.php:203
 #, php-format
 msgid "%d token was imported as a new extra token."
 msgid_plural "%d tokens were imported as a new extra token."
 msgstr[0] "%d kenmerk geïmporteerd als nieuw extra kenmerk."
 msgstr[1] "%d kenmerken geïmporteerd als nieuw extra kenmerk."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:207
+#: classes/Gems/Task/Import/SaveAnswerTask.php:215
 #, php-format
 msgid "Additional answers in imported token %s."
 msgstr "Additionele antwoorden zitten in het geïmporteerde kenmerk %s."
 
-#: classes/Gems/Task/Import/SaveAnswerTask.php:228
+#: classes/Gems/Task/Import/SaveAnswerTask.php:237
 #, php-format
 msgid "%d token imported."
 msgid_plural "%d tokens imported."
@@ -5998,7 +6007,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:170
-#: classes/Gems/User/User.php:1274
+#: classes/Gems/User/User.php:1306
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -6152,15 +6161,15 @@ msgstr[1] ""
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1260
+#: classes/Gems/User/User.php:1292
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1359
+#: classes/Gems/User/User.php:1391
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1387
+#: classes/Gems/User/User.php:1419
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
