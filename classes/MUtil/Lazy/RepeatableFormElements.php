@@ -145,7 +145,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
             $this->_hidden_elements = array();
 
             foreach ($elements as $element) {
-                if ($element instanceof Zend_Form_Element_Hidden) {
+                if (($element instanceof Zend_Form_Element_Hidden) || ($element instanceof Zend_Form_Element_Hash)) {
                     $this->_hidden_elements[] = $element;
                 } else {
                     $filteredElements[] = $element;
@@ -175,7 +175,7 @@ class MUtil_Lazy_RepeatableFormElements extends MUtil_Lazy_Repeatable
             foreach ($element->getSubFocusElements() as $sub) {
                 $this->_flattenElement($sub, $newElements);
             }
-            
+
         } else {
             $newElements[] = $element;
         }

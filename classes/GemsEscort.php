@@ -91,8 +91,6 @@ class GemsEscort extends MUtil_Application_Escort
      */
     private $_startFirebird;
 
-
-
     /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
@@ -105,7 +103,7 @@ class GemsEscort extends MUtil_Application_Escort
      * @var boolean
      */
     public static $useHtml5 = false;
-    
+
     /**
      * The menu variable
      *
@@ -771,7 +769,7 @@ class GemsEscort extends MUtil_Application_Escort
 
                 if (self::$useBootstrap && !isset($args['tag'])) {
                     $div = MUtil_Html::create('ol', $args + array('id' => 'crumbs', 'class' => 'breadcrumb'));
-                    
+
                     foreach ($path as $menuItem) {
                         $div->li()->a($menuItem->toHRefAttribute($source), $menuItem->get('label'));
                     }
@@ -781,8 +779,8 @@ class GemsEscort extends MUtil_Application_Escort
                     }
 
                 } else {
-                    $div = MUtil_Html::create($tag, $args + array('id' => 'crumbs'));    
-                    
+                    $div = MUtil_Html::create($tag, $args + array('id' => 'crumbs'));
+
                     $content = $div->seq();
                     $content->setGlue(MUtil_Html::raw($this->_(' > ')));
                     // Add request to existing menu parameter sources

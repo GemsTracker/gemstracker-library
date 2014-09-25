@@ -54,6 +54,13 @@
 abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
 {
     /**
+     * Optional csrf element
+     *
+     * @var Zend_Form_Element_Hash
+     */
+    protected $_csrf;
+
+    /**
      *
      * @var Zend_Form
      */
@@ -91,6 +98,20 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      * @var boolean
      */
     protected $createData = false;
+
+    /**
+     * Field id for crsf protection field.
+     *
+     * @var string
+     */
+    protected $csrfId = 'no_csrf';
+
+    /**
+     * The timeout for crsf, 300 is default
+     *
+     * @var int
+     */
+    protected $csrfTimeout = 300;
 
     /**
      * As it is better for translation utilities to set the labels etc. translated,
@@ -157,6 +178,32 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     protected $saveLabel = null;
 
     /**
+     * Use csrf token on form for protection against Cross Site Request Forgery
+     *
+     * @var boolean
+     */
+    public $useCsrf = true;
+
+    /**
+     * Simple default function for making sure there is a $this->_saveButton.
+     *
+     * As the save button is not part of the model - but of the interface - it
+     * does deserve it's own function.
+     */
+    protected function addCsrf()
+    {
+        if (! $this->_csrf) {
+            $this->_form->addElement('hash', $this->csrfId, array(
+                'salt' => 'mutil_' . $this->request->getControllerName() . '_' . $this->request->getActionName(),
+                'timeout' => $this->csrfTimeout,
+                ));
+            $this->_csrf = $this->_form->getElement($this->csrfId);
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds elements from the model to the bridge that creates the form.
      *
      * Overrule this function to add different elements to the browse table, without
@@ -207,41 +254,6 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     }
 
     /**
-     * Hook that allows actions when data was saved
-     *
-     * When not rerouted, the form will be populated afterwards
-     *
-     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
-     */
-    protected function afterSave($changed)
-    {
-        // Communicate to user
-        if ($changed) {
-            $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed));
-        } else {
-            $this->addMessage($this->_('No changes to save!'));
-        }
-    }
-
-    /**
-     * Perform some actions on the form, right before it is displayed but already populated
-     *
-     * Here we add the table display to the form.
-     *
-     * @return Zend_Form
-     */
-    protected function beforeDisplay()
-    { }
-
-    /**
-     * Perform some actions to the data before it is saved to the database
-     * 
-     */
-    
-    protected function beforeSave()
-    { }
-
-    /**
      * Simple default function for making sure there is a $this->_saveButton.
      *
      * As the save button is not part of the model - but of the interface - it
@@ -270,11 +282,46 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                 }
 
                 $this->_saveButton = $this->_form->createElement('submit', $this->saveButtonId, $options);
-                
+
                 $this->_form->addElement($this->_saveButton);
             }
         }
     }
+
+    /**
+     * Hook that allows actions when data was saved
+     *
+     * When not rerouted, the form will be populated afterwards
+     *
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
+     */
+    protected function afterSave($changed)
+    {
+        // Communicate to user
+        if ($changed) {
+            $this->addMessage(sprintf($this->_('%2$u %1$s saved'), $this->getTopic($changed), $changed));
+        } else {
+            $this->addMessage($this->_('No changes to save!'));
+        }
+    }
+
+    /**
+     * Perform some actions on the form, right before it is displayed but already populated
+     *
+     * Here we add the table display to the form.
+     *
+     * @return Zend_Form
+     */
+    protected function beforeDisplay()
+    { }
+
+    /**
+     * Perform some actions to the data before it is saved to the database
+     *
+     */
+
+    protected function beforeSave()
+    { }
 
     /**
      * Should be called after answering the request to allow the Target
@@ -312,6 +359,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     {
         // Again, just to be sure all changes are set on the form
         $this->populateForm();
+
+        if ($this->_csrf) {
+            $this->_csrf->initCsrfToken();
+        }
 
         // Hook for subclasses
         $this->beforeDisplay();
@@ -457,6 +508,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     protected function onInValid()
     {
         $this->addMessage(sprintf($this->_('Input error! Changes to %s not saved!'), $this->getTopic()));
+
+        if ($this->_csrf) {
+            if ($this->_csrf->getMessages()) {
+                $this->addMessage($this->_('The form was open for too long or was opened in multiple windows.'));
+            }
+        }
     }
 
     /**
@@ -485,6 +542,11 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
 
         // Create $this->_saveButton
         $this->addSaveButton();
+
+        // Use Csrf when enabled
+        if ($this->useCsrf) {
+            $this->addCsrf();
+        }
 
         if ($this->request->isPost()) {
             //First populate the form, otherwise the saveButton will never be 'checked'!

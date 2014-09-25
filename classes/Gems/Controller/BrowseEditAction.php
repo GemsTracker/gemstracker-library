@@ -61,6 +61,20 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
     public $menuShowIncludeLevel = 2;
 
+    /**
+     * Field id for crsf protection field.
+     *
+     * @var string
+     */
+    protected $csrfId = 'no_csrfx';
+
+    /**
+     * The timeout for crsf, 300 is default
+     *
+     * @var int
+     */
+    protected $csrfTimeout = 300;
+
     public $filterStandard;
 
     /**
@@ -88,6 +102,13 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public $summarizedActions = array('index', 'autofilter');
 
     public $tableSnippets;
+
+    /**
+     * Use csrf token on form for protection against Cross Site Request Forgery
+     *
+     * @var boolean
+     */
+    public $useCsrf = true;
 
     public $useKeyboardSelector = true;
 
@@ -978,6 +999,15 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $form->addElement($saveButton);
         }
 
+        $csrf = $form->getElement($this->csrfId);
+        if ($this->useCsrf && (! $csrf)) {
+            $form->addElement('hash', $this->csrfId, array(
+                'salt' => 'gems_' . $request->getControllerName() . '_' . $request->getActionName(),
+                'timeout' => $this->csrfTimeout,
+                ));
+            $csrf = $form->getElement($this->csrfId);
+        }
+
         if ($request->isPost()) {
             //First populate the form, otherwise the saveButton will never be 'checked'!
             $form->populate($data);
@@ -1019,6 +1049,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                     }
                 } else {
                     $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
+                    if ($csrf && $csrf->getMessages()) {
+                        $this->addMessage($this->_('The form was open for too long or you opened the form in multiple windows.'));
+                    }
                 }
             } else {
                 //The default save button was NOT used, so we have a fakesubmit button
@@ -1034,6 +1067,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
             $form = $this->beforeFormDisplay($form, $isNew);
 
+            if ($csrf) {
+                $csrf->initCsrfToken();
+            }
             return $form;
         }
     }
