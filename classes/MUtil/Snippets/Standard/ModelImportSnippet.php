@@ -58,6 +58,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     /**
      *
+     * @var Zend_Session_Namespace
+     */
+    protected $_session;
+
+    /**
+     *
      * @var array
      */
     protected $_translatorDescriptions;
@@ -234,15 +240,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             if ($element instanceof Zend_Form_Element_File) {
                 // Now add the rename filter, the localfile is known only once after loadFormData() has run
                 $element->addFilter(new Zend_Filter_File_Rename(array(
-                    'target'    => $this->formData['localfile'],
+                    'target'    => $this->_session->localfile,
                     'overwrite' => true
                     )));
 
                 // Download the data (no test for post, step 2 is always a post)
-                if ($element->getFileName()) {
+                if ($element->isValid(null) && $element->getFileName()) {
                     // Now the filename is still set to the upload filename.
-                    $this->formData['extension'] = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
-                    // MUtil_Echo::track($this->formData['extension']);
+                    $this->_session->extension = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
+                    // MUtil_Echo::track($this->_session->extension);
                     if (!$element->receive()) {
                         throw new MUtil_Model_ModelException(sprintf(
                             $this->_("Error retrieving file '%s'."),
@@ -254,12 +260,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         } else {
             $this->addItems($bridge, 'content');
 
-            $this->formData['extension'] = 'txt';
+            $this->_session->extension = 'txt';
             if (isset($this->formData['content']) && $this->formData['content']) {
-                file_put_contents($this->formData['localfile'], $this->formData['content']);
+                file_put_contents($this->_session->localfile, $this->formData['content']);
             } else {
-                if (filesize($this->formData['localfile']) && ('txt' === $this->formData['extension'])) {
-                    $content = file_get_contents($this->formData['localfile']);
+                if (filesize($this->_session->localfile) && ('txt' === $this->formData['extension'])) {
+                    $content = file_get_contents($this->_session->localfile);
                 } else {
                     $content = '';
                 }
@@ -580,8 +586,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             }
 
             // Storage for local copy of the file, kept through process
-            $model->set('localfile');
-            $model->set('extension', 'default', 'txt');
+            $model->set('import_id');
 
             $model->set('content', 'label', $this->_('Import text - user header line - separate fields using tabs'),
                     'description', $this->_('Empty fields remove any existing values. Add a field only when used.'),
@@ -913,11 +918,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 }
             }
         }
+        if (! (isset($this->formData['import_id']) && $this->formData['import_id'])) {
+            $this->formData['import_id'] = mt_rand(10000,99999) . time();
+        }
+        $this->_session = new Zend_Session_Namespace(__CLASS__ . '-' . $this->formData['import_id']);
 
         if (isset($this->formData[$this->stepFieldName]) &&
                 $this->formData[$this->stepFieldName] > 1 &&
-                (!(isset($this->formData['localfile']) && $this->formData['localfile']))) {
-            $this->formData['localfile'] = MUtil_File::createTemporaryIn(
+                (!(isset($this->_session->localfile) && $this->_session->localfile))) {
+            $this->_session->localfile = MUtil_File::createTemporaryIn(
                     $this->tempDirectory,
                     $this->request->getControllerName() . '_'
                     );
@@ -947,7 +956,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->getImportTranslator();
 
             if (! $this->sourceModel) {
-                $this->importer->setSourceFile($this->formData['localfile'], $this->formData['extension']);
+                $this->importer->setSourceFile($this->_session->localfile, $this->_session->extension);
                 $this->sourceModel = $this->importer->getSourceModel();
             }
         } catch (Exception $e) {
@@ -1034,9 +1043,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      */
     protected function setAfterSaveRoute()
     {
-        if (isset($this->formData['localfile']) && file_exists($this->formData['localfile'])) {
+        if (isset($this->_session->localfile) && file_exists($this->_session->localfile)) {
             // Now is a good moment to remove the temporary file
-            @unlink($this->formData['localfile']);
+            @unlink($this->_session->localfile);
         }
 
         parent::setAfterSaveRoute();
