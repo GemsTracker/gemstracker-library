@@ -1050,7 +1050,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 } else {
                     $this->addMessage($this->_('Input error! No changes saved!'), 'danger');
                     if ($csrf && $csrf->getMessages()) {
-                        $this->addMessage($this->_('The form was open for too long or you opened the form in multiple windows.'));
+                        $this->addMessage($this->_('The form was open for too long or was opened in multiple windows.'));
                     }
                 }
             } else {

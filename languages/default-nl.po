@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-23 19:09+0100\n"
+"POT-Creation-Date: 2014-09-25 15:18+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -85,7 +85,7 @@ msgstr "Start %s opdrachten"
 msgid "Nothing to do."
 msgstr "Niets te doen."
 
-#: classes/Gems/Controller/BrowseEditAction.php:379
+#: classes/Gems/Controller/BrowseEditAction.php:400
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:288
 #: classes/Gems/Default/StaffAction.php:258
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:338
@@ -93,14 +93,14 @@ msgstr "Niets te doen."
 msgid "New %s..."
 msgstr "Nieuwe %s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:412
+#: classes/Gems/Controller/BrowseEditAction.php:433
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:318
 #: classes/Gems/Default/TrackRoundsAction.php:207
 #, php-format
 msgid "Delete %s"
 msgstr "Verwijder %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:416
+#: classes/Gems/Controller/BrowseEditAction.php:437
 #: classes/Gems/Default/TrackRoundsAction.php:222
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:134
 #: snippets/DeleteTrackTokenSnippet.php:152
@@ -108,54 +108,54 @@ msgstr "Verwijder %s"
 msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s verwijderd"
 
-#: classes/Gems/Controller/BrowseEditAction.php:433
+#: classes/Gems/Controller/BrowseEditAction.php:454
 #: classes/Gems/Default/OrganizationAction.php:226
 #: classes/Gems/Default/TemplateAction.php:82
 #, php-format
 msgid "Edit %s %s"
 msgstr "Bewerk %s %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:435
+#: classes/Gems/Controller/BrowseEditAction.php:456
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:328
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:340
 #, php-format
 msgid "Edit %s"
 msgstr "Bewerk %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:538
+#: classes/Gems/Controller/BrowseEditAction.php:559
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:282
 msgid "Free search text"
 msgstr "Vrije zoek tekst"
 
-#: classes/Gems/Controller/BrowseEditAction.php:620
+#: classes/Gems/Controller/BrowseEditAction.php:641
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:373
 msgid "Reset search"
 msgstr "Herstart zoeken"
 
-#: classes/Gems/Controller/BrowseEditAction.php:631
+#: classes/Gems/Controller/BrowseEditAction.php:652
 #: classes/Gems/Snippets/AutosearchFormSnippet.php:389
 msgid "Search"
 msgstr "Zoeken"
 
-#: classes/Gems/Controller/BrowseEditAction.php:649
+#: classes/Gems/Controller/BrowseEditAction.php:670
 #: classes/Gems/Default/TrackMaintenanceAction.php:422
 #, php-format
 msgid "No %s found"
 msgstr "Geen %s gevonden"
 
-#: classes/Gems/Controller/BrowseEditAction.php:736
+#: classes/Gems/Controller/BrowseEditAction.php:757
 #: classes/Gems/Default/ExportAction.php:404 classes/Gems/Export/Excel.php:133
 #, php-format
 msgid "No %s found."
 msgstr "Geen %s gevonden."
 
-#: classes/Gems/Controller/BrowseEditAction.php:872
+#: classes/Gems/Controller/BrowseEditAction.php:893
 #: classes/Gems/Default/TrackRoundsAction.php:287
 #: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:85
 msgid "Are you sure?"
 msgstr "Weet u het zeker?"
 
-#: classes/Gems/Controller/BrowseEditAction.php:888
+#: classes/Gems/Controller/BrowseEditAction.php:909
 #: classes/Gems/Default/DatabaseAction.php:175
 #: classes/Gems/Default/DatabaseAction.php:497
 #: classes/Gems/Default/StaffAction.php:306
@@ -174,7 +174,7 @@ msgstr "Weet u het zeker?"
 msgid "Yes"
 msgstr "Ja"
 
-#: classes/Gems/Controller/BrowseEditAction.php:889
+#: classes/Gems/Controller/BrowseEditAction.php:910
 #: classes/Gems/Default/DatabaseAction.php:176
 #: classes/Gems/Default/DatabaseAction.php:498
 #: classes/Gems/Default/StaffAction.php:307
@@ -194,7 +194,7 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nee"
 
-#: classes/Gems/Controller/BrowseEditAction.php:942
+#: classes/Gems/Controller/BrowseEditAction.php:963
 #: classes/Gems/Default/RespondentAction.php:251
 #: classes/Gems/Default/RespondentAction.php:334
 #: classes/Gems/Default/RespondentAction.php:538
@@ -203,43 +203,49 @@ msgstr "Nee"
 msgid "Unknown %s requested"
 msgstr "Onjuist %s verzoek"
 
-#: classes/Gems/Controller/BrowseEditAction.php:965
+#: classes/Gems/Controller/BrowseEditAction.php:986
 #, php-format
 msgid "New %1$s..."
 msgstr "Nieuwe %1$s..."
 
-#: classes/Gems/Controller/BrowseEditAction.php:973
+#: classes/Gems/Controller/BrowseEditAction.php:994
 #: classes/Gems/Email/MailTemplateForm.php:118
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:198
 #: classes/Gems/User/Form/ChangePasswordForm.php:348
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:264
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:276
 msgid "Save"
 msgstr "Opslaan"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1009
+#: classes/Gems/Controller/BrowseEditAction.php:1039
 #: classes/Gems/Default/MailTemplateAction.php:133
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:220
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:302
 #, php-format
 msgid "%2$u %1$s saved"
 msgstr "%2$u %1$s opgeslagen"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1012
+#: classes/Gems/Controller/BrowseEditAction.php:1042
 msgid "No changes to save."
 msgstr "Geen verandering om op te slaan."
 
-#: classes/Gems/Controller/BrowseEditAction.php:1021
+#: classes/Gems/Controller/BrowseEditAction.php:1051
 #: classes/Gems/Default/RespondentAction.php:302
 #: classes/Gems/Default/RespondentNewAction.php:221
 msgid "Input error! No changes saved!"
 msgstr "Invoer fout! Veranderingen niet opgeslagen!"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1049
+#: classes/Gems/Controller/BrowseEditAction.php:1053
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:514
+msgid "The form was open for too long or was opened in multiple windows."
+msgstr ""
+"Dit invoerscherm staat te lang open of staat open in meerdere vensters."
+
+#: classes/Gems/Controller/BrowseEditAction.php:1085
 #: classes/Gems/Default/SurveyMaintenanceAction.php:665
 #, php-format
 msgid "Show %s"
 msgstr "Toon %s"
 
-#: classes/Gems/Controller/BrowseEditAction.php:1056
+#: classes/Gems/Controller/BrowseEditAction.php:1092
 #: classes/Gems/Default/SurveyMaintenanceAction.php:674
 #, php-format
 msgid "Unknown %s."
@@ -280,7 +286,7 @@ msgstr "Toon %s"
 
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:482
 #: classes/Gems/Default/OptionAction.php:246
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:362
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:413
 #: classes/MUtil/Snippets/WizardFormSnippetAbstract.php:448
 msgid "item"
 msgid_plural "items"
@@ -379,7 +385,7 @@ msgstr "Uitsluitend voor programmeurs."
 #: classes/Gems/Default/AgendaProcedureAction.php:114
 #: classes/Gems/Default/AgendaStaffAction.php:112
 #: classes/Gems/Default/CommJobAction.php:95
-#: classes/Gems/Default/GroupAction.php:135
+#: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Default/MailJobAction.php:82
 #: classes/Gems/Default/OrganizationAction.php:160
@@ -437,7 +443,7 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/CommTemplateAction.php:73
 #: classes/Gems/Default/DatabaseAction.php:123
 #: classes/Gems/Default/DatabaseAction.php:323
-#: classes/Gems/Default/GroupAction.php:130
+#: classes/Gems/Default/GroupAction.php:78
 #: classes/Gems/Default/OrganizationAction.php:133
 #: classes/Gems/Default/RoleAction.php:255
 #: classes/Gems/Default/SourceAction.php:210
@@ -594,7 +600,7 @@ msgstr "Traject"
 #: classes/Gems/Default/SummaryAction.php:109
 #: classes/Gems/Email/OneMailForm.php:55
 #: classes/Gems/Export/RespondentExport.php:252
-#: classes/Gems/Menu/MenuAbstract.php:687
+#: classes/Gems/Menu/MenuAbstract.php:721
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:65
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:228
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:601
@@ -629,7 +635,7 @@ msgstr "Vragenlijst code"
 
 #: classes/Gems/Default/ChartconfigAction.php:64
 #: classes/Gems/Default/ConsentAction.php:68
-#: classes/Gems/Default/GroupAction.php:131
+#: classes/Gems/Default/GroupAction.php:79
 #: classes/Gems/Default/ReceptionAction.php:90
 #: classes/Gems/Default/RoleAction.php:256
 #: classes/Gems/Default/SurveyMaintenanceAction.php:214
@@ -1408,8 +1414,8 @@ msgstr "Niet patiënt nr, maar respondent id zoals dat hier geëxporteerd wordt.
 #: classes/Gems/Default/ExportAction.php:280
 #: classes/Gems/Default/ReceptionAction.php:104
 #: classes/Gems/Default/TrackMaintenanceAction.php:375
-#: classes/Gems/Menu.php:373 classes/Gems/Menu/MenuAbstract.php:543
-#: classes/Gems/Menu/MenuAbstract.php:653 snippets/AddTracksSnippet.php:241
+#: classes/Gems/Menu.php:373 classes/Gems/Menu/MenuAbstract.php:578
+#: classes/Gems/Menu/MenuAbstract.php:687 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
 msgstr "Trajecten"
 
@@ -1531,28 +1537,19 @@ msgstr "Controleer dit bestand op geldigheid en ga vervolgens importeren."
 msgid "Files ready for import"
 msgstr "Bestanden die klaarstaan om te importeren"
 
-#: classes/Gems/Default/GroupAction.php:65
-msgid "You do not have sufficient privilege to edit this group."
-msgstr "U heeft niet voldoende rechten om deze groep te wijzigen."
-
-#: classes/Gems/Default/GroupAction.php:86
-#: classes/Gems/Default/ReceptionAction.php:64
-msgid "Can be assigned to"
-msgstr "Kan toegewezen worden aan"
-
-#: classes/Gems/Default/GroupAction.php:132
+#: classes/Gems/Default/GroupAction.php:80
 #: classes/Gems/Default/LogAction.php:219
 #: classes/Gems/Default/RoleAction.php:467
 msgid "Role"
 msgstr "Rol"
 
-#: classes/Gems/Default/GroupAction.php:136
+#: classes/Gems/Default/GroupAction.php:84
 #: classes/Gems/Default/LogAction.php:211
 #: classes/Gems/Default/StaffAction.php:504 classes/Gems/Menu.php:217
 msgid "Staff"
 msgstr "Medewerkers"
 
-#: classes/Gems/Default/GroupAction.php:137
+#: classes/Gems/Default/GroupAction.php:85
 #: classes/Gems/Default/OrganizationAction.php:163
 #: classes/Gems/Default/ReceptionAction.php:100
 #: classes/Gems/Default/RespondentAction.php:457
@@ -1560,12 +1557,12 @@ msgstr "Medewerkers"
 msgid "Respondents"
 msgstr "Patiënten"
 
-#: classes/Gems/Default/GroupAction.php:140
+#: classes/Gems/Default/GroupAction.php:88
 #: classes/Gems/Default/OrganizationAction.php:189
 msgid "Allowed IP Ranges"
 msgstr "Toegestane IP adres reeksen"
 
-#: classes/Gems/Default/GroupAction.php:141
+#: classes/Gems/Default/GroupAction.php:89
 #: classes/Gems/Default/OrganizationAction.php:190
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
@@ -1573,13 +1570,13 @@ msgstr ""
 "Scheiden met | voorbeeld: 10.0.0.0-10.0.0.255 (subnet masks worden niet "
 "ondersteund)"
 
-#: classes/Gems/Default/GroupAction.php:151
+#: classes/Gems/Default/GroupAction.php:101
 msgid "group"
 msgid_plural "groups"
 msgstr[0] "groep"
 msgstr[1] "groepen"
 
-#: classes/Gems/Default/GroupAction.php:156
+#: classes/Gems/Default/GroupAction.php:106
 msgid "Administrative groups"
 msgstr "Beheer groepen"
 
@@ -1769,7 +1766,7 @@ msgstr ""
 msgid "Street"
 msgstr "Straat"
 
-#: classes/Gems/Default/LocationAction.php:142 classes/Gems/Model.php:307
+#: classes/Gems/Default/LocationAction.php:142 classes/Gems/Model.php:308
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Model/RespondentModel.php:360
 msgid "Zipcode"
@@ -1782,7 +1779,7 @@ msgstr "Voorbeeld: 0000 AA"
 
 #: classes/Gems/Default/LocationAction.php:148
 #: classes/Gems/Default/RespondentPlanAction.php:143
-#: classes/Gems/Model.php:308 classes/Gems/Model/RespondentModel.php:268
+#: classes/Gems/Model.php:309 classes/Gems/Model/RespondentModel.php:268
 #: classes/Gems/Model/RespondentModel.php:361
 msgid "City"
 msgstr "Woonplaats"
@@ -1797,7 +1794,7 @@ msgstr "Regio"
 msgid "Country"
 msgstr "Land"
 
-#: classes/Gems/Default/LocationAction.php:153 classes/Gems/Model.php:310
+#: classes/Gems/Default/LocationAction.php:153 classes/Gems/Model.php:311
 #: classes/Gems/Model/RespondentModel.php:270
 #: classes/Gems/Model/RespondentModel.php:365
 msgid "Phone"
@@ -2263,7 +2260,7 @@ msgid "Can the organization be used?"
 msgstr "Is de organisatie in gebruik?"
 
 #: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:161
 msgid "Login"
 msgstr "Inloggen"
 
@@ -2508,7 +2505,7 @@ msgid "Session content"
 msgstr "Sessie inhoud"
 
 #: classes/Gems/Default/ProjectInformationAction.php:275
-#: classes/Gems/Menu/MenuAbstract.php:504
+#: classes/Gems/Menu/MenuAbstract.php:539
 msgid "Session"
 msgstr "Sessie"
 
@@ -2573,6 +2570,11 @@ msgstr "Vragenlijst niet opgegeven."
 msgid "Track %s does not exist."
 msgstr "Trajectnummer %s bestaat niet."
 
+#: classes/Gems/Default/ReceptionAction.php:64
+#: classes/Gems/Snippets/Group/GroupFormSnippet.php:78
+msgid "Can be assigned to"
+msgstr "Kan toegewezen worden aan"
+
 #: classes/Gems/Default/ReceptionAction.php:65
 msgid "Additional action"
 msgstr "Aanvullende actie"
@@ -2599,8 +2601,8 @@ msgstr "Deze ontvangstcode kan aan een traject toegewezen worden."
 
 #: classes/Gems/Default/ReceptionAction.php:108
 #: classes/Gems/Default/SurveyMaintenanceAction.php:635
-#: classes/Gems/Menu.php:424 classes/Gems/Menu/MenuAbstract.php:550
-#: classes/Gems/Menu/MenuAbstract.php:633
+#: classes/Gems/Menu.php:424 classes/Gems/Menu/MenuAbstract.php:585
+#: classes/Gems/Menu/MenuAbstract.php:667
 #: classes/Gems/Tracker/Model/TrackModel.php:111
 msgid "Surveys"
 msgstr "Vragenlijsten"
@@ -2799,7 +2801,7 @@ msgid "Show track"
 msgstr "Toon traject"
 
 #: classes/Gems/Default/RespondentPlanAction.php:142
-#: classes/Gems/Model.php:312 classes/Gems/Model/RespondentModel.php:273
+#: classes/Gems/Model.php:313 classes/Gems/Model/RespondentModel.php:273
 #: classes/Gems/Model/RespondentModel.php:343
 msgid "Birthday"
 msgstr "Geboren op"
@@ -3052,7 +3054,7 @@ msgstr[0] "bron"
 msgstr[1] "bronnen"
 
 #: classes/Gems/Default/SourceAction.php:264
-#: classes/Gems/Menu/MenuAbstract.php:607
+#: classes/Gems/Menu/MenuAbstract.php:641
 msgid "Survey Sources"
 msgstr "Bronnen"
 
@@ -3104,13 +3106,13 @@ msgstr ""
 "Gebruiker met inlognaam %s bestaat al maar is verwijderd, wilt u het account "
 "opnieuw activeren?"
 
-#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1950
+#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1948
 msgid "No access to page"
 msgstr "Geen toegang tot pagina"
 
 #: classes/Gems/Default/StaffAction.php:357
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:232
-#: classes/Gems/User/User.php:1280
+#: classes/Gems/User/User.php:1312
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -3157,7 +3159,7 @@ msgstr "Wijzig wachtwoord mail"
 
 #: classes/Gems/Default/StaffAction.php:584
 #: classes/Gems/Default/StaffAction.php:595
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:508
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:512
 msgid "Mail sent"
 msgstr "Mail verzonden"
 
@@ -3892,7 +3894,7 @@ msgstr[0] "ronde"
 msgstr[1] "rondes"
 
 #: classes/Gems/Default/TrackRoundsAction.php:269
-#: classes/Gems/Menu/MenuAbstract.php:672
+#: classes/Gems/Menu/MenuAbstract.php:706
 msgid "Rounds"
 msgstr "Rondes"
 
@@ -3922,7 +3924,7 @@ msgstr "Upgrades"
 
 #: classes/Gems/Email/EmailFormAbstract.php:101
 #: classes/Gems/Mail/MailElements.php:308
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:233
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:235
 msgid "no email adress"
 msgstr "geen email adres"
 
@@ -3937,20 +3939,20 @@ msgid "BBCode"
 msgstr "BBCode"
 
 #: classes/Gems/Email/EmailFormAbstract.php:216
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:288
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:290
 msgid "Organization does not have an e-mail address."
 msgstr "Organisatie heeft geen email adres."
 
 #: classes/Gems/Email/EmailFormAbstract.php:231
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:304
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:306
 msgid "You do not have an e-mail address."
 msgstr "U heeft geen email adres."
 
 #: classes/Gems/Email/EmailFormAbstract.php:280
 #: classes/Gems/Email/EmailFormAbstract.php:291 classes/Gems/Menu.php:355
-#: classes/Gems/Menu.php:470 classes/Gems/Menu/MenuAbstract.php:534
-#: classes/Gems/Menu/MenuAbstract.php:547
-#: classes/Gems/Menu/MenuAbstract.php:557
+#: classes/Gems/Menu.php:470 classes/Gems/Menu/MenuAbstract.php:569
+#: classes/Gems/Menu/MenuAbstract.php:582
+#: classes/Gems/Menu/MenuAbstract.php:592
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:177
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:121
 msgid "Preview"
@@ -3976,14 +3978,14 @@ msgid "Input error! No changes made!"
 msgstr "Invoer fout! Veranderingen niet uitgevoerd!"
 
 #: classes/Gems/Email/EmailFormAbstract.php:446
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:474
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:479
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:179
 msgid "Subject:"
 msgstr "Onderwerp:"
 
 #: classes/Gems/Email/EmailFormAbstract.php:476
 #: classes/Gems/Mail/MailElements.php:160
-#: classes/Gems/Menu/MenuAbstract.php:659
+#: classes/Gems/Menu/MenuAbstract.php:693
 #: classes/Gems/Snippets/Mail/MailFormSnippet.php:171
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:115
 msgid "Fields"
@@ -4013,7 +4015,7 @@ msgstr "Test email verstuurd. De veranderingen zijn nog niet opgeslagen!"
 
 #: classes/Gems/Email/MultiMailForm.php:49
 #: classes/Gems/Email/OneMailForm.php:47
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:356
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:358
 msgid "On this test system all mail will be delivered to the from address."
 msgstr ""
 "Op dit test systeem worden alle emails gestuurd naar het \"van\" adres."
@@ -4307,7 +4309,7 @@ msgstr "Projectinfo"
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: classes/Gems/Menu.php:175 classes/Gems/Menu/SubMenuItem.php:615
+#: classes/Gems/Menu.php:175 classes/Gems/Menu/SubMenuItem.php:624
 msgid "Show"
 msgstr "Toon"
 
@@ -4401,7 +4403,7 @@ msgstr "Wachtwoord vergeten"
 msgid "Your account"
 msgstr "Uw account"
 
-#: classes/Gems/Menu.php:267 classes/GemsEscort.php:968
+#: classes/Gems/Menu.php:267 classes/GemsEscort.php:966
 msgid "Logoff"
 msgstr "Uitloggen"
 
@@ -4439,7 +4441,7 @@ msgstr "Print PDF"
 msgid "E-Mail now!"
 msgstr "Email nu!"
 
-#: classes/Gems/Menu.php:473 classes/Gems/Menu/MenuAbstract.php:403
+#: classes/Gems/Menu.php:473 classes/Gems/Menu/MenuAbstract.php:438
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:704
 msgid "Answers"
 msgstr "Antwoorden"
@@ -4460,7 +4462,7 @@ msgstr "Kalender"
 msgid "Overview"
 msgstr "Overzicht"
 
-#: classes/Gems/Menu.php:681 classes/Gems/Menu/MenuAbstract.php:503
+#: classes/Gems/Menu.php:681 classes/Gems/Menu/MenuAbstract.php:538
 msgid "Project"
 msgstr "Project"
 
@@ -4536,12 +4538,12 @@ msgid "Healtcare staff"
 msgstr "Zorgverleners"
 
 #: classes/Gems/Menu/MenuAbstract.php:295
-#: classes/Gems/Menu/MenuAbstract.php:427
+#: classes/Gems/Menu/MenuAbstract.php:462
 msgid "Automatic mail"
 msgstr "Automatische mail"
 
 #: classes/Gems/Menu/MenuAbstract.php:296
-#: classes/Gems/Menu/MenuAbstract.php:428
+#: classes/Gems/Menu/MenuAbstract.php:463
 msgid "Turn Automatic Mail Jobs OFF"
 msgstr "Automatische mail opdrachten UITzetten"
 
@@ -4554,8 +4556,8 @@ msgid "Servers"
 msgstr "Servers"
 
 #: classes/Gems/Menu/MenuAbstract.php:306
-#: classes/Gems/Menu/MenuAbstract.php:432
-#: classes/Gems/Menu/MenuAbstract.php:508
+#: classes/Gems/Menu/MenuAbstract.php:467
+#: classes/Gems/Menu/MenuAbstract.php:543
 msgid "Templates"
 msgstr "Sjablonen"
 
@@ -4575,137 +4577,136 @@ msgstr "Patiënt dossiers"
 msgid "Download"
 msgstr "Download"
 
-#: classes/Gems/Menu/MenuAbstract.php:404
+#: classes/Gems/Menu/MenuAbstract.php:439
 msgid "Importable"
 msgstr "Importeerbaar"
 
-#: classes/Gems/Menu/MenuAbstract.php:406
+#: classes/Gems/Menu/MenuAbstract.php:441
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:571
 msgid "Import file"
 msgstr "Import bestand"
 
-#: classes/Gems/Menu/MenuAbstract.php:409
+#: classes/Gems/Menu/MenuAbstract.php:444
 msgid "Imported files"
 msgstr "Geïmporteerd"
 
-#: classes/Gems/Menu/MenuAbstract.php:410
+#: classes/Gems/Menu/MenuAbstract.php:445
 msgid "Imported failures"
 msgstr "Import fouten"
 
-#: classes/Gems/Menu/MenuAbstract.php:464
+#: classes/Gems/Menu/MenuAbstract.php:499
 msgid "Track Summary"
 msgstr "Traject Samenvatting"
 
-#: classes/Gems/Menu/MenuAbstract.php:468
+#: classes/Gems/Menu/MenuAbstract.php:503
 msgid "Track Compliance"
 msgstr "Traject Voortgang"
 
-#: classes/Gems/Menu/MenuAbstract.php:472
+#: classes/Gems/Menu/MenuAbstract.php:507
 msgid "By period"
 msgstr "Per periode"
 
-#: classes/Gems/Menu/MenuAbstract.php:473
+#: classes/Gems/Menu/MenuAbstract.php:508
 msgid "By token"
 msgstr "Per kenmerk"
 
-#: classes/Gems/Menu/MenuAbstract.php:474
+#: classes/Gems/Menu/MenuAbstract.php:509
 msgid "By respondent"
 msgstr "Per patiënt"
 
-#: classes/Gems/Menu/MenuAbstract.php:478
+#: classes/Gems/Menu/MenuAbstract.php:513
 msgid "Bulk mail"
 msgstr "Bulk mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:482
+#: classes/Gems/Menu/MenuAbstract.php:517
 msgid "Respondent status"
 msgstr "Patiënt status"
 
-#: classes/Gems/Menu/MenuAbstract.php:500
+#: classes/Gems/Menu/MenuAbstract.php:535
 msgid "Errors"
 msgstr "Foutmeldingen"
 
-#: classes/Gems/Menu/MenuAbstract.php:501
+#: classes/Gems/Menu/MenuAbstract.php:536
 msgid "PHP"
 msgstr "PHP"
 
-#: classes/Gems/Menu/MenuAbstract.php:502
+#: classes/Gems/Menu/MenuAbstract.php:537
 msgid "PHP Errors"
 msgstr "PHP Foutmeldingen"
 
-#: classes/Gems/Menu/MenuAbstract.php:505
+#: classes/Gems/Menu/MenuAbstract.php:540
 msgid "Maintenance mode"
 msgstr "Onderhoudsmodus"
 
-#: classes/Gems/Menu/MenuAbstract.php:506
+#: classes/Gems/Menu/MenuAbstract.php:541
 msgid "Clean cache"
 msgstr "Cache opruimen"
 
-#: classes/Gems/Menu/MenuAbstract.php:579
-#: views/scripts/index/resetpassword.phtml:1
+#: classes/Gems/Menu/MenuAbstract.php:614
 msgid "Reset password"
 msgstr "Wijzig wachtwoord"
 
-#: classes/Gems/Menu/MenuAbstract.php:580
+#: classes/Gems/Menu/MenuAbstract.php:615
 msgid "Send Mail"
 msgstr "Vestuur mail"
 
-#: classes/Gems/Menu/MenuAbstract.php:616
+#: classes/Gems/Menu/MenuAbstract.php:650
 msgid "Check status"
 msgstr "Status controle"
 
-#: classes/Gems/Menu/MenuAbstract.php:618
+#: classes/Gems/Menu/MenuAbstract.php:652
 msgid "Synchronize surveys"
 msgstr "Synchroniseer vragenlijsten"
 
-#: classes/Gems/Menu/MenuAbstract.php:620
-#: classes/Gems/Menu/MenuAbstract.php:639
+#: classes/Gems/Menu/MenuAbstract.php:654
+#: classes/Gems/Menu/MenuAbstract.php:673
 msgid "Check is answered"
 msgstr "Controleer op antwoorden"
 
-#: classes/Gems/Menu/MenuAbstract.php:622
+#: classes/Gems/Menu/MenuAbstract.php:656
 msgid "Check attributes"
 msgstr "Controleer attributen"
 
-#: classes/Gems/Menu/MenuAbstract.php:625
+#: classes/Gems/Menu/MenuAbstract.php:659
 msgid "Synchronize all surveys"
 msgstr "Synchroniseer alle vragenlijsten"
 
-#: classes/Gems/Menu/MenuAbstract.php:626
-#: classes/Gems/Menu/MenuAbstract.php:649
+#: classes/Gems/Menu/MenuAbstract.php:660
+#: classes/Gems/Menu/MenuAbstract.php:683
 msgid "Check all is answered"
 msgstr "Controleer alles op antwoorden"
 
-#: classes/Gems/Menu/MenuAbstract.php:627
+#: classes/Gems/Menu/MenuAbstract.php:661
 msgid "Check all attributes"
 msgstr "Controleer alle attributen"
 
-#: classes/Gems/Menu/MenuAbstract.php:630
+#: classes/Gems/Menu/MenuAbstract.php:664
 msgid "Charts setup"
 msgstr "Chart beheer"
 
-#: classes/Gems/Menu/MenuAbstract.php:642
-#: classes/Gems/Menu/MenuAbstract.php:650
+#: classes/Gems/Menu/MenuAbstract.php:676
+#: classes/Gems/Menu/MenuAbstract.php:684
 msgid "Import answers"
 msgstr "Importeer antwoorden"
 
-#: classes/Gems/Menu/MenuAbstract.php:645
+#: classes/Gems/Menu/MenuAbstract.php:679
 msgid "PDF"
 msgstr "PDF"
 
-#: classes/Gems/Menu/MenuAbstract.php:655
+#: classes/Gems/Menu/MenuAbstract.php:689
 msgid "Copy"
 msgstr "Kopieer"
 
-#: classes/Gems/Menu/MenuAbstract.php:693
-#: classes/Gems/Menu/MenuAbstract.php:696
+#: classes/Gems/Menu/MenuAbstract.php:727
+#: classes/Gems/Menu/MenuAbstract.php:730
 msgid "Check assignments"
 msgstr "Controleer toewijzingen"
 
-#: classes/Gems/Menu/MenuAbstract.php:699
+#: classes/Gems/Menu/MenuAbstract.php:733
 msgid "Tracks per org"
 msgstr "Trajecten per org"
 
-#: classes/Gems/Menu/MenuAbstract.php:703
+#: classes/Gems/Menu/MenuAbstract.php:737
 msgid "Check all assignments"
 msgstr "Controleer alle toewijzingen"
 
@@ -4746,7 +4747,7 @@ msgstr "Afspraak"
 
 #: classes/Gems/Model/AppointmentModel.php:197
 #: classes/Gems/Model/AppointmentModel.php:227
-#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1315
+#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1313
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-jjjj uu:mm"
 
@@ -5088,6 +5089,11 @@ msgstr "Patiënt informatie"
 msgid "Are you sure you want to delete '%s'?"
 msgstr "Weet u zeker dat u '%s' wil verwijderen?"
 
+#: classes/Gems/Snippets/Group/GroupDeleteSnippet.php:93
+#: classes/Gems/Snippets/Group/GroupFormSnippet.php:136
+msgid "You do not have sufficient privilege to edit this group."
+msgstr "U heeft niet voldoende rechten om deze groep te wijzigen."
+
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:84
 #, php-format
 msgid "The file \"%s\" does not exist on the server."
@@ -5117,11 +5123,11 @@ msgstr "(selecteer een status)"
 msgid "Prefered Language"
 msgstr "Voorkeurstaal"
 
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:406
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:408
 msgid "Email to: "
 msgstr "Email naar:"
 
-#: classes/Gems/Snippets/Mail/MailFormSnippet.php:505
+#: classes/Gems/Snippets/Mail/MailFormSnippet.php:509
 #: classes/Gems/Snippets/Mail/MailModelFormSnippet.php:261
 msgid "Preview updated"
 msgstr "Tekstvoorbeeld bijgewerkt"
@@ -6012,7 +6018,7 @@ msgid "Trying upgrade for %s to level %s: %s"
 msgstr "Probeert upgrade voor %s naar niveau %s: %s"
 
 #: classes/Gems/User/Form/ChangePasswordForm.php:170
-#: classes/Gems/User/User.php:1275
+#: classes/Gems/User/User.php:1307
 #, php-format
 msgid "%s is not correct."
 msgstr "%s is onjuist."
@@ -6166,15 +6172,15 @@ msgstr[1] ""
 msgid "You are not allowed to login from this location."
 msgstr "U kunt vanaf deze locatie niet inloggen."
 
-#: classes/Gems/User/User.php:1261
+#: classes/Gems/User/User.php:1293
 msgid "Your birthday"
 msgstr "Uw geboortedatum"
 
-#: classes/Gems/User/User.php:1360
+#: classes/Gems/User/User.php:1392
 msgid "Trying to send a password reset to a user that cannot be reset."
 msgstr "Het wachtwoord voor deze gebruiker kan niet gewijzigd worden."
 
-#: classes/Gems/User/User.php:1388
+#: classes/Gems/User/User.php:1420
 msgid "Unable to send e-mail."
 msgstr "Verzenden email mislukt."
 
@@ -6192,25 +6198,25 @@ msgstr ""
 "Gebruiker niet gevonden of email adres onbekend of gebruiker kan niet "
 "gereset worden."
 
-#: classes/Gems/Util/DbLookup.php:414
+#: classes/Gems/Util/DbLookup.php:423
 #, php-format
 msgid "Respondent id %s not found."
 msgstr "Patiënt id %s niet gevonden."
 
-#: classes/Gems/Util/DbLookup.php:417
+#: classes/Gems/Util/DbLookup.php:426
 #, php-format
 msgid "With the organization nr %d."
 msgstr "Met het organisatie nummer %d."
 
-#: classes/Gems/Util/DbLookup.php:497
+#: classes/Gems/Util/DbLookup.php:506
 msgid "&laquo;system&raquo;"
 msgstr "&laquo;systeem&raquo;"
 
-#: classes/Gems/Util/DbLookup.php:548
+#: classes/Gems/Util/DbLookup.php:557
 msgid "inactive"
 msgstr "inactief"
 
-#: classes/Gems/Util/DbLookup.php:549
+#: classes/Gems/Util/DbLookup.php:558
 msgid "source inactive"
 msgstr "bron inactief"
 
@@ -6378,42 +6384,42 @@ msgstr "Mevrouw"
 msgid "Mr./Mrs."
 msgstr "De heer/Mevrouw"
 
-#: classes/GemsEscort.php:328 classes/MUtil/Log.php:105
+#: classes/GemsEscort.php:326 classes/MUtil/Log.php:105
 #, php-format
 msgid "Path %s not writable"
 msgstr "Path %s niet schrijfbaar"
 
-#: classes/GemsEscort.php:787
+#: classes/GemsEscort.php:785
 msgid " > "
 msgstr " | "
 
-#: classes/GemsEscort.php:966
+#: classes/GemsEscort.php:964
 #, php-format
 msgid "You are logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: classes/GemsEscort.php:971
+#: classes/GemsEscort.php:969
 msgid "You are not logged in"
 msgstr "U bent niet ingelogd"
 
-#: classes/GemsEscort.php:1199
+#: classes/GemsEscort.php:1197
 #, php-format
 msgid "User: %s"
 msgstr "Login: %s"
 
-#: classes/GemsEscort.php:1224
+#: classes/GemsEscort.php:1222
 msgid "version"
 msgstr "versie"
 
-#: classes/GemsEscort.php:1305
+#: classes/GemsEscort.php:1303
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-jjjj"
 
-#: classes/GemsEscort.php:1329
+#: classes/GemsEscort.php:1327
 msgid "hh:mm"
 msgstr "uu:mm"
 
-#: classes/GemsEscort.php:1750
+#: classes/GemsEscort.php:1748
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -6421,33 +6427,33 @@ msgstr ""
 "Let op: uw sessie is verlopen, uw invoer is niet opgeslagen. Controleer uw "
 "gegevens en probeer a.u.b. opnieuw."
 
-#: classes/GemsEscort.php:1914
+#: classes/GemsEscort.php:1912
 msgid "Please check back later."
 msgstr "Probeer het later opnieuw."
 
-#: classes/GemsEscort.php:1916 classes/GemsEscort.php:1920
-#: classes/GemsEscort.php:1921
+#: classes/GemsEscort.php:1914 classes/GemsEscort.php:1918
+#: classes/GemsEscort.php:1919
 msgid "System is in maintenance mode"
 msgstr "Systeem is in onderhoudsmodus"
 
-#: classes/GemsEscort.php:1932
+#: classes/GemsEscort.php:1930
 msgid "No access to site."
 msgstr "Geen toegang tot website."
 
-#: classes/GemsEscort.php:1934 classes/GemsEscort.php:1995
+#: classes/GemsEscort.php:1932 classes/GemsEscort.php:1993
 msgid "You have no access to this site."
 msgstr "U heeft geen toegang tot deze website."
 
-#: classes/GemsEscort.php:1952
+#: classes/GemsEscort.php:1950
 #, php-format
 msgid "Access to the %s/%s page is not allowed for current role: %s."
 msgstr "U heeft geen toegang tot de %s/%s pagina. Uw huidige rol is: %s."
 
-#: classes/GemsEscort.php:1979 classes/GemsEscort.php:1993
+#: classes/GemsEscort.php:1977 classes/GemsEscort.php:1991
 msgid "You are no longer logged in."
 msgstr "U bent niet meer ingelogd."
 
-#: classes/GemsEscort.php:1980
+#: classes/GemsEscort.php:1978
 msgid "You must login to access this page."
 msgstr "U moet ingelogd zijn voor toegang tot deze pagina."
 
@@ -6547,15 +6553,15 @@ msgstr " veld %s"
 msgid ": "
 msgstr ": "
 
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:222
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:304
 msgid "No changes to save!"
 msgstr "Geen verandering om op te slaan!"
 
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:436
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:487
 msgid "Unknown edit data requested"
 msgstr "Onjuist gegevens bewerkingsverzoek"
 
-#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:459
+#: classes/MUtil/Snippets/ModelFormSnippetAbstract.php:510
 #, php-format
 msgid "Input error! Changes to %s not saved!"
 msgstr "Invoer fout! Veranderingen aan %s niet opgeslagen!"
