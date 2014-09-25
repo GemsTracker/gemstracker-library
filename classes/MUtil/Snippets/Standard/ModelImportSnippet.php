@@ -245,7 +245,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     )));
 
                 // Download the data (no test for post, step 2 is always a post)
-                if ($element->getFileName()) {
+                if ($element->isValid(null) && $element->getFileName()) {
                     // Now the filename is still set to the upload filename.
                     $this->_session->extension = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
                     // MUtil_Echo::track($this->_session->extension);
