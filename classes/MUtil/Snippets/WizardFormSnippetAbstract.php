@@ -467,6 +467,15 @@ abstract class MUtil_Snippets_WizardFormSnippetAbstract extends MUtil_Snippets_M
 
         $this->addButtons();
 
+        // Use Csrf when enabled
+        if ($this->useCsrf) {
+            if ($this->_csrf) {
+                $this->_form->addElement($this->_csrf);
+            } else {
+                $this->addCsrf();
+            }
+        }
+
         $this->populateForm();
     }
 

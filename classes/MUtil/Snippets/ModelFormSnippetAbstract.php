@@ -360,12 +360,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
         // Again, just to be sure all changes are set on the form
         $this->populateForm();
 
+        // Hook for subclasses
+        $this->beforeDisplay();
+
         if ($this->_csrf) {
             $this->_csrf->initCsrfToken();
         }
-
-        // Hook for subclasses
-        $this->beforeDisplay();
 
         return $this->_form;
     }
