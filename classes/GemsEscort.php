@@ -917,7 +917,7 @@ class GemsEscort extends MUtil_Application_Escort
     {
         // LOCALE
         $currentUri = base64_encode($this->view->url());
-        $localeDiv = MUtil_Html::create('span', $args, array('id' => 'languages'));
+        $localeDiv = MUtil_Html::create('div', $args, array('id' => 'languages'));
 
         // There will always be a localeDiv, but it can be empty
         if (isset($this->project->locales)) {

@@ -62,7 +62,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     private $_hiddenPrivileges = array();
 
-    private $_menuUlClass = 'navigation nav nav-stacked';
+    protected $_menuUlClass = 'navigation nav nav-stacked';
 
     private $_onlyActiveBranchVisible = false;
 

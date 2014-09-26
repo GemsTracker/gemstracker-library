@@ -285,7 +285,15 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         if ($this->useTabbedForm) {
             return new Gems_TabForm($options);
         }
+        if (GemsEscort::$useBootstrap) {
+            if (!isset($options['class'])) {
+                $options['class'] = 'form-horizontal';
+            }
 
+            if (!isset($options['role'])) {
+                $options['role'] = 'form';
+            }
+        }
         return new Gems_Form($options);
     }
 
