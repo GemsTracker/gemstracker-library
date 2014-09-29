@@ -1427,9 +1427,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
      * This means that the data about this user will be stored in a session.
      *
      * @param boolean $signalLoader Do not set, except from UserLoader
+     * @param boolean $resetSessionId Should the session be reset?
      * @return Gems_User_User (continuation pattern)
      */
-    public function setAsCurrentUser($signalLoader = true)
+    public function setAsCurrentUser($signalLoader = true, $resetSessionId = true)
     {
         // Get the current variables
         $oldStore = $this->_getVariableStore();
@@ -1437,6 +1438,10 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
         // When $oldStore is a Zend_Session_Namespace, then this user is already the current user.
         if (! $this->isCurrentUser()) {
             $this->userLoader->unsetCurrentUser();
+
+            if ($resetSessionId) {
+                Zend_Session::regenerateId();
+            }
 
             $this->_vars = $this->session;
 
