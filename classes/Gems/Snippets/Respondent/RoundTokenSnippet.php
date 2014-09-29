@@ -72,6 +72,11 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
     protected $project;
 
     /**
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -134,6 +139,26 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
     }
 
     /**
+     * Creates the model
+     *
+     * @return MUtil_Model_ModelAbstract
+     */
+    protected function createModel()
+    {
+        $model = parent::createModel();
+
+        $translated = $this->util->getTranslated();
+        $model->set('calc_used_date',
+                'formatFunction', $translated->formatDateNever,
+                'tdClass', 'date');
+        $model->set('gto_changed',
+                'dateFormat', 'dd-MM-yyyy HH:mm:ss',
+                'tdClass', 'date');
+
+        return $model;
+    }
+
+    /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *
@@ -150,7 +175,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
             if ($default = $this->project->getDefaultTrackId()) {
 
                 $track = $this->loader->getTracker()->getTrackEngine($default);
-                
+
                 if ($track->isUserCreatable()) {
                     $list = $this->menu->getMenuList()
                             ->addByController('track', 'create',
