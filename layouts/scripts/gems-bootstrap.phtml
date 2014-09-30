@@ -26,7 +26,11 @@
     
 ?>
         <div class="row">
+            <?php if ($this->navigation || $this->menuHtml) { ?>
             <div id="main" class="col-sm-9 col-sm-push-3">
+            <?php } else { ?>
+            <div id="main" class="col-sm-12">
+            <?php } ?>
             <?php
                     if ($this->main) {
                         echo $this->main->render($this);
@@ -34,6 +38,7 @@
                     echo $this->layout()->content; ?>
 
             </div>
+            <?php if ($this->navigation || $this->menuHtml) { ?>
             <div id="menu" class="col-sm-3 col-sm-pull-9 navbar navbar-default" role="navigation">
             
                 <div class="navbar-header">
@@ -52,6 +57,7 @@
                     
                 </div>
             </div>
+            <?php } ?>
         </div>
 
 
