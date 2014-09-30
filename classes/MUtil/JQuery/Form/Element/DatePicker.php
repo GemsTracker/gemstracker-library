@@ -284,7 +284,11 @@ class MUtil_JQuery_Form_Element_DatePicker extends ZendX_JQuery_Form_Element_Dat
                     $baseUrl .= $jquery->getUiVersion();
                 }
                 // Option 1: download single language file
-                $jquery->addJavascriptFile($baseUrl . '/i18n/jquery.ui.datepicker-' . $language . '.js');
+                if (version_compare($jquery->getUiVersion() , '1.11.0', '>=')) {
+                    $jquery->addJavascriptFile($baseUrl . '/i18n/datepicker-' . $language . '.js');
+                } else {
+                    $jquery->addJavascriptFile($baseUrl . '/i18n/jquery.ui.datepicker-' . $language . '.js');                    
+                }
 
                 // Option 2: download all languages and select current
                 // $jquery->addJavascriptFile($baseUrl . '/i18n/jquery-ui-i18n.min.js');
