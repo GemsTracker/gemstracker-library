@@ -94,6 +94,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             }
             $html = '<div class="tab-content">';
             $fragment_counter = 1;
+            $tabIndex = 0;
             foreach($this->_tabs[$id] AS $k => $v) {
                 $frag_name = sprintf('%s-frag-%d', $attribs['id'], $fragment_counter++);
                 $opts = $v['options'];
@@ -111,6 +112,8 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
                   $active = ' active';
                   $firstSelected = false;
                 }
+                $tabIndex++;
+
                 if ($class) {
                   $class = ' class="'.$class.'"';
                 }
@@ -124,7 +127,6 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             }
             $list .= '</ul>'.PHP_EOL;
             $html .= '</div>'.PHP_EOL;
-
             $content = $list.$html;
             unset($this->_tabs[$id]);
         }
@@ -150,7 +152,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             ); 
             if (isset($selected)) {
                 $js .= sprintf('
-                    %s("#%s").tabs("select", %d);',
+                    %s("#%s").tabs("option", "active", %d);',
                     ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                     $attribs['id'],
                     $selected
