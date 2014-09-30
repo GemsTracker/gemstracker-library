@@ -1,10 +1,10 @@
 <h1>An error occurred!</h1>
 <br/>
-<h2><?php echo $this->message ?></h2>
+<h2><?php echo $this->escape($this->message); ?></h2>
 
 <?php if (isset($this->info)): ?>
   <p class="info">
-    <?php echo $this->info ?>
+    <?php echo $this->escape($this->info); ?>
   </p>
 <?php endif ?>
 
@@ -14,14 +14,14 @@
   <p class="info">
       <b>Class:</b> <?php echo get_class($this->exception) ?>
       <br/>
-      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+      <b>Message:</b> <?php echo $this->escape($this->exception->getMessage()) ?>
 
       <?php if (method_exists($this->exception, 'getChainedException') &&
                 ($chained = $this->exception->getChainedException())) : ?>
           <br/>
           <b>Chained class:</b> <?php echo get_class($chained) ?>
           <br/>
-          <b>Changed message:</b> <?php echo $chained ?>
+          <b>Changed message:</b> <?php echo $this->escape($chained) ?>
 
       <?php endif ?>
   </p>
@@ -31,7 +31,7 @@
   </pre>
 
   <h3>Request Parameters:</h3>
-  <pre><?php echo var_export($this->request->getParams(), 1) ?>
+  <pre><?php echo $this->escape(var_export($this->request->getParams(), 1)); ?>
   </pre>
 <?php else: ?>
     <p class="info">Please contact system administration</p>
