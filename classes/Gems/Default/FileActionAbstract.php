@@ -255,7 +255,7 @@ abstract class Gems_Default_FileActionAbstract extends Gems_Controller_ModelSnip
         $data = $model->loadFirst(array('urlpath' => $id));
 
         if (! ($data && isset($data['fullpath']))) {
-            $this->addMessage(sprintf($this->_('File "%s" not found on the server.'), $id));
+            $this->addMessage(sprintf($this->_('File "%s" not found on the server.'), $this->view->escape($id)));
             return;
         }
 

@@ -174,7 +174,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         if ($this->getRequest()->isXmlHttpRequest()) {
             Zend_Layout::getMvcInstance()->disableLayout();
         }
-        
+
         // Set menu OFF
         $this->menu->setVisible(false);
 
@@ -583,7 +583,10 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             }
             $this->addSnippets($this->addTrackContentSnippets, 'trackData', $trackData);
         } else {
-            $this->addMessage(sprintf($this->_('Track %s does not exist.'), $this->_getParam(Gems_Model::TRACK_ID)));
+            $this->addMessage(sprintf(
+                    $this->_('Track %s does not exist.'),
+                    $this->view->escape($this->_getParam(Gems_Model::TRACK_ID))
+                    ));
         }
     }
 }
