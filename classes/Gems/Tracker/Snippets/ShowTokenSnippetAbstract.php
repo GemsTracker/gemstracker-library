@@ -102,6 +102,12 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
     protected $useFakeForm = true;
 
     /**
+     *
+     * @var Zend_View
+     */
+    protected $view;
+
+    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -154,7 +160,7 @@ abstract class Gems_Tracker_Snippets_ShowTokenSnippetAbstract extends MUtil_Snip
                 return $htmlDiv;
 
             } else {
-                $this->addMessage(sprintf($this->_('Token %s not found.'), $this->tokenId));
+                $this->addMessage(sprintf($this->_('Token %s not found.'), $this->view->escape($this->tokenId)));
             }
 
         } else {

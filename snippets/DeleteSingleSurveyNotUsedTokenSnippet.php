@@ -71,6 +71,12 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
     protected $useFakeForm = false;
 
     /**
+     *
+     * @var Zend_View
+     */
+    protected $view;
+
+    /**
      * Adds rows from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -208,7 +214,11 @@ class DeleteSingleSurveyNotUsedTokenSnippet extends Gems_Tracker_Snippets_ShowTo
                     $changed = $model->delete($filter);
 
                     // Inform the user
-                    $this->addMessage(sprintf($this->_('Deleted token %s for survey %s.'), strtoupper($this->tokenId), $this->token->getSurveyName()));
+                    $this->addMessage(sprintf(
+                            $this->_('Deleted token %s for survey %s.'),
+                            $this->view->escape(strtoupper($this->tokenId)),
+                            $this->token->getSurveyName()
+                            ));
 
                     // Build a full route, throw all previous data away.
                     $this->_route = array(
