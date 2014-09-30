@@ -916,14 +916,10 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      */
     public static function applyFixedOptions($type, array &$options)
     {
-        static $typeOptions;
-
-        if (! $typeOptions) {
-            if (Zend_Registry::isRegistered(self::REGISTRY_KEY)) {
-                $typeOptions = Zend_Registry::get(self::REGISTRY_KEY);
-            } else {
-                $typeOptions = array();
-            }
+        if (Zend_Registry::getInstance()->isRegistered(self::REGISTRY_KEY)) {
+            $typeOptions = Zend_Registry::get(self::REGISTRY_KEY);
+        } else {
+            $typeOptions = array();
         }
 
         if (substr($type, 0, 3) == 'add') {
