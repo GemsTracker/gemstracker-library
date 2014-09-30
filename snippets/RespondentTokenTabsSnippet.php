@@ -70,6 +70,62 @@ class RespondentTokenTabsSnippet extends MUtil_Snippets_TabSnippetAbstract
     protected $model;
 
     /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param Zend_View_Abstract $view Just in case it is needed here
+     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(Zend_View_Abstract $view)
+    {
+        $tabs = $this->getTabs();
+
+        if ($tabs && ($this->displaySingleTab || count($tabs) > 1)) {
+            // Set the correct parameters
+            $this->getCurrentTab($tabs);
+
+            // Let loose
+            if (is_array($this->baseUrl)) {
+                $this->href = $this->href + $this->baseUrl;
+            }
+
+            if (GemsEscort::$useBootstrap) {
+                $tabRow = MUtil_Html::create()->ul();
+
+                foreach ($tabs as $tabId => $content) {
+
+                    $li = $tabRow->li(array('class' => $this->tabClass));
+
+                    $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+
+                    if ($this->currentTab == $tabId) {
+                        $li->appendAttrib('class', $this->tabActiveClass);
+                    }
+                }
+            } else {
+                $tabRow = MUtil_Html::create()->div();
+
+                foreach ($tabs as $tabId => $content) {
+
+                    $div = $tabRow->div(array('class' => $this->tabClass));
+
+                    $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+
+                    if ($this->currentTab == $tabId) {
+                        $div->appendAttrib('class', $this->tabActiveClass);
+                    }
+                }
+            }
+
+            return $tabRow;
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
      * Return optionally the single parameter key which should left out for the default value,
      * but is added for all other tabs.
      *
