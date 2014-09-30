@@ -137,8 +137,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
      */
     protected function _processAnswer($key, $input, $type)
     {
-        $output = array();
-
+        $output    = array();
+        $modelName = str_replace('/', '_', $key);
+        
         if (array_key_exists($key, $input))
         {
             $value = $input[$key];
@@ -150,13 +151,13 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
             case 'dateTime':
                 // A null value will sometimes be empty, causing errors in Zend_Date
                 if (empty($value)) {$value = null;}
-                $output[$key] = new Zend_Date($value, Zend_Date::ISO_8601);
+                $output[$modelName] = new Zend_Date($value, Zend_Date::ISO_8601);
                 break;
 
             case 'select':
                 $items = explode(' ', $value);
                 foreach ($items as $idx => $answer) {
-                    $multiName = $key . '_' . $answer;
+                    $multiName = $modelName . '_' . $answer;
                     $output[$multiName] = 1;
                 }
                 break;
@@ -165,15 +166,15 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
                 // Location split in 4 fields  latitude, longitude, altitude and accuracy.
                 $items         = explode(' ', $value);
                 if (count($items) == 4) {
-                    $answers[$key . '_lat'] = $items[0];
-                    $answers[$key . '_long'] = $items[1];
-                    $answers[$key . '_alt'] = $items[2];
-                    $answers[$key . '_acc'] = $items[3];
+                    $answers[$modelName . '_lat'] = $items[0];
+                    $answers[$modelName . '_long'] = $items[1];
+                    $answers[$modelName . '_alt'] = $items[2];
+                    $answers[$modelName . '_acc'] = $items[3];
                 }
                 break;
 
             default:
-                $output[$key] = $value;
+                $output[$modelName] = $value;
                 break;
         }
 
@@ -712,9 +713,9 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         $model   = $this->getModel();
         $answers = $this->flattenAnswers($xml);
-
+        
         //Now we should parse the response, extract the options given for a (multi)select
-        $output = array();
+        $output = array();      
         foreach ($this->instance as $name => $element) {
                 $bindName = $this->_getBindName($name);
                 if (array_key_exists($bindName, $this->bind)) {
@@ -744,7 +745,7 @@ class OpenRosa_Tracker_Source_OpenRosa_Form
 
         $output['orf_id'] = null;
         $answers = $model->save($output);
-
+        
         if ($model->getChanged() && $remove) {
             $log     = Gems_Log::getLogger();
             $log->log($file .  '-->' .  substr($file, 0, -4) . '.bak', Zend_Log::ERR);
