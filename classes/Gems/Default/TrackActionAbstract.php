@@ -323,49 +323,6 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $params['templateOnly'] = ! $this->loader->getCurrentUser()->hasPrivilege('pr.token.mail.freetext');
 
         $this->addSnippet('Mail_TokenMailFormSnippet', $params);
-        /*
-        $model = $this->getModel();
-
-        if ($tokenData = $model->applyRequest($this->getRequest())->loadFirst()) {
-            $this->setMenuParameters($tokenData);
-
-            $form = new Gems_Email_OneMailForm(array(
-                'escort'       => $this->escort,
-                'templateOnly' => ! $this->escort->hasPrivilege('pr.token.mail.freetext')
-            ));
-            $form->setTokenData($tokenData);
-
-            $wasSent = $form->processRequest($this->getRequest());
-
-            if ($form->hasMessages()) {
-                $this->addMessage($form->getMessages());
-            }
-
-            if ($wasSent) {
-                if ($this->afterSaveRoute($tokenData)) {
-                    return null;
-                }
-
-            } else {
-                $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
-                $table->setAsFormLayout($form, true, true);
-                $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
-                if ($links = $this->createMenuLinks(10)) {
-                    // Remove unwanted links
-                    unset($links['track.index'], $links['track.edit'], $links['track.delete'], $links['track.questions']);
-
-                    $table->tf(); // Add empty cell, no label
-                    $linksCell = $table->tf($links);
-                }
-
-                $this->html->h3(sprintf($this->_('Email %s %s'), $this->getTopic(), strtoupper($this->_getIdParam())));
-                $this->html[] = $form;
-            }
-
-
-        } else {
-            $this->addMessage(sprintf($this->_('%s %s not found.'), $this->getTopic(1), $this->_getParam(MUtil_Model::REQUEST_ID1)));
-        }*/
     }
 
     /**

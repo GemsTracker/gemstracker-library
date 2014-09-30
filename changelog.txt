@@ -1,6 +1,7 @@
 Important changes from 1.6.4 => 1.6.5
 ============================================================
 Improved security means users may get error warnings when opening the same form in two windows.
+X-frame setting in project.ini allows defense against clickjacking
 
 Important changes from 1.6.3 => 1.6.4
 ============================================================

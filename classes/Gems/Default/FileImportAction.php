@@ -72,36 +72,6 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
     }
 
     /**
-     * Action for automaticaly loading all ready files
-     * /
-    public function autoAction()
-    {
-        $importLoader = $this->loader->getImportLoader();
-        $files        = $this->getModel()->load(true, 'changed');
-
-        $batch = $this->loader->getTaskRunnerBatch('auto-file-import');
-
-        foreach ($files as $data) {
-            $importer = $importLoader->getFileImporter($data['fullpath']);
-
-            if ($importer) {
-                $this->addMessage(sprintf($this->_('"%s" is go!'), $data['relpath']));
-
-                // Batch is reset :((
-                $importer->getCheckAndImportBatch($batch);
-            } else {
-                $this->addMessage(sprintf($this->_('Automatic import not possible for file "%s".'), $data['relpath']));
-            }
-        }
-
-        $title = $this->_('Import the files.');
-
-        $this->_helper->batchRunner($batch, $title);
-
-        $this->html->pInfo($this->_('Checks the files for validity and then performs an import.'));
-    }
-
-    /**
      * Helper function to get the title for the index action.
      *
      * @return $string
