@@ -107,7 +107,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
                 if (isset($opts['class'])) {
                   $class .= $opts['class'];
                 }
-                if ($firstSelected || $fragment_counter == $selected) {
+                if ($firstSelected || $tabIndex == $selected) {
                   $class .= ' active';
                   $active = ' active';
                   $firstSelected = false;
