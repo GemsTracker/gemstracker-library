@@ -254,8 +254,9 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
 
             // Create a link for the old token
             if ($menuItem = $this->menu->find(array('controller' => $this->request->getControllerName(), 'action' => 'show', 'allowed' => true))) {
-                $paramSource['gto_id_token']   = $this->tokenId;
-                $paramSource['gtr_track_type'] = $this->token->getTrackEngine()->getTrackType();
+                $paramSource['gto_id_token']      = $this->tokenId;
+                $paramSource['gtr_track_type']    = $this->token->getTrackEngine()->getTrackType();
+                $paramSource[Gems_Model::ID_TYPE] = 'token';
 
                 $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);
                 $link->class = '';
@@ -266,7 +267,11 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
             }
 
             // Tell what the user what happened
-            $this->addMessage(sprintf($this->_('Created replacement token %2$s for token %1$s.'), $oldTokenUrl, strtoupper($this->_replacementTokenId)));
+            $this->addMessage(new MUtil_Html_Raw(sprintf(
+                    $this->_('Created replacement token %2$s for token %1$s.'),
+                    $oldTokenUrl,
+                    strtoupper($this->_replacementTokenId)
+                    )));
 
             // Lookup token
             $newToken = $this->loader->getTracker()->getToken($this->_replacementTokenId);

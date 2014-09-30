@@ -115,7 +115,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_BrowseEditAction
                     $this->html->buttonDiv($links);
                 }
             } else {
-                $this->addMessage(sprintf($this->_('Survey %s does not exist.'), $this->view->escape($sid)));
+                $this->addMessage(sprintf($this->_('Survey %s does not exist.'), $sid));
             }
         } else {
             $this->addMessage($this->_('Survey not specified.'));
@@ -129,7 +129,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_BrowseEditAction
         if ($useDetails = $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackId', $gtr_id_track, 'showHeader', true)) {
             $this->addSnippet('TrackSurveyOverviewSnippet', 'trackData', $useDetails->getTrackData());
         } else {
-            $this->addMessage(sprintf($this->_('Track %s does not exist.'), $this->view->escape($gtr_id_track)));
+            $this->addMessage(sprintf($this->_('Track %s does not exist.'), $gtr_id_track));
         }
     }
 }

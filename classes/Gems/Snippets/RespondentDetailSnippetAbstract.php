@@ -180,11 +180,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
 
                 $urlString = $this->view->url($url) . '#tabContainer-frag-4';
 
-                $this->addMessage(
-                        MUtil_Html::create()
-                            ->a($urlString, $msg)
-                            ->render($this->view)
-                        );
+                $this->addMessage(MUtil_Html::create()->a($urlString, $msg));
             } else {
                 $this->addMessage($msg);
             }

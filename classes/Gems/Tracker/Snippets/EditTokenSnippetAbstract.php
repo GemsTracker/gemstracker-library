@@ -82,12 +82,6 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
     protected $tokenId;
 
     /**
-     *
-     * @var Zend_View
-     */
-    protected $view;
-
-    /**
      * Should be called after answering the request to allow the Target
      * to check if all required registry values have been set correctly.
      *
@@ -128,7 +122,7 @@ abstract class Gems_Tracker_Snippets_EditTokenSnippetAbstract extends Gems_Snipp
             if ($this->token->exists) {
                 return parent::getHtmlOutput($view);
             } else {
-                $this->addMessage(sprintf($this->_('Token %s not found.'), $this->view->escape($this->tokenId)));
+                $this->addMessage(sprintf($this->_('Token %s not found.'), $this->tokenId));
             }
 
         } else {

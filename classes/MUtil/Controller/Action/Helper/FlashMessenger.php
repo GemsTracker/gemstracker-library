@@ -64,7 +64,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
 			$status = $this->_defaultStatus;
 		}
 
-		$message = array($message, $status);
+        $message = array($message, $status);
 		parent::addMessage($message, $namespace);
 		return $this;
 	}
@@ -84,7 +84,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
         if ($this->hasCurrentMessages()) {
             $messages = array_merge($messages, $this->getCurrentMessages());
         }
-        
+
         $errorContainer = MUtil_Html::create()->div(array('class' => 'errors'));
         $errorClose = MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
         $errorClose->raw('&times;');
@@ -100,12 +100,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
                     	$message = $message[0];
                     }
                     if (is_array($message)) {
-                    	foreach($message as &$subMessage) {
-                    		$subMessage = $this->checkHtmlMessage($subMessage);
-                    	}
                     	$message = MUtil_Html::create()->ul($message);
-                    } else {
-                    	$message = $this->checkHtmlMessage($message);
                     }
                 }
 
@@ -120,19 +115,4 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
             return $errorContainer;
         }
     }
-
-
-    /**
-     * Function to check if a specific message contains HTML code. This is allowed in flash messages and will be outputted as Raw
-     * @param  string $message The Message
-     * @return Html node with raw outpt of the message.          
-     */
-    public function checkHtmlMessage($message) {
-    	if (is_string($message) && strlen($message) && ((strpos($message, '<') !== false) || (strpos($message, '&') !== false))) {
-			$message = MUtil_Html::raw($message);
-        }
-        return $message;
-    }
-
-
 }

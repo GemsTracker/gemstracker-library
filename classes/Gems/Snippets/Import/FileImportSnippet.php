@@ -53,12 +53,6 @@ class Gems_Snippets_Import_FileImportSnippet extends MUtil_Snippets_ModelSnippet
     protected $model;
 
     /**
-     *
-     * @var Zend_View
-     */
-    protected $view;
-
-    /**
      * Creates the model
      *
      * @return MUtil_Model_ModelAbstract
@@ -83,7 +77,7 @@ class Gems_Snippets_Import_FileImportSnippet extends MUtil_Snippets_ModelSnippet
         if ($data && isset($data['relpath'])) {
             $nameForUser = $data['relpath'];
         } else {
-            $nameForUser = $this->view->escape($this->request->getParam(MUtil_Model::REQUEST_ID, $this->_('unknown')));
+            $nameForUser = $this->request->getParam(MUtil_Model::REQUEST_ID, $this->_('unknown'));
         }
 
         if (! ($data && file_exists($data['fullpath']))) {
