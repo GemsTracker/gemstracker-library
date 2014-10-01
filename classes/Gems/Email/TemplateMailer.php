@@ -48,6 +48,22 @@ class Gems_Email_TemplateMailer
     const MAIL_SSL = 1;
     const MAIL_TLS = 2;
 
+    private $_changeDate;
+    private $_mailSubject;
+    private $_mailKeys;
+    private $_mailFields;
+    private $_mailDate;
+
+    private $_from = 'O';
+    private $_tokens = array();
+    private $_subject = null;
+    private $_body = null;
+    private $_method = 'M';
+    private $_templateId = null; // Not used for lookup
+    private $_tokenData = array();
+
+    private $_verbose = false;
+
     /**
      * Should the mailer continue sending mails, even when it encounters errors?
      *
@@ -73,21 +89,11 @@ class Gems_Email_TemplateMailer
      */
     protected $messages = array();
 
-    private $_changeDate;
-    private $_mailSubject;
-    private $_mailKeys;
-    private $_mailFields;
-    private $_mailDate;
-
-    private $_from = 'O';
-    private $_tokens = array();
-    private $_subject = null;
-    private $_body = null;
-    private $_method = 'M';
-    private $_templateId = null; // Not used for lookup
-    private $_tokenData = array();
-
-    private $_verbose = false;
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
 
     /**
      * Constructs a new Gems_Email_TemplateMailer
@@ -95,7 +101,8 @@ class Gems_Email_TemplateMailer
      */
     public function __construct(GemsEscort $escort)
     {
-        $this->escort = $escort;
+        $this->escort    = $escort;
+        $this->project   = $this->escort->project;
         $this->_mailDate = MUtil_Date::format(new Zend_Date(), 'yyyy-MM-dd');
     }
 
@@ -129,7 +136,7 @@ class Gems_Email_TemplateMailer
      */
     public function bounceCheck()
     {
-        return $this->escort->project->getEmailBounce();
+        return $this->project->getEmailBounce();
     }
 
     /**
@@ -156,7 +163,10 @@ class Gems_Email_TemplateMailer
                 if (isset($serverData['gms_user'], $serverData['gms_password'])) {
                     $options['auth'] = 'login';
                     $options['username'] = $serverData['gms_user'];
-                    $options['password'] = $serverData['gms_password'];
+                    $options['password'] = $this->project->decrypt(
+                            $serverData['gms_password'],
+                            $serverData['gms_encryption']
+                            );
                 }
                 if (isset($serverData['gms_port'])) {
                     $options['port'] = $serverData['gms_port'];
@@ -225,7 +235,7 @@ class Gems_Email_TemplateMailer
      */
     public function process($tokensData)
     {
-        if (isset($this->escort->project->email['block']) && $this->escort->project->email['block']) {
+        if (isset($this->project->email['block']) && $this->project->email['block']) {
             $this->addMessage($this->escort->_('The sending of emails was blocked for this installation.'));
             return false;
         }
@@ -303,13 +313,13 @@ class Gems_Email_TemplateMailer
                 break;
 
             case 'S':
-                $from = $this->escort->project->email['site'];
+                $from = $this->project->email['site'];
                 $from_name = $this->escort->session->user_name;
                 break;
 
             case 'U':
                 $from = $this->escort->session->user_email;
-                $from_name = $this->escort->project->name;
+                $from_name = $this->project->name;
                 break;
 
             default:
@@ -368,8 +378,8 @@ class Gems_Email_TemplateMailer
 
         $mail->setFrom($from, $from_name);
         $mail->addTo($to, $to_name);
-        if (isset($this->escort->project->email['bcc'])) {
-            $mail->addBcc($this->escort->project->email['bcc']);
+        if (isset($this->project->email['bcc'])) {
+            $mail->addBcc($this->project->email['bcc']);
         }
 
         $subject = $this->applyFields($this->_subject);
@@ -478,7 +488,7 @@ class Gems_Email_TemplateMailer
             $this->setTokenData($tokenData);
         }
         if (! $this->_mailFields) {
-            $this->_mailFields = $this->escort->tokenMailFields($tokenData);
+            $this->_mailFields = array();
         }
 
         return $this->_mailFields;

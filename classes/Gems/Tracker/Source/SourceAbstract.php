@@ -78,6 +78,12 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
 
     /**
      *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
      * @var Gems_Tracker
      */
     protected $tracker;
@@ -314,11 +320,22 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
 
                     //If upgrade has run and we have a 'charset' use it
                     if (array_key_exists('gso_ls_charset', $this->_sourceData)) {
-                        $dbConfig['charset']  = $this->_sourceData['gso_ls_charset'] ? $this->_sourceData['gso_ls_charset'] : $gemsConfig['charset'];
+                        $dbConfig['charset'] = $this->_sourceData['gso_ls_charset']
+                                ? $this->_sourceData['gso_ls_charset']
+                                : $gemsConfig['charset'];
                     }
-                    $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost'] ? $this->_sourceData['gso_ls_dbhost'] : $gemsConfig['host'];
-                    $dbConfig['username'] = $this->_sourceData['gso_ls_username'] ? $this->_sourceData['gso_ls_username'] : $gemsConfig['username'];
-                    $dbConfig['password'] = $this->_sourceData['gso_ls_password'] ? $this->_sourceData['gso_ls_password'] : $gemsConfig['password'];
+                    $dbConfig['host']     = $this->_sourceData['gso_ls_dbhost']
+                            ? $this->_sourceData['gso_ls_dbhost']
+                            : $gemsConfig['host'];
+                    $dbConfig['username'] = $this->_sourceData['gso_ls_username']
+                            ? $this->_sourceData['gso_ls_username']
+                            : $gemsConfig['username'];
+                    $dbConfig['password'] = $this->_sourceData['gso_ls_password']
+                            ? $this->project->decrypt(
+                                    $this->_sourceData['gso_ls_password'],
+                                    $this->_sourceData['gso_encryption']
+                                    )
+                            : $gemsConfig['password'];
 
                     $this->_sourceDb = Zend_Db::factory($adapter, $dbConfig);
                 }
@@ -357,16 +374,6 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
                 return $cache[$surveyId][$field];
             }
         }
-    }
-
-    /**
-     * Returns true if a batch is set
-     *
-     * @return boolean
-     * /
-    public function hasBatch()
-    {
-        return ($this->_batch instanceof Gems_Task_TaskRunnerBatch);
     }
 
     /**
@@ -435,16 +442,4 @@ abstract class Gems_Tracker_Source_SourceAbstract extends MUtil_Translate_Transl
 
         return $this->_gemsDb->query($sql)->rowCount();
     }
-
-    /**
-     * Set the batch to be used by this source
-     *
-     * Use $this->hasBatch to check for existence
-     *
-     * @param Gems_Task_TaskRunnerBatch $batch
-     * /
-    public function setBatch(Gems_Task_TaskRunnerBatch $batch)
-    {
-        $this->_batch = $batch;
-    } // */
 }

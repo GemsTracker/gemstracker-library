@@ -805,11 +805,18 @@ update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.
 update gems__roles set grl_privileges =  concat(left(grl_privileges,locate(',pr.survey-maintenance.answer-import', grl_privileges)-1), right(grl_privileges, char_length(grl_privileges) - locate(',pr.survey-maintenance.answer-import', grl_privileges)-37)) WHERE grl_privileges LIKE '%,pr.survey-maintenance.answer-import%' AND grl_privileges NOT LIKE '%,pr.track-maintenance,%';
 
 -- PATCH: Fix projects that lived on trunk and have problems with multilanguage templates
-ALTER TABLE `gems__comm_template_translations` 
-    CHANGE `gctt_subject` `gctt_subject` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL, 
+ALTER TABLE `gems__comm_template_translations`
+    CHANGE `gctt_subject` `gctt_subject` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
     CHANGE `gctt_body` `gctt_body` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
 
 -- GEMS VERSION: 56
 -- PATCH: Add organizations to Rounds
 ALTER TABLE gems__rounds ADD gro_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
     AFTER gro_valid_for_length;
+
+-- PATCH: Encrypt password fields
+ALTER TABLE gems__mail_servers ADD
+      gms_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gms_password;
+
+ALTER TABLE gems__sources ADD
+    gso_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gso_ls_password;

@@ -242,6 +242,47 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Decrypt a string encrypted with encrypt()
+     *
+     * @param string $input String to decrypt
+     * @param string $method The method used for encrypting (null = no encryption)
+     * @return decrypted string
+     */
+    public function decrypt($input, $method = 'default')
+    {
+        if ((! $input) || (null === $method)) {
+            return $input;
+        }
+
+        $decoded = base64_decode($input);
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv      = substr($decoded, 0, $iv_size);
+        $key     = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
+
+        // Remove trailing zero bytes!
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, substr($decoded, $iv_size), MCRYPT_MODE_CBC, $iv), "\0");
+    }
+
+    /**
+     * Reversibly encrypt a string
+     *
+     * @param string $input String to decrypt
+     * @param string $method The method used for encrypting (null = no encryption)
+     * @return decrypted string
+     */
+    public function encrypt($input, $method = 'default')
+    {
+        if ((! $input) || (null === $method)) {
+            return $input;
+        }
+
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+        $iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $key     = md5($this->offsetExists('salt') ? $this->offsetGet('salt') : 'vadf2646fakjndkjn24656452vqk');
+
+        return base64_encode($iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv));
+    }
+    /**
      * Calculate the delay between surveys being asked for this request. Zero means forward
      * at once, a negative value means wait forever.
      *

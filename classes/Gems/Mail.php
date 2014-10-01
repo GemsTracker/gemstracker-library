@@ -49,7 +49,7 @@ class Gems_Mail extends MUtil_Mail
     const MAIL_NO_ENCRYPT = 0;
     const MAIL_SSL = 1;
     const MAIL_TLS = 2;
-    
+
     /**
      * @var GemsEscort
      */
@@ -60,28 +60,29 @@ class Gems_Mail extends MUtil_Mail
      * @var Zend_Db_Adapter_Abstract
      */
     protected $db;
-    
+
     /**
      *
      * @var Gems_Project_ProjectSettings
      */
     protected $project;
-    
+
     /**
      * Mail character set
-     * 
+     *
      * For Gems we use utf-8 as default instead op iso-8859-1
      * @var string
      */
     protected $_charset = 'utf-8';
-    
+
     protected static $mailServers = array();
-    
+
     public function __construct($charset = null) {
         parent::__construct($charset);
-        $this->escort = GemsEscort::getInstance();
+        $this->escort  = GemsEscort::getInstance();
+        $this->project = $this->escort->project;
     }
-    
+
     /**
      * Adds To-header and recipient, $email can be an array, or a single string address
      *
@@ -96,7 +97,7 @@ class Gems_Mail extends MUtil_Mail
             $bounce = $this->bounceCheck();
         }
         if ($bounce === true) {
-            $name  = str_replace('@', ' at ', $email);        
+            $name  = str_replace('@', ' at ', $email);
             if (is_array($email)) {
                 $name = array_shift($name);
                 if (count($email) > 1) {
@@ -110,7 +111,7 @@ class Gems_Mail extends MUtil_Mail
         }
         return parent::addTo($email, $name);
     }
-    
+
     /**
      * Returns true if the "email.bounce" setting exists in the project
      * configuration and is true
@@ -118,9 +119,9 @@ class Gems_Mail extends MUtil_Mail
      */
     public function bounceCheck()
     {
-        return $this->escort->project->getEmailBounce();
+        return $this->project->getEmailBounce();
     }
-    
+
     /**
      * Returns Zend_Mail_Transport_Abstract when something else than the default mail protocol should be used.
      *
@@ -143,7 +144,10 @@ class Gems_Mail extends MUtil_Mail
                 if (isset($serverData['gms_user'], $serverData['gms_password'])) {
                     $options['auth'] = 'login';
                     $options['username'] = $serverData['gms_user'];
-                    $options['password'] = $serverData['gms_password'];
+                    $options['password'] = $this->project->decrypt(
+                            $serverData['gms_password'],
+                            $serverData['gms_encryption']
+                            );
                 }
                 if (isset($serverData['gms_port'])) {
                     $options['port'] = $serverData['gms_port'];
@@ -202,13 +206,13 @@ class Gems_Mail extends MUtil_Mail
 
         return $this;
     }
-    
+
     public function send($transport = null) {
         // Before we forward to the Zend_Mail send method, first perfom a bounce check
         if (is_null($transport)) {
             $transport = $this->checkTransport($this->getFrom());
         }
-        
+
         parent::send($transport);
     }
 }

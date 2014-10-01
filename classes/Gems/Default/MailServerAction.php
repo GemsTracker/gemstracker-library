@@ -36,14 +36,29 @@
 
 /**
  *
- * @package Gems
+ * @package    Gems
  * @subpackage Default
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_MailServerAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_MailServerAction extends Gems_Controller_ModelSnippetActionAbstract
 {
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterParameters = array(
+        'extraSort'   => array('gms_from' => SORT_ASC),
+        );
+
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    public $project;
+
     /**
      * Creates a model for getModel(). Called only for each new $action.
      *
@@ -89,19 +104,123 @@ class Gems_Default_MailServerAction extends Gems_Controller_BrowseEditAction
                     'elementClass', 'Password',
                     'repeatLabel', $this->_('Repeat password'),
                     'description', $this->_('Enter only when changing'));
+
             $model->setSaveWhenNotNull('gms_password');
-}
+            $model->setOnLoad('gms_password', array($this, 'loadPassword'));
+            $model->setOnSave('gms_password', array($this, 'savePassword'));
+
+            // Only hidden to make sure onSave's are triggered
+            $model->set('gms_encryption', 'elementClass', 'hidden');
+            $model->setOnLoad('gms_encryption', 'default');
+            $model->setSaveWhen('gms_encryption', array($this, 'whenEncryption'));
+            $model->setOnSave('gms_encryption', array($this, 'saveEncryption'));
+        }
 
         return $model;
     }
 
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Email servers');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('email server', 'email servers', $count);
     }
 
-    public function getTopicTitle()
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a Zend_Date format
+     *
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function loadPassword($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
-        return $this->_('Email servers');
+        if ($value && (! $isPost)) {
+            // MUtil_Echo::track($context['gms_encryption'], $this->project->decrypt($value, $context['gms_encryption']));
+            return str_repeat('*', 8);
+        }
+
+        return $value;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns the input
+     * date as a valid date.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return Zend_Date
+     */
+    public function saveEncryption($value, $isNew = false, $name = null, array $context = array())
+    {
+        if (isset($context['gms_password']) && $context['gms_password']) {
+            return 'default';
+        }
+        return null;
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns the input
+     * date as a valid date.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return Zend_Date
+     */
+    public function savePassword($value, $isNew = false, $name = null, array $context = array())
+    {
+        if ($value) {
+            MUtil_Echo::track($value);
+            return $this->project->encrypt($value, 'default');
+        }
+    }
+
+    /**
+     * A ModelAbstract->setOnSave() function that returns the input
+     * date as a valid date.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @return Zend_Date
+     */
+    public function whenEncryption($value, $isNew = false, $name = null, array $context = array())
+    {
+        // MUtil_Echo::track($value);
+        return isset($context['gms_password']) && $context['gms_password'];
     }
 }
