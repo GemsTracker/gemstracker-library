@@ -75,6 +75,13 @@ class MUtil_Bootstrap
     const CND_JS = '/js/bootstrap.js.css';
 
     /**
+     * Bootsrap view helper
+     *
+     * @var MUtil_Bootstrap_View_Helper_Bootstrap
+     */
+    private static $_bootstrap;
+
+    /**
      * Returns the Bootstrapper object assigned to the view helper.
      *
      * @staticvar MUtil_Bootstrap_View_Helper_Bootstrapper $bootstrap
@@ -82,14 +89,12 @@ class MUtil_Bootstrap
      */
     public static function bootstrap()
     {
-        static $bootstrap;
-
-        if (! $bootstrap) {
+        if (! self::$_bootstrap) {
             $helper = new MUtil_Bootstrap_View_Helper_Bootstrap();
-            $bootstrap = $helper->bootstrap();
+            self::$_bootstrap = $helper->bootstrap();
         }
 
-        return $bootstrap;
+        self::$_bootstrap;
     }
 
     /**
@@ -130,6 +135,16 @@ class MUtil_Bootstrap
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper')) {
             $view->addHelperPath('MUtil/Bootstrap/View/Helper', 'MUtil_Bootstrap_View_Helper');
         }
+    }
+
+    /**
+     * Is bootstrap enabled
+     * 
+     * @return boolean
+     */
+    public static function on()
+    {
+        return self::$_bootstrap instanceof MUtil_Bootstrap_View_Helper_Bootstrap;
     }
 
     /**
