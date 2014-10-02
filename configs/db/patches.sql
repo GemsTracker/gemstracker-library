@@ -820,3 +820,9 @@ ALTER TABLE gems__mail_servers ADD
 
 ALTER TABLE gems__sources ADD
     gso_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER gso_ls_password;
+
+ALTER TABLE gems__radius_config CHANGE grcfg_secret
+    grcfg_secret varchar(255) CHARACTER SET 'utf8' COLLATE utf8_unicode_ci default NULL;
+
+ALTER TABLE gems__radius_config ADD
+    grcfg_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER grcfg_secret;

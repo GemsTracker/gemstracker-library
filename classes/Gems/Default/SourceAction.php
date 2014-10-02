@@ -231,17 +231,9 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
             } else {
                 $model->set('gso_ls_password', 'description', $this->_('Enter only when changing'),
                         'renderPassword', false);
-                $model->setSaveWhenNotNull('gso_ls_password');
             }
-            $model->setSaveWhenNotNull('gso_ls_password');
-            $model->setOnLoad('gso_ls_password', array($this, 'loadPassword'));
-            $model->setOnSave('gso_ls_password', array($this, 'savePassword'));
-
-            // Only hidden to make sure onSave's are triggered
-            $model->set('gso_encryption', 'elementClass', 'hidden');
-            $model->setOnLoad('gso_encryption', 'default');
-            $model->setSaveWhen('gso_encryption', array($this, 'whenEncryption'));
-            $model->setOnSave('gso_encryption', array($this, 'saveEncryption'));
+            $type = new Gems_Model_Type_EncryptedField($this->project, true);
+            $type->apply($model, 'gso_ls_password', 'gso_encryption');
 
             $model->set('gso_ls_charset',     'label', $this->_('Charset'),
                     'description', $in_gems,
@@ -317,32 +309,6 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
-     * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
-     *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
-     * currently there are no checks for a valid date format.
-     *
-     * @see MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
-     */
-    public function loadPassword($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
-    {
-        if ($value && (! $isPost)) {
-            // MUtil_Echo::track($context['gso_encryption'], $this->project->decrypt($value, $context['gso_encryption']));
-            return str_repeat('*', 8);
-        }
-
-        return $value;
-    }
-
-    /**
      * Action to check whether the source is active
      */
     public function pingAction()
@@ -356,46 +322,6 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
         }
 
         $this->afterSaveRoute($this->getRequest());
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return Zend_Date
-     */
-    public function saveEncryption($value, $isNew = false, $name = null, array $context = array())
-    {
-        if (isset($context['gso_ls_password']) && $context['gso_ls_password']) {
-            return 'default';
-        }
-        return null;
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return Zend_Date
-     */
-    public function savePassword($value, $isNew = false, $name = null, array $context = array())
-    {
-        if ($value) {
-            // MUtil_Echo::track($value);
-            return $this->project->encrypt($value, 'default');
-        }
     }
 
     /**
@@ -429,23 +355,5 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
         $this->html->actionLink(array('action' => 'index'), $this->_('Cancel'), array('class' => 'btn-danger'));
 
         $this->addSynchronizationInformation();
-    }
-
-    /**
-     * A ModelAbstract->setOnSave() function that returns the input
-     * date as a valid date.
-     *
-     * @see MUtil_Model_ModelAbstract
-     *
-     * @param mixed $value The value being saved
-     * @param boolean $isNew True when a new item is being saved
-     * @param string $name The name of the current field
-     * @param array $context Optional, the other values being saved
-     * @return Zend_Date
-     */
-    public function whenEncryption($value, $isNew = false, $name = null, array $context = array())
-    {
-        // MUtil_Echo::track($value);
-        return isset($context['gso_ls_password']) && $context['gso_ls_password'];
     }
 }

@@ -60,6 +60,12 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     protected $loader;
 
     /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
      * @var Zend_Translate_Adapter
      */
     protected $translate;
@@ -71,7 +77,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      */
     public function appendConfigFields(MUtil_Model_Bridge_FormBridgeInterface $bridge)
     {
-        $model = $this->getConfigModel();
+        $model = $this->getConfigModel(true);
 
         $bridge->getTab('access');
         foreach ($model->getItemNames() as $name) {
@@ -125,9 +131,11 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
 
+        $secret  = $this->project->decrypt($configData['grcfg_secret'], $configData['grcfg_encryption']);
+
         $config  = array('ip'                 => $configData['grcfg_ip'],
                          'authenticationport' => $configData['grcfg_port'],
-                         'sharedsecret'       => $configData['grcfg_secret']);
+                         'sharedsecret'       => $secret);
 
         //Unset empty
         foreach($config as $key=>$value) {
@@ -148,26 +156,34 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      */
     public function getConfigChanged()
     {
-        return $this->getConfigModel()->getChanged();
+        return $this->getConfigModel(true)->getChanged();
     }
 
     /**
      * Get a model to store the config
      *
+     * @param boolean $valueMask MAsk the password or if false decrypt it
      * @return Gems_Model_JoinModel
      */
-    protected function getConfigModel() {
+    protected function getConfigModel($valueMask = true)
+    {
         if (!$this->_configModel) {
             $model = new Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
 
             $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'));
             $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'));
             $model->setIfExists('grcfg_secret',
-                'label', $this->translate->_('Shared secret'),
-                'elementClass', 'password',
-                'required', false,
-                'description', $this->translate->_('Enter only when changing'));
-            $model->setSaveWhenNotNull('grcfg_secret');
+                    'label', $this->translate->_('Shared secret'),
+                    'description', $this->translate->_('Enter only when changing'),
+                    'elementClass', 'password',
+                    'required', false //,
+                    // Do not use repeat label as this will not work as belongsTo is set later
+                    // 'repeatLabel', $this->translate->_('Repeat password')
+                    );
+
+            $type = new Gems_Model_Type_EncryptedField($this->project, $valueMask);
+            $type->apply($model, 'grcfg_secret', 'grcfg_encryption');
+
             $this->_configModel = $model;
         }
 
@@ -267,9 +283,9 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      */
     public function loadConfig($data)
     {
-        $model = $this->getConfigModel();
+        $model = $this->getConfigModel(false);
 
-        $newData  = $model->loadFirst(array('grcfg_id_organization'=>$data['gor_id_organization']));
+        $newData = $model->loadFirst(array('grcfg_id_organization'=>$data['gor_id_organization']));
         $newData['grcfg_id_organization'] = $data['gor_id_organization'];
 
         return $newData;
@@ -284,7 +300,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
      */
     public function saveConfig($data, $values)
     {
-        $model     = $this->getConfigModel();
+        $model = $this->getConfigModel(true);
 
         $values['grcfg_id_organization'] = $data['gor_id_organization'];
 

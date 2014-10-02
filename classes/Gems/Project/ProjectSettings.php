@@ -282,6 +282,7 @@ class Gems_Project_ProjectSettings extends ArrayObject
 
         return base64_encode($iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $input, MCRYPT_MODE_CBC, $iv));
     }
+    
     /**
      * Calculate the delay between surveys being asked for this request. Zero means forward
      * at once, a negative value means wait forever.
