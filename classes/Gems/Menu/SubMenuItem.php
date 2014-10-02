@@ -961,6 +961,7 @@ class Gems_Menu_SubMenuItem extends Gems_Menu_MenuAbstract
 
                         // and make the tagName an if
                         $element->tagName = MUtil_Lazy::iff($condition, 'a', 'span');
+                        $element->appendAttrib('class', MUtil_Lazy::iff($condition, '' , 'disabled'));
                     } else {
                         // There is a (lazy) condition and nothing should show when not there
                         // so make the label an if
