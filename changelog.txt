@@ -1,3 +1,9 @@
+Important changes from 1.6.4 => 1.6.4+
+============================================================
+This is a minor upgrade, and requires no action on the database
+Some security issues were brought to our attention, the non breaking fixes are in this version
+Some bugs found after release of 1.6.4 have been fixed
+
 Important changes from 1.6.3 => 1.6.4
 ============================================================
 Errors in token events are less likely to cause the application to halt
