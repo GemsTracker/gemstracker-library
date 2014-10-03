@@ -153,7 +153,7 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
      */
     public function render($content)
     {
-        $useBootstrap = GemsEscort::$useBootstrap;
+        $useBootstrap = MUtil_Bootstrap::enabled();
 
         if ((null === ($element = $this->getElement())) ||
             (null === ($view = $element->getView()))) {

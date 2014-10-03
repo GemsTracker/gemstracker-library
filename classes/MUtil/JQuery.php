@@ -44,6 +44,21 @@
  */
 class MUtil_JQuery extends ZendX_JQuery
 {
+
+    /**
+     * jQuery-enable a view instance
+     *
+     * @param  Zend_View_Interface $view
+     * @return void
+     */
+    public static function enableView(Zend_View_Interface $view)
+    {
+        if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
+            $view->addHelperPath('ZendX/JQuery/View/Helper', 'ZendX_JQuery_View_Helper');
+            $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
+        }
+    }
+
     /**
      * Returns the jQuery container object assigned to the view helper.
      *
@@ -55,7 +70,7 @@ class MUtil_JQuery extends ZendX_JQuery
         static $jquery;
 
         if (! $jquery) {
-            $helper = new ZendX_JQuery_View_Helper_JQuery();
+            $helper = new MUtil_JQuery_View_Helper_JQuery();
             $jquery = $helper->jQuery();
         }
 
@@ -71,11 +86,11 @@ class MUtil_JQuery extends ZendX_JQuery
     public static function usesJQuery($object)
     {
         if ($object instanceof Zend_View_Abstract) {
-            return false !== $object->getPluginLoader('helper')->getPaths('ZendX_JQuery_View_Helper');
+            return false !== $object->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper');
         }
 
         if ($object instanceof Zend_Form) {
-            return false !== $object->getPluginLoader(Zend_Form::DECORATOR)->getPaths('ZendX_JQuery_Form_Decorator');
+            return false !== $object->getPluginLoader(Zend_Form::DECORATOR)->getPaths('MUtil_JQuery_Form_Decorator');
         }
 
         if (is_object($object))  {

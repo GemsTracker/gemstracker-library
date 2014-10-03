@@ -206,7 +206,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends MUtil_Snippets_Standard_M
         $model    = $this->getModel();
         $baseform = $this->createForm();
 
-        if ((gemsEscort::$useBootstrap !== true) && ($baseform instanceof MUtil_Form)) {
+        if ((MUtil_Bootstrap::enabled() !== true) && ($baseform instanceof MUtil_Form)) {
             $table = new MUtil_Html_TableElement();
             $table->setAsFormLayout($baseform, true, true);
 

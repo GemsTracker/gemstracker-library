@@ -355,7 +355,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
                 $form->addDisplayGroup(array('formLinks'), 'form_buttons');
             }
         } else {
-            if (GemsEscort::$useBootstrap !== true) {
+            if (MUtil_Bootstrap::enabled() !== true) {
                 $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
                 $table->setAsFormLayout($form, true, true);
                 $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.

@@ -190,7 +190,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
 
     protected function beforeDisplay()
     {
-        if (!GemsEscort::$useBootstrap) {
+        if (!MUtil_Bootstrap::enabled()) {
             $table = new MUtil_Html_TableElement(array('class' => $this->formClass));
             $table->setAsFormLayout($this->form, true, true);
 

@@ -81,7 +81,7 @@ class Gems_Form extends MUtil_Form
     
 
     public function activateBootstrap() {
-        if (GemsEscort::$useBootstrap === true) {
+        if (MUtil_Bootstrap::enabled() === true) {
             parent::activateBootstrap();
         }
     }
@@ -198,7 +198,7 @@ class Gems_Form extends MUtil_Form
         if (empty($decorators)) {
             $this->addDecorator('AutoFocus')
                  ->addDecorator('FormElements');
-            if (!GemsEscort::$useBootstrap) {
+            if (!MUtil_Bootstrap::enabled()) {
                 $this->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form'));
             }
             $this->addDecorator('Form');

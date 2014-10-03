@@ -95,14 +95,14 @@ class GemsEscort extends MUtil_Application_Escort
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
      */
-    public static $useBootstrap = false;
+    public $useBootstrap = false;
 
     /**
      * Set to true for html 5 projects
      *
      * @var boolean
      */
-    public static $useHtml5 = false;
+    public $useHtml5 = false;
 
     /**
      * The menu variable
@@ -644,15 +644,15 @@ class GemsEscort extends MUtil_Application_Escort
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
         $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
 
-        if (self::$useHtml5) {
+        if ($this->useHtml5) {
             $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
             $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
         }
 
-        // Always load jquery when using bootstrap
-        if (self::$useBootstrap) {
-            $view->addHelperPath("ZendX/JQuery/View/Helper", "ZendX_JQuery_View_Helper");
+        if ($this->useBootstrap) {
+            MUtil_Bootstrap::enableView($view);
+            $bootstrap = MUtil_Bootstrap::bootstrap();
         }
 
         // Add it to the ViewRenderer
@@ -676,10 +676,11 @@ class GemsEscort extends MUtil_Application_Escort
             return;
         }
 
-        $debug = $this->getOption('zfdebug');
+
+
         if (! isset($debug['activate']) || ('1' !== $debug['activate'])) {
             // Only turn on when activated
-            return;
+            //return;
         }
 
         $autoloader = Zend_Loader_Autoloader::getInstance();
@@ -767,7 +768,7 @@ class GemsEscort extends MUtil_Application_Escort
 
                 $source = array($this->menu->getParameterSource(), $this->request);
 
-                if (self::$useBootstrap && !isset($args['tag'])) {
+                if ($this->useBootstrap && !isset($args['tag'])) {
                     $div = MUtil_Html::create('ol', $args + array('id' => 'crumbs', 'class' => 'breadcrumb'));
 
                     foreach ($path as $menuItem) {
@@ -1843,6 +1844,12 @@ class GemsEscort extends MUtil_Application_Escort
             if (MUtil_Https::on()) {
                 $jquery->setCdnSsl(true);
             }
+        }
+        if (MUtil_Bootstrap::enabled() && $this->project->isBootstrapLocal()) {
+            $bootstrap = MUtil_Bootstrap::bootstrap();
+            $basePath = $request->getBasePath();
+            $bootstrap->setBootstrapScriptPath($basePath.'/bootstrap/bootstrap.min.js');
+            $bootstrap->setBootstrapStylePath($basePath.'/bootstrap/bootstrap.min.css');
         }
     }
 

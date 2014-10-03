@@ -243,7 +243,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 }
             }
         } else {
-            if (GemsEscort::$useBootstrap !== true) {
+            if (MUtil_Bootstrap::enabled() !== true) {
                 $table = new MUtil_Html_TableElement(array('class' => $this->class));
                 $table->setAsFormLayout($this->_form, true, true);
 
@@ -285,7 +285,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         if ($this->useTabbedForm) {
             return new Gems_TabForm($options);
         }
-        if (GemsEscort::$useBootstrap) {
+        if (MUtil_Bootstrap::enabled()) {
             if (!isset($options['class'])) {
                 $options['class'] = 'form-horizontal';
             }

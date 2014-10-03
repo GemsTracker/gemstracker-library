@@ -61,26 +61,20 @@ class MUtil_Bootstrap_View_Helper_Bootstrap extends Zend_View_Helper_Abstract
     public function __construct()
     {
         $registry = Zend_Registry::getInstance();
-        if ($registry->isRegistered(__CLASS__)) {
-            require_once 'ZendX/JQuery/View/Helper/JQuery/Container.php';
-            $bootstrapper = new MUtil_Bootstrap_View_Helper_Bootstrapper();
-            $registry->set(__CLASS__, $bootstrapper);
+        if (!isset($registry[__CLASS__])) {
+            $container = new MUtil_Bootstrap_View_Helper_Bootstrapper();
+            $registry[__CLASS__] = $container;
         }
-        $this->_bootstrapper = $registry->get(__CLASS__);
+        $this->_bootstrapper = $registry[__CLASS__];
     }
 
-    /**
-	 * Return Bootstrap View Helper class, to execute bootstrap library related functions.
-     *
-     * @return MUtil_Bootstrap_View_Helper_Bootstrapper
-     */
     public function bootstrap()
     {
         return $this->_bootstrapper;
     }
 
     /**
-     * Set view object
+     * Set view to this class and the bootstrapper
      *
      * @param  Zend_View_Interface $view
      * @return void

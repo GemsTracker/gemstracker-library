@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -18,7 +17,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,55 +26,79 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    Gems
+ * @package    MUtil
  * @subpackage JQuery
- * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @author     Jasper van Gestel <jappie@dse.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: Container.php 1775 2014-02-27 12:53:30Z matijsdejong $
  */
 
 /**
- * DatePicker extended with autosubmit
  *
- * @package    Gems
+ * @package    MUtil
  * @subpackage JQuery
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5.7
+ * @since      Class available since version 1.6.5
  */
-class Gems_JQuery_Form_Element_DatePicker extends MUtil_JQuery_Form_Element_DatePicker implements Gems_Form_AutosubmitElementInterface
+
+class MUtil_JQuery_View_Helper_JQuery_Container extends ZendX_JQuery_View_Helper_JQuery_Container
 {
     /**
-     * Change the form into an autosubmit form
+     * Render jQuery stylesheets
      *
-     * @see Gems_Form setAutoSubmit
-     * @param array $autoSubmitArgs Array containing submitUrl and targetId
+     * @return string
      */
-    public function enableAutoSubmit(array $autoSubmitArgs)
+    public function renderStylesheets()
     {
-        $this->setJQueryParam('onSelect', new Zend_Json_Expr('function(dateText, inst) {jQuery(this).trigger(jQuery.Event("keyup"));}'));
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
+        return $this->_renderStylesheets();
     }
 
     /**
-     * Load default decorators
+     * Renders all javascript file related stuff of the jQuery enviroment.
      *
-     * @return Zend_Form_Element
+     * @return string
      */
-    public function loadDefaultDecorators()
+    public function renderScriptTags()
     {
-        parent::loadDefaultDecorators();
-        if (MUtil_Bootstrap::enabled() === true) {
-            $this->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
-                 ->addDecorator('HtmlTag', array(
-                     'tag' => 'div',
-                     'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'col-sm-10'
-                 ))
-                 ->addDecorator('Label', array('class' => 'col-sm-2'))
-                 ->addDecorator('BootstrapRow');
+        if (!$this->isEnabled()) {
+            return '';
         }
-        return $this;
+
+        return $this->_renderScriptTags();
     }
 
+    /**
+     * Renders all javascript code related stuff of the jQuery enviroment. 
+     *
+     * @return string
+     */
+    public function renderExtras()
+    {
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
+        return $this->_renderExtras();
+    }
+
+    /**
+     * String representation of jQuery javascript files and code
+     * @return string
+     */
+    public function renderJavascript()
+    {
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
+        $html  = $this->_renderScriptTags() . PHP_EOL
+               . $this->_renderExtras();
+        return $html;
+    }
 }

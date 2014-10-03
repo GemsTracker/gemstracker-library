@@ -7,11 +7,13 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php echo $this->headTitle(); ?>
-
-<!-- Bootstrap CSS CDN link, recommended for production!   
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> 
--->
-    <link rel="stylesheet" type="text/css" href="/gemstracker_trunk/bootstrap/bootstrap.min.css">
+    <?php if ($this->jQuery) {
+        echo $this->jQuery()->renderStylesheets();
+    } 
+    if (MUtil_Bootstrap::enabled()) {
+        echo MUtil_Bootstrap::bootstrap()->renderStylesheets();
+    }
+    ?>
     <?php echo $this->headLink(); ?>
     
     
@@ -27,7 +29,7 @@
 ?>
         <div class="row">
             <?php if ($this->navigation || $this->menuHtml) { ?>
-            <div id="main" class="col-sm-9 col-sm-push-3">
+            <div id="main" class="col-sm-8 col-sm-push-4 col-md-9 col-md-push-3">
             <?php } else { ?>
             <div id="main" class="col-sm-12">
             <?php } ?>
@@ -39,7 +41,7 @@
 
             </div>
             <?php if ($this->navigation || $this->menuHtml) { ?>
-            <div id="menu" class="col-sm-3 col-sm-pull-9 navbar navbar-default" role="navigation">
+            <div id="menu" class="col-sm-4 col-sm-pull-8 col-md-3 col-md-pull-9 navbar navbar-default" role="navigation">
             
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -71,14 +73,13 @@
 
 
 <?php if ($this->jQuery) {
-        echo $this->jQuery();
+        //echo 
+        echo $this->jQuery()->renderJavascript();
+    }
+    if (MUtil_Bootstrap::enabled()) {
+        echo MUtil_Bootstrap::bootstrap()->renderJavascript();
     }
 ?>
-<!-- Bootstrap and Jquery Javascript CDN links, recommended for production.    
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
--->
-
-    <script src="/gemstracker_trunk/bootstrap/js/bootstrap.min.js"></script>
 <?php
 echo MUtil_Echo::out();
 echo $this->headScript();

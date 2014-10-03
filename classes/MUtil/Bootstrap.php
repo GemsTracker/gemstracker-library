@@ -51,14 +51,14 @@ class MUtil_Bootstrap
      *
      * @const string
      */
-    const DEFAULT_BOOTSTRAP_VERSION = "3.3.1";
+    const DEFAULT_BOOTSTRAP_VERSION = "3.2.0";
 
     /**
      * Link to CDN http://www.bootstrapcdn.com/
      *
      * @const string
      */
-    const CDN_BASE = '//netdna.bootstrapcdn.com/bootstrap/';
+    const CDN_BASE = '//maxcdn.bootstrapcdn.com/bootstrap/';
 
     /**
      * Location of bootstrap CSS
@@ -94,7 +94,7 @@ class MUtil_Bootstrap
             self::$_bootstrap = $helper->bootstrap();
         }
 
-        self::$_bootstrap;
+        return self::$_bootstrap;
     }
 
     /**
@@ -128,9 +128,8 @@ class MUtil_Bootstrap
     public static function enableView(Zend_View_Interface $view)
     {
         if (! MUtil_JQuery::usesJQuery($view)) {
-            ZendX_JQuery::enableView($view);
+            MUtil_JQuery::enableView($view);
         }
-        MUtil_Less::enableView($view);
 
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper')) {
             $view->addHelperPath('MUtil/Bootstrap/View/Helper', 'MUtil_Bootstrap_View_Helper');
@@ -138,13 +137,13 @@ class MUtil_Bootstrap
     }
 
     /**
-     * Is bootstrap enabled
+     * Is bootstrap enabled?
      * 
      * @return boolean
      */
-    public static function on()
+    public static function enabled()
     {
-        return self::$_bootstrap instanceof MUtil_Bootstrap_View_Helper_Bootstrap;
+        return self::$_bootstrap instanceof MUtil_Bootstrap_View_Helper_Bootstrapper;
     }
 
     /**

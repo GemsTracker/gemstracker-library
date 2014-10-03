@@ -75,7 +75,7 @@ class Gems_Form_TabSubForm extends Gems_Form_TableForm
      */
     public function fixDecorators()
     {
-        if (GemsEscort::$useBootstrap !== true) {
+        if (MUtil_Bootstrap::enabled() !== true) {
             parent::fixDecorators();
         }
     }
@@ -94,7 +94,7 @@ class Gems_Form_TabSubForm extends Gems_Form_TableForm
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('FormElements');
-            if (GemsEscort::$useBootstrap !== true) {
+            if (MUtil_Bootstrap::enabled() !== true) {
                 $this->addDecorator(array('table' => 'HtmlTag'), array('tag' => 'table', 'class'=>'formTable'));
             }
             $this->addDecorator(array('tab' => 'HtmlTag'), array('tag' => 'div', 'class' => 'displayGroup'))

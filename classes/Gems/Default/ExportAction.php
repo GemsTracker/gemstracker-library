@@ -260,7 +260,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $types         = $this->export->getExportClasses();
 
         //Create the basic form
-        if (GemsEscort::$useBootstrap) {
+        if (MUtil_Bootstrap::enabled()) {
             $form = new Gems_Form();
         } else {
             $form = new Gems_Form_TableForm();

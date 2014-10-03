@@ -102,7 +102,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
     public function __construct($spec, $options = null)
     {
         parent::__construct($spec, $options);
-        if (GemsEscort::$useBootstrap) {
+        if (MUtil_Bootstrap::enabled() {
             $this->addClass($this->_elementClass);
         }
     }
@@ -146,7 +146,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
                 'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
         );
         $labelOptions = array();
-        if (GemsEscort::$useBootstrap) {
+        if (MUtil_Bootstrap::enabled()) {
             $htmlTagOptions['class'] = 'col-sm-10';
             $labelOptions['class'] = 'col-sm-2';
         }

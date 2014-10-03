@@ -45,6 +45,10 @@
  */
 class MUtil_Bootstrap_View_Helper_Bootstrapper
 {
+    protected $_bootstrapScriptPath;
+
+    protected $_bootstrapStylePath;
+
     /**
      * Load CDN Path from SSL or Non-SSL?
      *
@@ -66,10 +70,106 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      */
     protected $_view = null;
 
-    public function __toString()
+    protected function _getBootstrapCdnPath()
+    {
+        return MUtil_Bootstrap::CDN_BASE;
+    }
+
+    /**
+     * Internal function that constructs the include path of the jQuery library.
+     *
+     * @return string
+     */
+    protected function _getBootstrapScriptPath()
+    {
+        if($this->_jqueryLibraryPath != null) {
+            $source = $this->_bootstrapScriptPath;
+        } else {
+            $baseUri = $this->_getBootstrapCdnPath();
+            $source  = $baseUri
+                     . $this->getVersion()
+                     . MUtil_Bootstrap::CND_JS;
+        }
+
+        return $source;
+    }
+
+    /**
+     * Internal function that constructs the include path of the jQuery library.
+     *
+     * @return string
+     */
+    protected function _getStylesheet()
+    {
+        if($this->_bootstrapStylePath != null) {
+            $source = $this->_bootstrapStylePath;
+        } else {
+            $baseUri = $this->_getBootstrapCdnPath();
+            $source  = $baseUri
+                     . $this->getVersion()
+                     . MUtil_Bootstrap::CND_CSS;
+        }
+
+        return $source;
+    }
+
+    /**
+     * Sets the (local) Script path to overwrite CDN loading
+     * @param string path
+     */
+    public function setBootstrapScriptPath($path)
+    {
+        $this->_bootstrapScriptPath = $path;
+    }
+
+    /**
+     * Sets the (local) Stylesheet path to overwrite CDN loading
+     * @param string path
+     */
+    public function setBootstrapStylePath($path)
+    {
+        $this->_bootstrapStylePath = $path;
+    }
+
+    public function getVersion()
+    {
+        return $this->_version;
+    }
+
+    /**
+     * Renders all javascript file related stuff of the jQuery enviroment.
+     *
+     * @return string
+     */
+    public function renderJavascript()
     {
 
+        $source = $this->_getBootstrapScriptPath();
+        $scriptTags .= '<script type="text/javascript" src="' . $source . '"></script>' . PHP_EOL;
+
+        return $style;
     }
+
+    /**
+     * Render Bootstrap stylesheet(s)
+     *
+     * @return string
+     */
+    public function renderStylesheets()
+    {
+        $stylesheet = $this->_getStylesheet();
+
+        if ($this->view instanceof Zend_View_Abstract) {
+            $closingBracket = ($this->view->doctype()->isXhtml()) ? ' />' : '>';
+        } else {
+            $closingBracket = ' />';
+        }
+        $style = '<link rel="stylesheet" href="'.$stylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
+
+        return $style;
+    }
+
+
 
     /**
      * Set Use SSL on CDN Flag

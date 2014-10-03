@@ -73,7 +73,7 @@ abstract class Gems_Controller_ModelActionAbstract extends MUtil_Controller_Mode
 
     protected function createForm($options = array())
     {
-        if (GemsEscort::$useBootstrap) {
+        if (MUtil_Bootstrap::enabled()) {
             if (!isset($options['class'])) {
                 $options['class'] = 'form-horizontal';
             }

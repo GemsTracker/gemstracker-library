@@ -90,7 +90,7 @@ class RespondentTokenTabsSnippet extends MUtil_Snippets_TabSnippetAbstract
                 $this->href = $this->href + $this->baseUrl;
             }
 
-            if (GemsEscort::$useBootstrap) {
+            if (MUtil_Bootstrap::enabled()) {
                 $tabRow = MUtil_Html::create()->ul();
 
                 foreach ($tabs as $tabId => $content) {

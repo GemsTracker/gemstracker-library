@@ -69,7 +69,7 @@ class Gems_JQuery_View_Helper_TabContainer extends ZendX_JQuery_View_Helper_TabC
             return $this;
         }
 
-        $useBootstrap = GemsEscort::$useBootstrap;
+        $useBootstrap = MUtil_Bootstrap::enabled();
 
         if(!isset($attribs['id'])) {
             $attribs['id'] = $id;

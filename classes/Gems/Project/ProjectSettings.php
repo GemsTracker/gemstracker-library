@@ -912,6 +912,18 @@ class Gems_Project_ProjectSettings extends ArrayObject
     }
 
     /**
+     * Does this project use a local Bootstrap
+     *
+     * Instead of e.g. google Content Delivery Network.
+     *
+     * @return boolean
+     */
+    public function isBootstrapLocal()
+    {
+        return isset($this['bootstrap'], $this['bootstrap']['local']);
+    }
+
+    /**
      * Is login shared between organizations (which therefore require
      * a unique staff logon id for each user, instead of for each
      * user within an organization).
