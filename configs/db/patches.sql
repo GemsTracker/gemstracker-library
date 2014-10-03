@@ -826,8 +826,7 @@ ALTER TABLE gems__radius_config CHANGE grcfg_secret
 
 ALTER TABLE gems__radius_config ADD
     grcfg_encryption varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null AFTER grcfg_secret;
-    AFTER gro_valid_for_length;
 
 -- PATCH: Add templates privilege to superadmin role (super)
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.templates')
-    WHERE NOT LIKE '%pr.templates%' AND grl_name = 'super';
+    WHERE grl_privileges NOT LIKE '%pr.templates%' AND grl_name = 'super';

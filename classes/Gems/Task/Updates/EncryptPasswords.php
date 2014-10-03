@@ -69,7 +69,7 @@ class Gems_Task_Updates_EncryptPasswords extends MUtil_Task_TaskAbstract
         if ($passwords) {
             $values[$methodField] = 'default';
 
-            foreach ($passwordField as $key => $password) {
+            foreach ($passwords as $key => $password) {
                 $values[$passwordField] = $this->project->encrypt($password, $values[$methodField]);
 
                 $this->db->update($tableName, $values, "$idField = '$key'");
