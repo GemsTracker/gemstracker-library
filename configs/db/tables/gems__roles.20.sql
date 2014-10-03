@@ -132,5 +132,6 @@ INSERT ignore INTO gems__roles (grl_id_role, grl_name, grl_description, grl_pare
     ,pr.source.synchronize-all,
     ,pr.staff.edit.all,
     ,pr.survey-maintenance.edit,
+    ,pr.templates,
     ,pr.track-maintenance.create,pr.track-maintenance.edit',
     CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, 1);
