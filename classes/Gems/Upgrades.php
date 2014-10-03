@@ -69,6 +69,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->register(array($this, 'Upgrade161to162'), 'Upgrade from 1.6.1 to 1.6.2');
         $this->register(array($this, 'Upgrade162to163'), 'Upgrade from 1.6.2 to 1.6.3');
         $this->register(array($this, 'Upgrade163to164'), 'Upgrade from 1.6.3 to 1.6.4');
+        $this->register(array($this, 'Upgrade164to165'), 'Upgrade from 1.6.4 to 1.6.5');
 
         /**
          * To have the new_project updated to the highest level, update
@@ -79,7 +80,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
          * it will start counting at 1.
          */
     }
-    
+
 
     /**
      * To upgrade from 143 to 15 we need to do some work:
@@ -230,7 +231,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
 
         return true;
     }
-    
+
     /**
      * To upgrade to 1.6.4 just execute patchlevel 55
      */
@@ -239,7 +240,23 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 55);
         $this->_batch->addTask('Updates_CompileTemplates');
-        
+
+        $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
+
+        return true;
+    }
+
+    /**
+     * To upgrade to 1.6.5
+     */
+    public function Upgrade164to165()
+    {
+        $this->_batch->addTask('Db_CreateNewTables');
+        $this->_batch->addTask('Db_AddPatches', 56);
+
+        // Use AddTask task to execute after patches
+        $this->_batch->addTask('AddTask', 'Updates_EncryptPasswords', 'gems__sources', 'gso_id_source', 'gso_ls_password', 'gso_encryption');
+
         $this->_batch->addTask('Echo', $this->_('Make sure to read the changelog as it contains important instructions'));
 
         return true;
