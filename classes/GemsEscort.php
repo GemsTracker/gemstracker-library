@@ -643,7 +643,7 @@ class GemsEscort extends MUtil_Application_Escort
         $view->setEncoding('UTF-8');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
         $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
-
+        
         if ($this->useHtml5) {
             $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
@@ -1655,6 +1655,11 @@ class GemsEscort extends MUtil_Application_Escort
     public function postDispatch(Zend_Controller_Request_Abstract $request)
     {
         if ($request->isDispatched()) {
+            
+            if ($this->project->offsetExists('x-frame')) {
+                $response = Zend_Controller_Front::getInstance()->getResponse();
+                $response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
+            }
 
             // Only when we need to render the layout, we run the layout prepare
             if (Zend_Controller_Action_HelperBroker::hasHelper('layout') &&

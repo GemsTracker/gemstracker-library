@@ -112,10 +112,6 @@ class Gems_Project_ProjectSettings extends ArrayObject
         }
 
         $this->offsetSet('multiLocale', $this->offsetExists('locales') && (count($this->offsetGet('locales')) > 1));
-
-        if ($this->offsetExists('x-frame')) {
-            header('X-Frame-Options: ' . $this->offsetGet('x-frame'));
-        }
     }
 
     /**
