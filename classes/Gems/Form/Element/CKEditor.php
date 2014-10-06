@@ -102,7 +102,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
     public function __construct($spec, $options = null)
     {
         parent::__construct($spec, $options);
-        if (MUtil_Bootstrap::enabled() {
+        if (MUtil_Bootstrap::enabled()) {
             $this->addClass($this->_elementClass);
         }
     }
