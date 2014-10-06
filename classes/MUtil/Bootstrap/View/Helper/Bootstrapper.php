@@ -88,7 +88,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $baseUri = $this->_getBootstrapCdnPath();
             $source  = $baseUri
                      . $this->getVersion()
-                     . MUtil_Bootstrap::CND_JS;
+                     . MUtil_Bootstrap::CDN_JS;
         }
 
         return $source;
@@ -107,7 +107,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $baseUri = $this->_getBootstrapCdnPath();
             $source  = $baseUri
                      . $this->getVersion()
-                     . MUtil_Bootstrap::CND_CSS;
+                     . MUtil_Bootstrap::CDN_CSS;
         }
 
         return $source;
@@ -147,7 +147,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
         $source = $this->_getBootstrapScriptPath();
         $scriptTags .= '<script type="text/javascript" src="' . $source . '"></script>' . PHP_EOL;
 
-        return $style;
+        return $scriptTags;
     }
 
     /**

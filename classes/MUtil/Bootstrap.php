@@ -65,14 +65,14 @@ class MUtil_Bootstrap
      *
      * @const string
      */
-    const CND_CSS = '/css/bootstrap.min.css';
+    const CDN_CSS = '/css/bootstrap.min.css';
 
     /**
      * Location of bootstrap JavaScript
      *
      * @const string
      */
-    const CND_JS = '/js/bootstrap.js.css';
+    const CDN_JS = '/js/bootstrap.min.js';
 
     /**
      * Bootsrap view helper
