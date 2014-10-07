@@ -44,6 +44,30 @@
  */
 class MUtil_JQuery extends ZendX_JQuery
 {
+    static $jquery;
+
+    /**
+     * jQuery-enable a form instance
+     *
+     * @param  Zend_Form $form
+     * @return void
+     */
+    public static function enableForm(Zend_Form $form)
+    {
+        $form->addPrefixPath('ZendX_JQuery_Form_Decorator', 'ZendX/JQuery/Form/Decorator', 'decorator')
+             ->addPrefixPath('ZendX_JQuery_Form_Element', 'ZendX/JQuery/Form/Element', 'element')
+             ->addElementPrefixPath('ZendX_JQuery_Form_Decorator', 'ZendX/JQuery/Form/Decorator', 'decorator')
+             ->addDisplayGroupPrefixPath('ZendX_JQuery_Form_Decorator', 'ZendX/JQuery/Form/Decorator');
+
+        foreach ($form->getSubForms() as $subForm) {
+            self::enableForm($subForm);
+        }
+
+        if (null !== ($view = $form->getView())) {
+            self::enableView($view);
+        }
+    }
+
 
     /**
      * jQuery-enable a view instance

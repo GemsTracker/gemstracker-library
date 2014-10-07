@@ -199,7 +199,7 @@ class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
             }
         }
 
-        ZendX_JQuery::enableView($view);
+        MUtil_JQuery::enableView($view);
 
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_JQuery_View_Helper')) {
             $view->addHelperPath('MUtil/JQuery/View/Helper', 'MUtil_JQuery_View_Helper');
@@ -232,7 +232,7 @@ class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
     public function activateJQuery()
     {
         if ($this->_no_jquery) {
-            ZendX_JQuery::enableForm($this);
+            MUtil_JQuery::enableForm($this);
 
             //$this->addPrefixPath('MUtil_JQuery_Form_Decorator', 'MUtil/JQuery/Form/Decorator/', Zend_Form::DECORATOR);
             $this->addPrefixPath('MUtil_JQuery_Form_Element', 'MUtil/JQuery/Form/Element/', Zend_Form::ELEMENT);

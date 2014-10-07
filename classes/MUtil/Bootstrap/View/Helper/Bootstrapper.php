@@ -68,7 +68,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      *
      * @var Zend_View_Interface
      */
-    protected $_view = null;
+    public $view = null;
 
     protected function _getBootstrapCdnPath()
     {
@@ -82,7 +82,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      */
     protected function _getBootstrapScriptPath()
     {
-        if($this->_jqueryLibraryPath != null) {
+        if($this->_bootstrapScriptPath != null) {
             $source = $this->_bootstrapScriptPath;
         } else {
             $baseUri = $this->_getBootstrapCdnPath();
@@ -145,7 +145,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
     {
 
         $source = $this->_getBootstrapScriptPath();
-        $scriptTags .= '<script type="text/javascript" src="' . $source . '"></script>' . PHP_EOL;
+        $scriptTags = '<script type="text/javascript" src="' . $source . '"></script>' . PHP_EOL;
 
         return $scriptTags;
     }
@@ -191,8 +191,8 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      */
     public function setView(Zend_View_Interface $view)
     {
-        $this->_view = $view;
-        $doctype = $this->_view->doctype();
+        $this->view = $view;
+        /*$doctype = $this->_view->doctype();
 
         if ($doctype instanceof Zend_View_Helper_Doctype) {
             if (! $doctype->isHtml5()) {
@@ -202,7 +202,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
                     $doctype->setDoctype(Zend_View_Helper_Doctype::HTML5);
                 }
             }
-        }
+        }*/
 
         return $this;
     }

@@ -89,12 +89,11 @@ class MUtil_Bootstrap
      */
     public static function bootstrap()
     {
-        if (! self::$_bootstrap) {
-            $helper = new MUtil_Bootstrap_View_Helper_Bootstrap();
-            self::$_bootstrap = $helper->bootstrap();
+        if (self::$_bootstrap) {
+            return self::$_bootstrap;
         }
 
-        return self::$_bootstrap;
+        return false;
     }
 
     /**
@@ -134,6 +133,7 @@ class MUtil_Bootstrap
         if (false === $view->getPluginLoader('helper')->getPaths('MUtil_Bootstrap_View_Helper')) {
             $view->addHelperPath('MUtil/Bootstrap/View/Helper', 'MUtil_Bootstrap_View_Helper');
         }
+        self::$_bootstrap = $view->bootstrap();
     }
 
     /**

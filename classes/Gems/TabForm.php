@@ -81,20 +81,23 @@ class Gems_TabForm extends Gems_Form
          * This script handles saving the tab to our hidden input when a new tab is showed
          */
 
-        $js = sprintf('
-            var listItem = %1$s(".active");
-            var tabs = %1$s("#tabContainer .nav-tabs li");
-            var activeTab = tabs.index(listItem);
-            %1$s("#%2$s #tab").val(activeTab);
+        //if (MUtil_Bootstrap::enabled()) {
+            $js = sprintf('
+                var listItem = %1$s(".active");
+                var tabContainer = %1$s("#tabContainer");
+                var tabs = tabContainer.find("ul li");
 
-            tabs.find("a").on("click", function(e) {
-                var liContainer = %1$s(this).parent();
-                var activeTab = tabs.index(liContainer);
-                %1$s("#%2$s #tab").val(activeTab);
-            });',
-            ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
-            $this->getAttrib('id')
-        );
+                var activeTab = tabs.index(listItem);
+                %1$s("#tab").val(activeTab);
+
+                tabContainer.on("click", "ul li", function(e) {
+                    var listItem = %1$s(this);
+                    var activeTab = tabs.index(listItem);
+                    %1$s("#%2$s #tab").val(activeTab);
+                });',
+                ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
+                $this->getAttrib('id')
+            );
         $jquery->addOnLoad($js);
     }
 
