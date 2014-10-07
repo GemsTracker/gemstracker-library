@@ -92,6 +92,13 @@ class GemsEscort extends MUtil_Application_Escort
     private $_startFirebird;
 
     /**
+     * The menu variable
+     *
+     * @var Gems_Menu
+     */
+    public $menu;
+
+    /**
      * Set to true for bootstrap projects. Needs html5 set to true as well
      * @var boolean
      */
@@ -103,13 +110,6 @@ class GemsEscort extends MUtil_Application_Escort
      * @var boolean
      */
     public $useHtml5 = false;
-
-    /**
-     * The menu variable
-     *
-     * @var Gems_Menu
-     */
-    public $menu;
 
     /**
      * Constructor
@@ -643,7 +643,7 @@ class GemsEscort extends MUtil_Application_Escort
         $view->setEncoding('UTF-8');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
         $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
-        
+
         if ($this->useHtml5) {
             $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
@@ -651,8 +651,8 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if ($this->useBootstrap) {
-            MUtil_Bootstrap::enableView($view);
             $bootstrap = MUtil_Bootstrap::bootstrap();
+            MUtil_Bootstrap::enableView($view);
         }
 
         // Add it to the ViewRenderer
@@ -667,7 +667,7 @@ class GemsEscort extends MUtil_Application_Escort
      * Add ZFDebug info to the page output.
      *
      * @return void
-     */
+     * /
     protected function _initZFDebug()
     {
         if ((APPLICATION_ENV === 'production') || (APPLICATION_ENV === 'acceptance') ||
@@ -1655,7 +1655,7 @@ class GemsEscort extends MUtil_Application_Escort
     public function postDispatch(Zend_Controller_Request_Abstract $request)
     {
         if ($request->isDispatched()) {
-            
+
             if ($this->project->offsetExists('x-frame')) {
                 $response = Zend_Controller_Front::getInstance()->getResponse();
                 $response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
