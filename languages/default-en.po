@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-03 17:50+0100\n"
+"POT-Creation-Date: 2014-10-07 16:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -88,7 +88,7 @@ msgstr "Nothing to do."
 #: classes/Gems/Controller/BrowseEditAction.php:400
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:288
 #: classes/Gems/Default/StaffAction.php:258
-#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:346
+#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:350
 #, php-format
 msgid "New %s..."
 msgstr "New %s..."
@@ -109,7 +109,7 @@ msgid "%2$u %1$s deleted"
 msgstr "%2$u %1$s deleted"
 
 #: classes/Gems/Controller/BrowseEditAction.php:454
-#: classes/Gems/Default/OrganizationAction.php:226
+#: classes/Gems/Default/OrganizationAction.php:156
 #: classes/Gems/Default/TemplateAction.php:82
 #, php-format
 msgid "Edit %s %s"
@@ -117,7 +117,7 @@ msgstr "Edit %s %s"
 
 #: classes/Gems/Controller/BrowseEditAction.php:456
 #: classes/Gems/Controller/ModelSnippetActionAbstract.php:328
-#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:348
+#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:352
 #, php-format
 msgid "Edit %s"
 msgstr "Edit %s"
@@ -160,7 +160,7 @@ msgstr "Are you sure?"
 #: classes/Gems/Default/DatabaseAction.php:497
 #: classes/Gems/Default/StaffAction.php:306
 #: classes/Gems/Default/TrackAction.php:430
-#: classes/Gems/Default/TrackRoundsAction.php:308 classes/Gems/Model.php:289
+#: classes/Gems/Default/TrackRoundsAction.php:308 classes/Gems/Model.php:290
 #: classes/Gems/Model/RespondentModel.php:449
 #: classes/Gems/Snippets/ModelItemYesNoDeleteSnippetAbstract.php:206
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:223
@@ -179,7 +179,7 @@ msgstr "Yes"
 #: classes/Gems/Default/DatabaseAction.php:498
 #: classes/Gems/Default/StaffAction.php:307
 #: classes/Gems/Default/TrackAction.php:431
-#: classes/Gems/Default/TrackRoundsAction.php:309 classes/Gems/Model.php:290
+#: classes/Gems/Default/TrackRoundsAction.php:309 classes/Gems/Model.php:291
 #: classes/Gems/Model/RespondentModel.php:450
 #: classes/Gems/Snippets/ModelItemYesNoDeleteSnippetAbstract.php:208
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:224
@@ -254,7 +254,7 @@ msgstr "Unknown %s."
 #: classes/Gems/Default/DatabaseAction.php:501
 #: classes/Gems/Default/SourceAction.php:355
 #: classes/Gems/Default/UpgradeAction.php:184
-#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:331
+#: classes/Gems/Snippets/ModelFormSnippetAbstract.php:335
 #: classes/Gems/Snippets/ModelItemTableSnippetAbstract.php:192
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:125
 #: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:193
@@ -314,7 +314,7 @@ msgstr ""
 #: classes/Gems/Default/IndexAction.php:229
 #: classes/Gems/Default/LogAction.php:215
 #: classes/Gems/Default/MailJobAction.php:98
-#: classes/Gems/Default/StaffAction.php:370 classes/Gems/Model.php:278
+#: classes/Gems/Default/StaffAction.php:370 classes/Gems/Model.php:279
 #: classes/Gems/Model/AppointmentModel.php:204
 #: classes/Gems/Model/AppointmentModel.php:243
 #: classes/Gems/Model/RespondentModel.php:255
@@ -322,7 +322,6 @@ msgstr ""
 #: classes/Gems/Snippets/Export/ReportHeaderSnippet.php:63
 #: classes/Gems/User/Form/LayeredLoginForm.php:283
 #: classes/Gems/User/Form/OrganizationFormAbstract.php:166
-#: snippets/Organization/OrganizationEditSnippet.php:80
 msgid "Organization"
 msgstr "Organization"
 
@@ -362,8 +361,8 @@ msgstr "Split multiple import matches using '|'."
 #: classes/Gems/Default/AgendaActivityAction.php:110
 #: classes/Gems/Default/AgendaProcedureAction.php:110
 #: classes/Gems/Default/LocationAction.php:127
-#: classes/Gems/Default/OrganizationAction.php:186
 #: classes/Gems/Default/SurveyMaintenanceAction.php:498
+#: classes/Gems/Model/OrganizationModel.php:117
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:820
 #: classes/Gems/Tracker/Model/TrackModel.php:122
 msgid "Code name"
@@ -373,8 +372,8 @@ msgstr "Code name"
 #: classes/Gems/Default/AgendaProcedureAction.php:112
 #: classes/Gems/Default/CommTemplateAction.php:105
 #: classes/Gems/Default/LocationAction.php:129
-#: classes/Gems/Default/OrganizationAction.php:186
 #: classes/Gems/Default/SurveyMaintenanceAction.php:498
+#: classes/Gems/Model/OrganizationModel.php:118
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:820
 #: classes/Gems/Tracker/Model/TrackModel.php:124
 msgid "Only for programmers."
@@ -387,11 +386,11 @@ msgstr "Only for programmers."
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Default/MailJobAction.php:82
-#: classes/Gems/Default/OrganizationAction.php:160
 #: classes/Gems/Default/ReceptionAction.php:96
 #: classes/Gems/Default/SourceAction.php:242
 #: classes/Gems/Default/SurveyMaintenanceAction.php:482
 #: classes/Gems/Default/SurveyMaintenanceAction.php:552
+#: classes/Gems/Model/OrganizationModel.php:124
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:819
 #: classes/Gems/Tracker/Model/TrackModel.php:113
 #: classes/Gems/Util/TrackData.php:185
@@ -441,12 +440,12 @@ msgstr[1] "procedures"
 #: classes/Gems/Default/DatabaseAction.php:123
 #: classes/Gems/Default/DatabaseAction.php:323
 #: classes/Gems/Default/GroupAction.php:78
-#: classes/Gems/Default/OrganizationAction.php:133
 #: classes/Gems/Default/RoleAction.php:255
 #: classes/Gems/Default/SourceAction.php:175
 #: classes/Gems/Default/StaffAction.php:358
 #: classes/Gems/Default/SurveyMaintenanceAction.php:469
-#: classes/Gems/Default/TokenPlanAction.php:136 classes/Gems/Model.php:302
+#: classes/Gems/Default/TokenPlanAction.php:136 classes/Gems/Model.php:303
+#: classes/Gems/Model/OrganizationModel.php:105
 #: classes/Gems/Model/RespondentModel.php:262
 #: classes/Gems/Model/TemplateModel.php:67
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:144
@@ -751,11 +750,10 @@ msgstr "Use the 'By staff member' address"
 
 #: classes/Gems/Default/CommJobAction.php:167
 #: classes/Gems/Default/MailJobAction.php:133
+#: classes/Gems/Model/OrganizationModel.php:320
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:203
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:302
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:350
-#: snippets/Organization/OrganizationEditSnippet.php:85
-#: snippets/Organization/OrganizationEditSnippet.php:133
 msgid "Other"
 msgstr "Other"
 
@@ -834,7 +832,7 @@ msgstr "Edit template: %s"
 msgid "Email templates"
 msgstr "Email templates"
 
-#: classes/Gems/Default/ComplianceAction.php:93 classes/Gems/Model.php:275
+#: classes/Gems/Default/ComplianceAction.php:93 classes/Gems/Model.php:276
 #: classes/Gems/Model/RespondentModel.php:260
 #: classes/Gems/Snippets/Agenda/AppointmentsTableSnippet.php:163
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:142
@@ -999,7 +997,6 @@ msgid "More information about GemsTracker is available on the %s website."
 msgstr "More information about GemsTracker is available on the %s website."
 
 #: classes/Gems/Default/ContactAction.php:170 classes/Gems/Menu.php:699
-#: snippets/Organization/OrganizationEditSnippet.php:82
 msgid "Contact"
 msgstr "Contact"
 
@@ -1118,9 +1115,9 @@ msgstr "Group"
 
 #: classes/Gems/Default/DatabaseAction.php:128
 #: classes/Gems/Default/LocationAction.php:111
-#: classes/Gems/Default/OrganizationAction.php:134
 #: classes/Gems/Model/AppointmentModel.php:203
 #: classes/Gems/Model/AppointmentModel.php:242
+#: classes/Gems/Model/OrganizationModel.php:106
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:517
 msgid "Location"
 msgstr "Location"
@@ -1544,20 +1541,20 @@ msgid "Staff"
 msgstr "Staff"
 
 #: classes/Gems/Default/GroupAction.php:85
-#: classes/Gems/Default/OrganizationAction.php:163
 #: classes/Gems/Default/ReceptionAction.php:100
 #: classes/Gems/Default/RespondentAction.php:457
 #: classes/Gems/Default/RespondentNewAction.php:330 classes/Gems/Menu.php:668
+#: classes/Gems/Model/OrganizationModel.php:147
 msgid "Respondents"
 msgstr "Patients"
 
 #: classes/Gems/Default/GroupAction.php:88
-#: classes/Gems/Default/OrganizationAction.php:189
+#: classes/Gems/Model/OrganizationModel.php:200
 msgid "Allowed IP Ranges"
 msgstr "Allowed IP Ranges"
 
 #: classes/Gems/Default/GroupAction.php:89
-#: classes/Gems/Default/OrganizationAction.php:190
+#: classes/Gems/Model/OrganizationModel.php:201
 msgid ""
 "Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)"
 msgstr ""
@@ -1729,7 +1726,7 @@ msgid "Organizations"
 msgstr "Organizations"
 
 #: classes/Gems/Default/LocationAction.php:116
-#: classes/Gems/Default/OrganizationAction.php:176
+#: classes/Gems/Model/OrganizationModel.php:156
 msgid "Checked organizations see this organizations respondents."
 msgstr "Checked organizations see this organizations patients."
 
@@ -1749,13 +1746,13 @@ msgstr "Location route url"
 msgid "Complete url for route to location: http://www.domain.etc"
 msgstr "Complete url for route to location: http://www.domain.etc"
 
-#: classes/Gems/Default/LocationAction.php:139 classes/Gems/Model.php:306
+#: classes/Gems/Default/LocationAction.php:139 classes/Gems/Model.php:307
 #: classes/Gems/Model/RespondentModel.php:266
 #: classes/Gems/Model/RespondentModel.php:354
 msgid "Street"
 msgstr "Street"
 
-#: classes/Gems/Default/LocationAction.php:142 classes/Gems/Model.php:308
+#: classes/Gems/Default/LocationAction.php:142 classes/Gems/Model.php:309
 #: classes/Gems/Model/RespondentModel.php:267
 #: classes/Gems/Model/RespondentModel.php:360
 msgid "Zipcode"
@@ -1768,7 +1765,7 @@ msgstr "E.g.: 0000 AA"
 
 #: classes/Gems/Default/LocationAction.php:148
 #: classes/Gems/Default/RespondentPlanAction.php:143
-#: classes/Gems/Model.php:309 classes/Gems/Model/RespondentModel.php:268
+#: classes/Gems/Model.php:310 classes/Gems/Model/RespondentModel.php:268
 #: classes/Gems/Model/RespondentModel.php:361
 msgid "City"
 msgstr "City"
@@ -1783,7 +1780,7 @@ msgstr "Region"
 msgid "Country"
 msgstr "Country"
 
-#: classes/Gems/Default/LocationAction.php:153 classes/Gems/Model.php:311
+#: classes/Gems/Default/LocationAction.php:153 classes/Gems/Model.php:312
 #: classes/Gems/Model/RespondentModel.php:270
 #: classes/Gems/Model/RespondentModel.php:365
 msgid "Phone"
@@ -1910,7 +1907,7 @@ msgstr "Patient"
 
 #: classes/Gems/Default/LogAction.php:220
 #: classes/Gems/Default/OptionAction.php:240
-#: classes/Gems/User/RadiusUserDefinition.php:173
+#: classes/Gems/User/RadiusUserDefinition.php:169
 msgid "IP address"
 msgstr "IP address"
 
@@ -1985,6 +1982,7 @@ msgstr "From address"
 #: classes/Gems/Default/TrackAction.php:537
 #: classes/Gems/Export/RespondentExport.php:253 classes/Gems/Menu.php:266
 #: classes/Gems/Menu.php:367 classes/Gems/Menu.php:419
+#: classes/Gems/Model/OrganizationModel.php:259
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:114
 #: classes/Gems/Snippets/Import/FileImportSnippet.php:89
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:97
@@ -1996,7 +1994,6 @@ msgstr "From address"
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:188
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:199
 #: snippets/BrowseSingleSurveyTokenSnippet.php:164
-#: snippets/Organization/OrganizationEditSnippet.php:89
 #: snippets/Track/Token/RedirectUntilGoodbyeSnippet.php:86
 #: snippets/Track/Token/ShowAllOpenSnippet.php:88
 #: snippets/Track/Token/ShowFirstOpenSnippet.php:110
@@ -2044,7 +2041,7 @@ msgid "TLS"
 msgstr "TLS"
 
 #: classes/Gems/Default/MailServerAction.php:89
-#: classes/Gems/User/RadiusUserDefinition.php:174
+#: classes/Gems/User/RadiusUserDefinition.php:170
 msgid "Port"
 msgstr "Port"
 
@@ -2065,12 +2062,13 @@ msgstr "Password"
 #: classes/Gems/Default/SourceAction.php:225
 #: classes/Gems/User/Form/ChangePasswordForm.php:248
 #: classes/Gems/User/Form/ChangePasswordForm.php:294
+#: classes/Gems/User/RadiusUserDefinition.php:176
 msgid "Repeat password"
 msgstr "Repeat password"
 
 #: classes/Gems/Default/MailServerAction.php:100
 #: classes/Gems/Default/SourceAction.php:232
-#: classes/Gems/User/RadiusUserDefinition.php:177
+#: classes/Gems/User/RadiusUserDefinition.php:173
 msgid "Enter only when changing"
 msgstr "Enter only when changing the password"
 
@@ -2125,40 +2123,40 @@ msgid "Login Name"
 msgstr "Login Name"
 
 #: classes/Gems/Default/OptionAction.php:194
-#: classes/Gems/Default/StaffAction.php:360 classes/Gems/Model.php:283
+#: classes/Gems/Default/StaffAction.php:360 classes/Gems/Model.php:284
 #: classes/Gems/Model/RespondentModel.php:264
 #: classes/Gems/Model/RespondentModel.php:350
 msgid "E-Mail"
 msgstr "E-Mail"
 
 #: classes/Gems/Default/OptionAction.php:196
-#: classes/Gems/Default/StaffAction.php:215 classes/Gems/Model.php:298
+#: classes/Gems/Default/StaffAction.php:215 classes/Gems/Model.php:299
 #: classes/Gems/Model/RespondentModel.php:327
 msgid "First name"
 msgstr "First name"
 
 #: classes/Gems/Default/OptionAction.php:197
-#: classes/Gems/Default/StaffAction.php:217 classes/Gems/Model.php:299
+#: classes/Gems/Default/StaffAction.php:217 classes/Gems/Model.php:300
 #: classes/Gems/Model/RespondentModel.php:328
 msgid "Surname prefix"
 msgstr "Surname prefix"
 
 #: classes/Gems/Default/OptionAction.php:198
-#: classes/Gems/Default/StaffAction.php:218 classes/Gems/Model.php:300
+#: classes/Gems/Default/StaffAction.php:218 classes/Gems/Model.php:301
 #: classes/Gems/Model/RespondentModel.php:331
 msgid "Last name"
 msgstr "Last name"
 
 #: classes/Gems/Default/OptionAction.php:199
-#: classes/Gems/Default/StaffAction.php:373 classes/Gems/Model.php:297
+#: classes/Gems/Default/StaffAction.php:373 classes/Gems/Model.php:298
 #: classes/Gems/Model/RespondentModel.php:338
 msgid "Gender"
 msgstr "Gender"
 
 #: classes/Gems/Default/OptionAction.php:201
-#: classes/Gems/Default/OrganizationAction.php:156
 #: classes/Gems/Default/RespondentAction.php:202
 #: classes/Gems/Default/StaffAction.php:382
+#: classes/Gems/Model/OrganizationModel.php:170
 #: classes/Gems/Model/RespondentModel.php:370
 msgid "Language"
 msgstr "Language"
@@ -2200,119 +2198,11 @@ msgstr "Inaccessible or unknown organization"
 msgid "Access to this page is not allowed for current role: %s."
 msgstr "Access to this page is not allowed for current role: %s."
 
-#: classes/Gems/Default/OrganizationAction.php:135
-msgid "Url"
-msgstr "Url"
-
-#: classes/Gems/Default/OrganizationAction.php:136
-msgid "Task"
-msgstr "Task"
-
-#: classes/Gems/Default/OrganizationAction.php:137
-msgid "Healtcare provider id"
-msgstr "Healtcare provider id"
-
-#: classes/Gems/Default/OrganizationAction.php:138
-msgid "An interorganizational id used for import and export."
-msgstr "An interorganizational id used for import and export."
-
-#: classes/Gems/Default/OrganizationAction.php:139
-msgid "Contact name"
-msgstr "Contact name"
-
-#: classes/Gems/Default/OrganizationAction.php:140
-msgid "Contact email"
-msgstr "Contact email"
-
-#: classes/Gems/Default/OrganizationAction.php:143
-msgid "Style"
-msgstr "Style"
-
-#: classes/Gems/Default/OrganizationAction.php:148
-msgid "Default url's"
-msgstr "Default url's"
-
-#: classes/Gems/Default/OrganizationAction.php:150
-#, php-format
-msgid ""
-"Always switch to this organization when %s is accessed from one of these "
-"space separated url's. The first is used for mails."
-msgstr ""
-"Always switch to this organization when %s is accessed from one of these "
-"space separated url's. The first is used for mails."
-
-#: classes/Gems/Default/OrganizationAction.php:160
-msgid "Can the organization be used?"
-msgstr "Can the organization be used?"
-
-#: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:7
-msgid "Login"
-msgstr "Login"
-
-#: classes/Gems/Default/OrganizationAction.php:161
-msgid "Can people login for this organization?"
-msgstr "Can people login for this organization?"
-
-#: classes/Gems/Default/OrganizationAction.php:162
-msgid "Accepting"
-msgstr "Accepting"
-
-#: classes/Gems/Default/OrganizationAction.php:162
-msgid "Can new respondents be added to the organization?"
-msgstr "Can new patients  be added to the organization?"
-
-#: classes/Gems/Default/OrganizationAction.php:163
-msgid "Does the organization have respondents?"
-msgstr "Does the organization have patients?"
-
-#: classes/Gems/Default/OrganizationAction.php:164
-msgid "Respondent group"
-msgstr "Patient group"
-
-#: classes/Gems/Default/OrganizationAction.php:164
-msgid "Allows respondents to login."
-msgstr "Allow patients to login."
-
-#: classes/Gems/Default/OrganizationAction.php:168
-msgid "Greeting"
-msgstr "Greeting"
-
-#: classes/Gems/Default/OrganizationAction.php:168
-#: classes/Gems/Default/OrganizationAction.php:169
-msgid "For emails and token forward screen."
-msgstr "For emails and token forward screen."
-
-#: classes/Gems/Default/OrganizationAction.php:169
-msgid "Signature"
-msgstr "Signature"
-
-#: classes/Gems/Default/OrganizationAction.php:173
-msgid "Create Account template"
-msgstr "Create Account template"
-
-#: classes/Gems/Default/OrganizationAction.php:174
-msgid "Reset Password template"
-msgstr "Reset Password template"
-
-#: classes/Gems/Default/OrganizationAction.php:176
-msgid "Accessible by"
-msgstr "Accessible by"
-
-#: classes/Gems/Default/OrganizationAction.php:204
-msgid "This can not be changed yet"
-msgstr "This can not be changed yet"
-
-#: classes/Gems/Default/OrganizationAction.php:206
-#: classes/Gems/Default/StaffAction.php:179
-msgid "User Definition"
-msgstr "User Definition"
-
-#: classes/Gems/Default/OrganizationAction.php:236
+#: classes/Gems/Default/OrganizationAction.php:166
 msgid "Participating organizations"
 msgstr "Participating organizations"
 
-#: classes/Gems/Default/OrganizationAction.php:256
+#: classes/Gems/Default/OrganizationAction.php:177
 msgid "organization"
 msgid_plural "organizations"
 msgstr[0] "organization"
@@ -2785,7 +2675,7 @@ msgid "Show track"
 msgstr "Show track"
 
 #: classes/Gems/Default/RespondentPlanAction.php:142
-#: classes/Gems/Model.php:313 classes/Gems/Model/RespondentModel.php:273
+#: classes/Gems/Model.php:314 classes/Gems/Model/RespondentModel.php:273
 #: classes/Gems/Model/RespondentModel.php:343
 msgid "Birthday"
 msgstr "Birthday"
@@ -3060,6 +2950,11 @@ msgstr "Synchronize all sources."
 msgid "password"
 msgstr "password"
 
+#: classes/Gems/Default/StaffAction.php:179
+#: classes/Gems/Model/OrganizationModel.php:165
+msgid "User Definition"
+msgstr "User Definition"
+
 #: classes/Gems/Default/StaffAction.php:185
 msgid "Unsupported User Definition"
 msgstr "Unsupported User Definition"
@@ -3085,7 +2980,7 @@ msgstr ""
 "User with id %s already exists but is deleted, do you want to reactivate the "
 "account?"
 
-#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1948
+#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1960
 msgid "No access to page"
 msgstr "No access to page"
 
@@ -4314,8 +4209,7 @@ msgstr "Codes"
 msgid "Consents"
 msgstr "Consents"
 
-#: classes/Gems/Menu.php:207
-#: snippets/Organization/OrganizationEditSnippet.php:96
+#: classes/Gems/Menu.php:207 classes/Gems/Model/OrganizationModel.php:283
 msgid "Access"
 msgstr "Access"
 
@@ -4364,7 +4258,7 @@ msgstr "Lost password"
 msgid "Your account"
 msgstr "Your account"
 
-#: classes/Gems/Menu.php:267 classes/GemsEscort.php:966
+#: classes/Gems/Menu.php:267 classes/GemsEscort.php:967
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -4681,17 +4575,17 @@ msgstr "Export the current data set to Excel"
 msgid "Excel export"
 msgstr "Excel export"
 
-#: classes/Gems/Model.php:280 classes/Gems/Model/RespondentModel.php:277
+#: classes/Gems/Model.php:281 classes/Gems/Model/RespondentModel.php:277
 #: classes/Gems/Model/RespondentModel.php:379
 msgid "Opened"
 msgstr "Opened"
 
-#: classes/Gems/Model.php:281 classes/Gems/Model/RespondentModel.php:280
+#: classes/Gems/Model.php:282 classes/Gems/Model/RespondentModel.php:280
 #: classes/Gems/Model/RespondentModel.php:374
 msgid "Consent"
 msgstr "Consent"
 
-#: classes/Gems/Model.php:285 classes/Gems/Model/RespondentModel.php:352
+#: classes/Gems/Model.php:286 classes/Gems/Model/RespondentModel.php:352
 #: classes/Gems/Model/RespondentModel.php:445
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:219
 msgid "May be mailed"
@@ -4706,7 +4600,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:197
 #: classes/Gems/Model/AppointmentModel.php:227
-#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1313
+#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1314
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -4766,6 +4660,122 @@ msgstr "  in step "
 #, php-format
 msgid "No script for %1$s."
 msgstr "No script for %1$s."
+
+#: classes/Gems/Model/OrganizationModel.php:107
+msgid "Task"
+msgstr "Task"
+
+#: classes/Gems/Model/OrganizationModel.php:108
+#, php-format
+msgid "Task in %s project"
+msgstr "Task in %s project"
+
+#: classes/Gems/Model/OrganizationModel.php:110
+msgid "Url"
+msgstr "Url"
+
+#: classes/Gems/Model/OrganizationModel.php:111
+msgid "Default url's"
+msgstr "Default url's"
+
+#: classes/Gems/Model/OrganizationModel.php:113
+#, php-format
+msgid ""
+"Always switch to this organization when %s is accessed from one of these "
+"space separated url's. The first is used for mails."
+msgstr ""
+"Always switch to this organization when %s is accessed from one of these "
+"space separated url's. The first is used for mails."
+
+#: classes/Gems/Model/OrganizationModel.php:120
+msgid "Healtcare provider id"
+msgstr "Healtcare provider id"
+
+#: classes/Gems/Model/OrganizationModel.php:121
+msgid "An interorganizational id used for import and export."
+msgstr "An interorganizational id used for import and export."
+
+#: classes/Gems/Model/OrganizationModel.php:125
+msgid "Can the organization be used?"
+msgstr "Can the organization be used?"
+
+#: classes/Gems/Model/OrganizationModel.php:129
+msgid "Contact name"
+msgstr "Contact name"
+
+#: classes/Gems/Model/OrganizationModel.php:130
+msgid "Contact email"
+msgstr "Contact email"
+
+#: classes/Gems/Model/OrganizationModel.php:139
+#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:7
+msgid "Login"
+msgstr "Login"
+
+#: classes/Gems/Model/OrganizationModel.php:140
+msgid "Can people login for this organization?"
+msgstr "Can people login for this organization?"
+
+#: classes/Gems/Model/OrganizationModel.php:143
+msgid "Accepting"
+msgstr "Accepting"
+
+#: classes/Gems/Model/OrganizationModel.php:144
+msgid "Can new respondents be added to the organization?"
+msgstr "Can new patients  be added to the organization?"
+
+#: classes/Gems/Model/OrganizationModel.php:148
+msgid "Does the organization have respondents?"
+msgstr "Does the organization have patients?"
+
+#: classes/Gems/Model/OrganizationModel.php:151
+msgid "Respondent group"
+msgstr "Patient group"
+
+#: classes/Gems/Model/OrganizationModel.php:152
+msgid "Allows respondents to login."
+msgstr "Allow patients to login."
+
+#: classes/Gems/Model/OrganizationModel.php:155
+msgid "Accessible by"
+msgstr "Accessible by"
+
+#: classes/Gems/Model/OrganizationModel.php:174
+msgid "Style"
+msgstr "Style"
+
+#: classes/Gems/Model/OrganizationModel.php:191
+msgid "Greeting"
+msgstr "Greeting"
+
+#: classes/Gems/Model/OrganizationModel.php:192
+#: classes/Gems/Model/OrganizationModel.php:194
+msgid "For emails and token forward screen."
+msgstr "For emails and token forward screen."
+
+#: classes/Gems/Model/OrganizationModel.php:193
+msgid "Signature"
+msgstr "Signature"
+
+#: classes/Gems/Model/OrganizationModel.php:195
+msgid "Create Account template"
+msgstr "Create Account template"
+
+#: classes/Gems/Model/OrganizationModel.php:197
+msgid "Reset Password template"
+msgstr "Reset Password template"
+
+#: classes/Gems/Model/OrganizationModel.php:229
+msgid "General"
+msgstr "General"
+
+#: classes/Gems/Model/OrganizationModel.php:259
+msgid "Email"
+msgstr "Email"
+
+#: classes/Gems/Model/OrganizationModel.php:299
+msgid "Can access"
+msgstr "Can access"
 
 #: classes/Gems/Model/RespondentModel.php:326
 msgid "Initials"
@@ -6111,7 +6121,7 @@ msgstr[1] "should contain at least %d numbers"
 msgid "may not contain numbers"
 msgstr "may not contain numbers"
 
-#: classes/Gems/User/RadiusUserDefinition.php:176
+#: classes/Gems/User/RadiusUserDefinition.php:172
 msgid "Shared secret"
 msgstr "Shared secret"
 
@@ -6339,37 +6349,37 @@ msgstr "Mr./Mrs."
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:785
+#: classes/GemsEscort.php:786
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:964
+#: classes/GemsEscort.php:965
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:969
+#: classes/GemsEscort.php:970
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1197
+#: classes/GemsEscort.php:1198
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1222
+#: classes/GemsEscort.php:1223
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1303
+#: classes/GemsEscort.php:1304
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
-#: classes/GemsEscort.php:1327
+#: classes/GemsEscort.php:1328
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:1748
+#: classes/GemsEscort.php:1754
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -6377,33 +6387,33 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:1912
+#: classes/GemsEscort.php:1924
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1914 classes/GemsEscort.php:1918
-#: classes/GemsEscort.php:1919
+#: classes/GemsEscort.php:1926 classes/GemsEscort.php:1930
+#: classes/GemsEscort.php:1931
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1930
+#: classes/GemsEscort.php:1942
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1932 classes/GemsEscort.php:1993
+#: classes/GemsEscort.php:1944 classes/GemsEscort.php:2005
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1950
+#: classes/GemsEscort.php:1962
 #, php-format
 msgid "Access to the %s/%s page is not allowed for current role: %s."
 msgstr "Access to the %s/%s page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1977 classes/GemsEscort.php:1991
+#: classes/GemsEscort.php:1989 classes/GemsEscort.php:2003
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1978
+#: classes/GemsEscort.php:1990
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
@@ -7014,25 +7024,9 @@ msgstr ""
 msgid "This organization cannot have any respondents."
 msgstr "This organization cannot have any patients."
 
-#: snippets/Organization/OrganizationEditSnippet.php:77
-msgid "General"
-msgstr "General"
-
-#: snippets/Organization/OrganizationEditSnippet.php:83
-msgid "The contact details for this organization, used for emailing."
-msgstr "The contact details for this organization, used for emailing."
-
-#: snippets/Organization/OrganizationEditSnippet.php:89
-msgid "Email"
-msgstr "Email"
-
-#: snippets/Organization/OrganizationEditSnippet.php:115
+#: snippets/Organization/OrganizationEditSnippet.php:94
 msgid "No access to other organizations."
 msgstr "No access to other organizations."
-
-#: snippets/Organization/OrganizationEditSnippet.php:117
-msgid "Can access"
-msgstr "Can access"
 
 #: snippets/RespondentDetailsSnippet.php:75
 #: snippets/RespondentDetailsWithAssignmentsSnippet.php:97
@@ -7214,6 +7208,12 @@ msgstr "This survey can be assigned since %s."
 #, php-format
 msgid "This track can be assigned since %s."
 msgstr "This track can be assigned since %s."
+
+#~ msgid "This can not be changed yet"
+#~ msgstr "This can not be changed yet"
+
+#~ msgid "The contact details for this organization, used for emailing."
+#~ msgstr "The contact details for this organization, used for emailing."
 
 #~ msgid "Mail Activity Log for %s"
 #~ msgstr "Mail Activity Log for %s"

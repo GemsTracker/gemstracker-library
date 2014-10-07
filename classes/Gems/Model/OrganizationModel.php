@@ -48,13 +48,324 @@
 class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
 {
     /**
+     *
+     * @var array
+     */
+    protected $_styles;
+
+    /**
      * @var Gems_Loader
      */
-    public $loader;
+    protected $loader;
 
-    public function __construct()
+    /**
+     *
+     * @var Gems_Project_ProjectSettings
+     */
+    protected $project;
+
+    /**
+     *
+     * @var Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Constructor
+     *
+     * @param array|mixed $styles
+     */
+    public function __construct($styles = array())
     {
         parent::__construct('organization', 'gems__organizations', 'gor');
+
+        $this->_styles = $styles;
+
+        $this->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
+        $this->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
+
+        Gems_Model::setChangeFieldsByPrefix($this, 'gor');
+    }
+
+    /**
+     * Set those settings needed for the browse display
+     *
+     *
+     * @return \Gems_Model_OrganizationModel
+     */
+    public function applyBrowseSettings()
+    {
+        $dbLookup    = $this->util->getDbLookup();
+        $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
+        $localized   = $this->util->getLocalized();
+        $projectName = $this->project->getName();
+        $yesNo       = $this->util->getTranslated()->getYesNo();
+
+        $this->resetOrder();
+        $this->set('gor_name',                  'label', $this->_('Name'));
+        $this->set('gor_location',              'label', $this->_('Location'));
+        $this->set('gor_task',                  'label', $this->_('Task'),
+                'description', sprintf($this->_('Task in %s project'), $projectName)
+                );
+        $this->set('gor_url',                   'label', $this->_('Url'));
+        $this->setIfExists('gor_url_base',      'label', $this->_("Default url's"),
+                'description', sprintf(
+                        $this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."),
+                        $projectName
+                        )
+                );
+        $this->setIfExists('gor_code',             'label', $this->_('Code name'),
+                'description', $this->_('Only for programmers.')
+                );
+        $this->set('gor_provider_id',           'label', $this->_('Healtcare provider id'),
+                'description', $this->_('An interorganizational id used for import and export.')
+                );
+
+        $this->setIfExists('gor_active',        'label', $this->_('Active'),
+                'description', $this->_('Can the organization be used?'),
+                'multiOptions', $yesNo
+                );
+
+        $this->set('gor_contact_name',          'label', $this->_('Contact name'));
+        $this->set('gor_contact_email',         'label', $this->_('Contact email'));
+
+        // Determine order for details, but do not show in browse
+        $this->set('gor_welcome');
+        $this->set('gor_signature');
+        $this->set('gor_create_account_template');
+        $this->set('gor_reset_pass_template');
+
+
+        $this->set('gor_has_login',             'label', $this->_('Login'),
+                'description', $this->_('Can people login for this organization?'),
+                'multiOptions', $yesNo
+                );
+        $this->set('gor_add_respondents',       'label', $this->_('Accepting'),
+                'description', $this->_('Can new respondents be added to the organization?'),
+                'multiOptions', $yesNo
+                );
+        $this->set('gor_has_respondents',       'label', $this->_('Respondents'),
+                'description', $this->_('Does the organization have respondents?'),
+                'multiOptions', $yesNo
+                );
+        $this->set('gor_respondent_group',      'label', $this->_('Respondent group'),
+                'description', $this->_('Allows respondents to login.'),
+                'multiOptions', $dbLookup->getAllowedRespondentGroups()
+                );
+        $this->set('gor_accessible_by',            'label', $this->_('Accessible by'),
+                'description', $this->_('Checked organizations see this organizations respondents.'),
+                'multiOptions', $dbLookup->getOrganizations()
+                );
+        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp->apply($this, 'gor_accessible_by');
+
+        $this->setIfExists('gor_allowed_ip_ranges');
+
+        if ($definitions && (count($definitions) > 1)) {
+            $this->setIfExists('gor_user_class',    'label', $this->_('User Definition'),
+                    'multiOptions', $definitions
+                    );
+        }
+
+        $this->setIfExists('gor_iso_lang',      'label', $this->_('Language'),
+                'multiOptions', $localized->getLanguages()
+                );
+        if ($this->_styles) {
+            $this->setIfExists('gor_style',     'label', $this->_('Style'), 'multiOptions', $this->_styles);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set those settings needed for the detailed display
+     *
+     * @return \Gems_Model_OrganizationModel
+     */
+    public function applyDetailSettings()
+    {
+        $staffTemplates = $this->getPasswordTemplatesFor('staffPassword');
+
+        $this->applyBrowseSettings();
+
+        $this->set('gor_welcome',                   'label', $this->_('Greeting'),
+                'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
+        $this->set('gor_signature',                 'label', $this->_('Signature'),
+                'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
+        $this->set('gor_create_account_template',   'label', $this->_('Create Account template'),
+                'multiOptions', $staffTemplates);
+        $this->set('gor_reset_pass_template',       'label', $this->_('Reset Password template'),
+                'multiOptions', $staffTemplates);
+
+        $this->setIfExists('gor_allowed_ip_ranges', 'label', $this->_('Allowed IP Ranges'),
+            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
+            'size', 50,
+            'validator', new Gems_Validate_IPRanges(),
+            'maxlength', 500
+            );
+
+
+        if ($this->project->multiLocale) {
+            $this->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
+            $this->set('gor_url',  'description', 'ENGLISH link preferred. Use translation file to translate.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set those values needed for editing
+     *
+     * @return \Gems_Model_OrganizationModel
+     */
+    public function applyEditSettings()
+    {
+        $this->applyDetailSettings();
+        $this->resetOrder();
+
+        // GENERAL TAB
+        $this->set('general',               'tab', 'general',
+                'elementClass', 'Tab',
+                'value', $this->_('General')
+                );
+        $this->set('gor_name',              'tab', 'general',
+                'size', 25,
+                'validator', $this->createUniqueValidator('gor_name')
+                );
+        $this->set('gor_location',          'tab', 'general',
+                'size', 25
+                );
+        $this->set('gor_task',              'tab', 'general',
+                'size', 25);
+        $this->set('gor_url',               'tab', 'general',
+                'size', 50
+                );
+        $this->setIfExists('gor_url_base',  'tab', 'general',
+                'size', 50,
+                'filter', 'TrailingSlash'
+                );
+        $this->setIfExists('gor_code',      'tab', 'general',
+                'size', 10
+                );
+        $this->set('gor_provider_id',       'tab', 'general');
+        $this->setIfExists('gor_active',    'tab', 'general',
+                'elementClass', 'Checkbox'
+                );
+
+        // EMAIL TAB
+        $this->set('email',                         'tab', 'email',
+                'elementClass', 'Tab',
+                'order', $this->getOrder('gor_active') + 1000,
+                'value', $this->_('Email') . ' & ' . $this->_('Token')
+                );
+        $this->set('gor_contact_name',              'tab', 'email',
+                'size', 25
+                );
+        $this->set('gor_contact_email',             'tab', 'email',
+                'size', 50,
+                'validator', 'SimpleEmail'
+                );
+        $this->set('gor_welcome',                   'tab', 'email',
+                'elementClass', 'Textarea',
+                'rows', 5
+                );
+        $this->set('gor_signature',                 'tab', 'email',
+                'elementClass', 'Textarea',
+                'rows', 5
+                );
+        $this->set('gor_create_account_template',   'tab', 'email');
+        $this->set('gor_reset_pass_template',       'tab', 'email');
+
+        // ACCESS TAB
+        $this->set('access',                         'tab', 'access',
+                'elementClass', 'Tab',
+                'order', $this->getOrder('gor_reset_pass_template') + 1000,
+                'value', $this->_('Access')
+                );
+        $this->set('gor_has_login',                 'tab', 'access',
+                'elementClass', 'CheckBox'
+                );
+        $this->set('gor_add_respondents',           'tab', 'access',
+                'elementClass', 'CheckBox'
+                );
+        $this->set('gor_has_respondents',           'tab', 'access',
+                'elementClass', 'Exhibitor'
+                );
+        $this->set('gor_respondent_group',          'tab', 'access');
+        $this->set('gor_accessible_by',             'tab', 'access',
+                'elementClass', 'MultiCheckbox'
+                );
+        $this->set('allowed',                       'tab', 'access',
+                'label', $this->_('Can access'),
+                'elementClass', 'Html'
+                );
+
+        $this->setIfExists('gor_allowed_ip_ranges', 'tab', 'access',
+                'size', 50,
+                'validator', new Gems_Validate_IPRanges(),
+                'maxlength', 500
+                );
+        $this->setIfExists('gor_user_class',        'tab', 'access');
+
+        $definitions = $this->get('gor_user_class', 'multiOptions');
+        if ($definitions && (count($definitions) > 1)) {
+            reset($definitions);
+            $this->setIfExists('gor_user_class',    'default', key($definitions), 'required', true);
+        }
+
+        // OTHER TAB
+        $this->set('other',                        'tab', 'other',
+                'elementClass', 'Tab',
+                'order', $this->getOrder('gor_user_class') + 1000,
+                'value', $this->_('Other')
+                );
+        $this->setIfExists('gor_iso_lang',  'tab', 'other',
+                'default', $this->project->getLocaleDefault()
+                );
+        if ($this->_styles) {
+            $this->setIfExists('gor_style', 'tab', 'other');
+        }
+        return $this;
+    }
+
+    /**
+     * Helper function to get the templates for mails
+     *
+     * @param string|array $for the template types to get
+     * @return array
+     */
+    public function getPasswordTemplatesFor($for)
+    {
+        return $this->loader->getMailLoader()->getMailElements()->getAvailableMailTemplates(false, $for);
+    }
+
+    /**
+     * Helper function that procesess the raw data after a load.
+     *
+     * @see MUtil_Model_SelectModelPaginator
+     *
+     * @param array $data Nested array containing rows or iterator
+     * @param boolean $new True when it is a new item
+     * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
+     * @return array Nested
+     */
+    public function processAfterLoad($data, $new = false, $isPostData = false)
+    {
+        if ($data instanceof Iterator) {
+            $data = iterator_to_array($data);
+        }
+        foreach ($data as &$row) {
+            if (isset($row['gor_user_class']) && !empty($row['gor_user_class'])) {
+                $definition = $this->loader->getUserLoader()->getUserDefinition($row['gor_user_class']);
+
+                if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
+                    $definition->addConfigFields($this);
+                    $row = $row + $definition->loadConfig($row);
+                }
+            }
+
+        }
+        return $data;
     }
 
     /**
@@ -79,7 +390,8 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
             $definition = $this->loader->getUserLoader()->getUserDefinition($newValues['gor_user_class']);
 
             if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
-                $savedValues['config'] = $definition->saveConfig($savedValues,$newValues['config']);
+                $savedValues = $definition->saveConfig($savedValues, $newValues);
+
                 if ($definition->getConfigChanged()>0 && $this->getChanged()<1) {
                     $this->setChanged(1);
                 }
@@ -87,20 +399,5 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
         }
 
         return $savedValues;
-    }
-
-    public function loadFirst($filter = true, $sort = true)
-    {
-        $data = parent::loadFirst($filter, $sort);
-
-        if (isset($data['gor_user_class']) && !empty($data['gor_user_class'])) {
-            $definition = $this->loader->getUserLoader()->getUserDefinition($data['gor_user_class']);
-
-            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
-                $data['config'] = $definition->loadConfig($data);
-            }
-        }
-
-        return $data;
     }
 }

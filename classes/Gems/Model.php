@@ -244,11 +244,12 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
     /**
      * Load the organization model
      *
+     * @param array|mixed $styles
      * @return Gems_Model_OrganizationModel
      */
-    public function getOrganizationModel()
+    public function getOrganizationModel($styles = array())
     {
-        $model = $this->_loadClass('OrganizationModel', true);
+        $model = $this->_loadClass('OrganizationModel', true, array($styles));
 
         return $model;
     }

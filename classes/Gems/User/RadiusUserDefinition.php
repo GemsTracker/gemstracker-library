@@ -73,21 +73,16 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     /**
      * Appends the needed fields for this config to the $bridge
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param MUtil_Model_ModelAbstract $orgModel
      */
-    public function appendConfigFields(MUtil_Model_Bridge_FormBridgeInterface $bridge)
+    public function addConfigFields(MUtil_Model_ModelAbstract $orgModel)
     {
-        $model = $this->getConfigModel(true);
+        $configModel = $this->getConfigModel(true);
+        $order       = $orgModel->getOrder('gor_user_class') + 1;
 
-        $bridge->getTab('access');
-        foreach ($model->getItemNames() as $name) {
-            if ($label = $model->get($name, 'label')) {
-                //We supply all options from the model as the bridge doesn't know about this model
-                $element = $bridge->add($name, $model->get($name));
-            } else {
-                $element = $bridge->addHidden($name);
-            }
-            $element->setBelongsTo('config');
+        foreach ($configModel->getItemNames() as $name) {
+            $orgModel->set($name, 'order', $order++, 'tab', 'access');
+            $orgModel->set($name, $configModel->get($name));
         }
     }
 
@@ -168,17 +163,17 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     protected function getConfigModel($valueMask = true)
     {
         if (!$this->_configModel) {
-            $model = new Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
+            $model = new MUtil_Model_TableModel('gems__radius_config', 'config');
+            // $model = new Gems_Model_JoinModel('config', 'gems__radius_config', 'grcfg');
 
-            $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'));
-            $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'));
+            $model->setIfExists('grcfg_ip', 'label', $this->translate->_('IP address'), 'required', true);
+            $model->setIfExists('grcfg_port', 'label', $this->translate->_('Port'), 'required', true);
             $model->setIfExists('grcfg_secret',
                     'label', $this->translate->_('Shared secret'),
                     'description', $this->translate->_('Enter only when changing'),
                     'elementClass', 'password',
-                    'required', false //,
-                    // Do not use repeat label as this will not work as belongsTo is set later
-                    // 'repeatLabel', $this->translate->_('Repeat password')
+                    'required', false,
+                    'repeatLabel', $this->translate->_('Repeat password')
                     );
 
             $type = new Gems_Model_Type_EncryptedField($this->project, $valueMask);
@@ -285,7 +280,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
     {
         $model = $this->getConfigModel(false);
 
-        $newData = $model->loadFirst(array('grcfg_id_organization'=>$data['gor_id_organization']));
+        $newData = $model->loadFirst(array('grcfg_id_organization' => $data['gor_id_organization']));
         $newData['grcfg_id_organization'] = $data['gor_id_organization'];
 
         return $newData;
@@ -304,7 +299,7 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
 
         $values['grcfg_id_organization'] = $data['gor_id_organization'];
 
-        return $model->save($values);
+        return $model->save($values) + $data;
     }
 
     /**

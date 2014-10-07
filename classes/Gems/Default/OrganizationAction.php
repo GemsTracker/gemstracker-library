@@ -126,92 +126,22 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
      */
     public function createModel($detailed, $action)
     {
-        $model = $this->loader->getModels()->getOrganizationModel();
-
-        $model->setDeleteValues('gor_active', 0, 'gor_add_respondents', 0);
-
-        $model->set('gor_name', 'label', $this->_('Name'), 'size', 25);
-        $model->set('gor_location', 'label', $this->_('Location'), 'size', 25);
-        $model->set('gor_url', 'label', $this->_('Url'), 'size', 50);
-        $model->set('gor_task', 'label', $this->_('Task'), 'size', 25);
-        $model->set('gor_provider_id', 'label', $this->_('Healtcare provider id'),
-                'description', $this->_('An interorganizational id used for import and export.'));
-        $model->set('gor_contact_name', 'label', $this->_('Contact name'), 'size', 25);
-        $model->set('gor_contact_email', 'label', $this->_('Contact email'), 'size', 50, 'validator', 'SimpleEmail');
         if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
-            $model->setIfExists('gor_style',
-                'label', $this->_('Style'),
-                'multiOptions', MUtil_Lazy::call(array($this->escort, 'getStyles'))
-            );
+            $styles = MUtil_Lazy::call(array($this->escort, 'getStyles'));
+        } else {
+            $styles = array();
         }
-        $model->setIfExists('gor_url_base',
-            'label', $this->_("Default url's"),
-            'size', 50,
-            'description', sprintf($this->_("Always switch to this organization when %s is accessed from one of these space separated url's. The first is used for mails."), $this->project->getName())
-        );
-        if ($detailed) {
-            $model->setIfExists('gor_url_base', 'filter', 'TrailingSlash');
-        }
-        $model->set(
-            'gor_iso_lang', 'label', $this->_('Language'),
-            'multiOptions', $this->util->getLocalized()->getLanguages(), 'default', 'nl'
-        );
-        $yesNo = $this->util->getTranslated()->getYesNo();
-        $model->set('gor_active', 'label', $this->_('Active'), 'description', $this->_('Can the organization be used?'), 'elementClass', 'Checkbox', 'multiOptions', $yesNo);
-        $model->set('gor_has_login', 'label', $this->_('Login'), 'description', $this->_('Can people login for this organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
-        $model->set('gor_add_respondents', 'label', $this->_('Accepting'), 'description', $this->_('Can new respondents be added to the organization?'), 'elementClass', 'CheckBox', 'multiOptions', $yesNo);
-        $model->set('gor_has_respondents', 'label', $this->_('Respondents'), 'description', $this->_('Does the organization have respondents?'), 'elementClass', 'Exhibitor', 'multiOptions', $yesNo);
-        $model->set('gor_respondent_group', 'label', $this->_('Respondent group'), 'description', $this->_('Allows respondents to login.'), 'multiOptions', $this->util->getDbLookup()->getAllowedRespondentGroups());
+        $model = $this->loader->getModels()->getOrganizationModel($styles);
 
         if ($detailed) {
-            $model->set('gor_name',      'validator', $model->createUniqueValidator('gor_name'));
-            $model->set('gor_welcome',   'label', $this->_('Greeting'),  'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
-            $model->set('gor_signature', 'label', $this->_('Signature'), 'description', $this->_('For emails and token forward screen.'), 'elementClass', 'Textarea', 'rows', 5);
-        
-            $templates = $this->getPasswordTemplates();
-        
-            $model->set('gor_create_account_template', 'label', $this->_('Create Account template'), 'multiOptions', $templates);
-            $model->set('gor_reset_pass_template', 'label', $this->_('Reset Password template'), 'multiOptions', $templates);
-        }
-        $model->set('gor_accessible_by', 'label', $this->_('Accessible by'), 'description', $this->_('Checked organizations see this organizations respondents.'),
-                'elementClass', 'MultiCheckbox', 'multiOptions', $this->util->getDbLookup()->getOrganizations());
-        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
-        $tp->apply($model, 'gor_accessible_by');
-
-        if ($detailed && $this->project->multiLocale) {
-            $model->set('gor_name', 'description', 'ENGLISH please! Use translation file to translate.');
-            $model->set('gor_url',  'description', 'ENGLISH link preferred. Use translation file to translate.');
-            $model->set('gor_task', 'description', 'ENGLISH please! Use translation file to translate.');
-        }
-        $model->setIfExists('gor_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
-
-        $model->setIfExists('gor_allowed_ip_ranges',
-            'label', $this->_('Allowed IP Ranges'),
-            'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
-            'size', 50,
-            'validator', new Gems_Validate_IPRanges(),
-            'maxlength', 500
-            );
-
-        if($model->has('gor_user_class')) {
-            $definitions = $this->loader->getUserLoader()->getAvailableStaffDefinitions();
-            //Use first element as default
-            $tmp = array_keys($definitions);
-            $default = array_shift($tmp);
-            $model->set('gor_user_class', 'default', $default);
-            if (count($definitions)>1) {
-                if ($action !== 'create') {
-                    $model->set('gor_user_class', 'elementClass', 'Exhibitor', 'description', $this->_('This can not be changed yet'));
-                }
-                $model->set('gor_user_class', 'label', $this->_('User Definition'), 'multiOptions', $definitions);
+            if (('create' == $action) || ('edit' == $action)) {
+                $model->applyEditSettings();
             } else {
-                $model->set('elementClass', 'hidden');
+                $model->applyDetailSettings();
             }
+        } else {
+            $model->applyBrowseSettings();
         }
-
-        $model->addColumn("CASE WHEN gor_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
-
-        Gems_Model::setChangeFieldsByPrefix($model, 'gor');
 
         return $model;
     }
@@ -234,15 +164,6 @@ class Gems_Default_OrganizationAction extends Gems_Controller_ModelSnippetAction
     public function getIndexTitle()
     {
         return $this->_('Participating organizations');
-    }
-
-    /**
-     * Helper function to get the templates for the password mails
-     * @return array
-     */
-    public function getPasswordTemplates()
-    {
-        return $this->loader->getMailLoader()->getMailElements()->getAvailableMailTemplates(false, 'staffPassword');
     }
 
     /**

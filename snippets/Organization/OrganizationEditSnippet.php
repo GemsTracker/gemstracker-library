@@ -48,65 +48,44 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
 {
     /**
      *
-     * @var Zend_Cache_Core
-     */
-    protected $cache;
-
-    /**
-     *
      * @var Gems_Loader
      */
     protected $loader;
 
-    /**
-     * Adds elements from the model to the bridge that creates the form.
+   /**
+     * Hook that allows actions when data was saved
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
+     * When not rerouted, the form will be populated afterwards
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param int $changed The number of changed rows (0 or 1 usually, but can be more)
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function afterSave($changed)
     {
-        //Get all elements in the model if not already done
-        $this->initItems();
+         parent::afterSave($changed);
 
-        //Create our tab structure first check if tab already exists to allow extension
-        if (!($bridge->getTab('general'))) {
-            $bridge->addTab('general', 'value', $this->_('General'));
-        }
-        //Need the first two together for validation
-        $bridge->addHtml('org')->b($this->_('Organization'));
-        $this->addItems($bridge, 'gor_name', 'gor_id_organization', 'gor_location', 'gor_url', 'gor_url_base', 'gor_active');
-        $bridge->addHtml('contact')->b($this->_('Contact'));
-        $bridge->addHtml('contact_desc')->i($this->_('The contact details for this organization, used for emailing.'));
-        $this->addItems($bridge, 'gor_contact_name', 'gor_contact_email');
-        $bridge->addHtml('general_other')->b($this->_('Other'));
-        $this->addItems($bridge, 'gor_iso_lang', 'gor_code', 'gor_has_respondents');
+        // Make sure any changes in the allowed list are reflected.
+        $this->loader->getCurrentUser()->refreshAllowedOrganizations();
+    }
 
-        if (!($bridge->getTab('email'))) {
-            $bridge->addTab('email', 'value', $this->_('Email') . ' & ' . $this->_('Token'));
-        }
-        $this->addItems($bridge, 'gor_welcome', 'gor_signature');
+    /**
+     * Hook that loads the form data from $_POST or the model
+     *
+     * Or from whatever other source you specify here.
+     */
+    protected function loadFormData()
+    {
+        parent::loadFormData();
 
-        $this->addItems($bridge, 'gor_create_account_template', 'gor_reset_pass_template');
+        if (isset($this->formData['gor_id_organization']) && $this->formData['gor_id_organization']) {
+            $model = $this->getModel();
 
-        if (!($bridge->getTab('access'))) {
-            $bridge->addTab('access', 'value', $this->_('Access'));
-        }
-
-        //Strip self from list of organizations
-        if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
+            // Strip self from list of organizations
             $multiOptions = $model->get('gor_accessible_by', 'multiOptions');
             unset($multiOptions[$this->formData['gor_id_organization']]);
             $model->set('gor_accessible_by', 'multiOptions', $multiOptions);
-        }
-        $this->addItems($bridge, 'gor_has_login', 'gor_add_respondents', 'gor_respondent_group', 'gor_accessible_by');
 
-        //Show what organizations we can access
-        if (isset($this->formData['gor_id_organization']) && !empty($this->formData['gor_id_organization'])) {
-            $org = $this->loader->getOrganization($this->formData['gor_id_organization']);
+            // Show allowed organisations
+            $org         = $this->loader->getOrganization($this->formData['gor_id_organization']);
             $allowedOrgs = $org->getAllowedOrganizations();
             //Strip self
             unset($allowedOrgs[$this->formData['gor_id_organization']]);
@@ -114,32 +93,8 @@ class Organization_OrganizationEditSnippet extends Gems_Snippets_ModelTabFormSni
             if (! $display) {
                 $display = MUtil_Html::create('em', $this->_('No access to other organizations.'));
             }
-            $bridge->addExhibitor('allowed', 'value', $display, 'label', $this->_('Can access'));
+
+            $model->set('allowed', 'value', $display);
         }
-
-        $this->addItems($bridge, 'gor_allowed_ip_ranges', 'gor_user_class');
-
-        if (isset($this->formData['gor_user_class']) && !empty($this->formData['gor_user_class'])) {
-            $definition = $this->loader->getUserLoader()->getUserDefinition($this->formData['gor_user_class']);
-
-            if ($definition instanceof Gems_User_UserDefinitionConfigurableInterface && $definition->hasConfig()) {
-                $definition->appendConfigFields($bridge);
-            }
-
-        }
-
-        //now add remaining items if any
-        if (count($this->_items)>0 && !($bridge->getTab('other'))) {
-            $bridge->addTab('other', 'value', $this->_('Other'));
-        }
-        parent::addItems($bridge, $this->_items);
-    }
-
-    public function afterSave($changed)
-    {
-        parent::afterSave($changed);
-
-        // Make sure any changes in the allowed list are reflected.
-        $this->loader->getCurrentUser()->refreshAllowedOrganizations();
     }
 }
