@@ -465,7 +465,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 );
 
         $element = $this->form->createElement('exhibitor', $name, $options);
-        
+
         $this->form->addElement($element);
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 

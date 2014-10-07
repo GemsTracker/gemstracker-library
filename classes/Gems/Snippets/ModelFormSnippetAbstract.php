@@ -146,7 +146,11 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
             $modelOptions = $model->get($name);
             $tabName      = $model->get($name, 'tab');
             if ($tabName && ($tabName !== $oldTab)) {
-                $bridge->addTab('tab' . $tab, 'value', $tabName);
+                if (isset($modelOptions['elementClass']) && ('tab' == strtolower($modelOptions['elementClass']))) {
+                    $bridge->addTab('tab' . $tab, $modelOptions + array('value' => $tabName));
+                } else {
+                    $bridge->addTab('tab' . $tab, 'value', $tabName);
+                }
                 $oldTab = $tabName;
                 $tab++;
             }
@@ -259,7 +263,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 $element->setValue($links);
                 $element->setOrder(999);
                 $this->_form->addElement($element);
-            }   
+            }
         }
     }
 

@@ -125,7 +125,10 @@ class MUtil_Model_Type_ConcatenatedRow
      */
     public function format($value)
     {
-        // MUtil_Echo::track($value);
+        // MUtil_Echo::track($value, $this->options);
+        if (! is_array($value)) {
+            $value = $this->loadValue($value);
+        }
         if (is_array($value)) {
             if ($this->options) {
                 foreach ($value as &$val) {

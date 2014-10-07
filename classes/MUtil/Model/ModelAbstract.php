@@ -381,11 +381,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             if ($this->getMeta(self::LOAD_TRANSFORMER)) {
                 $transformColumns = $this->getCol(self::LOAD_TRANSFORMER);
             }
-        }        
-        
+        }
+
         foreach ($transformColumns as $name => $call) {
             $value = isset($newRow[$name]) ? $newRow[$name] : null;
-            
+
             // Don't use getOnLoad to prevent additional overhead since we have the
             // callable already
             if (is_callable($call)) {
@@ -394,7 +394,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                  $newRow[$name] = $call;
              }
         }
-        
+
         if ($this->_model_dependencies) {
             $newRow = $this->processDependencies($newRow, $new);
         }
@@ -1584,7 +1584,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $this->_checkFilterUsed($filter),
                 $this->_checkSortUsed($sort)
                 );
-        
+
         if (is_array($data)) {
             $data = $this->processAfterLoad($data);
         }
@@ -1727,22 +1727,22 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if ($isPostData) {
             // Create an array to add a null for any missing multiOptions value
             $extraPostData = array_fill_keys($this->getColNames('multiOptions'), null);
-        }       
-              
+        }
+
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
             // Create empty array, will be filled after first row to speed up performance
             $transformColumns = array();
-            
+
             foreach ($data as $key => $row) {
                 if ($isPostData) {
                     // Add a null for any missing multiOptions value
                     $row = $row + $extraPostData;
                 }
-                
+
                 $data[$key] = $this->_processRowAfterLoad($row, $new, $isPostData, $transformColumns);
             }
         }
-        
+
         return $data;
     }
 
@@ -2174,7 +2174,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *                            an unlimited number of $key values pairs can be given.
      * @return boolean True when the $name exists in this model.
      */
-    public function setIfExists($name, $arrayOrKey1, $value1 = null, $key2 = null, $value2 = null)
+    public function setIfExists($name, $arrayOrKey1 = array(), $value1 = null, $key2 = null, $value2 = null)
     {
         if ($this->has($name)) {
             $args = func_get_args();
