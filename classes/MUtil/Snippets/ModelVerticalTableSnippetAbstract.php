@@ -122,7 +122,7 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
         }
 
         $table = $this->getShowTable($model);
-        $table->setRepeater($this->getRepeater($model));
+
         $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
         $container[] = $table;
         return $container;
@@ -156,6 +156,10 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
         $this->setShowTableHeader($bridge, $model);
         $this->setShowTableFooter($bridge, $model);
         $this->addShowTableRows($bridge, $model);
+
+        if (! $bridge->getRepeater()) {
+            $bridge->setRepeater($this->getRepeater($model));
+        }
 
         return $bridge->getTable();
     }

@@ -439,6 +439,9 @@ abstract class MUtil_Model_Bridge_BridgeAbstract extends MUtil_Translate_Transla
         $this->setMode(self::MODE_SINGLE_ROW);
 
         if (null === $row) {
+            // Stop tracking usage, in row mode it is unlikely
+            // all fields have been set.
+            $this->model->trackUsage(false);
             $row = $this->model->loadFirst();
 
             if (! $row) {
