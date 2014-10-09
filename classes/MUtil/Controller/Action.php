@@ -163,13 +163,13 @@ abstract class MUtil_Controller_Action extends Zend_Controller_Action
      * Adds one or more messages to the session based message store.
      *
      * @param mixed $message_args Can be an array or multiple argemuents. Each sub element is a single message string
-     * @param string $status Optional message status
+     * @param string $status Optional message status, one of: success, info, warning or danger
      * @return MUtil_Controller_Action
      */
-    public function addMessage($message, $status=null)
+    public function addMessage($message, $status = null)
     {
         $messenger = $this->getMessenger();
-        $messenger->addMessage($message,$status);
+        $messenger->addMessage($message, $status);
 
         return $this;
     }

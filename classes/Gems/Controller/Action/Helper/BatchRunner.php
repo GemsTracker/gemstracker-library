@@ -71,7 +71,7 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
             $controller->html->h3($title);
 
             if ($batch->isFinished()) {
-                $controller->addMessage($batch->getMessages(true));
+                $controller->addMessage($batch->getMessages(true), 'info');
                 $controller->html->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
             } else {
                 if ($batch->count()) {

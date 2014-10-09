@@ -46,6 +46,12 @@
 
 class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Action_Helper_FlashMessenger
 {
+    /**
+     * The satus values that are allowed
+     *
+     * @var array
+     */
+    protected $_allowedStati = array('success', 'info', 'warning', 'danger');
 
 	/**
 	 * @var string The default status, if no status has been set.
@@ -55,7 +61,7 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
 	/**
 	 * Add a message with a status
 	 * @param string|array     $message   The message to add. You can group Messages in one status by passing them as an Array
-	 * @param string $status    The status to add to the message
+	 * @param string $status    The status to add to the message, one of: success, info, warning or danger
 	 * @param string $namespace The messages namespace
 	 */
 	public function addMessage($message, $status = null, $namespace = null)
@@ -85,29 +91,33 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
             $messages = array_merge($messages, $this->getCurrentMessages());
         }
 
-        $errorContainer = MUtil_Html::create()->div(array('class' => 'errors'));
-        $errorClose = MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
-        $errorClose->raw('&times;');
-
         if ($messages) {
-            foreach ($messages as &$message) {
+            $errorContainer = MUtil_Html::create()->div(array('class' => 'errors'));
+            $errorClose = MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
+            $errorClose->raw('&times;');
+            $errorUls = array();
 
+            foreach ($messages as $message) {
                 $status = 'warning';
-                $multiMessage = false;
                 if (is_array($message)) {
-                 	if (is_string($message[1])) {
-                    	$status = $message[1];
+                 	if ((2 === count($message)) &&
+                            is_string($message[1]) &&
+                            in_array($message[1], $this->_allowedStati)) {
+                    	$status  = $message[1];
                     	$message = $message[0];
-                    }
-                    if (is_array($message)) {
-                    	$message = MUtil_Html::create()->ul($message);
                     }
                 }
 
-                $error = MUtil_Html::create()->div(array('class' => 'alert alert-'.$status, 'role' => 'alert'));
-                $error[] = $errorClose;
-                $error[] = $message;
-                $errorContainer[] = $error;
+                if (! isset($errorContainer[$status])) {
+                    $errorContainer[$status] = MUtil_Html::create()->div(
+                            array('class' => 'alert alert-' . $status, 'role' => 'alert'),
+                            $errorClose
+                            );
+                    $ul[$status] = $errorContainer[$status]->ul();
+                }
+                foreach ((array) $message as $msg) {
+                    $ul[$status]->append($msg);
+                }
             }
 
             $this->clearCurrentMessages();

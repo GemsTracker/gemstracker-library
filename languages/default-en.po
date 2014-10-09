@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-07 16:57+0100\n"
+"POT-Creation-Date: 2014-10-09 14:20+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -138,7 +138,7 @@ msgid "Search"
 msgstr "Search"
 
 #: classes/Gems/Controller/BrowseEditAction.php:670
-#: classes/Gems/Default/TrackMaintenanceAction.php:422
+#: classes/Gems/Default/TrackMaintenanceAction.php:463
 #, php-format
 msgid "No %s found"
 msgstr "No %s found"
@@ -861,7 +861,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/ComplianceAction.php:190
 #: classes/Gems/Default/ProjectTracksAction.php:85
 #: classes/Gems/Default/TrackAction.php:530
-#: classes/Gems/Default/TrackMaintenanceAction.php:370
+#: classes/Gems/Default/TrackMaintenanceAction.php:383
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:201
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:185
 msgid "track"
@@ -1109,7 +1109,7 @@ msgstr "Type"
 
 #: classes/Gems/Default/DatabaseAction.php:126
 #: classes/Gems/Default/SurveyMaintenanceAction.php:491
-#: classes/Gems/Default/TrackMaintenanceAction.php:274
+#: classes/Gems/Default/TrackMaintenanceAction.php:287
 msgid "Group"
 msgstr "Group"
 
@@ -1404,7 +1404,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 
 #: classes/Gems/Default/ExportAction.php:280
 #: classes/Gems/Default/ReceptionAction.php:104
-#: classes/Gems/Default/TrackMaintenanceAction.php:375
+#: classes/Gems/Default/TrackMaintenanceAction.php:388
 #: classes/Gems/Menu.php:373 classes/Gems/Menu/MenuAbstract.php:578
 #: classes/Gems/Menu/MenuAbstract.php:687 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
@@ -2087,7 +2087,7 @@ msgstr[1] "email servers"
 #: classes/Gems/Default/StaffAction.php:365
 #: classes/Gems/Default/StaffAction.php:439
 #: classes/Gems/Default/TokenPlanAction.php:363
-#: classes/Gems/Default/TrackMaintenanceAction.php:335
+#: classes/Gems/Default/TrackMaintenanceAction.php:348
 #: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:70
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:105
 #: classes/Gems/Snippets/RespondentSearchSnippet.php:88
@@ -2980,7 +2980,7 @@ msgstr ""
 "User with id %s already exists but is deleted, do you want to reactivate the "
 "account?"
 
-#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1960
+#: classes/Gems/Default/StaffAction.php:347 classes/GemsEscort.php:1962
 msgid "No access to page"
 msgstr "No access to page"
 
@@ -3662,37 +3662,72 @@ msgstr ""
 "If you do not run this code after changing a track, then the old tracks "
 "remain as they were and only newly created tracks will reflect the changes."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:227
+#: classes/Gems/Default/TrackMaintenanceAction.php:166
+msgid "Track field recalculation"
+msgstr "Track field recalculation"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:168
+msgid "Recalculates the values the fields should have."
+msgstr "Recalculates the values the fields should have."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:170
+msgid ""
+"Run this code when automatically calculated track fields have changed or "
+"when the code has changed and the track must be adjusted."
+msgstr ""
+"Run this code when automatically calculated track fields have changed or "
+"when the code has changed and the track must be adjusted."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:171
+msgid ""
+"If you do not run this code after changing track fields, then the old fields "
+"values remain as they were and only newly changed and newly created tracks "
+"will reflect the changes."
+msgstr ""
+"If you do not run this code after changing track fields, then the old fields "
+"values remain as they were and only newly changed and newly created tracks "
+"will reflect the changes."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:240
 msgid "Checking round assignments for all tracks."
 msgstr "Checking round assignments for all tracks."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:243
+#: classes/Gems/Default/TrackMaintenanceAction.php:256
 #, php-format
 msgid "Checking round assignments for track '%s'."
 msgstr "Checking round assignments for track '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:325
+#: classes/Gems/Default/TrackMaintenanceAction.php:338
 msgid "(all track engines)"
 msgstr "(all track engines)"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:329
+#: classes/Gems/Default/TrackMaintenanceAction.php:342
 msgid "(both)"
 msgstr "(both)"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:394
+#: classes/Gems/Default/TrackMaintenanceAction.php:397
+msgid "Recalculating fields for all tracks."
+msgstr "Recalculating fields for all tracks."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:413
+#, php-format
+msgid "Recalculating fields for track '%s'."
+msgstr "Recalculating fields for track '%s'."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:435
 msgid "fields"
 msgstr "fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:395
+#: classes/Gems/Default/TrackMaintenanceAction.php:436
 msgid "rounds"
 msgstr "rounds"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:426
+#: classes/Gems/Default/TrackMaintenanceAction.php:467
 #, php-format
 msgid "%s in track"
 msgstr "%s in track"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:428
+#: classes/Gems/Default/TrackMaintenanceAction.php:469
 #: classes/Gems/Menu.php:349 classes/Gems/Menu.php:383
 #: classes/Gems/Menu.php:431 snippets/AddTracksSnippet.php:244
 #: snippets/EditSingleSurveyTokenSnippet.php:132
@@ -4258,7 +4293,7 @@ msgstr "Lost password"
 msgid "Your account"
 msgstr "Your account"
 
-#: classes/Gems/Menu.php:267 classes/GemsEscort.php:967
+#: classes/Gems/Menu.php:267 classes/GemsEscort.php:960
 msgid "Logoff"
 msgstr "Logoff"
 
@@ -4495,7 +4530,6 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:614
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -4555,13 +4589,21 @@ msgstr "Copy"
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:733
+#: classes/Gems/Menu/MenuAbstract.php:732
+msgid "Recalculate fields"
+msgstr "Recalculate fields"
+
+#: classes/Gems/Menu/MenuAbstract.php:735
 msgid "Tracks per org"
 msgstr "Tracks per org"
 
-#: classes/Gems/Menu/MenuAbstract.php:737
+#: classes/Gems/Menu/MenuAbstract.php:739
 msgid "Check all assignments"
 msgstr "Check all assignments"
+
+#: classes/Gems/Menu/MenuAbstract.php:740
+msgid "Recalculate all fields"
+msgstr "Recalculate all fields"
 
 #: classes/Gems/Menu/SubMenuItem.php:395
 msgid "New"
@@ -4600,7 +4642,7 @@ msgstr "Appointment"
 
 #: classes/Gems/Model/AppointmentModel.php:197
 #: classes/Gems/Model/AppointmentModel.php:227
-#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1314
+#: classes/Gems/Model/AppointmentModel.php:230 classes/GemsEscort.php:1307
 msgid "dd-mm-yyyy hh:mm"
 msgstr "dd-mm-yyyy hh:mm"
 
@@ -4708,7 +4750,7 @@ msgid "Contact email"
 msgstr "Contact email"
 
 #: classes/Gems/Model/OrganizationModel.php:139
-#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:161
 msgid "Login"
 msgstr "Login"
 
@@ -5325,6 +5367,11 @@ msgstr "Checked %d tracks."
 #, php-format
 msgid "%d token round completion events caused changed to %d tokens."
 msgstr "%d token round completion events caused changed to %d tokens."
+
+#: classes/Gems/Task/Tracker/RecalculateFields.php:76
+#, php-format
+msgid "%d tracks checked, %d had field changes."
+msgstr "%d tracks checked, %d had field changes."
 
 #: classes/Gems/Task/Tracker/RefreshQuestion.php:104
 #, php-format
@@ -6349,37 +6396,37 @@ msgstr "Mr./Mrs."
 msgid "Path %s not writable"
 msgstr "Path %s not writable"
 
-#: classes/GemsEscort.php:786
+#: classes/GemsEscort.php:779
 msgid " > "
 msgstr " > "
 
-#: classes/GemsEscort.php:965
+#: classes/GemsEscort.php:958
 #, php-format
 msgid "You are logged in as %s"
 msgstr "You are logged in as %s"
 
-#: classes/GemsEscort.php:970
+#: classes/GemsEscort.php:963
 msgid "You are not logged in"
 msgstr "You are not logged in"
 
-#: classes/GemsEscort.php:1198
+#: classes/GemsEscort.php:1191
 #, php-format
 msgid "User: %s"
 msgstr "User: %s"
 
-#: classes/GemsEscort.php:1223
+#: classes/GemsEscort.php:1216
 msgid "version"
 msgstr "version"
 
-#: classes/GemsEscort.php:1304
+#: classes/GemsEscort.php:1297
 msgid "dd-mm-yyyy"
 msgstr "dd-mm-yyyy"
 
-#: classes/GemsEscort.php:1328
+#: classes/GemsEscort.php:1321
 msgid "hh:mm"
 msgstr "hh:mm"
 
-#: classes/GemsEscort.php:1754
+#: classes/GemsEscort.php:1749
 msgid ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
@@ -6387,33 +6434,33 @@ msgstr ""
 "Take note: your session has expired, your inputs were not saved. Please "
 "check the input data and try again"
 
-#: classes/GemsEscort.php:1924
+#: classes/GemsEscort.php:1926
 msgid "Please check back later."
 msgstr "Please check back later."
 
-#: classes/GemsEscort.php:1926 classes/GemsEscort.php:1930
-#: classes/GemsEscort.php:1931
+#: classes/GemsEscort.php:1928 classes/GemsEscort.php:1932
+#: classes/GemsEscort.php:1933
 msgid "System is in maintenance mode"
 msgstr "System is in maintenance mode"
 
-#: classes/GemsEscort.php:1942
+#: classes/GemsEscort.php:1944
 msgid "No access to site."
 msgstr "No access to site."
 
-#: classes/GemsEscort.php:1944 classes/GemsEscort.php:2005
+#: classes/GemsEscort.php:1946 classes/GemsEscort.php:2007
 msgid "You have no access to this site."
 msgstr "You have no access to this site."
 
-#: classes/GemsEscort.php:1962
+#: classes/GemsEscort.php:1964
 #, php-format
 msgid "Access to the %s/%s page is not allowed for current role: %s."
 msgstr "Access to the %s/%s page is not allowed for current role: %s."
 
-#: classes/GemsEscort.php:1989 classes/GemsEscort.php:2003
+#: classes/GemsEscort.php:1991 classes/GemsEscort.php:2005
 msgid "You are no longer logged in."
 msgstr "You are no longer logged in."
 
-#: classes/GemsEscort.php:1990
+#: classes/GemsEscort.php:1992
 msgid "You must login to access this page."
 msgstr "You must login to access this page."
 
