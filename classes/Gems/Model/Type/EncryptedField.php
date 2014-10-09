@@ -83,8 +83,8 @@ class Gems_Model_Type_EncryptedField
         $this->findValue[$methodField] = $valueField;
 
         $model->setSaveWhenNotNull($valueField);
-        $model->setOnLoad($valueField, array($this, 'loadPassword'));
-        $model->setOnSave($valueField, array($this, 'savePassword'));
+        $model->setOnLoad($valueField, array($this, 'loadValue'));
+        $model->setOnSave($valueField, array($this, 'saveValue'));
 
         // Only hidden to make sure onSave's are triggered
         $model->set($methodField, 'elementClass', 'hidden');
@@ -116,7 +116,7 @@ class Gems_Model_Type_EncryptedField
      * @param boolean $isPost True when passing on post data
      * @return MUtil_Date|Zend_Db_Expr|string
      */
-    public function loadPassword($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         if ($value && (! $isPost)) {
             if ($this->valueMask) {
@@ -165,7 +165,7 @@ class Gems_Model_Type_EncryptedField
      * @param array $context Optional, the other values being saved
      * @return Zend_Date
      */
-    public function savePassword($value, $isNew = false, $name = null, array $context = array())
+    public function saveValue($value, $isNew = false, $name = null, array $context = array())
     {
         if ($value) {
             // MUtil_Echo::track($value);
