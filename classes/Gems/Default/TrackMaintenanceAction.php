@@ -159,6 +159,19 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     }
 
     /**
+     * Displays a textual explanation what recalculating does on the page.
+     */
+    protected function addRecalcInformation()
+    {
+        $this->html->h2($this->_('Track field recalculation'));
+        $ul = $this->html->ul();
+        $ul->li($this->_('Recalculates the values the fields should have.'));
+
+        $this->html->pInfo($this->_('Run this code when automatically calculated track fields have changed or when the code has changed and the track must be adjusted.'));
+        $this->html->pInfo($this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'));
+    }
+
+    /**
      * @param array $data
      * @param bool  $isNew
      * @return array
@@ -373,6 +386,34 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
     public function getTopicTitle()
     {
         return $this->_('Tracks');
+    }
+
+    /**
+     * Action for checking all assigned rounds using a batch
+     */
+    public function recalcAllFieldsAction()
+    {
+        $batch = $this->loader->getTracker()->recalcTrackFields('trackRecalcAllFields', $this->loader->getCurrentUser()->getUserId());
+        $this->_helper->BatchRunner($batch, $this->_('Recalculating fields for all tracks.'));
+
+        $this->addRecalcInformation();
+    }
+
+    /**
+     * Action for checking all assigned rounds for a single track using a batch
+     */
+    public function recalcFieldsAction()
+    {
+        $id    = $this->_getIdParam();
+        $track = $this->loader->getTracker()->getTrackEngine($id);
+        $track->applyToMenuSource($this->menu->getParameterSource());
+        $where = $this->db->quoteInto('gr2t_id_track = ?', $id);
+        $batch = $this->loader->getTracker()->recalcTrackFields('trackRecalcFields' . $id, $this->loader->getCurrentUser()->getUserId(), $where);
+
+        $title = sprintf($this->_("Recalculating fields for track '%s'."), $track->getTrackName());
+        $this->_helper->BatchRunner($batch, $title);
+
+        $this->addRecalcInformation();
     }
 
     public function showAction()

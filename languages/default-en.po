@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-24 18:47+0100\n"
+"POT-Creation-Date: 2014-10-09 14:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -22,7 +22,7 @@ msgid "Database needs to be updated!"
 msgstr "Database needs to be updated!"
 
 #: classes/Gems/Agenda.php:226
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:848
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:853
 msgid "; "
 msgstr "; "
 
@@ -138,7 +138,7 @@ msgid "Search"
 msgstr "Search"
 
 #: classes/Gems/Controller/BrowseEditAction.php:636
-#: classes/Gems/Default/TrackMaintenanceAction.php:422
+#: classes/Gems/Default/TrackMaintenanceAction.php:463
 #, php-format
 msgid "No %s found"
 msgstr "No %s found"
@@ -151,7 +151,7 @@ msgstr "No %s found."
 
 #: classes/Gems/Controller/BrowseEditAction.php:859
 #: classes/Gems/Default/TrackRoundsAction.php:281
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:85
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:91
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
@@ -169,8 +169,8 @@ msgstr "Are you sure?"
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:171
 #: classes/Gems/Util/Translated.php:274
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:239
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:766
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:115
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:771
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:121
 msgid "Yes"
 msgstr "Yes"
 
@@ -190,7 +190,7 @@ msgstr "Yes"
 #: classes/Gems/Util/ReceptionCodeLibrary.php:144
 #: classes/Gems/Util/Translated.php:274
 #: classes/MUtil/Snippets/ModelYesNoDeleteSnippetAbstract.php:245
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:116
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:122
 msgid "No"
 msgstr "No"
 
@@ -858,7 +858,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/ComplianceAction.php:190
 #: classes/Gems/Default/ProjectTracksAction.php:85
 #: classes/Gems/Default/TrackAction.php:528
-#: classes/Gems/Default/TrackMaintenanceAction.php:370
+#: classes/Gems/Default/TrackMaintenanceAction.php:383
 #: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:201
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:185
 msgid "track"
@@ -1107,7 +1107,7 @@ msgstr "Type"
 
 #: classes/Gems/Default/DatabaseAction.php:124
 #: classes/Gems/Default/SurveyMaintenanceAction.php:491
-#: classes/Gems/Default/TrackMaintenanceAction.php:274
+#: classes/Gems/Default/TrackMaintenanceAction.php:287
 msgid "Group"
 msgstr "Group"
 
@@ -1402,7 +1402,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 
 #: classes/Gems/Default/ExportAction.php:275
 #: classes/Gems/Default/ReceptionAction.php:104
-#: classes/Gems/Default/TrackMaintenanceAction.php:375
+#: classes/Gems/Default/TrackMaintenanceAction.php:388
 #: classes/Gems/Menu.php:370 classes/Gems/Menu/MenuAbstract.php:543
 #: classes/Gems/Menu/MenuAbstract.php:653 snippets/AddTracksSnippet.php:241
 msgid "Tracks"
@@ -1480,7 +1480,7 @@ msgid "Full name"
 msgstr "Full name"
 
 #: classes/Gems/Default/FileActionAbstract.php:120 classes/Gems/Menu.php:183
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:852
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:857
 msgid "Content"
 msgstr "Content"
 
@@ -1989,7 +1989,7 @@ msgstr "From address"
 #: classes/Gems/Export/RespondentExport.php:253 classes/Gems/Menu.php:263
 #: classes/Gems/Menu.php:364 classes/Gems/Menu.php:416
 #: classes/Gems/Model/Translator/TokenAnswerTranslator.php:114
-#: classes/Gems/Snippets/Import/FileImportSnippet.php:89
+#: classes/Gems/Snippets/Import/FileImportSnippet.php:95
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:97
 #: classes/Gems/Snippets/Respondent/MailLogSnippet.php:99
 #: classes/Gems/Snippets/TokenModelSnippetAbstract.php:70
@@ -2092,7 +2092,7 @@ msgstr "Email servers"
 #: classes/Gems/Default/StaffAction.php:365
 #: classes/Gems/Default/StaffAction.php:439
 #: classes/Gems/Default/TokenPlanAction.php:363
-#: classes/Gems/Default/TrackMaintenanceAction.php:335
+#: classes/Gems/Default/TrackMaintenanceAction.php:348
 #: classes/Gems/Snippets/Agenda/CalendarSearchSnippet.php:70
 #: classes/Gems/Snippets/Mail/Log/MailLogSearchSnippet.php:105
 #: classes/Gems/Snippets/RespondentSearchSnippet.php:88
@@ -2249,7 +2249,7 @@ msgid "Can the organization be used?"
 msgstr "Can the organization be used?"
 
 #: classes/Gems/Default/OrganizationAction.php:161
-#: classes/Gems/User/Form/LoginForm.php:151 views/scripts/index/login.phtml:7
+#: classes/Gems/User/Form/LoginForm.php:151
 msgid "Login"
 msgstr "Login"
 
@@ -2554,7 +2554,7 @@ msgid "Survey not specified."
 msgstr "Survey not specified."
 
 #: classes/Gems/Default/ProjectTracksAction.php:132
-#: classes/Gems/Default/TrackActionAbstract.php:586
+#: classes/Gems/Default/TrackActionAbstract.php:587
 #, php-format
 msgid "Track %s does not exist."
 msgstr "Track %s does not exist."
@@ -2763,7 +2763,7 @@ msgstr "Mail Activity Log for patient number %s: %s"
 #: classes/Gems/Snippets/EditTrackSnippet.php:59
 #: snippets/DeleteInSourceTrackSnippet.php:132
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:174
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:150
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:156
 #: snippets/DeleteTrackTokenSnippet.php:195
 #: snippets/EditSingleSurveyTokenSnippet.php:223
 #: snippets/EditTrackTokenSnippet.php:147
@@ -3182,7 +3182,7 @@ msgstr "Summary"
 #: classes/Gems/Default/SummaryAction.php:232
 #: classes/Gems/Default/TokenPlanAction.php:537
 #: classes/Gems/Default/TrackAction.php:526
-#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:142
+#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:148
 msgid "token"
 msgid_plural "tokens"
 msgstr[0] "token"
@@ -3227,7 +3227,7 @@ msgstr "Assignments of this survey to %s: %s"
 
 #: classes/Gems/Default/SurveyAction.php:175
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:173
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:149
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:155
 #: snippets/EditSingleSurveyTokenSnippet.php:222
 #: snippets/ShowSingleSurveyTokenSnippet.php:139
 msgid "Show surveys"
@@ -3590,7 +3590,7 @@ msgstr "Show tracks"
 
 #: classes/Gems/Default/TrackAction.php:283
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:171
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:147
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:153
 #: snippets/DeleteTrackTokenSnippet.php:192
 #: snippets/EditTrackTokenSnippet.php:144
 #: snippets/ShowTrackTokenSnippet.php:163
@@ -3765,37 +3765,72 @@ msgstr ""
 "If you do not run this code after changing a track, then the old tracks "
 "remain as they were and only newly created tracks will reflect the changes."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:227
+#: classes/Gems/Default/TrackMaintenanceAction.php:166
+msgid "Track field recalculation"
+msgstr "Track field recalculation"
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:168
+msgid "Recalculates the values the fields should have."
+msgstr "Recalculates the values the fields should have."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:170
+msgid ""
+"Run this code when automatically calculated track fields have changed or "
+"when the code has changed and the track must be adjusted."
+msgstr ""
+"Run this code when automatically calculated track fields have changed or "
+"when the code has changed and the track must be adjusted."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:171
+msgid ""
+"If you do not run this code after changing track fields, then the old fields "
+"values remain as they were and only newly changed and newly created tracks "
+"will reflect the changes."
+msgstr ""
+"If you do not run this code after changing track fields, then the old fields "
+"values remain as they were and only newly changed and newly created tracks "
+"will reflect the changes."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:240
 msgid "Checking round assignments for all tracks."
 msgstr "Checking round assignments for all tracks."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:243
+#: classes/Gems/Default/TrackMaintenanceAction.php:256
 #, php-format
 msgid "Checking round assignments for track '%s'."
 msgstr "Checking round assignments for track '%s'."
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:325
+#: classes/Gems/Default/TrackMaintenanceAction.php:338
 msgid "(all track engines)"
 msgstr "(all track engines)"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:329
+#: classes/Gems/Default/TrackMaintenanceAction.php:342
 msgid "(both)"
 msgstr "(both)"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:394
+#: classes/Gems/Default/TrackMaintenanceAction.php:397
+msgid "Recalculating fields for all tracks."
+msgstr "Recalculating fields for all tracks."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:413
+#, php-format
+msgid "Recalculating fields for track '%s'."
+msgstr "Recalculating fields for track '%s'."
+
+#: classes/Gems/Default/TrackMaintenanceAction.php:435
 msgid "fields"
 msgstr "fields"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:395
+#: classes/Gems/Default/TrackMaintenanceAction.php:436
 msgid "rounds"
 msgstr "rounds"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:426
+#: classes/Gems/Default/TrackMaintenanceAction.php:467
 #, php-format
 msgid "%s in track"
 msgstr "%s in track"
 
-#: classes/Gems/Default/TrackMaintenanceAction.php:428
+#: classes/Gems/Default/TrackMaintenanceAction.php:469
 #: classes/Gems/Menu.php:346 classes/Gems/Menu.php:380
 #: classes/Gems/Menu.php:428 snippets/AddTracksSnippet.php:244
 #: snippets/EditSingleSurveyTokenSnippet.php:132
@@ -4135,7 +4170,7 @@ msgid "Enter the particulars concerning the assignment to this respondent."
 msgstr "Enter the particulars concerning the assignment to this patient."
 
 #: classes/Gems/Export/RespondentExport.php:338
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:107
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:112
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:138
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:182
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:240
@@ -4538,7 +4573,7 @@ msgid "Importable"
 msgstr "Importable"
 
 #: classes/Gems/Menu/MenuAbstract.php:406
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:571
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:577
 msgid "Import file"
 msgstr "Import file"
 
@@ -4599,7 +4634,6 @@ msgid "Clean cache"
 msgstr "Clean cache"
 
 #: classes/Gems/Menu/MenuAbstract.php:579
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -4659,13 +4693,21 @@ msgstr "Copy"
 msgid "Check assignments"
 msgstr "Check assignments"
 
-#: classes/Gems/Menu/MenuAbstract.php:699
+#: classes/Gems/Menu/MenuAbstract.php:698
+msgid "Recalculate fields"
+msgstr "Recalculate fields"
+
+#: classes/Gems/Menu/MenuAbstract.php:701
 msgid "Tracks per org"
 msgstr "Tracks per org"
 
-#: classes/Gems/Menu/MenuAbstract.php:703
+#: classes/Gems/Menu/MenuAbstract.php:705
 msgid "Check all assignments"
 msgstr "Check all assignments"
+
+#: classes/Gems/Menu/MenuAbstract.php:706
+msgid "Recalculate all fields"
+msgstr "Recalculate all fields"
 
 #: classes/Gems/Menu/SubMenuItem.php:395
 msgid "New"
@@ -4731,7 +4773,7 @@ msgid "not created"
 msgstr "not created"
 
 #: classes/Gems/Model/DbaModel.php:121
-#: classes/Gems/Snippets/Import/FileImportSnippet.php:80
+#: classes/Gems/Snippets/Import/FileImportSnippet.php:86
 #: classes/Gems/Util/Translated.php:123
 msgid "unknown"
 msgstr "unknown"
@@ -5046,12 +5088,12 @@ msgstr "Patient information"
 msgid "Are you sure you want to delete '%s'?"
 msgstr "Are you sure you want to delete '%s'?"
 
-#: classes/Gems/Snippets/Import/FileImportSnippet.php:84
+#: classes/Gems/Snippets/Import/FileImportSnippet.php:90
 #, php-format
 msgid "The file \"%s\" does not exist on the server."
 msgstr "The file \"%s\" does not exist on the server."
 
-#: classes/Gems/Snippets/Import/FileImportSnippet.php:85
+#: classes/Gems/Snippets/Import/FileImportSnippet.php:91
 #, php-format
 msgid "The file \"%s\" could not be imported."
 msgstr "The file \"%s\" could not be imported."
@@ -5089,7 +5131,7 @@ msgstr "Preview updated"
 msgid "Test mail sent to %s"
 msgstr "Test mail sent to %s"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:115
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:120
 #: classes/Gems/Snippets/RespondentTokenSnippet.php:144
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:277
 #: snippets/BrowseSingleSurveyTokenSnippet.php:138
@@ -5097,12 +5139,12 @@ msgstr "Test mail sent to %s"
 msgid "Score"
 msgstr "Score"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:157
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:182
 #, php-format
 msgid "Add %s track to this respondent"
 msgstr "Add %s track to this patient"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:173
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:198
 msgid "Add a track to this respondent"
 msgstr "Add a track to this patient"
 
@@ -5308,6 +5350,11 @@ msgstr "Checked %d tracks."
 #, php-format
 msgid "%d token round completion events caused changed to %d tokens."
 msgstr "%d token round completion events caused changed to %d tokens."
+
+#: classes/Gems/Task/Tracker/RecalculateFields.php:76
+#, php-format
+msgid "%d tracks checked, %d had field changes."
+msgstr "%d tracks checked, %d had field changes."
 
 #: classes/Gems/Task/Tracker/RefreshQuestion.php:104
 #, php-format
@@ -5541,7 +5588,7 @@ msgid "Optional extra name to link the field to program code."
 msgstr "Optional extra name to link the field to program code."
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:219
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:724
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:729
 msgid "Required"
 msgstr "Required"
 
@@ -5652,17 +5699,17 @@ msgid "Answers for token %s, patient number %s: %s."
 msgstr "Answers for token %s, patient number %s: %s."
 
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:267
-#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:125
-#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:157
-#: snippets/TokenNotFoundSnippet.php:70
+#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:131
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:163
+#: snippets/TokenNotFoundSnippet.php:76
 #, php-format
 msgid "Token %s not found."
 msgstr "Token %s not found."
 
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:271
-#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:129
-#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:161
-#: snippets/TokenNotFoundSnippet.php:72
+#: classes/Gems/Tracker/Snippets/EditTokenSnippetAbstract.php:135
+#: classes/Gems/Tracker/Snippets/ShowTokenSnippetAbstract.php:167
+#: snippets/TokenNotFoundSnippet.php:78
 msgid "No token specified."
 msgstr "No token specified."
 
@@ -5778,8 +5825,8 @@ msgid "Corrected anonymization for survey '%s'"
 msgstr "Corrected anonymization for survey '%s'"
 
 #: classes/Gems/Tracker/Source/LimeSurvey1m9Database.php:491
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:824
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:974
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:829
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:983
 msgid ", "
 msgstr ", "
 
@@ -6498,173 +6545,173 @@ msgstr "Input error! Changes to %s not saved!"
 msgid "Do you really want to delete this item?"
 msgstr "Do you really want to delete this item?"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:223
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:229
 msgid "Choosen import definition: "
 msgstr "Choosen import definition: "
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:248
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:254
 #, php-format
 msgid "Error retrieving file '%s'."
 msgstr "Error retrieving file '%s'."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:289
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:295
 msgid "Upload successful!"
 msgstr "Upload successful!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:290
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:296
 msgid "Check the input visually."
 msgstr "Check the input visually."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:306
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:312
 msgid "Upload error!"
 msgstr "Upload error!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:343
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:349
 msgid "Import errors found, import is not allowed."
 msgstr "Import errors found, import is not allowed."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:345
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:351
 msgid "Check was successfull, import can start."
 msgstr "Check was successfull, import can start."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:355
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:361
 msgid "Check error!"
 msgstr "Check error!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:392
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:398
 #, php-format
 msgid "%d row imported."
 msgid_plural "%d rows imported."
 msgstr[0] "%d row imported."
 msgstr[1] "%d rows imported."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:393
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:399
 #, php-format
 msgid "%d row changed."
 msgid_plural "%d rows changed."
 msgstr[0] "%d row changed."
 msgstr[1] "%d rows changed."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:407
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:413
 msgid "Import error!"
 msgstr "Import error!"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:428
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:434
 #, php-format
 msgid "Data import. Step %d of %d."
 msgstr "Data import. Step %d of %d."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:526
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:532
 msgid "Import field definitions"
 msgstr "Import field definitions"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:553
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:559
 msgid "Import definition"
 msgstr "Import definition"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:555
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:561
 msgid "See import field definitions table"
 msgstr "See import field definitions table"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:561
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:567
 msgid "Choose work mode"
 msgstr "Choose work mode"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:564
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:570
 msgid "Upload a file"
 msgstr "Upload a file"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:565
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:571
 msgid "Copy and paste into a text field"
 msgstr "Copy and paste into a text field"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:586
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:591
 msgid "Import text - user header line - separate fields using tabs"
 msgstr "Import text - user header line - separate fields using tabs"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:587
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:592
 msgid "Empty fields remove any existing values. Add a field only when used."
 msgstr "Empty fields remove any existing values. Add a field only when used."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:640
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:645
 msgid "No import definition specified"
 msgstr "No import definition specified"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:645
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:650
 #, php-format
 msgid "Import definition %s does not exist."
 msgstr "Import definition %s does not exist."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:651
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:656
 #, php-format
 msgid "%s is not a valid import definition."
 msgstr "%s is not a valid import definition."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:766
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:771
 msgid "For bold"
 msgstr "For bold"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:785
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:790
 #, php-format
 msgid "A number of length %d, with a precision of %d digits after the period."
 msgstr "A number of length %d, with a precision of %d digits after the period."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:787
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:792
 #, php-format
 msgid "A whole number of length %d."
 msgstr "A whole number of length %d."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:790
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:795
 msgid "A numeric value"
 msgstr "A numeric value"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:795
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:800
 msgid "Date value using ISO 8601: yyyy-mm-dd"
 msgstr "Date value using ISO 8601: yyyy-mm-dd"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:799
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:804
 msgid "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 msgstr "Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:803
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:808
 msgid "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 msgstr "Time value using ISO 8601: hh:mm::ss[+-hh:mm]"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:810
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:815
 #, php-format
 msgid "Text, %d character"
 msgid_plural "Text, %d characters"
 msgstr[0] "Text, %d character"
 msgstr[1] "Text, %d characters"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:814
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:819
 msgid "Text"
 msgstr "Text"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:829
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:834
 #, php-format
 msgid ", %s"
 msgstr ", %s"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:840
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:845
 #, php-format
 msgid "; one of: %s"
 msgstr "; one of: %s"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:842
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:847
 #, php-format
 msgid "; e.g. one of: %s, ..."
 msgstr "; e.g. one of: %s, ..."
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:851
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:856
 msgid "Field description"
 msgstr "Field description"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:851
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:856
 msgid "<<no description>>"
 msgstr "<<no description>>"
 
-#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:972
+#: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:981
 #, php-format
 msgid "Unknown translator '%s'. Should be one of: %s"
 msgstr "Unknown translator '%s'. Should be one of: %s"
@@ -6896,7 +6943,7 @@ msgid "Edit track"
 msgstr "Edit track"
 
 #: snippets/DeleteSingleSurveyInSourceTokenSnippet.php:172
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:148
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:154
 #: snippets/DeleteTrackTokenSnippet.php:193
 msgid "Edit token"
 msgstr "Edit token"
@@ -6918,11 +6965,11 @@ msgstr "Old comment:"
 msgid "Created replacement token %2$s for token %1$s."
 msgstr "Created replacement token %2$s for token %1$s."
 
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:181
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:187
 msgid "Delete unused survey"
 msgstr "Delete unused survey"
 
-#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:211
+#: snippets/DeleteSingleSurveyNotUsedTokenSnippet.php:218
 #, php-format
 msgid "Deleted token %s for survey %s."
 msgstr "Deleted token %s for survey %s."
