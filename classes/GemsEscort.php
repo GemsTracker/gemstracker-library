@@ -661,7 +661,7 @@ class GemsEscort extends MUtil_Application_Escort
      * Add ZFDebug info to the page output.
      *
      * @return void
-     * /
+     **/
     protected function _initZFDebug()
     {
         if ((APPLICATION_ENV === 'production') || (APPLICATION_ENV === 'acceptance') ||
@@ -670,11 +670,10 @@ class GemsEscort extends MUtil_Application_Escort
             return;
         }
 
-
-
+        $debug = $this->getOption('zfdebug');
         if (! isset($debug['activate']) || ('1' !== $debug['activate'])) {
             // Only turn on when activated
-            //return;
+            return;
         }
 
         $autoloader = Zend_Loader_Autoloader::getInstance();
