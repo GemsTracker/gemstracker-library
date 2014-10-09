@@ -642,17 +642,11 @@ class GemsEscort extends MUtil_Application_Escort
         $view->headTitle($this->project->getName());
         $view->setEncoding('UTF-8');
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=UTF-8');
-        $view->headMeta()->prependHttpEquiv('X-UA-Compatible', 'IE=Edge');
 
         if ($this->useHtml5) {
             $view->doctype(Zend_View_Helper_Doctype::HTML5);
         } else {
             $view->doctype(Zend_View_Helper_Doctype::XHTML1_STRICT);
-        }
-
-        if ($this->useBootstrap) {
-            $bootstrap = MUtil_Bootstrap::bootstrap();
-            MUtil_Bootstrap::enableView($view);
         }
 
         // Add it to the ViewRenderer
@@ -1656,8 +1650,10 @@ class GemsEscort extends MUtil_Application_Escort
     {
         if ($request->isDispatched()) {
 
+            $response = Zend_Controller_Front::getInstance()->getResponse();
+            $response->setHeader('X-UA-Compatible', 'IE=edge,chrome=1', true);
+            
             if ($this->project->offsetExists('x-frame')) {
-                $response = Zend_Controller_Front::getInstance()->getResponse();
                 $response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
             }
 
@@ -1770,10 +1766,17 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function prepareController()
     {
+        // Do the layout switch here, when view is set the layout can still be changed, but 
+        // Bootstrap can no longer be switched on/off
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $this->layoutSwitch();
         }
 
+        if ($this->useBootstrap) {
+            $bootstrap = MUtil_Bootstrap::bootstrap();
+            MUtil_Bootstrap::enableView($this->view);
+        }
+        
         if (MUtil_Console::isConsole()) {
             /* @var $layout Zend_Layout */
             $layout = $this->view->layout();
