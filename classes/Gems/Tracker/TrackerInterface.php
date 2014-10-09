@@ -341,6 +341,18 @@ interface Gems_Tracker_TrackerInterface
     public function recalculateTokens($batch_id, $userId = null, $cond = null);
 
     /**
+     * Recalculates the fields in tracks.
+     *
+     * Does recalculate changed tracks
+     *
+     * @param string $batchId A unique identifier for the current batch
+     * @param int $userId Id of the user who takes the action (for logging)
+     * @param string $cond Optional where statement for selecting tracks
+     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
+     */
+    public function recalcTrackFields($batchId, $userId = null, $cond = null);
+    
+    /**
      * Refreshes the tokens in the source
      *
      * @param string $batch_id A unique identifier for the current batch
