@@ -46,13 +46,6 @@
 
 class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Action_Helper_FlashMessenger
 {
-    /**
-     * The satus values that are allowed
-     *
-     * @var array
-     */
-    protected $_allowedStati = array('success', 'info', 'warning', 'danger');
-
 	/**
 	 * @var string The default status, if no status has been set.
 	 */
@@ -91,33 +84,33 @@ class MUtil_Controller_Action_Helper_FlashMessenger extends Zend_Controller_Acti
             $messages = array_merge($messages, $this->getCurrentMessages());
         }
 
+
         if ($messages) {
             $errorContainer = MUtil_Html::create()->div(array('class' => 'errors'));
             $errorClose = MUtil_Html::create()->button(array('type' => 'button','class' => 'close', 'data-dismiss' => 'alert'));
             $errorClose->raw('&times;');
-            $errorUls = array();
 
             foreach ($messages as $message) {
                 $status = 'warning';
+
                 if (is_array($message)) {
                  	if ((2 === count($message)) &&
-                            is_string($message[1]) &&
-                            in_array($message[1], $this->_allowedStati)) {
+                            is_string($message[1])) {
                     	$status  = $message[1];
                     	$message = $message[0];
                     }
+                    if (is_array($message)) {
+                        // Use array_values to remove string keys (as those are interpreted
+                        // as attributes
+                    	$message = MUtil_Html::create()->ul(array_values($message));
+                    }
                 }
 
-                if (! isset($errorContainer[$status])) {
-                    $errorContainer[$status] = MUtil_Html::create()->div(
-                            array('class' => 'alert alert-' . $status, 'role' => 'alert'),
-                            $errorClose
-                            );
-                    $ul[$status] = $errorContainer[$status]->ul();
-                }
-                foreach ((array) $message as $msg) {
-                    $ul[$status]->append($msg);
-                }
+                $errorContainer->div(
+                        array('class' => 'alert alert-'.$status, 'role' => 'alert'),
+                        $errorClose,
+                        $message
+                        );
             }
 
             $this->clearCurrentMessages();
