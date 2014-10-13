@@ -123,7 +123,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
         }
 
         // Add full path to the webdir
-        $inFile  = dirname($_SERVER["SCRIPT_FILENAME"]) . '/' . $href;
+        $inFile  = GEMS_WEB_DIR . $href;
         $outFile = substr($inFile, 0, -strlen(pathinfo($inFile, PATHINFO_EXTENSION))) . 'css';
 
         // Try compiling
