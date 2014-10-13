@@ -560,9 +560,11 @@ class MUtil_Form extends Zend_Form implements MUtil_Registry_TargetInterface
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('AutoFocus')
-                 ->addDecorator('FormElements')
-                 ->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form'))
-                 ->addDecorator('Form');
+                 ->addDecorator('FormElements');
+            if (!MUtil_Bootstrap::enabled()) {
+                $this->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form'));
+            }
+            $this->addDecorator('Form');
         }
     }
 

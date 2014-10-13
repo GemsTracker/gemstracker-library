@@ -78,7 +78,7 @@ class Gems_Form extends MUtil_Form
 
         $this->activateBootstrap();
     }
-    
+
 
     public function activateBootstrap() {
         if (MUtil_Bootstrap::enabled() === true) {
@@ -88,11 +88,11 @@ class Gems_Form extends MUtil_Form
 
     protected function _activateJQueryView(\Zend_View_Interface $view = null) {
         parent::_activateJQueryView($view);
-        
+
         if (null === $view) {
             $view = $this->getView();
         }
-        
+
         if (false === $view->getPluginLoader('helper')->getPaths('Gems_JQuery_View_Helper')) {
             $view->addHelperPath('Gems/JQuery/View/Helper', 'Gems_JQuery_View_Helper');
         }
@@ -181,28 +181,6 @@ class Gems_Form extends MUtil_Form
      */
     public function isAutoSubmit() {
         return isset($this->_autosubmit);
-    }
-
-    /**
-     * Load the default decorators
-     *
-     * @return void
-     */
-    public function loadDefaultDecorators()
-    {
-        if ($this->loadDefaultDecoratorsIsDisabled()) {
-            return;
-        }
-
-        $decorators = $this->getDecorators();
-        if (empty($decorators)) {
-            $this->addDecorator('AutoFocus')
-                 ->addDecorator('FormElements');
-            if (!MUtil_Bootstrap::enabled()) {
-                $this->addDecorator('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form'));
-            }
-            $this->addDecorator('Form');
-        }
     }
 
     /**
