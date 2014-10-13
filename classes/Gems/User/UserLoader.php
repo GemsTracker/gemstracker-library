@@ -685,7 +685,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
             }
         }
         // Add search fields
-        $select->where('(' . implode(') OR (', $wheres) . ')');
+        $select->where(new Zend_Db_Expr('(' . implode(') OR (', $wheres) . ')'));
         // MUtil_Echo::track($select->__toString());
 
         return $select;

@@ -233,7 +233,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         }
         $model->set('name',
                 'label', $label,
-                'column_expression', "CONCAT(" . implode(', ', $nameExpr) . ")",
+                'column_expression', new Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
                 'fieldlist', $fieldList);
    }
 

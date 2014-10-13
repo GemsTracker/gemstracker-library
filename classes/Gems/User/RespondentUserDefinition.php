@@ -84,9 +84,9 @@ class Gems_User_RespondentUserDefinition extends Gems_User_DbUserDefinitionAbstr
                     ))
                ->joinLeft('gems__user_passwords', 'gul_id_user = gup_id_user', array(
                    'user_password_reset' => 'gup_reset_required',
-                   'user_resetkey_valid' => 'CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
+                   'user_resetkey_valid' => new Zend_Db_Expr('CASE WHEN DATE_ADD(gup_reset_requested, INTERVAL ' .
                         $this->hoursResetKeyIsValid .
-                        ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
+                        ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
                     'user_password_last_changed' => 'gup_last_pwd_change',
                   ))
                ->joinLeft('gems__reception_codes', 'gr2o_reception_code = grc_id_reception_code', array())

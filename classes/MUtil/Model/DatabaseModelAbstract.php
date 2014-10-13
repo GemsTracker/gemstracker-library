@@ -640,7 +640,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         if (null === $columnName) {
             $columnName = strtr((string) $column, ' .,;:?!\'"()<=>-*+\\/&%^', '______________________');
         }
-        if (is_string($column) && (strpos($column, ' ') !== false)) {
+        if (is_string($column) && ((strpos($column, ' ') !== false) || (strpos($column, '(') !== false))) {
             $column = new Zend_Db_Expr($column);
         }
         if ($orignalColumn) {
@@ -773,7 +773,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             $formats['time'] = 'time';
             $formats['datetime'] = 'datetime';
             $formats['date'] ='date';
-                       
+
             // When posting try fixed formats first
             $formats = array_reverse($formats);
         }

@@ -356,7 +356,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
         $model->set('gsf_login',            'label', $this->_('Username'));
         $model->set('name',                 'label', $this->_('Name'),
-            'column_expression', "CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))");
+            'column_expression', new Zend_Db_Expr("CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"));
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
 
         $availableOrganizations = $this->util->getDbLookup()->getOrganizations();
