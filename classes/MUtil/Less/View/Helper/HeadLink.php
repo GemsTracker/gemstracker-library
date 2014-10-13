@@ -49,6 +49,18 @@ require_once __DIR__ . '/lessc.inc.php';
 class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 {
     /**
+     * Absolute file path to the webroot
+     * 
+     * @var string
+     */
+    protected $_webroot;
+    
+    public function __construct()
+    {
+        parent::__construct();
+        $this->_webroot = dirname($_SERVER["SCRIPT_FILENAME"]);
+    }
+    /**
      * Utility function to base64 encode gradients for use in IE
      * 
      * @param type $args
@@ -123,7 +135,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
         }
 
         // Add full path to the webdir
-        $inFile  = GEMS_WEB_DIR . '/' .  $href;
+        $inFile  = $this->_webroot . '/' .  $href;
         $outFile = substr($inFile, 0, -strlen(pathinfo($inFile, PATHINFO_EXTENSION))) . 'css';
 
         // Try compiling
