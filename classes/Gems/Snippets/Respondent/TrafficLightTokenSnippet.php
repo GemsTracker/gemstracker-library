@@ -27,7 +27,8 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         'gto_id_respondent_track' => SORT_DESC,
         'gto_valid_from'          => SORT_ASC,
         'gto_round_description'   => SORT_ASC,
-        'ggp_name'                => SORT_ASC);
+        'forgroup'                => SORT_ASC
+    );
     protected $_fixedFilter = array(
         'gto_valid_from <= NOW()'
     );
@@ -250,7 +251,7 @@ $(".trackheader").click(function(){
         $this->creator = Gems_Html::init();
     }
 
-    /**    
+    /**
      * Copied, optimised to we use the optional $menuItem we stored in _initView instead
      * of doing the lookup again and again
      * 
@@ -301,13 +302,14 @@ $(".trackheader").click(function(){
             $model->get($item);
         }
 
-        $data        = $model->load(true, $this->_fixedSort);
-        $lastDate    = null;
-        $doelgroep   = null;
-        $today       = new MUtil_Date();
-        $today       = $today->get($this->_dateFormat);
-        $progressDiv = null;
-        $respTrackId = 0;
+        $data            = $model->load(true, $this->_fixedSort);
+        $lastDate        = null;
+        $lastDescription = null;
+        $doelgroep       = null;
+        $today           = new MUtil_Date();
+        $today           = $today->get($this->_dateFormat);
+        $progressDiv     = null;
+        $respTrackId     = 0;
 
         // The normal loop
         foreach ($data as $row)
@@ -329,10 +331,13 @@ $(".trackheader").click(function(){
             } else {
                 continue;
             }
-            if ($date !== $lastDate) {
-                $progressDiv = $this->finishGroup($progressDiv);
-                $lastDate    = $date;
-                $class       = 'day';
+
+            $description = $row['gto_round_description'];
+            if ($date !== $lastDate || $lastDescription !== $description) {
+                $lastDescription = $description;
+                $progressDiv     = $this->finishGroup($progressDiv);
+                $lastDate        = $date;
+                $class           = 'day';
                 if ($date == $today) {
                     $class .= ' today';
                 }
