@@ -271,7 +271,9 @@ $(".trackheader").click(function(){
     public function createModel() {
         $model = parent::createModel();
 
-        $model->addColumn('gems__groups.ggp_name', 'forgroup');
+        if (!$model->has('forgroup')) {
+            $model->addColumn('gems__groups.ggp_name', 'forgroup');
+        }
 
         return $model;
     }
