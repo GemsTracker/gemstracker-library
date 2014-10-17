@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-17 18:28+0100\n"
+"POT-Creation-Date: 2014-10-17 19:36+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -5903,9 +5903,10 @@ msgstr "Nieuw traject"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:322
 msgid ""
-"Create a track if the respondent does not have an open track for this value."
+"Create a track if the respondent does not have a track where this field is "
+"empty."
 msgstr ""
-"Maak een nieuw traject als de patiënt geen openstaand traject heeft maar dit "
+"Maak een nieuw traject als de patiënt geen openstaand traject heeft waar dit "
 "veld leeg is."
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:327

@@ -319,7 +319,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         'onchange', 'this.form.submit();'
                         );
                 $this->set('gtf_create_track', 'label', $this->_('Create track'),
-                        'description', $this->_('Create a track if the respondent does not have an open track for this value.'),
+                        'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
                         'multiOptions', $translated->getYesNo(),
                         'onclick', 'this.form.submit();'
                         );
