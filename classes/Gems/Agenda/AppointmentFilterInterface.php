@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,51 +28,53 @@
  *
  *
  * @package    Gems
- * @subpackage task_Tracker
+ * @subpackage Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RecalculateFields.php $
+ * @version    $Id: AppointmentFilterInterface.php $
  */
+
+namespace Gems\Agenda;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Task_Tracker
+ * @subpackage Agenda
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 9-okt-2014 13:18:02
+ * @since      Class available since version 1.6.5 13-okt-2014 20:00:03
  */
-class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
+// interface Gems_Agenda_AppointmentFilterInterface
+interface AppointmentFilterInterface
 {
     /**
-     * @var Gems_Loader
+     * Load the object from a data array
+     *
+     * @param array $data
      */
-    public $loader;
+    public function exchangeArray(array $data);
 
     /**
-     * Should handle execution of the task, taking as much (optional) parameters as needed
+     * The filter id
      *
-     * The parameters should be optional and failing to provide them should be handled by
-     * the task
+     * @return int
      */
-    public function execute($respTrackData = null, $userId = null)
-    {
-        $batch     = $this->getBatch();
-        $tracker   = $this->loader->getTracker();
-        $respTrack = $tracker->getRespondentTrack($respTrackData);
+    public function getFilterId();
 
-        $current   = $respTrack->getFieldData();
-        $new       = $respTrack->setFieldData($current, $userId);
+    /**
+     * Check a filter for a match
+     *
+     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @return boolean
+     */
+    public function matchAppointment(Gems_Agenda_Appointment $appointment);
 
-        $t = $batch->addToCounter('trackFieldsChecked');
-        if ($current !== $new) {
-            $i = $batch->addToCounter('trackFieldsChanged');
-        } else {
-            $i = $batch->getCounter('trackFieldsChanged');
-        }
-
-        $batch->setMessage('trackFieldsCheck', sprintf($this->_('%d tracks checked, %d had field changes.'), $t, $i));
-    }
+    /**
+     * When true processing stops when there is a match.
+     *
+     * @return boolean
+     */
+    public function stopOnMatch();
 }

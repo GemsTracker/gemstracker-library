@@ -35,6 +35,8 @@
  * @version    $id: FieldMaintenanceModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
+use Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency;
+
 /**
  *
  *
@@ -207,17 +209,23 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $types = $this->getFieldTypes();
         asort($types);
 
-        $this->set('gtf_id_order',     'label', $this->_('Order'));
-        $this->set('gtf_field_name',   'label', $this->_('Name'));
-        $this->set('gtf_field_code',   'label', $this->_('Code Name'),
+        $this->set('gtf_id_order',      'label', $this->_('Order'));
+        $this->set('gtf_field_name',    'label', $this->_('Name'));
+        $this->set('gtf_field_code',    'label', $this->_('Code Name'),
                 'description', $this->_('Optional extra name to link the field to program code.'));
-        $this->set('gtf_field_type',   'label', $this->_('Type'),
+        $this->set('gtf_field_type',    'label', $this->_('Type'),
                 'multiOptions', $types,
                 'default', 'text',
                 'order', $this->getOrder('gtf_id_track') + 5
                 );
-        $this->set('gtf_required',     'label', $this->_('Required'), 'multiOptions', $yesNo);
-        $this->set('gtf_readonly',     'label', $this->_('Readonly'),
+        $this->set('gtf_to_track_info', 'label', $this->_('In description'),
+                'description', $this->_('Add this field to the track description'),
+                'multiOptions', $yesNo
+                );
+        $this->set('gtf_required',      'label', $this->_('Required'),
+                'multiOptions', $yesNo
+                );
+        $this->set('gtf_readonly',      'label', $this->_('Readonly'),
                 'multiOptions', $yesNo,
                 'description', $this->_('Check this box if this field is always set by code instead of the user.')
                 );
@@ -298,6 +306,33 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                 }
             }
         }
+
+        if ('appointment' == $data['gtf_field_type']) {
+            $filters = $this->loader->getAgenda()->getFilterList();
+
+            if ($filters) {
+                $translated = $this->util->getTranslated();
+
+                $this->set('gtf_filter_id', 'label', $this->_('Automatic link'),
+                        'description', $this->_('Automatically link an appointment when it passes this filter.'),
+                        'multiOptions', $translated->getEmptyDropdownArray() + $filters,
+                        'onchange', 'this.form.submit();'
+                        );
+                $this->set('gtf_create_track', 'label', $this->_('Create track'),
+                        'description', $this->_('Create a track if the respondent does not have an open track for this value.'),
+                        'multiOptions', $translated->getYesNo(),
+                        'onclick', 'this.form.submit();'
+                        );
+                $this->set('gtf_create_wait_days',
+                        'label', $this->_('Days between tracks'),
+                        'description', $this->_('Any previous track must have an end date at least this many days in the past.')
+                        );
+
+                // $this->addDependency(new Gems_Tracker_Model_Dependency_AppointmentMaintenanceDependency());
+                // $this->addDependency(new \Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency());
+                $this->addDependency(new AppointmentMaintenanceDependency());
+            }
+        }
     }
 
     /**
@@ -363,6 +398,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         } else {
             $this->set('gtf_field_values',  'elementClass', 'Hidden');
         }
+        $this->set('gtf_to_track_info',     'elementClass', 'CheckBox');
         $this->set('gtf_required',          'elementClass', 'CheckBox');
         $this->set('gtf_readonly',          'elementClass', 'CheckBox');
     }

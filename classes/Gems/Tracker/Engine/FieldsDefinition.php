@@ -187,17 +187,19 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
         foreach ($this->_trackFields as $key => $field) {
             if (array_key_exists($key, $data)) {
-                $typeFunction = 'calculateFieldInfo' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
-                if (method_exists($model, $typeFunction)) {
-                    $value = $model->$typeFunction($data[$key], $key, $data, $field, $respTrackId);
-                } else {
-                    $value = $data[$key];
-                }
+                if ($field['gtf_to_track_info']) {
+                    $typeFunction = 'calculateFieldInfo' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
+                    if (method_exists($model, $typeFunction)) {
+                        $value = $model->$typeFunction($data[$key], $key, $data, $field, $respTrackId);
+                    } else {
+                        $value = $data[$key];
+                    }
 
-                if (is_array($value)) {
-                    $results = array_merge($results, array_filter($value));
-                } elseif ($value || ($value == 0)) {
-                    $results[] = $value;
+                    if (is_array($value)) {
+                        $results = array_merge($results, array_filter($value));
+                    } elseif ($value || ($value == 0)) {
+                        $results[] = $value;
+                    }
                 }
             }
         }

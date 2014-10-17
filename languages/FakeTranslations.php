@@ -80,6 +80,12 @@ _("%value% is too short for a %testDescription%. Should be %length% digits.");
 // MUtil_Validate_IsConfirmed
 _("Must be the same as %fieldDescription%.");
 
+// MUtil_Validate_IsNot
+_("This value is not allowed.");
+
+// MUtil_Validate_NotEqualTo
+_('Values may not be the same.');
+
 // MUtil_Validate_Phone
 _("'%value%' is not a phone number (e.g. +12 (0)34-567 890).");
 

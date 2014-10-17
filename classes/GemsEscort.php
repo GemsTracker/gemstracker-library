@@ -158,9 +158,19 @@ class GemsEscort extends MUtil_Application_Escort
 
         // NAMESPACES
         $autoloader = Zend_Loader_Autoloader::getInstance();
+
+        //*
+        $nsLoader = function($className) {
+            $className = str_replace('\\', '_', $className);
+            Zend_Loader_Autoloader::autoload($className);
+        };
+        $autoloader->pushAutoloader($nsLoader, 'MUtil\\');
+        // */
+
         foreach ($this->_loaderDirs as $prefix => $path) {
             if ($prefix) {
                 $autoloader->registerNamespace($prefix . '_');
+                $autoloader->pushAutoloader($nsLoader, $prefix . '\\');
                 MUtil_Model::addNameSpace($prefix);
             }
         }
@@ -1651,7 +1661,7 @@ class GemsEscort extends MUtil_Application_Escort
 
             $response = Zend_Controller_Front::getInstance()->getResponse();
             $response->setHeader('X-UA-Compatible', 'IE=edge,chrome=1', true);
-            
+
             if ($this->project->offsetExists('x-frame')) {
                 $response->setHeader('X-Frame-Options', $this->project->offsetGet('x-frame'), true);
             }
@@ -1765,7 +1775,7 @@ class GemsEscort extends MUtil_Application_Escort
      */
     public function prepareController()
     {
-        // Do the layout switch here, when view is set the layout can still be changed, but 
+        // Do the layout switch here, when view is set the layout can still be changed, but
         // Bootstrap can no longer be switched on/off
         if ($this instanceof Gems_Project_Layout_MultiLayoutInterface) {
             $this->layoutSwitch();
@@ -1775,7 +1785,7 @@ class GemsEscort extends MUtil_Application_Escort
             $bootstrap = MUtil_Bootstrap::bootstrap();
             MUtil_Bootstrap::enableView($this->view);
         }
-        
+
         if (MUtil_Console::isConsole()) {
             /* @var $layout Zend_Layout */
             $layout = $this->view->layout();

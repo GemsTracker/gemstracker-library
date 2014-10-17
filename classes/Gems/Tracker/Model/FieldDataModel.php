@@ -110,7 +110,7 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
             $value = $currentValue;
         }
 
-        return array($fieldData['gtf_field_name'], $value);
+        return array($fieldData['gtf_field_name'], ' ', $value);
     }
 
     /**

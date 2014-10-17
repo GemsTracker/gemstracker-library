@@ -36,7 +36,7 @@
  */
 
 /**
- * 
+ *
  * @package    MUtil
  * @subpackage Model_Bridge
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -153,13 +153,17 @@ class MUtil_Model_Bridge_VerticalTableBridge extends MUtil_Model_Bridge_TableBri
 
         $this->_checkColumnNewRow();
 
+        $tr = $this->table->tbody()->tr();
+        if (is_string($name) && $this->model->has($name, 'description')) {
+            $tr->title = $this->model->get($name, 'description');
+        }
         if ($this->labelTh) {
-            $this->table->tdh($this->_checkLabel($label, $name), $hattr);
+            $tr->tdh($this->_checkLabel($label, $name), $hattr);
         } else {
-            $this->table->td($this->_checkLabel($label, $name), $hattr);
+            $tr->td($this->_checkLabel($label, $name), $hattr);
         }
 
-        $this->table->td($this->_getLazyName($name), $attr);
+        $tr->td($this->_getLazyName($name), $attr);
 
         $this->_checkColumnAdded($attr);
 

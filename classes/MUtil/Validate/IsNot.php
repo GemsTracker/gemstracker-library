@@ -65,11 +65,16 @@ class MUtil_Validate_IsNot extends Zend_Validate_Abstract
     /**
      * Sets validator options
      *
-     * @param  string $values On or more values that this element should not have
+     * @param array}string $values On or more values that this element should not have
+     * @param string Optional different message
      */
-    public function __construct($values)
+    public function __construct($values, $message = null)
     {
-        $this->values = MUtil_Ra::flatten(func_get_args());
+        $this->values = (array) $values;
+
+        if ($message) {
+            $this->setMessage($message, self::NOT_ONE);
+        }
     }
 
     /**

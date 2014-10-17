@@ -63,12 +63,12 @@ class Gems_Form_TableForm extends Gems_Form
     public static function doRowElement($content, $element, array $options)
     {
         return self::doRow($content, $element->getLabel(), $options['class'], $element);
-        
+
         return $content;
     }
 
     public static function doRowDisplayGroup($content, $element, array $options)
-    {     
+    {
         return self::doRow($content, $element->getDescription(), $options['class'], $element);
     }
 
@@ -94,7 +94,7 @@ class Gems_Form_TableForm extends Gems_Form
         $element->setDecorators(
             array('FormElements',
             array('Callback',  array('callback' => array($this, 'doRowDisplayGroup'), 'class' => $this->_alternate . ' ' . $element->getName(), 'placement'=>false))
-            
+
                 /*
             array('FormElements',
             array(array('data' => 'HtmlTag'), array('tag'   => 'td', 'class' => 'element')),
@@ -119,7 +119,7 @@ class Gems_Form_TableForm extends Gems_Form
             //If we want to see the individual fields labels, do so:
             if ($element->getAttrib('showLabels') === true) {
                 if ($groupElement instanceof Zend_Form_Element_Checkbox) {
-                    $decorators[] = array('Label', array('escape'    => false, 'placement' => Zend_Form_Decorator_Label::APPEND));
+                    $decorators[] = array('Label', array('escape' => false, 'placement' => Zend_Form_Decorator_Label::APPEND));
                 } else {
                     $decorators[] = array('Label', array('escape' => false));
                 }
@@ -169,7 +169,7 @@ class Gems_Form_TableForm extends Gems_Form
         if ($element instanceof Zend_Form_Element_Hidden) {
             $rowOptions['style'] = 'display:none;';
         }
-        
+
         $decorators = array(
             'ViewHelper',
             array('Description', array('class' => 'description')),
@@ -261,13 +261,13 @@ class Gems_Form_TableForm extends Gems_Form
         foreach ($this as $name => $element) {
             if ($element instanceof MUtil_Form_Element_Html) {
                 $this->_fixDecoratorHtml($element);
-                
+
             } elseif ($element instanceof Zend_Form_Element_Hidden || $element instanceof Zend_Form_Element_Submit) {
                 $this->_fixDecoratorHiddenSubmit($element);
 
             } elseif ($element instanceof Zend_Form_Element) {
                 $this->_fixDecoratorElement($element);
-                
+
             } elseif ($element instanceof Zend_Form_DisplayGroup) {
                 $this->_fixDecoratorDisplayGroup($element);
 

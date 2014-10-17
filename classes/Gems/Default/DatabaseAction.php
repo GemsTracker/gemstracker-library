@@ -463,13 +463,13 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         if ($this->_getParam('confirmed')) {
             if ($objects) {
                 $results = array();
-                $results[] = sprintf($this->_('Starting %d object creation scripts.'), $oCount) . '<br/>';
+                $results[] = sprintf($this->_('Starting %d object creation scripts.'), $oCount);
                 $i         = 1;
                 foreach ($objects as $data) {
 
                     $result = $model->runScript($data);
                     $results = array_merge($results, $result);
-                    $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount) . '<br/>';
+                    $results[] = sprintf($this->_('Finished %s creation script for object %d of %d'), $this->_(strtolower($data['type'])), $i, $oCount);
                     $i++;
                 }
 

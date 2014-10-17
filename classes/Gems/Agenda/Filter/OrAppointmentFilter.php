@@ -28,51 +28,45 @@
  *
  *
  * @package    Gems
- * @subpackage task_Tracker
+ * @subpackage Agenda
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RecalculateFields.php $
+ * @version    $Id: AndAppointmentFilter.php $
  */
+
+namespace Gems\Agenda\Filter;
+
+use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\AppointmentSubFilterAbstract;
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Task_Tracker
+ * @subpackage Agenda
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 9-okt-2014 13:18:02
+ * @since      Class available since version 1.6.5 16-okt-2014 16:56:07
  */
-class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
+// class Gems_Agenda_Filter_OrAppointmentFilter extends Gems_Agenda_AppointmentFilterAbstract
+class OrAppointmentFilter extends AppointmentSubFilterAbstract
 {
     /**
-     * @var Gems_Loader
-     */
-    public $loader;
-
-    /**
-     * Should handle execution of the task, taking as much (optional) parameters as needed
+     * Check a filter for a match
      *
-     * The parameters should be optional and failing to provide them should be handled by
-     * the task
+     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
+     * @return boolean
      */
-    public function execute($respTrackData = null, $userId = null)
+    public function matchAppointment(Gems_Agenda_Appointment $appointment)
     {
-        $batch     = $this->getBatch();
-        $tracker   = $this->loader->getTracker();
-        $respTrack = $tracker->getRespondentTrack($respTrackData);
-
-        $current   = $respTrack->getFieldData();
-        $new       = $respTrack->setFieldData($current, $userId);
-
-        $t = $batch->addToCounter('trackFieldsChecked');
-        if ($current !== $new) {
-            $i = $batch->addToCounter('trackFieldsChanged');
-        } else {
-            $i = $batch->getCounter('trackFieldsChanged');
+        foreach ($this->_subFilters as $filterObject) {
+            if ($filterObject instanceof AppointmentFilterInterface) {
+                if ($filterObject->matchAppointment($appointment)) {
+                    return true;
+                }
+            }
         }
-
-        $batch->setMessage('trackFieldsCheck', sprintf($this->_('%d tracks checked, %d had field changes.'), $t, $i));
+        return false;
     }
 }

@@ -320,7 +320,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $this->getTokens(true);
 
             $this->checkTrackTokens($userId, $this->_tokens[$tokenId]);
-            // Update the track counter            
+            // Update the track counter
             //$this->_checkTrackCount($userId);
         }
 
@@ -356,7 +356,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             $this->getTokens(true);
 
             $this->checkTrackTokens($userId, $token);
-            // Update the track counter            
+            // Update the track counter
             //$this->_checkTrackCount($userId);
         }
 
@@ -422,7 +422,7 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
             ELSE MAX(COALESCE(gto_completion_time, gto_valid_until))
             END as enddate";
 
-        $tokenSelect = $this->tracker->getTokenSelect(array($maxExpression));
+        $tokenSelect = $this->tracker->getTokenSelect(array(new Zend_Db_Expr($maxExpression)));
         $tokenSelect->andReceptionCodes(array())
                 ->andRounds(array())
                 ->forRespondentTrack($this->_respTrackId)
@@ -988,6 +988,18 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Refresh the fields (to reflect any changed appointments)
+     *
+     * @param int $userId The current user
+     * @return int The number of tokens changed as a result of this update
+     */
+    public function recalculateFields($userId)
+    {
+        $this->setFieldData($this->getFieldData(), $userId);
+        return $this->checkTrackTokens($userId);
+    }
+
+    /**
      *
      * @param array $gemsData Optional, the data refresh with, otherwise refresh from database.
      * @return Gems_Tracker_RespondentTrack (continuation pattern)
@@ -1032,9 +1044,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
      * Return the complete set of fielddata
      *
      * @param array $data
+     * @param int $userId The current user, when passed the track_info is recalculated and saved
      * @return array
      */
-    public function setFieldData($data)
+    public function setFieldData($data, $userId = null)
     {
         $engine    = $this->getTrackEngine();
         $fieldMap  = $engine->getFields();
@@ -1054,6 +1067,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $changeCount = $engine->setFieldsData($this->_respTrackId, $fieldData);
         if ($changeCount>0) {
             $this->_ensureFieldData(true);  // force reload
+
+            if ($userId) {
+                $info = $this->getTrackEngine()->calculateFieldsInfo($this->_respTrackId, $this->_fieldData);
+
+                if ($info != $this->_respTrackData['gr2t_track_info']) {
+                    $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
+                }
+            }
         }
 
         return $this->_fieldData;

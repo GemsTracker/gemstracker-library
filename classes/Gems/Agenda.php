@@ -35,6 +35,8 @@
  * @version    $Id: Afenda.php$
  */
 
+use Gems\Agenda\AppointmentFilterInterface;
+
 /**
  *
  *
@@ -54,7 +56,13 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var array of AppointmentFilterInterface
+     */
+    private $_filters = array();
+
+    /**
+     *
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -67,31 +75,31 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translateAdapter;
 
     /**
      *
-     * @param type $container A container acting as source fro MUtil_Registry_Source
+     * @param type $container A container acting as source for MUtil_Registry_Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)
@@ -151,6 +159,35 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         parent::afterRegistry();
 
         $this->initTranslateable();
+    }
+
+    /**
+     *
+     * @param Gems_Agenda_Appointment $appointment
+     */
+    public function applyRespondentTrackMatches(\Gems_Agenda_Appointment $appointment)
+    {
+        $filters = $this->loadDefaultFilters();
+
+        foreach ($filters as $filter) {
+            if ($filter instanceof AppointmentFilterInterface) {
+                if ($filter->matchAppointment($appointment)) {
+                    MUtil_Echo::track($appointment->getPatientNumber());
+                    if ($filter->stopOnMatch()) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param Gems_Agenda_Appointment $appointment
+     */
+    public function applyTrackCreationMatches(\Gems_Agenda_Appointment $appointment)
+    {
+
     }
 
     /**
@@ -307,6 +344,56 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             $results[$row['gap_id_appointment']] = $this->getAppointmentDisplay($row);
         }
         return $results;
+    }
+
+    /**
+     * Load the list of assignable filters
+     *
+     * @return array filter_id => label
+     */
+    public function getFilterList()
+    {
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        $output = $this->cache->load($cacheId);
+        if ($output) {
+            return $output;
+        }
+
+        $output = $this->db->fetchPairs("SELECT gaf_id, COALESCE(gaf_manual_name, gaf_calc_name) "
+                . "FROM gems__appointment_filters WHERE gaf_active = 1 ORDER BY gaf_id_order");
+
+        $this->cache->save($output, $cacheId, array('appointment_filters'));
+
+        return $output;
+    }
+
+    /**
+     * Get the filters from the database
+     *
+     * @param $sql SQL statement
+     * @return array of AppointmentFilterInterface objects
+     */
+    protected function getFilters($sql)
+    {
+        $classes    = array();
+        $filterRows = $this->db->fetchAll($sql);
+        $output     = array();
+
+        MUtil_Echo::track($filters);
+        foreach ($filterRows as $key => $filter) {
+            $className = $filter['gaf_class'];
+            if (! isset($classes[$className])) {
+                $classes[$className] = $this->newFilterObject($className);
+            }
+            $filterObject = clone $classes[$className];
+            if ($filterObject instanceof AppointmentFilterInterface) {
+                $filterObject->exchangeArray($filter);
+                $output[$key] = $filterObject;
+            }
+        }
+
+        return $output;
     }
 
     /**
@@ -567,6 +654,41 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Load the filters from cache or elsewhere
+     *
+     * @return array of AppointmentFilterInterface
+     */
+    protected function loadDefaultFilters()
+    {
+        if ($this->_filters) {
+            return $this->_filters;
+        }
+
+        $cacheId = __CLASS__ . '_' . __FUNCTION__;
+
+        $output = $this->cache->load($cacheId);
+        if (false && $output) {
+            foreach ($output as $key => $filterObject) {
+                // Filterobjects should not serialize anything loaded from a source
+                if ($filterObject instanceof \MUtil_Registry_TargetInterface) {
+                    $this->applySource($filterObject);
+                }
+                $this->_filters[$key] = $filterObject;
+            }
+            return $this->_filters;
+        }
+
+        $this->filters = $this->getFilters("SELECT *
+                FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
+                WHERE gaf_active = 1
+                ORDER BY gaf_id_order");
+
+        $this->cache->save($this->_filters, $cacheId, array('appointment_filters'));
+
+        return $this->_filters;
+    }
+
+    /**
      * Find an activity code for the name and organization.
      *
      * @param string $name The name to match against
@@ -821,6 +943,26 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
 
         return $result['gapr_id_procedure'];
+    }
+
+    /**
+     * Creates a new filter class object
+     *
+     * @param string $className The part after *_Agenda_Filter_
+     * @return object
+     */
+    public function newFilterObject($className)
+    {
+        return $this->_loadClass("Filter\\$className", true);
+    }
+
+    /**
+     *
+     * @return \Gems\Agenda\AppointmentFilterModel
+     */
+    public function newFilterModel()
+    {
+        return $this->_loadClass('AppointmentFilterModel', true);
     }
 
     /**

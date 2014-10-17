@@ -198,6 +198,16 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * The cooment to the appointment
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->_gemsData['gap_comment'];
+    }
+
+    /**
      * Return the appointment id
      *
      * @return int
@@ -284,6 +294,16 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * The subject of the appointment
+     *
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->_gemsData['gap_subject'];
+    }
+
+    /**
      * Return true when the satus is active
      *
      * @return type
@@ -326,12 +346,14 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     public function updateTracks()
     {
         $select = $this->db->select();
-        $select->from('gems__respondent2track2appointment', 'gr2t2a_id_respondent_track')
+        $select->from('gems__respondent2track2appointment',
+                array('gr2t2a_id_respondent_track', 'gr2t2a_id_respondent_track')
+                )
                 ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
                 ->distinct();
 
         $tokenChanges = 0;
-        $respTracks   = $this->db->fetchCol($select);
+        $respTracks   = $this->db->fetchPairs($select);
 
         // MUtil_Echo::track($respTracks);
         if ($respTracks) {
@@ -340,11 +362,15 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
             foreach ($respTracks as $respTrackId) {
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
-                $respTrack->setFieldData($respTrack->getFieldData());
-                $tokenChanges += $respTrack->checkTrackTokens($userId);
+                $tokenChanges += $respTrack->recalculateFields($this->loader->getCurrentUser()->getUserId());
             }
+        } else {
+            $respTracks = array();
         }
         // MUtil_Echo::track($tokenChanges);
+
+        $tokenChanges += $this->agenda->applyRespondentTrackMatches($this);
+        $tokenChanges += $this->agenda->applyTrackCreationMatches($this);
 
         return $tokenChanges;
     }

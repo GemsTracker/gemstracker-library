@@ -153,6 +153,12 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
         $bridge->setColumnCount($this->bridgeColumns)
                 ->setMode($this->bridgeMode);
 
+        if (($this->bridgeMode = MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW) &&
+                $model->hasDependencies()) {
+            // Trigger the dependencies
+            $bridge->getRow();
+        }
+
         $this->setShowTableHeader($bridge, $model);
         $this->setShowTableFooter($bridge, $model);
         $this->addShowTableRows($bridge, $model);

@@ -28,51 +28,21 @@
  *
  *
  * @package    Gems
- * @subpackage task_Tracker
+ * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: RecalculateFields.php $
+ * @version    $Id: AgendaFilter.php $
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Task_Tracker
+ * @subpackage Default
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 9-okt-2014 13:18:02
+ * @since      Class available since version 1.6.5 15-okt-2014 23:37:32
  */
-class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
-{
-    /**
-     * @var Gems_Loader
-     */
-    public $loader;
-
-    /**
-     * Should handle execution of the task, taking as much (optional) parameters as needed
-     *
-     * The parameters should be optional and failing to provide them should be handled by
-     * the task
-     */
-    public function execute($respTrackData = null, $userId = null)
-    {
-        $batch     = $this->getBatch();
-        $tracker   = $this->loader->getTracker();
-        $respTrack = $tracker->getRespondentTrack($respTrackData);
-
-        $current   = $respTrack->getFieldData();
-        $new       = $respTrack->setFieldData($current, $userId);
-
-        $t = $batch->addToCounter('trackFieldsChecked');
-        if ($current !== $new) {
-            $i = $batch->addToCounter('trackFieldsChanged');
-        } else {
-            $i = $batch->getCounter('trackFieldsChanged');
-        }
-
-        $batch->setMessage('trackFieldsCheck', sprintf($this->_('%d tracks checked, %d had field changes.'), $t, $i));
-    }
-}
+class AgendaFilterController extends Gems_Default_AgendaFilterAction
+{ }

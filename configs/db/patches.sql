@@ -830,3 +830,22 @@ ALTER TABLE gems__radius_config ADD
 -- PATCH: Add templates privilege to superadmin role (super)
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.templates')
     WHERE grl_privileges NOT LIKE '%pr.templates%' AND grl_name = 'super';
+
+-- PATCH: Add description inclusion option
+ALTER TABLE gems__track_fields ADD
+    gtf_to_track_info       boolean not null default true AFTER gtf_field_type;
+ALTER TABLE gems__track_appointments ADD
+    gtap_to_track_info      boolean not null default true AFTER gtap_field_description;
+
+-- PATCH: New aganda automation system
+UPDATE gems__roles
+    SET grl_privileges =
+        CONCAT(grl_privileges,',pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit')
+    WHERE grl_name = 'super' AND grl_privileges NOT LIKE '%pr.agenda-filters%';
+
+ALTER TABLE gems__track_appointments ADD
+    gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id) AFTER gtap_readonly;
+ALTER TABLE gems__track_appointments ADD
+    gtap_create_track      boolean not null default 0 AFTER gtap_filter_id;
+ALTER TABLE gems__track_appointments ADD
+    gtap_create_wait_days   bigint signed not null default 182 AFTER gtap_create_track;
