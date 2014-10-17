@@ -103,6 +103,11 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
         }
 
         $this->addColumns($table);
+        
+        // We wrap the table in a div, but the tables needs it's own class attributes
+        if ($this->class) {
+            $table->appendAttrib('class', $this->class);
+        }
 
         $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
         $container[] = $table;
