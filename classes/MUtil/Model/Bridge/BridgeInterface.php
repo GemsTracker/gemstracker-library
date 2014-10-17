@@ -30,8 +30,8 @@
  * @package    MUtil
  * @subpackage Model_Bridge
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 J-POP Foundation
- * @license    no free license, do not use without permission
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
  * @version    $id: FormatterInterface.php 203 2013-01-01t 12:51:32Z matijs $
  */
 
@@ -40,8 +40,8 @@
  *
  * @package    MUtil
  * @subpackage Model_Bridge
- * @copyright  Copyright (c) 2014 J-POP Foundation
- * @license    no free license, do not use without permission
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
  * @since      Class available since 2014 $(date} 22:00:30
  */
 interface MUtil_Model_Bridge_BridgeInterface
