@@ -28,11 +28,11 @@
  *
  *
  * @package    MUtil
- * @subpackage HeadLink
+ * @subpackage View\Helper
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: HeadLink .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: HeadLink.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
 require_once __DIR__ . '/lessc.inc.php';
@@ -41,7 +41,7 @@ require_once __DIR__ . '/lessc.inc.php';
  * Make sure each .less css script is compiled to .css
  *
  * @package    MUtil
- * @subpackage HeadLink
+ * @subpackage View\Helper
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
@@ -50,11 +50,11 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 {
     /**
      * Absolute file path to the webroot
-     * 
+     *
      * @var string
      */
     protected $_webroot;
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -62,24 +62,24 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
     }
     /**
      * Utility function to base64 encode gradients for use in IE
-     * 
+     *
      * @param type $args
      * @return type
      */
     public function base64encode($args)
     {
         list($type, $value, $unit) = $args;
-        
+
         $unit = array(base64_encode( $this->compileValue($args)));
-        
+
         return array('string', '"', $unit);
     }
-    
+
     /**
      * Copied mostly from less.inc.php
-     * 
+     *
      * Needed since it is protected
-     * 
+     *
      * @param type $value
      * @return type
      */
@@ -114,7 +114,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
 			$this->throwError("unknown value type: $value[0]");
 		}
     }
-    
+
     /**
      * Compile a less file
      *
