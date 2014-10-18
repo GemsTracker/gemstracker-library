@@ -53,12 +53,33 @@ use Gems\Agenda\AppointmentSubFilterAbstract;
 class AndAppointmentFilter extends AppointmentSubFilterAbstract
 {
     /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    public function getSqlWhere()
+    {
+        $wheres = array();
+
+        foreach ($this->_subFilters as $filterObject) {
+            if ($filterObject instanceof AppointmentFilterInterface) {
+                $where = $filterObject->getSqlWhere();
+                if ($where) {
+                    $wheres[] = $where;
+                }
+            }
+        }
+
+        return implode(' AND ', $wheres);
+    }
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
      * @return boolean
      */
-    public function matchAppointment(Gems_Agenda_Appointment $appointment)
+    public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {

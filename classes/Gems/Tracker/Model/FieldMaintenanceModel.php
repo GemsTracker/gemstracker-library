@@ -209,7 +209,9 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $types = $this->getFieldTypes();
         asort($types);
 
-        $this->set('gtf_id_order',      'label', $this->_('Order'));
+        $this->set('gtf_id_order',      'label', $this->_('Order'),
+                'description', $this->_('The display and processing order of the fields.')
+                );
         $this->set('gtf_field_name',    'label', $this->_('Name'));
         $this->set('gtf_field_code',    'label', $this->_('Code Name'),
                 'description', $this->_('Optional extra name to link the field to program code.'));
@@ -312,6 +314,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
             if ($filters) {
                 $translated = $this->util->getTranslated();
+
+                $this->set('gtf_id_order', 'description',
+                        $this->get('gtf_id_order', 'description') . "\n" .
+                        $this->_('When using automatic filters the fields are ALWAYS filled with appointments in ascending order.')
+                        );
 
                 $this->set('gtf_filter_id', 'label', $this->_('Automatic link'),
                         'description', $this->_('Automatically link an appointment when it passes this filter.'),

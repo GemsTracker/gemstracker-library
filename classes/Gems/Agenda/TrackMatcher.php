@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,77 +32,61 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentFilterInterface.php $
+ * @version    $Id: TrackMatcher.php $
  */
 
 namespace Gems\Agenda;
 
+use Gems\Agenda\AppointmentFilterInterface;
+
 /**
  *
  *
- * @package    Gems
- * @subpackage Agenda
+ * @package    Agenda
+ * @subpackage TrackMatcher
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 13-okt-2014 20:00:03
+ * @since      Class available since version 1.6.5 18-okt-2014 12:46:37
  */
-// interface Gems_Agenda_AppointmentFilterInterface
-interface AppointmentFilterInterface
+class TrackMatcher extends \MUtil_Translate_TranslateableAbstract
 {
     /**
-     * Load the object from a data array
      *
-     * @param array $data
+     * @var \Zend_Db_Adapter_Abstract
      */
-    public function exchangeArray(array $data);
+    protected $db;
 
     /**
-     * The filter id
      *
-     * @return int
+     * @param \Gems_Agenda_Appointment $appointment
+     * @param \Gems\Agenda\AppointmentFilterInterface $filter
      */
-    public function getFilterId();
+    public function processFilter(\Gems_Agenda_Appointment $appointment, AppointmentFilterInterface $filter)
+    {
+        \MUtil_Echo::track($filter->getName());
+        $select = $this->db->select();
+        $select->from('gems__respondent2track2appointment')
+                ->joinInner('gems__respondent2track', 'gr2t2a_id_respondent_track = gr2t_id_respondent_track')
+                ->where('gr2t_end_date IS NULL OR gr2t_end_date > CURRENT_TIMESTAMP')
+                ->where('gr2t2a_id_app_field = ?', $filter->getTrackAppointmentFieldId())
+                ->where('gr2t_id_user = ?')
+                ->where('gr2t_id_organization = ?')
+                ->order(new \Zend_Db_Expr());
+
+
+    }
 
     /**
-     * The name of the filter
      *
-     * @return string
+     * @param \Gems_Agenda_Appointment $appointment
+     * @param array $filters of AppointmentFilterInterface
      */
-    public function getName();
+    public function processFilters(\Gems_Agenda_Appointment $appointment, array $filters)
+    {
 
-    /**
-     * Generate a where statement to filter the appointment model
-     *
-     * @return string
-     */
-    public function getSqlWhere();
-
-    /**
-     * The track field id for the filter
-     *
-     * @return int
-     */
-    public function getTrackAppointmentFieldId();
-
-    /**
-     * The track id for the filter
-     *
-     * @return int
-     */
-    public function getTrackId();
-
-    /**
-     * Check a filter for a match
-     *
-     * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
-     * @return boolean
-     */
-    public function matchAppointment(\Gems_Agenda_Appointment $appointment);
-
-    /**
-     * When true processing stops when there is a match.
-     *
-     * @return boolean
-     */
-    public function stopOnMatch();
+        \MUtil_Echo::track(count($filters));
+        foreach ($filters as $filter) {
+            $this->processFilter($appointment, $filter);
+        }
+    }
 }

@@ -43,13 +43,40 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
+class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 {
     /**
+     * The last active appointment in any round
      *
-     * @var Gems_Loader
+     * @var \Gems_Agenda_Appointment
+     */
+    protected $_lastActiveAppointment;
+
+    /**
+     * The format string for outputting appointments
+     *
+     * @var string
+     */
+    protected $appointmentTimeFormat = 'dd MMM yyyy HH:MM';
+
+    /**
+     * The format string for outputting dates
+     *
+     * @var string
+     */
+    protected $dateTimeFormat = 'dd MMM yyyy';
+
+    /**
+     *
+     * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Tracker
+     */
+    protected $tracker;
 
     /**
      *
@@ -87,6 +114,21 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      */
     public function calculateFieldInfoAppointment($currentValue, $name, array $context, array $fieldData, $respTrackId)
     {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        $agenda = $this->loader->getAgenda();
+        $appointment = $agenda->getAppointment($currentValue);
+
+        if ($appointment->isActive()) {
+            $time = $appointment->getAdmissionTime();
+
+            if ($time) {
+                return array($fieldData['gtf_field_name'], ' ', $time->toString($this->appointmentTimeFormat));
+            }
+        }
+
         return null;
     }
 
@@ -102,8 +144,12 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      */
     public function calculateFieldInfoDate($currentValue, $name, array $context, array $fieldData, $respTrackId)
     {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
         if ($currentValue instanceof Zend_Date) {
-            $value = $currentValue->toString();
+            $value = $currentValue->toString($this->dateTimeFormat);
         } elseif ($currentValue instanceof DateTime) {
             $value = date('j M Y', $currentValue->getTimestamp());
         } else {
@@ -134,6 +180,61 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      * On save calculation function
      *
      * @param array $currentValue The current value
+     * @param array $values Containing filter => int
+     * @param array $context The other values being saved
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateOnSaveAppointment($currentValue, array $values, array $context, $respTrackId)
+    {
+        if ($currentValue || $values) {
+            $agenda = $this->loader->getAgenda();
+
+            if (isset($values['filter'])) {
+                if ($this->_lastActiveAppointment) {
+                    $appointment = $this->_lastActiveAppointment;
+                    $orEqual     = false;
+                } else {
+                    if ($currentValue) {
+                        $appointment = $agenda->getAppointment($currentValue);
+                    } else {
+                        $appointment = null;
+                    }
+                    $orEqual = true;
+                }
+                if ($appointment && $appointment->isActive()) {
+                    $respId   = $appointment->getRespondentId();
+                    $orgId    = $appointment->getOrganizationId();
+                    $fromDate = $appointment;
+                } else {
+                    $respTrack = $this->tracker->getRespondentTrack($respTrackId);
+                    $respId    = $respTrack->getRespondentId();
+                    $orgId     = $respTrack->getOrganizationId();
+                    $fromDate  = $respTrack->getStartDate();
+                }
+                $newValue = $agenda->findFirstAppointmentId($values['filter'], $respId, $orgId, $fromDate, $orEqual);
+
+                if ($newValue) {
+                    $currentValue = $newValue;
+                }
+            }
+
+            if ($currentValue) {
+                $appointment = $agenda->getAppointment($currentValue);
+
+                if ($appointment->isActive()) {
+                    $this->_lastActiveAppointment = $appointment;
+                }
+            }
+        }
+
+        return $currentValue;
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param array $currentValue The current value
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
@@ -141,13 +242,15 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      */
     public function calculateOnSaveCaretaker($currentValue, array $values, array $context, $respTrackId)
     {
-        $agenda = $this->loader->getAgenda();
+        if ($values) {
+            $agenda = $this->loader->getAgenda();
 
-        foreach (array_reverse(array_filter($values)) as $value) {
-            $appointment = $agenda->getAppointment($value);
+            foreach (array_reverse(array_filter($values)) as $value) {
+                $appointment = $agenda->getAppointment($value);
 
-            if ($appointment->exists) {
-                return $appointment->getAttendedById();
+                if ($appointment->exists) {
+                    return $appointment->getAttendedById();
+                }
             }
         }
 
@@ -165,16 +268,33 @@ class Gems_Tracker_Model_FieldDataModel extends MUtil_Model_UnionModel
      */
     public function calculateOnSaveLocation($currentValue, array $values, array $context, $respTrackId)
     {
-        $agenda = $this->loader->getAgenda();
+        if ($values) {
+            $agenda = $this->loader->getAgenda();
 
-        foreach (array_reverse(array_filter($values)) as $value) {
-            $appointment = $agenda->getAppointment($value);
+            foreach (array_reverse(array_filter($values)) as $value) {
+                $appointment = $agenda->getAppointment($value);
 
-            if ($appointment->exists) {
-                return $appointment->getLocationId();
+                if ($appointment->exists) {
+                    return $appointment->getLocationId();
+                }
             }
         }
 
         return $currentValue;
+    }
+
+    /**
+     * Calls $this->save() multiple times for each element
+     * in the input array and returns the number of saved rows.
+     *
+     * @param array $newValues A nested array
+     * @return int The number of changed rows
+     */
+    public function saveAll(array $newValues)
+    {
+        // Clear before the next run
+        $this->_lastActiveAppointment;
+
+        return parent::saveAll($newValues);
     }
 }

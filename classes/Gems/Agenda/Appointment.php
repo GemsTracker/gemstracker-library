@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
+class Gems_Agenda_Appointment extends \Gems_Registry_TargetAbstract
 {
     /**
      *
@@ -59,13 +59,13 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Agenda
+     * @var \Gems_Agenda
      */
     protected $agenda;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -78,7 +78,7 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -112,13 +112,13 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
 
             $respId = $this->_gemsData['gap_id_user'];
             $orgId  = $this->_gemsData['gap_id_organization'];
-            // MUtil_Echo::track($this->_gemsData);
+            // \MUtil_Echo::track($this->_gemsData);
 
             if ($row = $this->db->fetchRow($sql, array($respId, $orgId))) {
                 $this->_gemsData = $this->_gemsData + $row;
             } else {
                 $appId = $this->_appointmentId;
-                throw new Gems_Exception("Respondent data missing for appointment id $appId.");
+                throw new \Gems_Exception("Respondent data missing for appointment id $appId.");
             }
         }
     }
@@ -174,14 +174,14 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     /**
      * Return the admission time
      *
-     * @return MUtil_Date Admission time as a date or null
+     * @return \MUtil_Date Admission time as a date or null
      */
     public function getAdmissionTime()
     {
         if (isset($this->_gemsData['gap_admission_time']) && $this->_gemsData['gap_admission_time']) {
-            if (! $this->_gemsData['gap_admission_time'] instanceof MUtil_Date) {
+            if (! $this->_gemsData['gap_admission_time'] instanceof \MUtil_Date) {
                 $this->_gemsData['gap_admission_time'] =
-                        new MUtil_Date($this->_gemsData['gap_admission_time'], Gems_Tracker::DB_DATETIME_FORMAT);
+                        new \MUtil_Date($this->_gemsData['gap_admission_time'], \Gems_Tracker::DB_DATETIME_FORMAT);
             }
             return $this->_gemsData['gap_admission_time'];
         }
@@ -284,6 +284,20 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the respondent object
+     *
+     * @return \Gems_Tracker_Respondent
+     */
+    public function getRespondent()
+    {
+        return $this->loader->getRespondent(
+                $this->getPatientNumber(),
+                $this->getOrganizationId(),
+                $this->getRespondentId())
+            ;
+    }
+
+    /**
      * Return the user / respondent id
      *
      * @return int
@@ -345,6 +359,14 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
      */
     public function updateTracks()
     {
+        // First check the filter for any new fields to fill
+        $filters = $this->agenda->matchFilters($this);
+        if ($filters) {
+            $matcher = $this->agenda->getTrackMatcher();
+            $matcher->processFilters($this, $filters);
+        }
+
+        // Next recalculate all the fields that use this agenda item
         $select = $this->db->select();
         $select->from('gems__respondent2track2appointment',
                 array('gr2t2a_id_respondent_track', 'gr2t2a_id_respondent_track')
@@ -352,25 +374,22 @@ class Gems_Agenda_Appointment extends Gems_Registry_TargetAbstract
                 ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
                 ->distinct();
 
-        $tokenChanges = 0;
         $respTracks   = $this->db->fetchPairs($select);
+        $tokenChanges = 0;
 
-        // MUtil_Echo::track($respTracks);
+        // \MUtil_Echo::track($respTracks);
         if ($respTracks) {
             $tracker = $this->loader->getTracker();
             $userId  = $this->loader->getCurrentUser()->getUserId();
 
             foreach ($respTracks as $respTrackId) {
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
-                $tokenChanges += $respTrack->recalculateFields($this->loader->getCurrentUser()->getUserId());
+                $tokenChanges += $respTrack->recalculateFields($userId);
             }
         } else {
             $respTracks = array();
         }
-        // MUtil_Echo::track($tokenChanges);
-
-        $tokenChanges += $this->agenda->applyRespondentTrackMatches($this);
-        $tokenChanges += $this->agenda->applyTrackCreationMatches($this);
+        // \MUtil_Echo::track($tokenChanges);
 
         return $tokenChanges;
     }

@@ -52,6 +52,19 @@ use Gems\Agenda\AppointmentFilterAbstract;
 class SubjectAppointmentFilter extends AppointmentFilterAbstract
 {
     /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    public function getSqlWhere()
+    {
+        $text = $this->_data['gaf_filter_text1'];
+        if ($text) {
+            return "gap_subject LIKE '%$text%'";
+        }
+    }
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment

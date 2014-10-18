@@ -91,7 +91,7 @@ abstract class AppointmentSubFilterAbstract extends AppointmentFilterAbstract
 
             if ($filterIds) {
                 $filterObjects = $this->agenda->getFilters("SELECT *
-                    FROM gems__appointment_filters LEFT JOIN gems__track_appointments ON gaf_id = gtap_filter_id
+                    FROM gems__appointment_filters 
                     WHERE gaf_id IN (" . implode(', ', $filterIds) . ")
                     ORDER BY gaf_id_order");
 

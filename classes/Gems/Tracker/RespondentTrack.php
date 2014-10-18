@@ -841,12 +841,12 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * The start date of this track
      *
-     * @return MUtil_Date
+     * @return \MUtil_Date
      */
     public function getStartDate()
     {
         if (isset($this->_respTrackData['gr2t_start_date'])) {
-            return new MUtil_Date($this->_respTrackData['gr2t_start_date'], Gems_Tracker::DB_DATETIME_FORMAT);
+            return new \MUtil_Date($this->_respTrackData['gr2t_start_date'], Gems_Tracker::DB_DATETIME_FORMAT);
         }
     }
 
@@ -990,13 +990,15 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     /**
      * Refresh the fields (to reflect any changed appointments)
      *
-     * @param int $userId The current user
+     * @param int $userId The current user or null if a recalculation should not be performed
      * @return int The number of tokens changed as a result of this update
      */
     public function recalculateFields($userId)
     {
         $this->setFieldData($this->getFieldData(), $userId);
-        return $this->checkTrackTokens($userId);
+        if ($userId) {
+            return $this->checkTrackTokens($userId);
+        }
     }
 
     /**

@@ -96,6 +96,13 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     }
 
     /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    // public function getSqlWhere();
+
+    /**
      * The filter id
      *
      * @return int
@@ -103,6 +110,40 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     public function getFilterId()
     {
         return $this->_data['gaf_id'];
+    }
+
+    /**
+     * The name of the filter
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->_data['gaf_manual_name'] ? $this->_data['gaf_manual_name'] : $this->_data['gaf_calc_name'];
+    }
+
+    /**
+     * The track field id for the filter
+     *
+     * @return int
+     */
+    public function getTrackAppointmentFieldId()
+    {
+        if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
+            return $this->_data['gtap_id_app_field'];
+        }
+    }
+
+    /**
+     * The track id for the filter
+     *
+     * @return int
+     */
+    public function getTrackId()
+    {
+        if (isset($this->_data['gtap_id_track']) && $this->_data['gtap_id_track']) {
+            return $this->_data['gtap_id_track'];
+        }
     }
 
     /**

@@ -96,7 +96,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -109,13 +109,13 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -503,13 +503,14 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
         $saves = array();
 
         // MUtil_Echo::track($data);
-        foreach ($data as $key => $value) {
+        foreach ($data as $key => &$value) {
             if (isset($this->_trackFields[$key])) {
                 $field = $this->_trackFields[$key];
 
-                $calcUsing    = array();
                 $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
                 if (method_exists($model, $typeFunction)) {
+                    $calcUsing    = array();
+
                     // Perform automatic calculation
                     if (isset($field['gtf_calculate_using'])) {
                         $sources = explode(
@@ -524,6 +525,9 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
                                 $calcUsing[$source] = null;
                             }
                         }
+                    } elseif (isset($field['gtf_filter_id'])) {
+                        // Pass data for appointment filter
+                        $calcUsing['filter'] = $field['gtf_filter_id'];
                     }
                     $value = $model->$typeFunction($value, $calcUsing, $data, $respTrackId);
                 }

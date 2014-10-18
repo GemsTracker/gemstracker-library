@@ -131,6 +131,29 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
     }
 
     /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    public function getSqlWhere()
+    {
+        if ($this->_activities && ($this->_activities !== true)) {
+            $where = 'gap_id_activity IN (' . implode(', ', $this->_activities) . ')';
+
+            if ($this->_procedures !== true) {
+                $where .= ' AND ';
+            }
+        } else {
+            $where = '';
+        }
+        if ($this->_procedures && ($this->_procedures !== true)) {
+            $where .= 'gap_id_procedure IN (' . implode(', ', $this->_procedures) . ')';
+        }
+
+        return $where;
+    }
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment

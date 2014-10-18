@@ -36,6 +36,7 @@
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\TrackMatcher;
 
 /**
  *
@@ -46,7 +47,7 @@ use Gems\Agenda\AppointmentFilterInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
+class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 {
     /**
      *
@@ -67,7 +68,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     protected $cache;
 
     /**
-     * Allows sub classes of Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
+     * Allows sub classes of \Gems_Loader_LoaderAbstract to specify the subdirectory where to look for.
      *
      * @var string $cascade An optional subdirectory where this subclass always loads from.
      */
@@ -87,6 +88,12 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var TrackMatcher
+     */
+    protected $trackMachter;
+
+    /**
+     *
      * @var \Zend_Translate
      */
     protected $translate;
@@ -99,7 +106,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
-     * @param type $container A container acting as source for MUtil_Registry_Source
+     * @param type $container A container acting as source for \MUtil_Registry_Source
      * @param array $dirs The directories where to look for requested classes
      */
     public function __construct($container, array $dirs)
@@ -111,14 +118,14 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
-     * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string              $text   Translation string
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                     identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($text, $locale = null)
@@ -131,7 +138,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
      *
      * Allows for overruling on project level
      *
-     * @return Zend_Db_Select
+     * @return \Zend_Db_Select
      */
     protected function _getAppointmentSelect()
     {
@@ -162,32 +169,43 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Find the first appointment matching this query
      *
-     * @param Gems_Agenda_Appointment $appointment
+     * @param int $filterId
+     * @param int $respondentId
+     * @param int $orgId
+     * @param mixed $from Optional date or appointment after which the appointment must occur
+     * @param boolean $orEqual When true the date may be equal to the previous date
+     * @return int The first found appointment id or false
      */
-    public function applyRespondentTrackMatches(\Gems_Agenda_Appointment $appointment)
+    public function findFirstAppointmentId($filterId, $respondentId, $orgId, $from = null, $orEqual = true)
     {
-        $filters = $this->loadDefaultFilters();
-
-        foreach ($filters as $filter) {
-            if ($filter instanceof AppointmentFilterInterface) {
-                if ($filter->matchAppointment($appointment)) {
-                    MUtil_Echo::track($appointment->getPatientNumber());
-                    if ($filter->stopOnMatch()) {
-                        break;
-                    }
-                }
-            }
+        $filter = $this->getFilter($filterId);
+        if (! $filter) {
+            return false;
         }
-    }
 
-    /**
-     *
-     * @param Gems_Agenda_Appointment $appointment
-     */
-    public function applyTrackCreationMatches(\Gems_Agenda_Appointment $appointment)
-    {
+        $select = $this->db->select();
+        $select->from('gems__appointments', 'gap_id_appointment')
+                ->where('gap_id_user = ?', $respondentId)
+                ->where('gap_id_organization = ?', $orgId)
+                ->where('gap_status IN (?)', $this->getStatusKeysActiveDbQuoted())
+                ->where($filter->getSqlWhere())
+                ->order('gap_admission_time ASC')
+                ->limit(1);
 
+        if ($from) {
+            if ($from instanceof \Gems_Agenda_Appointment) {
+                $from = $from->getAdmissionTime();
+            }
+            if ($from instanceof \Zend_Date) {
+                $from = $from->toString('yyyy-MM-dd HH:mm:ss');
+            }
+            $oper = $orEqual ? '>=' : '>';
+            $select->where("gap_admission_time $oper ?", $from);
+        }
+
+        return $this->db->fetchOne($select);
     }
 
     /**
@@ -233,7 +251,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
                         ) OR
                             gaa_id_organization = ?', $organizationId);
         }
-        // MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('activities'));
         return $results;
@@ -248,7 +266,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
      */
     public function getAppointmentDisplay(array $row)
     {
-        $date = new MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
+        $date = new \MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
         $results[] = $date->toString('dd-MM-yyyy HH:mm');
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
@@ -272,12 +290,12 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     public function getAppointment($appointmentData)
     {
         if (! $appointmentData) {
-            throw new Gems_Exception_Coding('Provide at least the apppointment id when requesting an appointment.');
+            throw new \Gems_Exception_Coding('Provide at least the apppointment id when requesting an appointment.');
         }
 
         if (is_array($appointmentData)) {
              if (!isset($appointmentData['gap_id_appointment'])) {
-                 throw new Gems_Exception_Coding(
+                 throw new \Gems_Exception_Coding(
                          '$appointmentData array should atleast have a key "gap_id_appointment" containing the requested appointment id'
                          );
              }
@@ -285,7 +303,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         } else {
             $appointmentId = $appointmentData;
         }
-        // MUtil_Echo::track($appointmentId, $appointmentData);
+        // \MUtil_Echo::track($appointmentId, $appointmentData);
 
         if (! isset($this->_appointments[$appointmentId])) {
             $this->_appointments[$appointmentId] = $this->_loadClass('appointment', true, array($appointmentData));
@@ -319,7 +337,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
                     ->where('gap_id_organization = ?', $organizationId);
         } else {
             // Join might have been created in _getAppointmentSelect
-            $from = $select->getPart(Zend_Db_Select::FROM);
+            $from = $select->getPart(\Zend_Db_Select::FROM);
             if (! isset($from['gems__respondent2org'])) {
                 $select->joinInner(
                         'gems__respondent2org',
@@ -332,7 +350,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
                     ->where('gr2o_id_organization = ?', $organizationId);
         }
 
-        // MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString());
         $rows = $this->db->fetchAll($select);
 
         if (! $rows) {
@@ -369,18 +387,41 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Get a filter from the database
+     *
+     * @param $filterId Id of a single filter
+     * @return AppointmentFilterInterface or null
+     */
+    public function getFilter($filterId)
+    {
+        static $filters = array();
+
+        if (isset($filters[$filterId])) {
+            return $filters[$filterId];
+        }
+        $found = $this->getFilters("SELECT *
+                FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
+                WHERE gaf_active = 1 AND gaf_id = $filterId LIMIT 1");
+
+        if ($found) {
+            $filters[$filterId] = reset($found);
+            return $filters[$filterId];
+        }
+    }
+
+    /**
      * Get the filters from the database
      *
      * @param $sql SQL statement
      * @return array of AppointmentFilterInterface objects
      */
-    protected function getFilters($sql)
+    public function getFilters($sql)
     {
         $classes    = array();
         $filterRows = $this->db->fetchAll($sql);
         $output     = array();
 
-        MUtil_Echo::track($filters);
+        // \MUtil_Echo::track($filterRows);
         foreach ($filterRows as $key => $filter) {
             $className = $filter['gaf_class'];
             if (! isset($classes[$className])) {
@@ -392,6 +433,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
                 $output[$key] = $filterObject;
             }
         }
+        // \MUtil_Echo::track(count($filterRows), count($output));
 
         return $output;
     }
@@ -419,7 +461,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             $select->where('gas_active = 1')
                     ->where('gas_id_organization = ?', $organizationId);
         }
-        // MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('staff'));
         return $results;
@@ -488,7 +530,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
                         ) OR
                             gapr_id_organization = ?', $organizationId);
         }
-        // MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString());
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('procedures'));
         return $results;
@@ -556,7 +598,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     /**
      * Get the status keys for active agenda items as a quoted db query string for use in "x IN (?)"
      *
-     * @return Zend_Db_Expr
+     * @return \Zend_Db_Expr
      */
     public function getStatusKeysActiveDbQuoted()
     {
@@ -564,7 +606,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         foreach ($this->getStatusCodesActive() as $key => $label) {
             $codes[] = $this->db->quote($key);
         }
-        return new Zend_Db_Expr(implode(", ", $codes));
+        return new \Zend_Db_Expr(implode(", ", $codes));
     }
 
     /**
@@ -580,7 +622,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     /**
      * Get the status keys for active agenda items as a quoted db query string for use in "x IN (?)"
      *
-     * @return Zend_Db_Expr
+     * @return \Zend_Db_Expr
      */
     public function getStatusKeysInactiveDbQuoted()
     {
@@ -588,7 +630,21 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         foreach ($this->getStatusCodesInactive() as $key => $label) {
             $codes[] = $this->db->quote($key);
         }
-        return new Zend_Db_Expr(implode(", ", $codes));
+        return new \Zend_Db_Expr(implode(", ", $codes));
+    }
+
+    /**
+     * Get the agenda <=> track matcher
+     *
+     * @return \Gems\Agenda\TrackMatcher
+     */
+    public function getTrackMatcher()
+    {
+        if (! $this->trackMachter) {
+            $this->trackMachter = $this->_loadClass('TrackMatcher', true);
+        }
+
+        return $this->trackMachter;
     }
 
     /**
@@ -619,25 +675,25 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
      */
     protected function initTranslateable()
     {
-        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
             // OK
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate) {
+        if ($this->translate instanceof \Zend_Translate) {
             // Just one step
             $this->translateAdapter = $this->translate->getAdapter();
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate_Adapter) {
+        if ($this->translate instanceof \Zend_Translate_Adapter) {
             // It does happen and if it is all we have
             $this->translateAdapter = $this->translate;
             return;
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
@@ -667,7 +723,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
         $cacheId = __CLASS__ . '_' . __FUNCTION__;
 
         $output = $this->cache->load($cacheId);
-        if (false && $output) {
+        if ($output) {
             foreach ($output as $key => $filterObject) {
                 // Filterobjects should not serialize anything loaded from a source
                 if ($filterObject instanceof \MUtil_Registry_TargetInterface) {
@@ -678,10 +734,10 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             return $this->_filters;
         }
 
-        $this->filters = $this->getFilters("SELECT *
+        $this->_filters = $this->getFilters("SELECT *
                 FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
                 WHERE gaf_active = 1
-                ORDER BY gaf_id_order");
+                ORDER BY gaf_id_order, gtap_id_order");
 
         $this->cache->save($this->_filters, $cacheId, array('appointment_filters'));
 
@@ -733,8 +789,8 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             return null;
         }
 
-        $model = new MUtil_Model_TableModel('gems__agenda_activities');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
+        $model = new \MUtil_Model_TableModel('gems__agenda_activities');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
 
         $values = array(
             'gaa_name'            => $name,
@@ -745,11 +801,31 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('activity', 'activities'));
 
         return $result['gaa_id_activity'];
     }
 
+    /**
+     *
+     * @param \Gems_Agenda_Appointment $appointment
+     * @return array of AppointmentFilterInterface
+     */
+    public function matchFilters(\Gems_Agenda_Appointment $appointment)
+    {
+        $filters = $this->loadDefaultFilters();
+        $output  = array();
+
+        foreach ($filters as $filter) {
+            if ($filter instanceof AppointmentFilterInterface) {
+                if ($filter->matchAppointment($appointment)) {
+                    $output[] = $filter;
+                }
+            }
+        }
+
+        return $output;
+    }
 
     /**
      * Find a healt care provider for the name and organization.
@@ -794,8 +870,8 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             return null;
         }
 
-        $model = new MUtil_Model_TableModel('gems__agenda_staff');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gas');
+        $model = new \MUtil_Model_TableModel('gems__agenda_staff');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gas');
 
         $values = array(
             'gas_name'            => $name,
@@ -806,7 +882,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('staff'));
 
         return $result['gas_id_staff'];
     }
@@ -873,12 +949,12 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             return null;
         }
 
-        $model = new MUtil_Model_TableModel('gems__locations');
-        Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+        $model = new \MUtil_Model_TableModel('gems__locations');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
 
         $result = $model->save($values);
 
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('location', 'locations'));
 
         return $result;
     }
@@ -928,8 +1004,8 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
             return null;
         }
 
-        $model = new MUtil_Model_TableModel('gems__agenda_procedures');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
+        $model = new \MUtil_Model_TableModel('gems__agenda_procedures');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gapr');
 
         $values = array(
             'gapr_name'            => $name,
@@ -940,7 +1016,7 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
 
         $result = $model->save($values);
 
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('procedure', 'procedures'));
 
         return $result['gapr_id_procedure'];
     }
@@ -966,17 +1042,17 @@ class Gems_Agenda extends Gems_Loader_TargetLoaderAbstract
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string using plural notations
      * Returns the translated string
      *
-     * @see Zend_Locale
-     * @param  string             $singular Singular translation string
-     * @param  string             $plural   Plural translation string
-     * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see Zend_Locale for more information
+     * @see \Zend_Locale
+     * @param  string              $singular Singular translation string
+     * @param  string              $plural   Plural translation string
+     * @param  integer             $number   Number for detecting the correct plural
+     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                       locale identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function plural($singular, $plural, $number, $locale = null)
