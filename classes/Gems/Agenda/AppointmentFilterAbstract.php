@@ -96,11 +96,31 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     }
 
     /**
-     * Generate a where statement to filter the appointment model
+     * The appointment field id from gtap_id_app_field
+     *
+     * @return int
+     */
+    public function getAppointmentFieldId()
+    {
+        if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
+            return $this->_data['gtap_id_app_field'];
+        }
+    }
+
+    /**
+     * The field id as it is recognized be the track engine
      *
      * @return string
      */
-    // public function getSqlWhere();
+    public function getFieldId()
+    {
+        if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
+            return \Gems_Tracker_Engine_FieldsDefinition::makeKey(
+                    \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
+                    $this->_data['gtap_id_app_field']
+                    );
+        }
+    }
 
     /**
      * The filter id
@@ -121,6 +141,13 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     {
         return $this->_data['gaf_manual_name'] ? $this->_data['gaf_manual_name'] : $this->_data['gaf_calc_name'];
     }
+
+    /**
+     * Generate a where statement to filter the appointment model
+     *
+     * @return string
+     */
+    // public function getSqlWhere();
 
     /**
      * The track field id for the filter
@@ -147,6 +174,29 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     }
 
     /**
+     * The number of days to wait between track creation
+     *
+     * @return int or null when no track creation or no wait days
+     */
+    public function getWaitDays()
+    {
+        if (isset($this->_data['gtap_create_wait_days'], $this->_data['gtap_create_track']) &&
+                $this->_data['gtap_create_track']) {
+            return intval($this->_data['gtap_create_wait_days']);
+        }
+    }
+
+    /**
+     * Should this track be created when it does not exist?
+     *
+     * @return boolean
+     */
+    public function isCreator()
+    {
+        return isset($this->_data['gtap_create_track']) && $this->_data['gtap_create_track'];
+    }
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
@@ -169,16 +219,6 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
             }
         }
         return serialize($data);
-    }
-
-    /**
-     * When true processing stops when there is a match.
-     *
-     * @return boolean
-     */
-    public function stopOnMatch()
-    {
-        return (boolean) $this->_data['gaf_stop_on_match'];
     }
 
     /**

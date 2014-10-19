@@ -14,7 +14,6 @@ CREATE TABLE if not exists gems__appointment_filters (
         gaf_filter_text3        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
         gaf_filter_text4        varchar(200) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' null,
 
-        gaf_stop_on_match       boolean not null default 1,
         gaf_active              boolean not null default 1,
 
         gaf_changed             timestamp not null default current_timestamp on update current_timestamp,

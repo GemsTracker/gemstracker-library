@@ -36,7 +36,6 @@
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
-use Gems\Agenda\TrackMatcher;
 
 /**
  *
@@ -85,12 +84,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * @var \Gems_Loader
      */
     protected $loader;
-
-    /**
-     *
-     * @var TrackMatcher
-     */
-    protected $trackMachter;
 
     /**
      *
@@ -204,7 +197,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             $oper = $orEqual ? '>=' : '>';
             $select->where("gap_admission_time $oper ?", $from);
         }
-
+        // \MUtil_Echo::track($select->__toString());
         return $this->db->fetchOne($select);
     }
 
@@ -631,20 +624,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             $codes[] = $this->db->quote($key);
         }
         return new \Zend_Db_Expr(implode(", ", $codes));
-    }
-
-    /**
-     * Get the agenda <=> track matcher
-     *
-     * @return \Gems\Agenda\TrackMatcher
-     */
-    public function getTrackMatcher()
-    {
-        if (! $this->trackMachter) {
-            $this->trackMachter = $this->_loadClass('TrackMatcher', true);
-        }
-
-        return $this->trackMachter;
     }
 
     /**

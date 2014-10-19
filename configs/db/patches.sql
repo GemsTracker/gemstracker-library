@@ -837,7 +837,9 @@ ALTER TABLE gems__track_fields ADD
 ALTER TABLE gems__track_appointments ADD
     gtap_to_track_info      boolean not null default true AFTER gtap_field_description;
 
--- PATCH: New aganda automation system
+UPDATE gems__track_appointments SET gtap_to_track_info = 0;
+
+-- PATCH: New agenda automation system
 UPDATE gems__roles
     SET grl_privileges =
         CONCAT(grl_privileges,',pr.agenda-filters,pr.agenda-filters.create,pr.agenda-filters.delete,pr.agenda-filters.edit')
@@ -846,6 +848,6 @@ UPDATE gems__roles
 ALTER TABLE gems__track_appointments ADD
     gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id) AFTER gtap_readonly;
 ALTER TABLE gems__track_appointments ADD
-    gtap_create_track      boolean not null default 0 AFTER gtap_filter_id;
+    gtap_create_track       boolean not null default 0 AFTER gtap_filter_id;
 ALTER TABLE gems__track_appointments ADD
     gtap_create_wait_days   bigint signed not null default 182 AFTER gtap_create_track;

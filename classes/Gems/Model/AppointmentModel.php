@@ -204,6 +204,11 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->setIfExists('gor_name',              'label', $this->_('Organization'));
         $this->setIfExists('gap_subject',           'label', $this->_('Comment'));
 
+        $dels = $this->loader->getAgenda()->getStatusKeysInactiveDbQuoted();
+        if ($dels) {
+            $this->addColumn(new Zend_Db_Expr("CASE WHEN gap_status IN ($dels) THEN 'deleted' ELSE '' END "), 'row_class');
+        }
+
         return $this;
     }
 

@@ -581,6 +581,19 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     *
+     * @return string The number of rounds
+     */
+    public function getCount()
+    {
+        if (isset($this->_respTrackData['gr2t_count'])) {
+            return $this->_respTrackData['gr2t_count'];
+        }
+
+        return 0;
+    }
+
+    /**
      * The round description of the first round that has not been answered.
      *
      * @return string Round description or Stopped/Completed if not found.
@@ -681,6 +694,18 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function getEditSnippets()
     {
         return $this->getTrackEngine()->getTrackEditSnippetNames($this);
+    }
+
+    /**
+     * The end date of this track
+     *
+     * @return \MUtil_Date or null
+     */
+    public function getEndDate()
+    {
+        if (isset($this->_respTrackData['gr2t_end_date'])) {
+            return new \MUtil_Date($this->_respTrackData['gr2t_end_date'], Gems_Tracker::DB_DATETIME_FORMAT);
+        }
     }
 
     /**
@@ -988,6 +1013,19 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Are there still unanswered rounds
+     *
+     * @return boolean
+     */
+    public function isOpen()
+    {
+        if (isset($this->_respTrackData['gr2t_count'], $this->_respTrackData['gr2t_completed'])) {
+            return $this->_respTrackData['gr2t_count'] > $this->_respTrackData['gr2t_completed'];
+        }
+        return true;
+    }
+
+    /**
      * Refresh the fields (to reflect any changed appointments)
      *
      * @param int $userId The current user or null if a recalculation should not be performed
@@ -996,7 +1034,10 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     public function recalculateFields($userId)
     {
         $this->setFieldData($this->getFieldData(), $userId);
-        if ($userId) {
+
+        // We always update the fields, but recalculate the token dates
+        // only when this respondent track is still running.
+        if ($userId && $this->hasSuccesCode() && $this->isOpen()) {
             return $this->checkTrackTokens($userId);
         }
     }
@@ -1066,16 +1107,14 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
                 }
             }
         }
-        $changeCount = $engine->setFieldsData($this->_respTrackId, $fieldData);
-        if ($changeCount>0) {
-            $this->_ensureFieldData(true);  // force reload
+        $engine->setFieldsData($this->_respTrackId, $fieldData);
+        $this->_ensureFieldData(true);  // force reload
 
-            if ($userId) {
-                $info = $this->getTrackEngine()->calculateFieldsInfo($this->_respTrackId, $this->_fieldData);
+        if ($userId) {
+            $info = $this->getTrackEngine()->calculateFieldsInfo($this->_respTrackId, $this->_fieldData);
 
-                if ($info != $this->_respTrackData['gr2t_track_info']) {
-                    $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
-                }
+            if ($info != $this->_respTrackData['gr2t_track_info']) {
+                $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
             }
         }
 

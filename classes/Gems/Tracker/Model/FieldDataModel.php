@@ -195,6 +195,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                     $appointment = $this->_lastActiveAppointment;
                     $orEqual     = false;
                 } else {
+                    // MUtil_Echo::track($currentValue);
                     if ($currentValue) {
                         $appointment = $agenda->getAppointment($currentValue);
                     } else {
@@ -203,6 +204,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                     $orEqual = true;
                 }
                 if ($appointment && $appointment->isActive()) {
+                    // MUtil_Echo::track($appointment->getAdmissionTime()->toString());
                     $respId   = $appointment->getRespondentId();
                     $orgId    = $appointment->getOrganizationId();
                     $fromDate = $appointment;
@@ -212,7 +214,9 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                     $orgId     = $respTrack->getOrganizationId();
                     $fromDate  = $respTrack->getStartDate();
                 }
+                // MUtil_Echo::track($respId, $orgId, get_class($fromDate));
                 $newValue = $agenda->findFirstAppointmentId($values['filter'], $respId, $orgId, $fromDate, $orEqual);
+                // MUtil_Echo::track($newValue);
 
                 if ($newValue) {
                     $currentValue = $newValue;
@@ -293,7 +297,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
     public function saveAll(array $newValues)
     {
         // Clear before the next run
-        $this->_lastActiveAppointment;
+        $this->_lastActiveAppointment = null;
 
         return parent::saveAll($newValues);
     }

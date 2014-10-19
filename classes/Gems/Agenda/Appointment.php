@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Agenda\AppointmentFilterInterface;
+
 /**
  *
  * @package    Gems
@@ -43,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Agenda_Appointment extends \Gems_Registry_TargetAbstract
+class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      *
@@ -359,37 +361,113 @@ class Gems_Agenda_Appointment extends \Gems_Registry_TargetAbstract
      */
     public function updateTracks()
     {
-        // First check the filter for any new fields to fill
-        $filters = $this->agenda->matchFilters($this);
-        if ($filters) {
-            $matcher = $this->agenda->getTrackMatcher();
-            $matcher->processFilters($this, $filters);
-        }
+        $tokenChanges = 0;
+        $tracker      = $this->loader->getTracker();
+        $userId       = $this->loader->getCurrentUser()->getUserId();
 
-        // Next recalculate all the fields that use this agenda item
+        // Find all the fields that use this agenda item
         $select = $this->db->select();
-        $select->from('gems__respondent2track2appointment',
-                array('gr2t2a_id_respondent_track', 'gr2t2a_id_respondent_track')
-                )
+        $select->from('gems__respondent2track2appointment', array('gr2t2a_id_respondent_track'))
+                ->joinInner(
+                        'gems__respondent2track',
+                        'gr2t_id_respondent_track = gr2t2a_id_respondent_track',
+                        array('gr2t_id_track')
+                        )
                 ->where('gr2t2a_id_appointment = ?', $this->_appointmentId)
                 ->distinct();
 
-        $respTracks   = $this->db->fetchPairs($select);
-        $tokenChanges = 0;
+        // AND find the filters for any new fields to fill
+        $filters = $this->agenda->matchFilters($this);
+        if ($filters) {
+            $ids = array_map(function ($value) {
+                return $value->getTrackId();
+            }, $filters);
+
+            // \MUtil_Echo::track(array_keys($filters), $ids);
+            $respId = $this->getRespondentId();
+            $orgId  = $this->getOrganizationId();
+            $select->orWhere(
+                    "gr2t_id_user = $respId AND gr2t_id_organization = $orgId AND gr2t_id_track IN (?)",
+                    implode(', ', $ids)
+                    );
+        }
+
+        // Now find all the existing tracks that should be checked
+        $respTracks = $this->db->fetchPairs($select);
 
         // \MUtil_Echo::track($respTracks);
         if ($respTracks) {
-            $tracker = $this->loader->getTracker();
-            $userId  = $this->loader->getCurrentUser()->getUserId();
-
-            foreach ($respTracks as $respTrackId) {
+            foreach ($respTracks as $respTrackId => $trackId) {
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
+
+                // Recalculate this track
                 $tokenChanges += $respTrack->recalculateFields($userId);
+
+                // Store the track for creation checking
+                $existingTracks[$trackId][] = $respTrack;
             }
         } else {
+            $existingTracks = array();
             $respTracks = array();
         }
         // \MUtil_Echo::track($tokenChanges);
+
+        // Check for tracks that should be created
+        foreach ($filters as $filter) {
+            if (($filter instanceof AppointmentFilterInterface) &&
+                    $filter->isCreator()) {
+
+                $createTrack = true;
+                $trackId     = $filter->getTrackId();
+
+                if (isset($existingTracks[$trackId])) {
+                    foreach($existingTracks[$trackId] as $respTrack) {
+                        if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
+                            if ($respTrack->hasSuccesCode()) {
+                                // MUtil_Echo::track($trackId, $respTrack->isOpen());
+                                // An open track of this type exists: do not create a new one
+                                if ($respTrack->isOpen()) {
+                                    $createTrack = false;
+                                    break;
+                                }
+
+                                // Closed tracks exist.
+                                // Is there one that ended less than wait days ago
+                                $curr = $this->getAdmissionTime();
+                                $end  = $respTrack->getEndDate();
+                                $wait = $filter->getWaitDays();
+
+                                if (($wait !== null) && $curr && $end && ($curr->diffDays($end) > $wait)) {
+                                    // MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+                                    $createTrack = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                // MUtil_Echo::track($trackId, $createTrack);
+                if ($createTrack) {
+                    $trackData = array('gr2t_comment' => sprintf(
+                            $this->_('Track created by %s filter'),
+                            $filter->getName()
+                            ));
+
+                    $fields = array($filter->getFieldId() => $this->getId());
+
+                    $respTrack = $tracker->createRespondentTrack(
+                            $this->getRespondentId(),
+                            $this->getOrganizationId(),
+                            $trackId,
+                            $userId,
+                            $trackData,
+                            $fields
+                            );
+
+                    $tokenChanges += $respTrack->getCount();
+                }
+            }
+        }
 
         return $tokenChanges;
     }

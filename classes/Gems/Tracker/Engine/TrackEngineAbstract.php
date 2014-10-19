@@ -837,7 +837,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
 
 
-        
+
         switch ($action) {
             case 'create':
                 $this->_ensureRounds();
@@ -850,11 +850,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 // break;
             case 'edit':
             	$model->set('gro_icon_file', 'multiOptions', $this->util->getTranslated()->getEmptyDropdownArray() + $this->_getAvailableIcons());
-                $model->set('org_specific_round', 
+                $model->set('org_specific_round',
                 'label', $this->_('Organization specific round'),
                 'multiOptions', $this->util->getTranslated()->getYesNo(),
                 'elementClass', 'radio');
-    
+
                 break;
 
             default:
@@ -970,7 +970,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function setFieldsData($respTrackId, array $data)
     {
-        $this->_fieldsDefinition->setFieldsData($respTrackId, $data);
+        return $this->_fieldsDefinition->setFieldsData($respTrackId, $data);
     }
 
     /**

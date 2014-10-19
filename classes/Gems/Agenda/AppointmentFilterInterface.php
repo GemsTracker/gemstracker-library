@@ -57,6 +57,20 @@ interface AppointmentFilterInterface
     public function exchangeArray(array $data);
 
     /**
+     * The appointment field id from gtap_id_app_field
+     *
+     * @return int
+     */
+    public function getAppointmentFieldId();
+
+    /**
+     * The field id as it is recognized be the track engine
+     *
+     * @return string
+     */
+    public function getFieldId();
+
+    /**
      * The filter id
      *
      * @return int
@@ -92,17 +106,24 @@ interface AppointmentFilterInterface
     public function getTrackId();
 
     /**
+     * The number of days to wait between track creation
+     *
+     * @return int or null when no track creation or no wait days
+     */
+    public function getWaitDays();
+
+    /**
+     * Should this track be created when it does not exist?
+     *
+     * @return boolean
+     */
+    public function isCreator();
+
+    /**
      * Check a filter for a match
      *
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
      * @return boolean
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment);
-
-    /**
-     * When true processing stops when there is a match.
-     *
-     * @return boolean
-     */
-    public function stopOnMatch();
 }

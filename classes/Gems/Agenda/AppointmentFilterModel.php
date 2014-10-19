@@ -115,10 +115,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         $this->set('gaf_id_order', 'label', $this->_('Order'),
                 'description', $this->_('Execution order of the filters, lower numbers are executed first.')
                 );
-        $this->set('gaf_stop_on_match', 'label', $this->_('Stop on match'),
-                'description', $this->_('Stop looking for other filter matches when this fitler is triggered.'),
-                'multiOptions', $yesNo
-                );
         $this->set('gaf_active', 'label', $this->_('Active'),
                 'multiOptions', $yesNo
                 );
@@ -156,11 +152,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
         $this->set('gaf_filter_text3');
         $this->set('gaf_filter_text4');
 
-        $this->set('gaf_stop_on_match', 'label', $this->_('Stop on match'),
-                'description', $this->_('Stop looking for other filter matches when this fitler is triggered.'),
-                'multiOptions', $yesNo,
-                'order'
-                );
         $this->set('gaf_active', 'label', $this->_('Active'),
                 'multiOptions', $yesNo
                 );
@@ -186,7 +177,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
         $this->set('gaf_calc_name',     'elementClass', 'Exhibitor');
         $this->setOnSave('gaf_calc_name', array($this, 'calcultateName'));
-        $this->set('gaf_stop_on_match', 'elementClass', 'Checkbox');
         $this->set('gaf_active',        'elementClass', 'Checkbox');
 
         if ($create) {
