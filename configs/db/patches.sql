@@ -851,3 +851,7 @@ ALTER TABLE gems__track_appointments ADD
     gtap_create_track       boolean not null default 0 AFTER gtap_filter_id;
 ALTER TABLE gems__track_appointments ADD
     gtap_create_wait_days   bigint signed not null default 182 AFTER gtap_create_track;
+
+-- PATCH: Field update event
+ALTER TABLE gems__tracks ADD
+    gtr_fieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_completed_event;

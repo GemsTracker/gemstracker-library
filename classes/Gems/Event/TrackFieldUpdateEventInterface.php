@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,23 +28,32 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage TrackFieldUpdateEventInterface
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: EditTrackEngineSnippet.php 457 2012-02-07 11:24:23Z mennodekker $
+ * @version    $Id: TrackFieldUpdateEventInterface.php $
  */
 
 /**
- * Default snippet for editing track engines instances
+ *
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage TrackFieldUpdateEventInterface
+ * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
- * @deprecated since version 1.6.5
+ * @since      Class available since version 1.6.5 19-okt-2014 18:20:03
  */
-class EditTrackEngineSnippet extends Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric
+interface Gems_Event_TrackFieldUpdateEventInterface extends \Gems_Event_EventInterface
 {
+    /**
+     * Process the data and do what must be done
+     *
+     * Storing the changed $values is handled by the calling function.
+     *
+     * @param \Gems_Tracker_RespondentTrack $respTrack Gems repsondent track object
+     * @param int   $userId The current userId
+     * @return void
+     */
+    public function processFieldUpdate(\Gems_Tracker_RespondentTrack $respTrack, $userId);
 }

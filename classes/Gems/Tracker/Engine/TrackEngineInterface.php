@@ -213,6 +213,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getFieldsOfType($fieldType);
 
     /**
+     * Get the FieldUpdateEvent for this trackId
+     *
+     * @return Gems_TrackFieldUpdateEventInterface | null
+     */
+    public function getFieldUpdateEvent();
+    
+    /**
      * Get the round id of the first round
      *
      * @return int Gems id of first round

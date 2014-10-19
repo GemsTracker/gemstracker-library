@@ -139,6 +139,13 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
                     'label', $translator->_('After completion'),
                     'multiOptions', $list);
             }
+
+            $list = $events->listTrackFieldUpdateEvents();
+            if (count($list) > 1) {
+                $this->setIfExists('gtr_fieldupdate_event',
+                    'label', $translator->_('After field update'),
+                    'multiOptions', $list);
+            }
         }
 
         return $this;

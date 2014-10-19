@@ -769,7 +769,7 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
      */
     public function getTrackEngineEditSnippets()
     {
-        return array('EditTrackEngineSnippet');
+        return array('Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric');
     }
 
     /**

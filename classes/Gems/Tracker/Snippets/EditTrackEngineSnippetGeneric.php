@@ -143,6 +143,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         if ($model->has('gtr_completed_event', 'label')) {
             $bridge->add('gtr_completed_event');
         }
+        if ($model->has('gtr_fieldupdate_event', 'label')) {
+            $bridge->add('gtr_fieldupdate_event');
+        }
         $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
 
         $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));

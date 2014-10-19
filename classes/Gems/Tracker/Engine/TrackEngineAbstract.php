@@ -608,6 +608,18 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Get the FieldUpdateEvent for this trackId
+     *
+     * @return Gems_TrackFieldUpdateEventInterface | null
+     */
+    public function getFieldUpdateEvent()
+    {
+        if (isset($this->_trackData['gtr_fieldupdate_event']) && $this->_trackData['gtr_fieldupdate_event']) {
+            return $this->events->loadTrackFieldUpdateEvent($this->_trackData['gtr_fieldupdate_event']);
+        }
+    }
+
+    /**
      * Get the round id of the first round
      *
      * @return int Gems id of first round
@@ -887,7 +899,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Get the TrackCompletedEvent for the given trackId
+     * Get the TrackCompletedEvent for this trackId
      *
      * @return Gems_Event_TrackCalculationEventInterface | null
      */
@@ -899,7 +911,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
-     * Get the TrackCompletedEvent for the given trackId
+     * Get the TrackCompletedEvent for this trackId
      *
      * @return Gems_Event_TrackCompletedEventInterface|null
      */

@@ -50,10 +50,10 @@ interface Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterf
      *
      * Storing the changed $values is handled by the calling function.
      *
-     * @param Gems_Tracker_RespondentTrack $track Gems repsondent track object
+     * @param \Gems_Tracker_RespondentTrack $respTrack Gems respondent track object
      * @param array $values The values to update the track with, before they were saved
      * @param int   $userId The current userId
      * @return void
      */
-    public function processTrackCompletion(Gems_Tracker_RespondentTrack $track, &$values, $userId);
+    public function processTrackCompletion(\Gems_Tracker_RespondentTrack $respTrack, &$values, $userId);
 }

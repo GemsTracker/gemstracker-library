@@ -45,8 +45,6 @@
  */
 class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstract
 {
-    const RECALCULATE_FIELD = '_recalc';
-
     /**
      *
      * @var ArrayObject
@@ -129,7 +127,6 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
         if (! $this->token->hasSuccesCode()) {
             $bridge->addExhibitor('grc_description');
         }
-        $bridge->addCheckbox(self::RECALCULATE_FIELD, 'label', $this->_('Recalculate track'));
     }
 
     /**
@@ -172,23 +169,21 @@ class EditTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbstra
 
         // MUtil_Echo::track($this->formData);
 
-        if ($this->formData[self::RECALCULATE_FIELD]) {
-            // Refresh token with current form data
-            $updateData['gto_valid_from']         = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
-            $updateData['gto_valid_from_manual']  = $this->formData['gto_valid_from_manual'];
-            $updateData['gto_valid_until']        = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
-            $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
-            $updateData['gto_comment']            = $this->formData['gto_comment'];
+        // Refresh token with current form data
+        $updateData['gto_valid_from']         = $model->getOnSave($this->formData['gto_valid_from'], true, 'gto_valid_from');
+        $updateData['gto_valid_from_manual']  = $this->formData['gto_valid_from_manual'];
+        $updateData['gto_valid_until']        = $model->getOnSave($this->formData['gto_valid_until'], true, 'gto_valid_until');
+        $updateData['gto_valid_until_manual'] = $this->formData['gto_valid_until_manual'];
+        $updateData['gto_comment']            = $this->formData['gto_comment'];
 
-            $this->token->refresh($updateData);
+        $this->token->refresh($updateData);
 
-            $respTrack = $this->token->getRespondentTrack();
-            if ($nextToken = $this->token->getNextToken()) {
-                $changed = $respTrack->checkTrackTokens($this->session->user_id, $nextToken, $this->token);
+        $respTrack = $this->token->getRespondentTrack();
+        if ($nextToken = $this->token->getNextToken()) {
+            $changed = $respTrack->checkTrackTokens($this->session->user_id, $nextToken, $this->token);
 
-                if ($changed) {
-                    $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $changed), $changed));
-                }
+            if ($changed) {
+                $this->addMessage(sprintf($this->plural('%d token changed by recalculation.', '%d tokens changed by recalculation.', $changed), $changed));
             }
         }
     }

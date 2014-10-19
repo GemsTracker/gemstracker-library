@@ -846,6 +846,34 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Return the appointment (if any) linked to the valid after setting of given roundId
+     *
+     * @param int $roundId
+     * @return int | null | false False when RoundId not found or not an appointment otherwise appointment id or null when not set
+     */
+    public function getRoundAfterAppointmentId($roundId)
+    {
+        $this->_ensureFieldData();
+        $this->_ensureRounds();
+
+        if (isset($this->_rounds[$roundId])) {
+            $round = $this->_rounds[$roundId];
+
+            if (isset($round['gro_valid_after_source'], $round['gro_valid_after_field']) &&
+                    ('app' === $round['gro_valid_after_source'])) {
+
+                if (isset($this->_fieldData[$round['gro_valid_after_field']])) {
+                    return $this->_fieldData[$round['gro_valid_after_field']];
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return the round code for a given roundId
      *
      * @param int $roundId
@@ -961,6 +989,23 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         // Process any events
         if ($event = $this->getTrackEngine()->getRoundChangedEvent($token->getRoundId())) {
             return $event->processChangedRound($token, $this, $userId);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Find out if there are field update events and delegate to the event if needed
+     *
+     * @param int $userId
+     */
+    public function handleFieldUpdate($userId)
+    {
+        // Process any events
+        $trackEngine = $this->getTrackEngine();
+
+        if ($event = $trackEngine->getFieldUpdateEvent()) {
+            return $event->processFieldUpdate($this, $userId);
         }
 
         return 0;
@@ -1111,6 +1156,8 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
         $this->_ensureFieldData(true);  // force reload
 
         if ($userId) {
+            $this->handleFieldUpdate($userId);
+
             $info = $this->getTrackEngine()->calculateFieldsInfo($this->_respTrackId, $this->_fieldData);
 
             if ($info != $this->_respTrackData['gr2t_track_info']) {

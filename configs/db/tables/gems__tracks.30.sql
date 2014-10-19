@@ -20,6 +20,7 @@ CREATE TABLE if not exists gems__tracks (
         gtr_track_class       varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         gtr_calculation_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
         gtr_completed_event   varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
+        gtr_fieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         -- Yes, quick and dirty, will correct later (probably)
         gtr_organizations     varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

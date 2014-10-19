@@ -326,7 +326,9 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      */
     public function isActive()
     {
-        return isset($this->_gemsData['gap_status']) && $this->agenda->isStatusActive($this->_gemsData['gap_status']);
+        return $this->exists &&
+                isset($this->_gemsData['gap_status']) &&
+                $this->agenda->isStatusActive($this->_gemsData['gap_status']);
     }
 
     /**

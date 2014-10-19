@@ -33,7 +33,7 @@
  */
 
 /**
- * Track completed event interface
+ * Track calculation event interface
  *
  * Run on completion of an event
  *
@@ -48,9 +48,9 @@ interface Gems_Event_TrackCalculationEventInterface extends Gems_Event_EventInte
     /**
      * Process the data and do what must be done
      *
-     * @param Gems_Tracker_RespondentTrack $track Gems repsondent track object
+     * @param \Gems_Tracker_RespondentTrack $respTrack Gems respondent track object
      * @param int   $userId The current userId
      * @return int The number of changed tokens
      */
-    public function processTrackCalculation(Gems_Tracker_RespondentTrack $track, $userId);
+    public function processTrackCalculation(\Gems_Tracker_RespondentTrack $respTrack, $userId);
 }

@@ -48,6 +48,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 {
     const TRACK_CALCULATION_EVENT       = 'Track/Calculate';
     const TRACK_COMPLETION_EVENT        = 'Track/Completed';
+    const TRACK_FIELDUPDATE_EVENT       = 'Track/FieldUpdate';
     const ROUND_CHANGED_EVENT           = 'Round/Changed';
     const SURVEY_BEFORE_ANSWERING_EVENT = 'Survey/BeforeAnswering';
     const SURVEY_COMPLETION_EVENT       = 'Survey/Completed';
@@ -64,6 +65,7 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     protected $_eventClasses = array(
         self::TRACK_CALCULATION_EVENT       => 'Gems_Event_TrackCalculationEventInterface',
         self::TRACK_COMPLETION_EVENT        => 'Gems_Event_TrackCompletedEventInterface',
+        self::TRACK_FIELDUPDATE_EVENT       => 'Gems_Event_TrackFieldUpdateEventInterface',
         self::ROUND_CHANGED_EVENT           => 'Gems_Event_RoundChangedEventInterface',
         self::SURVEY_BEFORE_ANSWERING_EVENT => 'Gems_Event_SurveyBeforeAnsweringEventInterface',
         self::SURVEY_COMPLETION_EVENT       => 'Gems_Event_SurveyCompletedEventInterface',
@@ -258,6 +260,15 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @return array eventname => string
+     */
+    public function listTrackFieldUpdateEvents()
+    {
+        return $this->_listEvents(self::TRACK_FIELDUPDATE_EVENT);
+    }
+
+    /**
+     *
      * @param string $eventName
      * @return Gems_Event_RoundChangedEventInterface
      */
@@ -310,10 +321,20 @@ class Gems_Events extends Gems_Loader_TargetLoaderAbstract
     /**
      *
      * @param string $eventName
-     * @return Gems_Event_TrackCompletedEventInterface
+     * @return \Gems_Event_TrackCompletedEventInterface
      */
     public function loadTrackCompletionEvent($eventName)
     {
         return $this->_loadEvent($eventName, self::TRACK_COMPLETION_EVENT);
+    }
+
+    /**
+     *
+     * @param string $eventName
+     * @return \Gems_TrackFieldUpdateEventInterface
+     */
+    public function loadTrackFieldUpdateEvent($eventName)
+    {
+        return $this->_loadEvent($eventName, self::TRACK_FIELDUPDATE_EVENT);
     }
 }
