@@ -197,6 +197,10 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             $menuView   = $this->menu->findController($trackController, 'view');
             $menuCreate = $this->menu->findController($trackController, 'create');
 
+            if (! $menuCreate->isAllowed()) {
+                return null;
+            }
+
             $div->a($menuIndex->toHRefAttribute($this->request),
                 $trackTypeDescription,
                 array('class' => 'toolanchor'));
@@ -210,6 +214,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             $li->a($menuCreate->toHRefAttribute($this->request, $params),
                     $data->value,
                     array('class' => 'add'));
+
         } else {
             $div->a($menuIndex->toHRefAttribute($this->request),
                     $trackTypeDescription,
@@ -265,24 +270,38 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
 
             $pageRef = array(MUtil_Model::REQUEST_ID => $this->request->getParam(MUtil_Model::REQUEST_ID));
+            $output  = false;
 
             $addToLists = MUtil_Html::create()->div(array('class' => 'tooldock'));
             if ($this->showTitle) {
                 $addToLists->strong($this->showTitle);
             }
             if ($this->showForTracks && ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface)) {
-                $addToLists[] = $this->_getTracks('T', $pageRef, $this->showForTracks);
+                $dropdown = $this->_getTracks('T', $pageRef, $this->showForTracks);
+                if ($dropdown) {
+                    $addToLists[] = $dropdown;
+                    $output       = true;
+                }
             }
             if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
                 if ($this->showForRespondents) {
-                    $addToLists[] = $this->_getTracks('S', $pageRef, $this->showForRespondents);
+                    $dropdown = $this->_getTracks('S', $pageRef, $this->showForRespondents);
+                    if ($dropdown) {
+                        $addToLists[] = $dropdown;
+                        $output       = true;
+                    }
                 }
                 if ($this->showForStaff) {
-                    $addToLists[] = $this->_getTracks('M', $pageRef, $this->showForStaff);
+                    $dropdown = $this->_getTracks('M', $pageRef, $this->showForStaff);
+                    if ($dropdown) {
+                        $addToLists[] = $dropdown;
+                        $output       = true;
+                    }
                 }
             }
-
-            return $addToLists;
+            if ($output) {
+                return $addToLists;
+            }
         }
         return null;
     }
