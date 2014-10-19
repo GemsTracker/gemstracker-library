@@ -2001,10 +2001,12 @@ class GemsEscort extends MUtil_Application_Escort
                             $this->addMessage($this->_('You are no longer logged in.'));
                             $this->addMessage($this->_('You must login to access this page.'));
 
-                            // save original request, we will redirect back once the user succesfully logs in
-                            $staticSession = $this->getStaticSession();
-                            $staticSession->previousRequestParameters = $request->getParams();
-                            $staticSession->previousRequestMode = ($request->isPost() ? "POST" : "GET");
+                            if (! MUtil_String::contains($request->getControllerName() . $request->getActionName(), '.')) {
+                                // save original request, we will redirect back once the user succesfully logs in
+                                $staticSession = $this->getStaticSession();
+                                $staticSession->previousRequestParameters = $request->getParams();
+                                $staticSession->previousRequestMode = ($request->isPost() ? "POST" : "GET");
+                            }
                         }
 
                         $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
