@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-19 19:43+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
+"Last-Translator: Menno Dekker <menno.dekker@erasmusmc.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-KeywordsList: plural:1,2\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: classes/Gems/AccessLog.php:234
@@ -1861,8 +1861,8 @@ msgid ""
 "\n"
 "\n"
 "A new password was requested for your [b]{organization}[/b] account on the "
-"[b]{project}[/b] site, please click within {reset_in_hours} hours on "
-"[url={reset_url}]this link[/url] to enter the password of your choice.\n"
+"[b]{project}[/b] site, please click within {reset_in_hours} hours on [url="
+"{reset_url}]this link[/url] to enter the password of your choice.\n"
 "\n"
 "\n"
 "{organization_signature}\n"
@@ -3900,7 +3900,7 @@ msgid ""
 "changed and the track must be adjusted."
 msgstr ""
 "Voer deze opdracht uit als automatisch berekende traject velden veranderd "
-"zijn, als de afspraak filters gebruikt door dit traject verandert zijn of "
+"zijn, als de afspraak filters gebruikt door dit traject veranderd zijn of "
 "als de programma code veranderd is en het traject aangepast moet worden."
 
 #: classes/Gems/Default/TrackMaintenanceAction.php:173
@@ -3909,7 +3909,7 @@ msgid ""
 "values remain as they were and only newly changed and newly created tracks "
 "will reflect the changes."
 msgstr ""
-"Als deze code niet uitgevoerd wordt nadat de trajectvelden verandert zijn, "
+"Als deze code niet uitgevoerd wordt nadat de trajectvelden veranderd zijn, "
 "dan blijven de oude velden zoals ze zijn en alleen veranderde en nieuwe "
 "trajecten zullen de veranderingen laten zien."
 
@@ -4260,7 +4260,7 @@ msgstr ""
 
 #: classes/Gems/Event/Track/FieldUpdate/HideWhenNoAppointment.php:96
 msgid "Skipped until appointment is set"
-msgstr "Overgeslagen tot de afspraak ingestelt wordt"
+msgstr "Overgeslagen tot de afspraak ingesteld wordt"
 
 #: classes/Gems/Export/Excel.php:60
 msgid "Excel options"
@@ -5615,7 +5615,7 @@ msgstr "%2$d kenmerken zijn aangepast vanwege %1$d ronde voltooiingen."
 #: classes/Gems/Task/Tracker/RecalculateFields.php:76
 #, php-format
 msgid "%d tracks checked, %d had field changes."
-msgstr "%d trajecten gecontroleerd, bij %d zijn de velden verandert."
+msgstr "%d trajecten gecontroleerd, bij %d zijn de velden veranderd."
 
 #: classes/Gems/Task/Tracker/RefreshQuestion.php:104
 #, php-format
@@ -5656,7 +5656,7 @@ msgstr[1] "Controleer %s bronnen"
 #: classes/Gems/Task/Updates/EncryptPasswords.php:77
 #, php-format
 msgid "%d passwords encrypted for table %s."
-msgstr "%d wachtwoorden versleutelt in tabel %s."
+msgstr "%d wachtwoorden versleuteld in tabel %s."
 
 #: classes/Gems/Task/Updates/EncryptPasswords.php:79
 #, php-format
