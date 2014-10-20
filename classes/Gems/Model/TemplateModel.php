@@ -158,6 +158,31 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
             }
         }
     }
+    
+    /**
+     * Reset a template to it's default values by deleteing template-local.ini
+     * 
+     * @param string $id
+     * @return boolean true on success
+     */
+    public function reset($id) {
+        $template = $this->load(array('name'=>$id));
+        
+        $result = false;
+        if (count($template) == 1) {
+            if (unlink($this->_path . '/template-local.ini')) {
+                // Now force recompile
+                $this->_templates = false;
+                $this->_template = '';
+                
+                $template = $this->load(array('name'=>$id));
+                $this->saveTemplate($id, $template[$id]);
+                $result = true;
+            }
+        }
+        
+        return $result;
+    }
 
     public function setTemplate($template, $path, &$data)
     {
@@ -243,5 +268,5 @@ class Gems_Model_TemplateModel extends MUtil_Model_ArrayModelAbstract {
         }
 
         return $changed;
-    }
+    }  
 }

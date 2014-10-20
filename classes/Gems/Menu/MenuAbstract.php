@@ -543,7 +543,9 @@ abstract class Gems_Menu_MenuAbstract
 
         $templates = $page->addPage($this->_('Templates'), 'pr.templates', 'template');
         $templates->addAutofilterAction();
-        $templates->addEditAction();
+        $edit  = $templates->addEditAction();
+        $reset = $edit->addAction($this->_('Reset to default values'), 'pr.templates.reset', 'reset');
+        $reset->setModelParameters(1);
 
         return $page;
     }
