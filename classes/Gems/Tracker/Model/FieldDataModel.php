@@ -196,11 +196,13 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                     $orEqual     = false;
                 } else {
                     // MUtil_Echo::track($currentValue);
+                    /* No longer fixing first appointment
                     if ($currentValue) {
                         $appointment = $agenda->getAppointment($currentValue);
                     } else {
                         $appointment = null;
-                    }
+                    } //*/
+                    $appointment = null;
                     $orEqual = true;
                 }
                 if ($appointment && $appointment->isActive()) {

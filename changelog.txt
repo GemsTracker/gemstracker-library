@@ -1,6 +1,11 @@
 Important changes from 1.6.4 => 1.6.5
 ============================================================
+Appointments can be used to create tracks
+Appointments can be linked automatically to track fields
+New track fields changed events
+Layouts can use bootstrap for styling
 Improved security means users may get error warnings when opening the same form in two windows.
+Password fields for login to sources, mail servers and security devices are now encrypted reversible
 X-frame setting in project.ini allows defense against clickjacking
 
 Important changes from 1.6.3 => 1.6.4
