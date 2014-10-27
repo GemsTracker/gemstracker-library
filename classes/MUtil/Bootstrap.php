@@ -53,12 +53,16 @@ class MUtil_Bootstrap
      */
     const DEFAULT_BOOTSTRAP_VERSION = "3.2.0";
 
+    const DEFAULT_FONTAWESOME_VERSION = '4.2.0';
+
     /**
      * Link to CDN http://www.bootstrapcdn.com/
      *
      * @const string
      */
     const CDN_BASE = '//maxcdn.bootstrapcdn.com/bootstrap/';
+
+    const CDN_FONTAWESOME_BASE = '//maxcdn.bootstrapcdn.com/font-awesome/';
 
     /**
      * Location of bootstrap CSS
@@ -67,6 +71,7 @@ class MUtil_Bootstrap
      */
     const CDN_CSS = '/css/bootstrap.min.css';
 
+    const CDN_FONTAWESOME_CSS = '/css/font-awesome.min.css';
     /**
      * Location of bootstrap JavaScript
      *
@@ -81,16 +86,21 @@ class MUtil_Bootstrap
      */
     private static $_bootstrap;
 
+    public static $fontawesome = false;
+
     /**
      * Returns the Bootstrapper object assigned to the view helper.
      *
      * @staticvar MUtil_Bootstrap_View_Helper_Bootstrapper $bootstrap
      * @return MUtil_Bootstrap_View_Helper_Bootstrapper
      */
-    public static function bootstrap()
+    public static function bootstrap($options=array())
     {
         if (self::$_bootstrap) {
             return self::$_bootstrap;
+        }
+        if (isset($options['fontawesome']) && $options['fontawesome'] === true) {
+            self::$fontawesome = true;
         }
 
         return false;

@@ -1782,7 +1782,7 @@ class GemsEscort extends MUtil_Application_Escort
         }
 
         if ($this->useBootstrap) {
-            $bootstrap = MUtil_Bootstrap::bootstrap();
+            $bootstrap = MUtil_Bootstrap::bootstrap(array('fontawesome' => true));
             MUtil_Bootstrap::enableView($this->view);
         }
 
@@ -1865,8 +1865,9 @@ class GemsEscort extends MUtil_Application_Escort
         if (MUtil_Bootstrap::enabled() && $this->project->isBootstrapLocal()) {
             $bootstrap = MUtil_Bootstrap::bootstrap();
             $basePath = $request->getBasePath();
-            $bootstrap->setBootstrapScriptPath($basePath.'/bootstrap/bootstrap.min.js');
-            $bootstrap->setBootstrapStylePath($basePath.'/bootstrap/bootstrap.min.css');
+            $bootstrap->setBootstrapScriptPath($basePath.'/bootstrap/js/bootstrap.min.js');
+            $bootstrap->setBootstrapStylePath($basePath.'/bootstrap/css/bootstrap.min.css');
+            $bootstrap->setFontAwesomeStylePath($basePath.'/bootstrap/css/font-awesome.min.css');
         }
     }
 

@@ -49,6 +49,8 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
 
     protected $_bootstrapStylePath;
 
+    protected $_fontawesomeStylePath;
+
     /**
      * Load CDN Path from SSL or Non-SSL?
      *
@@ -62,6 +64,7 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
      * @var String
      */
     protected $_version = MUtil_Bootstrap::DEFAULT_BOOTSTRAP_VERSION;
+    protected $_fontawesomeVersion = MUtil_Bootstrap::DEFAULT_FONTAWESOME_VERSION;
 
     /**
      * View Instance
@@ -94,6 +97,11 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
         return $source;
     }
 
+    protected function _getFontAwesomeCdnPath()
+    {
+        return MUtil_Bootstrap::CDN_FONTAWESOME_BASE;
+    }
+
     /**
      * Internal function that constructs the include path of the jQuery library.
      *
@@ -108,6 +116,20 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $source  = $baseUri
                      . $this->getVersion()
                      . MUtil_Bootstrap::CDN_CSS;
+        }
+
+        return $source;
+    }
+
+    protected function _getFontAwesomeStylesheet()
+    {
+        if($this->_fontawesomeStylePath != null) {
+            $source = $this->_fontawesomeStylePath;
+        } else {
+            $baseUri = $this->_getFontAwesomeCdnPath();
+            $source  = $baseUri
+                     . $this->getFontAwesomeVersion()
+                     . MUtil_Bootstrap::CDN_FONTAWESOME_CSS;
         }
 
         return $source;
@@ -131,9 +153,23 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
         $this->_bootstrapStylePath = $path;
     }
 
+    /**
+     * Sets the (local) Font Awesome Stylesheet path to overwrite CDN loading
+     * @param string path
+     */
+    public function setFontAwesomeStylePath($path)
+    {
+        $this->_fontawesomeStylePath = $path;
+    }
+
     public function getVersion()
     {
         return $this->_version;
+    }
+
+    public function getFontAwesomeVersion()
+    {
+        return $this->_fontawesomeVersion;
     }
 
     /**
@@ -165,6 +201,12 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
             $closingBracket = ' />';
         }
         $style = '<link rel="stylesheet" href="'.$stylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
+
+        if (MUtil_Bootstrap::$fontawesome === true) {
+            $fontawesomeStylesheet = $this->_getFontAwesomeStylesheet();
+
+            $style .= '<link rel="stylesheet" href="'.$fontawesomeStylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
+        }
 
         return $style;
     }
