@@ -373,7 +373,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      *
      * @param $field    Field from getFieldMap function
      */
-    private function _getMultiOptions($field)
+    protected function _getMultiOptions($field)
     {
         if (!isset($field['scale_id'])) {
             $scale_id = 0;
@@ -585,7 +585,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * @param $field    Field from _getMap function
      * @return int MUtil_Model::TYPE_ constant
      */
-    private function _getType($field)
+    protected function _getType($field)
     {
         switch ($field['type']) {
             case ':':

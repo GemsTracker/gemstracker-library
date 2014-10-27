@@ -110,6 +110,30 @@ class Gems_Tracker_Source_LimeSurvey2m00Database extends Gems_Tracker_Source_Lim
 
         return $missingFields;
     }
+
+    /**
+     * Return a fieldmap object
+     *
+     * @param int $sourceSurveyId Survey ID
+     * @param string $language      Optional (ISO) Language, uses default language for survey when null
+     * @return Gems_Tracker_Source_LimeSurvey1m9FieldMap
+     */
+    protected function _getFieldMap($sourceSurveyId, $language = null)
+    {
+        $language = $this->_getLanguage($sourceSurveyId, $language);
+        // MUtil_Echo::track($language, $sourceSurveyId);
+
+        if (! isset($this->_fieldMaps[$sourceSurveyId][$language])) {
+            $this->_fieldMaps[$sourceSurveyId][$language] = new Gems_Tracker_Source_LimeSurvey2m00FieldMap(
+                    $sourceSurveyId,
+                    $language,
+                    $this->getSourceDatabase(),
+                    $this->translate,
+                    $this->addDatabasePrefix(''));
+        }
+
+        return $this->_fieldMaps[$sourceSurveyId][$language];
+    }
     
     /**
      * Returns the url that (should) start the survey for this token
