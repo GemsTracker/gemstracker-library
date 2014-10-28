@@ -189,7 +189,7 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
             $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
         }
 
-        $div = MUtil_Html::create()->div(array('class' => 'toolbox'));
+        $div = MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
 
         $menuIndex  = $this->menu->findController($trackController, 'index');
 
@@ -201,19 +201,32 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                 return null;
             }
 
-            $div->a($menuIndex->toHRefAttribute($this->request),
-                $trackTypeDescription,
-                array('class' => 'toolanchor'));
+            if (MUtil_Bootstrap::enabled()) {
+                $div->button($menuIndex->toHRefAttribute($this->request),                $trackTypeDescription,
+                    array('class' => 'toolanchor btn btn-primary', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'btn btn-primary dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));                
+                $dropdownButton->span(array('class' => 'caret'));
+            } else {
+                $div->a($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, array('class' => 'toolanchor'));
+            }
 
             $data   = new MUtil_Lazy_RepeatableByKeyValue($tracks);
             $params = array('gtr_id_track' => $data->key, 'gtr_track_type' => $trackTypeLetter);
+            
+            if (MUtil_Bootstrap::enabled()) {
+                $li = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'), $data)->li();
+                $link = $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat info'));
+                $link->i(array('class' => 'fa fa-info-circle'))->raw('&nbsp;');
+            } else {
+                $li = $div->ul($data)->li();
+                $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
+                    ->img(array('src' => 'info.png', 'width' => 12, 'height' => 12, 'alt' => $this->_('info')));
+            }
 
-            $li = $div->ul($data)->li();
-            $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
-               ->img(array('src' => 'info.png', 'width' => 12, 'height' => 12, 'alt' => $this->_('info')));
+            $toolboxRowAttributes = array('class' => 'add');
             $li->a($menuCreate->toHRefAttribute($this->request, $params),
                     $data->value,
-                    array('class' => 'add'));
+                    $toolboxRowAttributes);
 
         } else {
             $div->a($menuIndex->toHRefAttribute($this->request),
