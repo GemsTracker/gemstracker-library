@@ -77,6 +77,8 @@ class MUtil_Model_Bridge_TableBridge extends MUtil_Model_Bridge_TableBridgeAbstr
     public function addItemLink($link)
     {
         $tds = $this->table->addColumnArray($link);
+        $tbody = $tds[0];
+        $tbody->class = 'table-button';
 
         if ($this->useRowHref) {
             if ($this->row_href) {
