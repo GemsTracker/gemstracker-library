@@ -153,17 +153,16 @@ class MUtil_Model_Bridge_VerticalTableBridge extends MUtil_Model_Bridge_TableBri
 
         $this->_checkColumnNewRow();
 
-        $tr = $this->table->tbody()->tr();
-        if (is_string($name) && $this->model->has($name, 'description')) {
-            $tr->title = $this->model->get($name, 'description');
+        if (is_string($name) && $this->model->has($name, 'description') && !isset($hattr['title'])) {
+            $hattr['title'] = $this->model->get($name, 'description');
         }
         if ($this->labelTh) {
-            $tr->tdh($this->_checkLabel($label, $name), $hattr);
+            $this->table->tdh($this->_checkLabel($label, $name), $hattr);
         } else {
-            $tr->td($this->_checkLabel($label, $name), $hattr);
+            $this->table->td($this->_checkLabel($label, $name), $hattr);
         }
 
-        $tr->td($this->_getLazyName($name), $attr);
+        $this->table->td($this->_getLazyName($name), $attr);
 
         $this->_checkColumnAdded($attr);
 
