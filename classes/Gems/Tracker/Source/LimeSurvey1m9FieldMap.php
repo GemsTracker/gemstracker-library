@@ -578,6 +578,31 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     {
         return $this->tablePrefix . Gems_Tracker_Source_LimeSurvey1m9Database::SURVEYS_TABLE;
     }
+    
+    /**
+     * Returns a map of databasecode => questioncode
+     * 
+     * @return array
+     */
+    private function _getTitlesMap() {
+        if (! is_array($this->_titlesMap)) {
+            $map    = $this->_getMap();
+            $result = array();
+
+            foreach ($map as $key => $row) {
+
+                // Title does not have to be unique. So if a title is used
+                // twice we only use it for the first result.
+                if (isset($row['code']) && $row['code'] && (! isset($result[$row['code']]))) {
+                    $result[$row['code']] = $key;
+                }
+            }
+
+            $this->_titlesMap = $result;
+        }
+        
+        return $this->_titlesMap;
+    }
 
     /**
      * Returns
@@ -851,14 +876,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     public function mapKeysToTitles(array $values)
     {
-        $map = $this->_getMap();
-
+        $map = array_flip($this->_getTitlesMap());
+        
         $result = array();
         foreach ($values as $key => $value) {
-            // Title does not have to be unique. So if a title is used
-            // twice we only use it for the first result.
-            if (isset($map[$key]['code']) && (! isset($result[$map[$key]['code']]))) {
-                $result[$map[$key]['code']] = $value;
+            if (isset($map[$key])) {
+                $result[$map[$key]] = $value;
             } else {
                 $result[$key] = $value;
             }
@@ -877,26 +900,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     public function mapTitlesToKeys(array $values)
     {
-        if (! is_array($this->_titlesMap)) {
-            $map    = $this->_getMap();
-            $result = array();
-
-            foreach ($map as $key => $row) {
-
-                // Title does not have to be unique. So if a title is used
-                // twice we only use it for the first result.
-                if (isset($row['code']) && $row['code'] && (! isset($result[$row['code']]))) {
-                    $result[$row['code']] = $key;
-                }
-            }
-
-            $this->_titlesMap = $result;
-        }
+        $titlesMap = $this->_getTitlesMap();
 
         $result = array();
         foreach ($values as $key => $value) {
-            if (isset($this->_titlesMap[$key])) {
-                $result[$this->_titlesMap[$key]] = $value;
+            if (isset($titlesMap[$key])) {
+                $result[$titlesMap[$key]] = $value;
             } else {
                 $result[$key] = $value;
             }
