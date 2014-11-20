@@ -50,7 +50,7 @@ class MUtil_Bootstrap_Form_Element_Button extends Zend_Form_Element_Button
 	 * Bootstrap class for an input tag. Remove if you want the normal layout.
 	 * @var string
 	 */
-	protected $_elementClass = 'btn btn-primary';
+	protected $_elementClass = 'btn btn-sm btn-primary';
 
 	/**
      * Constructor

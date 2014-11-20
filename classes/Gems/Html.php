@@ -62,7 +62,7 @@ class Gems_Html
 
         $element = MUtil_Html::createArray('a', $args);
 
-        $element->appendAttrib('class', 'actionlink btn btn-primary'); // Keeps existing classes
+        $element->appendAttrib('class', 'actionlink btn btn-sm btn-default'); // Keeps existing classes
         return $element;
     }
 

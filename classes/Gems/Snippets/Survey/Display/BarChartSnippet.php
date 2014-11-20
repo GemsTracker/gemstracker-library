@@ -339,7 +339,8 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
 
         // Make vertically resizable
         $view = Zend_Layout::getMvcInstance()->getView();
-        ZendX_JQuery::enableView($view);
+        $jquery = $view->jQuery();
+        $jquery->enable();
 
         // We need width 100% otherwise it will look strange in print output
         $view->jQuery()->addOnLoad("$('.barchart').resizable({

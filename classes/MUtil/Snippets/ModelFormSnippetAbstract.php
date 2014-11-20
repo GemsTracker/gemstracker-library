@@ -90,7 +90,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      *
      * @var string class attribute for buttons
      */
-    protected $buttonClass = 'button btn btn-primary';
+    protected $buttonClass = 'button btn btn-sm btn-primary';
 
     /**
      * True when the form should edit a new model item.

@@ -153,18 +153,33 @@ abstract class MUtil_Snippets_TabSnippetAbstract extends MUtil_Snippets_SnippetA
                 $this->href = $this->href + $this->baseUrl;
             }
 
-            $tabRow = MUtil_Html::create()->ul();
+            if (MUtil_Bootstrap::enabled()) {
+                $tabRow = MUtil_Html::create()->ul();
 
-            foreach ($tabs as $tabId => $content) {
+                foreach ($tabs as $tabId => $content) {
 
-                $li = $tabRow->li(array('class' => $this->tabClass));
+                    $li = $tabRow->li(array('class' => $this->tabClass));
 
-                $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+                    $li->a($this->getParameterKeysFor($tabId) + $this->href, $content);
 
-                if ($this->currentTab == $tabId) {
-                    $li->appendAttrib('class', $this->tabActiveClass);
+                    if ($this->currentTab == $tabId) {
+                        $li->appendAttrib('class', $this->tabActiveClass);
+                    }
                 }
-            }
+            } else {
+                $tabRow = MUtil_Html::create()->div();
+
+                foreach ($tabs as $tabId => $content) {
+
+                    $div = $tabRow->div(array('class' => $this->tabClass));
+
+                    $div->a($this->getParameterKeysFor($tabId) + $this->href, $content);
+
+                    if ($this->currentTab == $tabId) {
+                        $div->appendAttrib('class', $this->tabActiveClass);
+                    }
+                }
+            }           
 
             return $tabRow;
         } else {

@@ -172,7 +172,8 @@ class Gems_Snippets_ModelFormVariableFieldSnippet extends Gems_Snippets_ModelFor
     {
 
     	if ($script = $this->getAjaxEventScript()) {
-	    	ZendX_JQuery::enableView($view);
+            $jquery = $view->jQuery();
+            $jquery->enable();
 	    	$view->headScript()->appendFile(Zend_Controller_Front::getInstance()->getBaseUrl()  .  '/gems/js/jquery.getSelectOptions.js');
 	        $view->inlineScript()->appendScript($script);
 	    }

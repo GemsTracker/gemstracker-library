@@ -995,7 +995,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             }
 
             $saveButton = $form->createElement('submit', 'save_button', array('label' => $saveLabel));
-            $saveButton->setAttrib('class', 'button btn btn-success');
+            $saveButton->setAttrib('class', 'button btn btn-sm btn-success');
             $form->addElement($saveButton);
         }
 
