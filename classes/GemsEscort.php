@@ -1306,22 +1306,29 @@ class GemsEscort extends MUtil_Application_Escort
         $dateFormOptions['dateFormat']   = 'dd-MM-yyyy';
         $dateFormOptions['description']  = $this->_('dd-mm-yyyy');
         $dateFormOptions['size']         =  10;
-        $dateFormOptions['jQueryParams'] = array(
-            'buttonImage' => $imgUrl,
+
+        if ($this->useBootstrap == true) {
+            // Do not use a buttonImage, since we will use bootstrap add-on
+            $basicOptions = array();
+        } else {
+            $basicOptions = array(
+                'buttonImage' => $imgUrl,
+                'showOn'      => 'button'
+            );
+        }
+        
+        $dateFormOptions['jQueryParams'] = $basicOptions + array(
             'changeMonth' => true,
             'changeYear'  => true,
             'duration'    => 'fast',
-            'showOn'      => 'button',
         );
         $datetimeFormOptions['dateFormat']   = 'dd-MM-yyyy HH:mm';
         $datetimeFormOptions['description']  = $this->_('dd-mm-yyyy hh:mm');
         $datetimeFormOptions['size']         = 16;
-        $datetimeFormOptions['jQueryParams'] = array(
-            'buttonImage' => $imgUrl,
+        $datetimeFormOptions['jQueryParams'] = $basicOptions + array(
             'changeMonth' => true,
             'changeYear'  => true,
             'duration'    => 'fast',
-            'showOn'      => 'button',
             'stepMinute'  => 5,
             'size'        => 8,
             'timeJsUrl'   => $jstUrl,
@@ -1329,10 +1336,8 @@ class GemsEscort extends MUtil_Application_Escort
 
         $timeFormOptions['dateFormat']   = 'HH:mm';
         $timeFormOptions['description']  = $this->_('hh:mm');
-        $timeFormOptions['jQueryParams'] = array(
-            'buttonImage' => $imgUrl,
+        $timeFormOptions['jQueryParams'] = $basicOptions + array(
             'duration'    => 'fast',
-            'showOn'      => 'button',
             'stepMinute'  => 5,
             'size'        => 8,
             'timeJsUrl'   => $jstUrl,
