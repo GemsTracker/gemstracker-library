@@ -153,6 +153,7 @@ class Gems_Default_CronAction extends Gems_Controller_Action
                         /* @var $mailer Gems_Mail_TokenMailer */
                         $token = $mailer->getToken();
                         $email = $token->getEmail();
+                        $respondentId = $token->getRespondent()->getId();
 
                         if (!empty($email)) {
                             if ($job['gcj_from_method'] == 'O') {
@@ -175,14 +176,14 @@ class Gems_Default_CronAction extends Gems_Controller_Action
 
                                     $mails++;
                                     $updates++;
-                                } elseif (!isset($sentMailAddresses[$email])) {
+                                } elseif (!isset($sentMailAddresses[$respondentId][$email])) {
                                     $mailer->setTemplate($job['gcj_id_message']);
                                     $mailer->send();
                                     $mailed = true;
 
                                     $mails++;
                                     $updates++;
-                                    $sentMailAddresses[$email] = true;
+                                    $sentMailAddresses[$respondentId][$email] = true;
 
                                 } elseif ($job['gcj_process_method'] == 'O') {
                                     $mailer->updateToken();
