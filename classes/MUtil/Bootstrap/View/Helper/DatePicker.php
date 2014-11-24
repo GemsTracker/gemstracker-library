@@ -47,7 +47,11 @@ class MUtil_Bootstrap_View_Helper_DatePicker extends MUtil_JQuery_View_Helper_Da
     
     public function datePicker($id, $value = null, array $params = array(), array $attribs = array())
     {
-        $attribs['class'] .= ' form-control';
+        if (isset($attribs['class'])) { 
+            $attribs['class'] .= ' form-control';
+        } else {
+            $attribs['class'] = ' form-control';
+        }
         $datePicker = parent::datePicker($id, $value, $params, $attribs);
         
         $datePicker = '<div class="input-group date">'
