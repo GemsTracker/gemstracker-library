@@ -72,7 +72,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         $baseUrl = GemsEscort::getInstance()->basepath->getBasePath();
 
         // Make sure we can use jQuery
-        ZendX_JQuery::enableView($view);
+        MUtil_JQuery::enableView($view);
 
         // Now add the scrollTo plugin so we can scroll to today
         $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.scrollTo.min.js');
