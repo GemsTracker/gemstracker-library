@@ -154,6 +154,7 @@ class MUtil_Less_View_Helper_HeadLink extends Zend_View_Helper_HeadLink
             if ((APPLICATION_ENV !== 'production') || (APPLICATION_ENV !== 'acceptance')) {
                 MUtil_Echo::pre($exc->getMessage());
             }
+            $result = null;
         }
 
         return $result;
