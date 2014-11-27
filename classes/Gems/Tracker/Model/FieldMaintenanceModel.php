@@ -348,7 +348,8 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         'onchange', 'this.form.submit();'
                         );
                 $this->set('gtf_create_track',
-                        'onclick', 'this.form.submit();'
+                        'onclick', 'this.form.submit();',
+						'order', $this->getOrder('gtf_filter_id') + 1
                         );
                 $this->set('gtf_create_wait_days',
                         'label', $this->_('Days between tracks'),
