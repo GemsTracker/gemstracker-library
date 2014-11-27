@@ -180,6 +180,32 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * On save calculation function
      *
      * @param array $currentValue The current value
+     * @param array $values The values for the checked calculate from fields
+     * @param array $context The other values being saved
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateOnSaveActivity($currentValue, array $values, array $context, $respTrackId)
+    {
+        if ($values) {
+            $agenda = $this->loader->getAgenda();
+
+            foreach (array_reverse(array_filter($values)) as $value) {
+                $appointment = $agenda->getAppointment($value);
+
+                if ($appointment->exists) {
+                    return $appointment->getActivityId();
+                }
+            }
+        }
+
+        return $currentValue;
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param array $currentValue The current value
      * @param array $values Containing filter => int
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
@@ -282,6 +308,32 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 
                 if ($appointment->exists) {
                     return $appointment->getLocationId();
+                }
+            }
+        }
+
+        return $currentValue;
+    }
+
+    /**
+     * On save calculation function
+     *
+     * @param array $currentValue The current value
+     * @param array $values The values for the checked calculate from fields
+     * @param array $context The other values being saved
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateOnSaveProcedure($currentValue, array $values, array $context, $respTrackId)
+    {
+        if ($values) {
+            $agenda = $this->loader->getAgenda();
+
+            foreach (array_reverse(array_filter($values)) as $value) {
+                $appointment = $agenda->getAppointment($value);
+
+                if ($appointment->exists) {
+                    return $appointment->getProcedureId();
                 }
             }
         }

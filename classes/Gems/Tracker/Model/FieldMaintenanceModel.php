@@ -74,7 +74,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      *
      * @var array
      */
-    protected $fromAppointments = array('caretaker', 'location');
+    protected $fromAppointments = array('caretaker', 'location', 'activity', 'procedure');
 
     /**
      *
@@ -205,21 +205,22 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      */
     public function applyBrowseSettings()
     {
+        $this->resetOrder();
+
         $yesNo = $this->util->getTranslated()->getYesNo();
         $types = $this->getFieldTypes();
         asort($types);
 
+        $this->set('gtf_field_name',    'label', $this->_('Name'));
         $this->set('gtf_id_order',      'label', $this->_('Order'),
                 'description', $this->_('The display and processing order of the fields.')
                 );
-        $this->set('gtf_field_name',    'label', $this->_('Name'));
-        $this->set('gtf_field_code',    'label', $this->_('Code Name'),
-                'description', $this->_('Optional extra name to link the field to program code.'));
         $this->set('gtf_field_type',    'label', $this->_('Type'),
                 'multiOptions', $types,
-                'default', 'text',
-                'order', $this->getOrder('gtf_id_track') + 5
+                'default', 'text'
                 );
+        $this->set('gtf_field_code',    'label', $this->_('Code Name'),
+                'description', $this->_('Optional extra name to link the field to program code.'));
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),
                 'multiOptions', $yesNo
@@ -230,6 +231,15 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->set('gtf_readonly',      'label', $this->_('Readonly'),
                 'multiOptions', $yesNo,
                 'description', $this->_('Check this box if this field is always set by code instead of the user.')
+                );
+
+        $this->set('gtf_calculate_using', 'label', $this->_('Calculate using'),
+                'description', $this->_('Automatically calculate this field using other fields'),
+                'formatFunction', array($this, 'countCalculationSources')
+                );
+        $this->set('gtf_create_track', 'label', $this->_('Create track'),
+                'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
+                'multiOptions', $yesNo
                 );
 
         return $this;
@@ -247,10 +257,14 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->applyBrowseSettings();
 
         $this->set('gtf_id_track',          'label', $this->_('Track'),
-                'multiOptions', $this->util->getTrackData()->getAllTracks()
+                'multiOptions', $this->util->getTrackData()->getAllTracks(),
+                'order', 2
                 );
+        $order = $this->getOrder('gtf_field_type') + 1;
         $this->set('gtf_field_description', 'label', $this->_('Description'),
-                'description', $this->_('Optional extra description to show the user.'));
+                'description', $this->_('Optional extra description to show the user.'),
+                'order', $order++
+                );
 
         // Display of data field
         if (! (isset($data['gtf_field_type']) && $data['gtf_field_type'])) {
@@ -280,9 +294,15 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         if (in_array($data['gtf_field_type'], $this->valuesFields)) {
             $this->set('gtf_field_values', 'label', $this->_('Values'),
                     'description', $this->_('Separate multiple values with a vertical bar (|)'),
-                    'formatFunction', array($this, 'formatValues'));
+                    'formatFunction', array($this, 'formatValues'),
+                    'order', $order++
+                    );
         }
 
+        // Clean up never used
+        $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
+                'formatFunction', null
+                );
         if ($trackId) { // && in_array($data['gtf_field_type'], $this->fromAppointments)) {
             $method = 'loadOptionsFor' . ucfirst($data['gtf_field_type']);
             if (!method_exists($this, $method)) {
@@ -297,16 +317,18 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                 $options = call_user_func(array($this, $method), $trackId);
 
                 if ($options) {
-                    $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
-                            'description', $this->_('Automatically calculate this field using other fields'),
+                    $this->set('gtf_calculate_using',
                             'elementClass', 'MultiCheckbox',
                             'multiOptions', $options
                             );
 
-                    $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
+                    $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
                     $contact->apply($this, 'gtf_calculate_using');
                 }
             }
+        }
+        if (! $this->has('gtf_calculate_using', 'elementClass')) {
+            $this->del('gtf_calculate_using', 'label', 'description');
         }
 
         if ('appointment' == $data['gtf_field_type']) {
@@ -325,9 +347,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         'multiOptions', $translated->getEmptyDropdownArray() + $filters,
                         'onchange', 'this.form.submit();'
                         );
-                $this->set('gtf_create_track', 'label', $this->_('Create track'),
-                        'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
-                        'multiOptions', $translated->getYesNo(),
+                $this->set('gtf_create_track',
                         'onclick', 'this.form.submit();'
                         );
                 $this->set('gtf_create_wait_days',
@@ -339,6 +359,9 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                 // $this->addDependency(new \Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency());
                 $this->addDependency(new AppointmentMaintenanceDependency());
             }
+        }
+        if (! $this->has('gtf_create_track', 'onclick')) {
+            $this->del('gtf_create_track', 'label', 'description');
         }
     }
 
@@ -408,6 +431,22 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         $this->set('gtf_to_track_info',     'elementClass', 'CheckBox');
         $this->set('gtf_required',          'elementClass', 'CheckBox');
         $this->set('gtf_readonly',          'elementClass', 'CheckBox');
+    }
+
+    /**
+     * A format function
+     *
+     * @return A string describing the contentn
+     */
+    public function countCalculationSources($value)
+    {
+        if (! $value) {
+            return null;
+        }
+
+        $count = substr_count($value, '|') + 1;
+
+        return sprintf($this->plural('%d field', '%d fields', $count), $count);
     }
 
     /**
@@ -559,6 +598,8 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             'text'        => $this->_('Free text'),
             'location'    => $this->_('Location'),
             'caretaker'   => $this->_('Caretaker'),
+            'activity'    => $this->_('Activity'),
+            'procedure'   => $this->_('Procedure'),
             );
     }
 
@@ -574,6 +615,29 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             return self::APPOINTMENTS_NAME;
         }
         return self::FIELDS_NAME;
+    }
+
+    /**
+     * Setting function for activity select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForActivity($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $agenda     = $this->loader->getAgenda();
+        $activities = $agenda->getActivities($organizationId);
+
+        if ($edit) {
+            $output['elementClass']  = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $activities;
+
+        return $output;
     }
 
     /**
@@ -689,6 +753,29 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
             $output['elementClass'] = 'MultiCheckbox';
         }
         $output['multiOptions'] = array_combine($multi, $multi);
+
+        return $output;
+    }
+
+    /**
+     * Setting function for procedure select
+     *
+     * @param string $values The content of the gtf_field_values field
+     * @param int $respondentId When null $patientNr is required
+     * @param int $organizationId
+     * @param string $patientNr Optional for when $respondentId is null
+     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @return array containing model settings
+     */
+    public function getSettingsForProcedure($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    {
+        $agenda     = $this->loader->getAgenda();
+        $procedures = $agenda->getProcedures($organizationId);
+
+        if ($edit) {
+            $output['elementClass']  = 'Select';
+        }
+        $output['multiOptions'] = $this->util->getTranslated()->getEmptyDropdownArray() + $procedures;
 
         return $output;
     }

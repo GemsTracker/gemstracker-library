@@ -7,6 +7,7 @@ Layouts can use bootstrap for styling
 Improved security means users may get error warnings when opening the same form in two windows.
 Password fields for login to sources, mail servers and security devices are now encrypted reversible
 X-frame setting in project.ini allows defense against clickjacking
+Project and application programmers can use PHP namespaces instead of Zend FW 1 class names.
 
 Important changes from 1.6.3 => 1.6.4
 ============================================================
