@@ -543,9 +543,9 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     {
         $args = func_get_args();
 
-        //ZendX_JQuery::enableView($view);
-        $jquery = $view->jQuery();
-        $jquery->enable();
+        MUtil_JQuery::enableView($view);
+        //$jquery = $view->jQuery();
+        //$jquery->enable();
 
         $urlFinish = $view->url(array($this->progressParameterName => $this->progressParameterReportValue));
         $urlRun    = $view->url(array($this->progressParameterName => $this->progressParameterRunValue));
