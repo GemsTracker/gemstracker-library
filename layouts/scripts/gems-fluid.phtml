@@ -9,7 +9,7 @@
 
     // Check if jQuery library is needed
     if ($this->jQuery) {
-        echo $this->jQuery();
+        echo $this->jQuery()->renderStylesheets();
         //Error message for when jQuery can not be loaded
         /*echo "<script>
         if (typeof jQuery == 'undefined') {
@@ -66,6 +66,9 @@
         ?>
         </div>
     </div><?php
+if ($this->jQuery) {
+    echo $this->jQuery()->renderJavascript();
+}
 echo MUtil_Echo::out();
 echo $this->headScript();
 echo $this->inlineScript();
