@@ -570,6 +570,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     }
 
     /**
+     * Get the storage model for field values
+     *
+     * @return Gems_Tracker_Model_FieldDataModel
+     */
+    public function getFieldsDataStorageModel()
+    {
+        return $this->_fieldsDefinition->getDataStorageModel();
+    }
+
+    /**
      * Returns a model that can be used to retrieve or save the field definitions for the track editor.
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table

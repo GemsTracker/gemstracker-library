@@ -493,6 +493,12 @@ abstract class Gems_Menu_MenuAbstract
         return $this->add($other);
     }
 
+    /**
+     * Add a list of report pages
+     *
+     * @param string $label         The label to display for the menu item, null for access without display
+     * @return Gems_Menu_SubMenuItem
+     */
     public function addPlanPage($label)
     {
         $infoPage = $this->addContainer($label);
@@ -504,6 +510,10 @@ abstract class Gems_Menu_MenuAbstract
         $page = $infoPage->addPage($this->_('Track Compliance'), 'pr.plan.compliance', 'compliance', 'index');
         $page->addAutofilterAction();
         $page->addExcelAction();
+
+        $page = $infoPage->addPage($this->_('Track Fields'), 'pr.plan.fields', 'field-report', 'index');
+        $page->addAutofilterAction();
+        // $page->addExcelAction();
 
         $plans[] = $infoPage->addPage($this->_('By period'), 'pr.plan.overview', 'overview-plan', 'index');
         $plans[] = $infoPage->addPage($this->_('By token'), 'pr.plan.token', 'token-plan', 'index');

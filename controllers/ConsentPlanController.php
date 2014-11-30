@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage ConsentPlanController
+ * @subpackage Controller
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -36,10 +36,10 @@
  */
 
 /**
- * Default stub for consent plan
+ *
  *
  * @package    Gems
- * @subpackage ConsentPlanController
+ * @subpackage Controller
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3

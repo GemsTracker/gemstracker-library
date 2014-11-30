@@ -1,0 +1,294 @@
+<?php
+
+/**
+ * Copyright (c) 2014, Erasmus MC
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: TrackFieldAction.php $
+ */
+
+/**
+ *
+ *
+ * @package    Gems
+ * @subpackage Default
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.6.5 30-nov-2014 17:50:22
+ */
+class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionAbstract
+{
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'browse' => false,
+        'columns' => 'getBrowseColumns',
+        );
+
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
+     *
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
+     */
+    protected $engine;
+
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Tracker_Fields_FieldReportSearchSnippet');
+
+    /**
+     * The number of instances of the currently selected track id
+     *
+     * @var int
+     */
+    protected $trackCount;
+
+    /**
+     * The number of instances of the current field that have been filled
+     *
+     * @var int
+     */
+    protected $trackFilled;
+
+    /**
+     * The currently selected track id
+     *
+     * @var int
+     */
+    protected $trackId;
+
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return MUtil_Model_ModelAbstract
+     */
+    public function createModel($detailed, $action)
+    {
+        $filter = $this->util->getRequestCache('index')->getProgramParams();
+
+        if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
+            $model = new Gems_Model_JoinModel('trackfields' , 'gems__track_fields');
+            $model->set('gtf_field_name', 'label', $this->_('Name'));
+            $model->setFilter(array('1=0'));
+            $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+            return $model;
+        }
+
+        $this->trackId = $filter['gtf_id_track'];
+
+        $tracker      = $this->loader->getTracker();
+        $this->engine = $tracker->getTrackEngine($this->trackId);
+
+        $sql     = "SELECT COUNT(*)
+            FROM gems__respondent2track INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
+            WHERE gr2t_id_track = ? AND grc_success = 1";
+        $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
+
+        $model = $this->engine->getFieldsMaintenanceModel(false, 'index', array());
+        $model->setFilter($filter);
+
+        // $model->addColumn(new Zend_Db_Expr($trackCount), 'trackcount');
+        // $model->addColumn(new Zend_Db_Expr("(SELECT COUNT())"), 'fillcount');
+
+        $model->set('trackcount', 'label', $this->_('Tracks'));
+        $model->setOnLoad('trackcount', $this->trackCount);
+
+        $model->set('fillcount', 'label', $this->_('Filled'));
+        $model->setOnLoad('fillcount', array($this, 'fillCount'));
+
+        $model->set('emptycount', 'label', $this->_('Empty'));
+        $model->setOnLoad('emptycount', array($this, 'emptyCount'));
+
+        $model->set('valuecount', 'label', $this->_('Unique values'));
+        $model->setOnLoad('valuecount', array($this, 'valueCount'));
+
+        return $model;
+    }
+
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a Zend_Date format
+     *
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function emptyCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        $value = $this->trackCount - $this->trackFilled;
+        return sprintf($this->_('%d (%d%%)'), $value, round($value / $this->trackCount * 100, 0));
+    }
+
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a Zend_Date format
+     *
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function fillCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        $model = $this->engine->getFieldsDataStorageModel();
+
+        if (! $model instanceof \Gems_Tracker_Model_FieldDataModel) {
+            return null;
+        }
+
+        $subName  = $model->getModelNameForRow($context);
+        $sql = sprintf("SELECT COUNT(*) FROM %s WHERE %s = %s AND %s IS NOT NULL",
+                $model->getTableName($subName),
+                $model->getFieldName('gr2t2f_id_field', $subName),
+                $context['gtf_id_field'],
+                $model->getFieldName('gr2t2f_value', $subName)
+                );
+
+        // MUtil_Echo::track($sql);
+        $this->trackFilled = $this->db->fetchOne($sql);
+
+        $value = $this->trackFilled;
+        return sprintf($this->_('%d (%d%%)'), $value, round($value / $this->trackCount * 100, 0));
+    }
+
+    /**
+     * A ModelAbstract->setOnLoad() function that takes care of transforming a
+     * dateformat read from the database to a Zend_Date format
+     *
+     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * currently there are no checks for a valid date format.
+     *
+     * @see MUtil_Model_ModelAbstract
+     *
+     * @param mixed $value The value being saved
+     * @param boolean $isNew True when a new item is being saved
+     * @param string $name The name of the current field
+     * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
+     * @return MUtil_Date|Zend_Db_Expr|string
+     */
+    public function valueCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
+    {
+        $model = $this->engine->getFieldsDataStorageModel();
+
+        if (! $model instanceof \Gems_Tracker_Model_FieldDataModel) {
+            return null;
+        }
+
+        $subName  = $model->getModelNameForRow($context);
+        $sql = sprintf("SELECT COUNT(DISTINCT %s) FROM %s WHERE %s = %s AND %s IS NOT NULL",
+                $model->getFieldName('gr2t2f_value', $subName),
+                $model->getTableName($subName),
+                $model->getFieldName('gr2t2f_id_field', $subName),
+                $context['gtf_id_field'],
+                $model->getFieldName('gr2t2f_value', $subName)
+                );
+
+        // MUtil_Echo::track($sql);
+        $value = $this->db->fetchOne($sql);
+        return sprintf($this->_('%d (uses per value: %01.2f)'), $value, $value ? $this->trackFilled / $value : 0);
+    }
+
+    /**
+     * Get the browse columns
+     * @return array
+     */
+    public function getBrowseColumns()
+    {
+        return array(
+            array('gtf_field_name'),
+            array('gtf_id_order'),
+            array('gtf_field_type'),
+            array('trackcount'),
+            array('emptycount'),
+            array('fillcount'),
+            array('valuecount'),
+        );
+    }
+
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('track fields');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('track', 'tracks', $count);
+    }
+}

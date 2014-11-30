@@ -126,4 +126,13 @@ class MUtil_Model_TableModel extends MUtil_Model_DatabaseModelAbstract
             return $this->_table->select(Zend_Db_Table_Abstract::SELECT_WITH_FROM_PART);
         }
     }
+
+    /**
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->_getTableName($this->_table);
+    }
 }

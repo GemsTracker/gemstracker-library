@@ -342,6 +342,40 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
     }
 
     /**
+     * Get the SQL table name of the union sub model that should be used for this row.
+     *
+     * @param array $row
+     * @return string
+     */
+    public function getFieldName($field, $modelName)
+    {
+        if (isset($this->_unionMapsTo[$modelName][$field])) {
+            return $this->_unionMapsTo[$modelName][$field];
+        }
+
+        return $field;
+    }
+
+    /**
+     * Get the SQL table name of the union sub model that should be used for this row.
+     *
+     * @param string $modelName Name of the submodel
+     * @return string
+     */
+    public function getTableName($modelName)
+    {
+        if (! isset($this->_unionModels[$modelName])) {
+            return null;
+        }
+
+        $model = $this->_unionModels[$modelName];
+
+        if ($model instanceof MUtil_Model_TableModel) {
+            return $model->getTableName();
+        }
+    }
+
+    /**
      * Calls $this->save() multiple times for each element
      * in the input array and returns the number of saved rows.
      *

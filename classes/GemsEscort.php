@@ -1316,7 +1316,7 @@ class GemsEscort extends MUtil_Application_Escort
                 'showOn'      => 'button'
             );
         }
-        
+
         $dateFormOptions['jQueryParams'] = $basicOptions + array(
             'changeMonth' => true,
             'changeYear'  => true,
@@ -1751,7 +1751,11 @@ class GemsEscort extends MUtil_Application_Escort
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
         if ($request instanceof Zend_Controller_Request_Http && $request->isXmlHttpRequest()) {
-            Zend_Layout::getMvcInstance()->disableLayout();
+            $mvc = Zend_Layout::getMvcInstance();
+
+            if ($mvc instanceof Zend_Layout) {
+                $mvc->disableLayout();
+            }
         }
         $staticSession = $this->getStaticSession();
         if ($this->session->user_id && $previousRequestParameters = $staticSession->previousRequestParameters) {

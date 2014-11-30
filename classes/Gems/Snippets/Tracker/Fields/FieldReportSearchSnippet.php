@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2014, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -26,23 +26,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ *
  * @package    Gems
- * @subpackage Controller
+ * @subpackage Tracker
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @version    $Id: FieldReportSearchSnippet.php $
  */
 
 /**
  *
  *
  * @package    Gems
- * @subpackage Controller
+ * @subpackage Tracker
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.3
+ * @since      Class available since version 1.6.5 30-nov-2014 18:11:58
  */
-class ConsentController extends Gems_Default_ConsentAction
+class Gems_Snippets_Tracker_Fields_FieldReportSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
 {
+    /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(array $data)
+    {
+        $elements[] = $this->_createSelectElement(
+                'gtf_id_track',
+                $this->util->getTrackData()->getSteppedTracks(),
+                $this->_('(select a track)')
+                );
+
+        /*
+        $orgs = $this->loader->getCurrentUser()->getRespondentOrganizations();
+        if (count($orgs) > 1) {
+            $elements[] = $this->_createSelectElement('org_id', $orgs, $this->_('(all organizations)'));
+        }
+        // */
+
+        return $elements;
+    }
 }

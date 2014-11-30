@@ -177,6 +177,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getFieldsData($respTrackId);
 
     /**
+     * Get the storage model for field values
+     *
+     * @return Gems_Tracker_Model_FieldDataModel
+     */
+    public function getFieldsDataStorageModel();
+
+    /**
      * Returns the fields required for editing a track of this type.
      *
      * @return array of Zend_Form_Element
@@ -218,7 +225,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return Gems_TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent();
-    
+
     /**
      * Get the round id of the first round
      *

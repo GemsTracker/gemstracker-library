@@ -831,6 +831,9 @@ ALTER TABLE gems__radius_config ADD
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.templates')
     WHERE grl_privileges NOT LIKE '%pr.templates%' AND grl_name = 'super';
 
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges,',pr.plan.fields')
+    WHERE grl_privileges NOT LIKE '%pr.plan.fields%' AND grl_privileges LIKE '%pr.plan.compliance%' ;
+
 -- PATCH: Add description inclusion option
 ALTER TABLE gems__track_fields ADD
     gtf_to_track_info       boolean not null default true AFTER gtf_field_type;

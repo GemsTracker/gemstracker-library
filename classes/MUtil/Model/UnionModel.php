@@ -405,13 +405,12 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
      * @param array $row
      * @return string
      */
-    protected function getModelNameForRow(array $row)
+    public function getModelNameForRow(array $row)
     {
         if (isset($row[$this->_modelField])) {
             return $row[$this->_modelField];
         }
     }
-
 
     /**
      * Creates a filter for this model for the given wildcard search text.
@@ -427,6 +426,7 @@ class MUtil_Model_UnionModel extends MUtil_Model_ModelAbstract
     /**
      * Return a union model
      *
+     * @param string The name of the
      * @return MUtil_Model_ModelAbstract
      */
     public function getUnionModel($name)

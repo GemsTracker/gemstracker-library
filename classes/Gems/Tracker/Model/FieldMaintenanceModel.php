@@ -610,7 +610,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * @param array $row
      * @return string
      */
-    protected function getModelNameForRow(array $row)
+    public function getModelNameForRow(array $row)
     {
         if (isset($row['gtf_field_type']) && ('appointment' === $row['gtf_field_type'])) {
             return self::APPOINTMENTS_NAME;
