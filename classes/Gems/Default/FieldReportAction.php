@@ -121,6 +121,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
             $model->set('gtf_field_name', 'label', $this->_('Name'));
             $model->setFilter(array('1=0'));
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
+
             return $model;
         }
 
@@ -174,7 +175,11 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
     public function emptyCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         $value = $this->trackCount - $this->trackFilled;
-        return sprintf($this->_('%d (%d%%)'), $value, round($value / $this->trackCount * 100, 0));
+        return sprintf(
+                $this->_('%d (%d%%)'),
+                $value,
+                $this->trackCount ? round($value / $this->trackCount * 100, 0) : 0
+            );
     }
 
     /**
@@ -213,7 +218,11 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
         $this->trackFilled = $this->db->fetchOne($sql);
 
         $value = $this->trackFilled;
-        return sprintf($this->_('%d (%d%%)'), $value, round($value / $this->trackCount * 100, 0));
+        return sprintf(
+                $this->_('%d (%d%%)'),
+                $value,
+                $this->trackCount ? round($value / $this->trackCount * 100, 0) : 0
+            );
     }
 
     /**
@@ -260,7 +269,8 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getBrowseColumns()
     {
-        if (! $this->trackId) {
+        $filter = $this->util->getRequestCache('index')->getProgramParams();
+        if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             return array(
                 array('gtf_field_name'),
                 );
