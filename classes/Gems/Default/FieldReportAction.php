@@ -260,6 +260,11 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getBrowseColumns()
     {
+        if (! $this->trackId) {
+            return array(
+                array('gtf_field_name'),
+                );
+        }
         return array(
             array('gtf_field_name'),
             array('gtf_id_order'),
