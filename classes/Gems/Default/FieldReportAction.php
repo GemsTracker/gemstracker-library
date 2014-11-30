@@ -207,11 +207,16 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
         }
 
         $subName  = $model->getModelNameForRow($context);
-        $sql = sprintf("SELECT COUNT(*) FROM %s WHERE %s = %s AND %s IS NOT NULL",
+        $sql = sprintf("SELECT COUNT(*)
+            FROM %s INNER JOIN gems__respondent2track ON %s = gr2t_id_respondent_track
+                INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
+            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1",
                 $model->getTableName($subName),
+                $model->getFieldName('gr2t2f_id_respondent_track', $subName),
                 $model->getFieldName('gr2t2f_id_field', $subName),
                 $context['gtf_id_field'],
-                $model->getFieldName('gr2t2f_value', $subName)
+                $model->getFieldName('gr2t2f_value', $subName),
+                $this->trackId
                 );
 
         // MUtil_Echo::track($sql);
@@ -250,12 +255,17 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
         }
 
         $subName  = $model->getModelNameForRow($context);
-        $sql = sprintf("SELECT COUNT(DISTINCT %s) FROM %s WHERE %s = %s AND %s IS NOT NULL",
+        $sql = sprintf("SELECT COUNT(DISTINCT %s)
+            FROM %s INNER JOIN gems__respondent2track ON %s = gr2t_id_respondent_track
+                INNER JOIN gems__reception_codes ON gr2t_reception_code = grc_id_reception_code
+            WHERE %s = %s AND %s IS NOT NULL AND gr2t_id_track = %d AND grc_success = 1",
                 $model->getFieldName('gr2t2f_value', $subName),
                 $model->getTableName($subName),
+                $model->getFieldName('gr2t2f_id_respondent_track', $subName),
                 $model->getFieldName('gr2t2f_id_field', $subName),
                 $context['gtf_id_field'],
-                $model->getFieldName('gr2t2f_value', $subName)
+                $model->getFieldName('gr2t2f_value', $subName),
+                $this->trackId
                 );
 
         // MUtil_Echo::track($sql);
