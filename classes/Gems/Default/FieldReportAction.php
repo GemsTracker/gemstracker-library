@@ -270,7 +270,11 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
         // MUtil_Echo::track($sql);
         $value = $this->db->fetchOne($sql);
-        return sprintf($this->_('%d (uses per value: %01.2f)'), $value, $value ? $this->trackFilled / $value : 0);
+        return sprintf(
+                $this->_('%d (uses per value: %01.2f)'),
+                $value,
+                $value ? $this->trackFilled / $value : 0
+            );
     }
 
     /**

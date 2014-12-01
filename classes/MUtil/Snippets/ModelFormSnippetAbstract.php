@@ -592,6 +592,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     {
         $this->beforeSave();
 
+        if ($this->csrfId && $this->_csrf) {
+            unset($this->formData[$this->csrfId]);
+        }
+
         // Perform the save
         $model          = $this->getModel();
         $this->formData = $model->save($this->formData);
