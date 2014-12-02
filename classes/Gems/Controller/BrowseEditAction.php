@@ -666,7 +666,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getBrowseTable($baseUrl, $sort, $model);
 
-        $table->class = 'browser table table-striped table-bordered table-hover';
+        $table->class = 'browser table table-striped table-bordered table-hover table-condensed';
         $table->setOnEmpty(sprintf($this->_('No %s found'), $this->getTopic(0)));
         $table->getOnEmpty()->class = 'centerAlign';
 
@@ -835,7 +835,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getShowTable($columns, $filter, $sort);
 
-        $table->class = 'displayer table table-striped table-bordered table-hover';
+        $table->class = 'displayer table table-striped table-bordered table-hover table-condensed';
 
         return $table;
     }
@@ -851,7 +851,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         $params = array();
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
-        $params['formatBoxClass']          = 'browser table table-striped table-bordered table-hover';
+        $params['formatBoxClass']          = 'browser table table-striped table-bordered table-hover table-condensed';
         $params['importer']                = $importLoader->getImporter($controller, $model);
         $params['model']                   = $model;
         $params['tempDirectory']           = $importLoader->getTempDirectory();

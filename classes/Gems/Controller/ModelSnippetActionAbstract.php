@@ -68,7 +68,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var array Mixed key => value array for snippet initializPdfation
      */
     private $_importExtraParameters = array(
-        'formatBoxClass'   => 'browser table table-striped table-bordered table-hover',
+        'formatBoxClass'   => 'browser table table-striped table-bordered table-hover table-condensed',
         'importer'         => 'getImporter',
         'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
