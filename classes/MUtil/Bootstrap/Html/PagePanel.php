@@ -107,7 +107,7 @@ class MUtil_Bootstrap_Html_PagePanel extends MUtil_Html_PagePanel
             unset($args[$name]);
         }
 
-        $container = MUtil_Html::create()->ul(array('class' => 'pagination pull-left'));
+        $container = MUtil_Html::create()->ul(array('class' => 'pagination pagination-sm pull-left'));
 
         if ($first) { // Can be null or array()
             $container[] = $this->firstPage((array) $first + $args);
