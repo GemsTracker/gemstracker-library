@@ -74,6 +74,11 @@ class Gems_Default_GroupAction extends Gems_Controller_ModelSnippetActionAbstrac
     public function createModel($detailed, $action)
     {
         $model = new MUtil_Model_TableModel('gems__groups');
+        
+        // Add id for excel export
+        if ($action == 'excel') {
+            $model->set('ggp_id_group', 'label', 'id');
+        }
 
         $model->set('ggp_name', 'label', $this->_('Name'), 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('ggp_name'));
         $model->set('ggp_description', 'label', $this->_('Description'), 'size', 40);
