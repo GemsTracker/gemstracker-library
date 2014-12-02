@@ -63,6 +63,13 @@ class MUtil_Markup extends Zend_Markup
         $options['parser'] = $parser;
         $renderer          = new $rendererClass($options);
 
+        // Ignore email tags (in any output)
+        $renderer->addMarkup(
+                'email',
+                Zend_Markup_Renderer_RendererAbstract::TYPE_REPLACE,
+                array('start' => '', 'end' => '', 'group' => 'inline')
+                );
+
         return $renderer;
     }
 
