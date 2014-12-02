@@ -321,7 +321,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
             $this->addMessage($this->_('Inactive installation.'));
         }
 
-        $this->afterSaveRoute($this->getRequest());
+        $this->_reroute(array($this->getRequest()->getActionKey() => 'show'));
     }
 
     /**
