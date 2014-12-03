@@ -366,8 +366,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                     (gto_round_description IS NULL AND gro_round_description IS NOT NULL) OR
                     (gto_round_description IS NOT NULL AND gro_round_description IS NULL)
                 ) AND
-                gto_id_respondent_track = ?
-                AND (gro_organizations IS NULL OR gro_organizations LIKE CONCAT('%|',?,'|%'))";
+                gto_id_respondent_track = ?";
 
         $stmt = $this->db->query($sql, array($respTrackId, $qOrgId));
 
@@ -972,12 +971,13 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         $qTrackId     = $this->db->quote($this->_trackId);
         $qRespTrackId = $this->db->quote($respTrack->getRespondentTrackId());
+        $orgId        = $this->db->quote($respTrack->getOrganizationId());
 
         $where = "gto_start_time IS NULL AND
             gto_id_respondent_track = $qRespTrackId AND
             gto_id_round IN (SELECT gro_id_round
                     FROM gems__rounds
-                    WHERE gro_active = 0 AND
+                    WHERE (gro_active = 0 OR gro_organizations NOT LIKE CONCAT('%|',$orgId,'|%')) AND
                         gro_id_track = $qTrackId)";
 
         return $this->db->delete('gems__tokens', $where);
