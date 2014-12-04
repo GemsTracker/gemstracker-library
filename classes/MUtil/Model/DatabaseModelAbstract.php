@@ -370,6 +370,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         $tableName = $this->_getTableName($table);
         if ((! $alias) || ($alias == $tableName)) {
             $aliasPrefix = '';
+            $alias       = $tableName;
         } else {
             $aliasPrefix = $alias . '.';
         }
