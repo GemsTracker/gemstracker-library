@@ -82,9 +82,9 @@ class Gems_JQuery_Form_Element_ColorPicker extends ZendX_JQuery_Form_Element_Col
                  ->addDecorator('HtmlTag', array(
                      'tag' => 'div',
                      'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'col-sm-10'
+                     'class' => 'element-container'
                  ))
-                 ->addDecorator('Label', array('class' => 'col-sm-2'))
+                 ->addDecorator('Label')
                  ->addDecorator('BootstrapRow');
         } else {
             parent::loadDefaultDecorators();

@@ -154,7 +154,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         // MUtil_Echo::r($filter);
         if ($data = $model->load($filter, $sort)) {
-            $bridge  = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+            $bridge  = $model->getBridgeFor('table', array('class' => 'browser table'));
             $bridge->setBaseUrl($baseUrl);
             $bridge->setRepeater($data);
             $bridge->setSort($sort);

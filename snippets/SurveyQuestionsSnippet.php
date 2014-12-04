@@ -51,7 +51,7 @@ class SurveyQuestionsSnippet extends MUtil_Snippets_TableSnippetAbstract
      *
      * @var string
      */
-    protected $class = 'browser table table-striped table-bordered table-hover table-condensed';
+    protected $class = 'browser table';
 
     /**
      *

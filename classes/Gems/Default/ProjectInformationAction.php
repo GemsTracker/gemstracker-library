@@ -63,7 +63,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
     {
         $tableContainer = $div = MUtil_Html::create()->div(array('class' => 'table-responsive'));
         $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
-        $table->class = 'browser table table-striped table-bordered table-hover table-condensed';
+        $table->class = 'browser table';
         $tableContainer[] = $table;
         $this->html[] = $tableContainer;
     }

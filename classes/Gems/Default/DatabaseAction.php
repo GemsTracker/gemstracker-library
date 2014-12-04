@@ -87,7 +87,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
         $table = MUtil_Html_TableElement::createArray($paginator->getCurrentItems(), $caption, true);
         if ($table instanceof MUtil_Html_TableElement) {
-            $table->class = 'browser table table-striped table-bordered table-hover  table-condensed';
+            $table->class = 'browser table';
             $table->tfrow()->pagePanel($paginator, $this->getRequest(), $this->translate);
         } else {
             $table = MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
@@ -487,7 +487,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $this->html->h4($this->plural('Are you sure you want to create it?', 'Are you sure you want to create them all?', $oCount));
 
             $model->set('name', 'itemDisplay', array(__CLASS__, 'createShowLink'), 'tableDisplay', 'em');
-            $bridge = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser table'));
             $bridge->setRepeater($objects);
             foreach (array('order', 'group', 'type', 'name', 'location') as $key) {
                 $bridge->add($key);

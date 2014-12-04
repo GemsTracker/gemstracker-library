@@ -147,8 +147,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
         );
         $labelOptions = array();
         if (MUtil_Bootstrap::enabled()) {
-            $htmlTagOptions['class'] = 'col-sm-10';
-            $labelOptions['class'] = 'col-sm-2';
+            $htmlTagOptions['class'] = 'element-container';
         }
 
 
@@ -158,7 +157,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
                  ->addDecorator('Errors')
                  ->addDecorator('Description', array('tag' => 'p', 'class' => 'help-block'))
                  ->addDecorator('HtmlTag', $htmlTagOptions)
-                 ->addDecorator('Label', $labelOptions)
+                 ->addDecorator('Label')
                  ->addDecorator('BootstrapRow');
         }
         return $this;

@@ -241,10 +241,10 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                         if ($useBootstrap) {
                             $subgroup = $subContainer->div(array('class' => 'form-group'));
 
-                            $label = $subgroup->div(array('class' => 'col-sm-2'))->label(array('for' => $subelement->getId()));
+                            $label = $subgroup->div(array('class' => 'label-container'))->label(array('for' => $subelement->getId()));
                             $label[] = $subelement->getLabel();
 
-                            $divContainer = $subgroup->div(array('class' => 'col-sm-10'));
+                            $divContainer = $subgroup->div(array('class' => 'element-container'));
 
                             $divContainer[] = $subelement;
                         } else {

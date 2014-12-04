@@ -342,7 +342,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
         if ($this->useTabbedForms || $form instanceof Gems_Form_TableForm) {
             //If needed, add a row of link buttons to the bottom of the form
             if ($links = $this->createMenuLinks($isNew ? $this->menuCreateIncludeLevel : $this->menuEditIncludeLevel)) {
-                $linkContainer = MUtil_Html::create()->div(array('class' => 'col-sm-offset-2 col-sm-10'));
+                $linkContainer = MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
@@ -666,7 +666,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getBrowseTable($baseUrl, $sort, $model);
 
-        $table->class = 'browser table table-striped table-bordered table-hover table-condensed';
+        $table->class = 'browser table';
         $table->setOnEmpty(sprintf($this->_('No %s found'), $this->getTopic(0)));
         $table->getOnEmpty()->class = 'centerAlign';
 
@@ -835,7 +835,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     {
         $table = parent::getShowTable($columns, $filter, $sort);
 
-        $table->class = 'displayer table table-striped table-bordered table-hover table-condensed';
+        $table->class = 'displayer table';
 
         return $table;
     }
@@ -851,7 +851,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
 
         $params = array();
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
-        $params['formatBoxClass']          = 'browser table table-striped table-bordered table-hover table-condensed';
+        $params['formatBoxClass']          = 'browser table';
         $params['importer']                = $importLoader->getImporter($controller, $model);
         $params['model']                   = $model;
         $params['tempDirectory']           = $importLoader->getTempDirectory();
@@ -995,7 +995,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             }
 
             $saveButton = $form->createElement('submit', 'save_button', array('label' => $saveLabel));
-            $saveButton->setAttrib('class', 'button btn btn-sm btn-success');
+            $saveButton->setAttrib('class', 'button btn-success');
             $form->addElement($saveButton);
         }
 

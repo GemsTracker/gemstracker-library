@@ -116,7 +116,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
                 'action'                 => 'index',
                 MUtil_Model::TEXT_FILTER => $searchText);
 
-            $bridge = $model->getBridgeFor('table', array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+            $bridge = $model->getBridgeFor('table', array('class' => 'browser table'));
             $bridge->setBaseUrl($baseUrl);
             $bridge->setOnEmpty($this->_('No tracks found'));
             $bridge->getOnEmpty()->class = 'centerAlign';

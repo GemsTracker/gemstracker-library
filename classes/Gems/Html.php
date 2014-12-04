@@ -62,7 +62,7 @@ class Gems_Html
 
         $element = MUtil_Html::createArray('a', $args);
 
-        $element->appendAttrib('class', 'actionlink btn btn-sm btn-default'); // Keeps existing classes
+        $element->appendAttrib('class', 'actionlink btn'); // Keeps existing classes
         return $element;
     }
 
@@ -175,8 +175,8 @@ class Gems_Html
             $pager->uptoOffDynamic(
                 $translator->_('to'),
                 $translator->_('of'),
-                array('-', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-default btn-xs', 'keyCtrlUp')),
-                array('+', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-default btn-xs', 'keyCtrlDown')),
+                array('-', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlUp')),
+                array('+', 'class' => new MUtil_Html_ClassArrayAttribute('browselink btn btn-xs', 'keyCtrlDown')),
                 null,
                 ' ',
                 $args),

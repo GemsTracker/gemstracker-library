@@ -96,7 +96,7 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     const PUSH = 'Push';
 
-    protected $_buttonClass = 'btn btn-sm btn-primary';
+    protected $_buttonClass = 'btn';
 
     /**
      *

@@ -70,9 +70,9 @@ class Gems_JQuery_Form_Element_DatePicker extends MUtil_JQuery_Form_Element_Date
                  ->addDecorator('HtmlTag', array(
                      'tag' => 'div',
                      'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'col-sm-10'
+                     'class' => 'element-container'
                  ))
-                 ->addDecorator('Label', array('class' => 'col-sm-2'))
+                 ->addDecorator('Label')
                  ->addDecorator('BootstrapRow');
         }
         return $this;

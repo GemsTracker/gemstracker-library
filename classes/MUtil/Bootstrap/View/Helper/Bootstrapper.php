@@ -200,7 +200,8 @@ class MUtil_Bootstrap_View_Helper_Bootstrapper
         } else {
             $closingBracket = ' />';
         }
-        $style = '<link rel="stylesheet" href="'.$stylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
+        // disable the stylesheat loader for bootstrap now that it gets compiled with the style
+        $style = ''; //'<link rel="stylesheet" href="'.$stylesheet.'" type="text/css" media="screen"' . $closingBracket . PHP_EOL;
 
         if (MUtil_Bootstrap::$fontawesome === true) {
             $fontawesomeStylesheet = $this->_getFontAwesomeStylesheet();

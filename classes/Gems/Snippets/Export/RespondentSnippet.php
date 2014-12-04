@@ -76,7 +76,7 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
             return $html;
         }
 
-        $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+        $bridge = $respondentModel->getBridgeFor('itemTable', array('class' => 'browser table'));
         $bridge->setRepeater(MUtil_Lazy::repeat(array($respondentData)));
         $bridge->th($this->_('Respondent information'), array('colspan' => 4));
         $bridge->setColumnCount(2);

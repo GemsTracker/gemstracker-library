@@ -227,7 +227,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     {
         if ($this->_form instanceof Gems_TabForm) {
             if ($links = $this->getMenuList()) {
-                $linkContainer = MUtil_Html::create()->div(array('class' => 'col-sm-offset-2 col-sm-10'));
+                $linkContainer = MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');

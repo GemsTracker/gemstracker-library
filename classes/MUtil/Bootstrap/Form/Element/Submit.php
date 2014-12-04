@@ -50,7 +50,7 @@ class MUtil_Bootstrap_Form_Element_Submit extends Zend_Form_Element_Submit
 	 * Bootstrap class for an input tag. Remove if you want the normal layout.
 	 * @var string
 	 */
-	protected $_elementClass = 'btn btn-sm btn-success';
+	protected $_elementClass = 'btn btn-success';
 
 	/**
      * Constructor
@@ -105,7 +105,7 @@ class MUtil_Bootstrap_Form_Element_Submit extends Zend_Form_Element_Submit
                  ->addDecorator('HtmlTag', array(
                      'tag' => 'div',
                      'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'col-sm-offset-2 col-sm-10'
+                     'class' => 'element-container-labelless'
                  ))
                  ->addDecorator('BootstrapRow');
         }

@@ -247,7 +247,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $engine       = $track->getTrackEngine();
         $surveys      = array();
 
-        $table = $this->html->table(array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+        $table = $this->html->table(array('class' => 'browser table'));
         $table->th($this->_('Survey'))
               ->th($this->_('Round'))
               ->th($this->_('Token'))

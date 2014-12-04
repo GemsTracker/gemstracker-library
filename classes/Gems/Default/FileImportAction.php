@@ -62,7 +62,7 @@ class Gems_Default_FileImportAction extends Gems_Default_FileActionAbstract
         $importLoader = $this->loader->getImportLoader();
 
         $params['defaultImportTranslator'] = $importLoader->getDefaultTranslator($controller);
-        $params['formatBoxClass']          = 'browser table table-striped table-bordered table-hover table-condensed';
+        $params['formatBoxClass']          = 'browser table';
         $params['importer']                = $importLoader->getImporter($controller);
         $params['importLoader']            = $importLoader;
         $params['tempDirectory']           = $importLoader->getTempDirectory();

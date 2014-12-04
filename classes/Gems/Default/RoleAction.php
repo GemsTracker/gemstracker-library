@@ -84,7 +84,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
     protected function _showTable($caption, $data, $nested = false)
     {
         $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
-        $table->class = 'browser table table-striped table-bordered table-hover table-condensed';
+        $table->class = 'browser table';
         $div = MUtil_Html::create()->div(array('class' => 'table-responsive'));
         $div[] = $table;
         $this->html[] = $div;

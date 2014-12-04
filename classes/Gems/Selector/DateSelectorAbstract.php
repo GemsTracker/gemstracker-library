@@ -602,8 +602,8 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         $tf = $bridge->tf();
         $tf->class = array($this->dataCellClass, $columnClass);
         $tf->iflink($repeater->df_link->strlen(),
-            array('href' => $href, $repeater->df_label, 'class' => 'browselink btn btn-default btn-xs'),
-            array($repeater->df_label, 'class' => 'browselink btn btn-primary btn-xs disabled'));
+            array('href' => $href, $repeater->df_label, 'class' => 'browselink btn btn-xs'),
+            array($repeater->df_label, 'class' => 'browselink btn btn-xs disabled'));
         $tf->setRepeater($repeater);
         $tf->setRepeatTags(true);
     }

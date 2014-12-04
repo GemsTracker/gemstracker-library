@@ -98,9 +98,9 @@ class MUtil_Bootstrap_Form_Element_Exhibitor extends MUtil_Form_Element_Exhibito
                  ->addDecorator('HtmlTag', array(
                      'tag' => 'div',
                      'id'  => array('callback' => array(get_class($this), 'resolveElementId')),
-                     'class' => 'col-sm-10'
+                     'class' => 'element-container'
                  ))
-                 ->addDecorator('Label', array('class' => 'col-sm-2'))
+                 ->addDecorator('Label')
                  ->addDecorator('BootstrapRow');
         }
         return $this;
