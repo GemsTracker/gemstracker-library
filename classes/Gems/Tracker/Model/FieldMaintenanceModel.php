@@ -347,7 +347,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         'multiOptions', $translated->getEmptyDropdownArray() + $filters,
                         'onchange', 'this.form.submit();'
                         );
-                $this->set('gtf_after_next', 'label', $this->_('Filter ascending'),
+                $this->set('gtf_after_next', 'label', $this->_('Link ascending'),
                         'description', $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
                         'multiOptions', $this->util->getTranslated()->getYesNo(),
                         'order', $this->getOrder('gtf_filter_id') + 1

@@ -511,7 +511,7 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         $page->addExcelAction();
 
-        $page = $infoPage->addPage($this->_('Track Fields'), 'pr.plan.fields', 'field-report', 'index');
+        $page = $infoPage->addPage($this->_('Track fields'), 'pr.plan.fields', 'field-report', 'index');
         $page->addAutofilterAction();
         // $page->addExcelAction();
 

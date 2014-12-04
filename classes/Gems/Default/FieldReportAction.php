@@ -307,7 +307,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getIndexTitle()
     {
-        return $this->_('track fields');
+        return $this->_('Track fields');
     }
 
     /**
