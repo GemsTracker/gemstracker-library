@@ -525,11 +525,8 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
                                 $calcUsing[$source] = null;
                             }
                         }
-                    } elseif (isset($field['gtf_filter_id'])) {
-                        // Pass data for appointment filter
-                        $calcUsing['filter'] = $field['gtf_filter_id'];
                     }
-                    $value = $model->$typeFunction($value, $calcUsing, $data, $respTrackId);
+                    $value = $model->$typeFunction($value, $calcUsing, $data, $respTrackId, $field);
                 }
 
                 $saves[] = array(

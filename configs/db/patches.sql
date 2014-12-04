@@ -851,6 +851,8 @@ UPDATE gems__roles
 ALTER TABLE gems__track_appointments ADD
     gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id) AFTER gtap_readonly;
 ALTER TABLE gems__track_appointments ADD
+    gtap_after_next         boolean not null default 1 AFTER gtap_filter_id;
+ALTER TABLE gems__track_appointments ADD
     gtap_create_track       boolean not null default 0 AFTER gtap_filter_id;
 ALTER TABLE gems__track_appointments ADD
     gtap_create_wait_days   bigint signed not null default 182 AFTER gtap_create_track;

@@ -183,9 +183,10 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
+     * @param array $field Field definition array
      * @return mixed the new value
      */
-    public function calculateOnSaveActivity($currentValue, array $values, array $context, $respTrackId)
+    public function calculateOnSaveActivity($currentValue, array $values, array $context, $respTrackId, $field)
     {
         if ($values) {
             $agenda = $this->loader->getAgenda();
@@ -209,41 +210,35 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param array $values Containing filter => int
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
+     * @param array $field Field definition array
      * @return mixed the new value
      */
-    public function calculateOnSaveAppointment($currentValue, array $values, array $context, $respTrackId)
+    public function calculateOnSaveAppointment($currentValue, array $values, array $context, $respTrackId, $field)
     {
         if ($currentValue || $values) {
             $agenda = $this->loader->getAgenda();
 
-            if (isset($values['filter'])) {
-                if ($this->_lastActiveAppointment) {
-                    $appointment = $this->_lastActiveAppointment;
-                    $orEqual     = false;
-                } else {
-                    // MUtil_Echo::track($currentValue);
-                    /* No longer fixing first appointment
-                    if ($currentValue) {
-                        $appointment = $agenda->getAppointment($currentValue);
-                    } else {
-                        $appointment = null;
-                    } //*/
-                    $appointment = null;
-                    $orEqual = true;
-                }
-                if ($appointment && $appointment->isActive()) {
-                    // MUtil_Echo::track($appointment->getAdmissionTime()->toString());
-                    $respId   = $appointment->getRespondentId();
-                    $orgId    = $appointment->getOrganizationId();
-                    $fromDate = $appointment;
+            if (isset($field['gtf_filter_id'])) {
+                if ($this->_lastActiveAppointment && $this->_lastActiveAppointment->isActive()) {
+                    // MUtil_Echo::track($this->_lastActiveAppointment->getAdmissionTime()->toString());
+                    $respId   = $this->_lastActiveAppointment->getRespondentId();
+                    $orgId    = $this->_lastActiveAppointment->getOrganizationId();
+                    $fromDate = $this->_lastActiveAppointment;
+                    $oper     = $field['gtf_after_next'] ? '>' : '<';
                 } else {
                     $respTrack = $this->tracker->getRespondentTrack($respTrackId);
                     $respId    = $respTrack->getRespondentId();
                     $orgId     = $respTrack->getOrganizationId();
                     $fromDate  = $respTrack->getStartDate();
+                    if ($field['gtf_after_next']) {
+                        $oper = '>=';
+                    } else {
+                        $fromDate->addDay(1);
+                        $oper = '<'; // < as we add a day to the start date
+                    }
                 }
-                // MUtil_Echo::track($respId, $orgId, get_class($fromDate));
-                $newValue = $agenda->findFirstAppointmentId($values['filter'], $respId, $orgId, $fromDate, $orEqual);
+                // MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
+                $newValue = $agenda->findFirstAppointmentId($field['gtf_filter_id'], $respId, $orgId, $fromDate, $oper);
                 // MUtil_Echo::track($newValue);
 
                 if ($newValue) {
@@ -270,9 +265,10 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
+     * @param array $field Field definition array
      * @return mixed the new value
      */
-    public function calculateOnSaveCaretaker($currentValue, array $values, array $context, $respTrackId)
+    public function calculateOnSaveCaretaker($currentValue, array $values, array $context, $respTrackId, $field)
     {
         if ($values) {
             $agenda = $this->loader->getAgenda();
@@ -296,9 +292,10 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
+     * @param array $field Field definition array
      * @return mixed the new value
      */
-    public function calculateOnSaveLocation($currentValue, array $values, array $context, $respTrackId)
+    public function calculateOnSaveLocation($currentValue, array $values, array $context, $respTrackId, $field)
     {
         if ($values) {
             $agenda = $this->loader->getAgenda();
@@ -322,9 +319,10 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param array $values The values for the checked calculate from fields
      * @param array $context The other values being saved
      * @param int $respTrackId Gems respondent track id
+     * @param array $field Field definition array
      * @return mixed the new value
      */
-    public function calculateOnSaveProcedure($currentValue, array $values, array $context, $respTrackId)
+    public function calculateOnSaveProcedure($currentValue, array $values, array $context, $respTrackId, $field)
     {
         if ($values) {
             $agenda = $this->loader->getAgenda();

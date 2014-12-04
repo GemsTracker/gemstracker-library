@@ -149,8 +149,11 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
         if ($this->_procedures && ($this->_procedures !== true)) {
             $where .= 'gap_id_procedure IN (' . implode(', ', $this->_procedures) . ')';
         }
-
-        return $where;
+        if ($where) {
+            return $where;
+        } else {
+            return '1=0';
+        }
     }
 
     /**

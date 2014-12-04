@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_SourceAction extends Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -66,7 +66,7 @@ class Gems_Default_SourceAction  extends Gems_Controller_ModelSnippetActionAbstr
      * @var array $summarizedActions Array of the actions that use a
      * summarized version of the model.
      */
-    public $summarizedActions = array('index', 'autofilter', 'synchronize-all');
+    public $summarizedActions = array('index', 'autofilter', 'check-all', 'attributes-all', 'synchronize-all');
 
     /**
      * Displays textual information what checking tokens does

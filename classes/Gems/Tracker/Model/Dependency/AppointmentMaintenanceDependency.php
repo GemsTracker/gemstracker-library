@@ -74,7 +74,7 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gtf_create_track', 'gtf_create_wait_days');
+    protected $_effecteds = array('gtf_after_next', 'gtf_create_track', 'gtf_create_wait_days');
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -105,11 +105,18 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
             $hideWait = !$context['gtf_create_track'];
         }
         if ($hideCreate) {
+            $output['gtf_after_next'] = array(
+                'elementClass' => 'Hidden',
+                'label'        => null,
+                );
             $output['gtf_create_track'] = array(
                 'elementClass' => 'Hidden',
                 'label'        => null,
                 );
         } else {
+            $output['gtf_after_next'] = array(
+                'elementClass' => 'Checkbox',
+                );
             $output['gtf_create_track'] = array(
                 'elementClass' => 'Checkbox',
                 );

@@ -168,10 +168,10 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * @param int $respondentId
      * @param int $orgId
      * @param mixed $from Optional date or appointment after which the appointment must occur
-     * @param boolean $orEqual When true the date may be equal to the previous date
+     * @param string $oper Comaprison operator for the from date
      * @return int The first found appointment id or false
      */
-    public function findFirstAppointmentId($filterId, $respondentId, $orgId, $from = null, $orEqual = true)
+    public function findFirstAppointmentId($filterId, $respondentId, $orgId, $from = null, $oper = '>=')
     {
         $filter = $this->getFilter($filterId);
         if (! $filter) {
@@ -194,10 +194,9 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             if ($from instanceof \Zend_Date) {
                 $from = $from->toString('yyyy-MM-dd HH:mm:ss');
             }
-            $oper = $orEqual ? '>=' : '>';
             $select->where("gap_admission_time $oper ?", $from);
         }
-        // \MUtil_Echo::track($select->__toString());
+        // \MUtil_Echo::track($select->__toString(), $filter->getSqlWhere());
         return $this->db->fetchOne($select);
     }
 

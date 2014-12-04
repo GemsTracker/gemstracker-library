@@ -14,6 +14,7 @@ CREATE TABLE if not exists gems__track_appointments (
         gtap_readonly           boolean not null default false,
 
         gtap_filter_id          bigint unsigned null references gems__appointment_filters (gaf_id),
+        gtap_after_next         boolean not null default 1,
         gtap_create_track       boolean not null default 0,
         gtap_create_wait_days   bigint signed not null default 182,
 

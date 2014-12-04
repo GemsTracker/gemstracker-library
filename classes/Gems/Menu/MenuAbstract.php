@@ -679,7 +679,6 @@ abstract class Gems_Menu_MenuAbstract
         // SURVEY MAINTENANCE CONTROLLER
         $page = $setup->addPage($this->_('Surveys'), 'pr.survey-maintenance', 'survey-maintenance');
         $page->addAutofilterAction();
-
         $page->addExcelAction();
         $showPage = $page->addShowAction();
         $showPage->addEditAction();
