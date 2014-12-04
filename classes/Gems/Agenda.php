@@ -184,7 +184,6 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 ->where('gap_id_organization = ?', $orgId)
                 ->where('gap_status IN (?)', $this->getStatusKeysActiveDbQuoted())
                 ->where($filter->getSqlWhere())
-                ->order('gap_admission_time ASC')
                 ->limit(1);
 
         if ($from) {
@@ -195,6 +194,11 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 $from = $from->toString('yyyy-MM-dd HH:mm:ss');
             }
             $select->where("gap_admission_time $oper ?", $from);
+        }
+        if ('<' === $oper[0]) {
+            $select->order('gap_admission_time DESC');
+        } else {
+            $select->order('gap_admission_time ASC');
         }
         // \MUtil_Echo::track($select->__toString(), $filter->getSqlWhere());
         return $this->db->fetchOne($select);
