@@ -139,7 +139,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
                     $select->columns(array($name => $expression));
                 } else {
                     if ($table = $this->get($name, 'table')) {
-                        $select->columns($name, $table);
+                        $select->columns(array($name => $name), $table);
                     }
                 }
             }
@@ -319,6 +319,12 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
         return $keys;
     }
 
+    /**
+     * Return the name of a table object
+     *
+     * @param Zend_Db_Table_Abstract $table
+     * @return string
+     */
     protected function _getTableName(Zend_Db_Table_Abstract $table)
     {
         return $table->info(Zend_Db_Table_Abstract::NAME);
@@ -357,35 +363,41 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
      * Extract all info about the fields in the table and set them for this model
      *
      * @param Zend_Db_Table_Abstract $table
+     * @param string $alias An optional. If different from the table name it is added to each name
      */
-    protected function _loadTableMetaData(Zend_Db_Table_Abstract $table)
+    protected function _loadTableMetaData(Zend_Db_Table_Abstract $table, $alias = null)
     {
-        $table_name = $this->_getTableName($table);
+        $tableName = $this->_getTableName($table);
+        if ((! $alias) || ($alias == $tableName)) {
+            $aliasPrefix = '';
+        } else {
+            $aliasPrefix = $alias . '.';
+        }
 
         // MUtil_Echo::track($table->info('metadata'));
         foreach ($table->info('metadata') as $field) {
-            $name = $field['COLUMN_NAME'];
-            $finfo = array('table' => $table_name);
+            $name = $aliasPrefix . $field['COLUMN_NAME'];
+            $finfo = array('table' => $alias);
 
             switch (strtolower($field['DATA_TYPE'])) {
                 case 'date':
-                    $finfo['type'] = MUtil_Model::TYPE_DATE;
-                    $this->set($name, 'storageFormat', 'yyyy-MM-dd');
+                    $finfo['type']          = MUtil_Model::TYPE_DATE;
+                    $finfo['storageFormat'] = 'yyyy-MM-dd';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'datetime':
                 case 'timestamp':
-                    $finfo['type'] = MUtil_Model::TYPE_DATETIME;
-                    $this->set($name, 'storageFormat', 'yyyy-MM-dd HH:mm:ss');
+                    $finfo['type']          = MUtil_Model::TYPE_DATETIME;
+                    $finfo['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
 
                 case 'time':
-                    $finfo['type'] = MUtil_Model::TYPE_TIME;
-                    $this->set($name, 'storageFormat', 'HH:mm:ss');
+                    $finfo['type']          = MUtil_Model::TYPE_TIME;
+                    $finfo['storageFormat'] = 'HH:mm:ss';
                     $this->setOnSave($name, array($this, 'formatSaveDate'));
                     $this->setOnLoad($name, array($this, 'formatLoadDate'));
                     break;
@@ -462,13 +474,13 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             return array();
         }
 
-        $table_name   = $this->_getTableName($table);
-        $primaryKeys  = $this->_getKeysFor($table_name);
+        $tableName    = $this->_getTableName($table);
+        $primaryKeys  = $this->_getKeysFor($tableName);
         $primaryCount = count($primaryKeys);
         $filter       = array();
         $update       = true;
 
-        // MUtil_Echo::r($newValues, $table_name);
+        // MUtil_Echo::r($newValues, $tableName);
         foreach ($primaryKeys as $key) {
             if (array_key_exists($key, $newValues) && (0 == strlen($newValues[$key]))) {
                 // Never include null key values
@@ -530,7 +542,7 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
 
         // Check for actual values for this table to save.
         // MUtil_Echo::track($newValues);
-        if ($returnValues = $this->_filterDataFor($table_name, $newValues, ! $update)) {
+        if ($returnValues = $this->_filterDataFor($tableName, $newValues, ! $update)) {
             if (MUtil_Model::$verbose) {
                 MUtil_Echo::r($returnValues, 'Return');
             }
@@ -707,13 +719,13 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             $name = reset($names);
         }
 
-        if ($table_name = $this->get($name, 'table')) {
-            $adapter    = $this->getAdapter();
+        if ($tableName = $this->get($name, 'table')) {
+            $adapter   = $this->getAdapter();
 
             if (null === $excludeFilter) {
                 $excludes = array();
                 // Find the keys for the current table
-                foreach ($this->_getKeysFor($table_name) as $current) {
+                foreach ($this->_getKeysFor($tableName) as $current) {
                     $copyName = $this->getKeyCopyName($current);
                     if ($this->has($copyName)) {
                         // Get the original value that is stored in a separate field create by $this->copyKeys()
@@ -730,11 +742,11 @@ abstract class MUtil_Model_DatabaseModelAbstract extends MUtil_Model_ModelAbstra
             // MUtil_Echo::r($excludes);
 
             if ($excludes) {
-                return new MUtil_Validate_Db_UniqueValue($table_name, $names, $excludes, $adapter);
+                return new MUtil_Validate_Db_UniqueValue($tableName, $names, $excludes, $adapter);
             }
 
             throw new MUtil_Model_ModelException(
-                    "Cannot create UniqueValue validator as no keys were defined for table $table_name."
+                    "Cannot create UniqueValue validator as no keys were defined for table $tableName."
                     );
         }
 

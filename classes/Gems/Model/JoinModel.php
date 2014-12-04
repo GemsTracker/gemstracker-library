@@ -112,7 +112,7 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Add a table to the model with a left join
      *
-     * @param string $table       The name of the table to join
+     * @param mixed  $table       The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
      * @param array  $joinFields  Array of source->dest primary keys for this join
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
@@ -133,7 +133,7 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Add a table to the model with a right join
      *
-     * @param string $table       The name of the table to join
+     * @param mixed  $table       The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
      * @param array  $joinFields  Array of source->dest primary keys for this join
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants
@@ -154,7 +154,7 @@ class Gems_Model_JoinModel extends MUtil_Model_JoinModel
     /**
      * Add a table to the model with an inner join
      *
-     * @param string $table       The name of the table to join
+     * @param mixed  $table       The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
      * @param array  $joinFields  Array of source->dest primary keys for this join
      * @param string $fieldPrefix Prefix to use for change fields (date/userid), if $saveable empty sets it to true
      * @param mixed  $saveable    Will changes to this table be saved, true or a combination of SAVE_MODE constants

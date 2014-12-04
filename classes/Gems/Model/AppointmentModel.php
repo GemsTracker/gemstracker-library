@@ -127,10 +127,10 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         /*
         if ($this->has('gap_id_referred_by')) {
             $this->addLeftTable(
-                    'gems__agenda_staff',
+                    array('ref_staff' => 'gems__agenda_staff'),
                     array('gap_id_referred_by' => 'ref_staff.gas_id_staff')
                     );
-        } */
+        } // */
         if ($this->has('gap_id_activity')) {
             $this->addLeftTable(
                     'gems__agenda_activities',
@@ -198,6 +198,7 @@ class Gems_Model_AppointmentModel extends Gems_Model_JoinModel
         $this->setIfExists('gap_status',             'label', $this->_('Type'),
                 'multiOptions', $agenda->getStatusCodes());
         $this->setIfExists('gas_name',              'label', $this->_('With'));
+        //  $this->setIfExists('ref_staff.gas_name',    'label', $this->_('By'));
         $this->setIfExists('gaa_name',              'label', $this->_('Activities'));
         $this->setIfExists('gapr_name',             'label', $this->_('Procedures'));
         $this->setIfExists('glo_name',              'label', $this->_('Location'));

@@ -68,13 +68,14 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     {
         parent::__construct($name);
 
-        $table = $this->_loadTable($startTable, $saveable);
+        $alias = $this->_loadTable($startTable, $saveable);
+        $table = $this->_tables[$alias];
 
         // Fix primary keys to those of the current table.
         $this->getKeys();
 
         $this->_select = new Zend_Db_Select($table->getAdapter());
-        $this->_select->from($this->_getTableName($table), array());
+        $this->_select->from(array($alias => $this->_getTableName($table)), array());
     }
 
     /**
@@ -107,15 +108,16 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      * Join a table to the select statement and load the table information
      *
      * @param string $join      Join function name specifying the type of join
-     * @param mixed $table      The name of the table to join or a table object
+     * @param mixed $table      The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
      * @param array $joinFields Array of field pairs that form the join statement
      * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      */
     protected function _joinTable($join, $table, array $joinFields, $saveable = false)
     {
-        $table      = $this->_loadTable($table, $saveable);
-        $table_name = $this->_getTableName($table);
-        $adapter    = $table->getAdapter();
+        $alias     = $this->_loadTable($table, $saveable);
+        $table     = $this->_tables[$alias];
+        $tableName = $this->_getTableName($table);
+        $adapter   = $table->getAdapter();
 
         $joinSql = array();
         foreach ($joinFields as $source => $target) {
@@ -127,8 +129,11 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                 $joinSql[] = $adapter->quoteIdentifier($source) . ' = ' . $adapter->quoteIdentifier($target);
             }
         }
+        if ($tableName != $alias) {
+            $tableName = array($alias => $tableName);
+        }
 
-        $this->_select->$join($table_name, implode(' ' . Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
+        $this->_select->$join($tableName, implode(' ' . Zend_Db_Select::SQL_AND . ' ', $joinSql), array());
     }
 
     /**
@@ -140,18 +145,37 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      */
     protected function _loadTable($table, $saveable = false)
     {
+        $alias = null;
         if ($table instanceof Zend_Db_Table_Abstract) {
             $tableName = $this->_getTableName($table);
         } else {
-            $tableName = (string) $table;
-            $table     = new Zend_DB_Table($tableName);
+            if (is_array($table)) {
+                $tableName = reset($table);
+
+                // Alias compatible with select
+                $alias     = key($table);
+                if (is_int($alias)) {
+                    $alias = end($table);
+                }
+            } else {
+                $tableName = (string) $table;
+            }
+            $table = new Zend_DB_Table($tableName);
         }
-        $this->_tables[$tableName] = $table;
+        if (! $alias) {
+            $alias = $tableName;
+        }
+        if (isset($this->_tables[$alias])) {
+            for ($i = 2; isset($this->_tables[$alias . '_' . $i]); $i++);
 
-        $this->_setTableSaveable($tableName, $saveable);
-        $this->_loadTableMetaData($table);
+            $alias = $alias . '_' . $i;
+        }
+        $this->_tables[$alias] = $table;
 
-        return $table;
+        $this->_setTableSaveable($alias, $saveable);
+        $this->_loadTableMetaData($table, $alias);
+
+        return $alias;
     }
 
 
@@ -253,9 +277,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Add a table to the model with a left join
      *
-     * @param string $table      The name of the table to join
-     * @param array  $joinFields Array of source->dest primary keys for this join
-     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     * @param mixed $table      The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
+     * @param array $joinFields Array of source->dest primary keys for this join
+     * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      * @return MUtil_Model_JoinModel
      */
     public function addLeftTable($table, array $joinFields, $saveable = false)
@@ -267,9 +291,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Add a table to the model with a right join
      *
-     * @param string $table      The name of the table to join
-     * @param array  $joinFields Array of source->dest primary keys for this join
-     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     * @param mixed $table      The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
+     * @param array $joinFields Array of source->dest primary keys for this join
+     * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return MUtil_Model_JoinModel
      */
@@ -282,9 +306,9 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     /**
      * Add a table to the model with an inner join
      *
-     * @param string $table      The name of the table to join
-     * @param array  $joinFields Array of source->dest primary keys for this join
-     * @param mixed  $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
+     * @param mixed $table      The name of the table to join or a table object or an array(corr_name => tablename) or array(int => tablename, corr_name)
+     * @param array $joinFields Array of source->dest primary keys for this join
+     * @param mixed $saveable   Will changes to this table be saved, true or a combination of SAVE_MODE constants
      *
      * @return Gems_Model_JoinModel
      */
@@ -348,7 +372,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
                     }
                 }
 
-                // MUtil_Echo::r($table_filter, $table_name);
+                // MUtil_Echo::r($table_filter, $tableName);
                 if ($delete && $table_filter) {
                     $changed = max($changed, $this->_deleteTableData($this->_tables[$tableName], $table_filter));
                 }
@@ -392,13 +416,24 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     }
 
     /**
+     * Does this table alias exist in the mdoel.
      *
-     * @param string $table_name    Does not test for existence
+     * @param string $name The name of the alias
+     * @return boolean
+     */
+    public function hasAlias($name)
+    {
+        return (boolean) isset($this->_tables[$name]);
+    }
+
+    /**
+     *
+     * @param string $tableName Does not test for existence
      * @return MUtil_Model_JoinModel (continuation pattern)
      */
-    public function setTableKeysToJoin($table_name)
+    public function setTableKeysToJoin($tableName)
     {
-        $origKeys = $this->_getKeysFor($table_name);
+        $origKeys = $this->_getKeysFor($tableName);
 
         // First remove old keys
         foreach ($origKeys as $key) {
@@ -406,10 +441,10 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
         }
 
         foreach ($this->_joinFields as $left => $right) {
-            if (is_string($left) && $this->is($left, 'table', $table_name)) {
+            if (is_string($left) && $this->is($left, 'table', $tableName)) {
                 $this->set($left, 'key', true);
             }
-            if (is_string($right) && $this->is($right, 'table', $table_name)) {
+            if (is_string($right) && $this->is($right, 'table', $tableName)) {
                 $this->set($right, 'key', true);
             }
         }

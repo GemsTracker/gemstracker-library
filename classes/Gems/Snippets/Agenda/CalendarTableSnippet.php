@@ -157,7 +157,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
         parent::processFilterAndSort($model);
 
         $params = $this->requestCache->getProgramParams() + $this->defaultSearchData;
-        
+
         $where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
                 $params,
                 $this->db,
