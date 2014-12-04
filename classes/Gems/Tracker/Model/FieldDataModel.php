@@ -215,7 +215,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      */
     public function calculateOnSaveAppointment($currentValue, array $values, array $context, $respTrackId, $field)
     {
-        if ($currentValue || $values) {
+        if ($currentValue || isset($field['gtf_filter_id'])) {
             $agenda = $this->loader->getAgenda();
 
             if (isset($field['gtf_filter_id'])) {
