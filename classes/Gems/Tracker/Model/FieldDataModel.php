@@ -242,11 +242,11 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                 // MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
                 if ($fromDate) {
                     $newValue = $agenda->findFirstAppointmentId($field['gtf_filter_id'], $respId, $orgId, $fromDate, $oper);
-                }
-                // MUtil_Echo::track($newValue);
+                    // MUtil_Echo::track($newValue);
 
-                if ($newValue) {
-                    $currentValue = $newValue;
+                    if ($newValue) {
+                        $currentValue = $newValue;
+                    }
                 }
             }
 
