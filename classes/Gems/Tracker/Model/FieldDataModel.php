@@ -230,15 +230,19 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                     $respId    = $respTrack->getRespondentId();
                     $orgId     = $respTrack->getOrganizationId();
                     $fromDate  = $respTrack->getStartDate();
-                    if ($field['gtf_after_next']) {
-                        $oper = '>=';
-                    } else {
-                        $fromDate->addDay(1);
-                        $oper = '<'; // < as we add a day to the start date
+                    if ($fromDate) {
+                        if ($field['gtf_after_next']) {
+                            $oper = '>=';
+                        } else {
+                            $fromDate->addDay(1);
+                            $oper = '<'; // < as we add a day to the start date
+                        }
                     }
                 }
                 // MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
-                $newValue = $agenda->findFirstAppointmentId($field['gtf_filter_id'], $respId, $orgId, $fromDate, $oper);
+                if ($fromDate) {
+                    $newValue = $agenda->findFirstAppointmentId($field['gtf_filter_id'], $respId, $orgId, $fromDate, $oper);
+                }
                 // MUtil_Echo::track($newValue);
 
                 if ($newValue) {

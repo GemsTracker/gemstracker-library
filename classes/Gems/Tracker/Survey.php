@@ -256,7 +256,7 @@ class Gems_Tracker_Survey extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Returns a model for diaplying the answers to this survey in the requested language.
+     * Returns a model for displaying the answers to this survey in the requested language.
      *
      * @param string $language (ISO) language string
      * @return MUtil_Model_ModelAbstract
