@@ -261,12 +261,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $id        = $this->getRequest()->getParam('id');
         if (!is_null($confirmed)) {
             if ($confirmed == true && intval($id) > 0) {
-                $id    = intval($id);
-                $model = $this->getModel();
+                $id     = intval($id);
+                $model  = $this->getModel();
                 $model->setFilter(array('gsf_id_user' => $id));
-                $result       = $model->loadFirst();
+                $result = $model->loadFirst();
                 if ($result) {
-                    if ($result['gsf_active'] == 0 || $result['gul_can_login'] == 0) {
+                    if (($result['gsf_active'] == 0) || ($result['gul_can_login'] == 0)) {
                         $result['gsf_active']    = 1;
                         $result['gul_can_login'] = 1;
                         $model->save($result);
@@ -292,7 +292,7 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
 
                     if (count($result) == 1) {
                         $result = array_shift($result); //Get the first (only) row
-                        if ($result['gsf_active'] == 0 || $result['gul_can_login'] == 0) {
+                        if (($result['gsf_active'] == 0) || ($result['gul_can_login'] == 0)) {
                             //Ok we try to add an inactive user...
                             //now ask if this is the one we would like to reactivate?
                             $question = sprintf($this->_('User with id %s already exists but is deleted, do you want to reactivate the account?'), $result['gsf_login']);

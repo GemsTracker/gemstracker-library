@@ -136,7 +136,7 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
                 'gul',
                 MUtil_Model_DatabaseModelAbstract::SAVE_MODE_INSERT |
                 MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                    MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
+                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE
                 );
     }
 

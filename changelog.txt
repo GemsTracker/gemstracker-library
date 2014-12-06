@@ -2,6 +2,7 @@ Important changes from 1.6.4 => 1.6.5
 ============================================================
 Appointments can be used to create tracks
 Appointments can be linked automatically to track fields
+New track field overview
 New track fields changed events
 Layouts can use bootstrap for styling
 Improved security means users may get error warnings when opening the same form in two windows.

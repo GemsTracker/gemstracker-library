@@ -168,6 +168,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $ul->li($this->_('Recalculates the values the fields should have.'));
         $ul->li($this->_('Couple existing appointments to tracks where an appointment field is not filled.'));
         $ul->li($this->_('Overwrite existing appointments to tracks e.g. when the filters have changed.'));
+        $ul->li($this->_('Checks the validity dates and times of unanswered tokens, using the current round settings.'));
 
         $this->html->pInfo($this->_('Run this code when automatically calculated track fields have changed, when the appointment filters used by this track have changed or when the code has changed and the track must be adjusted.'));
         $this->html->pInfo($this->_('If you do not run this code after changing track fields, then the old fields values remain as they were and only newly changed and newly created tracks will reflect the changes.'));
