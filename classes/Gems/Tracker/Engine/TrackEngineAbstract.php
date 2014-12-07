@@ -212,6 +212,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
             $transformer = new Gems_Tracker_Model_RespondentTrackModelTransformer(
+                    $this->loader,
                     $this->_fieldsDefinition,
                     $respondentId,
                     $organizationId,

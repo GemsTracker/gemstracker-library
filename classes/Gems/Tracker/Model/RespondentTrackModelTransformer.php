@@ -54,14 +54,21 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
 
     /**
      *
+     * @var Gems_loader
+     */
+    protected $loader;
+
+    /**
+     *
      * @param \Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      */
-    public function __construct(\Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function __construct(\Gems_Loader $loader, \Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
+        $this->loader = $loader;
         $this->fieldsDefinition = $fieldsDefinition;
 
         $this->_fields = $fieldsDefinition->getDataEditModelSettings($respondentId, $organizationId, $patientNr, $edit);
@@ -125,10 +132,14 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
     public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
     {
         if (isset($row['gr2t_id_respondent_track']) && $row['gr2t_id_respondent_track']) {
-            $changed = $this->fieldsDefinition->setFieldsData($row['gr2t_id_respondent_track'], $row);
-
-            if ($changed && (!$model->getChanged())) {
-                $model->addChanged(1);
+            $tracker   = $this->loader->getTracker();
+            $respTrack = $tracker->getRespondentTrack($row['gr2t_id_respondent_track']);
+            $userId    = $this->loader->getCurrentUser()->getUserId();
+            if ($respTrack) {
+                $newRow = $respTrack->setFieldData($row, $userId);
+                if (!$model->getChanged()) {
+                    $model->addChanged(1);
+                }
             }
         }
 
