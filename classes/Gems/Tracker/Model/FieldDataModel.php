@@ -112,6 +112,31 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
      * @param int $respTrackId Gems respondent track id
      * @return mixed the new value
      */
+    public function calculateFieldInfoActivity($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        $lookup = $this->loader->getAgenda()->getActivities();
+
+        if (isset($lookup[$currentValue])) {
+            return $lookup[$currentValue];
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
     public function calculateFieldInfoAppointment($currentValue, $name, array $context, array $fieldData, $respTrackId)
     {
         if (! $currentValue) {
@@ -121,12 +146,37 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
         $agenda = $this->loader->getAgenda();
         $appointment = $agenda->getAppointment($currentValue);
 
-        if ($appointment->isActive()) {
+        if ($appointment && $appointment->isActive()) {
             $time = $appointment->getAdmissionTime();
 
             if ($time) {
                 return array($fieldData['gtf_field_name'], ' ', $time->toString($this->appointmentTimeFormat));
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateFieldInfoCaretaker($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        $lookup = $this->loader->getAgenda()->getHealthcareStaff();
+
+        if (isset($lookup[$currentValue])) {
+            return $lookup[$currentValue];
         }
 
         return null;
@@ -157,6 +207,56 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
         }
 
         return array($fieldData['gtf_field_name'], ' ', $value);
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateFieldInfoLocation($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        $lookup = $this->loader->getAgenda()->getLocations();
+
+        if (isset($lookup[$currentValue])) {
+            return $lookup[$currentValue];
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculation the field info display for this type
+     *
+     * @param array $currentValue The current value
+     * @param string $name The name of the field
+     * @param array $context The other values loaded so far
+     * @param array $fieldData The field definition for this data item
+     * @param int $respTrackId Gems respondent track id
+     * @return mixed the new value
+     */
+    public function calculateFieldInfoProcedure($currentValue, $name, array $context, array $fieldData, $respTrackId)
+    {
+        if (! $currentValue) {
+            return $currentValue;
+        }
+
+        $lookup = $this->loader->getAgenda()->getProcedures();
+
+        if (isset($lookup[$currentValue])) {
+            return $lookup[$currentValue];
+        }
+
+        return null;
     }
 
     /**
