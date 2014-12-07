@@ -72,6 +72,9 @@ class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
         } else {
             $i = $batch->getCounter('trackFieldsChanged');
         }
+        if ($userId && $respTrack->hasSuccesCode() && $respTrack->isOpen()) {
+            $respTrack->checkTrackTokens($userId);
+        }
 
         $batch->setMessage('trackFieldsCheck', sprintf($this->_('%d tracks checked, %d had field changes.'), $t, $i));
     }
