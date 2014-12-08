@@ -418,7 +418,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ($this->getAdmissionTime()->isEarlierOrEqual(new MUtil_Date())) {
             return $tokenChanges;
         }
-        MUtil_Echo::track(count($filters));
+        // MUtil_Echo::track(count($filters));
 
         // Check for tracks that should be created
         foreach ($filters as $filter) {
