@@ -82,7 +82,7 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
             if ($token->isCompleted()) {
                 continue;
             }
-            
+
             $appId = $respTrack->getRoundAfterAppointmentId($token->getRoundId());
 
             // Not a round without appointment id
@@ -100,7 +100,10 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
                     $newCode = 'skip';
                     $newText = $this->_('Skipped until appointment is set');
                 }
-                if ($token->getReceptionCode() !== $newCode) {
+                $oldCode = GemsEscort::RECEPTION_OK === $newCode ? 'skip' : GemsEscort::RECEPTION_OK;
+                $curCode = $token->getReceptionCode()->getCode();
+                // MUtil_Echo::track($token->getTokenId(), $curCode, $oldCode, $newCode);
+                if (($oldCode === $curCode) && ($curCode !== $newCode)) {
                     $change = true;
                     $token->setReceptionCode($newCode, $newText, $userId);
                 }
