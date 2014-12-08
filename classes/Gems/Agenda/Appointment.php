@@ -418,6 +418,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ($this->getAdmissionTime()->isEarlierOrEqual(new MUtil_Date())) {
             return $tokenChanges;
         }
+        MUtil_Echo::track(count($filters));
 
         // Check for tracks that should be created
         foreach ($filters as $filter) {
@@ -444,8 +445,18 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                                 $end  = $respTrack->getEndDate();
                                 $wait = $filter->getWaitDays();
 
-                                if (($wait !== null) && $curr && $end && ($curr->diffDays($end) > $wait)) {
+                                if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
                                     // MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+                                    $createTrack = false;
+                                    break;
+                                }
+                                // MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+
+                                // Track has already been assigned
+                                $data = $respTrack->getFieldData();
+                                if (isset($data[$filter->getFieldId()]) &&
+                                        ($this->getId() == $data[$filter->getFieldId()])) {
+                                    // MUtil_Echo::track($data[$filter->getFieldId()]);
                                     $createTrack = false;
                                     break;
                                 }

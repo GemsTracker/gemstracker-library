@@ -75,9 +75,14 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
     public function processFieldUpdate(\Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
         $agenda = $this->loader->getAgenda();
+        $change = false;
         $token  = $respTrack->getFirstToken();
 
-        while ($token = $token->getNextToken()) {
+        do {
+            if ($token->isCompleted()) {
+                continue;
+            }
+            
             $appId = $respTrack->getRoundAfterAppointmentId($token->getRoundId());
 
             // Not a round without appointment id
@@ -96,9 +101,14 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
                     $newText = $this->_('Skipped until appointment is set');
                 }
                 if ($token->getReceptionCode() !== $newCode) {
+                    $change = true;
                     $token->setReceptionCode($newCode, $newText, $userId);
                 }
             }
+        } while ($token = $token->getNextToken());
+
+        if ($change) {
+            $respTrack->refresh();
         }
     }
 }
