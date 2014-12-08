@@ -369,7 +369,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 ) AND
                 gto_id_respondent_track = ?";
 
-        $stmt = $this->db->query($sql, array($respTrackId, $qOrgId));
+        $stmt = $this->db->query($sql, array($respTrackId));
 
         return $stmt->rowCount();
     }
