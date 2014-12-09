@@ -269,8 +269,9 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         $this->set('gr2t_track_info', 'elementClass', 'None');
         $this->set('assigned_by',     'elementClass', 'None');
         $this->set('gr2t_start_date', 'elementClass', 'Date',
-                'default', new Zend_Date(),
-                'size',    30
+                'default',  new Zend_Date(),
+                'required', true,
+                'size',     30
                 );
         $this->set('gr2t_end_date',   'elementClass', 'Date',
                 'default', null,
