@@ -482,6 +482,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                             $fields
                             );
 
+                    $existingTracks[$trackId][] = $respTrack;
+
                     $tokenChanges += $respTrack->getCount();
                 }
             }
