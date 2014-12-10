@@ -91,6 +91,14 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
     protected $request;
 
     /**
+     * When using bootstrap and more than this number of items the dropdowns will
+     * support scrolling.
+     *
+     * @var int
+     */
+    public $scrollTreshold = 10;
+
+    /**
      * Switch to set display of respondent dropdown on or off
      *
      * @var mixed When string, string is used for display, when false, nothing is displayed
@@ -203,8 +211,8 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
 
             if (MUtil_Bootstrap::enabled()) {
                 $div->button($menuIndex->toHRefAttribute($this->request),                $trackTypeDescription,
-                    array('class' => 'toolanchor btn btn-primary', 'type' => 'button'));
-                $dropdownButton = $div->button(array('class' => 'btn btn-primary dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));                
+                    array('class' => 'toolanchor btn btn-primary', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'btn btn-primary dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton->span(array('class' => 'caret'));
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, array('class' => 'toolanchor'));
@@ -212,11 +220,29 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
 
             $data   = new MUtil_Lazy_RepeatableByKeyValue($tracks);
             $params = array('gtr_id_track' => $data->key, 'gtr_track_type' => $trackTypeLetter);
-            
+
             if (MUtil_Bootstrap::enabled()) {
-                $li = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'), $data)->li();
+                if (count($tracks) > $this->scrollTreshold) {
+                    // Add a header and scroll class so we keep rounded corners
+                    $top  = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'));
+                    $link = $top->li(array('class' => 'disabled'))->a('#');
+                    $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-left', 'renderClosingTag' => true));
+                    $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-right', 'renderClosingTag' => true));
+                    // Add extra scroll-menu class
+                    $li   = $top->li()->ul(array('class' => 'dropdown-menu scroll-menu', 'role' => 'menu'), $data)->li();
+                } else {
+                    $li = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'), $data)->li();
+                }
+
                 $link = $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat info'));
                 $link->i(array('class' => 'fa fa-info-circle'))->raw('&nbsp;');
+
+                if (count($tracks) > $this->scrollTreshold) {
+                    // Add a footer so we keep rounded corners
+                    $link = $top->li(array('class' => 'disabled'))->a('#');
+                    $link->i(array('class' => 'fa fa-chevron-up fa-fw pull-left', 'renderClosingTag' => true));
+                    $link->i(array('class' => 'fa fa-chevron-up fa-fw pull-right', 'renderClosingTag' => true));
+                }
             } else {
                 $li = $div->ul($data)->li();
                 $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
@@ -229,11 +255,21 @@ class AddTracksSnippet extends MUtil_Snippets_SnippetAbstract
                     $toolboxRowAttributes);
 
         } else {
-            $div->a($menuIndex->toHRefAttribute($this->request),
-                    $trackTypeDescription,
-                    array('class' => 'toolanchor disabled'));
+            if (MUtil_Bootstrap::enabled()) {
+                $div->button($menuIndex->toHRefAttribute($this->request),                $trackTypeDescription,
+                    array('class' => 'toolanchor btn btn-primary disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'btn btn-primary disabled dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton->span(array('class' => 'caret'));
+                $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
+            } else {
+                $div->a($menuIndex->toHRefAttribute($this->request),
+                        $trackTypeDescription,
+                        array('class' => 'toolanchor disabled'));
 
-            $div->ul($this->_('None available'), array('class' => 'disabled'));
+                $options = array('class' => 'disabled');
+            }
+
+            $div->ul($this->_('None available'), $options);
         }
 
         return $div;
