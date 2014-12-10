@@ -288,7 +288,16 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
 
         // Save the fields
         if ($trackFieldsData) {
-            $trackEngine->setFieldsData($respTrack->getRespondentTrackId(), $trackFieldsData);
+            $respTrackId = $respTrack->getRespondentTrackId();
+            $trackEngine->setFieldsData($respTrackId, $trackFieldsData + $trackEngine->getFieldsData($respTrackId));
+
+            $newInfo = $trackEngine->calculateFieldsInfo($respTrackId, $trackEngine->getFieldsData($respTrackId));
+
+            // Update info if changed after creation
+            if ($newInfo !== $respTrackData['gr2t_track_info']) {
+                $respTrackData['gr2t_track_info'] = $newInfo;
+                $respTrackModel->save($respTrackData);
+            }
         }
 
         // Create the actual tokens!!!!

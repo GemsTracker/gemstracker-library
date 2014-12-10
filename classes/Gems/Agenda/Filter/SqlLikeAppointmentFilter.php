@@ -164,9 +164,11 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
-        if (! (isset($this->_activities[$appointment->getActivityId()]) || ($this->_activities === true))) {
-            return false;
+        if ($this->_activities !== true) {
+            if (! isset($this->_activities[$appointment->getActivityId()])) {
+                return false;
+            }
         }
-        return isset($this->_procedures[$appointment->getActivityId()]) || ($this->_procedures === true);
+        return isset($this->_procedures[$appointment->getProcedureId()]) || ($this->_procedures === true);
     }
 }
