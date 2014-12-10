@@ -150,7 +150,10 @@ class Gems_Tracker_Token_TokenValidator extends MUtil_Registry_TargetAbstract im
 
             // Retrieve the number of failed attempts that occurred within the specified window
             $select = $this->db->select();
-            $select->from('gems__token_attempts', array('COUNT(*) AS attempts', 'UNIX_TIMESTAMP(MAX(gta_datetime)) - UNIX_TIMESTAMP() AS last'))
+            $select->from('gems__token_attempts', array(
+                new Zend_Db_Expr('COUNT(*) AS attempts'),
+                new Zend_Db_Expr('UNIX_TIMESTAMP(MAX(gta_datetime)) - UNIX_TIMESTAMP() AS last'),
+                ))
                     ->where('gta_datetime > DATE_SUB(NOW(), INTERVAL ? second)', $throttleSettings['period']);
             $attemptData = $this->db->fetchRow($select);
 
