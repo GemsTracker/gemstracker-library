@@ -79,7 +79,7 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
         $token  = $respTrack->getFirstToken();
 
         do {
-            if ($token->isCompleted()) {
+            if ((! $token) || $token->isCompleted()) {
                 continue;
             }
 
