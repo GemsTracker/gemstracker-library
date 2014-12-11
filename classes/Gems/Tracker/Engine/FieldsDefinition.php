@@ -109,6 +109,12 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
     /**
      *
+     * @var int Maximum length of the track info field
+     */
+    protected $maxTrackInfoChars = 250;
+
+    /**
+     *
      * @var \Gems_Tracker
      */
     protected $tracker;
@@ -204,7 +210,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
             }
         }
 
-        return trim(implode(' ', $results));
+        return substr(trim(implode(' ', $results)), 0, $this->maxTrackInfoChars);
     }
 
     /**
