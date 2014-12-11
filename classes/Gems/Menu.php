@@ -177,6 +177,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $show->addActionButton($this->_('Execute this'), 'pr.upgrade.one', 'execute-one')->setModelParameters(1)->addNamedParameters('from','from','to','to');
         $show->addActionButton($this->_('Execute from here'), 'pr.upgrade.from', 'execute-from')->setModelParameters(1)->addNamedParameters('from','from');
         $show->addActionButton($this->_('Execute to here'), 'pr.upgrade.to', 'execute-to')->setModelParameters(1)->addNamedParameters('to','to');
+        $show->addAction(null, 'pr.upgrade.to', 'execute-last');
 
         // DATABASE CONTROLLER
         $page = $setup->addPage($this->_('Database'), 'pr.database', 'database');

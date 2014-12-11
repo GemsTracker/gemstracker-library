@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -13,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -76,11 +77,11 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
      *
      * usage: execute/context/<context>{/from/int/to/int}
      */
-    protected function executeAction()
+    protected function executeAction($from = null, $to = null)
     {
         $context = $this->getRequest()->getParam('id', 'gems');
-        $from    = $this->getRequest()->getParam('from');
-        $to      = $this->getRequest()->getParam('to');
+        $from    = $this->getRequest()->getParam('from', $from);
+        $to      = $this->getRequest()->getParam('to', $to);
 
         $batch = $this->loader->getTaskRunnerBatch('upgrade' . $context);
         $batch->minimalStepDurationMs = 3000; // 3 seconds max before sending feedback
@@ -97,19 +98,42 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
     /**
      * Proxy for the menu
      */
-    public function executeAllAction() {
+    public function executeAllAction()
+    {
         $this->executeAction();
     }
 
-    public function executeFromAction() {
+    /**
+     * Proxy for the menu
+     */
+    public function executeFromAction()
+    {
         $this->executeAction();
     }
 
-    public function executeOneAction() {
+    /**
+     * Proxy for the menu
+     */
+    public function executeOneAction()
+    {
         $this->executeAction();
     }
 
-    public function executeToAction() {
+    /**
+     * Proxy for the menu
+     */
+    public function executeLastAction()
+    {
+        $level = $this->_upgrades->getmaxLevel();
+
+        $this->executeAction($level, $level);
+    }
+
+    /**
+     * Proxy for the menu
+     */
+    public function executeToAction()
+    {
         $this->executeAction();
     }
 
@@ -130,7 +154,6 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
                 $row['link'] = $menuItem->toActionLinkLower($this->getRequest(), $row);
             }
             $data[] = $row;
-
         }
         $this->addSnippet('SelectiveTableSnippet', 'data', $data, 'class', 'browser table', 'columns', $displayColumns);
     }
@@ -182,7 +205,7 @@ class Gems_Default_UpgradeAction extends Gems_Controller_Action
 
         if ($parentItem = $this->menu->getCurrent()->getParent()) {
             $this->html[] = $parentItem->toActionLink($this->getRequest(), $this->_('Cancel'));
-        }       
+        }
     }
 
     public function getTopicTitle() {
