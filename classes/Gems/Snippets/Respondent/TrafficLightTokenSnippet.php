@@ -38,25 +38,25 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
 
     /**
      * The display format for the date
-     * 
+     *
      * @var string
      */
     protected $_dateFormat;
 
     /**
-     * 
+     *
      * @var Gems_Menu_SubMenuItem
      */
     protected $_surveyAnswer;
 
     /**
-     * 
+     *
      * @var Gems_Menu_SubMenuItem
      */
     protected $_trackAnswer;
 
     /**
-     * 
+     *
      * @var Gems_Menu_SubMenuItem
      */
     protected $_takeSurvey;
@@ -83,79 +83,74 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
          *  - If there is a day labeled today, scroll to it (prevents errors when not visible)
          */
         $view->headScript()->appendScript('
-$(document).ready(function() {
-    $(".doelgroep").click(function(){
-        element = $(this).children(".ui-icon").first();
-        if ( element.hasClass("ui-icon-triangle-1-e") ) {
-            element.addClass("ui-icon-triangle-1-s" );
-            element.removeClass("ui-icon-triangle-1-e" );
-        } else {
-            element.addClass("ui-icon-triangle-1-e" );
-            element.removeClass("ui-icon-triangle-1-s" );
-        };
-        $(this).children(".progress").toggle();
-        $(this).children(".token").toggle();
-    });
 
-$(".trackheader").click(function(){
+    // Click track
+    $(".traject .panel-heading").click(function(){
         $(this).next().toggle();
         if($(this).next().is(":visible")) {
+            $(this).find("h3 span").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+            // Close all days
+            $(this).next().find(".actor").each(function(){if ( $(this).find(".zpitems").is(":visible") ) { $(this).find("h5").click(); }});
             // Scroll to today
-            $(this).next().find(".day.today").each(function(){
+            $(this).next().find(".object.today").each(function(){
                 // Open current day
-                $(this).children(".doelgroep").each(function(){if ( $(this).find(".progress").is(":visible") ) { $(this).click(); }});
+                $(this).children(".actor").each(function(){if ( $(this).find(".zplegenda").is(":visible") ) { $(this).find("h5").click(); }});
                 // Scroll to today
-                $(this).parent().parent().scrollTo($(this),0, { offset: $(this).width()-$(this).parent().parent().width()} );    /* today is rightmost block */
+                $(this).parent().parent().scrollTo($(this),0, { offset: $(this).outerWidth(true)-$(this).parent().parent().innerWidth()} );    /* today is rightmost block */
+            });
+        } else {
+            $(this).find("h3 span").addClass("fa-chevron-right").removeClass("fa-chevron-down");
+        }
+    });
+
+    // Click day
+    $(".object h4").click(function(){
+        if ( $(this).parent().find(".actor h5 span").first().hasClass("fa-minus-square") ) {
+            // First is open, now close first and all others
+            $(this).parent().find(".actor h5 span").each(function(){
+                if ( $(this).hasClass("fa-minus-square")) {
+                    $(this).parent().click();
+                }
+            });
+        } else {
+            // First is closed, now open first and all others
+            $(this).parent().find(".actor h5 span").each(function(){
+                if ( $(this).hasClass("fa-plus-square")) {
+                    $(this).parent().click();
+                }
             });
         }
     });
 
-    $(".doelgroep").children(".token").toggle(false);
-
-    $(".trackheader").click();
-    $(".trackheader").first().click();
-
-    // Extends the dialog widget with a new option.
-    $.widget("app.dialog", $.ui.dialog, {
-
-        options: {
-            iconButtons: []
-        },
-
-        _create: function() {
-
-            // Call the default widget constructor.
-            this._super();
-
-            // The dialog titlebar is the button container.
-            var $titlebar = this.uiDialog.find( ".ui-dialog-titlebar" );
-
-            // Iterate over the iconButtons array, which defaults to
-            // and empty array, in which case, nothing happens.
-            $.each( this.options.iconButtons, function( i, v ) {
-
-                // Finds the last button added. This is actually the
-                // left-most button.
-                var $button = $( "<a/>" ).text( this.text ),
-                    right = $titlebar.find( "[role=\'button\']:last" )
-                                     .css( "right" );
-
-                // Creates the button widget, adding it to the titlebar.
-                $button.button( { icons: { primary: this.icon }, text: false } )
-                       .addClass( "ui-dialog-titlebar-close" )
-                       .removeClass( "ui-button-icon-only" )
-                       .removeClass( "ui-state-default" )
-                       .css( "right", ( parseInt( right ) + 22) + "px" )
-                       .click( this.click )
-                       .appendTo( $titlebar );
-
-            });
-
+    // Click actor
+    $(".actor h5").click(function(){
+        if ( $(this).find("span").first().hasClass("fa-plus-square") ) {
+            $(this).find("span").removeClass("fa-plus-square").addClass("fa-minus-square");
+            $(this).parent().find(".zplegenda").toggle(false);
+            $(this).parent().find(".zpitems").toggle(true);
+        } else {
+            $(this).find("span").addClass("fa-plus-square").removeClass("fa-minus-square");
+            $(this).parent().find(".zplegenda").toggle(true);
+            $(this).parent().find(".zpitems").toggle(false);
         }
-
     });
 
-    $("a.actionlink[target=\'inline\']").click(function(e){
+    // Click legend
+    $(".actor .zplegenda").click(function(){
+        // delegate to actor
+        $(this).parent().find("h5").click();
+    });
+
+    // Initially hide all zpitems so only zplegende remains visible
+    $(".object .actor").children(".zpitems").toggle(false);
+
+    // First close all tracks
+    $(".traject .panel-heading").click();
+    // and open the first one
+    $(".traject .panel-heading").first().click();
+
+    // Inline answers + printing dialog
+    $(".zpitem.success a[target=\'inline\']").click(function(e){
         e.preventDefault();
         // Now open a new div, not #menu and bring it to the front
         // Add a close button to it, maybe the available tooltip can help here
@@ -165,23 +160,32 @@ $(".trackheader").click(function(){
             modal: true,
             width: 500,
             position:{ my: "left top", at: "left top", of: "#main" },
-            iconButtons: [
+            buttons: [
                 {
-                    text: "Print",
-                    icon: "ui-icon-print",
-                    click: function( e ) {
-                        $(document.body).addClass("print");
-                        $("div#modalpopup").addClass( "printable" );
-                        window.print();
+                text: "Print",
+                "class": "btn-primary",
+                click: function() {
+                        if ($(".modal").is(":visible")) {
+                            var oldId = $(event.target).closest(".modal").attr("id");
+                            var modalId = "modelprint";
+                            $(event.target).closest(".modal").attr("id", modalId);
+                            $("body").css("visibility", "hidden");
+                            $("body #container").css("display", "none");
+                            $("div#modalpopup").css("visibility", "visible");
+                            $("#" + modalId).removeClass("modal");
+                            window.print();
+                            $("body").css("visibility", "visible");
+                            $("body #container").css("display", "block");
+                            $("#" + modalId).addClass("modal");
+                            $(event.target).closest(".modal").attr("id", oldId);
+                        } else {
+                            window.print();
+                        }
                     }
                 }
-                ],
-            close: function( event, ui ) {
-                $(document.body).removeClass("print");
-            }
+                ]
         });
-    });
-});');
+    });');
         // find the menu items only once for more efficiency
         $this->_trackAnswer  = $this->findMenuItem('track', 'answer');
         $this->_surveyAnswer = $this->findMenuItem('survey', 'answer');
@@ -190,7 +194,7 @@ $(".trackheader").click(function(){
 
     /**
      * Copied from Gems_Token, to save overhead of loading a token just for this check
-     * 
+     *
      * @param array $tokenData
      * @return boolean
      */
@@ -200,42 +204,44 @@ $(".trackheader").click(function(){
 
     public function addToken($tokenData) {
         // We add all data we need so no database calls needed to load the token
-        $tokenDiv = $this->creator->div(array('class' => 'token', 'renderClosingTag' => true));
+        $tokenDiv = $this->creator->div(array('class' => 'zpitem', 'renderClosingTag' => true));
 
         $tokenLink = null;
 
         if ($this->_isCompleted($tokenData)) {
-            $status = $this->creator->span($this->translate->_('Answered'), array('class' => 'answered'));
+            $status = $this->creator->span($this->translate->_('Answered'), array('class' => 'success'));
+            $status = '';
             if ($tokenData['gtr_track_type'] == 'T') {
                 $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', $status, $this->_trackAnswer);
             } else {
                 $tokenLink = $this->createMenuLink($tokenData, 'survey', 'answer', $status, $this->_surveyAnswer);
             }
         } else {
-            $status    = $this->creator->span($this->translate->_('Fill in'), array('class' => 'open'));
+            $status = $this->creator->span($this->translate->_('Fill in'), array('class' => 'warning'));
+            $status = '';
             $tokenLink = $this->createMenuLink($tokenData, 'ask', 'take', $status, $this->_takeSurvey);
         }
 
         if (!empty($tokenLink)) {
             if ($this->_isCompleted($tokenData)) {
                 $this->_completed++;
-                $tokenDiv->appendAttrib('class', ' answered');
+                $tokenDiv->appendAttrib('class', ' success');
                 $tokenLink->target = 'inline';
             } else {
                 $this->_open++;
-                $tokenDiv->appendAttrib('class', ' open');
-                $tokenLink->target = $tokenData['gto_id_token'];
+                $tokenDiv->appendAttrib('class', ' warning');
+                $tokenLink->target = '_self'; //$tokenData['gto_id_token'];
             }
-            $tokenLink[] = $this->creator->br();
+            //$tokenLink[] = $this->creator->br();
             $tokenLink[] = $tokenData['gsu_survey_name'];
             $tokenDiv[]  = $tokenLink;
         } else {
             $this->_missed++;
-            $tokenDiv->appendAttrib('class', ' missed');
-            $status      = $this->creator->span($this->translate->_('Missed'), array('class' => 'missed'));
+            $tokenDiv->appendAttrib('class', ' danger');
+            $status      = $this->creator->span($this->translate->_('Missed'), array('class' => 'danger'));
+            $status = '';
             $tokenLink   = $tokenDiv->a('#', $status);
-            $tokenLink->appendAttrib('class', ' actionlink');
-            $tokenLink[] = $this->creator->br();
+            //$tokenLink[] = $this->creator->br();
             $tokenLink[] = $tokenData['gsu_survey_name'];
         }
         return $tokenDiv;
@@ -254,7 +260,7 @@ $(".trackheader").click(function(){
     /**
      * Copied, optimised to we use the optional $menuItem we stored in _initView instead
      * of doing the lookup again and again
-     * 
+     *
      * @param type $parameterSource
      * @param type $controller
      * @param type $action
@@ -264,7 +270,11 @@ $(".trackheader").click(function(){
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null, $menuItem = null) {
         if (!is_null($menuItem) || $menuItem = $this->findMenuItem($controller, $action)) {
-            return $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
+            $item = $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
+            if (is_object($item)) {
+                $item->setAttrib('class', '');
+            }
+            return $item;
         }
     }
 
@@ -281,7 +291,8 @@ $(".trackheader").click(function(){
     public function getHtmlOutput(Zend_View_Abstract $view) {
         $this->_initView($view);
 
-        $main = $this->creator->div(array('class' => 'wrapper', 'renderClosingTag' => true));
+        $main = $this->creator->div(array('class' => 'panel panel-default', 'id'=>'wrapper' , 'renderClosingTag' => true));
+
         $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
         $model = $this->getModel();
@@ -297,7 +308,9 @@ $(".trackheader").click(function(){
             'forgroup',
             'gtr_track_type',
             'gsu_survey_name',
-            'gto_completion_time'
+            'gto_completion_time',
+            'gr2o_patient_nr',
+            'gr2o_id_organization'
         );
         foreach ($items as $item)
         {
@@ -319,13 +332,40 @@ $(".trackheader").click(function(){
             if ($respTrackId !== $row['gto_id_respondent_track']) {
                 $lastDate    = null;
                 $doelgroep   = null;
+                //if ($respTrackId == 0) {
+                //    $track = $main->div(array('class' => 'panel panel-default traject active'));
+                //} else {
+                    $track = $main->div(array('class' => 'panel panel-default traject'));
+                //}
                 $respTrackId = $row['gto_id_respondent_track'];
-                $track       = $main->div(array('class' => 'trackheader'));
-                $track->div($row['gtr_track_name'], array('class' => 'tracktitle', 'renderClosingTag' => true));
-                $track->div($row['gr2t_track_info'], array('class' => 'trackinfo', 'renderClosingTag' => true));
-                $track->div($row['gr2t_start_date']->get($this->_dateFormat), array('class' => 'trackdate', 'renderClosingTag' => true));
-                $container   = $main->div(array('class' => 'scrollContainer', 'renderClosingTag' => true));
-                $cva         = $container->div(array('class' => 'cvacontainer', 'renderClosingTag' => true));
+                $trackHeading = $track->div(array('class' => 'panel-heading', 'renderClosingTag' => true));
+                $trackHeading->h3($row['gtr_track_name'], array('class'=>"panel-title"))->span(array('class'=>"fa fa-chevron-down fa-fw"));
+
+                $editLink = MUtil_Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
+
+                    $editTrackContainer = MUtil_Html::create('div', array('class' => 'editIcon'));
+                     $link = $this->createMenuLink(
+                        array(
+                            'gr2t_id_respondent_track' => $row['gto_id_respondent_track'],
+                            'gtr_track_type' => 'T',
+                            'gr2o_patient_nr' => $row['gr2o_patient_nr'],
+                            'gr2o_id_organization' => $row['gr2o_id_organization'],
+                            'can_edit' => 1
+                        ),
+                        'track',
+                        'edit-track',   // Somehow edit track won't show up
+                        $editLink
+                    );
+                     $link->addCancelBubble();
+                     $link->setAttrib('onClick', 'event.cancelBubble = true;');
+                    $editTrackContainer[] = $link;
+                    $trackHeading[]   = $editTrackContainer;
+
+                $trackHeading->div($row['gr2t_track_info'], array('renderClosingTag' => true));
+                $trackHeading->div($this->_('Start date') . ': ' . $row['gr2t_start_date']->get($this->_dateFormat), array('renderClosingTag' => true));
+
+                $container        = $track->div(array('class' => 'panel-body', 'renderClosingTag' => true));
+                $cva              = $container->div(array('class' => 'objecten', 'renderClosingTag' => true));
             }
             $date = $row['gto_valid_from'];
             if ($date instanceof Zend_Date) {
@@ -339,15 +379,13 @@ $(".trackheader").click(function(){
                 $lastDescription = $description;
                 $progressDiv     = $this->finishGroup($progressDiv);
                 $lastDate        = $date;
-                $class           = 'day';
+                $class           = 'object';
                 if ($date == $today) {
                     $class .= ' today';
                 }
-                $day       = $cva->div(array('class' => $class));
-                $dayheader = $day->div(array('class' => 'dayheader'));
-
-                $dayheader[] = $this->creator->div(ucfirst($row['gto_round_description']), array('class' => 'roundDescription', 'renderClosingTag' => true));
-                $dayheader[] = $date;
+                $day       = $cva->div(array('class' => $class, 'renderClosingTag' => true));
+                $day->h4(ucfirst($row['gto_round_description']));
+                $day->h5($date);
 
                 $doelgroep = null;
             }
@@ -355,14 +393,15 @@ $(".trackheader").click(function(){
             if ($doelgroep !== $row['forgroup']) {
                 $progressDiv  = $this->finishGroup($progressDiv);
                 $doelgroep    = $row['forgroup'];
-                $doelgroepDiv = $day->div(array('class' => 'doelgroep'));
+                $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
                 //$progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
-                $doelgroepDiv->span('.', array('class' => 'ui-icon ui-button ui-icon-triangle-1-e'));
-                $doelgroepDiv->span($doelgroep, array('class' => 'title'));
-                $progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
+                $minIcon = MUtil_Html::create('span',array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
+                $title = $doelgroepDiv->h5(array($minIcon, $doelgroep));
+                $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
+                $tokenDiv = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
             }
 
-            $doelgroepDiv[] = $this->addToken($row);
+            $tokenDiv[] = $this->addToken($row);
         }
         $progressDiv = $this->finishGroup($progressDiv);
 
@@ -372,9 +411,15 @@ $(".trackheader").click(function(){
     protected function finishGroup($progressDiv) {
         $total = $this->_completed + $this->_open + $this->_missed;
         if (!is_null($progressDiv)) {
-            $progressDiv->div(array('class' => 'answered'))->append($this->_completed)->setAttrib('style', sprintf('width: %s%%;', $this->_completed / $total * 100));
-            $progressDiv->div(array('class' => 'open'))->append($this->_open)->setAttrib('style', sprintf('width: %s%%;', $this->_open / $total * 100));
-            $progressDiv->div(array('class' => 'missed'))->append($this->_missed)->setAttrib('style', sprintf('width: %s%%;', $this->_missed / $total * 100));
+            if (! $this->_completed == 0) {
+                $progressDiv->div(array('class' => 'success'))->append($this->_completed);
+            }
+            if (! $this->_open == 0) {
+                $progressDiv->div(array('class' => 'warning'))->append($this->_open);
+            }
+            if (! $this->_missed == 0) {
+                $progressDiv->div(array('class' => 'danger'))->append($this->_missed); //->setAttrib('style', sprintf('width: %s%%;', $this->_missed / $total * 100));
+            }
         }
         $this->_completed = 0;
         $this->_open      = 0;
