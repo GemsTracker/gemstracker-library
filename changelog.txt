@@ -1,4 +1,4 @@
-Important changes from 1.6.4 => 1.6.5
+Important changes from 1.6.4 => 1.7.0
 ============================================================
 Appointments can be used to create tracks
 Appointments can be linked automatically to track fields
