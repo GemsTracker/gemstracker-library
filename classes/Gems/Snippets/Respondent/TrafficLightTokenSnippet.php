@@ -291,7 +291,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     public function getHtmlOutput(Zend_View_Abstract $view) {
         $this->_initView($view);
 
-        $main = $this->creator->div(array('class' => 'panel panel-default', 'id'=>'wrapper' , 'renderClosingTag' => true));
+        $main = $this->creator->div(array('id'=>'wrapper' , 'renderClosingTag' => true));
 
         $main->div(array('id' => 'modalpopup', 'renderClosingTag' => true));
 
