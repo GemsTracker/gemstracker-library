@@ -105,6 +105,18 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
     }
 
     /**
+     *
+     * @param string $alias
+     * @return Zend_Db_Table_Abstract
+     */
+    protected function _getTable($alias)
+    {
+        if (isset($this->_tables[$alias])) {
+            return $this->_tables[$alias];
+        }
+    }
+
+    /**
      * Join a table to the select statement and load the table information
      *
      * @param string $join      Join function name specifying the type of join
@@ -141,7 +153,7 @@ class MUtil_Model_JoinModel extends MUtil_Model_DatabaseModelAbstract
      *
      * @param mixed $table    The name of the table to join or a table object
      * @param mixed $saveable Will changes to this table be saved, true or a combination of SAVE_MODE constants
-     * @return Zend_DB_Table
+     * @return string Table alias
      */
     protected function _loadTable($table, $saveable = false)
     {
