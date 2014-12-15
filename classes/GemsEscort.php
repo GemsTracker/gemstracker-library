@@ -271,6 +271,10 @@ class GemsEscort extends MUtil_Application_Escort
 
 
         // Check if APC extension is loaded and enabled
+        if (MUtil_Console::isConsole() && !ini_get('apc.enable_cli') && $useCache === 'apc') {
+            // To keep the rest readable, we just fall back to File when apc is disabled on cli
+            $useCache = "File";
+        }
         if ($useCache === 'apc' && extension_loaded('apc') && ini_get('apc.enabled')) {
             $cacheBackend = 'Apc';
             $cacheBackendOptions = array();
