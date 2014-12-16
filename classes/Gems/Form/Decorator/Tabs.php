@@ -220,10 +220,10 @@ class Gems_Form_Decorator_Tabs extends Zend_Form_Decorator_ViewHelper
                     $tabNumber++;
 
                     $list->li($liOptions)->a('#'.$tabId, $tabName, array('role' => 'tab', 'data-toggle' => 'tab'));
-
-                    $subContainer = $tabContainerDiv->div($tabPaneOptions);
-                    if (!$useBootstrap) {
-                        $subContainer->table(array('class' => 'formTable'));
+                    if ($useBootstrap) {
+                        $subContainer = $tabContainerDiv->div($tabPaneOptions);
+                    } else {
+                        $subContainer = $tabContainerDiv->div($tabPaneOptions)->table(array('class' => 'formTable'));
                     }
                 } else {
                     if($useBootstrap) {
