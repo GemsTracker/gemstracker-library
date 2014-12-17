@@ -231,7 +231,7 @@ class Gems_User_OldStaffUserDefinition extends Gems_User_UserDefinitionAbstract
                     'user_locale'         => 'gsf_iso_lang',
                     'user_logout'         => 'gsf_logout_on_survey',
                     'user_base_org_id'    => 'gsf_id_organization',
-                    'user_resetkey_valid' => 'CASE WHEN DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END',
+                    'user_resetkey_valid' => new Zend_Db_Expr('CASE WHEN DATE_ADD(gsf_reset_req, INTERVAL ' . $this->hoursResetKeyIsValid . ' HOUR) >= CURRENT_TIMESTAMP THEN 1 ELSE 0 END'),
                     ))
                ->join('gems__groups', 'gsf_id_primary_group = ggp_id_group', array(
                    'user_role'            => 'ggp_role',
