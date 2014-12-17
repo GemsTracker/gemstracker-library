@@ -392,7 +392,10 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                     "gr2t_id_user = $respId AND gr2t_id_organization = $orgId AND gr2t_id_track IN (?)",
                     implode(', ', $ids)
                     );
+            // \MUtil_Echo::track($this->getId(), implode(', ', $ids));
         }
+
+        // \MUtil_Echo::track($select->__toString());
 
         // Now find all the existing tracks that should be checked
         $respTracks = $this->db->fetchPairs($select);
@@ -418,7 +421,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
         if ((! $this->isActive()) || $this->getAdmissionTime()->isEarlierOrEqual(new MUtil_Date())) {
             return $tokenChanges;
         }
-        // MUtil_Echo::track(count($filters));
+        // \MUtil_Echo::track(count($filters));
 
         // Check for tracks that should be created
         foreach ($filters as $filter) {
@@ -432,7 +435,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                     foreach($existingTracks[$trackId] as $respTrack) {
                         if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
                             if ($respTrack->hasSuccesCode()) {
-                                // MUtil_Echo::track($trackId, $respTrack->isOpen());
+                                // \MUtil_Echo::track($trackId, $respTrack->isOpen());
                                 // An open track of this type exists: do not create a new one
                                 if ($respTrack->isOpen()) {
                                     $createTrack = false;
@@ -446,7 +449,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                                 $wait = $filter->getWaitDays();
 
                                 if (($wait === null) || (! $curr) || (! $end) || ($curr->diffDays($end) <= $wait)) {
-                                    // MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
+                                    // \MUtil_Echo::track($trackId, $curr->diffDays($end), $wait);
                                     $createTrack = false;
                                     break;
                                 }
@@ -456,7 +459,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                                 $data = $respTrack->getFieldData();
                                 if (isset($data[$filter->getFieldId()]) &&
                                         ($this->getId() == $data[$filter->getFieldId()])) {
-                                    // MUtil_Echo::track($data[$filter->getFieldId()]);
+                                    // \MUtil_Echo::track($data[$filter->getFieldId()]);
                                     $createTrack = false;
                                     break;
                                 }
@@ -464,7 +467,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                         }
                     }
                 }
-                // MUtil_Echo::track($trackId, $createTrack);
+                // \MUtil_Echo::track($trackId, $createTrack, $filter->getName(), $filter->getSqlWhere(), $filter->getFilterId());
                 if ($createTrack) {
                     $trackData = array('gr2t_comment' => sprintf(
                             $this->_('Track created by %s filter'),

@@ -64,13 +64,17 @@ class OrAppointmentFilter extends AppointmentSubFilterAbstract
         foreach ($this->_subFilters as $filterObject) {
             if ($filterObject instanceof AppointmentFilterInterface) {
                 $where = $filterObject->getSqlWhere();
-                if ($where) {
+                if ($where && ($where !== parent::NO_MATCH_SQL)) {
                     $wheres[] = $where;
                 }
             }
         }
 
-        return implode(' OR ', $wheres);
+        if ($wheres) {
+            return implode(' OR ', $wheres);
+        } else {
+            return parent::NO_MATCH_SQL;
+        }
     }
 
     /**

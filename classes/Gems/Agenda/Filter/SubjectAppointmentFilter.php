@@ -61,6 +61,8 @@ class SubjectAppointmentFilter extends AppointmentFilterAbstract
         $text = $this->_data['gaf_filter_text1'];
         if ($text) {
             return "gap_subject LIKE '%$text%'";
+        } else {
+            return parent::NO_MATCH_SQL;
         }
     }
 

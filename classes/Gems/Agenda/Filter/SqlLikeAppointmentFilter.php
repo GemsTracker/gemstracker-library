@@ -150,9 +150,9 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
             $where .= 'gap_id_procedure IN (' . implode(', ', $this->_procedures) . ')';
         }
         if ($where) {
-            return $where;
+            return "($where)";
         } else {
-            return '1=0';
+            return parent::NO_MATCH_SQL;
         }
     }
 
@@ -164,11 +164,11 @@ class SqlLikeAppointmentFilter extends AppointmentFilterAbstract
      */
     public function matchAppointment(\Gems_Agenda_Appointment $appointment)
     {
-        if ($this->_activities !== true) {
+        if (true !== $this->_activities) {
             if (! isset($this->_activities[$appointment->getActivityId()])) {
                 return false;
             }
         }
-        return isset($this->_procedures[$appointment->getProcedureId()]) || ($this->_procedures === true);
+        return isset($this->_procedures[$appointment->getProcedureId()]) || (true === $this->_procedures);
     }
 }

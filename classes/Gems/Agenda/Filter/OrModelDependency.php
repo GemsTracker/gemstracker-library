@@ -100,7 +100,7 @@ class OrModelDependency extends FilterModelDependencyAbstract
         // Check all the fields
         for ($i = 1; $i <= $this->_fieldCount; $i++) {
             $field = 'gaf_filter_text' . $i;
-            if (isset($context[$field], $this->_filters[$context[$field]]) && $this->_filters[$context[$field]]) {
+            if (isset($context[$field], $this->_filters[$context[$field]]) && $context[$field] && $this->_filters[$context[$field]]) {
                 $output[] = $this->_filters[$context[$field]];
             }
         }
