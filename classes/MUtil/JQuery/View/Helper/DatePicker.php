@@ -86,13 +86,11 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
             $baseurl = false;
         }
 
-        $params = ZendX_JQuery::encodeJson($params);
-
         $js = sprintf('%s("#%s").%s(%s);',
                 ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $attribs['id'],
                 $picker,
-                $params
+                ZendX_JQuery::encodeJson($params)
         );
 
         if ($formatTime && $sayThisOnlyOnce) {
@@ -126,8 +124,8 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
         $onload = $this->onLoadJs(
                 $id,
                 $picker,
-                isset($attribs['disabled']),
-                isset($params['dateFormat']) && $params['dateFormat']);
+                isset($attribs['disabled'])
+                );
 
         $onload->render($this->view);
 
@@ -140,19 +138,14 @@ class MUtil_JQuery_View_Helper_DatePicker extends ZendX_JQuery_View_Helper_DateP
      * @param string $id
      * @param string $picker
      * @param boolean $disabled
-     * @param boolean $dateFormat
      * @return \MUtil_Html_Code_JavaScript
      */
-    public function onLoadJs($id, $picker, $disabled, $dateFormat)
+    public function onLoadJs($id, $picker, $disabled)
     {
         $onload = new MUtil_Html_Code_JavaScript(array('ELEM_ID' => $id, 'PICKER' => $picker));
 
         if ($disabled) {
             $onload->addContent(__DIR__ . '/js/datepicker.disabled.js');
-        }
-
-        if ($dateFormat) {
-            $onload->addContent(__DIR__ . '/js/datepicker.formatdate.js');
         }
 
         return $onload;
