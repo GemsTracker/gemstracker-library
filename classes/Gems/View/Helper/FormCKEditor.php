@@ -46,7 +46,30 @@
  */
 class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
     public $config = array();
-    public $basePath = '';
+    
+    /**
+     * Default basedir for CKEditor. Can be overwritten through the Decorator options.
+     * @var string
+     */
+    protected $_basedir = 'gems/ckeditor';
+
+    protected $_options = array();
+
+    public function __construct($options = null)
+    {
+        //MUtil_Echo::track('test');
+        // If basepath not set, try a default
+        if ($options) {
+            if (is_array($options)) {
+                $this->_options = $options;
+            } else {
+                $this->_options[] = $options;
+            }
+            if (isset($this->_options['baseDir'])) {
+                $this->_basedir = $this->_options['baseDir'];
+            }
+        }
+    }
 
     public function formCKEditor($name = null, $value = null, $attribs = null, $options = null) {
         // Remove from attribs what we need to have in options
@@ -58,16 +81,29 @@ class Gems_View_Helper_FormCKEditor extends Zend_View_Helper_FormTextarea{
             }
         }
 
-        include_once $this->basePath . '/ckeditor.php'; // Now make sure the CKEditor class can be loaded
-        
-        // Now set the location to the js/css
-        $baseUrl = $this->view->serverUrl() . GemsEscort::getInstance()->basepath->getBasePath();
-        $CKEditor = new CKEditor($baseUrl . '/gems/ckeditor/');
-        $CKEditor->returnOutput = true; // We capture the output
+        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath() . '/';
+
+        $this->view->headScript()->appendFile($baseUrl . $this->_basedir . '/' . 'ckeditor.js');
+        $this->view->headScript()->prependScript("
+            CKEditorConfig = ".Zend_Json::encode($this->config).";
+            ");
+
+        //MUtil_Echo::track($baseUrl);
+        //MUtil_Echo::track('test');
+        //
+        //$markup = sprintf($this->_format, $id, $name, $value);
 
         $output = $this->formTextarea($name, $value, $attribs); // Get regular textarea output
         $output = sprintf('<div class="ckeditor">%s</div>', $output); // Wrap in a div
-        $output .= $CKEditor->replace($attribs['id'], $this->config); // And add init code for CKEditor
+        
+        $id = $name;
+
+        $this->view->inlineScript()->appendScript("
+            if (typeof CKEditorConfig === 'undefined') {
+                CKEditorConfig = {};
+            }
+            CKEDITOR.replace( '{$id}', CKEditorConfig );
+        ");
 
         return $output;
     }
