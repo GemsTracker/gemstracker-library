@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Event_Survey_Display_AllOfSurveyWithCharts extends Gems_Event_Survey_Display_OnlyAnswered
+class Gems_Event_Survey_Display_OnlyAnsweredWithCharts extends Gems_Event_Survey_Display_OnlyAnswered
 {
     public function getEventName() {
      return parent::getEventName() . ' with chart';
