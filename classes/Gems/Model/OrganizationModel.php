@@ -351,6 +351,8 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
      */
     public function processAfterLoad($data, $new = false, $isPostData = false)
     {
+        $data = parent::processAfterLoad($data, $new, $isPostData);
+        
         if ($data instanceof Iterator) {
             $data = iterator_to_array($data);
         }
