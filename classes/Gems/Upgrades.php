@@ -69,7 +69,7 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
         $this->register(array($this, 'Upgrade161to162'), 'Upgrade from 1.6.1 to 1.6.2');
         $this->register(array($this, 'Upgrade162to163'), 'Upgrade from 1.6.2 to 1.6.3');
         $this->register(array($this, 'Upgrade163to164'), 'Upgrade from 1.6.3 to 1.6.4');
-        $this->register(array($this, 'Upgrade164to165'), 'Upgrade from 1.6.4 to 1.6.5');
+        $this->register(array($this, 'Upgrade164to170'), 'Upgrade from 1.6.4 to 1.7.0');
 
         /**
          * To have the new_project updated to the highest level, update
@@ -247,10 +247,10 @@ class Gems_Upgrades extends Gems_UpgradesAbstract
     }
 
     /**
-     * To upgrade to 1.6.5
+     * To upgrade to 1.7.0 / 1.6.5
      */
-    public function Upgrade164to165()
-    {
+     public function Upgrade164to170()
+   {
         $this->_batch->addTask('Db_CreateNewTables');
         $this->_batch->addTask('Db_AddPatches', 56);
 
