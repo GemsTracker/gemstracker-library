@@ -42,9 +42,9 @@ namespace MUtil\Model\Transform;
  *
  * Functions that can be used to sum are:
  *
+ * - count: the number of rows counted
  * - sum: just add the total
  * - last: use the last value that occured
- *
  *
  * @package    MUtil
  * @subpackage Model
@@ -54,21 +54,80 @@ namespace MUtil\Model\Transform;
  */
 class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
 {
-    private $_rowClassField;
-
+    /**
+     *
+     * @var array of suummarizeField => ['array' => [fieldName => values], 'string' => [fieldName => value]]
+     */
     private $_summarizeOn = array();
 
-    public function __construct($rowClassField = null)
+    /**
+     * Helper function for total rows field calculation
+     *
+     * @param striong $keyField
+     * @param mixed $keyValue
+     * @param array $currentValues
+     */
+    protected function _calculateFixedValues($keyField, $keyValue, array &$currentValues)
     {
-        $this->_rowClassField = $rowClassField;
+        if (isset($this->_summarizeOn[$keyField]['arrays'])) {
+            foreach ($this->_summarizeOn[$keyField]['arrays'] as $targetField => $lookup) {
+                if (isset($lookup[$keyValue])) {
+                    $currentValues[$targetField] = $lookup[$keyValue];
+                }
+            }
+        }
+        if (isset($this->_summarizeOn[$keyField]['calls'])) {
+            foreach ($this->_summarizeOn[$keyField]['calls'] as $targetField => $function) {
+                $value = isset($currentValues[$targetField]) ? $currentValues[$targetField] : null;
+                $currentValues[$targetField] = call_user_func($function, $value, $targetField);
+            }
+        }
     }
 
-    public function addTotal($field, $rowClass = null, $labels = false)
+    /**
+     * Add a field to add a totals row on.
+     *
+     * The other parameters contains fixed field values for that row, e.g. a fixed value:
+     *
+     * <code>
+     * $transformer->addTotal('groupField', 'rowClass', 'total');
+     * </code>
+     *
+     * or a lookup array:
+     *
+     * <code>
+     * $transformer->addTotal('groupField', 'labelField', array('x' => 'Total for X', 'y' => 'Total for Y'));
+     * </code>
+     *
+     * or a callable:
+     *
+     * <code>
+     * $transformer->addTotal('groupField', 'labelField', function ($value, $keyField) {sprintf('Total %d', $value);});
+     * </code>
+     *
+     * for as many fields as required.
+     *
+     * @param type $field
+     * @param type $fixedFieldsArrayOrName1
+     * @param type $fixedFieldsValue1
+     * @return \MUtil\Model\Transform\SumTotalTransformer
+     */
+    public function addTotal($field, $fixedFieldsArrayOrName1 = null, $fixedFieldsValue1 = null)
     {
-        $this->_summarizeOn[$field] = array(
-            'rowClass' => $rowClass,
-            'labels'   => $labels,
-            );
+        $args  = \MUtil_Ra::pairs(func_get_args(), 1);
+        $fixed = array();
+
+        foreach ($args as $fixedName => $value) {
+            if (is_callable($value)) {
+                $fixed['calls'][$fixedName] = $value;
+            } elseif (is_array($value)) {
+                $fixed['arrays'][$fixedName] = $value;
+            } else {
+                $fixed['string'][$fixedName] = $value;
+            }
+        }
+
+        $this->_summarizeOn[$field] = $fixed;
 
         return $this;
     }
@@ -96,37 +155,48 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
                 array_fill_keys(array_keys(reset($data)), null);
         $sumValues     = array_fill_keys(array_keys($this->_summarizeOn), $sumReset);
 
-        if ($this->_rowClassField) {
-            foreach ($this->_summarizeOn as $keyField => $settings) {
-                $sumValues[$keyField][$this->_rowClassField] = $settings['rowClass'];
+        foreach ($this->_summarizeOn as $keyField => $settings) {
+            if (isset($settings['string'])) {
+                $sumValues[$keyField] = $settings['string'] + $sumValues[$keyField];
             }
         }
 
         foreach ($data as $row) {
+            // Add summarize rows to output
             foreach ($sumValues as $keyField => $currentValues) {
-                if (isset($sumValues[$keyField], $keyValues[$keyField], $row[$keyField]) &&
+                if (isset($sumValues[$keyField], $row[$keyField]) &&
+                        array_key_exists($keyField, $keyValues) &&
                         ($row[$keyField] !== $keyValues[$keyField])) {
-                    $output[] = $sumValues[$keyField];
+
+                    $this->_calculateFixedValues($keyField, $keyValues[$keyField], $currentValues);
+
+                    $output[] = $currentValues;
                 }
             }
             $output[] = $row;
 
             foreach ($sumValues as $keyField => $currentValues) {
-                if (isset($row[$keyField])) {
-                    if ((! isset($keyValues[$keyField])) || ($row[$keyField] !== $keyValues[$keyField])) {
+                if (array_key_exists($keyField, $row)) {
+                    // Create summarize rows
+                    if ((!array_key_exists($keyField, $keyValues)) || ($row[$keyField] != $keyValues[$keyField])) {
                         $keyValues[$keyField] = $row[$keyField];
-                        $currentValues        = array_combine(array_keys($sumReset), $sumReset);
+                        $currentValues        = $sumReset;
 
-                        if ($this->_rowClassField && $this->_summarizeOn[$keyField]['rowClass']) {
-                            $currentValues[$this->_rowClassField] = $this->_summarizeOn[$keyField]['rowClass'];
+                        if (isset($this->_summarizeOn[$keyField]['string'])) {
+                            $currentValues = $this->_summarizeOn[$keyField]['string'] + $currentValues;
                         }
                     }
                 }
+                // Calculate summarize values
                 foreach ($summarizeCols as $fieldName => $function) {
-                    if (isset($row[$fieldName], $currentValues[$fieldName])) {
+                    if (array_key_exists($fieldName, $row) && array_key_exists($fieldName, $currentValues)) {
                         switch ($function) {
                             case 'sum':
                                 $currentValues[$fieldName] = $currentValues[$fieldName] + $row[$fieldName];
+                                break;
+
+                            case 'count':
+                                $currentValues[$fieldName]++;
                                 break;
 
                             case 'last':
@@ -134,9 +204,7 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
                                 break;
 
                             default:
-                                if (is_callable($function)) {
-                                    $currentValues[$fieldName] = $function($row[$fieldName], $currentValues[$fieldName], $keyField);
-                                }
+                                break;
                         }
                     }
                 }
@@ -144,7 +212,11 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
             }
         }
 
-        foreach ($sumValues as $currentValues) {
+        foreach ($sumValues as $keyField => $currentValues) {
+            $keyValue = isset($keyValues[$keyField]) ? $keyValues[$keyField] : null;
+
+            $this->_calculateFixedValues($keyField, $keyValue, $currentValues);
+
             $output[] = $currentValues;
         }
 
