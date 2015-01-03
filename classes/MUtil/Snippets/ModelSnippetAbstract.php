@@ -91,6 +91,12 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
     public $extraSort;
 
     /**
+     *
+     * @var boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     */
+    public $includeNumericFilters = false;
+    
+    /**
      * When true the post parameters are removed from the request while filtering
      *
      * @var boolean Should post variables be removed from the request?
@@ -194,7 +200,7 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
         if ($this->request instanceof Zend_Controller_Request_Abstract) {
-            $model->applyRequest($this->request, $this->removePost);
+            $model->applyRequest($this->request, $this->removePost, $this->includeNumericFilters);
         }
     }
 

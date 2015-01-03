@@ -49,6 +49,12 @@
 abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Action
 {
     /**
+     *
+     * @var boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     */
+    public $includeNumericFilters = false;
+
+    /**
      * Array of the actions that use a summarized version of the model.
      *
      * This determines the value of $detailed in createAction(). As it is usually
@@ -208,7 +214,7 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
 
             // Detailed models DO NOT USE $_POST for filtering,
             // multirow models DO USE $_POST parameters for filtering.
-            $this->_model->applyRequest($request, $detailed);
+            $this->_model->applyRequest($request, $detailed, $this->includeNumericFilters);
         }
 
         return $this->_model;
@@ -245,7 +251,6 @@ abstract class MUtil_Controller_ModelActionAbstract extends MUtil_Controller_Act
     public function getShowTable($columns = 1)
     {
         $model = $this->getModel();
-        // QUE $model->applyRequest($request);
 
         $bridge = $model->getBridgeFor('itemTable');
         $bridge->setColumnCount($columns);

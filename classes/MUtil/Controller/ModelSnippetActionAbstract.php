@@ -90,8 +90,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var array
      */
     private $_defaultParameters = array(
-        'model'   => 'getModel',
-        'request' => 'getRequest',
+        'includeNumericFilters' => 'getIncludeNumericFilters',
+        'model'                 => 'getModel',
+        'request'               => 'getRequest',
         );
 
     /**
@@ -208,6 +209,12 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var mixed String or array of snippets name
      */
     protected $importSnippets = 'ModelImportSnippet';
+
+    /**
+     *
+     * @var boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     */
+    public $includeNumericFilters = false;
 
     /**
      * The parameters used for the index action minus those in autofilter.
@@ -449,6 +456,15 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     *
+     * @return boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
+     */
+    public function getIncludeNumericFilters()
+    {
+        return $this->includeNumericFilters;
+    }
+
+    /**
      * Returns the model for the current $action.
      *
      * The parameters allow you to easily adapt the model to the current action. The $detailed
@@ -471,7 +487,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
             // Detailed models DO NOT USE $_POST for filtering,
             // multirow models DO USE $_POST parameters for filtering.
-            $this->_model->applyRequest($request, $detailed);
+            $this->_model->applyRequest($request, $detailed, $this->includeNumericFilters);
         }
 
         return $this->_model;

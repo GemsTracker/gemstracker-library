@@ -604,9 +604,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * sort / filter objects attached to this model.
      *
      * @param array $parameters
+     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
      * @return array The $parameters minus the sort & textsearch keys
      */
-    public function applyParameters(array $parameters)
+    public function applyParameters(array $parameters, $includeNumericFilters = false)
     {
         if ($parameters) {
             if (MUtil_Model::$verbose) {
@@ -656,7 +657,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             // Apply all other fields...
             foreach ($parameters as $param => $value) {
                 // ... when they are fields in the model
-                if ($this->has($param)) {
+                if (($includeNumericFilters && is_int($param)) || $this->has($param)) {
                     $filter[$param] = $value;
                 }
             }
@@ -683,7 +684,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function applyPostRequest(Zend_Controller_Request_Abstract $request)
     {
-        return $this->applyRequest($request, false);
+        return $this->applyRequest($request, false, false);
     }
 
     /**
@@ -691,9 +692,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param Zend_Controller_Request_Abstract $request
      * @param boolean $removePost Optional
+     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
      * @return MUtil_Model_ModelAbstract
      */
-    public function applyRequest(Zend_Controller_Request_Abstract $request, $removePost = true)
+    public function applyRequest(Zend_Controller_Request_Abstract $request, $removePost = true, $includeNumericFilters = false)
     {
         $parameters = $request->getParams();
 
@@ -708,7 +710,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         // Remove all empty values (but not arrays) from the filter
         $parameters = array_filter($parameters, function($i) { return is_array($i) || strlen($i); });
 
-        $this->applyParameters($parameters);
+        $this->applyParameters($parameters, $includeNumericFilters);
 
         return $this;
     }
