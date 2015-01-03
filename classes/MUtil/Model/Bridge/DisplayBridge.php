@@ -25,7 +25,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.+
- * 
+ *
  *
  *
  * @package    MUtil
@@ -76,6 +76,15 @@ class MUtil_Model_Bridge_DisplayBridge extends MUtil_Model_Bridge_BridgeAbstract
                 $storageFormat = $this->model->get($name, 'storageFormat');
                 $output['dateFormat'] = function ($value) use ($format, $storageFormat) {
                     return MUtil_Date::format($value, $format, $storageFormat);
+                };
+            }
+        } elseif ($this->model->has($name, 'numberFormat')) {
+            $format = $this->model->get($name, 'numberFormat');
+            if (is_callable($format)) {
+                $output['numberFormat'] = $format;
+            } else {
+                $output['numberFormat'] = function ($value) use ($format) {
+                    return Zend_Locale_Format::toNumber($value, array('number_format' => $format));
                 };
             }
         }
