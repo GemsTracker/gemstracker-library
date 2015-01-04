@@ -111,7 +111,7 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      * for that).
      *
      * @param MUtil_Model_ModelAbstract $model The parent model
-     * @return array Of filedname => set() values
+     * @return array Of fieldname => set() values
      */
     public function getFieldInfo(MUtil_Model_ModelAbstract $model)
     {

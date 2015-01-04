@@ -125,6 +125,8 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
             } else {
                 $fixed['string'][$fixedName] = $value;
             }
+            // Make sure the fields are know to the model
+            $this->_fields[$fixedName] = array();
         }
 
         $this->_summarizeOn[$field] = $fixed;
