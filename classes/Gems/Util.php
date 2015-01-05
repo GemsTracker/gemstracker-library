@@ -196,8 +196,9 @@ class Gems_Util extends Gems_Loader_TargetLoaderAbstract
         static $uri;
 
         if (! $uri) {
-            $uri = MUtil_Https::on() ? 'https' : 'http';
+            $uri = (MUtil_Https::on() || $this->project->isHttpsRequired()) ? 'https' : 'http';
 
+            MUtil_Echo::track($uri);
             $uri .= '://';
             $uri .= isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $this->project->getConsoleUrl();
             $uri .= $this->basepath->getBasePath();
