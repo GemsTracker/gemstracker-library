@@ -79,9 +79,10 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
      * sort / filter objects attached to this model.
      *
      * @param array $parameters
+     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
      * @return array The $parameters minus the sort & textsearch keys
      */
-    public function applyParameters(array $parameters)
+    public function applyParameters(array $parameters, $includeNumericFilters = false)
     {
         if ($parameters) {
             // Allow use when passed only an ID value
@@ -113,7 +114,7 @@ class Gems_Model_HiddenOrganizationModel extends Gems_Model_JoinModel
                         sprintf($this->_('Access to this page is not allowed for current role: %s.'), $this->user->getRole()));
             }
 
-            return parent::applyParameters($parameters);
+            return parent::applyParameters($parameters, $includeNumericFilters);
         }
 
         return array();

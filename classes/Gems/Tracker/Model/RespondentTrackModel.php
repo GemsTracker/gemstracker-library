@@ -285,9 +285,10 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
      * sort / filter objects attached to this model.
      *
      * @param array $parameters
+     * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
      * @return array The $parameters minus the sort & textsearch keys
      */
-    public function applyParameters(array $parameters)
+    public function applyParameters(array $parameters, $includeNumericFilters = false)
     {
         if ($parameters) {
             // Altkey
@@ -303,7 +304,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
                 $parameters['gtr_id_track'] = $id;
             }
 
-            return parent::applyParameters($parameters);
+            return parent::applyParameters($parameters, $includeNumericFilters);
         }
 
         return array();
