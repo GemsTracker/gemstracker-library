@@ -82,7 +82,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * @see Zend_Controller_Action_Helper_Redirector
      *
-     * @var mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
+     * @var mixed Nothing or either an array or a string that is acceptable for Redirector->gotoRoute()
      */
     protected $afterSaveRouteUrl;
 
