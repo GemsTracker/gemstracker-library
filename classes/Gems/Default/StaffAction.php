@@ -211,12 +211,12 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
             $bridge->addExhibitor('gsf_id_organization');
         }
 
-        $bridge->addRadio(   'gsf_gender',         'separator', '');
-        $bridge->addText(    'gsf_first_name',     'label', $this->_('First name'));
-        $bridge->addFilter(  'gsf_first_name',     $ucfirst);
-        $bridge->addText(    'gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', 'de, van der, \'t, etc...');
-        $bridge->addText(    'gsf_last_name',      'label', $this->_('Last name'), 'required', true);
-        $bridge->addFilter(  'gsf_last_name',      $ucfirst);
+        $bridge->addRadio(   'gsf_gender',     'separator', '');
+        $bridge->addText(    'gsf_first_name');
+        $bridge->addFilter(  'gsf_first_name', $ucfirst);
+        $bridge->addText(    'gsf_surname_prefix');
+        $bridge->addText(    'gsf_last_name',  'required', true);
+        $bridge->addFilter(  'gsf_last_name',  $ucfirst);
         $bridge->addText(    'gsf_email', array('size' => 30))->addValidator('SimpleEmail');
 
         $bridge->add('gsf_id_primary_group');
@@ -358,6 +358,11 @@ class Gems_Default_StaffAction extends Gems_Controller_BrowseEditAction
         $model->set('name',                 'label', $this->_('Name'),
             'column_expression', new Zend_Db_Expr("CONCAT(COALESCE(CONCAT(gsf_last_name, ', '), '-, '), COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, ''))"));
         $model->set('gsf_email',            'label', $this->_('E-Mail'), 'itemDisplay', 'MUtil_Html_AElement::ifmail');
+        if ($detailed) {
+            $model->set('gsf_first_name',     'label', $this->_('First name'));
+            $model->set('gsf_surname_prefix', 'label', $this->_('Surname prefix'), 'description', $this->_('de, van der, \'t, etc...'));
+            $model->set('gsf_last_name',      'label', $this->_('Last name'));
+        }
 
         $availableOrganizations = $this->util->getDbLookup()->getOrganizations();
         if ($this->escort->hasPrivilege('pr.staff.see.all')) {
