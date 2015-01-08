@@ -171,7 +171,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
      */
     public function setBasePath($basePath) {
         $basePath = (string) $basePath;
-        if (file_exists($basePath . '/ckeditor.php')) {
+        if (file_exists($basePath . '/ckeditor.js')) {
             $this->basePath = $basePath;
         } else {
             throw new Zend_Exception(sprintf('CKEditor.php not found at %s', $basePath));
@@ -228,7 +228,7 @@ class Gems_Form_Element_CKEditor extends Zend_Form_Element_Textarea {
             }
         }
 
-        if (!file_exists($this->basePath . '/ckeditor.php')) {
+        if (!file_exists($this->basePath . '/ckeditor.js')) {
             throw new Zend_Exception('Use setBasePath() to set the full path to the file ckeditor.php in the public folder of ckedit.');
         }
 
