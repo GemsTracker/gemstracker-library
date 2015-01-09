@@ -42,6 +42,10 @@
  */
 class MUtil_Form_Element_Html extends Zend_Form_Element_Xhtml implements MUtil_Form_Element_NoFocusInterface
 {
+    /**
+     * Default view helper to use
+     * @var string
+     */
     public $helper = 'html';
 
     /**
