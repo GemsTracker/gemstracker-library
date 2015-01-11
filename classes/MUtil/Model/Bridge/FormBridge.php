@@ -94,7 +94,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         self::GROUP_OPTIONS      => array('elements', 'legend', 'separator'),
         self::JQUERY_OPTIONS     => array('jQueryParams'),
         self::MULTI_OPTIONS      => array('disable', 'multiOptions', 'onchange', 'separator', 'size', 'disableTranslator'),
-        self::PASSWORD_OPTIONS   => array('repeatLabel'),
+        self::PASSWORD_OPTIONS   => array('renderPassword', 'repeatLabel'),
         self::SUBFORM_OPTIONS    => array('class', 'escape', 'form', 'tabindex'),
         self::TAB_OPTIONS        => array('value'),
         self::TEXT_OPTIONS       => array('maxlength', 'minlength', 'onblur', 'onchange', 'onfocus', 'onselect', 'size'),
