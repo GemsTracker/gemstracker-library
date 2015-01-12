@@ -207,7 +207,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $multiOptions = $this->util->getTranslated()->getBulkMailProcessOptions();
         $options = array(
             'label'        => $this->translate->_('Method'),
-            'multiOptions' => $options,
+            'multiOptions' => $multiOptions,
             'required'     => true,
         );
 
