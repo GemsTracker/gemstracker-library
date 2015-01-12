@@ -254,8 +254,10 @@ abstract class Gems_User_Form_OrganizationFormAbstract extends Gems_Form_AutoLoa
      */
     public function isValid($data, $disableTranslateValidators = null)
     {
-        $this->_user = $this->loader->getUser($data[$this->usernameFieldName],
-            (isset($data[$this->organizationFieldName]) ? $data[$this->organizationFieldName] : ''));
+        $this->_user = $this->loader->getUser(
+                (isset($data[$this->usernameFieldName]) ? $data[$this->usernameFieldName] : null),
+                (isset($data[$this->organizationFieldName]) ? $data[$this->organizationFieldName] : '')
+            );
 
         return parent::isValid($data, $disableTranslateValidators);
     }

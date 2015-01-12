@@ -557,7 +557,7 @@ class Gems_User_UserLoader extends Gems_Loader_TargetLoaderAbstract
     protected function getUserClass($login_name, $organization)
     {
         //First check for project user, as this one can run without a db
-        if (!is_null($login_name) && $this->isProjectUser($login_name)) {
+        if ((null !== $login_name) && $this->isProjectUser($login_name)) {
             return $this->loadUser(self::USER_PROJECT, $organization, $login_name);
         }
 
