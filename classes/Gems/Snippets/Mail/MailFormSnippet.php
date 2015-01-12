@@ -153,7 +153,6 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
      */
     protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
     {
-        $this->mailElements->setForm($bridge->getForm());
         $bridge->addHtml('to', 'label', $this->_('To'));
         $bridge->addHtml('prefered_language', 'label', $this->_('Prefered Language'));
 
@@ -207,6 +206,7 @@ class Gems_Snippets_Mail_MailFormSnippet extends MUtil_Snippets_ModelSnippetAbst
     {
         if (!$this->form) {
             $this->form = new Gems_Form(array('class' => 'form-horizontal', 'role' => 'form'));
+            $this->mailElements->setForm($this->form);
         }
         return $this->form;
     }
