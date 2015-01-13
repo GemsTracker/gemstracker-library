@@ -582,7 +582,20 @@ class Gems_Tracker_RespondentTrack extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @return string The number of rounds
+     * @return int The number of rounds completed
+     */
+    public function getCompleted()
+    {
+        if (isset($this->_respTrackData['gr2t_completed'])) {
+            return $this->_respTrackData['gr2t_completed'];
+        }
+
+        return 0;
+    }
+
+    /**
+     *
+     * @return int The number of rounds
      */
     public function getCount()
     {
