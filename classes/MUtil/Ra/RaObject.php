@@ -84,6 +84,17 @@ class RaObject extends \ArrayObject implements \MUtil_Registry_TargetInterface
     }
 
     /**
+     *
+     * @param mixed $input The input parameter accepts an array or an Object.
+     * @param int $flags Flags to control the behaviour of the ArrayObject object, STD_PROP_LIST is always set on
+     * @param string $iterator_class Specify the class that will be used for iteration of the ArrayObject object.
+     */
+    public function __construct($input = array(), $flags = 0, $iterator_class = "ArrayIterator")
+    {
+        parent::__construct($input, $flags | \ArrayObject::STD_PROP_LIST, $iterator_class);
+    }
+
+    /**
      * Called after the check that all required registry values
      * have been set correctly has run.
      *
