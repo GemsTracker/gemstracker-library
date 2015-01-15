@@ -36,7 +36,7 @@
  */
 
 /**
- *
+ * File system utility functions
  *
  * @package    MUtil
  * @subpackage File
@@ -85,7 +85,7 @@ class MUtil_File
 
         file_put_contents($filename, '');
 
-        // MUtil_Echo::track($filename, file_exists($filename), filesize($filename));
+        // \MUtil_Echo::track($filename, file_exists($filename), filesize($filename));
 
         return $filename;
     }
@@ -107,7 +107,7 @@ class MUtil_File
                 throw new Zend_Exception(sprintf(
                         "Could not create '%s' directory: %s.",
                         $dir,
-                        MUtil_Error::getLastPhpErrorMessage('reason unknown')
+                        \MUtil_Error::getLastPhpErrorMessage('reason unknown')
                         ));
             }
         }
@@ -188,5 +188,31 @@ class MUtil_File
         chmod($output, 0777);
 
         return $output;
+    }
+
+    /**
+     * Is the path a rooted path?
+     * On Windows this does not require a drive letter, but one is allowed
+     *
+     * Check OS specific plus check for urls
+     *
+     * @param string $path
+     * @return boolean
+     */
+    public static function isRootPath($path)
+    {
+        if (! $path) {
+            return false;
+        }
+        // Quick checkes first and then something just in case
+        if (('\\' == $path[0]) || ('/' == $path[0]) || \MUtil_String::startsWith($path, DIRECTORY_SEPARATOR)) {
+            return true;
+        }
+        // One more check for windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            return preg_match('#^[a-zA-Z]:\\\\#', $path);
+        }
+        // The check for uri's (frp, http, https
+        return preg_match('#^[a-zA-Z]+://#', $path);
     }
 }
