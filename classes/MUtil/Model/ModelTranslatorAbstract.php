@@ -252,7 +252,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                             $options,
                             $this->_targetModel->get($targetName, 'extraValueKeys')
                             );
-                    $bridge->add($targetName)->addFilter($filter);
+                    $element = $bridge->add($targetName);
+                    if ($element && method_exists($element, 'addFilter')) {
+                        $element->addFilter($filter);
+                    }
                 } else {
                     $bridge->add($targetName);
                 }

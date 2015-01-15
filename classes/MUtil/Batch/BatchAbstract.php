@@ -177,6 +177,12 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
     public $initialPushPaddingKb = 0;
 
     /**
+     *
+     * @var \Zend_Log
+     */
+    protected $log;
+
+    /**
      * The mode to use for the panel: PUSH or PULL
      *
      * @var string
@@ -376,7 +382,22 @@ abstract class MUtil_Batch_BatchAbstract extends MUtil_Registry_TargetAbstract i
      */
     public function addException(Exception $e)
     {
-        $this->_session->exceptions[] = $e;
+        $message = $e->getMessage();
+
+        $this->addMessage($message);
+        $this->_session->exceptions[] = $message;
+        
+        if ($this->log instanceof \Zend_Log) {
+            $messages[] = $message;
+
+            $previous = $e->getPrevious();
+            while ($previous) {
+                $messages[] = '  Previous exception: ' . $previous->getMessage();
+            }
+            $messages[] = $e->getTraceAsString();
+
+            $this->log->log(implode("\n", $messages), \Zend_Log::ERR);
+        }
         return $this;
     }
 
