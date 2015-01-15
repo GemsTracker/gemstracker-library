@@ -883,15 +883,6 @@ class Gems_Tracker extends Gems_Loader_TargetLoaderAbstract implements Gems_Trac
             $changed = false;
         }
 
-        $exceptions = $batch->getExceptions();
-        if ($exceptions) {
-            foreach ($exceptions as $exception) {
-                if ($exception instanceof Exception) {
-                    $this->logger->logError($exception);
-                }
-            }
-        }
-
         $batch->reset();
         return $changed;
     }

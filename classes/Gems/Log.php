@@ -103,10 +103,10 @@ class Gems_Log extends Zend_Log
         $previous = $exception->getPrevious();
         while ($previous) {
             $info[] = '';
-            $info[] = 'Chained class:   ' . get_class($previous);
-            $info[] = 'Changed message: ' . $this->stripHtml($previous->getMessage());
+            $info[] = 'Prevous class:   ' . get_class($previous);
+            $info[] = 'Prevous message: ' . $this->stripHtml($previous->getMessage());
             if (($previous instanceof Gems_Exception) && ($text = $previous->getInfo())) {
-                $info[] = 'Changed info:    ' . $this->stripHtml($text);
+                $info[] = 'Previous info:    ' . $this->stripHtml($text);
             }
             $previous = $previous->getPrevious();
         }
@@ -135,6 +135,13 @@ class Gems_Log extends Zend_Log
 
         $info[] = 'Stack trace:';
         $info[] = $exception->getTraceAsString();
+
+        $priority = Zend_Log::DEBUG;
+        if (($exception instanceof Zend_Db_Exception) ||
+                ($exception instanceof Gems_Exception_Coding)
+                ){
+            $priority = Zend_Log::ERR;
+        }
 
         foreach ($info as $line) {
             $this->log($line, Zend_Log::DEBUG);
