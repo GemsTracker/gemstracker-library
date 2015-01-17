@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -32,39 +32,34 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: BridgeStack.php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: RepeatableStack.php $
  */
 
+namespace MUtil\Lazy\Stack;
+
 /**
- * Get an object property get object implementation
+ *
  *
  * @package    MUtil
  * @subpackage Lazy_Stack
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.5
+ * @since      Class available since MUtil version 1.4 17-jan-2015 14:30:59
  */
-class MUtil_Lazy_Stack_BridgeStack implements \MUtil_Lazy_StackInterface
+class RepeatableStack implements \MUtil_Lazy_StackInterface
 {
     /**
      * The object to get properties from
      *
-     * @var \MUtil_Model_Bridge_TableBridgeAbstract
+     * @var \MUtil_Lazy_Repeatable
      */
     protected $_object;
 
     /**
-     * Should we throw an exception on a missing value?
      *
-     * @var boolean
+     * @param \MUtil_Lazy_Repeatable $object
      */
-    private $_throwOnMiss = false;
-
-    /**
-     *
-     * @param Object $object
-     */
-    public function __construct(\MUtil_Model_Bridge_TableBridgeAbstract $object)
+    public function __construct(\MUtil_Lazy_Repeatable $object)
     {
         $this->_object = $object;
     }
@@ -77,8 +72,8 @@ class MUtil_Lazy_Stack_BridgeStack implements \MUtil_Lazy_StackInterface
      */
     public function lazyGet($name)
     {
-        // \MUtil_Echo::track($name, isset($this->_object->$name), \MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
-        return $this->_object->getLazyValue($name);
+        // MUtil_Echo::track($name, isset($this->_object->$name), MUtil_Lazy::rise($this->_object->$name), $this->_object->getLazyValue($name));
+        return \MUtil_Lazy::rise($this->_object->__get($name));
     }
 
     /**

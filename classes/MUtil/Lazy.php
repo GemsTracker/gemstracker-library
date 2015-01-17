@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use MUtil\Lazy\Stack\RepeatableStack;
+
 /**
  * Why get lazy:
  * 1 - You want to use a result later that is not yet known
@@ -58,7 +60,7 @@ class MUtil_Lazy
     /**
      * The default stack to use
      *
-     * @var MUtil_Lazy_StackInterface
+     * @var \MUtil_Lazy_StackInterface
      */
     private static $_stack;
 
@@ -70,20 +72,20 @@ class MUtil_Lazy
     public static $verbose = false;
 
     /**
-     * Turns any input into a MUtil_Lazy_StackInterface object.
+     * Turns any input into a \MUtil_Lazy_StackInterface object.
      *
      * @param mixed $stack Value to be turned into stack for evaluation
      * @param string A string describing where the stack was created.
-     * @return MUtil_Lazy_StackInterface A usable stack
+     * @return \MUtil_Lazy_StackInterface A usable stack
      */
     private static function _checkStack($stack, $source)
     {
-        if ($stack instanceof MUtil_Lazy_StackInterface) {
+        if ($stack instanceof \MUtil_Lazy_StackInterface) {
             return $stack;
         }
 
-        if (! self::$_stack instanceof MUtil_Lazy_StackInterface) {
-            self::$_stack = new MUtil_Lazy_Stack_EmptyStack($source);
+        if (! self::$_stack instanceof \MUtil_Lazy_StackInterface) {
+            self::$_stack = new \MUtil_Lazy_Stack_EmptyStack($source);
         }
 
         return self::$_stack;
@@ -100,7 +102,7 @@ class MUtil_Lazy
     public static function alternate($value1, $value2)
     {
         $args = func_get_args();
-        return new MUtil_Lazy_Alternate($args);
+        return new \MUtil_Lazy_Alternate($args);
     }
 
     /**
@@ -113,7 +115,7 @@ class MUtil_Lazy
     public static function call($callable, $arg_array = null)
     {
         $args = array_slice(func_get_args(), 1);
-        return new MUtil_Lazy_Call($callable, $args);
+        return new \MUtil_Lazy_Call($callable, $args);
     }
 
     /**
@@ -127,7 +129,7 @@ class MUtil_Lazy
     public static function comp($opLeft, $oper, $opRight)
     {
         $lambda = create_function('$a, $b', 'return $a ' . $oper . ' $b;');
-        return new MUtil_Lazy_Call($lambda, array($opLeft, $opRight));
+        return new \MUtil_Lazy_Call($lambda, array($opLeft, $opRight));
     }
 
     /**
@@ -135,13 +137,13 @@ class MUtil_Lazy
      * and then joined together without separator.
      *
      * @param mixed $arg_array
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public static function concat($arg_array = null)
     {
         $args = func_get_args();
 
-        return new MUtil_Lazy_Call('implode', array('', new MUtil_Lazy_Call('MUtil_Ra::flatten', array($args))));
+        return new \MUtil_Lazy_Call('implode', array('', new \MUtil_Lazy_Call('MUtil_Ra::flatten', array($args))));
     }
 
     public static function first($args_array)
@@ -152,7 +154,7 @@ class MUtil_Lazy
         $result = array_shift($args);
 
         foreach ($args as $arg) {
-            $result = new MUtil_Lazy_Call(array($result, 'if'), array($result, $arg));
+            $result = new \MUtil_Lazy_Call(array($result, 'if'), array($result, $arg));
         }
         return $result;
     }
@@ -163,11 +165,11 @@ class MUtil_Lazy
      * @param mixed $if The value tested during raise
      * @param mixed $then The value after raise when $if is true
      * @param mixed $else The value after raise when $if is false
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public static function iff($if, $then, $else = null)
     {
-        return new MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
+        return new \MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
     }
 
     /**
@@ -176,35 +178,35 @@ class MUtil_Lazy
      * @param mixed $if The value tested during raise
      * @param mixed $then The value after raise when $if is true
      * @param mixed $else The value after raise when $if is false
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public static function iif($if, $then, $else = null)
     {
-        return new MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
+        return new \MUtil_Lazy_Call(array($if, 'if'), array($then, $else));
     }
 
     /**
      * Returns a Lazy version of the parameter
      *
      * @param mixed $var
-     * @return MUtil_Lazy_LazyInterface
+     * @return \MUtil_Lazy_LazyInterface
      */
     public static function L($var)
     {
         if (is_object($var)) {
-            if ($var instanceof MUtil_Lazy_LazyInterface) {
+            if ($var instanceof \MUtil_Lazy_LazyInterface) {
                 return $var;
-            } elseif ($var instanceof MUtil_Lazy_Procrastinator) {
+            } elseif ($var instanceof \MUtil_Lazy_Procrastinator) {
                 return $var->toLazy();
             }
 
-            return new MUtil_Lazy_ObjectWrap($var);
+            return new \MUtil_Lazy_ObjectWrap($var);
 
         } elseif(is_array($var)) {
-            return new MUtil_Lazy_ArrayWrap($var);
+            return new \MUtil_Lazy_ArrayWrap($var);
 
         } else {
-            return new MUtil_Lazy_LazyGet($var);
+            return new \MUtil_Lazy_LazyGet($var);
         }
     }
 
@@ -214,23 +216,33 @@ class MUtil_Lazy
      * @param Object $object
      * @param string $method Method of the object
      * @param mixed $arg_array1 Optional, first of any arguments to the call
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public static function method($object, $method, $arg_array1 = null)
     {
         $args = array_slice(func_get_args(), 2);
-        return new MUtil_Lazy_Call(array($object, $method), $args);
+        return new \MUtil_Lazy_Call(array($object, $method), $args);
+    }
+
+    /**
+     * Get a named call to the lazy stack
+     *
+     * @return \MUtil_Lazy_LazyGet
+     */
+    public static function get($name)
+    {
+        return new \MUtil_Lazy_LazyGet($name);
     }
 
     /**
      * Get the current stack or none
      *
-     * @return MUtil_Lazy_StackInterface
+     * @return \MUtil_Lazy_StackInterface
      */
     public static function getStack()
     {
-        if (! self::$_stack instanceof MUtil_Lazy_StackInterface) {
-            self::$_stack = new MUtil_Lazy_Stack_EmptyStack(__CLASS__);
+        if (! self::$_stack instanceof \MUtil_Lazy_StackInterface) {
+            self::$_stack = new \MUtil_Lazy_Stack_EmptyStack(__CLASS__);
         }
 
         return self::$_stack;
@@ -245,7 +257,7 @@ class MUtil_Lazy
      */
     public static function offsetGet($array, $offset)
     {
-        return new MUtil_Lazy_ArrayAccessor($array, $offset);
+        return new \MUtil_Lazy_ArrayAccessor($array, $offset);
     }
 
     /**
@@ -257,23 +269,23 @@ class MUtil_Lazy
      */
     public static function property($object, $property)
     {
-        return new MUtil_Lazy_Property($object, $property);
+        return new \MUtil_Lazy_Property($object, $property);
     }
 
     /**
-     * Raises a MUtil_Lazy_LazyInterface one level, but may still
-     * return a MUtil_Lazy_LazyInterface.
+     * Raises a \MUtil_Lazy_LazyInterface one level, but may still
+     * return a \MUtil_Lazy_LazyInterface.
      *
      * This function is usually used to perform a e.g. filter function on object that may e.g.
      * contain Repeater objects.
      *
-     * @param mixed $object Usually an object of type MUtil_Lazy_LazyInterface
+     * @param mixed $object Usually an object of type \MUtil_Lazy_LazyInterface
      * @param mixed $stack Optional variable stack for evaluation
      * @return mixed
      */
     public static function raise($object, $stack = null)
     {
-        if ($object instanceof MUtil_Lazy_LazyInterface) {
+        if ($object instanceof \MUtil_Lazy_LazyInterface) {
             return $object->__toValue(self::_checkStack($stack, __FUNCTION__));
         } else {
             return $object;
@@ -283,22 +295,22 @@ class MUtil_Lazy
     /**
      *
      * @param mixed $repeatable
-     * @return MUtil_Lazy_RepeatableInterface
+     * @return \MUtil_Lazy_RepeatableInterface
      */
     public static function repeat($repeatable)
     {
-        if ($repeatable instanceof MUtil_Lazy_RepeatableInterface) {
+        if ($repeatable instanceof \MUtil_Lazy_RepeatableInterface) {
             return $repeatable;
         }
 
-        return new MUtil_Lazy_Repeatable($repeatable);
+        return new \MUtil_Lazy_Repeatable($repeatable);
     }
 
     /**
-     * Raises a MUtil_Lazy_LazyInterface until the return object is not a
-     * MUtil_Lazy_LazyInterface object.
+     * Raises a \MUtil_Lazy_LazyInterface until the return object is not a
+     * \MUtil_Lazy_LazyInterface object.
      *
-     * @param mixed $object Usually an object of type MUtil_Lazy_LazyInterface
+     * @param mixed $object Usually an object of type \MUtil_Lazy_LazyInterface
      * @param mixed $stack Optional variable stack for evaluation
      * @return mixed Something not lazy
      */
@@ -307,8 +319,8 @@ class MUtil_Lazy
         $raised = false;
         $stack  = self::_checkStack($stack, __FUNCTION__);
 
-        // Resolving when MUtil_Lazy_LazyInterface.
-        while ($object instanceof MUtil_Lazy_LazyInterface) {
+        // Resolving when \MUtil_Lazy_LazyInterface.
+        while ($object instanceof \MUtil_Lazy_LazyInterface) {
             $object = $object->__toValue($stack);
             $raised = true;
         }
@@ -321,15 +333,15 @@ class MUtil_Lazy
                 $raised = true;
             }
 
-            if ($raised && MUtil_Lazy::$verbose) {
-                MUtil_Echo::header('Lazy array rise');
-                MUtil_Echo::classToName($result);
+            if ($raised && \MUtil_Lazy::$verbose) {
+                \MUtil_Echo::header('Lazy array rise');
+                \MUtil_Echo::classToName($result);
             }
             return $result;
         }
-        if ($raised && MUtil_Lazy::$verbose) {
-            MUtil_Echo::header('Lazy rise');
-            MUtil_Echo::classToName($object);
+        if ($raised && \MUtil_Lazy::$verbose) {
+            \MUtil_Echo::header('Lazy rise');
+            \MUtil_Echo::classToName($object);
         }
 
         return $object;
@@ -339,26 +351,29 @@ class MUtil_Lazy
      * Set the current stack
      *
      * @param mixed $stack Value to be turned into stack for evaluation
-     * @return MUtil_Lazy_StackInterface
+     * @return \MUtil_Lazy_StackInterface
      */
     public static function setStack($stack)
     {
-        if ($stack instanceof MUtil_Lazy_StackInterface) {
+        if ($stack instanceof \MUtil_Lazy_StackInterface) {
             self::$_stack = $stack;
 
-        } elseif ($stack instanceof MUtil_Model_Bridge_TableBridgeAbstract) {
-            self::$_stack = new MUtil_Lazy_Stack_BridgeStack($stack);
+        } elseif ($stack instanceof \MUtil_Model_Bridge_TableBridgeAbstract) {
+            self::$_stack = new \MUtil_Lazy_Stack_BridgeStack($stack);
 
-        } elseif (MUtil_Ra::is($stack)) {
-            $stack = MUtil_Ra::to($stack);
+        } elseif ($stack instanceof \MUtil_Lazy_Repeatable) {
+            self::$_stack = new RepeatableStack($stack);
 
-            self::$_stack = new MUtil_Lazy_Stack_ArrayStack($stack);
+        } elseif (\MUtil_Ra::is($stack)) {
+            $stack = \MUtil_Ra::to($stack);
+
+            self::$_stack = new \MUtil_Lazy_Stack_ArrayStack($stack);
 
         } elseif (is_object($stack)) {
-            self::$_stack = new MUtil_Lazy_Stack_ObjectStack($stack);
+            self::$_stack = new \MUtil_Lazy_Stack_ObjectStack($stack);
 
         } else {
-            throw new MUtil_Lazy_LazyException("Lazy stack set to invalid scalar type.");
+            throw new \MUtil_Lazy_LazyException("Lazy stack set to invalid scalar type.");
         }
 
         return self::$_stack;
