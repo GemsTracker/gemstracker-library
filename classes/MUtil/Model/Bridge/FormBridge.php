@@ -87,7 +87,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         self::AUTO_OPTIONS       => array('elementClass', 'multiOptions'),
         self::CHECK_OPTIONS      => array('checkedValue', 'uncheckedValue'),
         self::DATE_OPTIONS       => array('dateFormat', 'storageFormat'),
-        self::DISPLAY_OPTIONS    => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'label', 'onclick', 'readonly', 'required', 'tabindex', 'value', 'showLabels', 'labelplacement'),
+        self::DISPLAY_OPTIONS    => array('accesskey', 'autoInsertNotEmptyValidator', 'class', 'disabled', 'description', 'escape', 'escapeDescription', 'label', 'onclick', 'readonly', 'required', 'tabindex', 'value', 'showLabels', 'labelplacement'),
         self::EXHIBIT_OPTIONS    => array('formatFunction', 'itemDisplay'),
         self::FAKESUBMIT_OPTIONS => array('label', 'tabindex', 'disabled'),
         self::FILE_OPTIONS       => array('accept', 'count', 'destination', 'extension', 'filename', 'valueDisabled'),
@@ -138,6 +138,12 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $this->form->addElement($element, $name, $options);
         if (is_string($element)) {
             $element = $this->form->getElement($name);
+        }
+        if (isset($options['escapeDescription']))  {
+            $description = $element->getDecorator('Description');
+            if ($description instanceof \Zend_Form_Decorator_Description) {
+                $description->setEscape($options['escapeDescription']);
+            }
         }
         $this->_applyFilters($name, $element);
         if (! $element instanceof Zend_Form_Element_Hidden) {
