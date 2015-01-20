@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: TrackFieldAction.php $
+ * @version    $Id: FieldReportAction.php $
  */
 
 /**
@@ -116,6 +116,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
     {
         $filter = $this->util->getRequestCache('index')->getProgramParams();
 
+        // Return empty model when no track sel;ected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             $model = new Gems_Model_JoinModel('trackfields' , 'gems__track_fields');
             $model->set('gtf_field_name', 'label', $this->_('Name'));
