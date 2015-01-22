@@ -434,7 +434,7 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 if (isset($existingTracks[$trackId])) {
                     foreach($existingTracks[$trackId] as $respTrack) {
                         if ($respTrack instanceof \Gems_Tracker_RespondentTrack) {
-                            if ($respTrack->hasSuccesCode()) {
+                            if ($respTrack->getReceptionCode()->isSuccess()) {
                                 // \MUtil_Echo::track($trackId, $respTrack->isOpen());
                                 // An open track of this type exists: do not create a new one
                                 if ($respTrack->isOpen()) {
