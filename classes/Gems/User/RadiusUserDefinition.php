@@ -126,11 +126,9 @@ class Gems_User_RadiusUserDefinition extends Gems_User_StaffUserDefinition imple
         //Ok hardcoded for now this needs to be read from the userdefinition
         $configData = $this->loadConfig(array('gor_id_organization' => $user->getBaseOrganizationId()));
 
-        $secret  = $this->project->decrypt($configData['grcfg_secret'], $configData['grcfg_encryption']);
-
         $config  = array('ip'                 => $configData['grcfg_ip'],
                          'authenticationport' => $configData['grcfg_port'],
-                         'sharedsecret'       => $secret);
+                         'sharedsecret'       => $configData['grcfg_secret']);
 
         //Unset empty
         foreach($config as $key=>$value) {
