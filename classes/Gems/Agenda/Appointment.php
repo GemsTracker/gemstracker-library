@@ -389,8 +389,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
             $respId = $this->getRespondentId();
             $orgId  = $this->getOrganizationId();
             $select->orWhere(
-                    "gr2t_id_user = $respId AND gr2t_id_organization = $orgId AND gr2t_id_track IN (?)",
-                    implode(', ', $ids)
+                    "gr2t_id_user = $respId AND gr2t_id_organization = $orgId AND gr2t_id_track IN (" .
+                    implode(', ', $ids) . ")"
                     );
         }
 
