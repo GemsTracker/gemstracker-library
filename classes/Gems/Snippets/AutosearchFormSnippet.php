@@ -47,6 +47,16 @@
 class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 {
     /**
+     * Url parameter to reset
+     */
+    const AUTOSEARCH_RESET = 'reset';
+
+    /**
+     * Field name for perioe filters
+     */
+    const PERIOD_DATE_USED = 'dateused';
+
+    /**
      *
      * @var Zend_Db_Adapter_Abstract
      */
@@ -99,6 +109,12 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      *
+     * @var array The input data for the model
+     * /
+    protected $searchData;
+
+    /**
+     *
      * @var Gems_Util
      */
     protected $util;
@@ -128,16 +144,16 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $fromLabel = $this->_('From');
         }
         if (is_string($dates)) {
-            $element = new Zend_Form_Element_Hidden('dateused');
+            $element = new Zend_Form_Element_Hidden(self::PERIOD_DATE_USED);
             $element->setValue($dates);
         } else {
             if (count($dates) >= $switchToSelect) {
-                $element = $this->_createSelectElement('dateused', $dates);
+                $element = $this->_createSelectElement(self::PERIOD_DATE_USED, $dates);
                 $element->setLabel($this->_('For date'));
 
                 $fromLabel = '';
             } else {
-                $element = $this->_createRadioElement('dateused', $dates);
+                $element = $this->_createRadioElement(self::PERIOD_DATE_USED, $dates);
                 $element->setSeparator(' ');
 
                 $fromLabel = html_entity_decode(' &raquo; ',  ENT_QUOTES, 'UTF-8');
@@ -151,7 +167,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             }
             $element->setValue($defaultDate);
         }
-        $elements['dateused'] = $element;
+        $elements[self::PERIOD_DATE_USED] = $element;
 
         $type = 'date';
         if ($this->dateFormat) {
@@ -411,7 +427,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
     {
-        $isUsed = isset($data['dateused']) && $data['dateused'];
+        $isUsed = isset($data[self::PERIOD_DATE_USED]) && $data[self::PERIOD_DATE_USED];
         if (! $isUsed) {
             return;
         }
@@ -430,10 +446,10 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
         }
 
 
-        switch ($data['dateused'][0]) {
+        switch ($data[self::PERIOD_DATE_USED][0]) {
             case '_':
                 // overlaps
-                $periods = explode(' ', substr($data['dateused'], 1));
+                $periods = explode(' ', substr($data[self::PERIOD_DATE_USED], 1));
 
                 if ($isFrom && $isUntil) {
                     return sprintf(
@@ -465,7 +481,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
             case '-':
                 // within
-                $periods = explode(' ', substr($data['dateused'], 1));
+                $periods = explode(' ', substr($data[self::PERIOD_DATE_USED], 1));
 
                 if ($isFrom && $isUntil) {
                     return sprintf(
@@ -498,7 +514,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                 if ($isFrom && $isUntil) {
                     return sprintf(
                             '%s BETWEEN %s AND %s',
-                            $db->quoteIdentifier($data['dateused']),
+                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
                             $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
                             $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
                             );
@@ -506,14 +522,14 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                 if ($isFrom) {
                     return sprintf(
                             '%s >= %s',
-                            $db->quoteIdentifier($data['dateused']),
+                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
                             $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
                     return sprintf(
                             '%s <= %s',
-                            $db->quoteIdentifier($data['dateused']),
+                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
                             $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
                             );
                 }
@@ -537,6 +553,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $data = $data + $this->defaultSearchData;
         }
 
+        // \MUtil_Echo::track($this->searchData, $data);
+        // return $this->searchData;
         return $data;
     }
 }
