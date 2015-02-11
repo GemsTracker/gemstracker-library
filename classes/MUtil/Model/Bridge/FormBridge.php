@@ -470,12 +470,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 self::MULTI_OPTIONS
                 );
 
-        $element = $this->form->createElement('exhibitor', $name, $options);
-
-        $this->form->addElement($element);
-        // MUtil_Echo::r($element->getOrder(), $element->getName());
-
-        return $element;
+        return $this->_addToForm($name, 'exhibitor', $options);
     }
 
     /**
