@@ -130,10 +130,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
      * Add the element to the form and apply any filters & validators
      *
      * @param string $name
-     * @param Zend_Form_Element $element
+     * @param string|Zend_Form_Element $element Element or element class name
+     * @param array $options Element creation options
+     * @param boolean $addFilters When true filters are added
+     * @param boolean $addValidators When true validators are added
      * @return Zend_Form_Element
      */
-    protected function _addToForm($name, $element, $options = null)
+    protected function _addToForm($name, $element, $options = null, $addFilters = true, $addValidators = true)
     {
         $this->form->addElement($element, $name, $options);
         if (is_string($element)) {
@@ -145,11 +148,12 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 $description->setEscape($options['escapeDescription']);
             }
         }
-        $this->_applyFilters($name, $element);
-        if (! $element instanceof Zend_Form_Element_Hidden) {
+        if ($addFilters) {
+            $this->_applyFilters($name, $element);
+        }
+        if ($addValidators) {
             $this->_applyValidators($name, $element);
         }
-
         // MUtil_Echo::r($element->getOrder(), $element->getName());
 
         return $element;
@@ -447,6 +451,12 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         return $this->form->getDisplayGroup($name);
     }
 
+    /**
+     * Add an element of your choice to the form
+     *
+     * @param Zend_Form_Element $element
+     * @return Zend_Form_Element
+     */
     public function addElement(Zend_Form_Element $element)
     {
         return $this->_addToForm($element->getName(), $element);
@@ -470,7 +480,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 self::MULTI_OPTIONS
                 );
 
-        return $this->_addToForm($name, 'exhibitor', $options);
+        return $this->_addToForm($name, 'exhibitor', $options, false, false);
     }
 
     /**
@@ -488,7 +498,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
                 self::FAKESUBMIT_OPTIONS
                 );
 
-        return $this->_addToForm($name, 'fakeSubmit', $options);
+        return $this->_addToForm($name, 'fakeSubmit', $options, true, false);
     }
 
     public function addFile($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -536,6 +546,13 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         return $this->_addToForm($name, $element);
     }
 
+    /**
+     *
+     * @param string $name Element to add the filter to
+     * @param mixed $filter Filter object or classname
+     * @param array $options Filter options
+     * @return \MUtil_Model_Bridge_FormBridge
+     */
     public function addFilter($name, $filter, $options = array())
     {
         $element = $this->form->getElement($name);
@@ -601,7 +618,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $options = MUtil_Ra::pairs($options, 1);
 
 
-        return $this->_addToForm($name, 'Hidden', $options);
+        return $this->_addToForm($name, 'Hidden', $options, true, false);
     }
 
     public function addHiddenMulti($name_args)
@@ -621,7 +638,7 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
         $options = $this->_mergeOptions($name, $options,
             self::DISPLAY_OPTIONS);
 
-        return $this->_addToForm($name, 'html', $options);
+        return $this->_addToForm($name, 'html', $options, false, false);
     }
 
     public function addList($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
@@ -717,19 +734,14 @@ class MUtil_Model_Bridge_FormBridge implements MUtil_Model_Bridge_FormBridgeInte
             $repeatName = $name . '__repeat';
         }
 
-        $element = $this->form->createElement('password', $name, $options);
-        $this->_applyFilters($name, $element);
-        $this->_applyValidators($name, $element);
-        $this->form->addElement($element);
+        $element = $this->_addToForm($name, 'password', $options);
 
         if ($stringlength) {
             $element->addValidator('StringLength', true, $stringlength);
         }
 
         if (isset($repeatLabel)) {
-            $repeatElement = $this->form->createElement('password', $repeatName, $repeatOptions);
-            $this->form->addElement($repeatElement);
-            $this->_applyFilters($name, $repeatElement);
+            $repeatElement = $this->_addToForm($repeatName, 'password', $repeatOptions, true, false);
 
             if ($stringlength) {
                 $repeatElement->addValidator('StringLength', true, $stringlength);
