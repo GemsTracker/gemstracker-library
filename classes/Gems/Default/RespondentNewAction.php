@@ -76,6 +76,13 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     protected $createEditSnippets = 'RespondentFormSnippet';
 
     /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = array('grc_success' => 1);
+
+    /**
      * The snippets used for the delete action.
      *
      * @var mixed String or array of snippets name
@@ -279,17 +286,14 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $phonesep = MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, MUtil_Html::raw('&#9743; '));
         $citysep  = MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
 
-        $user = $this->loader->getCurrentUser();
-
-        $data = $this->util->getRequestCache()->getProgramParams();
-
-        if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
-            $column2 = 'gr2o_id_organization';
-        } else {
-            $model->addFilter(array('gr2o_id_organization' => $user->getCurrentOrganizationId()));
+        $filter = $this->getSearchFilter();
+        if (isset($filter[\MUtil_Model::REQUEST_ID2])) {
             $column2 = 'gr2o_opened';
+        } else {
+            $column2 = 'gr2o_id_organization';
         }
-        if (isset($data['grc_success']) && (! $data['grc_success'])) {
+        $filter = $this->getSearchFilter();
+        if (isset($filter['grc_success']) && (! $filter['grc_success'])) {
             $model->set('grc_description', 'label', $this->_('Rejection code'));
             $column2 = 'grc_description';
         }
@@ -386,6 +390,27 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     }
 
     /**
+     * Get the data to use for searching: the values passed in the request + any defaults
+     * as opposed to the actual filter used in the query.
+     *
+     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
+     * @return array or false
+     */
+    public function getSearchData($dontUseRequest = false)
+    {
+        if (! isset($this->defaultSearchData[\MUtil_Model::REQUEST_ID2])) {
+            $user = $this->loader->getCurrentUser();
+
+            if ($user->hasPrivilege('pr.respondent.multiorg') && (!$user->getCurrentOrganization()->canHaveRespondents())) {
+                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = '';
+            } else {
+                $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $user->getCurrentOrganizationId();
+            }
+        }
+        return parent::getSearchData($dontUseRequest);
+    }
+    
+    /**
      * Helper function to allow generalized statements about the items in the model.
      *
      * @param int $count
@@ -405,18 +430,6 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $user = $this->loader->getCurrentUser();
 
         if ($user->hasPrivilege('pr.respondent.multiorg') || $user->getCurrentOrganization()->canHaveRespondents()) {
-
-            // Make sure the filter for grc_success exists
-            $requestCache = $this->util->getRequestCache();
-            $data = $requestCache->getProgramParams();
-
-            if (! isset($data['grc_success'])) {
-                // Add request to cache as otherwise later searches (using autofilter) will miss
-                // this value
-                $data['grc_success'] = 1;
-                $requestCache->setProgramParams($data);
-            }
-
             parent::indexAction();
         } else {
             $this->addSnippet('Organization_ChooseOrganizationSnippet');

@@ -52,7 +52,6 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
      * @var mixed String or array of snippets name
      */
     protected $autofilterParameters = array(
-        'defaultSearchData' => 'getDefaultSearchData',
         'dateFormat'        => 'getDateFormat',
         'extraSort'         => array(
             'gap_admission_time' => SORT_ASC,
@@ -67,6 +66,12 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
      * @var mixed String or array of snippets name
      */
     protected $autofilterSnippets = 'Agenda_CalendarTableSnippet';
+
+    /**
+     *
+     * @var Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      * The snippets used for the index action, before those in autofilter
@@ -111,19 +116,43 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
     }
 
     /**
-     * Returns possible status types, can be filtered by implementations
+     * Get the data to use for searching: the values passed in the request + any defaults
+     * as opposed to the actual filter used in the query.
      *
-     * @return array
+     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
+     * @return array or false
      */
-    protected function getDefaultSearchData()
+    public function getSearchData($dontUseRequest = false)
     {
-        // The date is kept in the requestCache so it should not be an object
-        $date  = new MUtil_Date();
+        if (! $this->defaultSearchData) {
+            $this->defaultSearchData = array(
+                'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
+                'dateused'            => 'gap_admission_time',
+                'datefrom'            => new MUtil_Date(),
+                );
+        }
 
-        return array(
-            'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
-            'dateused'            => 'gap_admission_time',
-            'datefrom'            => $date->toString($this->getDateFormat()),
-            );
+        return parent::getSearchData($dontUseRequest);
+    }
+
+    /**
+     * Get the filter to use with the model for searching
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
+            $filter[] = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
+                $filter,
+                $this->db,
+                $this->getDateFormat(),
+                'yyyy-MM-dd HH:mm:ss');
+            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
+        }
+
+        return $filter;
     }
 }

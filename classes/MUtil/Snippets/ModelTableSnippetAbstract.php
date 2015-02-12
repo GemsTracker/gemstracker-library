@@ -222,7 +222,7 @@ abstract class MUtil_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_M
         $textKey = $model->getTextFilter();
         if ($searchText = $this->request->getParam($textKey)) {
             // MUtil_Echo::r($textKey . '[' . $searchText . ']');
-            $this->_marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'xxUTF-8');
+            $this->_marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
 
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label')) {

@@ -178,13 +178,6 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
         }
         $model->set('ggp_name', 'label', $this->translate->getAdapter()->_('Fill out by'));
 
-        $filter = $this->util->getRequestCache('index', $detailed)->getProgramParams();
-
-        // Add the period filter - if any
-        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
-            $model->addFilter(array($where));
-        }
-
         return $model;
     }
 
@@ -215,5 +208,22 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
     public function getTopic($count = 1)
     {
         return $this->plural('mail activity', 'mail activities', $count);
+    }
+
+    /**
+     * Get the filter to use with the model for searching
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
+            $filter[] = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
+        }
+
+        return $filter;
     }
 }

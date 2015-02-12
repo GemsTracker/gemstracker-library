@@ -75,9 +75,9 @@ class Gems_Selector_SelectorField
 
     public function getHRef(MUtil_Lazy_RepeatableInterface $repeater, array $url = array())
     {
-        $url[Gems_Selector_DateSelectorAbstract::DATE_FACTOR] = $repeater->date_factor;
-        $url[Gems_Selector_DateSelectorAbstract::DATE_GROUP]  = $this->name;
-        $url[Gems_Util_RequestCache::RESET_PARAM]             = null;
+        $url[\Gems_Selector_DateSelectorAbstract::DATE_FACTOR]       = $repeater->date_factor;
+        $url[\Gems_Selector_DateSelectorAbstract::DATE_GROUP]        = $this->name;
+        $url[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET] = null;
         return new MUtil_Html_HrefArrayAttribute($url);
     }
 

@@ -58,29 +58,6 @@ class Gems_Snippets_ModelTableSnippetGeneric extends Gems_Snippets_ModelTableSni
     protected $model;
 
     /**
-     *
-     * @var Gems_Util
-     */
-    protected $util;
-
-    /**
-     * Automatically add request cacge
-     *
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->util && (! $this->requestCache)) {
-            $this->requestCache = $this->util->getRequestCache();
-        }
-
-        return parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      * Creates the model
      *
      * @return MUtil_Model_ModelAbstract

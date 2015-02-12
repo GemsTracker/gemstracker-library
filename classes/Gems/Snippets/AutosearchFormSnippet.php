@@ -110,8 +110,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      *
      * @var array The input data for the model
-     * /
-    protected $searchData;
+     */
+    protected $searchData = false;
 
     /**
      *
@@ -261,7 +261,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     {
         parent::afterRegistry();
 
-        if ($this->util && (! $this->requestCache)) {
+        if ($this->util && (false !== $this->searchData) && (! $this->requestCache)) {
             $this->requestCache = $this->util->getRequestCache();
         }
         if ($this->requestCache) {
@@ -421,14 +421,13 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Helper function to generate a period query string
      *
-     * @param array $data A filter array or $request->getParams()
+     * @param array $filter A filter array or $request->getParams()
      * @param Zend_Db_Adapter_Abstract $db
      * @return string
      */
-    public static function getPeriodFilter(array $data, Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
+    public static function getPeriodFilter(array $filter, Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
     {
-        $isUsed = isset($data[self::PERIOD_DATE_USED]) && $data[self::PERIOD_DATE_USED];
-        if (! $isUsed) {
+        if (! (isset($filter[self::PERIOD_DATE_USED]) && $filter[self::PERIOD_DATE_USED])) {
             return;
         }
 
@@ -439,17 +438,16 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $inFormat  = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
-        $isFrom  = isset($data['datefrom'])  && $data['datefrom']  && MUtil_Date::isDate($data['datefrom'],  $inFormat);
-        $isUntil = isset($data['dateuntil']) && $data['dateuntil'] && MUtil_Date::isDate($data['dateuntil'], $inFormat);
+        $isFrom  = isset($filter['datefrom'])  && $filter['datefrom']  && MUtil_Date::isDate($filter['datefrom'],  $inFormat);
+        $isUntil = isset($filter['dateuntil']) && $filter['dateuntil'] && MUtil_Date::isDate($filter['dateuntil'], $inFormat);
         if (! ($isFrom || $isUntil)) {
             return;
         }
 
-
-        switch ($data[self::PERIOD_DATE_USED][0]) {
+        switch ($filter[self::PERIOD_DATE_USED][0]) {
             case '_':
                 // overlaps
-                $periods = explode(' ', substr($data[self::PERIOD_DATE_USED], 1));
+                $periods = explode(' ', substr($filter[self::PERIOD_DATE_USED], 1));
 
                 if ($isFrom && $isUntil) {
                     return sprintf(
@@ -457,8 +455,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                                 (%2$s >= %3$s OR %2$s IS NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
@@ -466,7 +464,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%2$s >= %3$s OR (%2$s IS NULL AND %1$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
@@ -474,22 +472,22 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%1$s <= %3$s OR (%1$s IS NULL AND %2$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;
 
             case '-':
                 // within
-                $periods = explode(' ', substr($data[self::PERIOD_DATE_USED], 1));
+                $periods = explode(' ', substr($filter[self::PERIOD_DATE_USED], 1));
 
                 if ($isFrom && $isUntil) {
                     return sprintf(
                             '%1$s >= %3$s AND %2$s <= %4$s',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
@@ -497,7 +495,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%1$s >= %3$s AND (%2$s IS NULL OR %2$s >= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
@@ -505,7 +503,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%2$s <= %3$s AND (%1$s IS NULL OR %1$s <= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;
@@ -514,23 +512,23 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                 if ($isFrom && $isUntil) {
                     return sprintf(
                             '%s BETWEEN %s AND %s',
-                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($data['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
+                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
                     return sprintf(
                             '%s >= %s',
-                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($data['datefrom'], $outFormat, $inFormat))
+                            $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
+                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
                     return sprintf(
                             '%s <= %s',
-                            $db->quoteIdentifier($data[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($data['dateuntil'], $outFormat, $inFormat))
+                            $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
+                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;
@@ -543,17 +541,21 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function getSearchData()
     {
+        if (false !== $this->searchData) {
+            // \MUtil_Echo::track($this->searchData);
+            return $this->searchData;
+        }
         if ($this->requestCache) {
-            $data = $this->requestCache->getProgramParams();
+            $filter = $this->requestCache->getProgramParams();
         } else {
-            $data = $this->request->getParams();
+            $filter = $this->request->getParams();
         }
 
         if ($this->defaultSearchData) {
-            $data = $data + $this->defaultSearchData;
+            $filter = $filter + $this->defaultSearchData;
         }
 
-        // \MUtil_Echo::track($this->searchData, $data);
+        // \MUtil_Echo::track($this->searchData, $filter);
         // return $this->searchData;
         return $data;
     }

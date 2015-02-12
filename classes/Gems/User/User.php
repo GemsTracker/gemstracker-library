@@ -1493,7 +1493,11 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                 // Now update the requestcache to change the oldOrgId to the new orgId
                 // Don't do it when the oldOrgId doesn't match
                 if ($requestCache = $this->session->requestCache) {
-
+                    if ($organization->canHaveRespondents()) {
+                        $usedOrganizationId = $organizationId;
+                    } else {
+                        $usedOrganizationId = null;
+                    }
                     //Create the list of request cache keys that match an organization ID (to be extended)
                     foreach ($requestCache as $key => $value) {
                         if (is_array($value)) {
@@ -1501,13 +1505,24 @@ class Gems_User_User extends MUtil_Registry_TargetAbstract
                                 if (in_array($paramKey, $this->possibleOrgIds)) {
 
                                     if ($paramValue == $oldOrganizationId) {
-                                        $requestCache[$key][$paramKey] = $organizationId;
+                                        $requestCache[$key][$paramKey] = $usedOrganizationId;
                                     }
                                 }
                             }
                         }
                     }
                     $this->session->requestCache = $requestCache;
+                }
+                // $searchSession &= $_SESSION['ModelSnippetActionAbstract_getSearchData'];
+                $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
+                foreach ($searchSession as $id => $data) {
+                    foreach ($this->possibleOrgIds as $key) {
+                        // WARNING: use {$id}[$key] otherwise the {$id[$key]} index of searchSession is returned
+                        if (isset($searchSession->{$id}[$key]) && ($searchSession->{$id}[$key] == $oldOrganizationId)) {
+                            $searchSession->{$id}[$key] = $usedOrganizationId;
+                            // \MUtil_Echo::track($key, $data[$key], $searchSession->{$id}[$key]);
+                        }
+                    }
                 }
             }
         }

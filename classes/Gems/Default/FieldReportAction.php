@@ -114,7 +114,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      */
     public function createModel($detailed, $action)
     {
-        $filter = $this->util->getRequestCache('index')->getProgramParams();
+        $filter = $this->getSearchFilter();
 
         // Return empty model when no track sel;ected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
@@ -284,7 +284,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      */
     public function getBrowseColumns()
     {
-        $filter = $this->util->getRequestCache('index')->getProgramParams();
+        $filter = $this->getSearchFilter();
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
             return array(
                 array('gtf_field_name'),

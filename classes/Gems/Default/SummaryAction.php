@@ -122,14 +122,14 @@ class Gems_Default_SummaryAction extends Gems_Controller_ModelSnippetActionAbstr
         $model->set('gsu_id_primary_group',  'label', $this->_('Filler'),
                 'multiOptions', $this->util->getDbLookup()->getGroups());
 
-        $data = $this->util->getRequestCache('index')->getProgramParams();
-        if (! (isset($data['gto_id_organization']) && $data['gto_id_organization'])) {
+        $filter = $this->getSearchFilter();
+        if (! (isset($filter['gto_id_organization']) && $filter['gto_id_organization'])) {
             $model->addFilter(array('gto_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
         }
 
-        if (isset($data['gto_id_track']) && $data['gto_id_track']) {
+        if (isset($filter['gto_id_track']) && $filter['gto_id_track']) {
             // Add the period filter
-            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+            if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db)) {
                 $select->joinInner('gems__respondent2track', 'gto_id_respondent_track = gr2t_id_respondent_track', array());
                 $model->addFilter(array($where));
             }

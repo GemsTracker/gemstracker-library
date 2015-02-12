@@ -95,7 +95,7 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      * @var boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
      */
     public $includeNumericFilters = false;
-    
+
     /**
      * When true the post parameters are removed from the request while filtering
      *

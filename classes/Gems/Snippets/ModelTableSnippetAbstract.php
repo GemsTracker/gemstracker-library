@@ -96,6 +96,13 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     public $requestCache;
 
     /**
+     * Searchfilter
+     *
+     * @var array
+     */
+    protected $searchFilter = false;
+
+    /**
      * Optioan to manually diasable the menu
      *
      * @var boolean
@@ -160,6 +167,32 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     }
 
     /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if (false !== $this->searchFilter) {
+            if (! $this->baseUrl) {
+                $this->baseUrl[$this->request->getModuleKey()]     = $this->request->getModuleName();
+                $this->baseUrl[$this->request->getControllerKey()] = $this->request->getControllerName();
+                $this->baseUrl[$this->request->getActionKey()]     = 'index';
+            }
+        } elseif ($this->requestCache) {
+            // Items that should not be stored.
+            $this->requestCache->removeParams('action');
+
+            if (! $this->baseUrl) {
+                $this->baseUrl = $this->requestCache->getProgramParams();
+            }
+        }
+    }
+
+    /**
      * Make sure generic search text results are marked
      *
      * @return void
@@ -181,31 +214,6 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
                 }
             }
         }
-    }
-
-    /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->requestCache) {
-            // Items that should not be stored.
-            $this->requestCache->removeParams('action');
-
-            if ((! $this->baseUrl)) {
-                $this->baseUrl = $this->requestCache->getProgramParams();
-                // MUtil_Echo::track($this->baseUrl);
-
-                if (MUtil_Registry_Source::$verbose) {
-                    // MUtil_Echo::r($this->baseUrl, __CLASS__ . '->' .  __FUNCTION__);
-                }
-            }
-        }
-
-        return parent::checkRegistryRequestsAnswers();
     }
 
     /**
@@ -290,7 +298,10 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        if ($this->requestCache) {
+        if (false !== $this->searchFilter) {
+            $model->applyParameters($this->searchFilter, true);
+
+        } elseif ($this->requestCache) {
             $data = $this->requestCache->getProgramParams() + $this->defaultSearchData;
 
             // Remove all empty values (but not arrays) from the filter

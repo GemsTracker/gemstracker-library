@@ -94,7 +94,7 @@ class Gems_Default_ComplianceAction extends Gems_Controller_ModelSnippetActionAb
         $model->set('gr2t_start_date', 'label', $this->_('Start date'), 'dateFormat', 'dd-MM-yyyy');
         $model->set('gr2t_end_date',   'label', $this->_('End date'), 'dateFormat', 'dd-MM-yyyy');
 
-        $filter = $this->util->getRequestCache('index')->getProgramParams();
+        $filter = $this->getSearchFilter();
         if (! (isset($filter['gr2t_id_organization']) && $filter['gr2t_id_organization'])) {
             $model->addFilter(array('gr2t_id_organization' => $this->loader->getCurrentUser()->getRespondentOrgFilter()));
         }

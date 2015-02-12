@@ -47,26 +47,6 @@
 class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
-     * Optional string format for date
-     *
-     * @var string
-     */
-    protected $dateFormat;
-
-    /**
-     *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     * Optional database string format for date
-     *
-     * @var string
-     */
-    protected $storageFormat = 'yyyy-MM-dd HH:mm:ss';
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -145,27 +125,5 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
 
         // MUtil_Model::$verbose = true;
         return $this->model;
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    {
-        parent::processFilterAndSort($model);
-
-        $params = $this->requestCache->getProgramParams() + $this->defaultSearchData;
-
-        $where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
-                $params,
-                $this->db,
-                $this->dateFormat,
-                $this->storageFormat);
-        if ($where) {
-            $model->addFilter(array($where));
-        }
-
     }
 }

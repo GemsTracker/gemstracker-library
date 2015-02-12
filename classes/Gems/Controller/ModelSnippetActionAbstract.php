@@ -57,8 +57,8 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         'containingId'  => 'autofilter_target',
         'keyboard'      => true,
         'onEmpty'       => 'getOnEmptyText',
-        // 'searchData'    => 'getSearchData',
-        // 'searchFilter'  => 'getSearchFilter',
+        'searchData'    => 'getSearchData',
+        'searchFilter'  => 'getSearchFilter',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
         );
@@ -259,10 +259,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         // Make sure we have all the parameters used by the model
         $this->autofilterParameters = $this->autofilterParameters + $this->_autofilterExtraParameters;
 
-        // Set the request cache to use the search params from the index action
-        $requestCache = $this->util->getRequestCache('index', true);
-        $filter       = $requestCache->getProgramParams();
-        $model        = $this->getModel();
+        $model = $this->getModel();
 
         // Set any defaults.
         if (isset($this->autofilterParameters['sortParamAsc'])) {
@@ -272,9 +269,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
             $model->setSortParamDesc($this->autofilterParameters['sortParamDesc']);
         }
 
-        // Remove all empty values (but not arrays) from the filter
-        $filter = array_filter($filter, function($i) { return is_array($i) || strlen($i); });
-        $model->applyParameters($filter);
+        $model->applyParameters($this->getSearchFilter(), true);
 
         // Add any defaults.
         if (isset($this->autofilterParameters['extraFilter'])) {
@@ -480,9 +475,9 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * Get the data to use for searching: the values passed in the request + any defaults
      * as opposed to the actual filter used in the query.
      *
-     * @param boolean $dontUseRequest Do use the request for filtering unless false
+     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
      * @return array or false
-     * /
+     */
     public function getSearchData($dontUseRequest = false)
     {
         if ($this->_searchData) {
@@ -495,50 +490,64 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
                     $this->request->getParam(\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET),
                 );
         } else {
+            // use strlen to fitler so that '0' is a value
             $data = $this->request->getParams();
+
             // remove controler/action/module
             unset($data[$this->request->getModuleKey()],
                     $data[$this->request->getControllerKey()],
                     $data[$this->request->getActionKey()]);
-
-            foreach ($data as $key => $val) {
-                if ("" === $val) {
-                    // unset($data[$key]);
-                }
-            }
         }
 
-        \MUtil_Echo::track($data, $this->searchSessionId);
-
-        if (! $this->searchSessionId) {
-            $this->searchSessionId = get_class($this);
+        if ($this->searchSessionId) {
+            $sessionId = $this->searchSessionId;
+        } else {
+            $sessionId = get_class($this);
         }
 
-        $session = new \Zend_Session_Namespace($this->searchSessionId);
+        $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
+        if (isset($searchSession->$sessionId)) {
+            $sessionData = $searchSession->$sessionId;
+            // \MUtil_Echo::track($sessionData);
+        } else {
+            $sessionData = array();
+        }
 
         if (isset($data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]) &&
                 $data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]) {
 
             $this->request->setParam(\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET, null);
-            unset($data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]);
 
-            foreach ($session as $key => $value) {
-                // Remove any empty strings
-                if (array_key_exists($key, $data)) {
-                    $session->$key = $data[$key];
-                } else {
-                    unset($session->$key);
+            // Clean up values
+            $sessionData = array();
+        } else {
+            foreach ($sessionData as $key => $value) {
+                if (! array_key_exists($key, $data)) {
+                    $data[$key] = $value;
                 }
             }
         }
 
+        // Always remove
+        // unset($data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]);
+
+        // Store cleaned values in session
+        $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
+
+        // Add defaults to data without cleanup
         if ($this->defaultSearchData) {
             $data = $data + $this->defaultSearchData;
         }
 
-        \MUtil_Echo::track($data, $this->searchSessionId);
+        // \MUtil_Echo::track($data, $this->searchSessionId);
 
-        $this->_searchData = array_filter($data);
+        // Remove empty strings and nulls HERE as they are not part of
+        // the filter itself, but the values should be stored in the session.
+        //
+        // Remove all empty values (but not arrays) from the filter
+        $this->_searchData = array_filter($data, function($i) { return is_array($i) || strlen($i); });
+
+        // \MUtil_Echo::track($this->_searchData, $this->searchSessionId);
 
         return $this->_searchData;
     }
@@ -547,7 +556,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * Get the filter to use with the model for searching
      *
      * @return array or false
-     * /
+     */
     public function getSearchFilter()
     {
         if (false !== $this->_searchFilter) {
@@ -564,7 +573,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
 
             $this->_searchFilter[$field] = $value;
         }
-        // \MUtil_Echo::track($this->_searchFilter, $this->_searchData);
 
         return $this->_searchFilter;
     }
