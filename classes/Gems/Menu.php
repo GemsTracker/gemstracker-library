@@ -778,7 +778,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $ul = $this->renderFirst();
 
-        $this->renderItems($ul, $nav);
+        $this->renderItems($ul, $nav, true);
 
         return $ul->render($view);
     }
@@ -802,8 +802,9 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param MUtil_Html_ListElement $ul
      * @param array $items
+     * @param boolean $cascade render nested items
      */
-    protected function renderItems(MUtil_Html_ListElement $ul, array $items)
+    protected function renderItems(MUtil_Html_ListElement $ul, array $items, $cascade)
     {
         foreach ($items as $item) {
             if (isset($item['visible'], $item['label']) && $item['visible'] && $item['label']) {
@@ -827,8 +828,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     $a->target = $item['target'];
                 }
 
-                if (isset($item['pages']) && is_array($item['pages'])) {
-                    $this->renderItems($li->ul(array('class' => 'subnav '. $this->_menuUlClass)), $item['pages']);
+                if ($cascade && isset($item['pages']) && is_array($item['pages'])) {
+                    $this->renderItems($li->ul(array('class' => 'subnav '. $this->_menuUlClass)), $item['pages'], true);
                 }
             }
         }
@@ -909,7 +910,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             if ($sub['label'] === $activeItem->get('label')) {
 
                 if (isset($sub['pages'])) {
-                    $this->renderItems($ul, $sub['pages']);
+                    $this->renderItems($ul, $sub['pages'], true);
                 }
 
                 return $ul;
@@ -926,9 +927,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      */
     public function toTopLevelElement()
     {
-
-        $this->setBranchVisible(array());
         $activeItems = $this->_findPath($this->escort->request);
+        $this->setBranchVisible($activeItems);
         foreach ($activeItems as $activeItem) {
             if ($activeItem instanceof Gems_Menu_SubMenuItem) {
                 $activeItem->set('class', 'active');
@@ -949,7 +949,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $ul = $this->renderFirst();
 
-        $this->renderItems($ul, $nav);
+        $this->renderItems($ul, $nav, false);
 
         return $ul;
     }

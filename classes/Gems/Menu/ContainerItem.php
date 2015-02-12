@@ -49,6 +49,28 @@
 class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
 {
     /**
+     *
+     * @var \Zend_Session_Namespace
+     */
+    private static $_sessionStore;
+
+    /**
+     *
+     * @return \Zend_Session_Namespace
+     */
+    private static function _getSessionStore($label)
+    {
+        if (! self::$_sessionStore instanceof \Zend_Session_Namespace) {
+            self::$_sessionStore = new \Zend_Session_Namespace('MenuContainerItems');
+        }
+        if (! isset(self::$_sessionStore->$label)) {
+            self::$_sessionStore->$label = new ArrayObject();
+        }
+
+        return self::$_sessionStore->$label;
+    }
+
+    /**
      * Returns a Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
@@ -58,6 +80,16 @@ class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
     protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
     {
         $result = parent::_toNavigationArray($source);
+
+        $store  = self::_getSessionStore($this->get('label'));
+        if (isset($store->controller)) {
+            $result['controller'] = $store->controller;
+            $this->set('controller', $store->controller);
+        }
+       if (isset($store->action)) {
+           $result['action'] = $store->action;
+           $this->set('action', $store->action);
+       }
 
         // Get any missing MVC keys from children, even when invisible
         if ($requiredIndices = $this->notSet('controller', 'action')) {
@@ -125,6 +157,29 @@ class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
                 }
             }
         }
+        return $this;
+    }
+
+    /**
+     * Make sure only the active branch is visible
+     *
+     * @param array $activeBranch Of Gems_Menu_Menu Abstract items
+     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     */
+    protected function setBranchVisible(array $activeBranch)
+    {
+        parent::setBranchVisible($activeBranch);
+
+        $child  = end($activeBranch);
+        $store  = self::_getSessionStore($this->get('label'));
+        $contr  = $child->get('controller');
+        $action = $child->get('action');
+
+        $store->controller = $contr;
+        $store->action = $action;
+        $this->set('controller', $contr);
+        $this->set('action', $action);
+
         return $this;
     }
 }
