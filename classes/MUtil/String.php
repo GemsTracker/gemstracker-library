@@ -73,10 +73,14 @@ class MUtil_String
      *
      * @param string $haystack The string to search in
      * @param string $needle The string to search for
+     * @param boolean $caseInSensitive When true a case insensitive compare is performed
      * @return boolean
      */
-    public static function contains($haystack, $needle)
+    public static function contains($haystack, $needle, $caseInSensitive = false)
     {
+        if ($caseInSensitive) {
+            return stripos($haystack, $needle) !== false;
+        }
         return strpos($haystack, $needle) !== false;
     }
 
@@ -130,9 +134,9 @@ class MUtil_String
      * Split a string whereever the callback returns true (including
      * the character that returns true.
      *
-     * MUtil_String::splitOnCharCallback('abcDef', 'ctype_upper') => array(0 => 'abc', 1 => 'Def');
+     * \MUtil_String::splitOnCharCallback('abcDef', 'ctype_upper') => array(0 => 'abc', 1 => 'Def');
      *
-     * MUtil_String::splitOnCharCallback('abCDef', 'ctype_upper', true) => array(0 => 'ab', 2 => 'ef');
+     * \MUtil_String::splitOnCharCallback('abCDef', 'ctype_upper', true) => array(0 => 'ab', 2 => 'ef');
      *
      * @param string $input
      * @param callback $callBack Taking a single character as input

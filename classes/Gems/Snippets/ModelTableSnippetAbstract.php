@@ -42,7 +42,6 @@
  * - Display class: 'browser'
  *
  * Extra helpers are:
- * - Baseurl helper:  $this->requestCache
  * - Keyboard access: $this->keyboard & getHtmlOutput()
  * - Menu helpers:    $this->menu, findMenuItem()
  * - Sort parameters: $sortParamAsc & $sortParamDesc
@@ -53,7 +52,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_ModelTableSnippetAbstract
+abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -84,16 +83,9 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
-
-    /**
-     * Optional, used for base url
-     *
-     * @var Gems_Util_RequestCache
-     */
-    public $requestCache;
 
     /**
      * Optioan to manually diasable the menu
@@ -122,11 +114,11 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($model->has('row_class')) {
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
@@ -152,37 +144,11 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      * Only called when $this->browse is true. Overrule this function
      * to define your own method.
      *
-     * $param Zend_Paginator $paginator
+     * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
+    protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
     {
-        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
-    }
-
-    /**
-     * Called after the check that all required registry values
-     * have been set correctly has run.
-     *
-     * @return void
-     */
-    public function afterRegistry()
-    {
-        parent::afterRegistry();
-
-        if (false !== $this->searchFilter) {
-            if (! $this->baseUrl) {
-                $this->baseUrl[$this->request->getModuleKey()]     = $this->request->getModuleName();
-                $this->baseUrl[$this->request->getControllerKey()] = $this->request->getControllerName();
-                $this->baseUrl[$this->request->getActionKey()]     = 'index';
-            }
-        } elseif ($this->requestCache) {
-            // Items that should not be stored.
-            $this->requestCache->removeParams('action');
-
-            if (! $this->baseUrl) {
-                $this->baseUrl = $this->requestCache->getProgramParams();
-            }
-        }
+        $table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
     }
 
     /**
@@ -199,8 +165,8 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
 
         if (isset($filter[$textKey])) {
             $searchText = $filter[$textKey];
-            // MUtil_Echo::r('[' . $searchText . ']');
-            $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            // \MUtil_Echo::r('[' . $searchText . ']');
+            $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label')) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
@@ -215,7 +181,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      * @param string $controller
      * @param string $action
      * @param string $label
-     * @return MUtil_Html_AElement
+     * @return \MUtil_Html_AElement
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
     {
@@ -229,7 +195,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      *
      * @param string $controller
      * @param string $action
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     protected function findMenuItem($controller, $action = 'index')
     {
@@ -239,7 +205,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Returns an edit menu item, if access is allowed by privileges
      *
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     protected function getEditMenuItem()
     {
@@ -251,10 +217,10 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
@@ -262,10 +228,10 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
         if ($this->containingId || $this->keyboard) {
             $this->applyHtmlAttributes($table);
 
-            $div = MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
+            $div = \MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
 
             if ($this->keyboard) {
-                return array($div, new Gems_JQuery_TableRowKeySelector($div));
+                return array($div, new \Gems_JQuery_TableRowKeySelector($div));
             } else {
                 return $div;
             }
@@ -277,30 +243,10 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Returns a show menu item, if access is allowed by privileges
      *
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     protected function getShowMenuItem()
     {
         return $this->findMenuItem($this->request->getControllerName(), 'show');
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    {
-        if ((false === $this->searchFilter) && $this->requestCache) {
-            $data = $this->requestCache->getProgramParams() + $this->defaultSearchData;
-
-            // Remove all empty values (but not arrays) from the filter
-            $data = array_filter($data, function($i) { return is_array($i) || strlen($i); });
-
-            $model->applyParameters($data);
-
-        } else {
-            parent::processFilterAndSort($model);
-        }
     }
 }

@@ -52,7 +52,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSnippetAbstract
+class Gems_Snippets_FolderModelTableSnippet extends \MUtil_Snippets_ModelTableSnippetAbstract
 {
     /**
      * Shortfix to add class attribute
@@ -76,22 +76,15 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
-
-    /**
-     * Optional, used for base url
-     *
-     * @var Gems_Util_RequestCache
-     */
-    public $requestCache;
 
     /**
      * The $request param that stores the ascending sort
@@ -109,7 +102,7 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -119,11 +112,11 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -147,15 +140,15 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
 
     /**
      *
-     * @staticvar MUtil_Html_HtmlElement $blank What to display when blank
-     * @param MUtil_Html_HtmlElement $td      The element / cell to add the conditional link
-     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @staticvar \MUtil_Html_HtmlElement $blank What to display when blank
+     * @param \MUtil_Html_HtmlElement $td      The element / cell to add the conditional link
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
      * @param string $icon                    Name of icon file
-     * @param Gems_Menu_SubMenuItem $menuItem The menu item to add
+     * @param \Gems_Menu_SubMenuItem $menuItem The menu item to add
      * @param mixed $options                  Other values for for link (not used for blank)
      * @return void
      */
-    protected function addFileImage(MUtil_Html_HtmlElement $td, MUtil_Model_Bridge_TableBridge $bridge, $icon, Gems_Menu_SubMenuItem $menuItem = null, $options = null)
+    protected function addFileImage(\MUtil_Html_HtmlElement $td, \MUtil_Model_Bridge_TableBridge $bridge, $icon, \Gems_Menu_SubMenuItem $menuItem = null, $options = null)
     {
         static $blank;
 
@@ -164,12 +157,12 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
         }
 
         if (! $blank) {
-            $blank = MUtil_Html::create('img', array('src' => 'blank.png', 'alt' => '', 'class' => 'file-icon'));
+            $blank = \MUtil_Html::create('img', array('src' => 'blank.png', 'alt' => '', 'class' => 'file-icon'));
         }
 
         $href  = $menuItem->toHRefAttribute($this->request, $bridge);
         $title = array(strtolower($menuItem->get('label')), $bridge->relpath);
-        $img  = MUtil_Html::create('img', array(
+        $img  = \MUtil_Html::create('img', array(
             'src'   => $icon,
             'alt'   => $title,
             'class' => 'file-icon',
@@ -183,9 +176,9 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      * Only called when $this->browse is true. Overrule this function
      * to define your own method.
      *
-     * $param Zend_Paginator $paginator
+     * $param \Zend_Paginator $paginator
      */
-    protected function addPaginator(MUtil_Html_TableElement $table, Zend_Paginator $paginator)
+    protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
     {
         $table->tfrow()->pagePanel($paginator, $this->request, $this->translate, array('baseUrl' => $this->baseUrl));
     }
@@ -204,8 +197,8 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
 
         if (isset($filter[$textKey])) {
             $searchText = $filter[$textKey];
-            // MUtil_Echo::r('[' . $searchText . ']');
-            $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            // \MUtil_Echo::r('[' . $searchText . ']');
+            $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
             foreach ($model->getItemNames() as $name) {
                 if ($model->get($name, 'label')) {
                     $model->set($name, 'markCallback', array($marker, 'mark'));
@@ -215,41 +208,12 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
-     *
-     * @return boolean False if required are missing.
-     */
-    public function checkRegistryRequestsAnswers()
-    {
-        if ($this->util && (! $this->requestCache)) {
-            $this->requestCache = $this->util->getRequestCache();
-        }
-
-        if ($this->requestCache) {
-            // Items that should not be stored.
-            $this->requestCache->removeParams('action');
-
-            if ((! $this->baseUrl)) {
-                $this->baseUrl = $this->requestCache->getProgramParams();
-                // MUtil_Echo::track($this->baseUrl);
-
-                if (MUtil_Registry_Source::$verbose) {
-                    MUtil_Echo::r($this->baseUrl, __CLASS__ . '->' .  __FUNCTION__);
-                }
-            }
-        }
-
-        return parent::checkRegistryRequestsAnswers();
-    }
-
-    /**
      *
      * @param mixed $parameterSource
      * @param string $controller
      * @param string $action
      * @param string $label
-     * @return MUtil_Html_AElement
+     * @return \MUtil_Html_AElement
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
     {
@@ -261,7 +225,7 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -273,7 +237,7 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      *
      * @param string $controller
      * @param string $action
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     protected function findMenuItem($controller, $action = 'index')
     {
@@ -283,13 +247,13 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
     /**
      * Get the file icons
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
      * @return array $icon => $menuItem or array($menuItem, $other)
      */
-    protected function getFileIcons(MUtil_Model_Bridge_TableBridge $bridge)
+    protected function getFileIcons(\MUtil_Model_Bridge_TableBridge $bridge)
     {
-        $onDelete = new MUtil_Html_OnClickArrayAttribute();
-        $onDelete->addConfirm(MUtil_Lazy::call(
+        $onDelete = new \MUtil_Html_OnClickArrayAttribute();
+        $onDelete->addConfirm(\MUtil_Lazy::call(
                 'sprintf',
                 $this->_("Are you sure you want to delete '%s'?"),
                 $bridge->relpath
@@ -312,10 +276,10 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $table = parent::getHtmlOutput($view);
         $table->getOnEmpty()->class = 'centerAlign';
@@ -323,35 +287,15 @@ class Gems_Snippets_FolderModelTableSnippet extends MUtil_Snippets_ModelTableSni
         if ($this->containingId || $this->keyboard) {
             $this->applyHtmlAttributes($table);
 
-            $div = MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
+            $div = \MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
 
             if ($this->keyboard) {
-                return array($div, new Gems_JQuery_TableRowKeySelector($div));
+                return array($div, new \Gems_JQuery_TableRowKeySelector($div));
             } else {
                 return $div;
             }
         } else {
             return $table;
-        }
-    }
-
-    /**
-     * Overrule to implement snippet specific filtering and sorting.
-     *
-     * @param MUtil_Model_ModelAbstract $model
-     */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
-    {
-        if ($this->requestCache) {
-            $data = $this->requestCache->getProgramParams();
-
-            // Remove all empty values (but not arrays) from the filter
-            $data = array_filter($data, function($i) { return is_array($i) || strlen($i); });
-
-            $model->applyParameters($data);
-
-        } else {
-            parent::processFilterAndSort($model);
         }
     }
 }
