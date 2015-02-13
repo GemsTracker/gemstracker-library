@@ -110,6 +110,16 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
     protected $request;
 
     /**
+     * Searchfilter to use including model sorts, etcc..
+     *
+     * The default is false, to signal that no data was passed. Any other value including
+     * null means the value is used.
+     *
+     * @var array
+     */
+    protected $searchFilter = false;
+
+    /**
      * The $request param that stores the ascending sort
      *
      * @var string
@@ -199,7 +209,10 @@ abstract class MUtil_Snippets_ModelSnippetAbstract extends MUtil_Snippets_Snippe
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        if ($this->request instanceof Zend_Controller_Request_Abstract) {
+        if (false !== $this->searchFilter) {
+            $model->applyParameters($this->searchFilter, true);
+
+        } elseif ($this->request instanceof Zend_Controller_Request_Abstract) {
             $model->applyRequest($this->request, $this->removePost, $this->includeNumericFilters);
         }
     }

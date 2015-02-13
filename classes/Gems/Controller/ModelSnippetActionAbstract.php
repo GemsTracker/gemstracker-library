@@ -57,8 +57,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         'containingId'  => 'autofilter_target',
         'keyboard'      => true,
         'onEmpty'       => 'getOnEmptyText',
-        'searchData'    => 'getSearchData',
-        'searchFilter'  => 'getSearchFilter',
         'sortParamAsc'  => 'asrt',
         'sortParamDesc' => 'dsrt',
         );
@@ -75,18 +73,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         'tempDirectory'    => 'getImportTempDirectory',
         'topicCallable'    => 'getTopic',
         );
-
-    /**
-     *
-     * @var array The search data
-     */
-    private $_searchData = false;
-
-    /**
-     *
-     * @var array The search data
-     */
-    private $_searchFilter = false;
 
     /**
      * The snippets used for the autofilter action.
@@ -147,32 +133,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * @var mixed String or array of snippets name
      */
     protected $indexStopSnippets = 'Generic_CurrentButtonRowSnippet';
-
-    /**
-     * The default search data to use.
-     *
-     * @var array()
-     */
-    protected $defaultSearchData = array();
-
-    /**
-     * Optional search field renammes
-     *
-     * The sharing search sessions means that sometimes the fields in the search
-     * have to be renamed for a specific module.
-     *
-     * @var array
-     */
-    protected $searchFieldRenames = array();
-
-    /**
-     * An optional search session id.
-     *
-     * When set, autosearch gets a session memory. Multiple controllers can share one session id
-     *
-     * @var string
-     */
-    protected $searchSessionId;
 
     /**
      * The snippets used for the show action
@@ -469,112 +429,6 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public function getOnEmptyText()
     {
         return sprintf($this->_('No %s found...'), $this->getTopic(0));
-    }
-
-    /**
-     * Get the data to use for searching: the values passed in the request + any defaults
-     * as opposed to the actual filter used in the query.
-     *
-     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
-     * @return array or false
-     */
-    public function getSearchData($dontUseRequest = false)
-    {
-        if ($this->_searchData) {
-            return $this->_searchData;
-        }
-
-        if (true === $dontUseRequest) {
-            $data = array(
-                \Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET =>
-                    $this->request->getParam(\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET),
-                );
-        } else {
-            // use strlen to fitler so that '0' is a value
-            $data = $this->request->getParams();
-
-            // remove controler/action/module
-            unset($data[$this->request->getModuleKey()],
-                    $data[$this->request->getControllerKey()],
-                    $data[$this->request->getActionKey()]);
-        }
-
-        if ($this->searchSessionId) {
-            $sessionId = $this->searchSessionId;
-        } else {
-            $sessionId = get_class($this);
-        }
-
-        $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
-        if (isset($searchSession->$sessionId)) {
-            $sessionData = $searchSession->$sessionId;
-            // \MUtil_Echo::track($sessionData);
-        } else {
-            $sessionData = array();
-        }
-
-        if (isset($data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]) &&
-                $data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]) {
-
-            $this->request->setParam(\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET, null);
-
-            // Clean up values
-            $sessionData = array();
-        } else {
-            foreach ($sessionData as $key => $value) {
-                if (! array_key_exists($key, $data)) {
-                    $data[$key] = $value;
-                }
-            }
-        }
-
-        // Always remove
-        // unset($data[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]);
-
-        // Store cleaned values in session
-        $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
-
-        // Add defaults to data without cleanup
-        if ($this->defaultSearchData) {
-            $data = $data + $this->defaultSearchData;
-        }
-
-        // \MUtil_Echo::track($data, $this->searchSessionId);
-
-        // Remove empty strings and nulls HERE as they are not part of
-        // the filter itself, but the values should be stored in the session.
-        //
-        // Remove all empty values (but not arrays) from the filter
-        $this->_searchData = array_filter($data, function($i) { return is_array($i) || strlen($i); });
-
-        // \MUtil_Echo::track($this->_searchData, $this->searchSessionId);
-
-        return $this->_searchData;
-    }
-
-    /**
-     * Get the filter to use with the model for searching
-     *
-     * @return array or false
-     */
-    public function getSearchFilter()
-    {
-        if (false !== $this->_searchFilter) {
-            return $this->_searchFilter;
-        }
-
-        $filter = $this->getSearchData();
-        $this->_searchFilter = array();
-
-        foreach ($filter as $field => $value) {
-            if (isset($this->searchFieldRenames[$field])) {
-                $field = $this->searchFieldRenames[$field];
-            }
-
-            $this->_searchFilter[$field] = $value;
-        }
-
-        return $this->_searchFilter;
     }
 
     /**

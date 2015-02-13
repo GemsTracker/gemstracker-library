@@ -96,13 +96,6 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
     public $requestCache;
 
     /**
-     * Searchfilter
-     *
-     * @var array
-     */
-    protected $searchFilter = false;
-
-    /**
      * Optioan to manually diasable the menu
      *
      * @var boolean
@@ -298,10 +291,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        if (false !== $this->searchFilter) {
-            $model->applyParameters($this->searchFilter, true);
-
-        } elseif ($this->requestCache) {
+        if ((false === $this->searchFilter) && $this->requestCache) {
             $data = $this->requestCache->getProgramParams() + $this->defaultSearchData;
 
             // Remove all empty values (but not arrays) from the filter

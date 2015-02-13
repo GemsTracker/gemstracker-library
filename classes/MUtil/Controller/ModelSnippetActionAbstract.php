@@ -49,6 +49,17 @@
 abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Controller_Action
 {
     /**
+     * Default parameters for the autofilter action. Can be overruled
+     * by setting $this->autofilterParameters
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    private $_defaultAutofilterParameters = array(
+        'searchData'    => 'getSearchData',
+        'searchFilter'  => 'getSearchFilter',
+        );
+
+    /**
      * Default parameters for createAction, can be overruled by $this->createParameters
      * or $this->createEditParameters values with the same key.
      *
@@ -105,6 +116,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     private $_model;
 
     /**
+     *
+     * @var array The search data
+     */
+    private $_searchData = false;
+
+    /**
+     *
+     * @var array The search data
+     */
+    private $_searchFilter = false;
+
+    /**
      * The parameters used for the autofilter action.
      *
      * When the value is a function name of that object, then that functions is executed
@@ -155,6 +178,13 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var mixed String or array of snippets name
      */
     protected $createEditSnippets = 'ModelFormSnippet';
+
+    /**
+     * The default search data to use.
+     *
+     * @var array()
+     */
+    protected $defaultSearchData = array();
 
     /**
      * The parameters used for the delete action.
@@ -241,6 +271,25 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var mixed String or array of snippets name
      */
     protected $indexStopSnippets = null;
+
+    /**
+     * Optional search field renames
+     *
+     * The optional sharing of searches between action using searchSessionId's means that sometimes
+     * the fields in the search have to be renamed for a specific action.
+     *
+     * @var array
+     */
+    protected $searchFieldRenames = array();
+
+    /**
+     * An optional search session id.
+     *
+     * When set, autosearch gets a session memory. Multiple controllers can share one session id
+     *
+     * @var string
+     */
+    protected $searchSessionId;
 
     /**
      * The parameters used for the show action
@@ -359,7 +408,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         }
 
         if ($this->autofilterSnippets) {
-            $params = $this->_processParameters($this->autofilterParameters);
+            $params = $this->_processParameters($this->autofilterParameters + $this->_defaultAutofilterParameters);
 
             $this->addSnippets($this->autofilterSnippets, $params);
         }
@@ -494,6 +543,103 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     }
 
     /**
+     * Get the data to use for searching: the values passed in the request + any defaults
+     * used in the search form (or any other search request mechanism).
+     *
+     * It does not return the actual filter used in the query.
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchData()
+    {
+        if ($this->_searchData) {
+            return $this->_searchData;
+        }
+
+        $data = $this->request->getParams();
+
+        // remove controler/action/module
+        unset($data[$this->request->getModuleKey()],
+                $data[$this->request->getControllerKey()],
+                $data[$this->request->getActionKey()]);
+
+        if ($this->searchSessionId) {
+            $sessionId = $this->searchSessionId;
+        } else {
+            // Always use a search id 
+            $sessionId = get_class($this);
+        }
+
+        $searchSession = new \Zend_Session_Namespace('ModelSnippetActionAbstract_getSearchData');
+        if (isset($searchSession->$sessionId)) {
+            $sessionData = $searchSession->$sessionId;
+            // \MUtil_Echo::track($sessionData);
+        } else {
+            $sessionData = array();
+        }
+
+        if (isset($data[\MUtil_Model::AUTOSEARCH_RESET]) && $data[\MUtil_Model::AUTOSEARCH_RESET]) {
+            // Clean up values
+            $sessionData = array();
+
+            $this->request->setParam(\MUtil_Model::AUTOSEARCH_RESET, null);
+        } else {
+            $data = $data + $sessionData;
+        }
+
+        // Always remove
+        unset($data[\MUtil_Model::AUTOSEARCH_RESET]);
+
+        // Store cleaned values in session (we do not store the defaults as they may change
+        // depending on the request and this way the filter data responds to that).
+        $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
+
+        // Add defaults to data without cleanup
+        if ($this->defaultSearchData) {
+            $data = $data + $this->defaultSearchData;
+        }
+
+        // \MUtil_Echo::track($data, $this->searchSessionId);
+
+        // Remove empty strings and nulls HERE as they are not part of
+        // the filter itself, but the values should be stored in the session.
+        //
+        // Remove all empty values (but not arrays) from the filter
+        $this->_searchData = array_filter($data, function($i) { return is_array($i) || strlen($i); });
+
+        // \MUtil_Echo::track($this->_searchData, $this->searchSessionId);
+
+        return $this->_searchData;
+    }
+
+    /**
+     * Get the filter to use with the model for searching including model sorts, etc..
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        if (false !== $this->_searchFilter) {
+            return $this->_searchFilter;
+        }
+
+        $filter = $this->getSearchData();
+        $this->_searchFilter = array();
+
+        foreach ($filter as $field => $value) {
+            if (isset($this->searchFieldRenames[$field])) {
+                $field = $this->searchFieldRenames[$field];
+            }
+
+            $this->_searchFilter[$field] = $value;
+        }
+
+        return $this->_searchFilter;
+    }
+
+    /**
      * Generic model based import action
      */
     public function importAction()
@@ -511,7 +657,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     public function indexAction()
     {
         if ($this->indexStartSnippets || $this->indexStopSnippets) {
-            $params = $this->_processParameters($this->indexParameters + $this->autofilterParameters);
+            $params = $this->_processParameters(
+                    $this->indexParameters + $this->autofilterParameters + $this->_defaultAutofilterParameters
+                    );
 
             if ($this->indexStartSnippets) {
                 $this->addSnippets($this->indexStartSnippets, $params);

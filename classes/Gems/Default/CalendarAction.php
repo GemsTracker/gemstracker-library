@@ -145,11 +145,16 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
         $filter = parent::getSearchFilter();
 
         if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
-            $filter[] = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
+            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter(
                 $filter,
                 $this->db,
                 $this->getDateFormat(),
                 'yyyy-MM-dd HH:mm:ss');
+
+            if ($where) {
+                $filter[] = $where;
+            }
+            
             unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
         }
 

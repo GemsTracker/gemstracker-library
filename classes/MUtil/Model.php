@@ -51,6 +51,11 @@
 class MUtil_Model
 {
     /**
+     * Url parameter to reset searches
+     */
+    const AUTOSEARCH_RESET = 'reset';
+
+    /**
      * Indentifier for bridges meta key
      */
     const META_BRIDGES = 'bridges';

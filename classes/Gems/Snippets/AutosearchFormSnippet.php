@@ -47,11 +47,6 @@
 class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 {
     /**
-     * Url parameter to reset
-     */
-    const AUTOSEARCH_RESET = 'reset';
-
-    /**
      * Field name for perioe filters
      */
     const PERIOD_DATE_USED = 'dateused';

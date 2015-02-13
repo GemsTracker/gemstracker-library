@@ -1103,7 +1103,7 @@ class GemsEscort extends MUtil_Application_Escort
                 $currentId  = $user->getCurrentOrganizationId();
                 $params     = $this->request->getparams();
                 unset($params['error_handler']);    // If present, this is an object and causes a warning
-                unset($params[\Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET]);
+                unset($params[\MUtil_Model::AUTOSEARCH_RESET]);
                 if ($this->request instanceof Zend_Controller_Request_Http) {
                     // Use only get params, not post as it is an url
                     $params = array_diff_key($params, $this->request->getPost());

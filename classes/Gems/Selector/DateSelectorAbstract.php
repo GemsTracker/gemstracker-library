@@ -595,7 +595,7 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
 
         $href = array(
             self::DATE_FACTOR => $repeater->df_link,
-            \Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET => null,
+            \MUtil_Model::AUTOSEARCH_RESET => null,
             ) + $baseurl;
 
         // Repeating column
@@ -658,10 +658,9 @@ abstract class Gems_Selector_DateSelectorAbstract extends Gems_Registry_TargetAb
         }
         $th = $bridge->th();
         $th->class = array($this->dataCellClass, $columnClass);
-        $th->a(array(
-            self::DATE_FACTOR => $repeater->date_factor,
-            \Gems_Snippets_AutosearchFormSnippet::AUTOSEARCH_RESET => null,
-            ) + $baseurl, $header);
+        $th->a(array(self::DATE_FACTOR => $repeater->date_factor, \MUtil_Model::AUTOSEARCH_RESET => null) + $baseurl,
+                $header
+                );
         $th->setRepeater($repeater);
         $th->setRepeatTags(true);
 
