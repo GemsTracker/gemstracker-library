@@ -1,7 +1,7 @@
 
 CREATE TABLE IF NOT EXISTS gems__sources (
         gso_id_source       int(10) unsigned NOT NULL auto_increment,
-        gso_source_name     varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' varchar(40) NOT NULL,
+        gso_source_name     varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
 
         gso_ls_url          varchar(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL,
         gso_ls_class        varchar(60) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NOT NULL
