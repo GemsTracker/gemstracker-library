@@ -860,3 +860,30 @@ ALTER TABLE gems__track_appointments ADD
 -- PATCH: Field update event
 ALTER TABLE gems__tracks ADD
     gtr_fieldupdate_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' AFTER gtr_completed_event;
+
+-- GEMS VERSION: 57
+-- PATCH: More detailed logging setup options
+DELETE FROM gems__log_actions WHERE glac_log = 0;
+
+ALTER TABLE gems__log_actions ADD
+    glac_on_post boolean not null default 0 AFTER glac_change;
+UPDATE gems__log_actions SET glac_on_post = 1 WHERE glac_name LIKE '%edit%' OR glac_name LIKE '%create%';
+
+ALTER TABLE gems__log_actions ADD
+    glac_changed timestamp AFTER glac_log;
+UPDATE gems__log_actions SET glac_changed = glac_created;
+
+ALTER TABLE gems__log_actions CHANGE
+    glac_created glac_created timestamp not null;
+ALTER TABLE gems__log_actions CHANGE
+    glac_changed glac_changed timestamp not null default current_timestamp on update current_timestamp;
+
+ALTER TABLE gems__log_actions ADD
+    glac_changed_by bigint unsigned not null default 1 AFTER glac_changed;
+ALTER TABLE gems__log_actions CHANGE
+    glac_changed_by glac_changed_by bigint unsigned not null;
+
+ALTER TABLE gems__log_actions ADD
+    glac_created_by bigint unsigned not null default 1 AFTER glac_changed;
+ALTER TABLE gems__log_actions CHANGE
+    glac_created_by glac_created_by bigint unsigned not null;

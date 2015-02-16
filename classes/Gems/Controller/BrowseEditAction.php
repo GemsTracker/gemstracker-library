@@ -45,6 +45,7 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.0
+ * @deprecated Since version 1.7.1
  */
 abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelActionAbstract
 {

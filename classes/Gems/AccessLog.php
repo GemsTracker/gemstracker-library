@@ -26,18 +26,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @version $Id$
  * @package    Gems
  * @subpackage AccessLog
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
  * Logging class to log access to certaint controller/actions
  *
  * @author     Menno Dekker
- * @filesource
  * @package    Gems
  * @subpackage AccessLog
  * @copyright  Copyright (c) 2011 Erasmus MC
@@ -77,24 +76,24 @@ class Gems_AccessLog
         throw new exception(sprintf('Method %s does not exist', $name));
     }
 
-    public function __construct(Zend_Db_Adapter_Abstract $db)
+    public function __construct(\Zend_Db_Adapter_Abstract $db)
     {
         $this->_db = $db;
-        $this->_sessionStore = new Zend_Session_Namespace(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
+        $this->_sessionStore = new \Zend_Session_Namespace(GEMS_PROJECT_NAME . APPLICATION_PATH . '__Gems__' . __CLASS__);
         $this->loadActions();
     }
 
     /**
-     * Return an instance of the Gems_AccesLog class
+     * Return an instance of the \Gems_AccesLog class
      *
-     * @param Zend_Db_Adapter_Abstract $db
-     * @return Gems_AccessLog
+     * @param \Zend_Db_Adapter_Abstract $db
+     * @return \Gems_AccessLog
      */
-    public static function getLog(Zend_Db_Adapter_Abstract $db = null)
+    public static function getLog(\Zend_Db_Adapter_Abstract $db = null)
     {
         if (! self::$_log) {
             if (null === $db) {
-                $db = Zend_Registry::get('db');
+                $db = \Zend_Registry::get('db');
             }
             self::$_log = new self($db);
         }
@@ -103,13 +102,14 @@ class Gems_AccessLog
     }
 
     protected function getActionId($action)
-    {       
+    {
         if (! array_key_exists($action,  $this->_actions)) {
             //Check if a refresh fixes the problem
             $this->loadActions(true);
             if (! array_key_exists($action,  $this->_actions)) {
                 $values['glac_name']    = $action;
-                $values['glac_change']  = preg_match('/(save|add|store|delete|remove|create)/', $action);
+                $values['glac_change']  = preg_match('/(create|edit|delete)/', $action);
+                $values['glac_on_post'] = preg_match('/(create|edit)/', $action);
 
                 /*
                  * For 1.3 release the default behaviour is to disable logging for all actions,
@@ -122,7 +122,8 @@ class Gems_AccessLog
                  * actions like the autofilter
                  */
                 //$values['glac_log']  = !substr_count($action, '.autofilter');
-                $values['glac_created'] = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['glac_changed'] = $values['glac_created'] = new \MUtil_Db_Expr_CurrentTimestamp();
+                $values['glac_changed_by'] = $values['glac_created_by'] = \Gems_User_UserLoader::SYSTEM_USER_ID;
 
                 $this->_db->insert('gems__log_actions', $values);
 
@@ -141,7 +142,7 @@ class Gems_AccessLog
     public function loadActions($reset = false)
     {
         //When project escort doesn't implement the log interface, we disable logging and don't load actions
-        if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface &&
+        if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface &&
              ($reset || (! isset($this->_actions)))) {
 
             $actions = GemsEscort::getInstance()->getUtil()->getAccessLogActions();
@@ -160,18 +161,18 @@ class Gems_AccessLog
      * Logs the action for the current user with optional message and respondent id
      *
      * @param string  $action
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param string  $message   An optional message to log with the action
      * @param <type>  $respondentId
      * @param boolean $force     Should we force the logentry to be inserted or should we try to skip duplicates? Default = false
-     * @return Gems_AccessLog
+     * @return \Gems_AccessLog
      */
-    public function log($action, Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
+    public function log($action, \Zend_Controller_Request_Abstract $request = null, $message = null, $respondentId = null, $force = false)
     {
         try {
             $currentUser = GemsEscort::getInstance()->getLoader()->getCurrentUser();
             //When project escort doesn't implement the log interface, we disable logging
-            if (!(GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface)
+            if (!(GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface)
                 || (is_null($currentUser->getUserId()) && $force === false ) ) {
                 return $this;
             }
@@ -180,8 +181,8 @@ class Gems_AccessLog
              * For backward compatibility, get the request from the frontcontroller when it
              * is not supplied in the
              */
-            if (!($request instanceof Zend_Controller_Request_Abstract)) {
-                $request = Zend_Controller_Front::getInstance()->getRequest();
+            if (!($request instanceof \Zend_Controller_Request_Abstract)) {
+                $request = \Zend_Controller_Front::getInstance()->getRequest();
             }
 
             $values['glua_to']           = $respondentId;
@@ -190,9 +191,9 @@ class Gems_AccessLog
             $values['glua_organization'] = $currentUser->getCurrentOrganizationId() ? $currentUser->getCurrentOrganizationId() : 0;
             $values['glua_action']       = $this->getActionId($action);
             $values['glua_role']         = $currentUser->getRole() ? $currentUser->getRole() : '--not set--' ;
-            $values['glua_created']      = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['glua_created']      = new \MUtil_Db_Expr_CurrentTimestamp();
 
-            if ($request instanceof Zend_Controller_Request_Http) {
+            if ($request instanceof \Zend_Controller_Request_Http) {
                 $values['glua_remote_ip'] = $request->getClientIp();
             } else {
                 $values['glua_remote_ip'] = '';
@@ -213,12 +214,12 @@ class Gems_AccessLog
                         ($this->_sessionStore->glua_message == $values['glua_message'])) {
 
                         // Prevent double logging of nothing
-                        // MUtil_Echo::r($values, 'Double');
+                        // \MUtil_Echo::r($values, 'Double');
                         return $this;
                     }
                 }
             }
-            // MUtil_Echo::r($values, 'Logged');
+            // \MUtil_Echo::r($values, 'Logged');
 
             //Now save the variables to the session to prevent duplicates if needed
             $this->_sessionStore->glua_to           = $values['glua_to'];
@@ -227,11 +228,11 @@ class Gems_AccessLog
             $this->_sessionStore->glua_message      = $values['glua_message'];
 
             $this->_db->insert('gems__log_useractions', $values);
-            
+
             return $this;
         } catch (Exception $exc) {
-            Gems_Log::getLogger()->logError($exc, $request);
-            MUtil_Echo::r(GemsEscort::getInstance()->translate->_('Database needs to be updated!'));
+            \Gems_Log::getLogger()->logError($exc, $request);
+            \MUtil_Echo::r(\GemsEscort::getInstance()->translate->_('Database needs to be updated!'));
             return $this;
         }
     }

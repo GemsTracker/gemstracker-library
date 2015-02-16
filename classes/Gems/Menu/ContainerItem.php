@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
+class Gems_Menu_ContainerItem extends \Gems_Menu_SubMenuItem
 {
     /**
      *
@@ -71,25 +71,29 @@ class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
     }
 
     /**
-     * Returns a Zend_Navigation creation array for this menu item, with
+     * Returns a \Zend_Navigation creation array for this menu item, with
      * sub menu items in 'pages'
      *
-     * @param Gems_Menu_ParameterCollector $source
+     * @param \Gems_Menu_ParameterCollector $source
      * @return array
      */
-    protected function _toNavigationArray(Gems_Menu_ParameterCollector $source)
+    protected function _toNavigationArray(\Gems_Menu_ParameterCollector $source)
     {
         $result = parent::_toNavigationArray($source);
 
         $store  = self::_getSessionStore($this->get('label'));
         if (isset($store->controller)) {
-            $result['controller'] = $store->controller;
-            $this->set('controller', $store->controller);
+            foreach ($result['pages'] as $page) {
+                if ($page['controller'] === $store->controller) {
+                    if (isset($store->action) && $page['action'] === $store->action) {
+                        $result['action'] = $store->action;
+                        $this->set('action', $store->action);
+                    }
+                    $result['controller'] = $store->controller;
+                    $this->set('controller', $store->controller);
+                }
+            }
         }
-       if (isset($store->action)) {
-           $result['action'] = $store->action;
-           $this->set('action', $store->action);
-       }
 
         // Get any missing MVC keys from children, even when invisible
         if ($requiredIndices = $this->notSet('controller', 'action')) {
@@ -133,11 +137,11 @@ class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
      * Set the visibility of the menu item and any sub items in accordance
      * with the specified user role.
      *
-     * @param Zend_Acl $acl
+     * @param \Zend_Acl $acl
      * @param string $userRole
-     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
-    protected function applyAcl(Zend_Acl $acl, $userRole)
+    protected function applyAcl(\Zend_Acl $acl, $userRole)
     {
         parent::applyAcl($acl, $userRole);
 
@@ -163,8 +167,8 @@ class Gems_Menu_ContainerItem extends Gems_Menu_SubMenuItem
     /**
      * Make sure only the active branch is visible
      *
-     * @param array $activeBranch Of Gems_Menu_Menu Abstract items
-     * @return Gems_Menu_MenuAbstract (continuation pattern)
+     * @param array $activeBranch Of \Gems_Menu_Menu Abstract items
+     * @return \Gems_Menu_MenuAbstract (continuation pattern)
      */
     protected function setBranchVisible(array $activeBranch)
     {

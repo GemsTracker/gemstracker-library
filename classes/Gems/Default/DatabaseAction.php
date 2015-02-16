@@ -44,8 +44,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
+// class Gems_Default_DatabaseAction extends \Gems_Controller_BrowseEditAction
+class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
+    /**
+     * The snippets used for the autofilter action.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $autofilterParameters = array(
+        'extraSort' => array('group' => SORT_ASC, 'type' => SORT_ASC, 'name' => SORT_ASC),
+        );
     public $sortKey = array('group' => SORT_ASC, 'type' => SORT_ASC, 'name' => SORT_ASC);
 
     /**
@@ -70,32 +79,111 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
      */
     private function _cleanCache()
     {
-        if ($this->cache instanceof Zend_Cache_Core) {
+        if ($this->cache instanceof \Zend_Cache_Core) {
             $this->cache->clean();
             $this->addMessage($this->_('Cache cleaned'));
         }
     }
 
-    public function createDataTable($tableName, $caption, Zend_Db_Adapter_Abstract $db)
+    public function createDataTable($tableName, $caption, \Zend_Db_Adapter_Abstract $db)
     {
         $select = $db->select();
         $select->from($tableName);
 
-        $paginator = Zend_Paginator::factory($select);
+        $paginator = \Zend_Paginator::factory($select);
         $paginator->setCurrentPageNumber($this->_getParam('page'));
         $paginator->setItemCountPerPage(10);
 
-        $table = MUtil_Html_TableElement::createArray($paginator->getCurrentItems(), $caption, true);
-        if ($table instanceof MUtil_Html_TableElement) {
+        $table = \MUtil_Html_TableElement::createArray($paginator->getCurrentItems(), $caption, true);
+        if ($table instanceof \MUtil_Html_TableElement) {
             $table->class = 'browser table';
             $table->tfrow()->pagePanel($paginator, $this->getRequest(), $this->translate);
         } else {
-            $table = MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
+            $table = \MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
         }
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = \MUtil_Html::create()->div(array('class' => 'table-responsive'));
         $container[] = $table;
         return $container;
+    }
+
+    /**
+     * Retrieve a form object and add extra decorators
+     *
+     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     *
+     * @param array $options
+     * @return \Gems_Form
+     */
+    public function createForm($options = null) {
+        if (\MUtil_Bootstrap::enabled()) {
+            $options['class'] = 'form-horizontal';
+            $options['role'] = 'form';
+        }
+        return new \Gems_Form($options);
+    }
+
+    /**
+     *
+     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     *
+     * @param int $includeLevel
+     * @param string $parentLabel
+     * @return array
+     */
+    protected function createMenuLinks($includeLevel = 2, $parentLabel = true)
+    {
+        if ($currentItem  = $this->menu->getCurrent()) {
+            $links        = array();
+            $childItems   = $currentItem->getChildren();
+            $parameters   = $currentItem->getParameters();
+            $request      = $this->getRequest();
+            $showDisabled = $includeLevel > 99;
+            $menuSource   = $this->menu->getParameterSource();
+
+            if ($parentItem = $currentItem->getParent()) {
+                // Add only if not toplevel.
+                if (($parentItem instanceof \Gems_Menu_SubMenuItem) && $parentItem->has('controller')) {
+                    $key = $parentItem->get('controller') . '.' . $parentItem->get('action');
+                    if ($parentLabel) {
+                        if (true === $parentLabel) {
+                            $parentLabel = $this->_('Cancel');
+                        }
+                        $links[$key] = $parentItem->toActionLink($request, $this, $menuSource, $parentLabel);
+                    } else {
+                        $links[$key] = $parentItem->toActionLink($request, $this, $menuSource);
+                    }
+                    if ($includeLevel > 1) {
+                        $childItems = array_merge($parentItem->getChildren(), $childItems);
+                    }
+                }
+            }
+
+            if ($includeLevel < 1) {
+                return $links;
+            }
+
+            //The reset parameter blocks the display of buttons, so we unset it
+            unset($parameters['reset']);
+            if ($childItems) {
+                foreach ($childItems as $menuItem) {
+                    if ($menuItem !== $currentItem) {
+                        // Select only children with the same parameters
+                        if ($menuItem->getParameters() == $parameters) {
+                            // And buttons only if include level higher than 2.
+                            if (($includeLevel > 2) || (! $menuItem->get('button_only'))) {
+                                if ($link = $menuItem->toActionLink($request, $this, $menuSource, $showDisabled)) {
+                                    $key = $menuItem->get('controller') . '.' . $menuItem->get('action');
+                                    $links[$key] = $link;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $links;
+        }
     }
 
     /**
@@ -107,13 +195,13 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
         $moreDetails = ! in_array($action, array('run', 'deleted'));
 
-        $model = new Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
+        $model = new \Gems_Model_DbaModel($this->db, $this->escort->getDatabasePaths());
         if ($this->project->databaseFileEncoding) {
             $model->setFileEncoding($this->project->databaseFileEncoding);
         }
@@ -141,7 +229,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
     public static function createShowLink($for)
     {
-        return MUtil_Html::create()->a(array('action' => 'show', MUtil_Model::REQUEST_ID => $for), $for);
+        return \MUtil_Html::create()->a(array('action' => 'show', \MUtil_Model::REQUEST_ID => $for), $for);
     }
 
     public function deleteAction()
@@ -189,7 +277,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
                 $model->save(array('exists' => false), $model->getFilter());
 
-            } catch (Zend_Db_Statement_Exception $e) {
+            } catch (\Zend_Db_Statement_Exception $e) {
                 $this->addMessage($e->getMessage() . $this->_(' during statement ') . '<pre>' . $sql . '</pre>');
             }
             return $this->_reroute(array('action' => 'show'));
@@ -203,7 +291,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         if (! $tData) {
             return sprintf($this->_('%s no longer exists in the database.'), $id);
         }
-        if (Gems_Model_DbaModel::STATE_DEFINED == $tData['state']) {
+        if (\Gems_Model_DbaModel::STATE_DEFINED == $tData['state']) {
             return sprintf($this->_('%s does not yet exist in the database.'), ucfirst($tData['type']));
         }
         if ('table' !== $tData['type']) {
@@ -211,14 +299,14 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         }
 
         try {
-            $table = new Zend_DB_Table(array(
-                Zend_Db_Table_Abstract::NAME => $id,
-                Zend_Db_Table_Abstract::ADAPTER => $tData['db'],
+            $table = new \Zend_DB_Table(array(
+                \Zend_Db_Table_Abstract::NAME => $id,
+                \Zend_Db_Table_Abstract::ADAPTER => $tData['db'],
                 ));
 
-            $data = MUtil_Lazy::repeat($table->info('metadata'));
+            $data = \MUtil_Lazy::repeat($table->info('metadata'));
 
-            $html = new MUtil_Html_TableElement($data);
+            $html = new \MUtil_Html_TableElement($data);
             $html->addColumn($data->COLUMN_NAME, 'Column');
             $html->addColumn($data->DATA_TYPE,   'Type');
             $html->addColumn($data->LENGTH, 'Length');
@@ -227,7 +315,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $html->addColumn($data->NULLABLE, 'Nullable');
             $html->addColumn($data->DEFAULT, 'Default');
 
-        } catch (Zend_Db_Table_Exception $zdte) {
+        } catch (\Zend_Db_Table_Exception $zdte) {
             $html = $this->_('Object is not a table.');
         }
 
@@ -235,45 +323,106 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
     }
 
     /**
-     * Creates from the model a MUtil_Html_TableElement for display of a single item.
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Database object overview');
+    }
+
+    /**
+     * Creates from the model a \MUtil_Html_TableElement for display of a single item.
      *
      * It can and will display multiple items, but that is not what this function is for.
      *
      * @param integer $columns The number of columns to use for presentation
-     * @param mixed $filter A valid filter for MUtil_Model_ModelAbstract->load()
-     * @param mixed $sort A valid sort for MUtil_Model_ModelAbstract->load()
-     * @return MUtil_Html_TableElement
+     * @param mixed $filter A valid filter for \MUtil_Model_ModelAbstract->load()
+     * @param mixed $sort A valid sort for \MUtil_Model_ModelAbstract->load()
+     * @return \MUtil_Html_TableElement
      */
     public function getShowTable($columns = 1, $filter = null, $sort = null)
     {
-        $table = parent::getShowTable($columns, $filter, $sort);
+        $model  = $this->getModel();
+        $bridge = $model->getBridgeFor('itemTable');
+        $bridge->setColumnCount($columns);
 
-        $model = $this->getModel();
+        foreach($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $bridge->addItem($name, $label);
+            }
+        }
+
+        $table = $bridge->getTable();
+        $table->class = 'displayer table';
 
         if ($model->isMeta('action', 'show')) {
             $table->tr();
             $table->tdh($this->_('Structure'));
-            $table->td($this->getFieldTable($this->_getParam(MUtil_Model::REQUEST_ID)));
+            $table->td($this->getFieldTable($this->_getParam(\MUtil_Model::REQUEST_ID)));
         }
 
         return $table;
     }
 
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('database object', 'database objects', $count);
     }
 
-    public function getTopicTitle()
+    /**
+     *
+     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     *
+     * @param string $title
+     * @param string $question
+     * @param string $info
+     * @return boolean
+     */
+    public function isConfirmedItem($title, $question = null, $info = null)
     {
-        return $this->_('Database object overview');
+        if ($this->_getParam('confirmed')) {
+            return true;
+        }
+
+        if (null === $question) {
+            $question = $this->_('Are you sure?');
+        }
+
+        $this->html->h3(sprintf($title, $this->getTopic()));
+
+        if ($info) {
+            $this->html->pInfo($info);
+        }
+
+        $model    = $this->getModel();
+        $repeater = $model->applyRequest($this->getRequest())->loadRepeatable();
+        $table    = $this->getShowTable();
+        $table->caption($question);
+        $table->setRepeater($repeater);
+
+        $footer = $table->tfrow($question, ' ', array('class' => 'centerAlign'));
+        $footer->actionLink(array('confirmed' => 1), $this->_('Yes'), array('class' => 'btn-success'));
+        $footer->actionLink(array('action' => 'show', 'class' => 'btn-warning'), $this->_('No'), array('class' => 'btn-danger'));
+
+        $this->html[] = $table;
+        $this->html->buttonDiv($this->createMenuLinks());
+
+        return false;
     }
 
     public function patchAction()
     {
         $this->html->h3($this->_('Patch maintenance'));
 
-        $patcher  = new Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
+        $patcher  = new \Gems_Util_DatabasePatcher($this->db, 'patches.sql', $this->escort->getDatabasePaths());
         $tableSql = sprintf(
             'SELECT gpa_level AS `%s`, gpa_location AS `%s`, COUNT(*) AS `%s`, COUNT(*) - SUM(gpa_executed) AS `%s`, SUM(gpa_executed) AS `%s`, SUM(gpa_completed) AS `%s`, MAX(gpa_changed) AS `%s` FROM gems__patches GROUP BY gpa_level, gpa_location ORDER BY gpa_level DESC, gpa_location',
             $this->_('Level'),
@@ -291,13 +440,13 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $form->addElement($form->createElement('exhibitor', 'db_level', array('label' => $this->_('Database build'))));
 
         $level = $form->createElement('text', 'level', array('label' => $this->_('Execute level')));
-        $level->addValidator(new Zend_Validate_Digits());
+        $level->addValidator(new \Zend_Validate_Digits());
         $form->addElement($level);
 
         $form->addElement($form->createElement('checkbox', 'completed', array('label' => $this->_('Ignore finished'))));
         $form->addElement($form->createElement('checkbox', 'executed', array('label' => $this->_('Ignore executed'))));
         $form->addElement($form->createElement('submit', 'show_button',   array('label' => $this->_('Show patches'), 'class' => 'button')));
-        // $execute = new Zend_Form_Element_Submit('save_button',   array('label' => $this->_('Execute'), 'class' => 'button'));
+        // $execute = new \Zend_Form_Element_Submit('save_button',   array('label' => $this->_('Execute'), 'class' => 'button'));
         // $form->addElement($execute);
 
         if ($this->request->isPost()) {
@@ -339,7 +488,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
                 $this->addMessage($this->_('Create the patch table!'));
             } elseif ($changed) {
                 $this->addMessage(sprintf($this->_('%d new or changed patch(es).'), $changed));
-                $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('sess_' . session_id()));
+                $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('sess_' . session_id()));
             }
 
             $data['app_level'] = $this->loader->getVersions()->getBuild();
@@ -351,7 +500,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $form->populate($data);
         }
 
-        //$table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        //$table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
         //$table->setAsFormLayout($form, true, true);
         //$table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
@@ -363,7 +512,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $this->html[] = $form;
 
         if ($data = $this->db->fetchAll($tableSql)) {
-            $table = MUtil_Html_TableElement::createArray($data, $this->_('Patch overview'), true);
+            $table = \MUtil_Html_TableElement::createArray($data, $this->_('Patch overview'), true);
             $table->class = 'browser table table-striped table-bordered table-hover table-condensed';
             $this->html[] = $table;
         }
@@ -384,7 +533,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
 
                 $sql = 'SELECT ' . $fields . ' FROM ' . $table;
 
-                $rows = $this->db->fetchAll($sql, array(), Zend_Db::FETCH_NUM);
+                $rows = $this->db->fetchAll($sql, array(), \Zend_Db::FETCH_NUM);
 
                 foreach ($rows as $row) {
                     foreach ($row as $field) {
@@ -515,7 +664,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         $element->setRequired(true);
         $form->addElement($element);
 
-        //$element = new Zend_Form_Element_Submit('submit');
+        //$element = new \Zend_Form_Element_Submit('submit');
         $element = $form->createElement('submit', 'submit');
         $element->setLabel($this->_('Run'));
         $form->addElement($element);
@@ -531,7 +680,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
             $model = $this->getModel();
             $results   = $model->runScript($data, true);
             $resultSet = 1;
-            $echos     = MUtil_Html::create()->array();
+            $echos     = \MUtil_Html::create()->array();
             foreach ($results as $result) {
                 if (is_string($result)) {
                     $this->addMessage($result);
@@ -549,7 +698,7 @@ class Gems_Default_DatabaseAction  extends Gems_Controller_BrowseEditAction
         /****************
          * Display form *
          ****************/
-        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
         $table['tbody'][0][0]->style = 'vertical-align: top;'; // Only single cell, this always looks better here.

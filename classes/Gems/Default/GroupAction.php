@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_GroupAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_GroupAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the create and edit actions.
@@ -69,12 +69,12 @@ class Gems_Default_GroupAction extends Gems_Controller_ModelSnippetActionAbstrac
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__groups');
-        
+        $model = new \MUtil_Model_TableModel('gems__groups');
+
         // Add id for excel export
         if ($action == 'excel') {
             $model->set('ggp_id_group', 'label', 'id');
@@ -93,21 +93,32 @@ class Gems_Default_GroupAction extends Gems_Controller_ModelSnippetActionAbstrac
                 'label', $this->_('Allowed IP Ranges'),
                 'description', $this->_('Separate with | example: 10.0.0.0-10.0.0.255 (subnet masks are not supported)'),
                 'size', 50,
-                'validator', new Gems_Validate_IPRanges(),
+                'validator', new \Gems_Validate_IPRanges(),
                 'maxlength', 500);
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'ggp');
 
         return $model;
     }
 
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Administrative groups');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('group', 'groups', $count);
-    }
-
-    public function getTopicTitle()
-    {
-        return $this->_('Administrative groups');
     }
 }

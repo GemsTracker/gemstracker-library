@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -25,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Default
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -43,59 +44,99 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_LogMaintenanceAction extends Gems_Controller_BrowseEditAction {
-
-    public $sortKey = array('glac_name' => SORT_ASC);
+class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetActionAbstract
+{
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraSort' => array('glac_name' => SORT_ASC),
+        );
 
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * The parameters used for the create and edit actions.
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @var array Mixed key => value array for snippet initialization
      */
-    public function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false) {
-        $model->set('glac_name', 'elementClass', 'exhibitor');
-        $model->set('glac_log', 'elementClass', 'checkBox');
-        parent::addFormElements($bridge, $model, $data, $new);
-    }
+    protected $createEditParameters = array(
+        'cacheTags' => array('accesslog_actions'),
+    );
 
-    protected function createModel($detailed, $action) {
-        //MUtil_Model::$verbose=true;
-        $model = new Gems_Model_JoinModel('log_maint', 'gems__log_actions', true);
-        $model->set('glac_name', 'label', $this->_('Action'));
-        $model->set('glac_log', 'label', $this->_('Log'), 'multiOptions', $this->util->getTranslated()->getYesNo());
+    /**
+     * The snippets used for the index action, before those in autofilter
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogSearchSnippet');
+
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \MUtil_Model_ModelAbstract
+     */
+    protected function createModel($detailed, $action)
+    {
+        $model = new \Gems_Model_JoinModel('log_maint', 'gems__log_actions', true);
+        $model->set('glac_name', 'label', $this->_('Action'),
+                'elementClass', 'Exhibitor');
+
+        $model->set('glac_log', 'label', $this->_('Log'),
+                'description', $this->_('Is this an action that should be logged?'),
+                'elementClass', 'CheckBox',
+                'multiOptions', $this->util->getTranslated()->getYesNo()
+                );
+
+        $model->set('glac_on_post', 'label', $this->_('On post'),
+                'description', $this->_('Log only when posted?'),
+                'elementClass', 'CheckBox',
+                'multiOptions', $this->util->getTranslated()->getYesNo()
+                );
+
+        $model->set('glac_change', 'label', $this->_('Changes data'),
+                'description', $this->_('Is this an action that changes the data?'),
+                'elementClass', 'CheckBox',
+                'multiOptions', $this->util->getTranslated()->getYesNo()
+                );
 
         return $model;
     }
 
-    public function afterSave(array $data, $isNew)
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
-        $this->loader->getUtil()->getAccessLogActions()->invalidateCache();
-        return parent::afterSave($data, $isNew);
+        return $this->_('Logging Setup');
     }
 
-    public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
-        $elements = parent::getAutoSearchElements($model, $data);
-
-        if ($elements) {
-            $elements[] = null; // break into separate spans
-        }
-
-        $elements[] = $this->_('Log:');
-        $elements[] = $this->_createSelectElement('glac_log', $this->util->getTranslated()->getYesNo(), $this->_('All'));
-
-        return $elements;
-    }
-
-    public function getTopic($count = 1) {
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
         return $this->_('Log action');
     }
-
-    public function getTopicTitle() {
-        return $this->_('Log maintenance');
-    }
-
 }
