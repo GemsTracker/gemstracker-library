@@ -52,11 +52,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterface
+class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInterface
 {
     /**
      *
-     * @var Gems_Menu_SubMenuItem
+     * @var \Gems_Menu_SubMenuItem
      */
     private $_currentMenuItem;
 
@@ -68,7 +68,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     /**
      *
-     * @var Gems_Menu_ParameterSource
+     * @var \Gems_Menu_ParameterSource
      */
     private $_menuParameters;
 
@@ -105,7 +105,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Shortcut function to create a ask menu, with hidden options.
      *
-     * This function is in Gems_Menu instead of AbstractMenu because
+     * This function is in \Gems_Menu instead of AbstractMenu because
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
@@ -126,11 +126,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Shortcut function to create a contact container.
      *
-     * This function is in Gems_Menu instead of AbstractMenu because
+     * This function is in \Gems_Menu instead of AbstractMenu because
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
-     * @return Gems_Menu_MenuAbstract The new contact page
+     * @return \Gems_Menu_MenuAbstract The new contact page
      */
     public function addContactPage($label)
     {
@@ -154,7 +154,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Shortcut function to create a setup container.
      *
-     * This function is in Gems_Menu instead of AbstractMenu because
+     * This function is in \Gems_Menu instead of AbstractMenu because
      * you should ALWAYS put this menu in the root menu.
      *
      * @param string $label Label for the whole menu
@@ -185,10 +185,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         // Creation not possible
         $showPage = $page->addShowAction('pr.database');
         $showPage->addAction($this->_('Content'), 'pr.database', 'view')
-            ->addParameters(MUtil_Model::REQUEST_ID)
+            ->addParameters(\MUtil_Model::REQUEST_ID)
             ->setParameterFilter('exists', true);
         $showPage->addAction($this->_('Execute'), 'pr.database.create', 'run')
-            ->addParameters(MUtil_Model::REQUEST_ID)
+            ->addParameters(\MUtil_Model::REQUEST_ID)
             ->setParameterFilter('script', true);
         $showPage->addDeleteAction('pr.database.delete')
             ->setParameterFilter('exists', true);
@@ -224,15 +224,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $setup->addCommSetupMenu($this->_('Communication'));
         $setup->addMailSetupMenu($this->_('Mail'));
 
+        // LOG SETUP CONTROLLER
+        $setup->addBrowsePage($this->_('Logging Setup'), 'pr.log.maintenance', 'log-maintenance');
 
         // LOG CONTROLLER
         $page = $setup->addPage($this->_('Logging'), 'pr.log', 'log', 'index');
         $page->addAutofilterAction();
         $page->addExcelAction();
         $page->addShowAction();
-        $logMaint = $page->addPage($this->_('Maintenance'), 'pr.log.maintenance', 'log-maintenance');
-        $logMaint->addAutofilterAction();
-        $logMaint->addEditAction('pr.log.maintenance');
 
         // OpenRosa
         $this->addOpenRosaContainer($this->_('OpenRosa'), $setup);
@@ -245,7 +244,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param string $privilege
      * @param string $label
-     * @return Gems_Menu
+     * @return \Gems_Menu
      */
     public function addHiddenPrivilege($privilege, $label = null)
     {
@@ -272,7 +271,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $this->addPage(null, null, 'language', 'change-ui');
         }
 
-        if ($this->escort instanceof Gems_Project_Organization_MultiOrganizationInterface) {
+        if ($this->escort instanceof \Gems_Project_Organization_MultiOrganizationInterface) {
             // ALLOW ORGANIZATION CHANGE
             $this->addPage(null, null, 'organization', 'change-ui');
         }
@@ -305,13 +304,13 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      * Shortcut function to create the respondent page.
      *
      * @param string $label Label for the container
-     * @return Gems_Menu_MenuAbstract The new respondent page
+     * @return \Gems_Menu_MenuAbstract The new respondent page
      */
     public function addRespondentPage($label)
     {
         $orgId = $this->escort->getLoader()->getCurrentUser()->getCurrentOrganizationId();
 
-        $params = array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
+        $params = array(\MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization');
 
         // MAIN RESPONDENTS ITEM
         $page = $this->addPage($label, 'pr.respondent', 'respondent');
@@ -329,7 +328,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 ->setHiddenOrgId($orgId);
 
         // Add "appointments"
-        $appParams = array(Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
+        $appParams = array(\Gems_Model::APPOINTMENT_ID => 'gap_id_appointment'); // + $params;
         $apage = $page->addPage($this->_('Appointments'), 'pr.appointments', 'appointment');
         $apage->setNamedParameters($params)
                 ->setHiddenOrgId($orgId)
@@ -339,35 +338,35 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         $apage->addEditAction()->setNamedParameters($appParams);
         $apage->addDeleteAction()->setNamedParameters($appParams);
 
-        if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 
             $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
                     ->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
-                    ->addHiddenParameter(Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
+                    ->addHiddenParameter(\Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
 
             $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
                     ->addHiddenParameter('track_can_be_created', 1);
             $subPage->addAction($this->_('Preview'), 'pr.track', 'view')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
                     ->addHiddenParameter('track_can_be_created', 1);
             $subPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 0)
                     ->addHiddenParameter('track_can_be_created', 0);
             $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
 
         } else {
 
@@ -379,49 +378,49 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                     ->addAutofilterAction();
 
             /*
-             MUtil_Lazy::iff(is('gtr_track_type', $trType), aget(MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', Gems_Model::TRACK_ID, 'gtr_id_track'))
+             \MUtil_Lazy::iff(is('gtr_track_type', $trType), aget(\MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', \Gems_Model::TRACK_ID, 'gtr_id_track'))
              */
             $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
             $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
             $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
             $itemPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
 
             $itemPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
 
             $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
+                    ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
             $tkPages[$trType] = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
-                    ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                    ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
 
-            if ($this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface) {
+            if ($this->escort instanceof \Gems_Project_Tracks_StandAloneSurveysInterface) {
                 $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
                 $trType = 'S';
 
@@ -431,54 +430,54 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
                 $trPage->addAction($this->_('Add'), 'pr.survey.create', 'create')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
                 $trPage->addAction($this->_('Assigned'), 'pr.survey', 'view')
                     ->setNamedParameters($params)
-                    ->addNamedParameters(Gems_Model::TRACK_ID, 'gtr_id_track')
+                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
                     ->setParameterFilter('gtr_track_type', $trType);
 
                 // $tkPages[$trType] = $trPage;
 
                 $tkPages[$trType] =$trPage->addShowAction('pr.survey')
-                        ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                        ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                        ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                        ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
             }
         }
 
         foreach ($tkPages as $trType => $tkPage) {
 
             $tkPage->addEditAction('pr.token.edit')
-                    ->setNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
+                    ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, \Gems_Model::ID_TYPE, 'token');
 
             $tkPage->addDeleteAction('pr.token.delete')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, \Gems_Model::ID_TYPE, 'token');
 
             $tkPage->addButtonOnly($this->_('Fill in'), 'pr.ask', 'ask', 'take')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('can_be_taken', 1, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('can_be_taken', 1, \Gems_Model::ID_TYPE, 'token');
             $tkPage->addPdfButton($this->_('Print PDF'), 'pr.token.print')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gsu_has_pdf', 1, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gsu_has_pdf', 1, \Gems_Model::ID_TYPE, 'token');
             $tkPage->addAction($this->_('E-Mail now!'), 'pr.token.mail', 'email')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_be_taken', 1, 'can_email', 1, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'can_be_taken', 1, 'can_email', 1, \Gems_Model::ID_TYPE, 'token');
             $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, Gems_Model::ID_TYPE, 'token');
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
             $answers = $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
-                    ->set('target', MUtil_Model::REQUEST_ID);
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, \Gems_Model::ID_TYPE, 'token')
+                    ->set('target', \MUtil_Model::REQUEST_ID);
             $answers->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
-                    ->addNamedParameters(MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, Gems_Model::ID_TYPE, 'token')
-                    ->set('target', MUtil_Model::REQUEST_ID);
+                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, \Gems_Model::ID_TYPE, 'token')
+                    ->set('target', \MUtil_Model::REQUEST_ID);
         }
 
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
@@ -498,8 +497,8 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     /**
      *
-     * @param Zend_Controller_Request_Abstract|array $request
-     * @return Gems_Menu_SubMenuItem|null
+     * @param \Zend_Controller_Request_Abstract|array $request
+     * @return \Gems_Menu_SubMenuItem|null
      */
     public function find($request)
     {
@@ -521,7 +520,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
                 return reset($results);
             }
 
-            return new MUtil_Html_MultiWrapper($results);
+            return new \MUtil_Html_MultiWrapper($results);
         }
     }
 
@@ -530,7 +529,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * @param string $controller
      * @param string $action
-     * @return Gems_SubMenuItem
+     * @return \Gems_SubMenuItem
      */
     public function findController($controller, $action = 'index')
     {
@@ -544,7 +543,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         return $this->findItem($find, false);
     }
 
-    public function getActivePath(Zend_Controller_Request_Abstract $request)
+    public function getActivePath(\Zend_Controller_Request_Abstract $request)
     {
         $activePath = $this->_findPath($request);
 
@@ -553,7 +552,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     /**
      *
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     public function getCurrent()
     {
@@ -572,11 +571,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Menulist populated with current items
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param $parentLabel
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
-    public function getCurrentMenuList(Zend_Controller_Request_Abstract $request, $parentLabel = null)
+    public function getCurrentMenuList(\Zend_Controller_Request_Abstract $request, $parentLabel = null)
     {
         $controller = $request->getControllerName();
         $action     = $request->getActionName();
@@ -588,7 +587,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
         }
 
         foreach ($this->getCurrent()->getChildren() as $child) {
-            if ($child instanceof Gems_Menu_SubMenuItem) {
+            if ($child instanceof \Gems_Menu_SubMenuItem) {
                 $chAction = $child->get('action');
                 $chContr  = $child->get('controller');
                 if (! ($controller == $chContr && $action == $chAction)) {
@@ -602,7 +601,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     /**
      *
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     public function getCurrentParent()
     {
@@ -613,23 +612,23 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     public function getMenuList()
     {
-        return new Gems_Menu_MenuList($this);
+        return new \Gems_Menu_MenuList($this);
     }
 
     /**
      * Use to set parameters that will be used when
      * drawing the navigation menu.
      *
-     * @return Gems_Menu_ParameterSource
+     * @return \Gems_Menu_ParameterSource
      */
     public function getParameterSource()
     {
         if (! $this->_menuParameters) {
-            $this->_menuParameters = new Gems_Menu_ParameterSource();
+            $this->_menuParameters = new \Gems_Menu_ParameterSource();
         }
 
         return $this->_menuParameters;
@@ -750,15 +749,15 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         if ($this->_onlyActiveBranchVisible) {
             $activePath = $this->_findPath($this->escort->request);
 
-            // MUtil_Echo::r($activePath);
+            // \MUtil_Echo::r($activePath);
 
             $this->setBranchVisible($activePath);
         }
@@ -769,12 +768,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $parameterSources[] = $this->_menuParameters;
         }
 
-        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        $source = new \Gems_Menu_ParameterCollector($parameterSources);
         // self::$verbose = true;
 
         $nav = $this->_toNavigationArray($source);
 
-        // MUtil_Echo::track($nav);
+        // \MUtil_Echo::track($nav);
 
         $ul = $this->renderFirst();
 
@@ -788,11 +787,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * Allows overloading by sub classes.
      *
-     * @return MUtil_Html_ListElement
+     * @return \MUtil_Html_ListElement
      */
     protected function renderFirst()
     {
-        return MUtil_Html::create()->ul(array('class' => $this->_menuUlClass));
+        return \MUtil_Html::create()->ul(array('class' => $this->_menuUlClass));
     }
 
     /**
@@ -800,11 +799,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
      *
      * Allows overloading by sub classes.
      *
-     * @param MUtil_Html_ListElement $ul
+     * @param \MUtil_Html_ListElement $ul
      * @param array $items
      * @param boolean $cascade render nested items
      */
-    protected function renderItems(MUtil_Html_ListElement $ul, array $items, $cascade)
+    protected function renderItems(\MUtil_Html_ListElement $ul, array $items, $cascade)
     {
         foreach ($items as $item) {
             if (isset($item['visible'], $item['label']) && $item['visible'] && $item['label']) {
@@ -841,18 +840,18 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             return $request;
         }
 
-        if ($request instanceof Zend_Controller_Request_Abstract) {
+        if ($request instanceof \Zend_Controller_Request_Abstract) {
             $find['action']     = $request->getActionName();
             $find['controller'] = $request->getControllerName();
         } else {
-            throw new Gems_Exception_Coding('Not a valid menu search request!');
+            throw new \Gems_Exception_Coding('Not a valid menu search request!');
         }
-        // MUtil_Echo::r($find);
+        // \MUtil_Echo::r($find);
 
         return $find;
     }
 
-    public function setCurrent(Gems_Menu_SubMenuItem $item)
+    public function setCurrent(\Gems_Menu_SubMenuItem $item)
     {
         $this->_currentMenuItem = $item;
     }
@@ -874,7 +873,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Renders the top level menu items into a html element
      *
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     public function toActiveBranchElement()
     {
@@ -888,10 +887,10 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
 
         $activeItem = array_pop($activePath);
 
-        if (! $activeItem instanceof Gems_Menu_SubMenuItem) {
+        if (! $activeItem instanceof \Gems_Menu_SubMenuItem) {
             return null;
         }
-        // MUtil_Echo::track($activeItem->get('label'));
+        // \MUtil_Echo::track($activeItem->get('label'));
 
         $parameterSources[] = $this->escort->request;
 
@@ -899,7 +898,7 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $parameterSources[] = $this->_menuParameters;
         }
 
-        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        $source = new \Gems_Menu_ParameterCollector($parameterSources);
         // self::$verbose = true;
 
         $nav = $this->_toNavigationArray($source);
@@ -923,14 +922,14 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     /**
      * Renders the top level menu items into a html element
      *
-     * @return MUtil_Html_HtmlElement
+     * @return \MUtil_Html_HtmlElement
      */
     public function toTopLevelElement()
     {
         $activeItems = $this->_findPath($this->escort->request);
         $this->setBranchVisible($activeItems);
         foreach ($activeItems as $activeItem) {
-            if ($activeItem instanceof Gems_Menu_SubMenuItem) {
+            if ($activeItem instanceof \Gems_Menu_SubMenuItem) {
                 $activeItem->set('class', 'active');
             }
         }
@@ -941,11 +940,11 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $parameterSources[] = $this->_menuParameters;
         }
 
-        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        $source = new \Gems_Menu_ParameterCollector($parameterSources);
 
         $nav = $this->_toNavigationArray($source);
 
-        // MUtil_Echo::track($nav);
+        // \MUtil_Echo::track($nav);
 
         $ul = $this->renderFirst();
 
@@ -955,18 +954,18 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
     }
 
     /**
-     * Generates a Zend_Navigation object from the current menu
+     * Generates a \Zend_Navigation object from the current menu
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param mixed $actionController
-     * @return Zend_Navigation
+     * @return \Zend_Navigation
      */
-    public function toZendNavigation(Zend_Controller_Request_Abstract $request, $actionController = null)
+    public function toZendNavigation(\Zend_Controller_Request_Abstract $request, $actionController = null)
     {
         if ($this->_onlyActiveBranchVisible) {
             $activePath = $this->_findPath($request);
 
-            // MUtil_Echo::r($activePath);
+            // \MUtil_Echo::r($activePath);
             $this->setBranchVisible($activePath);
         }
 
@@ -976,12 +975,12 @@ class Gems_Menu extends Gems_Menu_MenuAbstract implements MUtil_Html_HtmlInterfa
             $parameterSources[] = $this->_menuParameters;
         }
 
-        $source = new Gems_Menu_ParameterCollector($parameterSources);
+        $source = new \Gems_Menu_ParameterCollector($parameterSources);
         // self::$verbose = true;
 
-        $nav = new Zend_Navigation($this->_toNavigationArray($source));
+        $nav = new \Zend_Navigation($this->_toNavigationArray($source));
 
-        // MUtil_Echo::track($this->_toNavigationArray($source), $nav);
+        // \MUtil_Echo::track($this->_toNavigationArray($source), $nav);
 
         return $nav;
     }

@@ -44,7 +44,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-// class Gems_Default_DatabaseAction extends \Gems_Controller_BrowseEditAction
 class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
@@ -110,7 +109,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
     /**
      * Retrieve a form object and add extra decorators
      *
-     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     * Hack to get everything working without BrowseEditAction
      *
      * @param array $options
      * @return \Gems_Form
@@ -125,7 +124,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
     /**
      *
-     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     * Hack to get everything working without BrowseEditAction
      *
      * @param int $includeLevel
      * @param string $parentLabel
@@ -379,7 +378,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
 
     /**
      *
-     * Hack to get everything working without \Gems_Controller_BrowseEditAction
+     * Hack to get everything working without BrowseEditAction
      *
      * @param string $title
      * @param string $question
