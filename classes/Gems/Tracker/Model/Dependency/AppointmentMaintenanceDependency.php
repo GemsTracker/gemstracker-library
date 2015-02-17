@@ -46,7 +46,6 @@ namespace Gems\Tracker\Model\Dependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 18:30:05
  */
-// class Gems_Tracker_Model_Dependency_AppointmentMaintenanceDependency extends MUtil_Model_Dependency_DependencyAbstract
 class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_DependencyAbstract
 {
     /**
@@ -109,6 +108,10 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
                 'elementClass' => 'Hidden',
                 'label'        => null,
                 );
+            $output['gtf_uniqueness'] = array(
+                'elementClass' => 'Hidden',
+                'label'        => null,
+                );
             $output['gtf_create_track'] = array(
                 'elementClass' => 'Hidden',
                 'label'        => null,
@@ -116,6 +119,9 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
         } else {
             $output['gtf_after_next'] = array(
                 'elementClass' => 'Checkbox',
+                );
+            $output['gtf_uniqueness'] = array(
+                'elementClass' => 'Radio',
                 );
             $output['gtf_create_track'] = array(
                 'elementClass' => 'Checkbox',

@@ -62,9 +62,9 @@ class LogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
         $yesNo = $this->util->getTranslated()->getYesNo();
         $elements = parent::getAutoSearchElements($data);
 
-        $elements[] = $this->_createSelectElement('glac_log', $yesNo, $this->_('<<any log>>'));
-        $elements[] = $this->_createSelectElement('glac_on_post', $yesNo, $this->_('<<any post>>'));
-        $elements[] = $this->_createSelectElement('glac_change', $yesNo, $this->_('<<any change>>'));
+        $elements[] = $this->_createSelectElement('glac_log', $yesNo, $this->_('<<any always>>'));
+        $elements[] = $this->_createSelectElement('glac_on_post', $yesNo, $this->_('<<any on post>>'));
+        $elements[] = $this->_createSelectElement('glac_change', $yesNo, $this->_('<<any on change>>'));
 
         return $elements;
     }

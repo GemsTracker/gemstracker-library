@@ -98,20 +98,20 @@ class Gems_Default_LogMaintenanceAction extends \Gems_Controller_ModelSnippetAct
         $model->set('glac_name', 'label', $this->_('Action'),
                 'elementClass', 'Exhibitor');
 
-        $model->set('glac_log', 'label', $this->_('Log'),
-                'description', $this->_('Is this an action that should be logged?'),
+        $model->set('glac_log', 'label', $this->_('Log always'),
+                'description', $this->_('Always log this action.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('glac_on_post', 'label', $this->_('On post'),
-                'description', $this->_('Log only when posted?'),
+        $model->set('glac_on_post', 'label', $this->_('Log on post'),
+                'description', $this->_('Log only when posted.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );
 
-        $model->set('glac_change', 'label', $this->_('Changes data'),
-                'description', $this->_('Is this an action that changes the data?'),
+        $model->set('glac_change', 'label', $this->_('Log on change'),
+                'description', $this->_('Log when this action changes data.'),
                 'elementClass', 'CheckBox',
                 'multiOptions', $this->util->getTranslated()->getYesNo()
                 );

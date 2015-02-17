@@ -165,18 +165,22 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * Find the first appointment matching this query
      *
      * @param int $filterId
-     * @param int $respondentId
-     * @param int $orgId
+     * @param \Gems_Tracker_RespondentTrack $respTrack
      * @param mixed $from Optional date or appointment after which the appointment must occur
      * @param string $oper Comaprison operator for the from date
+     * @param int $uniqueness 0 is not unique, 1 within respTreck, 2 within track, 3 overall
      * @return int The first found appointment id or false
      */
-    public function findFirstAppointmentId($filterId, $respondentId, $orgId, $from = null, $oper = '>=')
+    public function findFirstAppointmentId($filterId, \Gems_Tracker_RespondentTrack $respTrack,
+            $from = null, $oper = '>=', $uniqueness = 0)
     {
         $filter = $this->getFilter($filterId);
         if (! $filter) {
             return false;
         }
+
+        $respondentId = $respTrack->getRespondentId();
+        $orgId        = $respTrack->getOrganizationId();
 
         $select = $this->db->select();
         $select->from('gems__appointments', 'gap_id_appointment')
@@ -200,7 +204,47 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         } else {
             $select->order('gap_admission_time ASC');
         }
-        // \MUtil_Echo::track($select->__toString(), $filter->getSqlWhere());
+
+        if ($uniqueness) {
+            $fieldId     = intval($filter->getAppointmentFieldId());
+            $respTrackId = intval($respTrack->getRespondentTrackId());
+            switch ($uniqueness) {
+                case 1:
+                    $select->where(
+                            "gap_id_appointment NOT IN
+                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
+                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
+                                        gr2t2a_id_respondent_track = $respTrackId AND
+                                        gr2t2a_id_app_field != $fieldId)"
+                            );
+                    break;
+                case 2:
+                    $trackId = $respTrack->getTrackId();
+                    $select->where(
+                            "gap_id_appointment NOT IN
+                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
+                                    INNER JOIN gems__respondent2track
+                                        ON gr2t2a_id_respondent_track = gr2t_id_respondent_track
+                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
+                                        gr2t_id_track = $trackId AND
+                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
+                                            gr2t2a_id_app_field = $fieldId))"
+                            );
+                    break;
+//                case 3:
+//                    $select->where(
+//                            "gap_id_appointment NOT IN
+//                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
+//                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
+//                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
+//                                            gr2t2a_id_app_field = $fieldId))"
+//                            );
+//                    break;
+                // default:
+            }
+        }
+
+        // \MUtil_Echo::track($select->__toString(), $uniqueness, $filter->getSqlWhere());
         return $this->db->fetchOne($select);
     }
 

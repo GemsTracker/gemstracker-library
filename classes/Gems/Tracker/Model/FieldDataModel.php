@@ -87,19 +87,19 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $model = new MUtil_Model_TableModel('gems__respondent2track2field');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2f');
-        $this->addUnionModel($model, null, Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME);
+        $model = new \MUtil_Model_TableModel('gems__respondent2track2field');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2f');
+        $this->addUnionModel($model, null, \Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME);
 
-        $model = new MUtil_Model_TableModel('gems__respondent2track2appointment');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2a');
+        $model = new \MUtil_Model_TableModel('gems__respondent2track2appointment');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2a');
 
         $map = $model->getItemsOrdered();
         $map = array_combine($map, str_replace('gr2t2a_', 'gr2t2f_', $map));
         $map['gr2t2a_id_app_field'] = 'gr2t2f_id_field';
         $map['gr2t2a_id_appointment'] = 'gr2t2f_value';
 
-        $this->addUnionModel($model, $map, Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
+        $this->addUnionModel($model, $map, \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
     }
 
     /**
@@ -198,7 +198,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
             return $currentValue;
         }
 
-        if ($currentValue instanceof Zend_Date) {
+        if ($currentValue instanceof \Zend_Date) {
             $value = $currentValue->toString($this->dateTimeFormat);
         } elseif ($currentValue instanceof DateTime) {
             $value = date('j M Y', $currentValue->getTimestamp());
@@ -273,7 +273,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
             return null;
         }
 
-        return new MUtil_Date($currentValue, Zend_Date::ISO_8601);
+        return new \MUtil_Date($currentValue, \Zend_Date::ISO_8601);
     }
 
     /**
@@ -319,16 +319,12 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
             $agenda = $this->loader->getAgenda();
 
             if (isset($field['gtf_filter_id'])) {
+                $respTrack = $this->tracker->getRespondentTrack($respTrackId);
                 if ($this->_lastActiveAppointment && $this->_lastActiveAppointment->isActive()) {
-                    // MUtil_Echo::track($this->_lastActiveAppointment->getAdmissionTime()->toString());
-                    $respId   = $this->_lastActiveAppointment->getRespondentId();
-                    $orgId    = $this->_lastActiveAppointment->getOrganizationId();
+                    // \MUtil_Echo::track($this->_lastActiveAppointment->getAdmissionTime()->toString());
                     $fromDate = $this->_lastActiveAppointment;
                     $oper     = $field['gtf_after_next'] ? '>' : '<';
                 } else {
-                    $respTrack = $this->tracker->getRespondentTrack($respTrackId);
-                    $respId    = $respTrack->getRespondentId();
-                    $orgId     = $respTrack->getOrganizationId();
                     $fromDate  = $respTrack->getStartDate();
                     if ($fromDate) {
                         if ($field['gtf_after_next']) {
@@ -339,10 +335,16 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
                         }
                     }
                 }
-                // MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
+                // \MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
                 if ($fromDate) {
-                    $newValue = $agenda->findFirstAppointmentId($field['gtf_filter_id'], $respId, $orgId, $fromDate, $oper);
-                    // MUtil_Echo::track($newValue);
+                    $newValue = $agenda->findFirstAppointmentId(
+                            $field['gtf_filter_id'],
+                            $respTrack,
+                            $fromDate,
+                            $oper,
+                            $field['gtf_uniqueness']
+                            );
+                    // \MUtil_Echo::track($newValue);
 
                     if ($newValue) {
                         $currentValue = $newValue;
@@ -472,7 +474,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 
         $model = $this->_unionModels[$modelName];
 
-        if ($model instanceof MUtil_Model_TableModel) {
+        if ($model instanceof \MUtil_Model_TableModel) {
             return $model->getTableName();
         }
     }

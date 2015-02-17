@@ -46,7 +46,7 @@ use Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
+class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
 {
     /**
      * Constant name to id appointment items
@@ -65,7 +65,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -78,25 +78,25 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
      *
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     protected $translateAdapter;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -116,12 +116,12 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $model = new MUtil_Model_TableModel('gems__track_fields');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
+        $model = new \MUtil_Model_TableModel('gems__track_fields');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gtf');
         $this->addUnionModel($model, null, self::FIELDS_NAME);
 
-        $model = new MUtil_Model_TableModel('gems__track_appointments');
-        Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
+        $model = new \MUtil_Model_TableModel('gems__track_appointments');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gtap');
 
         $map = $model->getItemsOrdered();
         $map = array_combine($map, str_replace('gtap_', 'gtf_', $map));
@@ -129,27 +129,27 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         $this->addUnionModel($model, $map, self::APPOINTMENTS_NAME);
 
-        $model->addColumn(new Zend_Db_Expr("'appointment'"), 'gtf_field_type');
-        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_field_values');
-        $model->addColumn(new Zend_Db_Expr("NULL"), 'gtf_calculate_using');
+        $model->addColumn(new \Zend_Db_Expr("'appointment'"), 'gtf_field_type');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_field_values');
+        $model->addColumn(new \Zend_Db_Expr("NULL"), 'gtf_calculate_using');
 
         $this->setKeys(array(
-            Gems_Model::FIELD_ID => 'gtf_id_field',
-            MUtil_Model::REQUEST_ID => 'gtf_id_track',
+            \Gems_Model::FIELD_ID => 'gtf_id_field',
+            \MUtil_Model::REQUEST_ID => 'gtf_id_track',
             ));
-        $this->setClearableKeys(array(Gems_Model::FIELD_ID => 'gtf_id_field'));
+        $this->setClearableKeys(array(\Gems_Model::FIELD_ID => 'gtf_id_field'));
         $this->setSort(array('gtf_id_order' => SORT_ASC));
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($text, $locale = null)
@@ -175,7 +175,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         if ($appFields) {
             foreach ($appFields as $id => $label) {
-                $key = Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
+                $key = \Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
                 $options[$key] = $label;
             }
         }
@@ -201,7 +201,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
      */
     public function applyBrowseSettings()
     {
@@ -250,7 +250,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      *
      * @param int $trackId The current track id
      * @param array $data The currently known data
-     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
      */
     public function applyDetailSettings($trackId, array &$data)
     {
@@ -272,12 +272,12 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                 $data['gtf_field_type'] = 'appointment';
             } else {
                 if (isset($data['gtf_id_field']) && $data['gtf_id_field']) {
-                    $data[Gems_Model::FIELD_ID] = $data['gtf_id_field'];
+                    $data[\Gems_Model::FIELD_ID] = $data['gtf_id_field'];
                 }
-                if (isset($data[Gems_Model::FIELD_ID])) {
+                if (isset($data[\Gems_Model::FIELD_ID])) {
                     $data['gtf_field_type'] = $this->db->fetchOne(
                             "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
-                            $data[Gems_Model::FIELD_ID]
+                            $data[\Gems_Model::FIELD_ID]
                             );
                 } else  {
                     if (! $this->has('gtf_field_type', 'default')) {
@@ -322,7 +322,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                             'multiOptions', $options
                             );
 
-                    $contact = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
+                    $contact = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
                     $contact->apply($this, 'gtf_calculate_using');
                 }
             }
@@ -349,7 +349,17 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         );
                 $this->set('gtf_after_next', 'label', $this->_('Link ascending'),
                         'description', $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
-                        'multiOptions', $this->util->getTranslated()->getYesNo(),
+                        'multiOptions', $translated->getYesNo(),
+                        'order', $this->getOrder('gtf_filter_id') + 1
+                        );
+                $this->set('gtf_uniqueness', 'label', $this->_('Link unique'),
+                        'description', $this->_('Can one appointment be used in multiple fields?'),
+                        'multiOptions', array(
+                            0 => $this->_('No: repeatedly linked appointments are allowed.'),
+                            1 => $this->_('Track instances may link only once to an appointment.'),
+                            2 => $this->_('Tracks of this type may link only once to an appointment.'),
+//                            3 => $this->_('Appointment may not be used in any other track.'),
+                        ),
                         'order', $this->getOrder('gtf_filter_id') + 1
                         );
                 $this->set('gtf_create_track',
@@ -361,7 +371,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
                         'description', $this->_('Any previous track must have an end date at least this many days in the past.')
                         );
 
-                // $this->addDependency(new Gems_Tracker_Model_Dependency_AppointmentMaintenanceDependency());
+                // $this->addDependency(new \Gems_Tracker_Model_Dependency_AppointmentMaintenanceDependency());
                 // $this->addDependency(new \Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency());
                 $this->addDependency(new AppointmentMaintenanceDependency());
             }
@@ -376,7 +386,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      *
      * @param int $trackId The current track id
      * @param array $data The currently known data
-     * @return Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
      */
     public function applyEditSettings($trackId, array $data)
     {
@@ -396,8 +406,8 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         } else {
             $sql = false;
         }
-        if ($sql && isset($data[Gems_Model::FIELD_ID])) {
-            $noSubChange = $this->db->fetchOne($sql, $data[Gems_Model::FIELD_ID]);
+        if ($sql && isset($data[\Gems_Model::FIELD_ID])) {
+            $noSubChange = $this->db->fetchOne($sql, $data[\Gems_Model::FIELD_ID]);
         }
 
         $this->set('gtf_id_field',          'elementClass', 'Hidden');
@@ -419,7 +429,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
                 'validators[int]', 'Int',
-                'validators[gt]', new Zend_Validate_GreaterThan(0)
+                'validators[gt]', new \Zend_Validate_GreaterThan(0)
                 );
 
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
@@ -487,31 +497,31 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function formatLoadDate($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         // If not empty or zend_db_expression and not already a zend date, we
-        // transform to a Zend_Date using the ISO_8601 format
-        if (empty($value) || $value instanceof Zend_Date || $value instanceof Zend_Db_Expr) {
+        // transform to a \Zend_Date using the ISO_8601 format
+        if (empty($value) || $value instanceof \Zend_Date || $value instanceof \Zend_Db_Expr) {
             return $value;
         }
 
         $formats = array(
-            Gems_Tracker::DB_DATE_FORMAT,
-            MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat'),
+            \Gems_Tracker::DB_DATE_FORMAT,
+            \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat'),
             );
 
         if ($isPost) {
@@ -520,14 +530,14 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         }
 
         foreach ($formats as $format) {
-            if (Zend_Date::isDate($value, $format)) {
-                return new MUtil_Date($value, $format);
+            if (\Zend_Date::isDate($value, $format)) {
+                return new \MUtil_Date($value, $format);
             }
         }
 
         try {
             // Last try
-            $tmpDate = new MUtil_Date($value, Zend_Date::ISO_8601);
+            $tmpDate = new \MUtil_Date($value, \Zend_Date::ISO_8601);
 
         } catch (Exception $exc) {
             // On failure, we use the input value
@@ -541,34 +551,34 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function formatSaveDate($value, $isNew = false, $name = null, array $context = array())
     {
         if ((null === $value) ||
-                ($value instanceof Zend_Db_Expr) ||
-                MUtil_String::startsWith($value, 'current_', true)) {
+                ($value instanceof \Zend_Db_Expr) ||
+                \MUtil_String::startsWith($value, 'current_', true)) {
             return $value;
         }
 
-        $saveFormat = Gems_Tracker::DB_DATE_FORMAT;
+        $saveFormat = \Gems_Tracker::DB_DATE_FORMAT;
 
-        if ($value instanceof Zend_Date) {
+        if ($value instanceof \Zend_Date) {
             return $value->toString($saveFormat);
 
         } else {
-            $displayFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
 
             try {
-                return MUtil_Date::format($value, $saveFormat, $displayFormat);
-            } catch (Zend_Exception $e) {
-                if (Zend_Date::isDate($value, $saveFormat)) {
+                return \MUtil_Date::format($value, $saveFormat, $displayFormat);
+            } catch (\Zend_Exception $e) {
+                if (\Zend_Date::isDate($value, $saveFormat)) {
                     return $value;
                 }
                 throw $e;
@@ -586,7 +596,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      */
     public function formatValues($values)
     {
-        return new MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
+        return new \MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
     }
 
     /**
@@ -707,11 +717,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
         if ($edit) {
             $output['elementClass']  = 'Date';
         }
-        $output['dateFormat']    = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
-        $output['storageFormat'] = Gems_Tracker::DB_DATE_FORMAT;
+        $output['dateFormat']    = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        $output['storageFormat'] = \Gems_Tracker::DB_DATE_FORMAT;
 
-        $output[MUtil_Model_ModelAbstract::LOAD_TRANSFORMER] = array($this, 'formatLoadDate');
-        $output[MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'formatSaveDate');
+        $output[\MUtil_Model_ModelAbstract::LOAD_TRANSFORMER] = array($this, 'formatLoadDate');
+        $output[\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER] = array($this, 'formatSaveDate');
 
         return $output;
     }
@@ -751,7 +761,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      */
     public function getSettingsForMultiSelect($values, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
-        $concatter = new MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
+        $concatter = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, ' ', false);
         $multi     = explode(self::FIELD_SEP, $values);
         $output    = $concatter->getSettings();
 
@@ -841,39 +851,39 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends MUtil_Model_UnionModel
      */
     protected function initTranslateable()
     {
-        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+        if ($this->translateAdapter instanceof \Zend_Translate_Adapter) {
             // OK
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate) {
+        if ($this->translate instanceof \Zend_Translate) {
             // Just one step
             $this->translateAdapter = $this->translate->getAdapter();
             return;
         }
 
-        if ($this->translate instanceof Zend_Translate_Adapter) {
+        if ($this->translate instanceof \Zend_Translate_Adapter) {
             // It does happen and if it is all we have
             $this->translateAdapter = $this->translate;
             return;
         }
 
         // Make sure there always is an adapter, even if it is fake.
-        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
+        $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string using plural notations
      * Returns the translated string
      *
-     * @see Zend_Locale
+     * @see \Zend_Locale
      * @param  string             $singular Singular translation string
      * @param  string             $plural   Plural translation string
      * @param  integer            $number   Number for detecting the correct plural
-     * @param  string|Zend_Locale $locale   (Optional) Locale/Language to use, identical with
-     *                                      locale identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale   (Optional) Locale/Language to use, identical with
+     *                                      locale identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function plural($singular, $plural, $number, $locale = null)
