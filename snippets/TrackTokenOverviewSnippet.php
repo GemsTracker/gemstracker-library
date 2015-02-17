@@ -149,6 +149,26 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
     }
 
     /**
+     * Create the snippets content
+     *
+     * This is a stub function either override getHtmlOutput() or override render()
+     *
+     * @param Zend_View_Abstract $view Just in case it is needed here
+     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     */
+    public function getHtmlOutput(Zend_View_Abstract $view)
+    {
+        $table = parent::getHtmlOutput($view);
+        
+        $table->class = $this->class;
+        $this->applyHtmlAttributes($table);
+        $this->class = false;
+        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'), $table);
+        
+        return $tableContainer;
+    }
+
+    /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
      *

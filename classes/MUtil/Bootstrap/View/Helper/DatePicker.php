@@ -56,7 +56,7 @@ class MUtil_Bootstrap_View_Helper_DatePicker extends MUtil_JQuery_View_Helper_Da
         
         $datePicker = '<div class="input-group date">'
                        . $datePicker 
-                       . '<label for="' . $attribs['id'] . '" class="input-group-addon"><i class="fa fa-calendar"></i></label>'
+                       . '<label for="' . $attribs['id'] . '" class="input-group-addon date"><i class="fa fa-calendar"></i></label>'
                        . '</div>';
         
         return $datePicker;

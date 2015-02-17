@@ -71,7 +71,7 @@ class Generic_ContentTitleSnippet extends MUtil_Snippets_SnippetAbstract
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
         if ($this->contentTitle) {
-            return MUtil_Html::create($this->tagName, $this->contentTitle);
+            return MUtil_Html::create($this->tagName, $this->contentTitle, array('class' => 'title'));
         }
     }
 

@@ -109,7 +109,7 @@ class MUtil_Snippets_TableSnippetAbstract extends MUtil_Snippets_SnippetAbstract
             $table->appendAttrib('class', $this->class);
         }
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $table;
 
         return $container;

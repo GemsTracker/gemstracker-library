@@ -61,7 +61,7 @@ class Gems_Default_ProjectInformationAction  extends Gems_Controller_Action
 
     protected function _showTable($caption, $data, $nested = false)
     {
-        $tableContainer = $div = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $tableContainer = $div = MUtil_Html::create()->div(array('class' => 'table-container'));
         $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
         $tableContainer[] = $table;

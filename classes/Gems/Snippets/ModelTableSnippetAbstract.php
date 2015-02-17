@@ -228,7 +228,7 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
         if ($this->containingId || $this->keyboard) {
             $this->applyHtmlAttributes($table);
 
-            $div = \MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target'), $table);
+            $div = \MUtil_Html::create()->div(array('id' => $this->containingId ? $this->containingId : 'keys_target', 'class' => 'table-container'), $table);
 
             if ($this->keyboard) {
                 return array($div, new \Gems_JQuery_TableRowKeySelector($div));

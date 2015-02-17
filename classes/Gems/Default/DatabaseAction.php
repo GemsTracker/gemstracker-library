@@ -101,7 +101,7 @@ class Gems_Default_DatabaseAction extends \Gems_Controller_ModelSnippetActionAbs
             $table = \MUtil_Html::create()->pInfo(sprintf($this->_('No rows in %s.'), $tableName));
         }
 
-        $container = \MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $table;
         return $container;
     }

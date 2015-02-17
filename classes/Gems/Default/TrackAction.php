@@ -179,7 +179,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             }
 
             $this->html->h3(sprintf($this->_('Assignments of this track to %s: %s'), $respId, $this->getRespondentName()));
-            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'));
             $tableContainer[] = $bridge->getTable();
             $this->html[] = $tableContainer;
 

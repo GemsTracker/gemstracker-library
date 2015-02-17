@@ -227,7 +227,7 @@ abstract class Gems_Snippets_RespondentDetailSnippetAbstract extends Gems_Snippe
         $this->addButtons($bridge);
         $this->addOnClick($bridge);
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $bridge->getTable();
         return $container;
     }

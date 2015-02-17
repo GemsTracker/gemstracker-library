@@ -204,7 +204,8 @@ class Gems_Default_IndexAction extends Gems_Controller_Action
             $this->setCurrentOrganizationTo($user);
         }
 
-        $this->html->append($form);
+        $formContainer = MUtil_Html::create('div', array('class' => 'resetPassword'), $form);
+        $this->html->append($formContainer);
     }
 
     /**

@@ -104,7 +104,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
         }
 
         $trackRepeater = $this->getRepeater($this->trackId);
-        $table = $html->div(array('class' => 'table-responsive'))->table($trackRepeater, array('class' => 'browser table table-striped table-bordered table-hover table-condensed'));
+        $table = $html->div(array('class' => 'table-container'))->table($trackRepeater, array('class' => 'browser table'));
 
         if ($link = $this->findMenuItem('project-tracks', 'questions')) {
             $table->tr()->onclick = array('location.href=\'', $link->toHRefAttribute($trackRepeater), '\';');

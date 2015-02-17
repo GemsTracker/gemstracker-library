@@ -301,7 +301,7 @@ class Gems_Mail_MailElements extends Gems_Registry_TargetAbstract {
         $mailFieldsHtml     = new MUtil_Html_TableElement($mailFieldsRepeater, array('class' => 'table table-striped table-bordered table-condensed'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->key, $this->translate->_('Field'));
         $mailFieldsHtml->addColumn($mailFieldsRepeater->value, $this->translate->_('Value'));
-        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $mailFieldsHtml;
         return $container;
     }

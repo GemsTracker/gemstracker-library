@@ -77,7 +77,11 @@ class Generic_CurrentButtonRowSnippet extends MUtil_Snippets_SnippetAbstract
                 ->addCurrentParent($this->_('Cancel'))
                 ->addCurrentChildren();
 
-        return $menuList;
+        $buttonContainer = false;
+        if ($menuList->render($view)) {
+            $buttonContainer = MUtil_Html::create('div', array('class' => 'buttons', 'renderClosingTag' => true), $menuList);
+        }
+        return $buttonContainer;
     }
 
 }

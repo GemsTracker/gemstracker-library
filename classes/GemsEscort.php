@@ -938,7 +938,8 @@ class GemsEscort extends MUtil_Application_Escort
                                 'controller' => 'language',
                                 'action' => 'change-ui',
                                 'language' => urlencode($locale),
-                                'current_uri' => $currentUri
+                                'current_uri' => $currentUri,
+                                'class' => ''
                             ),
                             strtoupper($locale)
                         );

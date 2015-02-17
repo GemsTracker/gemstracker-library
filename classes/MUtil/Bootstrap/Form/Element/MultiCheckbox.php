@@ -63,7 +63,7 @@ class MUtil_Bootstrap_Form_Element_MultiCheckbox extends Zend_Form_Element_Multi
     public function __construct($spec, $options = null)
     {
         parent::__construct($spec, $options);
-        $this->setAttrib('label_class', 'radio-inline');
+        $this->setAttrib('label_class', 'checkbox');
     }
 
 

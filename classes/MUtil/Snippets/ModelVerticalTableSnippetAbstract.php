@@ -123,7 +123,7 @@ abstract class MUtil_Snippets_ModelVerticalTableSnippetAbstract extends MUtil_Sn
 
         $table = $this->getShowTable($model);
 
-        $container = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $container = MUtil_Html::create()->div(array('class' => 'table-container'));
         $container[] = $table;
         return $container;
     }

@@ -68,17 +68,18 @@ class Gems_Controller_Action_Helper_BatchRunner extends Zend_Controller_Action_H
             exit;
         } else {
             $controller = $this->getActionController();
-            $controller->html->h3($title);
+            $batchContainer = $controller->html->div(array('class' => 'batch-container'));
+            $batchContainer->h3($title);
 
             if ($batch->isFinished()) {
                 $controller->addMessage($batch->getMessages(true), 'info');
-                $controller->html->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
+                $batchContainer->pInfo($batch->getRestartButton($controller->_('Prepare recheck'), array('class' => 'actionlink')));
             } else {
                 if ($batch->count()) {
-                    $controller->html->pInfo($batch->getStartButton(sprintf($controller->_('Start %s jobs'), $batch->count())));
-                    $controller->html->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
+                    $batchContainer->pInfo($batch->getStartButton(sprintf($controller->_('Start %s jobs'), $batch->count())));
+                    $batchContainer->append($batch->getPanel($controller->view, $batch->getProgressPercentage() . '%'));
                 } else {
-                    $controller->html->pInfo($controller->_('Nothing to do.'));
+                    $batchContainer->pInfo($controller->_('Nothing to do.'));
                 }
             }
         }

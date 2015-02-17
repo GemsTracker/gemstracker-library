@@ -86,7 +86,7 @@ class Gems_Snippets_Export_RespondentSnippet extends MUtil_Snippets_SnippetAbstr
             }
         }
 
-        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'));
         $tableContainer[] = $bridge->getTable();
 
         $html->h2($this->_('Respondent information') . ': ' . $respondentId);

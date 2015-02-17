@@ -68,7 +68,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      *
      * @var string
      */
-    protected $class = 'browser';
+    protected $class = 'browser table answer';
 
     /**
      *
@@ -178,7 +178,6 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
             if (null !== $label) {     // Was strlen($label), but this ruled out empty sub-questions
                 $bridge->thd($label, array('class' => $model->get($name, 'thClass')));
                 $td = $bridge->td($bridge->$name);
-
                 $td->appendAttrib('class', 'answer');
                 $td->appendAttrib('class', $selectedClass);
                 $td->appendAttrib('class', $bridge->row_class);
@@ -242,7 +241,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
      */
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
-        $htmlDiv   = MUtil_Html::create()->div();
+        $htmlDiv   = MUtil_Html::create()->div(array('class' => 'answer-container'));
 
         if ($this->tokenId) {
             if ($this->token->exists) {
@@ -261,6 +260,7 @@ class Gems_Tracker_Snippets_AnswerModelSnippetGeneric extends Gems_Snippets_Mode
                 $table->setPivot(true, 2, 1);
 
                 $this->applyHtmlAttributes($table);
+                $this->class = false;
                 $htmlDiv[] = $table;
 
             } else {

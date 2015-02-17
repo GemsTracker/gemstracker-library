@@ -139,7 +139,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             }
 
             $result[] = MUtil_Html::create()->h3($this->_('Available tracks'));
-            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-responsive'));
+            $tableContainer = MUtil_Html::create()->div();
             $tableContainer[] = $bridge->getTable();
             $result[] = $tableContainer;
         }

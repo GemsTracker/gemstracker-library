@@ -84,9 +84,9 @@ class Gems_User_Form_LoginForm extends Gems_User_Form_OrganizationFormAbstract
     public function __construct($options = null)
     {
         if (isset($options['class'])) {
-            $options['class'] .= ' col-sm-4';
+            $options['class'] .= ' login-form';
         } else {
-            $options['class'] = 'col-sm-4';
+            $options['class'] = 'login-form';
         }
         parent::__construct($options);
     }

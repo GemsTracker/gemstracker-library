@@ -93,6 +93,12 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     protected $importSnippets = 'ModelImportSnippet';
 
     /**
+     * The page title at the top of each page
+     * @var string Title
+     */
+    public $pageTitle;
+
+    /**
      *
      * @var Gems_Util_RequestCache
      */
@@ -398,7 +404,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public function createAction()
     {
         if ($form = $this->processForm()) {
-            $this->html->h3(sprintf($this->_('New %s...'), $this->getTopic()));
+            $this->setPageTitle(sprintf($this->_('New %s...'), $this->getTopic()));
             $this->html[] = $form;
         }
     }
@@ -452,9 +458,9 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             if ($this->useTabbedForms && method_exists($this, 'getSubject')) {
                 $data = $this->getModel()->loadFirst();
                 $subject = $this->getSubject($data);
-                $this->html->h3(sprintf($this->_('Edit %s %s'), $this->getTopic(1), $subject));
+                $this->setPageTitle(sprintf($this->_('Edit %s %s'), $this->getTopic(1), $subject));
             } else {
-                $this->html->h3(sprintf($this->_('Edit %s'), $this->getTopic(1)));
+                $this->setPageTitle(sprintf($this->_('Edit %s'), $this->getTopic(1)));
             }
             $this->html[] = $form;
         }
@@ -864,7 +870,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     public function indexAction()
     {
         // MUtil_Model::$verbose = true;
-        $this->html->h3($this->getTopicTitle());
+        $this->setPageTitle($this->getTopicTitle(), array('class' => 'title'));
 
         if (! $this->useMultiRowForm) {
             $id = 'autofilter_target';
@@ -894,7 +900,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $question = $this->_('Are you sure?');
         }
 
-        $this->html->h3(sprintf($title, $this->getTopic()));
+        $this->setPageTitle(sprintf($title, $this->getTopic()));
 
         if ($info) {
             $this->html->pInfo($info);
@@ -1076,6 +1082,20 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
     }
 
     /**
+     * Set the page title on top of a page, also store it in a public var
+     * @param string $title Title
+     */
+    protected function setPageTitle($title) {
+
+        $this->pageTitle = $title;
+
+        $args = array('class' => 'title');
+        $titleTag = MUtil_Html::create('h3', $title, $args);
+
+        $this->html->append($titleTag);
+    }
+
+    /**
      * Shows a table displaying a single record from the model
      *
      * Uses: $this->getModel()
@@ -1083,7 +1103,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
      */
     public function showAction()
     {
-        $this->html->h3(sprintf($this->_('Show %s'), $this->getTopic()));
+        $this->setPageTitle(sprintf($this->_('Show %s'), $this->getTopic()));
 
         $model    = $this->getModel();
         // NEAR FUTURE:
@@ -1098,7 +1118,7 @@ abstract class Gems_Controller_BrowseEditAction extends Gems_Controller_ModelAct
             $table->tbody()->onclick = array('location.href=\'', $menuItem->toHRefAttribute($this->getRequest()), '\';');
         }
 
-
-        $this->html[] = $table;
+        $tableContainer = MUtil_Html::create('div', array('class' => 'table-container'), $table);
+        $this->html[] = $tableContainer;
     }
 }
