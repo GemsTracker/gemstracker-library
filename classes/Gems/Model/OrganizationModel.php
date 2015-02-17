@@ -233,7 +233,8 @@ class Gems_Model_OrganizationModel extends Gems_Model_JoinModel
                 'validator', $this->createUniqueValidator('gor_name')
                 );
         $this->set('gor_location',          'tab', 'general',
-                'size', 25
+                'size', 50,
+                'maxlength', 255
                 );
         $this->set('gor_task',              'tab', 'general',
                 'size', 25);
