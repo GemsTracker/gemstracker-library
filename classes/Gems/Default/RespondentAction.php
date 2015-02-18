@@ -44,7 +44,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditAction implements Gems_Menu_ParameterSourceInterface
+abstract class Gems_Default_RespondentAction extends \Gems_Controller_BrowseEditAction
+        implements \Gems_Menu_ParameterSourceInterface
 {
     public $deleteSnippets = array('RespondentDetailsSnippet');
 
@@ -54,7 +55,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public $showSnippets = array(
         'RespondentDetailsSnippet',
-    	'AddTracksSnippet',
+    	'Tracker\\AddTracksSnippet',
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
@@ -70,11 +71,11 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $model->setIfExists('gr2o_opened', 'tableDisplay', 'small');
         $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');
@@ -84,14 +85,14 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         // Newline placeholder
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
 
         // Display separator and phone sign only if phone exist.
-        $phonesep = $bridge->itemIf($bridge->grs_phone_1, MUtil_Html::raw('&#9743; '));
-        $citysep  = $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
+        $phonesep = $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
+        $citysep  = $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
 
         if ($this->loader->getCurrentUser()->hasPrivilege('pr.respondent.multiorg')) {
-            $bridge->addMultiSort('gr2o_patient_nr', $br, 'gor_name'); //, MUtil_Html::raw(' '), 'gr2o_opened');
+            $bridge->addMultiSort('gr2o_patient_nr', $br, 'gor_name'); //, \MUtil_Html::raw(' '), 'gr2o_opened');
         } else {
             $bridge->addMultiSort('gr2o_patient_nr', $br, 'gr2o_opened');
         }
@@ -110,18 +111,18 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
         $returnValues = array();
 
         if (APPLICATION_ENV !== 'production') {
-            $bsn = new MUtil_Validate_Dutch_Burgerservicenummer();
+            $bsn = new \MUtil_Validate_Dutch_Burgerservicenummer();
             $num = mt_rand(100000000, 999999999);
 
             while (! $bsn->isValid($num)) {
@@ -133,16 +134,16 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $model->set('grs_ssn', 'description', $this->_('Enter a 9-digit SSN number.'));
         }
 
-        if ($model->hashSsn === Gems_Model_RespondentModel::SSN_HASH) {
+        if ($model->hashSsn === \Gems_Model_RespondentModel::SSN_HASH) {
             if (strlen($data['grs_ssn']) > 9) {
                 // When longer the grs_ssn contains a hash, not a bsn number
                 $returnValues['grs_ssn'] = '';
                 }
         }
 
-        $ucfirst = new Zend_Filter_Callback('ucfirst');
+        $ucfirst = new \Zend_Filter_Callback('ucfirst');
 
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
         $bridge->addTab(    'caption1')->h4($this->_('Identification'));
         //Add the hidden fields after the tab, so validation will work. They need to be in the
@@ -156,7 +157,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         $bridge->addText(    'grs_ssn',            'label', $this->_('SSN'), 'size', 10, 'maxlength', 12)
-            ->addValidator(  new MUtil_Validate_Dutch_Burgerservicenummer())
+            ->addValidator(  new \MUtil_Validate_Dutch_Burgerservicenummer())
             ->addValidator(  $model->createUniqueValidator('grs_ssn'))
             ->addFilter(     'Digits');
         $bridge->addText(    'gr2o_patient_nr',    'label', $this->_('Patient number'), 'size', 15, 'minlength', 4)
@@ -172,7 +173,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         $bridge->addRadio(   'grs_gender',         'separator', '', 'multiOptions', $this->util->getTranslated()->getGenders());
         $year = intval(date('Y')); // Als jQuery 1.4 gebruikt wordt: yearRange = c-130:c0
         $bridge->addDate(    'grs_birthday',       'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => ($year - 130) . ':' . $year))
-            ->addValidator(new MUtil_Validate_Date_DateBefore());
+            ->addValidator(new \MUtil_Validate_Date_DateBefore());
 
         //$bridge->addSelect(  'gr2o_id_physician');
         $bridge->addText(    'gr2o_treatment',     'size', 30, 'description', $this->_('DBC\'s, etc...'));
@@ -191,7 +192,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $bridge->addText(    'grs_address_2',      'size', 40);
         }
         $bridge->addText(    'grs_zipcode',        'size', 7, 'description', '0000 AA');
-        $bridge->addFilter(  'grs_zipcode',        new Gems_Filter_DutchZipcode());
+        $bridge->addFilter(  'grs_zipcode',        new \Gems_Filter_DutchZipcode());
         $bridge->addText(    'grs_city')
             ->addFilter(     $ucfirst);
         $bridge->addSelect(  'grs_iso_country',    'label', $this->_('Country'), 'multiOptions', $this->util->getLocalized()->getCountries());
@@ -220,7 +221,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
@@ -267,7 +268,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
         $form = $bridge->getForm();
 
-        $save = new Zend_Form_Element_Submit('save_button', array('label' => $this->_('Delete respondent'), 'class' => 'button'));
+        $save = new \Zend_Form_Element_Submit('save_button', array('label' => $this->_('Delete respondent'), 'class' => 'button'));
         $form->addElement($save);
 
         if ($request->isPost()) {
@@ -304,7 +305,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
         $form->populate($data);
 
-        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
@@ -336,7 +337,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         $params['model']   = $model;
-        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
+        $params['baseUrl'] = array(\MUtil_Model::REQUEST_ID1 => $this->_getParam(\MUtil_Model::REQUEST_ID1), \MUtil_Model::REQUEST_ID2 => $this->_getParam(\MUtil_Model::REQUEST_ID2));
         $params['buttons'] = $this->createMenuLinks();
         $params['onclick'] = $this->findAllowedMenuItem('edit');
         if ($params['onclick']) {
@@ -367,18 +368,18 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
         if ($model->isMultiOrganization()) {
             $options = $this->loader->getCurrentUser()->getRespondentOrganizations();
 
-            $elements[] = $this->_createSelectElement(MUtil_Model::REQUEST_ID2, $options, $this->_('(all organizations)'));
+            $elements[] = $this->_createSelectElement(\MUtil_Model::REQUEST_ID2, $options, $this->_('(all organizations)'));
         }
 
         return $elements;
@@ -400,7 +401,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $orgs  = $user->getRespondentOrganizations();
 
             if (isset($orgs[$orgId])) {
-                return array(MUtil_Model::REQUEST_ID2 => $orgId);
+                return array(\MUtil_Model::REQUEST_ID2 => $orgId);
             }
         }
         return parent::getDefaultSearchData();
@@ -414,12 +415,12 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
      */
     protected function getOrganizationId($default = null)
     {
-        if ($orgId = $this->_getParam(MUtil_Model::REQUEST_ID2, $default)) {
+        if ($orgId = $this->_getParam(\MUtil_Model::REQUEST_ID2, $default)) {
             return $orgId;
         }
         $data = $this->getCachedRequestData(false);
-        if (isset($data[MUtil_Model::REQUEST_ID2])) {
-            return $data[MUtil_Model::REQUEST_ID2];
+        if (isset($data[\MUtil_Model::REQUEST_ID2])) {
+            return $data[\MUtil_Model::REQUEST_ID2];
         }
 
         return $this->loader->getCurrentUser()->getCurrentOrganizationId();
@@ -429,7 +430,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         switch ($name) {
             case 'gr2o_patient_nr':
-                return $this->_getParam(MUtil_Model::REQUEST_ID1, $default);
+                return $this->_getParam(\MUtil_Model::REQUEST_ID1, $default);
 
             case 'gr2o_id_organization':
                 return $this->getOrganizationId($default);
@@ -491,14 +492,14 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
     {
         if ($patientId) {
             // Logging
-            if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface) {
+            if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
                 $request = $this->getRequest();
                 $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
                 if (is_null($respondentId)) {
                     $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
                 }
 
-                Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
+                \Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
             }
 
             $user      = $this->loader->getCurrentUser();
@@ -506,7 +507,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;
 
-            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gr2o_opened_by']          = $user->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);
@@ -517,8 +518,8 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
 
     public function showAction()
     {
-        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
         $user      = $this->loader->getCurrentUser();
         $userId    = $user->getUserId();
@@ -541,7 +542,7 @@ abstract class Gems_Default_RespondentAction extends Gems_Controller_BrowseEditA
         }
 
         $params['model']   = $model;
-        $params['baseUrl'] = array(MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1), MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2));
+        $params['baseUrl'] = array(\MUtil_Model::REQUEST_ID1 => $this->_getParam(\MUtil_Model::REQUEST_ID1), \MUtil_Model::REQUEST_ID2 => $this->_getParam(\MUtil_Model::REQUEST_ID2));
         $params['buttons'] = $this->createMenuLinks();
         $params['onclick'] = $this->findAllowedMenuItem('edit');
         if ($params['onclick']) {

@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
+class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 {
     /**
      * Holds the trackData in array with key trackId, for internal caching use only
@@ -55,22 +55,22 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     protected $_trackData = array();
 
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
     /**
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -81,9 +81,9 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     {
         parent::__construct('gems__tracks');
 
-        Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
+        \Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
 
-        $this->set('gtr_date_start', 'default', new Zend_Date());
+        $this->set('gtr_date_start', 'default', new \Zend_Date());
     }
 
     /**
@@ -91,14 +91,14 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
      *
      * @param boolean $detailed True when shopwing detailed information
      * @param boolean $edit When true use edit settings
-     * @return Gems_Tracker_Model_TrackModel
+     * @return \Gems_Tracker_Model_TrackModel
      */
     public function applyFormatting($detailed = false, $edit = false)
     {
         $translated = $this->util->getTranslated();
         $translator = $this->getTranslateAdapter();
         if ($edit) {
-            $dateFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $dateFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         } else {
             $dateFormat = $translated->dateFormatString;
         }
@@ -119,6 +119,9 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
                 'dateFormat', $dateFormat,
                 'formatFunction', $translated->formatDateForever);
 
+        $this->set('gtr_display_group', 'label', $translator->_('Display group'),
+                'description', $translator->_('Create lists per group, e.g. tracks, respondent or staff.'),
+                'multiOptions', $this->tracker->getTrackDisplayGroups());
         $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
                 'size', 10,
                 'description', $translator->_('Only for programmers.'));
@@ -201,17 +204,17 @@ class Gems_Tracker_Model_TrackModel extends MUtil_Model_TableModel
     /**
      * Returns a translate adaptor
      *
-     * @return Zend_Translate_Adapter
+     * @return \Zend_Translate_Adapter
      */
     protected function getTranslateAdapter()
     {
-        if ($this->translate instanceof Zend_Translate)
+        if ($this->translate instanceof \Zend_Translate)
         {
             return $this->translate->getAdapter();
         }
 
-        if (! $this->translate instanceof Zend_Translate_Adapter) {
-            $this->translate = new MUtil_Translate_Adapter_Potemkin();
+        if (! $this->translate instanceof \Zend_Translate_Adapter) {
+            $this->translate = new \MUtil_Translate_Adapter_Potemkin();
         }
 
         return $this->translate;

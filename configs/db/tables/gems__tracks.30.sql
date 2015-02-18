@@ -11,6 +11,8 @@ CREATE TABLE if not exists gems__tracks (
 
         gtr_active            boolean not null default 0,
         gtr_survey_rounds     int unsigned not null default 0,
+
+        gtr_display_group     varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tracks',
         gtr_track_type        char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'T',
 
         -- depreciated

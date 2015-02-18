@@ -36,10 +36,10 @@
 /**
  * This interface lists all API-level methods in the Tracker class.
  *
- * This interface only exists to prevent the Gems_Loader_TargetLoaderAbstract
+ * This interface only exists to prevent the \Gems_Loader_TargetLoaderAbstract
  * functions of being accessible when working with a tracker. Do not create
  * a second implementation is this interface but always create a subclass of
- * the Gems_Tracker class.
+ * the \Gems_Tracker class.
  *
  *
  * The tracker is the central access point doing anything with tracks or tokens.
@@ -47,11 +47,11 @@
  * Tracker contains a number of getXxx functions to create Token, Survey,
  * RespondentTrack, [Survey]SourceInterface and TrackEngine objects.
  *
- * Tracker also offers MUtil_Model_ModelAbstract children for RespondentTracks,
+ * Tracker also offers \MUtil_Model_ModelAbstract children for RespondentTracks,
  * Surveys, Tokens and Tracks.
  *
  * Other object classes accessible through gems_Tracker are TokenLibrary (defines
- * how tokens are created and checked), TokenSelect (Gems_Tracker_Token_TokenSelect
+ * how tokens are created and checked), TokenSelect (\Gems_Tracker_Token_TokenSelect
  * extension) and TokenValidator.
  *
  * Other functions are general utility functions, e.g. checkTrackRounds(), createToken(),
@@ -74,7 +74,7 @@ interface Gems_Tracker_TrackerInterface
      * @param string $batchId A unique identifier for the current batch
      * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond Optional where statement for selecting tracks
-     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
+     * @return \Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function checkTrackRounds($batchId, $userId = null, $cond = null);
 
@@ -87,7 +87,7 @@ interface Gems_Tracker_TrackerInterface
      * @param int $userId         Id of the user who takes the action (for logging)
      * @param mixed $respTrackData Optional array containing field values or the start date.
      * @param array $trackFieldsData
-     * @return Gems_Tracker_RespondentTrack The newly created track
+     * @return \Gems_Tracker_RespondentTrack The newly created track
      */
     public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = null, array $trackFieldsData = array());
 
@@ -145,15 +145,15 @@ interface Gems_Tracker_TrackerInterface
     /**
      * Returns a form to ask for a token
      *
-     * @param mixed $args_array MUtil_Ra::args array for Form initiation.
-     * @return Gems_Tracker_Form_AskTokenForm
+     * @param mixed $args_array \MUtil_Ra::args array for Form initiation.
+     * @return \Gems_Tracker_Form_AskTokenForm
      */
     public function getAskTokenForm($args_array = null);
 
     /**
      *
      * @param mixed $respTrackData Track id or array containing trackdata
-     * @return Gems_Tracker_RespondentTrack
+     * @return \Gems_Tracker_RespondentTrack
      */
     public function getRespondentTrack($respTrackData);
 
@@ -165,25 +165,25 @@ interface Gems_Tracker_TrackerInterface
      * @param int $respondentId
      * @param int $organizationId
      * @param mixed $order The column(s) and direction to order by
-     * @return array of Gems_Tracker_RespondentTrack
+     * @return array of \Gems_Tracker_RespondentTrack
      */
     public function getRespondentTracks($respondentId, $organizationId, $order = array('gr2t_start_date'));
 
     /**
      * Load project specific model or general Gems model otherwise
      *
-     * @return Gems_Tracker_Model_RespondentTrackModel
+     * @return \Gems_Tracker_Model_RespondentTrackModel
      */
     public function getRespondentTrackModel();
 
     /**
      * Retrieve a SourceInterface with a given id
      *
-     * Should only be called by Gems_Tracker, Gems_Tracker_Survey or Gems_Tracker_Token (or should
-     * this one use Gems_Tracker_Survey instead?)
+     * Should only be called by \Gems_Tracker, \Gems_Tracker_Survey or \Gems_Tracker_Token (or should
+     * this one use \Gems_Tracker_Survey instead?)
      *
      * @param mixed $sourceData Gems source id or array containing gems source data
-     * @return Gems_Tracker_Source_SourceInterface
+     * @return \Gems_Tracker_Source_SourceInterface
      */
     public function getSource($sourceData);
 
@@ -204,7 +204,7 @@ interface Gems_Tracker_TrackerInterface
     /**
      *
      * @param mixed $surveyData Gems survey id or array containing gems survey data
-     * @return Gems_Tracker_Survey
+     * @return \Gems_Tracker_Survey
      */
     public function getSurvey($surveyData);
 
@@ -212,35 +212,35 @@ interface Gems_Tracker_TrackerInterface
      *
      * @param mixed $sourceSurveyId The source survey id
      * @param int $sourceId The gems source id of the source
-     * @return Gems_Tracker_Survey
+     * @return \Gems_Tracker_Survey
      */
     public function getSurveyBySourceId($sourceSurveyId, $sourceId);
 
     /**
      *
-     * @param Gems_Tracker_Survey $survey
-     * @param Gems_Tracker_Source_SourceInterface $source
-     * @return Gems_Tracker_SurveyModel
+     * @param \Gems_Tracker_Survey $survey
+     * @param \Gems_Tracker_Source_SourceInterface $source
+     * @return \Gems_Tracker_SurveyModel
      */
-    public function getSurveyModel(Gems_Tracker_Survey $survey, Gems_Tracker_Source_SourceInterface $source);
+    public function getSurveyModel(\Gems_Tracker_Survey $survey, \Gems_Tracker_Source_SourceInterface $source);
 
     /**
      *
      * @param mixed $tokenData Token id or array containing tokendata
-     * @return Gems_Tracker_Token
+     * @return \Gems_Tracker_Token
      */
     public function getToken($tokenData);
 
     /**
      *
-     * @return type Gems_Tracker_Token_TokenFilter
+     * @return \Gems_Tracker_Token_TokenFilter
      */
     public function getTokenFilter();
 
     /**
-     * Use this function only within Gems_Tracker!!
+     * Use this function only within \Gems_Tracker!!
      *
-     * @return Gems_Tracker_Token_TokenLibrary
+     * @return \Gems_Tracker_Token_TokenLibrary
      */
     public function getTokenLibrary();
 
@@ -248,27 +248,34 @@ interface Gems_Tracker_TrackerInterface
      * Returns a token model of the specified class with full display information
      *
      * @param string $modelClass Optional class to use instead of StandardTokenModel. Must be subclass.
-     * @return Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems_Tracker_Model_StandardTokenModel
      */
     public function getTokenModel($modelClass = 'StandardTokenModel');
 
     /**
      * Create a select statement on the token table
      *
-     * @return Gems_Tracker_Token_TokenSelect
+     * @return \Gems_Tracker_Token_TokenSelect
      */
     public function getTokenSelect($fields = '*');
 
     /**
      *
-     * @return type Gems_Tracker_TokenFilter
+     * @return \Gems_Tracker_TokenFilter
      */
     public function getTokenValidator();
 
     /**
+     * Get the allowed display groups for tracks in this project.
+     *
+     * @return array
+     */
+    public function getTrackDisplayGroups();
+
+    /**
      *
      * @param mixed $trackData Gems track id or array containing gems track data
-     * @return Gems_Tracker_Engine_TrackEngineInterface
+     * @return \Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getTrackEngine($trackData);
 
@@ -283,7 +290,7 @@ interface Gems_Tracker_TrackerInterface
      * @see getTrackEngineClassNames()
      *
      * @static $dummyClasses Cache array
-     * @return array Of Gems_Tracker_Engine_TrackEngineInterface
+     * @return array Of \Gems_Tracker_Engine_TrackEngineInterface
      */
     public function getTrackEngineClasses();
 
@@ -306,7 +313,7 @@ interface Gems_Tracker_TrackerInterface
     /**
      * Simple function for a default track model.
      *
-     * @return Gems_Tracker_Model_TrackModel
+     * @return \Gems_Tracker_Model_TrackModel
      */
     public function getTrackModel();
 
@@ -336,7 +343,7 @@ interface Gems_Tracker_TrackerInterface
      * @param string $batch_id A unique identifier for the current batch
      * @param int $userId    Id of the user who takes the action (for logging)
      * @param string $cond
-     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
+     * @return \Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function recalculateTokens($batch_id, $userId = null, $cond = null);
 
@@ -348,23 +355,23 @@ interface Gems_Tracker_TrackerInterface
      * @param string $batchId A unique identifier for the current batch
      * @param int $userId Id of the user who takes the action (for logging)
      * @param string $cond Optional where statement for selecting tracks
-     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
+     * @return \Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function recalcTrackFields($batchId, $userId = null, $cond = null);
-    
+
     /**
      * Refreshes the tokens in the source
      *
      * @param string $batch_id A unique identifier for the current batch
      * @param string $cond An optional where statement
-     * @return Gems_Task_TaskRunnerBatch A batch to process the changes
+     * @return \Gems_Task_TaskRunnerBatch A batch to process the changes
      */
     public function refreshTokenAttributes($batch_id, $cond = null);
 
     /**
      * Remove token from cache for saving memory
      *
-     * @param string|Gems_Tracker_Token $token
+     * @param string|\Gems_Tracker_Token $token
      * @return \Gems_Tracker (continuation pattern)
      */
     public function removeToken($token);
@@ -377,7 +384,7 @@ interface Gems_Tracker_TrackerInterface
      *
      * @param int $sourceId A source identifier
      * @param int $userId Id of the user who takes the action (for logging)
-     * @return Gems_Task_TaskRunnerBatch A batch to process the synchronization
+     * @return \Gems_Task_TaskRunnerBatch A batch to process the synchronization
      */
     public function synchronizeSources($sourceId = null, $userId = null);
 }

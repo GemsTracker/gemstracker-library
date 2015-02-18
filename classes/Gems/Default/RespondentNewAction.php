@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSnippetActionAbstract
+abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -105,7 +105,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -134,7 +134,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     protected $showSnippets = array(
         'Generic_ContentTitleSnippet',
         'RespondentDetailsSnippet',
-    	'AddTracksSnippet',
+    	'Tracker\\AddTracksSnippet',
         'RespondentTokenTabsSnippet',
         'RespondentTokenSnippet',
     );
@@ -148,7 +148,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -181,7 +181,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $options = $this->util->getReceptionCodeLibrary()->getRespondentDeletionCodes();
 
-        $bridge = $model->getBridgeFor('form', new Gems_Form());
+        $bridge = $model->getBridgeFor('form', new \Gems_Form());
         $bridge->addSelect('gr2o_reception_code',
             'label', $this->_('Rejection code'),
             'multiOptions', $options,
@@ -190,7 +190,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
 
         $form = $bridge->getForm();
 
-        $save = new Zend_Form_Element_Submit(
+        $save = new \Zend_Form_Element_Submit(
                 'save_button',
                 array('label' => $this->_('Delete respondent'), 'class' => 'button')
                 );
@@ -230,7 +230,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         }
         $form->populate($data);
 
-        $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+        $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
         $table->setAsFormLayout($form, true, true);
         $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
 
@@ -280,11 +280,11 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         $model->setIfExists('grs_email',   'formatFunction', 'MUtil_Html_AElement::ifmail');
 
         // Newline placeholder
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
 
         // Display separator and phone sign only if phone exist.
-        $phonesep = MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, MUtil_Html::raw('&#9743; '));
-        $citysep  = MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, MUtil_Html::raw('&nbsp;&nbsp;'));
+        $phonesep = \MUtil_Html::raw('&#9743; '); // $bridge->itemIf($bridge->grs_phone_1, \MUtil_Html::raw('&#9743; '));
+        $citysep  = \MUtil_Html::raw('&nbsp;&nbsp;'); // $bridge->itemIf($bridge->grs_zipcode, \MUtil_Html::raw('&nbsp;&nbsp;'));
 
         $filter = $this->getSearchFilter();
         if (isset($filter[\MUtil_Model::REQUEST_ID2])) {
@@ -308,7 +308,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     /**
      * Get the link to edit respondent
      *
-     * @return MUtil_Html_HrefArrayAttribute
+     * @return \MUtil_Html_HrefArrayAttribute
      */
     public function getEditLink()
     {
@@ -342,9 +342,9 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     public function getItemUrlArray()
     {
         return array(
-            MUtil_Model::REQUEST_ID1 => $this->_getParam(MUtil_Model::REQUEST_ID1),
-            MUtil_Model::REQUEST_ID2 => $this->_getParam(MUtil_Model::REQUEST_ID2)
-                );
+            \MUtil_Model::REQUEST_ID1 => $this->_getParam(\MUtil_Model::REQUEST_ID1),
+            \MUtil_Model::REQUEST_ID2 => $this->_getParam(\MUtil_Model::REQUEST_ID2),
+            );
     }
 
     /**
@@ -374,8 +374,8 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
      */
     public function getRespondentData()
     {
-        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
-        $patientNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+        $patientNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         $respId    = $this->util->getDbLookup()->getRespondentId($patientNr, $orgId);
         $user      = $this->loader->getCurrentUser();
         $userId    = $user->getUserId();
@@ -409,7 +409,7 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
         }
         return parent::getSearchData($dontUseRequest);
     }
-    
+
     /**
      * Helper function to allow generalized statements about the items in the model.
      *
@@ -463,21 +463,21 @@ abstract class Gems_Default_RespondentNewAction extends Gems_Controller_ModelSni
     {
         if ($patientId) {
             // Logging
-            if  (GemsEscort::getInstance() instanceof Gems_Project_Log_LogRespondentAccessInterface) {
+            if  (GemsEscort::getInstance() instanceof \Gems_Project_Log_LogRespondentAccessInterface) {
                 $request = $this->getRequest();
                 $logAction = $request->getControllerName() . ucfirst($request->getActionName());  // ucfirst to distinct from default actions
                 if (is_null($respondentId)) {
                     $respondentId = $this->util->getDbLookup()->getRespondentId($patientId, $orgId);
                 }
 
-                Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
+                \Gems_AccessLog::getLog()->log($logAction, $request, null, $respondentId);
             }
 
             $user      = $this->loader->getCurrentUser();
 
             $where['gr2o_patient_nr = ?']      = $patientId;
             $where['gr2o_id_organization = ?'] = $orgId;
-            $values['gr2o_opened']             = new MUtil_Db_Expr_CurrentTimestamp();
+            $values['gr2o_opened']             = new \MUtil_Db_Expr_CurrentTimestamp();
             $values['gr2o_opened_by']          = $user->getUserId();
 
             $this->db->update('gems__respondent2org', $values, $where);

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_ModelFormSnippetAbstract
+class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets_ModelFormSnippetAbstract
 {
     /**
      *
@@ -54,21 +54,21 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      * Required
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      * Optional, required when creating or $trackId should be set
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -80,7 +80,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
     protected $trackId;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -90,10 +90,10 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if (! $this->createData) {
             $bridge->addHidden('gtr_id_track');
@@ -134,6 +134,9 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         }
+        if ($model->has('gtr_display_group')) {
+            $bridge->add('gtr_display_group');
+        }
         if ($model->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
@@ -148,7 +151,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
         }
         $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
 
-        $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
+        $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
         $element->setLabel($this->_('Toggle'));
         $bridge->addElement($element);
     }
@@ -167,7 +170,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -179,7 +182,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      * /
     protected function getMenuList()
     {
@@ -224,7 +227,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends Gems_Snippets_
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */

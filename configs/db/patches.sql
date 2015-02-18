@@ -893,4 +893,26 @@ ALTER TABLE gems__track_appointments ADD
     gtap_uniqueness tinyint unsigned not null default 0 AFTER gtap_after_next;
 
 -- PATCH: Organization locations field larger
-ALTER TABLE `gems__organizations` CHANGE `gor_location` `gor_location` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `gems__organizations` CHANGE
+    `gor_location` `gor_location` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+-- PATCH: Display groups instead of single survey vs track
+ALTER TABLE gems__tracks ADD
+    gtr_display_group varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tracks'
+    AFTER gtr_survey_rounds;
+
+UPDATE gems__tracks SET gtr_display_group = 'respondents'
+    WHERE gtr_track_type = 'S' AND
+        gtr_id_track IN (SELECT gro_id_track
+                        FROM gems__rounds INNER JOIN
+                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
+                            gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE ggp_respondent_members = 1);
+
+UPDATE gems__tracks SET gtr_display_group = 'staff'
+    WHERE gtr_track_type = 'S' AND
+        gtr_id_track IN (SELECT gro_id_track
+                        FROM gems__rounds INNER JOIN
+                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
+                            gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE ggp_respondent_members = 0);

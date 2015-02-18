@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAction
 {
     /**
      * Mode for the current addBrowse drawing.
@@ -54,7 +54,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     public $cache;
 
@@ -69,11 +69,11 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $request = $this->getRequest();
 
@@ -95,8 +95,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                 if ($label = $model->get($name, 'label')) {
                     if (strpos($name, 'valid') !== false) {
                         if ($added === false) {
-                            $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', MUtil_Html::raw(' '), 'gro_valid_after_source', MUtil_Html::raw(' '), 'gro_valid_after_id');
-                            $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', MUtil_Html::raw(' '), 'gro_valid_for_source', MUtil_Html::raw(' '), 'gro_valid_for_id');
+                            $bridge->addMultiSort(array('', array($this->_('Valid from'), Mutil_Html::create('br'))), 'gro_valid_after_field', \MUtil_Html::raw(' '), 'gro_valid_after_source', \MUtil_Html::raw(' '), 'gro_valid_after_id');
+                            $bridge->addMultiSort(array('', array($this->_('Valid until'), Mutil_Html::create('br'))), 'gro_valid_for_field', \MUtil_Html::raw(' '), 'gro_valid_for_source', \MUtil_Html::raw(' '), 'gro_valid_for_id');
                             $added = true;
                         }
                     } else {
@@ -132,30 +132,6 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         $this->html->pInfo($this->_('Run this code when a track has changed or when the code has changed and the track must be adjusted.'));
         $this->html->pInfo($this->_('If you do not run this code after changing a track, then the old tracks remain as they were and only newly created tracks will reflect the changes.'));
-    }
-
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
-     */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        $bridge->addHidden(  'gtr_id_track');
-        $bridge->addText(    'gtr_track_name', 'size', 30, 'minlength', 4, 'validator', $model->createUniqueValidator('gtr_track_name'));
-        $bridge->addSelect(  'gtr_track_class');
-        $bridge->addDate(    'gtr_date_start');
-        $bridge->addDate(    'gtr_date_until');
-        // $bridge->addList(    'gtr_start_date_field', 'label', $this->_('Date used for track'));
-        $bridge->addCheckbox('gtr_active');
-        $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
     }
 
     /**
@@ -198,7 +174,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      */
     public function afterSave(array $data, $isNew)
     {
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'tracks'));
+        $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'tracks'));
 
         return true;
     }
@@ -207,10 +183,10 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      *
      * @param array $data The data that will be saved.
      * @param boolean $isNew
-     * $param Zend_Form $form
+     * $param \Zend_Form $form
      * @return array|null Returns null if save was already handled, the data otherwise.
      */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
     {
         // feature request #200
         if (isset($data['gtr_organizations']) && is_array($data['gtr_organizations'])) {
@@ -231,7 +207,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         $engine = $this->loader->getTracker()->getTrackEngine($trackId);
         $newTrackId = $engine->copyTrack($trackId);
 
-        $this->_reroute(array('action' => 'edit', MUtil_Model::REQUEST_ID => $newTrackId));
+        $this->_reroute(array('action' => 'edit', \MUtil_Model::REQUEST_ID => $newTrackId));
     }
 
     /**
@@ -276,7 +252,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return Gems_Model_TrackModel
+     * @return \Gems_Model_TrackModel
      */
     public function createModel($detailed, $action)
     {
@@ -287,7 +263,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
                 $trackId = $this->_getIdParam();
                 $engine = $tracker->getTrackEngine($trackId);
                 $model  = $engine->getRoundModel(false, $action);
-                $model->set('ggp_name',   'label', $this->_('Group'));
+                $model->set('ggp_name', 'label', $this->_('Group'));
                 $model->addSort(array('gro_id_order' => SORT_ASC));
             } break;
 
@@ -328,16 +304,16 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
         if ($elements) {
-            $br = MUtil_Html::create('br');
+            $br = \MUtil_Html::create('br');
             $elements[] = $this->_createSelectElement('gtr_track_class', $model, $this->_('(all track engines)'));
 
             $elements[] = $br;
@@ -431,8 +407,8 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
         // $this->addSnippets($tracker->getTrackEngineEditSnippets(), 'trackEngine', $trackEngine, 'trackId', $trackId);
         parent::showAction();
 
-        $this->showList("fields", array(MUtil_Model::REQUEST_ID => 'gtf_id_track', 'fid' => 'gtf_id_field'));
-        $this->showList("rounds", array(MUtil_Model::REQUEST_ID => 'gro_id_track', 'rid' => 'gro_id_round'), 'row_class');
+        $this->showList("fields", array(\MUtil_Model::REQUEST_ID => 'gtf_id_track', 'fid' => 'gtf_id_field'));
+        $this->showList("rounds", array(\MUtil_Model::REQUEST_ID => 'gro_id_track', 'rid' => 'gro_id_round'), 'row_class');
 
         // explicitly translate
         $this->_('fields');
@@ -469,7 +445,7 @@ class Gems_Default_TrackMaintenanceAction  extends Gems_Controller_BrowseEditAct
 
         $this->html->h3(sprintf($this->_('%s in track'), $this->_(ucfirst($mode))));
         $this->html[] = $table;
-        $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(MUtil_Model::REQUEST_ID)), $this->_('Add'));
+        $this->html->actionLink(array('controller' => 'track-' . $mode, 'action' => 'create', 'id' => $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID)), $this->_('Add'));
 
         $this->getRequest()->setActionName($action);
     }
