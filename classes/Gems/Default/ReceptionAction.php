@@ -44,28 +44,23 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_ReceptionAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
-    public $menuIndexIncludeLevel = 1;
-
-    public $sortKey = array('grc_id_reception_code' => SORT_ASC);
-
     /**
-     * Adds elements from the model to the bridge that creates the form.
+     * The parameters used for the autofilter action.
      *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @var array Mixed key => value array for snippet initialization
      */
-    public function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        $model->set('desc1', 'elementClass', 'Html', 'order', 55, 'label', $this->_('Can be assigned to'));
-        $model->set('desc2', 'elementClass', 'Html', 'order', 85, 'label', $this->_('Additional action'));
-
-        parent::addFormElements($bridge, $model, $data, $new);
-    }
+    protected $autofilterParameters = array(
+        'extraSort' => array(
+            'grc_id_reception_code' => SORT_ASC,
+            ),
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -76,18 +71,18 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
         $rcLib = $this->util->getReceptionCodeLibrary();
         $yesNo  = $this->util->getTranslated()->getYesNo();
 
-        $model  = new MUtil_Model_TableModel('gems__reception_codes');
+        $model  = new \MUtil_Model_TableModel('gems__reception_codes');
         $model->copyKeys(); // The user can edit the keys.
 
         $model->set('grc_id_reception_code', 'label', $this->_('Code'), 'size', '10');
-        $model->set('grc_description',       'label', $this->_('Description'), 'size', '20');
+        $model->set('grc_description',       'label', $this->_('Description'), 'size', '30');
 
         $model->set('grc_success',           'label', $this->_('Is success code'),
             'multiOptions', $yesNo ,
@@ -97,6 +92,12 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('Only active codes can be selected.'));
+        if ($detailed) {
+            $model->set('desc1', 'elementClass', 'Html',
+                    'label', ' ',
+                    'value', \MUtil_Html::create('h4', $this->_('Can be assigned to'))
+                    );
+        }
         $model->set('grc_for_respondents',   'label', $this->_('Respondents'),
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
@@ -105,9 +106,15 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             'multiOptions', $yesNo,
             'elementClass', 'CheckBox',
             'description', $this->_('This reception code can be assigned to a track.'));
-        $model->set('grc_for_surveys',       'label', $this->_('Surveys'),
+        $model->set('grc_for_surveys',       'label', $this->_('Tokens'),
             'multiOptions', $rcLib->getSurveyApplicationValues(),
-            'description', $this->_('This reception code can be assigned to a survey.'));
+            'description', $this->_('This reception code can be assigned to a token.'));
+        if ($detailed) {
+            $model->set('desc2', 'elementClass', 'Html',
+                    'label', ' ',
+                     'value', \MUtil_Html::create('h4', $this->_('Additional actions'))
+                    );
+        }
         $model->set('grc_redo_survey',       'label', $this->_('Redo survey'),
             'multiOptions', $rcLib->getRedoValues(),
             'description', $this->_('Redo a survey on this reception code.'));
@@ -125,18 +132,29 @@ class Gems_Default_ReceptionAction  extends Gems_Controller_BrowseEditAction
             $model->set('grc_description',       'description', 'ENGLISH please! Use translation file to translate.');
         }
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'grc');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'grc');
 
         return $model;
     }
 
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Reception codes');
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('reception code', 'reception codes', $count);
-    }
-
-    public function getTopicTitle()
-    {
-        return $this->_('Reception codes');
     }
 }

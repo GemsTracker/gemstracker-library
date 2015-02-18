@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engine_TrackEngineAbstract
+abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engine_TrackEngineAbstract
 {
     /**
      * Database stored constant value for using an answer in a survey as date source
@@ -80,26 +80,26 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     protected $locale;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
      * Helper function for default handling of multi options value sets
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param string $fieldName
      * @param array $options
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function _applyOptions(MUtil_Model_ModelAbstract $model, $fieldName, array $options, array &$itemData)
+    protected function _applyOptions(\MUtil_Model_ModelAbstract $model, $fieldName, array $options, array &$itemData)
     {
         if ($options) {
             $model->set($fieldName, 'multiOptions', $options);
@@ -139,12 +139,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Set the after dates to be listed for this item and the way they are displayed (if at all)
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applyDatesValidAfter(MUtil_Model_ModelAbstract $model, array &$itemData, $language)
+    protected function applyDatesValidAfter(\MUtil_Model_ModelAbstract $model, array &$itemData, $language)
     {
         // Set the after date fields that can be chosen for the current values
         $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_after_source'], $itemData['gro_valid_after_id'], $language, true);
@@ -155,12 +155,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Set the for dates to be listed for this item and the way they are displayed (if at all)
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    protected function applyDatesValidFor(MUtil_Model_ModelAbstract $model, array &$itemData, $language)
+    protected function applyDatesValidFor(\MUtil_Model_ModelAbstract $model, array &$itemData, $language)
     {
         $dateOptions = $this->getDateOptionsFor($itemData['gro_valid_for_source'], $itemData['gro_valid_for_id'], $language, true);
 
@@ -179,31 +179,31 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Set the surveys to be listed as valid after choices for this item and the way they are displayed (if at all)
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    abstract protected function applySurveyListValidAfter(MUtil_Model_ModelAbstract $model, array &$itemData);
+    abstract protected function applySurveyListValidAfter(\MUtil_Model_ModelAbstract $model, array &$itemData);
 
     /**
      * Set the surveys to be listed as valid for choices for this item and the way they are displayed (if at all)
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    abstract protected function applySurveyListValidFor(MUtil_Model_ModelAbstract $model, array &$itemData);
+    abstract protected function applySurveyListValidFor(\MUtil_Model_ModelAbstract $model, array &$itemData);
 
     /**
      *
-     * @param MUtil_Date $startDate
+     * @param \MUtil_Date $startDate
      * @param string $type
      * @param int $period
-     * @return MUtil_Date
+     * @return \MUtil_Date
      */
     protected function calculateFromDate($startDate, $type, $period)
     {
-        if ($startDate instanceof MUtil_Date) {
+        if ($startDate instanceof \MUtil_Date) {
             $date = clone $startDate;
 
             switch (strtoupper($type)) {
@@ -247,7 +247,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                         break;
 
                     default:
-                        throw new Gems_Exception_Coding('Unknown period type; ' . $type);
+                        throw new \Gems_Exception_Coding('Unknown period type; ' . $type);
 
                 }
             }
@@ -257,16 +257,16 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
     /**
      *
-     * @param MUtil_Date $startDate
+     * @param \MUtil_Date $startDate
      * @param string $type
      * @param int $period
-     * @return MUtil_Date
+     * @return \MUtil_Date
      */
     protected function calculateUntilDate($startDate, $type, $period)
     {
         $date = $this->calculateFromDate($startDate, $type, $period);
 
-        if ($date instanceof MUtil_Date) {
+        if ($date instanceof \MUtil_Date) {
             switch (strtoupper($type)) {
                 case 'N':
                 case 'H':
@@ -285,13 +285,13 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Check the valid from and until dates in the track starting at a specified token
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
-     * @param Gems_Tracker_Token $startToken The token to start at
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_Token $startToken The token to start at
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
+     * @param \Gems_Tracker_Token $skipToken Optional token to skip in the recalculation
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFrom(Gems_Tracker_RespondentTrack $respTrack, Gems_Tracker_Token $startToken, $userId, Gems_Tracker_Token $skipToken = null)
+    public function checkTokensFrom(\Gems_Tracker_RespondentTrack $respTrack, \Gems_Tracker_Token $startToken, $userId, \Gems_Tracker_Token $skipToken = null)
     {
         // Make sure the rounds are loaded
         $this->_ensureRounds();
@@ -303,7 +303,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         $changed = 0;
         $token = $startToken;
         while ($token) {
-            // MUtil_Echo::track($token->getTokenId());
+            // \MUtil_Echo::track($token->getTokenId());
 
             // Change only not-completed tokens with a positive successcode where at least one date
             // is not set by user input
@@ -333,7 +333,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                                 );
                     }
 
-                    // MUtil_Echo::track($round, (string) $fromDate, $validFrom);
+                    // \MUtil_Echo::track($round, (string) $fromDate, $validFrom);
 
                     if ($token->isValidUntilManual()) {
                         $validUntil = $token->getValidUntil();
@@ -365,14 +365,14 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Check the valid from and until dates in the track
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    public function checkTokensFromStart(Gems_Tracker_RespondentTrack $respTrack, $userId)
+    public function checkTokensFromStart(\Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
         $token = $respTrack->getFirstToken();
-        if ($token instanceof Gems_Tracker_Token) {
+        if ($token instanceof \Gems_Tracker_Token) {
             return $this->checkTokensFrom($respTrack, $respTrack->getFirstToken(), $userId);
         } else {
             return 0;
@@ -421,7 +421,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
             $unit = $context[$fieldBase . 'unit'];
         }
 
-        // MUtil_Echo::track(func_get_args());
+        // \MUtil_Echo::track(func_get_args());
         return sprintf($format, $field, abs($context[$fieldBase . 'length']), $unit);
     }
 
@@ -482,7 +482,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
             case self::APPOINTMENT_TABLE:
                 return $this->_fieldsDefinition->getFieldLabelsOfType(
-                        Gems_Tracker_Engine_FieldsDefinition::TYPE_APPOINTMENT
+                        \Gems_Tracker_Engine_FieldsDefinition::TYPE_APPOINTMENT
                         );
 
             case self::RESPONDENT_TRACK_TABLE:
@@ -493,7 +493,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
                 );
 
                 return $results + $this->_fieldsDefinition->getFieldLabelsOfType(
-                        Gems_Tracker_Engine_FieldsDefinition::TYPE_DATE);
+                        \Gems_Tracker_Engine_FieldsDefinition::TYPE_DATE);
 
             case self::TOKEN_TABLE:
                 return array(
@@ -532,7 +532,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function getRoundModel($detailed, $action)
     {
@@ -557,7 +557,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
         // Calculate valid from
         if ($detailed) {
-            $html = MUtil_Html::create()->h4($this->_('Valid from calculation'));
+            $html = \MUtil_Html::create()->h4($this->_('Valid from calculation'));
             $model->set('valid_after',
                     'default', $html,
                     'label', ' ',
@@ -608,7 +608,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
 
         if ($detailed) {
             // Calculate valid until
-            $html = MUtil_Html::create()->h4($this->_('Valid for calculation'));
+            $html = \MUtil_Html::create()->h4($this->_('Valid for calculation'));
             $model->set('valid_for',
                     'label', ' ',
                     'default', $html,
@@ -684,7 +684,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     {
         $this->_ensureRounds();
 
-        return MUtil_Ra::column('gro_id_order', $this->_rounds);
+        return \MUtil_Ra::column('gro_id_order', $this->_rounds);
     }
 
     /**
@@ -717,7 +717,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
         if ($detailed) {
             foreach ($results as $key => $value) {
                 if (is_array($value)) {
-                    $results[$key] = MUtil_Html::raw(sprintf('<strong>%s</strong> %s', reset($value), next($value)));
+                    $results[$key] = \MUtil_Html::raw(sprintf('<strong>%s</strong> %s', reset($value), next($value)));
                 }
             }
         } else {
@@ -744,16 +744,16 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
            return $this->_rounds[$roundId]['gro_id_survey'];
        }
 
-       throw new Gems_Exception_Coding("Requested non existing survey id for round $roundId.");
+       throw new \Gems_Exception_Coding("Requested non existing survey id for round $roundId.");
     }
 
     /**
      * An array of snippet names for deleting a token.
      *
-     * @param Gems_Tracker_Token $token Allows token status dependent delete snippets
+     * @param \Gems_Tracker_Token $token Allows token status dependent delete snippets
      * @return array of string snippet names
      */
-    public function getTokenDeleteSnippetNames(Gems_Tracker_Token $token)
+    public function getTokenDeleteSnippetNames(\Gems_Tracker_Token $token)
     {
         return array('DeleteTrackTokenSnippet');
     }
@@ -761,10 +761,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * An array of snippet names for editing a token.
      *
-     * @param Gems_Tracker_Token $token Allows token status dependent edit snippets
+     * @param \Gems_Tracker_Token $token Allows token status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTokenEditSnippetNames(Gems_Tracker_Token $token)
+    public function getTokenEditSnippetNames(\Gems_Tracker_Token $token)
     {
         return array('EditTrackTokenSnippet');
     }
@@ -772,10 +772,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * An array of snippet names for displaying a token
      *
-     * @param Gems_Tracker_Token $token Allows token status dependent show snippets
+     * @param \Gems_Tracker_Token $token Allows token status dependent show snippets
      * @return array of string snippet names
      */
-    public function getTokenShowSnippetNames(Gems_Tracker_Token $token )
+    public function getTokenShowSnippetNames(\Gems_Tracker_Token $token )
     {
         return array('ShowTrackTokenSnippet');
     }
@@ -783,10 +783,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * An array of snippet names for deleting a track.
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
+     * @param \Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTrackDeleteSnippetNames(Gems_Tracker_RespondentTrack $respTrack)
+    public function getTrackDeleteSnippetNames(\Gems_Tracker_RespondentTrack $respTrack)
     {
         return array('DeleteInSourceTrackSnippet', 'TrackTokenOverviewSnippet');
     }
@@ -809,10 +809,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * An array of snippet names for editing a track.
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
+     * @param \Gems_Tracker_RespondentTrack $respTrack Allows track status dependent edit snippets
      * @return array of string snippet names
      */
-    public function getTrackEditSnippetNames(Gems_Tracker_RespondentTrack $respTrack)
+    public function getTrackEditSnippetNames(\Gems_Tracker_RespondentTrack $respTrack)
     {
         return array(
             'ShowTrackUsageSnippet',
@@ -838,11 +838,11 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
      * @param int $prevRoundId Id from round
-     * @param Gems_Tracker_Token $token
-     * @param Gems_Tracker_RespondentTrack $respTrack
-     * @return MUtil_Date date time or null
+     * @param \Gems_Tracker_Token $token
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @return \MUtil_Date date time or null
      */
-    abstract protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, Gems_Tracker_Token $token, Gems_Tracker_RespondentTrack $respTrack);
+    abstract protected function getValidFromDate($fieldSource, $fieldName, $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack);
 
     /**
      * Returns the date to use to calculate the ValidUntil if any
@@ -850,12 +850,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      * @param string $fieldSource Source for field from round
      * @param string $fieldName Name from round
      * @param int $prevRoundId Id from round
-     * @param Gems_Tracker_Token $token
-     * @param Gems_Tracker_RespondentTrack $respTrack
-     * @param MUtil_Date $validFrom The calculated new valid from value
-     * @return MUtil_Date date time or null
+     * @param \Gems_Tracker_Token $token
+     * @param \Gems_Tracker_RespondentTrack $respTrack
+     * @param \MUtil_Date $validFrom The calculated new valid from value
+     * @return \MUtil_Date date time or null
      */
-    abstract protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, Gems_Tracker_Token $token, Gems_Tracker_RespondentTrack $respTrack, $validFrom);
+    abstract protected function getValidUntilDate($fieldSource, $fieldName, $prevRoundId, \Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respTrack, $validFrom);
 
     /**
      * True if the user can create this kind of track in TrackMaintenanceAction.
@@ -873,14 +873,14 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * The logic to set the display of the valid_X_field date list field.
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param string $fieldName The valid_X_field to set
      * @param string $source The date list source as defined by this object
      * @param int $roundId Optional a round id
      * @param string $language   (ISO) language string
      * @param boolean $validAfter True if it concerns _valid_after_ dates
      */
-    protected function setDateListFor(MUtil_Model_ModelAbstract $model, $fieldName, $source, $roundId, $language, $validAfter)
+    protected function setDateListFor(\MUtil_Model_ModelAbstract $model, $fieldName, $source, $roundId, $language, $validAfter)
     {
         $dateOptions = $this->getDateOptionsFor($source, $roundId, $language, $validAfter);
 
@@ -900,12 +900,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
     /**
      * Updates the model to reflect the values for the current item data
      *
-     * @param MUtil_Model_ModelAbstract $model The round model
+     * @param \MUtil_Model_ModelAbstract $model The round model
      * @param array $itemData    The current items data
      * @param string $language   (ISO) language string
      * @param boolean True if the update changed values (usually by changed selection lists).
      */
-    public function updateRoundModelToItem(MUtil_Model_ModelAbstract $model, array &$itemData, $language)
+    public function updateRoundModelToItem(\MUtil_Model_ModelAbstract $model, array &$itemData, $language)
     {
         $this->_ensureRounds();
 

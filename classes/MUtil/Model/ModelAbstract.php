@@ -57,7 +57,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
+abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
 {
     /**
      * Identifier fro alias fields
@@ -115,7 +115,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Dependencies that transform the model
      *
-     * @var array order => MUtil_Model_Dependency_DependencyInterface
+     * @var array order => \MUtil_Model_Dependency_DependencyInterface
      */
     private $_model_dependencies = array();
 
@@ -144,7 +144,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var array of MUtil_Model_ModelTransformerInterface
+     * @var array of \MUtil_Model_ModelTransformerInterface
      */
     private $_transformers = array();
 
@@ -167,21 +167,21 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Recursively apply the changes from a dependency
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $changes
      * @param array $data Referenced data
      */
-    protected function _applyDependencyChanges(MUtil_Model_ModelAbstract $model, array $changes, array &$data)
+    protected function _applyDependencyChanges(\MUtil_Model_ModelAbstract $model, array $changes, array &$data)
     {
-        // MUtil_Echo::track($model->getName(), $changes, $data);
+        // \MUtil_Echo::track($model->getName(), $changes, $data);
 
         // Here we could allow only those changes this dependency claims to change
         // or even check all of them are set.
         foreach ($changes as $name => $settings) {
             if (isset($settings['model'])) {
                 $submodel = $model->get($name, 'model');
-                // MUtil_Echo::track($name, $settings['model'], $data[$name]);
-                if ($submodel instanceof MUtil_Model_ModelAbstract) {
+                // \MUtil_Echo::track($name, $settings['model'], $data[$name]);
+                if ($submodel instanceof \MUtil_Model_ModelAbstract) {
                     if (! isset($data[$name])) {
                         $data[$name] = array();
                     }
@@ -198,7 +198,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
             // Change the actual value
             If (isset($settings['value'])) {
-                // MUtil_Echo::track($name, $settings['value']);
+                // \MUtil_Echo::track($name, $settings['value']);
                 $data[$name] = $settings['value'];
             }
         }
@@ -291,7 +291,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     protected function _filterDataForSave(array $data, $new = false)
     {
-        // MUtil_Echo::r($data, 'preFilter');
+        // \MUtil_Echo::r($data, 'preFilter');
 
         foreach ($data as $name => $value) {
             if ('' === $value) {
@@ -304,7 +304,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             }
         }
 
-        // MUtil_Echo::r($filteredData, 'afterFilter');
+        // \MUtil_Echo::r($filteredData, 'afterFilter');
 
         return $filteredData;
     }
@@ -314,8 +314,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if (isset($this->_model[$name][$key])) {
             $value = $this->_model[$name][$key];
 
-            if ($value instanceof MUtil_Lazy_LazyInterface) {
-                $value = MUtil_Lazy::rise($value);
+            if ($value instanceof \MUtil_Lazy_LazyInterface) {
+                $value = \MUtil_Lazy::rise($value);
             }
 
             return $value;
@@ -329,7 +329,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     protected static function _getValueFrom($fieldName, $fromData)
     {
-        if ($fromData instanceof MUtil_Lazy_RepeatableInterface) {
+        if ($fromData instanceof \MUtil_Lazy_RepeatableInterface) {
             return $fromData->$fieldName;
         } else {
             if (isset($fromData[$fieldName])) {
@@ -399,7 +399,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $newRow = $this->processDependencies($newRow, $new);
         }
 
-        return $newRow;
+        return $newRow + $this->getCol('value');
     }
 
     /**
@@ -416,7 +416,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Tell the model one more item has changed
      *
      * @param int $add
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function addChanged($add = 1)
     {
@@ -430,7 +430,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * Dependencies are processed in the order they are added
      *
-     * @param mixed $dependency MUtil_Model_Dependency_DependencyInterface or string or array to create one
+     * @param mixed $dependency \MUtil_Model_Dependency_DependencyInterface or string or array to create one
      * @param mixed $dependsOn Optional string field name or array of fields that do the changing
      * @param array $effects Optional array of field => array(setting) of settings are changed, array of whatever
      * the dependency accepts as an addEffects() argument
@@ -439,8 +439,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function addDependency($dependency, $dependsOn = null, array $effects = null,  $key = null)
     {
-        if (! $dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
-            $loader = MUtil_Model::getDependencyLoader();
+        if (! $dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+            $loader = \MUtil_Model::getDependencyLoader();
 
             if (is_array($dependency)) {
                 $parameters = $dependency;
@@ -483,8 +483,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      */
     public function addFilter(array $value)
     {
-        if (MUtil_Model::$verbose) {
-            MUtil_Echo::r($value, 'New filter');
+        if (\MUtil_Model::$verbose) {
+            \MUtil_Echo::r($value, 'New filter');
         }
         if ($old = $this->getFilter()) {
             foreach ($value as $key => $filter) {
@@ -516,10 +516,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                     }
                 }
             }
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($value, 'New filter');
-                MUtil_Echo::r($this->getFilter(), 'Old filter');
-                MUtil_Echo::r($old, 'Merged filter');
+            if (\MUtil_Model::$verbose) {
+                \MUtil_Echo::r($value, 'New filter');
+                \MUtil_Echo::r($this->getFilter(), 'Old filter');
+                \MUtil_Echo::r($old, 'Merged filter');
             }
             $this->setFilter($old);
         } else {
@@ -535,25 +535,25 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * You get a nested join where a set of rows is placed in the $name field
      * of each row of the parent model.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $joins The join fields for the sub model
      * @param string $name Optional 'field' name, otherwise model name is used
      * @return \MUtil_Model_Transform_NestedTransformer The added transformer
      */
-    public function addModel(MUtil_Model_ModelAbstract $model, array $joins, $name = null)
+    public function addModel(\MUtil_Model_ModelAbstract $model, array $joins, $name = null)
     {
         if (null === $name) {
             $name = $model->getName();
         }
 
-        $trans = new MUtil_Model_Transform_NestedTransformer();
+        $trans = new \MUtil_Model_Transform_NestedTransformer();
         $trans->addModel($model, $joins);
 
         $this->addTransformer($trans);
         $this->set($name,
                 'model', $model,
                 'elementClass', 'FormTable',
-                'type', MUtil_Model::TYPE_CHILD_MODEL
+                'type', \MUtil_Model::TYPE_CHILD_MODEL
                 );
 
         return $trans;
@@ -563,19 +563,19 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Add's one or more sort fields to the standard sort.
      *
      * @param mixed $value Array of sortfield => SORT_ASC|SORT_DESC or single sortfield for ascending sort.
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function addSort($value)
     {
         $value = $this->_checkSortValue($value);
 
-        if (MUtil_Model::$verbose) {
-            MUtil_Echo::r($value, 'New sort');
+        if (\MUtil_Model::$verbose) {
+            \MUtil_Echo::r($value, 'New sort');
         }
         if ($old = $this->getSort()) {
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($old, 'Old sort');
-                MUtil_Echo::r($old + $value, 'Merged sort');
+            if (\MUtil_Model::$verbose) {
+                \MUtil_Echo::r($old, 'Old sort');
+                \MUtil_Echo::r($old + $value, 'Merged sort');
             }
             $this->setSort($old + $value);
         } else {
@@ -587,10 +587,10 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Add a model transformer
      *
-     * @param MUtil_Model_ModelTransformerInterface $transformer
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @param \MUtil_Model_ModelTransformerInterface $transformer
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
-    public function addTransformer(MUtil_Model_ModelTransformerInterface $transformer)
+    public function addTransformer(\MUtil_Model_ModelTransformerInterface $transformer)
     {
         foreach ($transformer->getFieldInfo($this) as $name => $info) {
             $this->set($name, $info);
@@ -610,8 +610,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function applyParameters(array $parameters, $includeNumericFilters = false)
     {
         if ($parameters) {
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($parameters, 'Model parameters');
+            if (\MUtil_Model::$verbose) {
+                \MUtil_Echo::r($parameters, 'Model parameters');
             }
 
             // Check for sort parameters and apply + remove them from the filter
@@ -650,8 +650,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                     }
                 }
             }
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($parameters, 'Model parameters');
+            if (\MUtil_Model::$verbose) {
+                \MUtil_Echo::r($parameters, 'Model parameters');
             }
 
             // Apply all other fields...
@@ -666,8 +666,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $this->addFilter($filter);
             }
 
-            if (MUtil_Model::$verbose) {
-                MUtil_Echo::r($filter, 'Model filter');
+            if (\MUtil_Model::$verbose) {
+                \MUtil_Echo::r($filter, 'Model filter');
             }
 
         }
@@ -678,11 +678,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Filters a request for use with applyParameters, including $_POST parameters.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param boolean $removePost Optional
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
-    public function applyPostRequest(Zend_Controller_Request_Abstract $request)
+    public function applyPostRequest(\Zend_Controller_Request_Abstract $request)
     {
         return $this->applyRequest($request, false, false);
     }
@@ -690,12 +690,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Filters a request for use with applyParameters.
      *
-     * @param Zend_Controller_Request_Abstract $request
+     * @param \Zend_Controller_Request_Abstract $request
      * @param boolean $removePost Optional
      * @param boolean $includeNumericFilters When true numeric filter keys (0, 1, 2...) are added to the filter as well
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
-    public function applyRequest(Zend_Controller_Request_Abstract $request, $removePost = true, $includeNumericFilters = false)
+    public function applyRequest(\Zend_Controller_Request_Abstract $request, $removePost = true, $includeNumericFilters = false)
     {
         $parameters = $request->getParams();
 
@@ -745,7 +745,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         // Cascade
         foreach ($this->getCol('model') as $subModel) {
-            if ($subModel instanceof MUtil_Model_ModelAbstract) {
+            if ($subModel instanceof \MUtil_Model_ModelAbstract) {
                 $subModel->clearElementClasses();
             }
         }
@@ -763,11 +763,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * If no $excludes the model creates a filter using the primary key of the table.
      *
      * @param string|array $name The name of a model field in the model or an array of them.
-     * @return MUtil_Validate_Db_UniqueValue A validator.
+     * @return \MUtil_Validate_Db_UniqueValue A validator.
      */
     public function createUniqueValidator($name)
     {
-        return new MUtil_Validate_Model_UniqueValue($this, $name);
+        return new \MUtil_Validate_Model_UniqueValue($this, $name);
     }
 
     /**
@@ -784,7 +784,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         } else {
             $args = func_get_args();
             array_shift($args);
-            $args = MUtil_Ra::flatten($args);
+            $args = \MUtil_Ra::flatten($args);
 
             foreach ($args as $arg) {
                 unset($this->_model[$name][$arg]);
@@ -795,7 +795,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Disable the onload settings. This is sometimes needed for speed/
      *
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function disableOnLoad()
     {
@@ -855,7 +855,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function get($name, $arrayOrKey1 = null, $key2 = null)
     {
         $args = func_get_args();
-        $args = MUtil_Ra::args($args, 1);
+        $args = \MUtil_Ra::args($args, 1);
 
         if ($this->_model_used) {
             $this->_model_used[$name] = $name;
@@ -864,7 +864,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         switch (count($args)) {
             case 0:
                 if (isset($this->_model[$name])) {
-                    $result = MUtil_Lazy::rise($this->_model[$name]);
+                    $result = \MUtil_Lazy::rise($this->_model[$name]);
                     if ($alias = $this->getAlias($name)) {
                         $result = $result + $this->get($alias);
                     }
@@ -910,25 +910,25 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param string $identifier
      * @param mixed $arg1 Optional first of extra arguments
-     * @return MUtil_Model_Bridge_BridgeAbstract
+     * @return \MUtil_Model_Bridge_BridgeAbstract
      */
     public function getBridgeFor($identifier, $arg1 = null)
     {
-        $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
+        $bridges = $this->getMeta(\MUtil_Model::META_BRIDGES);
 
         if (! $bridges) {
-            $bridges = MUtil_Model::getDefaultBridges();
-            $this->setMeta(MUtil_Model::META_BRIDGES, $bridges);
+            $bridges = \MUtil_Model::getDefaultBridges();
+            $this->setMeta(\MUtil_Model::META_BRIDGES, $bridges);
         }
 
         if (! isset($bridges[$identifier])) {
             // We cannot create when noting is specified
-            throw new MUtil_Model_ModelException("Request for unknown bridge type $identifier.");
+            throw new \MUtil_Model_ModelException("Request for unknown bridge type $identifier.");
         }
 
         // First parameter is always the model, using + replaces that value
         $params = array($this) + func_get_args();
-        $loader = MUtil_Model::getBridgeLoader();
+        $loader = \MUtil_Model::getBridgeLoader();
         $bridge = $loader->createClass($bridges[$identifier], $params);
 
         return $bridge;
@@ -1009,11 +1009,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $results = array();
 
         foreach ($this->_model_dependencies as $key => $dependency) {
-            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
                 foreach ($names as $name) {
                     $settings = $dependency->getEffected($name);
 
-                    // MUtil_Echo::track($name, $settings, get_class($dependency));
+                    // \MUtil_Echo::track($name, $settings, get_class($dependency));
                     if ($settings) {
                         if ((null === $setting) or isset($settings[$setting])) {
                             $results[$key] = $dependency;
@@ -1041,11 +1041,11 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $results      = array();
 
         foreach ($dependencies as $dependency) {
-            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
                 $results = $results + $dependency->getDependsOn();
             }
         }
-        // MUtil_Echo::track($name, $results);
+        // \MUtil_Echo::track($name, $results);
 
         return $results;
     }
@@ -1081,7 +1081,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function getItemsFor($arrayOrKey1, $value1 = null, $key2 = null, $value2 = null)
     {
         $args    = func_get_args();
-        $args    = MUtil_Ra::pairs($args);
+        $args    = \MUtil_Ra::pairs($args);
         $results = array();
 
         foreach ($this->_model as $itemName => $row) {
@@ -1123,7 +1123,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $result[] = $field;
             }
         }
-        // MUtil_Echo::track($result);
+        // \MUtil_Echo::track($result);
         return $result;
     }
 
@@ -1163,13 +1163,13 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if (count($keys) == 1) {
             $key = reset($keys);
             if ($value = self::_getValueFrom($key, $forData)) {
-                $href[MUtil_Model::REQUEST_ID] = $value;
+                $href[\MUtil_Model::REQUEST_ID] = $value;
             }
         } else {
             $i = 1;
             foreach ($keys as $key) {
                 if ($value = self::_getValueFrom($key, $forData)) {
-                    $href[MUtil_Model::REQUEST_ID . $i] = $value;
+                    $href[\MUtil_Model::REQUEST_ID . $i] = $value;
                 }
             }
         }
@@ -1286,7 +1286,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         }
     }
 
-    public function getRequestSort(Zend_Controller_Request_Abstract $request, $ascParam = null, $descParam = null)
+    public function getRequestSort(\Zend_Controller_Request_Abstract $request, $ascParam = null, $descParam = null)
     {
         // DEPRECIATED
 
@@ -1319,17 +1319,17 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
     public function getSortParamAsc()
     {
-        return $this->getMeta('sortParamAsc', MUtil_Model::SORT_ASC_PARAM);
+        return $this->getMeta('sortParamAsc', \MUtil_Model::SORT_ASC_PARAM);
     }
 
     public function getSortParamDesc()
     {
-        return $this->getMeta('sortParamDesc', MUtil_Model::SORT_DESC_PARAM);
+        return $this->getMeta('sortParamDesc', \MUtil_Model::SORT_DESC_PARAM);
     }
 
     public function getTextFilter()
     {
-        return $this->getMeta('textFilter', MUtil_Model::TEXT_FILTER);
+        return $this->getMeta('textFilter', \MUtil_Model::TEXT_FILTER);
     }
 
     /**
@@ -1356,7 +1356,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Get the model transformers
      *
-     * @return array of MUtil_Model_ModelTransformerInterface
+     * @return array of \MUtil_Model_ModelTransformerInterface
      */
     public function getTransformers()
     {
@@ -1420,7 +1420,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         $names = (array) $name;
 
         foreach ($this->_model_dependencies as $dependency) {
-            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
                 foreach ($names as $name) {
                     $settings = $dependency->getEffected($name);
 
@@ -1567,7 +1567,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function isString($name)
     {
         if ($type = $this->get($name, 'type')) {
-            return MUtil_Model::TYPE_STRING == $type;
+            return \MUtil_Model::TYPE_STRING == $type;
         }
 
         return true;
@@ -1629,7 +1629,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                 $this->_checkFilterUsed($filter),
                 $this->_checkSortUsed($sort)
                 );
-        // MUtil_Echo::track($row);
+        // \MUtil_Echo::track($row);
 
         if (! is_array($row)) {
             // Return false
@@ -1638,7 +1638,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
 
         // Transform the row
         $data = $this->processAfterLoad(array($row));
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
         // Return resulting first row
         return reset($data);
@@ -1681,34 +1681,34 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     }
 
     /**
-     * Returns a Zend_Paginator for the items in the model
+     * Returns a \Zend_Paginator for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return Zend_Paginator
+     * @return \Zend_Paginator
      */
     public function loadPaginator($filter = true, $sort = true)
     {
-        return Zend_Paginator::factory($this->load($filter, $sort));
+        return \Zend_Paginator::factory($this->load($filter, $sort));
     }
 
     /**
-     * Returns a MUtil_Lazy_RepeatableInterface for the items in the model
+     * Returns a \MUtil_Lazy_RepeatableInterface for the items in the model
      *
      * @param mixed $filter True to use the stored filter, array to specify a different filter
      * @param mixed $sort True to use the stored sort, array to specify a different sort
-     * @return MUtil_Lazy_RepeatableInterface
+     * @return \MUtil_Lazy_RepeatableInterface
      */
     public function loadRepeatable($filter = true, $sort = true)
     {
-        return MUtil_Lazy::repeat($this->loadIterator($filter, $sort));
+        return \MUtil_Lazy::repeat($this->loadIterator($filter, $sort));
     }
 
 
     /**
      * Helper function that procesess the raw data after a load.
      *
-     * @see MUtil_Model_SelectModelPaginator
+     * @see \MUtil_Model_SelectModelPaginator
      *
      * @param array $data Nested array containing rows or iterator
      * @param boolean $new True when it is a new item
@@ -1779,12 +1779,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function processDependencies(array $data, $new)
     {
         foreach ($this->_model_dependencies as $dependency) {
-            if ($dependency instanceof MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
 
                 $dependsOn = $dependency->getDependsOn();
                 $context   = array_intersect_key($data, $dependsOn);
 
-                // MUtil_Echo::track($context, $dependsOn, get_class($dependency));
+                // \MUtil_Echo::track($context, $dependsOn, get_class($dependency));
 
                 // If there are required fields and all required fields are there
                 if ($dependsOn && (count($context) === count($dependsOn))) {
@@ -1792,8 +1792,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                     $changes = $dependency->getChanges($context, $new);
 
                     if ($changes) {
-                        if (MUtil_Model::$verbose) {
-                            MUtil_Echo::r($changes, 'Changes by ' . get_class($dependency));
+                        if (\MUtil_Model::$verbose) {
+                            \MUtil_Echo::r($changes, 'Changes by ' . get_class($dependency));
                         }
 
                         // Here we could allow only those changes this dependency claims to change
@@ -1802,7 +1802,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                         // this extra check. (Though I may change my mind in the future
                         $this->_applyDependencyChanges($this, $changes, $data);
                     }
-                } elseif (MUtil_Model::$verbose) {
+                } elseif (\MUtil_Model::$verbose) {
                     if ($dependsOn) {
                         $missing = array_diff_key($dependsOn, $data);
 
@@ -1818,12 +1818,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
                         $msg = "%s%s dependency is not dependent on any fields.";
                         $fld = '';
                     }
-                    MUtil_Echo::r(sprintf($msg, $fld, get_class($dependency)), 'Dependency skipped');
+                    \MUtil_Echo::r(sprintf($msg, $fld, get_class($dependency)), 'Dependency skipped');
                 }
             }
         }
 
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
         return $data;
     }
@@ -1839,7 +1839,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param string $name The fieldname
      * @param string $key The name of the key
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function remove($name, $key = null)
     {
@@ -1865,7 +1865,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @see getItemsOrdered()
      *
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function resetOrder()
     {
@@ -1925,7 +1925,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Both set the attribute 'save' to true for 'field_x'.
      *
      * @param string $name        The fieldname
-     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see \MUtil_Args::pairs()
      * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2        Optional second key when $arrayOrKey1 is a string
      * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
@@ -1935,7 +1935,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     public function set($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args, 1);
+        $args = \MUtil_Ra::pairs($args, 1);
 
         if ($args) {
             foreach ($args as $key => $value) {
@@ -1985,7 +1985,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param string $name
      * @param string $aliasOf
      * @return \MUtil_Model_ModelAbstract
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function setAlias($name, $aliasOf)
     {
@@ -1993,7 +1993,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $this->set($name, self::ALIAS_OF, $aliasOf);
             return $this;
         }
-        throw new MUtil_Model_ModelException("Alias for '$name' set to non existing field '$aliasOf'");
+        throw new \MUtil_Model_ModelException("Alias for '$name' set to non existing field '$aliasOf'");
     }
 
     /**
@@ -2002,7 +2002,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param string $name  The name of a field
      * @param boolean $value
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setAutoSave($name, $value = true)
     {
@@ -2014,23 +2014,23 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Set the bridge class for the specific identifier
      *
      * @param string $identifier
-     * @param string $bridge Class name for a MUtil_Model_Bridge_BridgeInterface, optioanlly loaded using *_Model_Bridge_*
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @param string $bridge Class name for a \MUtil_Model_Bridge_BridgeInterface, optioanlly loaded using *_Model_Bridge_*
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setBridgeFor($identifier, $bridge)
     {
         if (! is_string($bridge)) {
-            throw new MUtil_Model_ModelException("Non string bridge class specified for $identifier.");
+            throw new \MUtil_Model_ModelException("Non string bridge class specified for $identifier.");
         }
 
-        $bridges = $this->getMeta(MUtil_Model::META_BRIDGES);
+        $bridges = $this->getMeta(\MUtil_Model::META_BRIDGES);
 
         if (! $bridges) {
-            $bridges = MUtil_Model::getDefaultBridges();
+            $bridges = \MUtil_Model::getDefaultBridges();
         }
 
         $bridges[$identifier] = $bridge;
-        $this->setMeta(MUtil_Model::META_BRIDGES, $bridges);
+        $this->setMeta(\MUtil_Model::META_BRIDGES, $bridges);
     }
 
     /**
@@ -2068,7 +2068,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setCol($namesOrKeyArray, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
@@ -2080,7 +2080,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $skip = 0;
         }
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args, $skip);
+        $args = \MUtil_Ra::pairs($args, $skip);
 
         foreach ($names as $name) {
             $this->set($name, $args);
@@ -2111,7 +2111,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setDefault($namesOrKeyArray, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
@@ -2123,7 +2123,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $skip = 0;
         }
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args, $skip);
+        $args = \MUtil_Ra::pairs($args, $skip);
 
         foreach ($names as $name) {
             foreach ($args as $key => $value) {
@@ -2169,7 +2169,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Both set the attribute 'save' to true for 'field_x'.
      *
      * @param string $name        The fieldname
-     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see \MUtil_Args::pairs()
      * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2        Optional second key when $arrayOrKey1 is a string
      * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
@@ -2180,7 +2180,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     {
         if ($this->has($name)) {
             $args = func_get_args();
-            $args = MUtil_Ra::pairs($args, 1);
+            $args = \MUtil_Ra::pairs($args, 1);
 
             $this->set($name, $args);
 
@@ -2193,14 +2193,14 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * Sets the keys, processing the array key.
      *
-     * When an array key is numeric MUtil_Model::REQUEST_ID is used.
+     * When an array key is numeric \MUtil_Model::REQUEST_ID is used.
      * When there is more than one key a increasing number is added to
-     * MUtil_Model::REQUEST_ID starting with 1.
+     * \MUtil_Model::REQUEST_ID starting with 1.
      *
      * String key names are left as is.
      *
      * @param array $keys [alternative_]name or number => name
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setKeys(array $keys)
     {
@@ -2209,7 +2209,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
         if (count($keys) == 1) {
             $name = reset($keys);
             if (is_numeric(key($keys))) {
-                $this->_keys[MUtil_Model::REQUEST_ID] = $name;
+                $this->_keys[\MUtil_Model::REQUEST_ID] = $name;
             } else {
                 $this->_keys[key($keys)] = $name;
             }
@@ -2217,7 +2217,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
             $i = 1;
             foreach ($keys as $idx => $name) {
                 if (is_numeric($idx)) {
-                    $this->_keys[MUtil_Model::REQUEST_ID . $i] = $name;
+                    $this->_keys[\MUtil_Model::REQUEST_ID . $i] = $name;
                     $i++;
                 } else {
                     $this->_keys[$idx] = $name;
@@ -2256,12 +2256,12 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param mixed $value1 The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2 Optional second key when $arrayOrKey1 is a string
      * @param mixed $value2 Optional second value when $arrayOrKey1 is a string, an unlimited number of $key values pairs can be given.
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setMulti(array $names, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args, 1);
+        $args = \MUtil_Ra::pairs($args, 1);
 
         foreach ($names as $name) {
             $this->set($name, $args);
@@ -2276,7 +2276,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param string $name The fieldname
      * @param mixed $callableOrConstant A constant or a function of this type:
      *              callable($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setOnLoad($name, $callableOrConstant)
     {
@@ -2292,7 +2292,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * @param string $name The fieldname
      * @param mixed $callableOrConstant A constant or a function of this type:
      *          callable($value, $isNew = false, $name = null, array $context = array())
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setOnSave($name, $callableOrConstant)
     {
@@ -2304,7 +2304,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Set this field to be saved whenever there is anything to save at all.
      *
      * @param string $name The fieldname
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setSaveOnChange($name)
     {
@@ -2317,7 +2317,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      *
      * @param string $name The fieldname
      * @param mixed $callableOrConstant A constant or a function of this type: callable($value, $isNew = false, $name = null, array $context = array()) boolean
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setSaveWhen($name, $callableOrConstant)
     {
@@ -2329,7 +2329,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Set this field to be saved only when it is a new item.
      *
      * @param string $name The fieldname
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setSaveWhenNew($name)
     {
@@ -2341,7 +2341,7 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
      * Set this field to be saved only when it is not empty.
      *
      * @param string $name The fieldname
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setSaveWhenNotNull($name)
     {
@@ -2351,8 +2351,8 @@ abstract class MUtil_Model_ModelAbstract extends MUtil_Registry_TargetAbstract
     /**
      * set the model transformers
      *
-     * @param array $transformers of MUtil_Model_ModelTransformerInterface
-     * @return MUtil_Model_ModelAbstract (continuation pattern)
+     * @param array $transformers of \MUtil_Model_ModelTransformerInterface
+     * @return \MUtil_Model_ModelAbstract (continuation pattern)
      */
     public function setTransformers(array $transformers)
     {

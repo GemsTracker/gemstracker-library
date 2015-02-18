@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-18 18:45+0100\n"
+"POT-Creation-Date: 2015-02-18 19:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -132,7 +132,7 @@ msgstr "Execution order of the filters, lower numbers are executed first."
 #: classes/Gems/Default/GroupAction.php:88
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Default/MailJobAction.php:82
-#: classes/Gems/Default/ReceptionAction.php:96
+#: classes/Gems/Default/ReceptionAction.php:91
 #: classes/Gems/Default/SourceAction.php:242
 #: classes/Gems/Default/SurveyMaintenanceAction.php:482
 #: classes/Gems/Default/SurveyMaintenanceAction.php:552
@@ -813,7 +813,7 @@ msgstr "Survey code"
 #: classes/Gems/Default/ChartconfigAction.php:64
 #: classes/Gems/Default/ConsentAction.php:72
 #: classes/Gems/Default/GroupAction.php:84
-#: classes/Gems/Default/ReceptionAction.php:90
+#: classes/Gems/Default/ReceptionAction.php:85
 #: classes/Gems/Default/RoleAction.php:134
 #: classes/Gems/Default/SurveyMaintenanceAction.php:214
 #: classes/Gems/Default/SurveyMaintenanceAction.php:470
@@ -998,7 +998,7 @@ msgid "Message"
 msgstr "Message"
 
 #: classes/Gems/Default/CommTemplateAction.php:105
-#: classes/Gems/Default/ReceptionAction.php:89
+#: classes/Gems/Default/ReceptionAction.php:84
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:230
 msgid "Code"
 msgstr "Code"
@@ -1585,7 +1585,7 @@ msgstr "Not patient nr, but respondent id as exported here."
 
 #: classes/Gems/Default/ExportAction.php:280
 #: classes/Gems/Default/FieldReportAction.php:145
-#: classes/Gems/Default/ReceptionAction.php:104
+#: classes/Gems/Default/ReceptionAction.php:105
 #: classes/Gems/Default/TrackMaintenanceAction.php:367
 #: classes/Gems/Menu.php:373 classes/Gems/Menu/MenuAbstract.php:591
 #: classes/Gems/Menu/MenuAbstract.php:699
@@ -1754,7 +1754,7 @@ msgid "Staff"
 msgstr "Staff"
 
 #: classes/Gems/Default/GroupAction.php:90
-#: classes/Gems/Default/ReceptionAction.php:100
+#: classes/Gems/Default/ReceptionAction.php:101
 #: classes/Gems/Default/RespondentAction.php:458
 #: classes/Gems/Default/RespondentNewAction.php:334 classes/Gems/Menu.php:668
 #: classes/Gems/Model/OrganizationModel.php:147
@@ -2595,72 +2595,69 @@ msgstr "Survey #"
 msgid "Active tracks"
 msgstr "Active tracks"
 
-#: classes/Gems/Default/ReceptionAction.php:64
+#: classes/Gems/Default/ReceptionAction.php:87
+msgid "Is success code"
+msgstr "Is success code"
+
+#: classes/Gems/Default/ReceptionAction.php:90
+msgid "This reception code is a success code."
+msgstr "This reception code is a success code."
+
+#: classes/Gems/Default/ReceptionAction.php:94
+msgid "Only active codes can be selected."
+msgstr "Only active codes can be selected."
+
+#: classes/Gems/Default/ReceptionAction.php:98
 #: classes/Gems/Snippets/Group/GroupFormSnippet.php:78
 msgid "Can be assigned to"
 msgstr "Can be assigned to"
 
-#: classes/Gems/Default/ReceptionAction.php:65
-msgid "Additional action"
-msgstr "Additional action"
-
-#: classes/Gems/Default/ReceptionAction.php:92
-msgid "Is success code"
-msgstr "Is success code"
-
-#: classes/Gems/Default/ReceptionAction.php:95
-msgid "This reception code is a success code."
-msgstr "This reception code is a success code."
-
-#: classes/Gems/Default/ReceptionAction.php:99
-msgid "Only active codes can be selected."
-msgstr "Only active codes can be selected."
-
-#: classes/Gems/Default/ReceptionAction.php:103
+#: classes/Gems/Default/ReceptionAction.php:104
 msgid "This reception code can be assigned to a respondent."
 msgstr "This reception code can be assigned to a patient."
 
-#: classes/Gems/Default/ReceptionAction.php:107
+#: classes/Gems/Default/ReceptionAction.php:108
 msgid "This reception code can be assigned to a track."
 msgstr "This reception code can be assigned to a track."
 
-#: classes/Gems/Default/ReceptionAction.php:108
-#: classes/Gems/Default/SurveyMaintenanceAction.php:635
-#: classes/Gems/Menu.php:424 classes/Gems/Menu/MenuAbstract.php:598
-#: classes/Gems/Menu/MenuAbstract.php:680
-#: classes/Gems/Tracker/Model/TrackModel.php:111
-msgid "Surveys"
-msgstr "Surveys"
-
-#: classes/Gems/Default/ReceptionAction.php:110
-msgid "This reception code can be assigned to a survey."
-msgstr "This reception code can be assigned to a survey."
+#: classes/Gems/Default/ReceptionAction.php:109
+#: classes/Gems/Selector/TokenByGroupDateSelector.php:85
+msgid "Tokens"
+msgstr "Tokens"
 
 #: classes/Gems/Default/ReceptionAction.php:111
+msgid "This reception code can be assigned to a token."
+msgstr "This reception code can be assigned to a token."
+
+#: classes/Gems/Default/ReceptionAction.php:115
+msgid "Additional actions"
+msgstr "Additional actions"
+
+#: classes/Gems/Default/ReceptionAction.php:118
 msgid "Redo survey"
 msgstr "Redo survey"
 
-#: classes/Gems/Default/ReceptionAction.php:113
+#: classes/Gems/Default/ReceptionAction.php:120
 msgid "Redo a survey on this reception code."
 msgstr "Redo a survey on this reception code."
 
-#: classes/Gems/Default/ReceptionAction.php:114
+#: classes/Gems/Default/ReceptionAction.php:121
 msgid "Overwrite existing consents"
 msgstr "Overwrite existing consents"
 
-#: classes/Gems/Default/ReceptionAction.php:117
+#: classes/Gems/Default/ReceptionAction.php:124
 msgid "Remove the consent from already answered surveys."
 msgstr "Remove the consent from already answered surveys."
 
-#: classes/Gems/Default/ReceptionAction.php:135
+#: classes/Gems/Default/ReceptionAction.php:147 classes/Gems/Menu.php:204
+msgid "Reception codes"
+msgstr "Reception codes"
+
+#: classes/Gems/Default/ReceptionAction.php:158
 msgid "reception code"
 msgid_plural "reception codes"
 msgstr[0] "reception code"
 msgstr[1] "reception codes"
-
-#: classes/Gems/Default/ReceptionAction.php:140 classes/Gems/Menu.php:204
-msgid "Reception codes"
-msgstr "Reception codes"
 
 #: classes/Gems/Default/RespondentAction.php:132
 #: classes/Gems/Model/RespondentNlModel.php:116
@@ -3462,6 +3459,13 @@ msgstr "Not used in track."
 #: classes/Gems/Default/SurveyMaintenanceAction.php:623
 msgid "Not used in tracks."
 msgstr "Not used in tracks."
+
+#: classes/Gems/Default/SurveyMaintenanceAction.php:635
+#: classes/Gems/Menu.php:424 classes/Gems/Menu/MenuAbstract.php:598
+#: classes/Gems/Menu/MenuAbstract.php:680
+#: classes/Gems/Tracker/Model/TrackModel.php:111
+msgid "Surveys"
+msgstr "Surveys"
 
 #: classes/Gems/Default/TemplateAction.php:92
 msgid "Used templates"
@@ -5183,10 +5187,6 @@ msgstr "for patients"
 #: classes/Gems/Selector/TokenDateSelector.php:82
 msgid "for staff"
 msgstr "for staff"
-
-#: classes/Gems/Selector/TokenByGroupDateSelector.php:85
-msgid "Tokens"
-msgstr "Tokens"
 
 #: classes/Gems/Selector/TokenByGroupDateSelector.php:97
 msgid "Todo"
@@ -7647,6 +7647,12 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "Additional action"
+#~ msgstr "Additional action"
+
+#~ msgid "This reception code can be assigned to a survey."
+#~ msgstr "This reception code can be assigned to a survey."
 
 #~ msgid "days"
 #~ msgstr "days"
