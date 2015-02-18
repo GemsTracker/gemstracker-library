@@ -50,7 +50,7 @@ class Gems_Default_SurveyAction extends Gems_Default_TrackActionAbstract
      *
      * @var mixed can be empty;
      */
-    public $addTrackContentSnippets = 'SurveyQuestionsSnippet';
+    public $addTrackContentSnippets = 'Survey\\SurveyQuestionsSnippet';
 
     public $sortKey = array('gr2t_created' => SORT_DESC);
 

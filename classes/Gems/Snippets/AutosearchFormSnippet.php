@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
+class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstract
 {
     /**
      * Field name for perioe filters
@@ -53,7 +53,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -79,26 +79,26 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     protected $menu;
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
     /**
      * Optional, otherwise created from $util
      *
-     * @var Gems_Util_RequestCache
+     * @var \Gems_Util_RequestCache
      */
     public $requestCache;
 
@@ -110,7 +110,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -139,7 +139,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $fromLabel = $this->_('From');
         }
         if (is_string($dates)) {
-            $element = new Zend_Form_Element_Hidden(self::PERIOD_DATE_USED);
+            $element = new \Zend_Form_Element_Hidden(self::PERIOD_DATE_USED);
             $element->setValue($dates);
         } else {
             if (count($dates) >= $switchToSelect) {
@@ -167,7 +167,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
         $type = 'date';
         if ($this->dateFormat) {
             $options['dateFormat'] = $this->dateFormat;
-            list($dateFormat, $separator, $timeFormat) = MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
+            list($dateFormat, $separator, $timeFormat) = \MUtil_Date_Format::splitDateTimeFormat($options['dateFormat']);
 
             if ($timeFormat) {
                 if ($dateFormat) {
@@ -178,16 +178,16 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             }
         }
         $options['label'] = $fromLabel;
-        MUtil_Model_Bridge_FormBridge::applyFixedOptions($type, $options);
+        \MUtil_Model_Bridge_FormBridge::applyFixedOptions($type, $options);
 
-        $elements['datefrom'] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
+        $elements['datefrom'] = new \Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements['dateuntil'] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
+        $elements['dateuntil'] = new \Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
     }
 
     /**
-     * Creates a Zend_Form_Element_Select
+     * Creates a \Zend_Form_Element_Select
      *
      * If $options is a string it is assumed to contain an SQL statement.
      *
@@ -195,11 +195,11 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options
      * @param string        $empty   Text to display for the empty selector
-     * @return Zend_Form_Element_Multi
+     * @return \Zend_Form_Element_Multi
      */
     private function _createMultiElement($class, $name, $options, $empty)
     {
-        if ($options instanceof MUtil_Model_ModelAbstract) {
+        if ($options instanceof \MUtil_Model_ModelAbstract) {
             $options = $options->get($name, 'multiOptions');
         } elseif (is_string($options)) {
             $options = $this->db->fetchPairs($options);
@@ -217,14 +217,14 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Creates a Zend_Form_Element_Select
+     * Creates a \Zend_Form_Element_Select
      *
      * If $options is a string it is assumed to contain an SQL statement.
      *
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options
      * @param string        $empty   Text to display for the empty selector
-     * @return Zend_Form_Element_Radio
+     * @return \Zend_Form_Element_Radio
      */
     protected function _createRadioElement($name, $options, $empty = null)
     {
@@ -232,14 +232,14 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     }
 
     /**
-     * Creates a Zend_Form_Element_Select
+     * Creates a \Zend_Form_Element_Select
      *
      * If $options is a string it is assumed to contain an SQL statement.
      *
      * @param string        $name    Name of the select element
      * @param string|array  $options Can be a SQL select string or key/value array of options
      * @param string        $empty   Text to display for the empty selector
-     * @return Zend_Form_Element_Select
+     * @return \Zend_Form_Element_Select
      */
     protected function _createSelectElement($name, $options, $empty = null)
     {
@@ -269,11 +269,11 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      * Creates the form itself
      *
      * @param array $options
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     protected function createForm($options = null)
     {
-        $form = new Gems_Form($options);
+        $form = new \Gems_Form($options);
 
         return $form;
     }
@@ -285,7 +285,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -297,11 +297,12 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Creates an autosearch form for indexAction.
      *
-     * @return Gems_Form|null
+     * @return \Gems_Form|null
      */
     protected function getAutoSearchForm()
     {
         $data = $this->getSearchData();
+        \MUtil_Echo::track($data);
 
         $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
 
@@ -322,13 +323,13 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             }
 
             foreach ($elements as $element) {
-                if ($element instanceof Zend_Form_Element) {
+                if ($element instanceof \Zend_Form_Element) {
                     $appendLabel = false;
                     if ($element->getLabel()) {
                         $labelDecor = $element->getDecorator('Label');
 
                         if ($labelDecor) {
-                            $appendLabel = Zend_Form_Decorator_Abstract::APPEND === $labelDecor->getPlacement();
+                            $appendLabel = \Zend_Form_Decorator_Abstract::APPEND === $labelDecor->getPlacement();
 
                             if (! $appendLabel) {
                                 $span->label($element);
@@ -339,7 +340,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                     if ($appendLabel) {
                         $span->label($element);
                     }
-                    // TODO: Elementen automatisch toevoegen in MUtil_Form
+                    // TODO: Elementen automatisch toevoegen in \MUtil_Form
                     $form->addElement($element);
                 } elseif (null === $element) {
                     $span = $div->div(array('class' => 'panel panel-default'))->div(array('class' => 'inputgroup panel-body'));
@@ -370,20 +371,20 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      */
     protected function getAutoSearchHref()
     {
-        return MUtil_Html::attrib('href', array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true));
+        return \MUtil_Html::attrib('href', array('action' => 'autofilter', $this->model->getTextFilter() => null, 'RouteReset' => true));
     }
 
     /**
      * Creates a reset button for the search form
      *
-     * @return Zend_Form_Element_Html or null
+     * @return \Zend_Form_Element_Html or null
      */
     protected function getAutoSearchReset()
     {
         if ($menuItem = $this->menu->getCurrent()) {
             $link    = $menuItem->toActionLink($this->request, array('reset' => 1), $this->_('Reset search'));
 
-            $element = new MUtil_Form_Element_Html('reset');
+            $element = new \MUtil_Form_Element_Html('reset');
             $element->setValue($link);
 
             return $element;
@@ -393,7 +394,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
     /**
      * Creates a submit button
      *
-     * @return Zend_Form_Element_Submit
+     * @return \Zend_Form_Element_Submit
      */
     protected function getAutoSearchSubmit()
     {
@@ -405,10 +406,10 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         return $this->getAutoSearchForm();
     }
@@ -417,10 +418,10 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
      * Helper function to generate a period query string
      *
      * @param array $filter A filter array or $request->getParams()
-     * @param Zend_Db_Adapter_Abstract $db
+     * @param \Zend_Db_Adapter_Abstract $db
      * @return string
      */
-    public static function getPeriodFilter(array $filter, Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
+    public static function getPeriodFilter(array $filter, \Zend_Db_Adapter_Abstract $db, $inFormat = null, $outFormat = null)
     {
         if (! (isset($filter[self::PERIOD_DATE_USED]) && $filter[self::PERIOD_DATE_USED])) {
             return;
@@ -430,11 +431,11 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
             $outFormat = 'yyyy-MM-dd';
         }
         if (null === $inFormat) {
-            $inFormat  = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $inFormat  = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
-        $isFrom  = isset($filter['datefrom'])  && $filter['datefrom']  && MUtil_Date::isDate($filter['datefrom'],  $inFormat);
-        $isUntil = isset($filter['dateuntil']) && $filter['dateuntil'] && MUtil_Date::isDate($filter['dateuntil'], $inFormat);
+        $isFrom  = isset($filter['datefrom'])  && $filter['datefrom']  && \MUtil_Date::isDate($filter['datefrom'],  $inFormat);
+        $isUntil = isset($filter['dateuntil']) && $filter['dateuntil'] && \MUtil_Date::isDate($filter['dateuntil'], $inFormat);
         if (! ($isFrom || $isUntil)) {
             return;
         }
@@ -450,8 +451,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                                 (%2$s >= %3$s OR %2$s IS NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
@@ -459,7 +460,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%2$s >= %3$s OR (%2$s IS NULL AND %1$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
@@ -467,7 +468,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%1$s <= %3$s OR (%1$s IS NULL AND %2$s IS NOT NULL)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;
@@ -481,8 +482,8 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%1$s >= %3$s AND %2$s <= %4$s',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
@@ -490,7 +491,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%1$s >= %3$s AND (%2$s IS NULL OR %2$s >= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
@@ -498,7 +499,7 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                             '%2$s <= %3$s AND (%1$s IS NULL OR %1$s <= %3$s)',
                             $db->quoteIdentifier($periods[0]),
                             $db->quoteIdentifier($periods[1]),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;
@@ -508,22 +509,22 @@ class Gems_Snippets_AutosearchFormSnippet extends MUtil_Snippets_SnippetAbstract
                     return sprintf(
                             '%s BETWEEN %s AND %s',
                             $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'],  $outFormat, $inFormat)),
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 if ($isFrom) {
                     return sprintf(
                             '%s >= %s',
                             $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['datefrom'], $outFormat, $inFormat))
                             );
                 }
                 if ($isUntil) {
                     return sprintf(
                             '%s <= %s',
                             $db->quoteIdentifier($filter[self::PERIOD_DATE_USED]),
-                            $db->quote(MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
+                            $db->quote(\MUtil_Date::format($filter['dateuntil'], $outFormat, $inFormat))
                             );
                 }
                 return;

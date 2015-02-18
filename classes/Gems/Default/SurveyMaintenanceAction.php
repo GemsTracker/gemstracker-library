@@ -678,7 +678,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         $this->html[] = $table;
 
         if ($this->escort->hasPrivilege('pr.project.questions')) {
-            $this->addSnippet('SurveyQuestionsSnippet', 'surveyId', $this->_getIdParam());
+            $this->addSnippet('Survey\\SurveyQuestionsSnippet', 'surveyId', $this->_getIdParam());
         }
     }
 }

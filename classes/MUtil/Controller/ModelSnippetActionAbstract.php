@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Controller_Action
+abstract class MUtil_Controller_ModelSnippetActionAbstract extends \MUtil_Controller_Action
 {
     /**
      * Default parameters for the autofilter action. Can be overruled
@@ -111,7 +111,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      *
      * Always retrieve using $this->getModel().
      *
-     * $var MUtil_Model_ModelAbstract $_model The model in use
+     * $var \MUtil_Model_ModelAbstract $_model The model in use
      */
     private $_model;
 
@@ -337,7 +337,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      */
     protected function _getIdParam()
     {
-        return $this->_getParam(MUtil_Model::REQUEST_ID);
+        return $this->_getParam(\MUtil_Model::REQUEST_ID);
     }
 
     /**
@@ -381,10 +381,10 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     /**
      * Apply this source to the target.
      *
-     * @param MUtil_Registry_TargetInterface $target
+     * @param \MUtil_Registry_TargetInterface $target
      * @return boolean True if $target is OK with loaded requests
      */
-    public function applySource(MUtil_Registry_TargetInterface $target)
+    public function applySource(\MUtil_Registry_TargetInterface $target)
     {
         return $this->getSnippetLoader()->getSource()->applySource($target);
     }
@@ -397,14 +397,14 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      */
     public function autofilterAction($resetMvc = true)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         // We do not need to return the layout, just the above table
         if ($resetMvc) {
             // Make sure all links are generated as if the current request was index.
             $this->aliasAction('index');
 
-            Zend_Layout::resetMvcInstance();
+            \Zend_Layout::resetMvcInstance();
         }
 
         if ($this->autofilterSnippets) {
@@ -416,7 +416,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         if ($resetMvc) {
             // Lazy call here, because any echo calls in the snippets have not yet been
             // performed. so they will appear only in the next call when not lazy.
-            $this->html->raw(MUtil_Lazy::call(array('MUtil_Echo', 'out')));
+            $this->html->raw(\MUtil_Lazy::call(array('MUtil_Echo', 'out')));
         }
     }
 
@@ -441,7 +441,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     abstract protected function createModel($detailed, $action);
 
@@ -494,11 +494,11 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     /**
      * Get the possible translators for the import snippet.
      *
-     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     * @return array of \MUtil_Model_ModelTranslatorInterface objects
      */
     public function getImportTranslators()
     {
-        $trs = new MUtil_Model_Translator_StraightTranslator($this->_('Direct import'));
+        $trs = new \MUtil_Model_Translator_StraightTranslator($this->_('Direct import'));
         $this->applySource($trs);
 
         return array('default' => $trs);
@@ -520,7 +520,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * parameter was added, because the most common use of action is a split between detailed
      * and summarized actions.
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function getModel()
     {
@@ -597,8 +597,9 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         $searchSession->$sessionId = array_filter($data, function($i) { return is_array($i) || strlen($i); });
 
         // Add defaults to data without cleanup
-        if ($this->defaultSearchData) {
-            $data = $data + $this->defaultSearchData;
+        $defaults = $this->getSearchDefaults();
+        if ($defaults) {
+            $data = $data + $defaults;
         }
 
         // \MUtil_Echo::track($data, $this->searchSessionId);
@@ -612,6 +613,18 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         // \MUtil_Echo::track($this->_searchData, $this->searchSessionId);
 
         return $this->_searchData;
+    }
+
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        return $this->defaultSearchData;
     }
 
     /**
@@ -635,6 +648,8 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
 
             $this->_searchFilter[$field] = $value;
         }
+
+        // \MUtil_Echo::track($this->_searchFilter);
 
         return $this->_searchFilter;
     }

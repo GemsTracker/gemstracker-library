@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_RespondentMailLogAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -112,11 +112,11 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
+        $model = new \Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
 
         $model->addLeftTable('gems__respondents', array('grco_id_to' => 'grs_id_user'));
         $model->addLeftTable('gems__staff', array('grco_id_by' => 'gsf_id_user'));
@@ -145,7 +145,7 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
         $model->addColumn($this->util->getTokenData()->getStatusExpression(), 'status');
 
         $model->addTable('gems__respondent2org', array('grs_id_user' => 'gr2o_id_user'), 'gr2o');
-        $model->setKeys(array(MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization'));
+        $model->setKeys(array(\MUtil_Model::REQUEST_ID1  => 'gr2o_patient_nr', \MUtil_Model::REQUEST_ID2 => 'gr2o_id_organization'));
 
         $model->addTable(    'gems__groups',           array('gsu_id_primary_group' => 'ggp_id_group'));
         $model->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
@@ -188,11 +188,11 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
      */
     public function getContentTitle()
     {
-        $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
+        $patientId = $this->_getParam(\MUtil_Model::REQUEST_ID1);
         if ($patientId) {
             $respondent = $this->loader->getRespondent(
                     $patientId,
-                    $this->getRequest()->getParam(MUtil_Model::REQUEST_ID2)
+                    $this->getRequest()->getParam(\MUtil_Model::REQUEST_ID2)
                 );
             return sprintf($this->_('Mail Activity Log for respondent number %s: %s'), $patientId, $respondent->getName());
         }
@@ -220,7 +220,12 @@ class Gems_Default_RespondentMailLogAction extends Gems_Controller_ModelSnippetA
         $filter = parent::getSearchFilter();
 
         if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
-            $filter[] = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+
+            if ($where) {
+                $filter[] = $where;
+            }
+
             unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
         }
 

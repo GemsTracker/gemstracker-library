@@ -51,7 +51,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
      *
      * @var mixed can be empty;
      */
-    public $addTrackContentSnippets = 'TrackSurveyOverviewSnippet';
+    public $addTrackContentSnippets = 'Tracker\\TrackSurveyOverviewSnippet';
 
     /**
      *
@@ -577,7 +577,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                         'model', $model,
                         'trackType', $this->trackType);
 
-                $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackData', $data);
+                $this->addSnippet('Tracker\\TrackUsageTextDetailsSnippet', 'trackData', $data);
             }
             $baseUrl[MUtil_Model::REQUEST_ID1]     = $this->_getParam(MUtil_Model::REQUEST_ID1);
             $baseUrl[MUtil_Model::REQUEST_ID2]     = $this->_getParam(MUtil_Model::REQUEST_ID2);

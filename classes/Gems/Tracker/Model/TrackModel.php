@@ -120,7 +120,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                 'formatFunction', $translated->formatDateForever);
 
         $this->set('gtr_display_group', 'label', $translator->_('Display group'),
-                'description', $translator->_('Create lists per group, e.g. tracks, respondent or staff.'),
+                'description', $translator->_('Seperate tracks into display groups.'),
                 'multiOptions', $this->tracker->getTrackDisplayGroups());
         $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
                 'size', 10,

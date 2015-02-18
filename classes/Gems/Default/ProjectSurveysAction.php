@@ -42,18 +42,69 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_ProjectSurveysAction  extends Gems_Controller_BrowseEditAction
+class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActionAbstract
 {
-    const TRACK_TYPE = 'S';
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'extraFilter' => array(
+            'gtr_display_group' => array('staff', 'respondents'),
+            'gtr_active'        => 1,
+            -2 => '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE'
+            ),
+        'extraSort' => array(
+            'gtr_track_name' => SORT_ASC,
+            ),
+        );
 
-    public $filterStandard = array(
-        'gtr_track_type' => self::TRACK_TYPE,
-        'gtr_active' => 1,
-        '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE');
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
 
-    public $sortKey = array('gtr_track_name' => SORT_ASC);
+    /**
+     * The parameters used for the show action
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $showParameters = array('trackId' => '_getIdParam');
 
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Survey\\SurveyQuestionsSnippet'
+        );
 
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \MUtil_Model_ModelAbstract
+     */
     protected function createModel($detailed, $action)
     {
         $translated = $this->util->getTranslated();
@@ -65,38 +116,55 @@ class Gems_Default_ProjectSurveysAction  extends Gems_Controller_BrowseEditActio
 
         //$model->resetOrder();
         $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-        $model->set('ggp_name',        'label', $this->_('By'),    'elementClass', 'Exhibitor');
-        $model->set('gtr_date_start',  'label', $this->_('From'),  'dateFormat', $translated->dateFormatString, 'tdClass', 'date');
-        $model->set('gtr_date_until',  'label', $this->_('Until'), 'dateFormat', $translated->dateFormatString, 'tdClass', 'date',
-            'formatFunction', $translated->formatDateForever);
+        $model->set('ggp_name',        'label', $this->_('By'));
+        $model->set('gtr_date_start',  'label', $this->_('From'),
+                'dateFormat', $translated->dateFormatString,
+                'tdClass', 'date'
+                );
+        $model->set('gtr_date_until',  'label', $this->_('Until'),
+                'dateFormat', $translated->dateFormatString,
+                'formatFunction', $translated->formatDateForever,
+                'tdClass', 'date'
+                );
 
         return $model;
     }
 
-    protected function getDataFilter(array $data)
-    {
-        $filter = parent::getDataFilter($data);
-
-        $organization_id = $this->escort->getCurrentOrganization();
-        $filter[] = "gtr_organizations LIKE '%|$organization_id|%'";
-
-        return $filter;
-    }
-
-    public function getTopic($count = 1)
-    {
-        return $this->plural('survey', 'surveys', $count);
-    }
-
-    public function getTopicTitle()
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
     {
         return $this->_('Active surveys');
     }
 
-    public function showAction()
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
     {
-        parent::showAction();
+        if (! $this->defaultSearchData) {
+            $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
+            $this->defaultSearchData[-1] = "gtr_organizations LIKE '%|$orgId|%'";
+        }
 
-        $this->addSnippet('SurveyQuestionsSnippet', 'trackId', $this->_getIdParam());
+        return parent::getSearchDefaults();
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('survey', 'surveys', $count);
     }
 }

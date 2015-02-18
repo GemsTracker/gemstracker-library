@@ -390,13 +390,13 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
     }
 
     /**
-     * Get the data to use for searching: the values passed in the request + any defaults
-     * as opposed to the actual filter used in the query.
+     * Function to allow the creation of search defaults in code
      *
-     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
-     * @return array or false
+     * @see getSearchFilter()
+     *
+     * @return array
      */
-    public function getSearchData($dontUseRequest = false)
+    public function getSearchDefaults()
     {
         if (! isset($this->defaultSearchData[\MUtil_Model::REQUEST_ID2])) {
             $user = $this->loader->getCurrentUser();
@@ -407,7 +407,7 @@ abstract class Gems_Default_RespondentNewAction extends \Gems_Controller_ModelSn
                 $this->defaultSearchData[\MUtil_Model::REQUEST_ID2] = $user->getCurrentOrganizationId();
             }
         }
-        return parent::getSearchData($dontUseRequest);
+        return parent::getSearchDefaults();
     }
 
     /**

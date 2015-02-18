@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * 
+ *
  * @package    Gems
  * @subpackage Controller
  * @author     Matijs de Jong <mjong@magnafacta.nl>
@@ -44,161 +44,73 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_LogAction extends Gems_Controller_BrowseEditAction {
-
-    public $sortKey = array('glua_created' => SORT_DESC);
-
-    public $defaultPeriodEnd   = 1;
-    public $defaultPeriodStart = -4;
-    public $defaultPeriodType  = 'W';
-
-    public $maxPeriod = 1;
-    public $minPeriod = -15;
+class Gems_Default_LogAction extends \Gems_Controller_ModelSnippetActionAbstract
+{
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'columns'   => 'getBrowseColumns',
+        'extraSort' => array(
+            'glua_created' => SORT_DESC,
+            ),
+        );
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
+     * The snippets used for the index action, before those in autofilter
      *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @return void
+     * @var mixed String or array of snippets name
      */
-    public function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        // Add edit button if allowed, otherwise show, again if allowed
-        if ($menuItem = $this->findAllowedMenuItem('edit', 'show')) {
-            $bridge->addItemLink($menuItem->toActionLinkLower($this->getRequest(), $bridge));
-        }
+    protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Log\\LogSearchSnippet');
 
-        $html = MUtil_Html::create();
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
+
+    /**
+     * Set column usage to use for the browser.
+     *
+     * Must be an array of arrays containing the input for TableBridge->setMultisort()
+     *
+     * @return array or false
+     */
+    public function getBrowseColumns()
+    {
+        $html = \MUtil_Html::create();
         $br   = $html->br();
 
-        $bridge->addSortable('glua_created');
-        $bridge->addSortable('glac_name');
-        $bridge->addSortable('glua_message');
-        $bridge->addMultiSort('staff_name', $br, 'glua_organization');
-        $bridge->addSortable('respondent_name');
+        $columns[10] = array('glua_created', $br, 'glac_name');
+        // $columns[15] = array('glua_message');
+        $columns[20] = array('staff_name', $br, 'glua_organization');
+        $columns[30] = array('respondent_name');
+
+        return $columns;
     }
 
-    public function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data) {
-        $elements = parent::getAutoSearchElements($model, $data);
-
-        if ($elements) {
-            $elements[] = null; // break into separate spans
-        }
-
-        // Create date range elements
-        $min  = $this->minPeriod;
-        $max  = $this->maxPeriod;
-        $size = max(strlen($min), strlen($max));
-
-        $element = new Zend_Form_Element_Text('period_start', array('label' => $this->_('from'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));
-        $element->addValidator(new Zend_Validate_Int());
-        $element->addValidator(new Zend_Validate_Between($min, $max));
-        $elements[] = $element;
-
-        $element = new Zend_Form_Element_Text('period_end', array('label' => $this->_('until'), 'size' => $size - 1, 'maxlength' => $size, 'class' => 'rightAlign'));
-        $element->addValidator(new Zend_Validate_Int());
-        $element->addValidator(new Zend_Validate_Between($min, $max));
-        $elements[] = $element;
-
-        $options = array(
-            'D' => $this->_('days'),
-            'W' => $this->_('weeks'),
-            'M' => $this->_('months'),
-            'Y' => $this->_('years'),
-            );
-        $element = $this->_createSelectElement('date_type', $options);
-        $element->class = 'minimal';
-        $elements[] = $element;
-
-        $joptions['change'] = new Zend_Json_Expr('function(e, ui) {
-jQuery("#period_start").attr("value", ui.values[0]);
-jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
-
-}');
-        $joptions['min']    = $this->minPeriod;
-        $joptions['max']    = $this->maxPeriod;
-        $joptions['range']  = true;
-        $joptions['values'] = new Zend_Json_Expr('[jQuery("#period_start").attr("value"), jQuery("#period_end").attr("value")]');
-
-        $element = new ZendX_JQuery_Form_Element_Slider('period', array('class' => 'periodSlider', 'jQueryParams' => $joptions));
-        $elements[] = $element;
-
-        $elements[] = null; // break into separate spans
-
-        $elements[] = $this->_('Organization:');
-        $sql = 'SELECT gor_id_organization, gor_name FROM gems__organizations';
-        $elements[] = $this->_createSelectElement('glua_organization', $sql, $this->_('All organizations'));
-
-        $elements[] = $this->_('Staff:');
-        $sql = "SELECT glua_by, CONCAT(gsf_last_name, ', ', COALESCE(CONCAT(gsf_first_name, ' '), ''), COALESCE(gsf_surname_prefix, '')) AS name "
-             . "FROM gems__log_useractions "
-             . "JOIN gems__staff ON glua_by = gsf_id_user GROUP BY glua_by";
-        /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
-            $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
-        }*/
-        $elements[] = $this->_createSelectElement('glua_by', $sql, $this->_('All staff'));
-
-        $elements[] = MUtil_Html::create('br');
-        $elements[] = $this->_('Patient:');
-        $sql = "SELECT glua_to, CONCAT(grs_last_name, ', ', COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS name "
-             . "FROM gems__log_useractions "
-             . "JOIN gems__respondents ON glua_to = grs_id_user GROUP BY glua_to";
-        /*if (isset($data['glua_organization']) && !empty($data['glua_organization'])) {
-            $sql .= ' WHERE glua_organization = ' . $this->db->quote($data['glua_organization']);
-        }*/
-        $elements[] = $this->_createSelectElement('glua_to', $sql, $this->_('All patients'));
-
-        $elements[] = $this->_('Action:');
-        $sql = "SELECT glac_id_action, glac_name "
-             . "FROM gems__log_actions ";
-        $elements[] = $this->_createSelectElement('glua_action', $sql, $this->_('All actions'));
-
-        return $elements;
-    }
-
-    public function getDataFilter(array $data) {
-        $filter = array();
-
-
-        // Check for period selected
-        switch ($data['date_type']) {
-            case 'W':
-                $period_unit  = 'WEEK';
-                break;
-            case 'M':
-                $period_unit  = 'MONTH';
-                break;
-            case 'Y':
-                $period_unit  = 'YEAR';
-                break;
-            default:
-                $period_unit  = 'DAY';
-                break;
-        }
-
-        $date_field  = $this->db->quoteIdentifier('glua_created');
-        $date_filter = "DATE_ADD(CURRENT_DATE, INTERVAL ? " . $period_unit . ")";
-        $filter[] = $this->db->quoteInto($date_field . ' >= '.  $date_filter, intval($data['period_start']));
-        $filter[] = $this->db->quoteInto($date_field . ' <= '.  $date_filter, intval($data['period_end']));
-
-        return $filter;
-    }
-
-    public function getDefaultSearchData()
+    /**
+     * Creates a model for getModel(). Called only for each new $action.
+     *
+     * The parameters allow you to easily adapt the model to the current action. The $detailed
+     * parameter was added, because the most common use of action is a split between detailed
+     * and summarized actions.
+     *
+     * @param boolean $detailed True when the current action is not in $summarizedActions.
+     * @param string $action The current action.
+     * @return \MUtil_Model_ModelAbstract
+     */
+    protected function createModel($detailed, $action)
     {
-        return array(
-            'date_type'           => $this->defaultPeriodType,
-            'period_start'        => $this->defaultPeriodStart,
-            'period_end'          => $this->defaultPeriodEnd
-        );
-    }
-
-    protected function createModel($detailed, $action) {
-        //MUtil_Model::$verbose=true;
-        $model = new Gems_Model_JoinModel('Log', 'gems__log_useractions');
+        //\MUtil_Model::$verbose=true;
+        $model = new \Gems_Model_JoinModel('Log', 'gems__log_useractions');
         $model->addLeftTable('gems__log_actions', array('glua_action'=>'glac_id_action'));
         $model->addLeftTable('gems__respondents', array('glua_to'=>'grs_id_user'));
         $model->addLeftTable('gems__staff', array('glua_by'=>'gsf_id_user'));
@@ -223,12 +135,69 @@ jQuery("#period_end"  ).attr("value", ui.values[1]).trigger("keyup");
         return $model;
     }
 
-    public function getTopic($count = 1) {
-        return $this->_('Log');
-    }
-
-    public function getTopicTitle() {
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
         return $this->_('Logging');
     }
 
+    /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! $this->defaultSearchData) {
+            $from = new \MUtil_Date();
+            $from->subWeek(2);
+
+            $this->defaultSearchData = array(
+                'glua_organization' => $this->loader->getOrganization()->getId(),
+                'datefrom'          => $from,
+                'dateuntil'         => new \MUtil_Date(),
+                );
+        }
+
+        return parent::getSearchDefaults();
+    }
+
+    /**
+     * Get the filter to use with the model for searching
+     *
+     * @return array or false
+     */
+    public function getSearchFilter()
+    {
+        $filter = parent::getSearchFilter();
+
+        if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
+            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+
+            if ($where) {
+                $filter[] = $where;
+            }
+
+            unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
+        }
+
+        return $filter;
+    }
+
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
+    public function getTopic($count = 1)
+    {
+        return $this->plural('log', 'log', $count);
+    }
 }

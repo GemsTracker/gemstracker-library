@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+namespace Gems\Snippets\Tracker;
+
 /**
  * Shows the survey rounds in a track
  *
@@ -43,19 +45,18 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.1
- * @deprecated Since 1.7.1 use Tracker\\TrackSurveyOverviewSnippet
  */
-class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
+class TrackSurveyOverviewSnippet extends \Gems_Snippets_MenuSnippetAbstract
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -69,7 +70,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
     /**
      * Optional, can be source of the $trackId
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
 
@@ -94,10 +95,10 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         $html = $this->getHtmlSequence();
         if ($this->trackName) {
@@ -113,7 +114,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
         }
 
         $surveyName[] = $trackRepeater->gsu_survey_name;
-        $surveyName[] = MUtil_Lazy::iif($trackRepeater->gro_icon_file, MUtil_Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
+        $surveyName[] = \MUtil_Lazy::iif($trackRepeater->gro_icon_file, \MUtil_Html::create('img', array('src' => $trackRepeater->gro_icon_file, 'class' => 'icon')));
 
         $table->addColumn($surveyName,                           $this->_('Survey'));
         $table->addColumn($trackRepeater->gro_round_description, $this->_('Details'));
@@ -125,7 +126,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
 
     private function getRepeater($trackId)
     {
-        if (!($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface)) {
+        if (!($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface)) {
             $this->trackEngine = $this->loader->getTracker()->getTrackEngine($trackId);
         }
 
@@ -141,7 +142,7 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -150,18 +151,18 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
         if (! $this->trackId) {
             if (isset($this->trackData['gtr_id_track'])) {
                 $this->trackId = $this->trackData['gtr_id_track'];
-            } elseif ($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface) {
+            } elseif ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
                 $this->trackId = $this->trackEngine->getTrackId();
             }
         }
         if (! $this->trackName) {
             if (isset($this->trackData['gtr_track_name'])) {
                 $this->trackName = $this->trackData['gtr_track_name'];
-            } elseif ($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface) {
+            } elseif ($this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
                 $this->trackName = $this->trackEngine->getTrackName();
             }
         }
-        return $this->trackId;
+        return (boolean) $this->trackData && parent::hasHtmlOutput();
     }
 
     public static function oneLine($line)
@@ -175,6 +176,6 @@ class TrackSurveyOverviewSnippet extends Gems_Snippets_MenuSnippetAbstract
             }
         }
 
-        return MUtil_Html::raw(trim($line));
+        return \MUtil_Html::raw(trim($line));
     }
 }

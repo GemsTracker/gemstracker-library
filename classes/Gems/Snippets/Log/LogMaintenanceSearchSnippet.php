@@ -46,14 +46,8 @@ namespace Gems\Snippets\Log;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-feb-2015 19:46:34
  */
-class LogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
+class LogMaintenanceSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
     /**
      * Returns a text element for autosearch. Can be overruled.
      *
@@ -65,25 +59,12 @@ class LogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
      */
     protected function getAutoSearchElements(array $data)
     {
+        $yesNo = $this->util->getTranslated()->getYesNo();
         $elements = parent::getAutoSearchElements($data);
 
-        $this->_addPeriodSelectors($elements, 'glua_created');
-
-        $elements[] = null;
-
-        $elements[] = $this->_('Specific action');
-
-        $sql = "SELECT glac_name, glac_name
-            FROM gems__log_actions
-            WHERE glac_change = 1 OR glac_on_post = 1 OR glac_log = 1
-            ORDER BY glac_name";
-        $elements[] = $this->_createSelectElement('glac_name', $sql, $this->_('(any action)'));
-
-        $elements[] = $this->_createSelectElement(
-                'glua_organization',
-                $this->loader->getCurrentUser()->getRespondentOrganizations(),
-                $this->_('(all organizations)')
-                );
+        $elements[] = $this->_createSelectElement('glac_log', $yesNo, $this->_('(any always)'));
+        $elements[] = $this->_createSelectElement('glac_on_post', $yesNo, $this->_('(any on post)'));
+        $elements[] = $this->_createSelectElement('glac_change', $yesNo, $this->_('(any on change)'));
 
         return $elements;
     }

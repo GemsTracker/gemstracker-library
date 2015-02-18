@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_MailLogAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -84,11 +84,11 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
+        $model = new \Gems_Model_JoinModel('maillog', 'gems__log_respondent_communications');
 
         $model->addLeftTable('gems__respondents', array('grco_id_to' => 'grs_id_user'));
         $model->addLeftTable('gems__staff', array('grco_id_by' => 'gsf_id_user'));
@@ -161,6 +161,29 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
     }
 
     /**
+     * Function to allow the creation of search defaults in code
+     *
+     * @see getSearchFilter()
+     *
+     * @return array
+     */
+    public function getSearchDefaults()
+    {
+        if (! $this->defaultSearchData) {
+            $from = new \MUtil_Date();
+            $from->subWeek(2);
+
+            $this->defaultSearchData = array(
+                'grco_organization' => $this->loader->getOrganization()->getId(),
+                'datefrom'          => $from,
+                'dateuntil'         => new \MUtil_Date(),
+                );
+        }
+
+        return parent::getSearchDefaults();
+    }
+
+    /**
      * Get the filter to use with the model for searching
      *
      * @return array or false
@@ -170,7 +193,12 @@ class Gems_Default_MailLogAction extends Gems_Controller_ModelSnippetActionAbstr
         $filter = parent::getSearchFilter();
 
         if (isset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED])) {
-            $filter[] = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+            $where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($filter, $this->db);
+
+            if ($where) {
+                $filter[] = $where;
+            }
+
             unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
         }
 

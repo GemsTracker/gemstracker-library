@@ -798,7 +798,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     public function getTrackCreateSnippetNames()
     {
-        return array('ShowTrackUsageSnippet', 'EditTrackSnippet', 'TrackUsageTextDetailsSnippet', 'TrackSurveyOverviewSnippet');
+        return array(
+            'ShowTrackUsageSnippet',
+            'EditTrackSnippet',
+            'Tracker\\TrackUsageTextDetailsSnippet',
+            'Tracker\\TrackSurveyOverviewSnippet',
+            );
     }
 
     /**
@@ -809,7 +814,12 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends Gems_Tracker_Engin
      */
     public function getTrackEditSnippetNames(Gems_Tracker_RespondentTrack $respTrack)
     {
-        return array('ShowTrackUsageSnippet', 'EditTrackSnippet', 'TrackUsageTextDetailsSnippet', 'TrackSurveyOverviewSnippet');
+        return array(
+            'ShowTrackUsageSnippet',
+            'EditTrackSnippet',
+            'Tracker\\TrackUsageTextDetailsSnippet',
+            'Tracker\\TrackSurveyOverviewSnippet',
+            );
     }
 
     /**

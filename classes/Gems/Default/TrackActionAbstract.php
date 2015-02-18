@@ -176,7 +176,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         /*if ($this->getRequest()->isXmlHttpRequest()) {
             Zend_Layout::getMvcInstance()->disableLayout();
         }*/
-        
+
         // Set menu OFF
         $this->menu->setVisible(false);
 
@@ -465,7 +465,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         // Set variables for the menu
         $token->applyToMenuSource($this->menu->getParameterSource());
 
-        $this->addSnippets('SurveyQuestionsSnippet', 'surveyId', $token->getSurveyId());
+        $this->addSnippets('Survey\\SurveyQuestionsSnippet', 'surveyId', $token->getSurveyId());
     }
 
     public function setMenuParameters(array $data)
@@ -532,7 +532,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
         if ($trackData = $this->db->fetchRow('SELECT * FROM gems__tracks WHERE gtr_id_track = ? ', $trackId)) {
             $this->html->h2(sprintf($this->_('Overview of %s track for respondent %s: %s'), $trackData['gtr_track_name'], $patientId, $this->getRespondentName($trackData)));
-            $this->addSnippet('TrackUsageTextDetailsSnippet', 'trackData', $trackData);
+            $this->addSnippet('Tracker\\TrackUsageTextDetailsSnippet', 'trackData', $trackData);
 
             if (! $this->addTrackUsage($patientId, $orgId, $trackId, array())) {
                 $this->html->pInfo($this->_('This track is currently not assigned to this respondent.'));

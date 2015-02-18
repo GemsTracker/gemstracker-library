@@ -131,6 +131,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
     protected $formData = array();
 
     /**
+     *
+     * @var string class attribute for labels
+     */
+    protected $labelClass = 'label';
+
+    /**
      * Output only those elements actually used by the form.
      *
      * When false all fields without a label or elementClass are hidden,
@@ -140,12 +146,6 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_M
      * @var boolean
      */
     protected $onlyUsedElements = false;
-
-    /**
-     *
-     * @var string class attribute for labels
-     */
-    protected $labelClass = 'label';
 
     /**
      * Required

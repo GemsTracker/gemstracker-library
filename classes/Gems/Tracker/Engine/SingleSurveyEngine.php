@@ -212,8 +212,8 @@ class Gems_Tracker_Engine_SingleSurveyEngine extends Gems_Tracker_Engine_TrackEn
         return array(
             // 'ShowTrackUsageSnippet',
             'EditSingleSurveyTokenSnippet',
-            'TrackUsageTextDetailsSnippet',
-            'SurveyQuestionsSnippet');
+            'Tracker\\TrackUsageTextDetailsSnippet',
+            'Survey\\SurveyQuestionsSnippet');
     }
 
     /**

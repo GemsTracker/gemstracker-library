@@ -3,6 +3,9 @@ Important changes from 1.7.0 => 1.7.1
 Some snippets have moved location in the code:
     AddTracksSnippet => Tracker\\AddTracksSnippet
     EditTrackEngineSnippet => Tracker\\EditTrackEngineSnippet
+    SurveyQuestionsSnippet => Survey\\SurveyQuestionsSnippet
+    TrackSurveyOverviewSnippet => Tracker\\TrackSurveyOverviewSnippet
+    TrackUsageTextDetailsSnippet => Tracker\\TrackUsageTextDetailsSnippet
 
 
 Important changes from 1.6.4 => 1.7.0

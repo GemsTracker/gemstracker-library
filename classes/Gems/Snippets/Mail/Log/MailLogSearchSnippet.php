@@ -44,28 +44,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.6
  */
-class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
-    public $loader;
-
-    /**
-     * Creates the form itself
-     *
-     * @param array $options
-     * @return Gems_Form
-     */
-    protected function createForm($options = null)
-    {
-        $form = parent::createForm($options);
-
-        $form->activateJQuery();
-
-        return $form;
-    }
+    protected $loader;
 
     /**
      * Returns a text element for autosearch. Can be overruled.
@@ -74,7 +59,7 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends Gems_Snippets_Autosear
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -83,7 +68,7 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends Gems_Snippets_Autosear
 
         $this->_addPeriodSelectors($elements, array('grco_created' => $this->_('Date sent')));
 
-        $br  = MUtil_Html::create()->br();
+        $br  = \MUtil_Html::create()->br();
 
         $elements[] = null;
 
@@ -95,9 +80,11 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends Gems_Snippets_Autosear
                 $this->_('(select a track)')
                 );
 
-        $elements[] = $this->_createSelectElement('gto_id_survey',
+        $elements[] = $this->_createSelectElement(
+                'gto_id_survey',
                 $this->util->getTrackData()->getAllSurveys(),
-                $this->_('(all surveys)'));
+                $this->_('(all surveys)')
+                );
 
         $elements[] = $this->_createSelectElement(
                 'grco_organization',
@@ -106,20 +93,5 @@ class Gems_Snippets_Mail_Log_MailLogSearchSnippet extends Gems_Snippets_Autosear
                 );
 
         return $elements;
-    }
-
-    /**
-     *
-     * @return array The data to fill the form with
-     */
-    protected function getSearchData()
-    {
-        $data = parent::getSearchData();
-
-        if (!array_key_exists('grco_organization', $data)) {
-            $data['grco_organization'] = $this->loader->getOrganization()->getId();
-        }
-
-        return $data;
     }
 }

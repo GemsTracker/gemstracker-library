@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_CalendarAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -69,7 +69,7 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -89,7 +89,7 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -109,30 +109,30 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
 
         $format = $model->get('gap_admission_time', 'dateFormat');
         if (! $format) {
-            $format = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+            $format = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
         }
 
         return $format;
     }
 
     /**
-     * Get the data to use for searching: the values passed in the request + any defaults
-     * as opposed to the actual filter used in the query.
+     * Function to allow the creation of search defaults in code
      *
-     * @param boolean $dontUseRequest Do use the request for filtering unless true (_processParameters passes a string value)
-     * @return array or false
+     * @see getSearchFilter()
+     *
+     * @return array
      */
-    public function getSearchData($dontUseRequest = false)
+    public function getSearchDefaults()
     {
         if (! $this->defaultSearchData) {
             $this->defaultSearchData = array(
                 'gap_id_organization' => $this->loader->getCurrentUser()->getCurrentOrganizationId(),
                 'dateused'            => 'gap_admission_time',
-                'datefrom'            => new MUtil_Date(),
+                'datefrom'            => new \MUtil_Date(),
                 );
         }
 
-        return parent::getSearchData($dontUseRequest);
+        return parent::getSearchDefaults();
     }
 
     /**
@@ -154,7 +154,7 @@ class Gems_Default_CalendarAction extends Gems_Controller_ModelSnippetActionAbst
             if ($where) {
                 $filter[] = $where;
             }
-            
+
             unset($filter[\Gems_Snippets_AutosearchFormSnippet::PERIOD_DATE_USED], $filter['datefrom'], $filter['dateuntil']);
         }
 
