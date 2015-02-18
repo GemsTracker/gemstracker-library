@@ -147,6 +147,12 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
     /**
      *
+     * @var Zend_Translate_Adapter
+     */
+    protected $translateAdapter;
+
+    /**
+     *
      * @var \Zend_Session
      */
     protected $session;
@@ -193,6 +199,38 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function addSourceClasses($stack) {
         $this->_sourceClasses = array_merge($this->_sourceClasses, $stack);
+    }
+
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * This function is no needed if the classes are setup correctly
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        if ($this->translateAdapter instanceof Zend_Translate_Adapter) {
+            // OK
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate) {
+            // Just one step
+            $this->translateAdapter = $this->translate->getAdapter();
+            return;
+        }
+
+        if ($this->translate instanceof Zend_Translate_Adapter) {
+            // It does happen and if it is all we have
+            $this->translateAdapter = $this->translate;
+            return;
+        }
+
+        // Make sure there always is an adapter, even if it is fake.
+        $this->translateAdapter = new MUtil_Translate_Adapter_Potemkin();
     }
 
     /**
@@ -691,9 +729,9 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public function getTrackDisplayGroups()
     {
         return array(
-            'tracks'      => $this->translate->_('Tracks'),
-            'respondents' => $this->translate->_('Respondent'),
-            'staff'       => $this->translate->_('Staff'),
+            'tracks'      => $this->translateAdapter->_('Tracks'),
+            'respondents' => $this->translateAdapter->_('Respondent'),
+            'staff'       => $this->translateAdapter->_('Staff'),
         );
     }
 
