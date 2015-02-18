@@ -51,18 +51,18 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_ModelSnippetAbstract
+abstract class MUtil_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_ModelSnippetAbstract
 {
     /**
      * Optional csrf element
      *
-     * @var Zend_Form_Element_Hash
+     * @var \Zend_Form_Element_Hash
      */
     protected $_csrf;
 
     /**
      *
-     * @var Zend_Form
+     * @var \Zend_Form
      */
     protected $_form;
 
@@ -75,12 +75,12 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
 
     /**
      *
-     * @var Zend_Form_Element_Submit
+     * @var \Zend_Form_Element_Submit
      */
     protected $_saveButton;
 
     /**
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @var mixed Nothing or either an array or a string that is acceptable for Redirector->gotoRoute()
      */
@@ -150,7 +150,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Required
      *
-     * @var Zend_Controller_Request_Abstract
+     * @var \Zend_Controller_Request_Abstract
      */
     protected $request;
 
@@ -209,10 +209,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         //Get all elements in the model if not already done
         $this->initItems();
@@ -224,20 +224,20 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Add items to the bridge, and remove them from the items array
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param string $element1
      *
      * @return void
      */
-    protected function addItems(MUtil_Model_Bridge_FormBridgeInterface $bridge, $element1)
+    protected function addItems(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $element1)
     {
         $args = func_get_args();
         if (count($args)<2) {
-            throw new Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
+            throw new \Gems_Exception_Coding('Use at least 2 arguments, first the bridge and then one or more individual items');
         }
 
         array_shift($args); // Remove bridge
-        $elements = MUtil_Ra::flatten($args);
+        $elements = \MUtil_Ra::flatten($args);
         $model    = $this->getModel();
 
         //Remove the elements from the _items variable
@@ -309,17 +309,13 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      * Perform some actions on the form, right before it is displayed but already populated
      *
      * Here we add the table display to the form.
-     *
-     * @return Zend_Form
      */
     protected function beforeDisplay()
     { }
 
     /**
      * Perform some actions to the data before it is saved to the database
-     *
      */
-
     protected function beforeSave()
     { }
 
@@ -338,11 +334,11 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function createForm($options = null)
     {
-        $form = new MUtil_Form($options);
+        $form = new \MUtil_Form($options);
 
         return $form;
     }
@@ -352,10 +348,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
         // Again, just to be sure all changes are set on the form
         $this->populateForm();
@@ -371,10 +367,10 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     }
 
     /**
-     * Creates from the model a Zend_Form using createForm and adds elements
+     * Creates from the model a \Zend_Form using createForm and adds elements
      * using addFormElements().
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function getModelForm()
     {
@@ -393,7 +389,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      *
      * When hasHtmlOutput() is true this functions should not be called.
      *
-     * @see Zend_Controller_Action_Helper_Redirector
+     * @see \Zend_Controller_Action_Helper_Redirector
      *
      * @return mixed Nothing or either an array or a string that is acceptable for Redector->gotoRoute()
      */
@@ -420,7 +416,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -484,7 +480,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
                     $this->formData = $model->loadFirst();
 
                     if (! $this->formData) {
-                        throw new Zend_Exception($this->_('Unknown edit data requested'));
+                        throw new \Zend_Exception($this->_('Unknown edit data requested'));
                     }
                 }
             }
@@ -608,7 +604,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {
@@ -637,7 +633,7 @@ abstract class MUtil_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mo
      */
     protected function validateForm()
     {
-        // Note we use an MUtil_Form
+        // Note we use an \MUtil_Form
         return $this->_form->isValid($this->formData, $this->disableValidatorTranslation);
     }
 }

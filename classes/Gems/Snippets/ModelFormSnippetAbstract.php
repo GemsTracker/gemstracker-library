@@ -41,7 +41,7 @@
  * Items set are:
  * = Default route: 'show'
  * - Display class: 'formTable'
- * - Gems_Form use: createForm()
+ * - \Gems_Form use: createForm()
  * - Table display: beforeDispay()
  *
  * Extra helpers are:
@@ -54,11 +54,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_ModelFormSnippetAbstract
+abstract class Gems_Snippets_ModelFormSnippetAbstract extends \MUtil_Snippets_ModelFormSnippetAbstract
 {
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -93,7 +93,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     /**
      * Required
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     protected $menu;
 
@@ -117,12 +117,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        if (! $bridge->getForm() instanceof Gems_TabForm) {
+        if (! $bridge->getForm() instanceof \Gems_TabForm) {
             parent::addFormElements($bridge, $model);
             return;
         }
@@ -131,16 +131,16 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
         $this->initItems();
 
         // Add 'tooltip' to the allowed displayoptions
-        $displayOptions = $bridge->getAllowedOptions(MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS);
+        $displayOptions = $bridge->getAllowedOptions(\MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS);
         if (!array_search('tooltip', $displayOptions)) {
             $displayOptions[] = 'tooltip';
-            $bridge->setAllowedOptions(MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS, $displayOptions);
+            $bridge->setAllowedOptions(\MUtil_Model_Bridge_FormBridge::DISPLAY_OPTIONS, $displayOptions);
         }
 
         $tab    = 0;
         $group  = 0;
         $oldTab = null;
-        // MUtil_Echo::track($model->getItemsOrdered());
+        // \MUtil_Echo::track($model->getItemsOrdered());
         foreach ($model->getItemsOrdered() as $name) {
             // Get all options at once
             $modelOptions = $model->get($name);
@@ -194,7 +194,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      */
     protected function addSaveButton()
     {
-        if ($this->_form instanceof Gems_TabForm) {
+        if ($this->_form instanceof \Gems_TabForm) {
             $this->_form->resetContext();
         }
         parent::addSaveButton();
@@ -211,8 +211,8 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     {
         parent::afterSave($changed);
 
-        if ($this->cacheTags && ($this->cache instanceof Zend_Cache_Core)) {
-            $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
+        if ($this->cacheTags && ($this->cache instanceof \Zend_Cache_Core)) {
+            $this->cache->clean(\Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, (array) $this->cacheTags);
         }
     }
 
@@ -221,13 +221,13 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      *
      * Here we add the table display to the form.
      *
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     public function beforeDisplay()
     {
-        if ($this->_form instanceof Gems_TabForm) {
+        if ($this->_form instanceof \Gems_TabForm) {
             if ($links = $this->getMenuList()) {
-                $linkContainer = MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
+                $linkContainer = \MUtil_Html::create()->div(array('class' => 'element-container-labelless'));
                 $linkContainer[] = $links;
 
                 $element = $this->_form->createElement('html', 'formLinks');
@@ -240,15 +240,15 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 $this->_form->resetContext();
                 $this->_form->addElement($element);
 
-                if (is_null($this->_form->getDisplayGroup(Gems_TabForm::GROUP_OTHER))) {
-                    $this->_form->addDisplayGroup(array($element), Gems_TabForm::GROUP_OTHER);
+                if (is_null($this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER))) {
+                    $this->_form->addDisplayGroup(array($element), \Gems_TabForm::GROUP_OTHER);
                 } else {
-                    $this->_form->getDisplayGroup(Gems_TabForm::GROUP_OTHER)->addElement($element);
+                    $this->_form->getDisplayGroup(\Gems_TabForm::GROUP_OTHER)->addElement($element);
                 }
             }
         } else {
-            if (MUtil_Bootstrap::enabled() !== true) {
-                $table = new MUtil_Html_TableElement(array('class' => $this->class));
+            if (\MUtil_Bootstrap::enabled() !== true) {
+                $table = new \MUtil_Html_TableElement(array('class' => $this->class));
                 $table->setAsFormLayout($this->_form, true, true);
 
                 // There is only one row with formLayout, so all in output fields get class.
@@ -282,14 +282,14 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      * Creates an empty form. Allows overruling in sub-classes.
      *
      * @param mixed $options
-     * @return Zend_Form
+     * @return \Zend_Form
      */
     protected function createForm($options = null)
     {
         if ($this->useTabbedForm) {
-            return new Gems_TabForm($options);
+            return new \Gems_TabForm($options);
         }
-        if (MUtil_Bootstrap::enabled()) {
+        if (\MUtil_Bootstrap::enabled()) {
             if (!isset($options['class'])) {
                 $options['class'] = 'form-horizontal';
             }
@@ -298,7 +298,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
                 $options['role'] = 'form';
             }
         }
-        return new Gems_Form($options);
+        return new \Gems_Form($options);
     }
 
     /**
@@ -306,12 +306,12 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
      *
      * This is a stub function either override getHtmlOutput() or override render()
      *
-     * @param Zend_View_Abstract $view Just in case it is needed here
-     * @return MUtil_Html_HtmlInterface Something that can be rendered
+     * @param \Zend_View_Abstract $view Just in case it is needed here
+     * @return \MUtil_Html_HtmlInterface Something that can be rendered
      */
-    public function getHtmlOutput(Zend_View_Abstract $view)
+    public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        $htmlDiv = MUtil_Html::div();
+        $htmlDiv = \MUtil_Html::div();
 
         $htmlDiv->h3($this->getTitle(), array('class' => 'title'));
 
@@ -325,7 +325,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     /**
      * overrule to add your own buttons.
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -371,7 +371,7 @@ abstract class Gems_Snippets_ModelFormSnippetAbstract extends MUtil_Snippets_Mod
     /**
      * If menu item does not exist or is not allowed, redirect to index
      *
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {

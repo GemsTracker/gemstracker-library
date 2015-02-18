@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.2
  */
-abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controller_ModelSnippetActionAbstract
+abstract class Gems_Controller_ModelSnippetActionAbstract extends \MUtil_Controller_ModelSnippetActionAbstract
 {
     /**
      * Gems only parameters used for the autofilter action. Can be overruled
@@ -110,13 +110,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
@@ -143,7 +143,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
@@ -242,7 +242,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
         // $this->addExcelColumns($model);     // Hook to modify the model
 
         // Use $this->formatExcelData to switch between formatted and unformatted data
-        $excelData = new Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
+        $excelData = new \Gems_FormattedData($this->getExcelData($model->load(), $model), $model, $this->formatExcelData);
 
         $this->view->result   = $excelData;
 
@@ -257,11 +257,11 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * @param string $action
      * @param string $action2
-     * @return Gems_Menu_SubMenuItem
+     * @return \Gems_Menu_SubMenuItem
      */
     protected function firstAllowedMenuItem($action, $action2 = null)
     {
-        $actions = MUtil_Ra::args(func_get_args());
+        $actions = \MUtil_Ra::args(func_get_args());
         $controller = $this->_getParam('controller');
 
         foreach ($actions as $action) {
@@ -327,10 +327,10 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      * Returns an array with all columns from the model that have a label
      *
      * @param array                     $data
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @return array
      */
-    protected function getExcelData($data, MUtil_Model_ModelAbstract $model)
+    protected function getExcelData($data, \MUtil_Model_ModelAbstract $model)
     {
         $headings = array();
         $emptyMsg = $this->_('No data found.');
@@ -388,7 +388,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     /**
      * Get the possible translators for the import snippet.
      *
-     * @return array of MUtil_Model_ModelTranslatorInterface objects
+     * @return array of \MUtil_Model_ModelTranslatorInterface objects
      */
     public function getImportTranslators()
     {
@@ -410,13 +410,13 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
      *
      * Overrule this function if the last item in the page title
      * should be something other than te value of
-     * MUtil_Model::REQUEST_ID.
+     * \MUtil_Model::REQUEST_ID.
      *
      * @return mixed
      */
     public function getInstanceId()
     {
-        if ($id = $this->_getParam(MUtil_Model::REQUEST_ID)) {
+        if ($id = $this->_getParam(\MUtil_Model::REQUEST_ID)) {
             return $id;
         }
     }
@@ -509,7 +509,7 @@ abstract class Gems_Controller_ModelSnippetActionAbstract extends MUtil_Controll
     public function initHtml($reset = false)
     {
         if (! $this->html) {
-            Gems_Html::init();
+            \Gems_Html::init();
         }
 
         parent::initHtml($reset);

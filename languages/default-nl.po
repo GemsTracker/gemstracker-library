@@ -2942,7 +2942,7 @@ msgstr "afgeleid van huidige rol"
 #: classes/Gems/Default/RoleAction.php:141
 #, php-format
 msgid "inherited from %s"
-msgstr "overerfd van %s"
+msgstr "overerft van %s"
 
 #: classes/Gems/Default/RoleAction.php:153
 msgid "this role"

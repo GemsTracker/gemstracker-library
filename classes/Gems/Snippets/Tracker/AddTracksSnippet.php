@@ -69,18 +69,6 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
     /**
      *
-     * @var GemsEscort
-     */
-    public $escort;
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    public $loader;
-
-    /**
-     *
      * @var \Gems_Menu
      */
     protected $menu;
@@ -291,47 +279,36 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public function getHtmlOutput(\Zend_View_Abstract $view)
     {
-        if (! $this->escort) {
-            $this->escort = GemsEscort::getInstance();
+        $pageRef = array(\MUtil_Model::REQUEST_ID => $this->request->getParam(\MUtil_Model::REQUEST_ID));
+        $output  = false;
+
+        $addToLists = \MUtil_Html::create()->div(array('class' => 'tooldock'));
+        if ($this->showTitle) {
+            $addToLists->strong($this->showTitle);
         }
-
-        if ($this->escort instanceof \Gems_Project_Tracks_MultiTracksInterface ||
-            $this->escort instanceof \Gems_Project_Tracks_StandAloneSurveysInterface) {
-
-            $pageRef = array(\MUtil_Model::REQUEST_ID => $this->request->getParam(\MUtil_Model::REQUEST_ID));
-            $output  = false;
-
-            $addToLists = \MUtil_Html::create()->div(array('class' => 'tooldock'));
-            if ($this->showTitle) {
-                $addToLists->strong($this->showTitle);
-            }
-            if ($this->showForTracks && ($this->escort instanceof \Gems_Project_Tracks_MultiTracksInterface)) {
-                $dropdown = $this->_getTracks('tracks', $pageRef, $this->showForTracks);
-                if ($dropdown) {
-                    $addToLists[] = $dropdown;
-                    $output       = true;
-                }
-            }
-            if ($this->escort instanceof \Gems_Project_Tracks_StandAloneSurveysInterface) {
-                if ($this->showForRespondents) {
-                    $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
-                    if ($dropdown) {
-                        $addToLists[] = $dropdown;
-                        $output       = true;
-                    }
-                }
-                if ($this->showForStaff) {
-                    $dropdown = $this->_getTracks('staff', $pageRef, $this->showForStaff);
-                    if ($dropdown) {
-                        $addToLists[] = $dropdown;
-                        $output       = true;
-                    }
-                }
-            }
-            if ($output) {
-                return $addToLists;
+        if ($this->showForTracks) {
+            $dropdown = $this->_getTracks('tracks', $pageRef, $this->showForTracks);
+            if ($dropdown) {
+                $addToLists[] = $dropdown;
+                $output       = true;
             }
         }
-        return null;
+        if ($this->showForRespondents) {
+            $dropdown = $this->_getTracks('respondents', $pageRef, $this->showForRespondents);
+            if ($dropdown) {
+                $addToLists[] = $dropdown;
+                $output       = true;
+            }
+        }
+        if ($this->showForStaff) {
+            $dropdown = $this->_getTracks('staff', $pageRef, $this->showForStaff);
+            if ($dropdown) {
+                $addToLists[] = $dropdown;
+                $output       = true;
+            }
+        }
+        if ($output) {
+            return $addToLists;
+        }
     }
 }

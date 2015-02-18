@@ -159,6 +159,13 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
     protected $createEditParameters = array();
 
     /**
+     * The snippets used for the create and edit actions.
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $createEditSnippets = 'ModelFormSnippet';
+
+    /**
      * The parameters used for the edit actions, overrules any values in
      * $this->createEditParameters.
      *
@@ -171,13 +178,6 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createParameters = array();
-
-    /**
-     * The snippets used for the create and edit actions.
-     *
-     * @var mixed String or array of snippets name
-     */
-    protected $createEditSnippets = 'ModelFormSnippet';
 
     /**
      * The default search data to use.
@@ -568,7 +568,7 @@ abstract class MUtil_Controller_ModelSnippetActionAbstract extends MUtil_Control
         if ($this->searchSessionId) {
             $sessionId = $this->searchSessionId;
         } else {
-            // Always use a search id 
+            // Always use a search id
             $sessionId = get_class($this);
         }
 

@@ -44,36 +44,51 @@
  * @license    New BSD License
  * @since      Class available since version 1.3
  */
-class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_RoleAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      *
-     * @var MUtil_Acl
+     * @var \MUtil_Acl
      */
     public $acl;
 
     /**
+     * The parameters used for the autofilter action.
      *
-     * @var Zend_Cache_Core
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
      */
-    public $cache = null;
+    protected $autofilterParameters = array(
+        'extraSort'   => array(
+            'grl_name' => SORT_ASC,
+            ),
+        );
 
     /**
-     * @var GemsEscort
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
      */
-    public $escort;
+    protected $createEditParameters = array(
+        'cacheTags'      => array('roles'),
+        'usedPrivileges' => 'getUsedPrivileges',
+    );
 
     /**
-     * This code uses string parent / descendant values but
-     * we want to save and load the numeric values.
+     * The snippets used for the create and edit actions.
      *
-     * Filled by createModel
-     *
-     * @var array
+     * @var mixed String or array of snippets name
      */
-    public $parentTranslation;
-
-    public $sortKey = 'grl_name';
+    protected $createEditSnippets = 'Role\\RoleEditFormSnippet';
 
     /**
      *
@@ -81,160 +96,20 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      */
     protected $usedPrivileges;
 
+    /**
+     * Helper function to show a table
+     *
+     * @param string $caption
+     * @param array $data
+     * @param boolean $nested
+     */
     protected function _showTable($caption, $data, $nested = false)
     {
-        $table = MUtil_Html_TableElement::createArray($data, $caption, $nested);
+        $table = \MUtil_Html_TableElement::createArray($data, $caption, $nested);
         $table->class = 'browser table';
-        $div = MUtil_Html::create()->div(array('class' => 'table-container'));
+        $div = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $div[] = $table;
         $this->html[] = $div;
-    }
-
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param optional boolean $new
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
-     */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        $bridge->addHidden('grl_id_role');
-        $bridge->addText('grl_name', 'size', 15, 'minlength', 4, 'validator', $model->createUniqueValidator('grl_name'));
-        $bridge->addText('grl_description', 'size', 40);
-
-        $roles = $this->acl->getRoles();
-        if ($roles) {
-            $possibleParents = array_combine($roles, $roles);
-        } else {
-            $possibleParents = array();
-        }
-        if (isset($data['grl_parents']) && $data['grl_parents']) {
-            $currentParents = array_combine($data['grl_parents'], $data['grl_parents']);
-        } else {
-            $currentParents = array();
-        }
-
-        // Don't allow master, nologin or itself as parents
-        unset($possibleParents['master']);
-        unset($possibleParents['nologin']);
-        $disabled   = array();
-
-        if (isset($data['grl_name'])) {
-            foreach ($possibleParents as $parent) {
-                if ($this->acl->hasRole($data['grl_name']) && $this->acl->inheritsRole($parent, $data['grl_name'])) {
-                    $disabled[] = $parent;
-                    $possibleParents[$parent] .= ' ' .
-                            MUtil_Html::create('small', $this->_('child of current role'), $this->view);
-                    unset($currentParents[$parent]);
-                } else {
-                    foreach ($currentParents as $p2) {
-                        if ($this->acl->hasRole($p2) && $this->acl->inheritsRole($p2, $parent)) {
-                            $disabled[] = $parent;
-                            $possibleParents[$parent] .= ' ' . MUtil_Html::create(
-                                    'small',
-                                    MUtil_Html::raw(sprintf(
-                                            $this->_('inherited from %s'),
-                                            MUtil_Html::create('em', $p2, $this->view)
-                                            )),
-                                    $this->view);
-                            $currentParents[$parent] = $parent;
-                        }
-                    }
-                }
-            }
-            $disabled[] = $data['grl_name'];
-            if (isset($possibleParents[$data['grl_name']])) {
-                $possibleParents[$data['grl_name']] .= ' ' .
-                        MUtil_Html::create('small', $this->_('this role'), $this->view);
-            }
-        }
-        $bridge->addMultiCheckbox('grl_parents', 'multiOptions', $possibleParents,
-                'disable', $disabled,
-                'escape', false,
-                'required', false,
-                'onchange', 'this.form.submit();');
-
-        $allPrivileges       = $this->getUsedPrivileges();
-        $rolePrivileges      = $this->escort->acl->getRolePrivileges();
-
-        if (isset($data['grl_parents']) && $data['grl_parents']) {
-            $inherited           = $this->getInheritedPrivileges($data['grl_parents']);
-            $privileges          = array_diff_key($allPrivileges, $inherited);
-            $inheritedPrivileges = array_intersect_key($allPrivileges, $inherited);
-        } else {
-            $privileges          = $allPrivileges;
-            $inheritedPrivileges = false;
-        }
-        $checkbox = $bridge->addMultiCheckbox('grl_privileges', 'multiOptions', $privileges, 'required', false);
-        $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
-
-        if ($inheritedPrivileges) {
-            $checkbox = $bridge->addMultiCheckbox(
-                    'inherited',
-                    'label', $this->_('Inherited'),
-                    'multiOptions', $inheritedPrivileges,
-                    'required', false,
-                    'disabled', 'disabled');
-            $checkbox->setAttrib('escape', false); //Don't use escaping, so the line breaks work
-            $checkbox->setValue(array_keys($inheritedPrivileges)); //To check the boxes
-        }
-
-        return array('grl_parents' => $currentParents);
-    }
-
-    /**
-     * As the ACL might have to be updated, rebuild the acl
-     *
-     * @param array $data
-     * @param type $isNew
-     * @return type
-     */
-    public function afterSave(array $data, $isNew)
-    {
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('roles'));
-
-        return true;
-    }
-
-    /**
-     *
-     * @param array $data The data that will be saved.
-     * @param boolean $isNew
-     * $param Zend_Form $form
-     * @return array|null Returns null if save was already handled, the data otherwise.
-     */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
-    {
-        if (isset($data['grl_parents']) && (! is_array($data['grl_parents']))) {
-            $data['grl_parents'] = explode(',', $data['grl_parents']);
-        }
-        if (isset($data['grl_parents']) && is_array($data['grl_parents'])) {
-            $data['grl_parents'] = implode(',', Gems_Roles::getInstance()->translateToRoleIds($data['grl_parents']));
-        }
-
-        //Always add nologin privilege to 'nologin' role
-        if (isset($data['grl_name']) && $data['grl_name'] == 'nologin') {
-            $data['grl_privileges'][] = 'pr.nologin';
-        } elseif (isset($data['grl_name']) && $data['grl_name'] !== 'nologin') {
-            //Assign islogin to all other roles
-            $data['grl_privileges'][] = 'pr.islogin';
-        }
-
-        if (isset($data['grl_privileges'])) {
-            $data['grl_privileges'] = implode(',', $data['grl_privileges']);
-        }
-
-        if(isset($data['grl_name']) && $data['grl_name'] == 'master') {
-            $form->getElement('grl_name')->setErrors(array($this->_('Illegal name')));
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -246,26 +121,37 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__roles');
+        $model = new \MUtil_Model_TableModel('gems__roles');
 
-        $model->set('grl_name', 'label', $this->_('Name'));
-        $model->set('grl_description', 'label', $this->_('Description'));
+        $model->set('grl_name', 'label', $this->_('Name'),
+                'size', 15,
+                'minlength', 4
+                );
+        $model->set('grl_description', 'label', $this->_('Description'),
+                'size', 40);
         $model->set('grl_parents', 'label', $this->_('Parents'));
 
-        $tpa = new MUtil_Model_Type_ConcatenatedRow(',', ', ');
+        $tpa = new \MUtil_Model_Type_ConcatenatedRow(',', ', ');
         $tpa->apply($model, 'grl_parents');
-        $model->setOnLoad('grl_parents', array(Gems_Roles::getInstance(), 'translateToRoleNames'));
-
+        $model->setOnLoad('grl_parents', array(\Gems_Roles::getInstance(), 'translateToRoleNames'));
 
         $model->set('grl_privileges', 'label', $this->_('Privileges'));
-        $tpr = new MUtil_Model_Type_ConcatenatedRow(',', '<br/>');
+        $tpr = new \MUtil_Model_Type_ConcatenatedRow(',', '<br/>');
         $tpr->apply($model, 'grl_privileges');
 
         if ($detailed) {
+            $model->set('grl_name',
+                    'validators[unique]', $model->createUniqueValidator('grl_name'),
+                    'validators[nomaster]', new \MUtil_Validate_IsNot(
+                            'master',
+                            $this->_('The name "master" is reserved')
+                            )
+                    );
+
             $model->set('grl_privileges', 'formatFunction', array($this, 'formatPrivileges'));
 
             if ('show' === $action) {
@@ -274,7 +160,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
                 $model->set('inherited',
                         'label', $this->_('Inherited privileges'),
                         'formatFunction', array($this, 'formatInherited'));
-                $model->setOnLoad('inherited', array(Gems_Roles::getInstance(), 'translateToRoleNames'));
+                $model->setOnLoad('inherited', array(\Gems_Roles::getInstance(), 'translateToRoleNames'));
 
                 // Concatenated field, we can not use onload so handle transaltion to rolenames in the formatFunction
                 $model->addColumn("CONCAT(COALESCE(grl_parents, ''), '\t', COALESCE(grl_privileges, ''))", 'not_allowed');
@@ -286,11 +172,14 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
             $model->set('grl_privileges', 'formatFunction', array($this, 'formatLongLine'));
         }
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'grl');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'grl');
 
         return $model;
     }
 
+    /**
+     * Action for showing a edit item page with extra title
+     */
     public function editAction()
     {
         $model   = $this->getModel();
@@ -313,7 +202,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      */
     public function formatLongLine(array $privileges)
     {
-        $output     = MUtil_Html::create('div');
+        $output     = \MUtil_Html::create('div');
 
         if (count($privileges)) {
             $privileges = array_combine($privileges, $privileges);
@@ -323,7 +212,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
                         $output->append('...');
                         return $output;
                     }
-                    if (MUtil_String::contains($description, '<br/>')) {
+                    if (\MUtil_String::contains($description, '<br/>')) {
                         $description = substr($description, 0, strpos($description, '<br/>') - 1);
                     }
                     $output->raw($description);
@@ -339,7 +228,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      * Output of not allowed for viewing rols
      *
      * @param array $parent
-     * @return MUtil_Html_ListElement
+     * @return \MUtil_Html_ListElement
      */
     public function formatInherited(array $parents)
     {
@@ -351,7 +240,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      * Output of not allowed for viewing rols
      *
      * @param strong $data parents tab privileges
-     * @return MUtil_Html_ListElement
+     * @return \MUtil_Html_ListElement
      */
     public function formatNotAllowed($data)
     {
@@ -363,7 +252,7 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
         }
 
         // Concatenated field, we can not use onload so handle translation here
-        $parents = Gems_Roles::getInstance()->translateToRoleNames($parents);
+        $parents = \Gems_Roles::getInstance()->translateToRoleNames($parents);
 
         $notAllowed = $this->getUsedPrivileges();
         $notAllowed = array_diff_key($notAllowed, $this->getInheritedPrivileges($parents), $privileges);
@@ -378,12 +267,12 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
      * Output for viewing rols
      *
      * @param array $privileges
-     * @return MUtil_Html_ListElement
+     * @return \MUtil_Html_ListElement
      */
     public function formatPrivileges(array $privileges)
     {
         if (count($privileges)) {
-            $output     = MUtil_Html_ListElement::ul();
+            $output     = \MUtil_Html_ListElement::ul();
             $privileges = array_combine($privileges, $privileges);
 
             $output->class = 'allowed';
@@ -398,7 +287,17 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
             }
         }
 
-        return MUtil_Html::create('em', $this->_('No privileges found.'));
+        return \MUtil_Html::create('em', $this->_('No privileges found.'));
+    }
+
+    /**
+     * Helper function to get the title for the index action.
+     *
+     * @return $string
+     */
+    public function getIndexTitle()
+    {
+        return $this->_('Administrative roles');
     }
 
     /**
@@ -413,13 +312,13 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
             return array();
         }
 
-        $rolePrivileges = $this->escort->acl->getRolePrivileges();
+        $rolePrivileges = $this->acl->getRolePrivileges();
         $inherited      = array();
         foreach ($parents as $parent) {
             if (isset($rolePrivileges[$parent])) {
-                $inherited = $inherited + array_flip($rolePrivileges[$parent][Zend_Acl::TYPE_ALLOW]);
+                $inherited = $inherited + array_flip($rolePrivileges[$parent][\Zend_Acl::TYPE_ALLOW]);
                 $inherited = $inherited +
-                        array_flip($rolePrivileges[$parent][MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW]);
+                        array_flip($rolePrivileges[$parent][\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]);
             }
         }
         // Sneaks in:
@@ -428,14 +327,15 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
         return $inherited;
     }
 
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('role', 'roles', $count);
-    }
-
-    public function getTopicTitle()
-    {
-        return $this->_('Administrative roles');
     }
 
     /**
@@ -459,17 +359,20 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
         return $this->usedPrivileges;
     }
 
+    /**
+     * Action to shw overview of all privileges
+     */
     public function overviewAction()
     {
         $roles = array();
 
         foreach ($this->acl->getRolePrivileges() as $role => $privileges) {
             $roles[$role][$this->_('Role')]    = $role;
-            $roles[$role][$this->_('Parents')] = $privileges[MUtil_Acl::PARENTS]   ? implode(', ', $privileges[MUtil_Acl::PARENTS])   : null;
-            $roles[$role][$this->_('Allowed')] = $privileges[Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[Zend_Acl::TYPE_ALLOW]) : null;
-            //$roles[$role][$this->_('Denied')]  = $privileges[Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[Zend_Acl::TYPE_DENY])  : null;
-            $roles[$role][$this->_('Inherited')] = $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_ALLOW]) : null;
-            //$roles[$role][$this->_('Parent denied')]  = $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[MUtil_Acl::INHERITED][Zend_Acl::TYPE_DENY])  : null;
+            $roles[$role][$this->_('Parents')] = $privileges[\MUtil_Acl::PARENTS]   ? implode(', ', $privileges[\MUtil_Acl::PARENTS])   : null;
+            $roles[$role][$this->_('Allowed')] = $privileges[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[\Zend_Acl::TYPE_ALLOW]) : null;
+            //$roles[$role][$this->_('Denied')]  = $privileges[\Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[\Zend_Acl::TYPE_DENY])  : null;
+            $roles[$role][$this->_('Inherited')] = $privileges[\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_ALLOW] ? implode(', ', $privileges[\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_ALLOW]) : null;
+            //$roles[$role][$this->_('Parent denied')]  = $privileges[\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_DENY]  ? implode(', ', $privileges[\MUtil_Acl::INHERITED][\Zend_Acl::TYPE_DENY])  : null;
         }
         ksort($roles);
 
@@ -478,14 +381,17 @@ class Gems_Default_RoleAction extends Gems_Controller_BrowseEditAction
         $this->_showTable($this->_('Roles'), $roles, true);
     }
 
+    /**
+     * Action to show all privileges
+     */
     public function privilegeAction()
     {
         $privileges = array();
 
         foreach ($this->acl->getPrivilegeRoles() as $privilege => $roles) {
             $privileges[$privilege][$this->_('Privilege')] = $privilege;
-            $privileges[$privilege][$this->_('Allowed')]   = $roles[Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[Zend_Acl::TYPE_ALLOW]) : null;
-            $privileges[$privilege][$this->_('Denied')]    = $roles[Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[Zend_Acl::TYPE_DENY])  : null;
+            $privileges[$privilege][$this->_('Allowed')]   = $roles[\Zend_Acl::TYPE_ALLOW] ? implode(', ', $roles[\Zend_Acl::TYPE_ALLOW]) : null;
+            $privileges[$privilege][$this->_('Denied')]    = $roles[\Zend_Acl::TYPE_DENY]  ? implode(', ', $roles[\Zend_Acl::TYPE_DENY])  : null;
         }
         ksort($privileges);
 
