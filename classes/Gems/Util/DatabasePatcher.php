@@ -53,13 +53,13 @@ class Gems_Util_DatabasePatcher
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var array Of location => Zend_Db_Adapter_Abstract db
+     * @var array Of location => \Zend_Db_Adapter_Abstract db
      */
     protected $patch_databases;
 
@@ -71,11 +71,11 @@ class Gems_Util_DatabasePatcher
 
     /**
      *
-     * @param Zend_Db_Adapter_Abstract $db
+     * @param \Zend_Db_Adapter_Abstract $db
      * @param mixed $files Array of file names or single file name
      * @param array $databases Nested array with rowes containing path, name and db keys.
      */
-    public function __construct(Zend_Db_Adapter_Abstract $db, $files, array $databases)
+    public function __construct(\Zend_Db_Adapter_Abstract $db, $files, array $databases)
     {
         $this->db = $db;
 
@@ -141,8 +141,8 @@ class Gems_Util_DatabasePatcher
 
                         $name = substr(trim($name), 0, 30);
 
-                        // MUtil_Echo::r($statements, $name);
-                        foreach (MUtil_Parser_Sql_WordsParser::splitStatements($statements, false) as $i => $statement) {
+                        // \MUtil_Echo::r($statements, $name);
+                        foreach (\MUtil_Parser_Sql_WordsParser::splitStatements($statements, false) as $i => $statement) {
                             $this->_loaded_patches[] = array(
                                     'gpa_level'    => $levelnr,
                                     'gpa_location' => $location,
@@ -156,75 +156,6 @@ class Gems_Util_DatabasePatcher
                 }
             }
         }
-    }
-
-    /**
-     * Executes db patches for the given $patchLevel
-     *
-     * @param int $patchLevel Only execute patches for this patchlevel
-     * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
-     * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed (this includes the ones that are executed but not completed)
-     * @return int The number of executed patches
-     */
-    public function executePatch($patchLevel, $ignoreCompleted = true, $ignoreExecuted = false)
-    {
-        $sql = 'SELECT gpa_id_patch, gpa_sql, gpa_location, gpa_completed FROM gems__patches WHERE gpa_level = ?';
-        if ($ignoreCompleted) {
-            $sql .= ' AND gpa_completed = 0';
-        }
-        if ($ignoreExecuted) {
-            $sql .= ' AND gpa_executed = 0';
-        }
-        $sql .= ' ORDER BY gpa_level, gpa_location, gpa_id_patch';
-        // MUtil_Echo::rs($ignoreCompleted, $ignoreExecuted, $sql);
-
-        $current  = new MUtil_Db_Expr_CurrentTimestamp();
-        $executed = 0;
-        $patches  = $this->db->fetchAll($sql, $patchLevel);
-
-        foreach ($patches as $patch) {
-            $data = array();
-            $data['gpa_executed'] = 1;
-            $data['gpa_changed']  = $current;
-
-            if (isset($this->patch_databases[$patch['gpa_location']])) {
-                $db = $this->patch_databases[$patch['gpa_location']];
-            } else {
-                $db = $this->db;
-            }
-
-            try {
-                $stmt = $db->query($patch['gpa_sql']);
-                if ($rows = $stmt->rowCount()) {
-                    $data['gpa_result'] = 'OK: ' . $rows . ' changed';
-                } else {
-                    $data['gpa_result'] = 'OK';
-                }
-                $data['gpa_completed'] = 1;
-
-            } catch (Zend_Db_Statement_Exception $e) {
-                $message = $e->getMessage();
-
-                // Make sure these do not remain uncompleted
-                if (MUtil_String::contains($message, 'Duplicate column name')) {
-                    $data['gpa_result'] = 'Column exists in table';
-                    $data['gpa_completed'] = 1;
-                } else {
-                    $data['gpa_result'] = substr($message, 0, 254);
-                    $data['gpa_completed'] = $patch['gpa_completed'] ? $patch['gpa_completed'] : 0;
-                }
-            }
-
-            $this->db->update('gems__patches', $data, $this->db->quoteInto('gpa_id_patch = ?', $patch['gpa_id_patch']));
-            $executed++;
-        }
-
-        //Update the patchlevel only when we have executed at least one patch
-        if ($executed>0) {
-            $this->db->query('INSERT IGNORE INTO gems__patch_levels (gpl_level, gpl_created) VALUES (?, CURRENT_TIMESTAMP)', $patchLevel);
-        }
-
-        return $executed;
     }
 
     /**
@@ -247,7 +178,7 @@ class Gems_Util_DatabasePatcher
      * Get the database for a location
      *
      * @param string $location
-     * @return Zend_Db_Adapter_Abstract
+     * @return \Zend_Db_Adapter_Abstract
      */
     public function getPatchDatabase($location)
     {
@@ -274,10 +205,10 @@ class Gems_Util_DatabasePatcher
      * @param boolean $ignoreCompleted Set to yes to skip patches that where already completed
      * @param boolean $ignoreExecuted Set to yes to skip patches that where already executed
      *                                (this includes the ones that are executed but not completed)
-     * @param MUtil_Task_TaskBatch $batch Optional batch, otherwise one is created
-     * @return MUtil_Task_TaskBatch The batch
+     * @param \MUtil_Task_TaskBatch $batch Optional batch, otherwise one is created
+     * @return \MUtil_Task_TaskBatch The batch
      */
-    public function loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, MUtil_Task_TaskBatch $batch)
+    public function loadPatchBatch($patchLevel, $ignoreCompleted, $ignoreExecuted, \MUtil_Task_TaskBatch $batch)
     {
         $select = $this->db->select();
         $select->from('gems__patches', array('gpa_id_patch', 'gpa_sql', 'gpa_location', 'gpa_completed'))
@@ -292,7 +223,7 @@ class Gems_Util_DatabasePatcher
         if ($ignoreExecuted) {
             $select->where('gpa_executed = 0');
         }
-        // MUtil_Echo::track($ignoreCompleted, $ignoreExecuted, $select);
+        // \MUtil_Echo::track($ignoreCompleted, $ignoreExecuted, $select);
 
         $executed = 0;
         $patches  = $select->query()->fetchAll();
@@ -336,12 +267,12 @@ class Gems_Util_DatabasePatcher
         }
 
         // Change into a nested tree for easy access
-        $tree    = MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
+        $tree    = \MUtil_Ra_Nested::toTree($existing, 'gpa_level', 'gpa_location', 'gpa_name', 'gpa_order');
         $changed = 0;
-        $current = new MUtil_Db_Expr_CurrentTimestamp();
+        $current = new \MUtil_Db_Expr_CurrentTimestamp();
 
         $this->_loadPatches($this->getMinimumPatchLevel(), $applicationLevel);
-        // MUtil_Echo::track($this->_loaded_patches);
+        // \MUtil_Echo::track($this->_loaded_patches);
         foreach ($this->_loaded_patches as $patch) {
             $level    = $patch['gpa_level'];
             $location = $patch['gpa_location'];

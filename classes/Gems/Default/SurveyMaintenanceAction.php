@@ -44,222 +44,50 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
-    public $autoFilter = true;
+    /**
+     * The parameters used for the autofilter action.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $autofilterParameters = array(
+        'columns'   => 'getBrowseColumns',
+        'extraSort' => array(
+            'gsu_survey_name' => SORT_ASC,
+            ),
+        );
+
+    /**
+     * The parameters used for the create and edit actions.
+     *
+     * When the value is a function name of that object, then that functions is executed
+     * with the array key as single parameter and the return value is set as the used value
+     * - unless the key is an integer in which case the code is executed but the return value
+     * is not stored.
+     *
+     * @var array Mixed key => value array for snippet initialization
+     */
+    protected $createEditParameters = array(
+        'cacheTags' => array('surveys', 'tracks'),
+    );
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Db_Adapter_Abstract
      */
-    public $cache;
-
-    public $menuEditIncludeLevel = 100;
-
-    public $menuShowIncludeLevel = 100;
-
-    public $sortKey = array('gsu_survey_name' => SORT_ASC);
+    public $db;
 
     /**
-     * Adds columns from the model to the bridge that creates the browse table.
      *
-     * Adds a button column to the model, if such a button exists in the model.
-     *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @rturn void
+     * @var \Gems_Project_ProjectSettings
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
-    {
-        parent::addBrowseTableColumns($bridge, $model);
-
-        // Add pdf button if allowed
-        if ($menuItem = $this->findAllowedMenuItem('pdf')) {
-            $bridge->addItemLink(MUtil_Lazy::iif($bridge->gsu_has_pdf, $menuItem->toActionLinkLower($this->getRequest(), $bridge)));
-        }
-    }
-
-    /**
-     * Adds elements from the model to the bridge that creates the form.
-     *
-     * Overrule this function to add different elements to the browse table, without
-     * having to recode the core table building code.
-     *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The data that will later be loaded into the form
-     * @param optional boolean $new Form should be for a new element
-     * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
-     */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
-    {
-        // MUtil_Echo::track($data);
-
-        // Prepare variables
-        $currentId    = $data['gsu_id_survey'];
-
-        $survey       = $this->loader->getTracker()->getSurvey($currentId);
-        $standAlone   = $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface;
-        $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
-                $survey->getQuestionList($this->locale->getLanguage());
-        // $dateFields   = $this->util->getTranslated()->getEmptyDropdownArray() +
-        //        $survey->getDatesList($this->locale->getLanguage());
-        $surveyNotOK  = $data['gsu_surveyor_active'] ? null : 'disabled';
-
-        // Forced data changes
-        if ($surveyNotOK) {
-            $data['gsu_active'] = 0;
-        }
-        if (! isset($data['track_count'])) {
-            $data['track_count'] = $this->getTrackCount($currentId);
-        }
-
-        $bridge->addHiddenMulti('gsu_id_survey', 'gsu_surveyor_id'); // Key fields
-        $bridge->addHidden(     'gsu_survey_pdf');
-
-        $bridge->addExhibitor(  'gsu_survey_name',           'size', 25);
-        if (isset($data['gsu_survey_description']) && strlen(trim($data['gsu_survey_description']))) {
-            $bridge->addExhibitor('gsu_survey_description',  'size', 60);
-        } else {
-            $bridge->addHidden('gsu_survey_description');
-        }
-        $bridge->addExhibitor(  'gsu_status_show');
-        $bridge->addExhibitor(  'gsu_surveyor_active');
-
-        $bridge->addCheckbox(   'gsu_active',                'disabled', $surveyNotOK)
-                ->addValidator( new MUtil_Validate_Require($model->get('gsu_active', 'label'), 'gsu_id_primary_group', $model->get('gsu_id_primary_group', 'label')));
-
-        $bridge->addSelect(     'gsu_id_primary_group',      'description', $this->_('If empty, survey will never show up!'));
-        if (count($surveyFields) > 1) {
-            $bridge->addSelect(     'gsu_result_field',          'multiOptions', $surveyFields);
-        }
-        // if (count($dateFields) > 1) {
-        //     $bridge->addSelect(     'gsu_agenda_result',         'multiOptions', $dateFields);
-        // }
-        $bridge->addText(       'gsu_duration');
-        $bridge->addExhibitor(  'calc_duration', 'label', $this->_('Duration calculated'), 'value', $this->calculateDuration(isset($data['gsu_id_survey']) ? $data['gsu_id_survey'] : null));
-        $bridge->addText(       'gsu_code');
-        $bridge->add(           'gsu_beforeanswering_event');
-        $bridge->add(           'gsu_completed_event');
-        $bridge->add(           'gsu_display_event');
-
-        $bridge->addFile(       'new_pdf',                'label', $this->_('Upload new PDF'),
-                'accept', 'application/pdf',
-                'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),
-                'extension', 'pdf',
-                'filename', $data['gsu_id_survey'],
-                'required', false)
-        ->addValidator(new MUtil_Validate_Pdf());
-
-        $bridge->addExhibitor(  'track_count', 'label', $this->_('Usage'), 'value', $data['track_count']);
-
-        if ($standAlone) {
-            // Forced data changes
-            if ($surveyNotOK) {
-                $data['gsu_active'] = 0;
-                $data['gro_active'] = 0;
-                $data['gtr_active'] = 0;
-            } else {
-                // These are always active when the survey is active,
-                // though they are only saved in the right circumstances of course. ;)
-                $data['gro_active'] = $data['gsu_active'];
-                $data['gtr_active'] = $data['gsu_active'];
-            }
-
-            $bridge->addHtml(       'stand_alone_surveys')->h4($this->_('Single Survey Assignment'));
-            $bridge->addHidden(     'gsu_as_survey');                // Needed for FakeSubmitButton
-            $bridge->addHiddenMulti('gro_active', 'gtr_active');     // Can change in this code
-            $bridge->addHiddenMulti('gro_id_round', 'gtr_id_track'); // Key fields enable storing of results
-
-            if (! $data['gsu_as_survey']) {
-                if ($data['create_stand_alone']) {
-                    $newValues = array(
-                        // Only for insert
-                        'gro_id_track'          => null,
-                        'gro_id_order'          => 10,
-                        'gro_id_survey'         => $currentId,
-                        'gro_survey_name'       => $data['gsu_survey_name'],
-                        'gro_round_description' => 'Stand-alone survey',
-                        'gtr_track_name'        => $data['gsu_survey_name'],
-                        'gtr_survey_rounds'     => 1,
-                        'gtr_track_type'        => 'S',
-
-                        // New normal values
-                        'gtr_track_info'        => strip_tags($data['gsu_survey_description']),
-                        'gtr_date_start'        => new Zend_Date(),
-                        'gtr_date_until'        => null,
-                        'gsu_as_survey'         => true,
-                        );
-                    $data = $newValues + $data;
-                }
-            }
-
-            if ($data['gsu_as_survey'] || $data['create_stand_alone']) {
-                // The magic: NOW we say we save the tables
-                //
-                // PS: order is important, this save gems__tracks first, as
-                //     this may create the gtr_id_track needed in gems__rounds.
-                $model->setTableSaveable('gems__tracks', 'gtr');
-                $model->setTableSaveable('gems__rounds', 'gro');
-
-                if ($data['create_stand_alone']) {
-                    // These fields are needed only when the stand alone survey is being created.
-                    $bridge->addHiddenMulti('gro_id_order', 'gro_id_track',
-                            'gro_id_survey', 'gro_survey_name', 'gro_round_description',
-                            'gtr_track_name', 'gtr_survey_rounds');
-                }
-
-                $bridge->addHidden('create_stand_alone');
-                $bridge->addHidden('gtr_track_type'); // Always store, otherwise join expression is used as value. :(
-                $bridge->addText(  'gtr_track_info', 'label', $this->_('Description'));
-                $bridge->addDate(  'gtr_date_start', 'label', $this->_('Assignable since'));
-                $bridge->addDate(  'gtr_date_until', 'label', $this->_('Assignable until'));
-                // feature request #200
-                $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
-
-            } else {
-                $standAloneButton = new MUtil_Form_Element_FakeSubmit('create_stand_alone');
-                $standAloneButton->setLabel($this->_('Create Single Survey'));
-                $standAloneButton->setAttrib('disabled', $surveyNotOK);
-
-                $bridge->addElement($standAloneButton);
-                $bridge->addExhibitor('stand_alone_explanation', 'value', $this->_('At the moment this survey can only be assigned to respondents as part of an existing track.'));
-            }
-        }
-
-        $this->setMenuParameter($data);
-
-        return $data;
-    }
-
-    /**
-     * @param array $data
-     * @param bool  $isNew
-     * @return array
-     */
-    public function afterFormLoad(array &$data, $isNew)
-    {
-        // feature request #200
-        if (isset($data['gtr_organizations']) && (! is_array($data['gtr_organizations']))) {
-            $data['gtr_organizations'] = explode('|', trim($data['gtr_organizations'], '|'));
-        }
-    }
-
-    /**
-     * Hook to perform action after a record (with changes) was saved
-     *
-     * As the data was already saved, it can NOT be changed anymore
-     *
-     * @param array $data
-     * @param boolean $isNew
-     * @return boolean  True when you want to display the default 'saved' messages
-     */
-    public function afterSave(array $data, $isNew)
-    {
-        $this->cache->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array('surveys', 'tracks'));
-
-        return true;
-    }
+    public $project;
 
     /**
      * Import answers to a survey
@@ -288,97 +116,6 @@ class Gems_Default_SurveyMaintenanceAction extends Gems_Controller_BrowseEditAct
     }
 
     /**
-     *
-     * @param array $data The data that will be saved.
-     * @param boolean $isNew
-     * $param Zend_Form $form
-     * @return array|null Returns null if save was already handled, the data otherwise.
-     */
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
-    {
-        // MUtil_Model::$verbose = true;
-        if (isset($data['new_pdf'])) {
-            // Make sure the record is saved in the database when a file was uploaded
-            $this->getModel()->setAutoSave('gsu_changed', false);
-            $data['gsu_changed'] = null;
-        }
-
-        // Set the value of the field in the database.
-        $new_name = $data['gsu_id_survey'] . '.pdf';
-
-        if (file_exists($form->new_pdf->getDestination() . DIRECTORY_SEPARATOR . $new_name)) {
-            $data['gsu_survey_pdf'] = $new_name;
-        } else {
-            $data['gsu_survey_pdf'] = null;
-        }
-
-        $data['gtr_track_class'] = 'SingleSurveyEngine';
-
-        // feature request #200
-        if (isset($data['gtr_organizations']) && is_array($data['gtr_organizations'])) {
-            $data['gtr_organizations'] = '|' . implode('|', $data['gtr_organizations']) . '|';
-        }
-
-        if ($data['gsu_active']==1 && empty($data['gsu_id_primary_group'])) {
-            $this->addMessage($this->_('Survey should be assigned to a group before making it active.'));
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Calculates the average duration for answering a survey
-     *
-     * @param $surveyId Id of survey to calculate it for
-     * @return MUtil_Html_HtmlElement
-     */
-    public function calculateDuration($surveyId = null)
-    {
-        if ($surveyId) {
-            $fields['cnt'] = 'COUNT(*)';
-            $fields['avg'] = 'AVG(gto_duration_in_sec)';
-            $fields['std'] = 'STDDEV_POP(gto_duration_in_sec)';
-
-            $select = $this->loader->getTracker()->getTokenSelect($fields);
-            $select->forSurveyId($surveyId)
-                    ->onlyCompleted();
-
-            $row = $select->fetchRow();
-            if ($row) {
-                $trs = $this->util->getTranslated();
-                $seq = new MUtil_Html_Sequence();
-                $seq->setGlue(MUtil_Html::create('br', $this->view));
-
-                $seq->append(sprintf($this->_('Answered surveys: %d.'), $row['cnt']));
-                $seq->append(sprintf($this->_('Average answer time: %s.'), $trs->formatTime($row['avg'])));
-                $seq->append(sprintf($this->_('Standard deviation: %s.'), $trs->formatTime($row['std'])));
-
-                // Picked solution from http://stackoverflow.com/questions/1291152/simple-way-to-calculate-median-with-mysql
-                $sql = "
-SELECT t1.gto_duration_in_sec as median_val
-FROM (SELECT @rownum:=@rownum+1 as `row_number`, gto_duration_in_sec
-        FROM gems__tokens, (SELECT @rownum:=0) r
-        WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
-        ORDER BY gto_duration_in_sec
-    ) AS t1,
-    (SELECT count(*) as total_rows
-        FROM gems__tokens
-        WHERE gto_id_survey = ? AND gto_completion_time IS NOT NULL
-    ) as t2
-WHERE t1.row_number=floor(total_rows/2)+1";
-                if ($med = $this->db->fetchOne($sql, array($surveyId, $surveyId))) {
-                    $seq->append(sprintf($this->_('Median value: %s.'), $trs->formatTime($med)));
-                }
-
-                return $seq;
-            }
-        }
-
-        return $this->_('incalculable');
-    }
-
-    /**
      * Check the tokens for a single survey
      */
     public function checkAction()
@@ -392,7 +129,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
                 $this->db->fetchOne("SELECT gsu_survey_name FROM gems__surveys WHERE gsu_id_survey = ?", $surveyId));
         $this->_helper->BatchRunner($batch, $title);
 
-        Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for this survey.'));
+        \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for this survey.'));
     }
 
     /**
@@ -405,7 +142,7 @@ WHERE t1.row_number=floor(total_rows/2)+1";
         $title = $this->_('Checking survey results for all surveys.');
         $this->_helper->BatchRunner($batch, $title);
 
-        Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for all surveys.'));
+        \Gems_Default_SourceAction::addCheckInformation($this->html, $this->translate, $this->_('This task checks all tokens for all surveys.'));
     }
 
     /**
@@ -417,268 +154,171 @@ WHERE t1.row_number=floor(total_rows/2)+1";
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
-    public function createModel($detailed, $action)
+    protected function createModel($detailed, $action)
     {
-        $standAlone = $this->escort instanceof Gems_Project_Tracks_StandAloneSurveysInterface;
+        $survey = null;
+        $yesNo  = $this->util->getTranslated()->getYesNo();
 
-        $yesNo = $this->util->getTranslated()->getYesNo();
+        if ($detailed) {
+            $surveyId = $this->_getIdParam();
 
-        if ($standAlone) {
-            // WHY EXPLANATION
-            //
-            // We have to LEFT JOIN
-            //  - the INNER JOIN of gems__surveys and gems__sources
-            // with
-            //  - the INNER JOIN of gems__tracks and gems__rounds WHERE gtr_track_type = 'S'
-            //
-            // This would be possible in SQL using brackets in the join statement, but
-            // Zend_Db_Select does not support this.
-            //
-            // However, by using a RIGHT JOIN we do not need the brackets.
-            //
-            // Hence the unexpected order of the tables in the JoinModel.
-            $model = new Gems_Model_JoinModel('surveys', 'gems__tracks');
-            $model->addTable('gems__rounds', array('gro_id_track' => 'gtr_id_track', 'gtr_track_type' => new Zend_Db_Expr("'S'")));
-            $model->addRightTable('gems__surveys', array('gsu_id_survey' => 'gro_id_survey'), 'gus');
-            $model->addTable('gems__sources', array('gsu_id_source'=>'gso_id_source'));
-            $model->setKeysToTable('gems__surveys');
-
-            $model->addColumn(
-                    "CASE WHEN gtr_id_track IS NOT NULL THEN 1 ELSE 0 END",
-                    'gsu_as_survey');
-
-            if ('edit' === $action) {
-                $model->addColumn(new Zend_Db_Expr('NULL'), 'create_stand_alone');
+            if ($surveyId) {
+                $survey = $this->loader->getTracker()->getSurvey($surveyId);
             }
-        } else {
-            $model = new Gems_Model_JoinModel('surveys', 'gems__surveys', 'gus');
-            $model->addTable('gems__sources', array('gsu_id_source'=>'gso_id_source'));
         }
 
+        $model = new Gems_Model_JoinModel('surveys', 'gems__surveys', 'gus');
+        $model->addTable('gems__sources', array('gsu_id_source' => 'gso_id_source'));
+        $model->setCreate(false);
+
         $model->addColumn(
-            "CASE WHEN gsu_survey_pdf IS NULL OR CHAR_LENGTH(gsu_survey_pdf) = 0 THEN 0 ELSE 1 END",
-            'gsu_has_pdf');
+                "CASE WHEN gsu_survey_pdf IS NULL OR CHAR_LENGTH(gsu_survey_pdf) = 0 THEN 0 ELSE 1 END",
+                'gsu_has_pdf'
+                );
         $model->addColumn(
-            "COALESCE(gsu_status, '" . $this->_('OK') . "')",
-            'gsu_status_show');
+                "COALESCE(gsu_status, '" . $this->_('OK') . "')",
+                'gsu_status_show',
+                'gsu_status'
+                );
+        $model->addColumn(
+                "CASE WHEN gsu_surveyor_active THEN '' ELSE 'deleted' END",
+                'row_class'
+                );
 
         $model->resetOrder();
 
-        $model->set('gsu_survey_name',        'label', $this->_('Name'));
-        $model->set('gsu_survey_description', 'label', $this->_('Description'), 'formatFunction', array(__CLASS__, 'formatDescription'));
+        $model->set('gsu_survey_name',        'label', $this->_('Name'),
+                'elementClass', 'Exhibitor');
+        $model->set('gsu_survey_description', 'label', $this->_('Description'),
+                'elementClass', 'Exhibitor',
+                'formatFunction', array(__CLASS__, 'formatDescription')
+                );
+        $model->set('gso_source_name',        'label', $this->_('Source'),
+                'elementClass', 'Exhibitor');
+        $model->set('gsu_surveyor_active',    'label', $this->_('Active in source'),
+                'elementClass', 'Exhibitor',
+                'multiOptions', $yesNo
+                );
+        $model->set('gsu_status_show',        'label', $this->_('Status in source'),
+                'elementClass', 'Exhibitor');
+        $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+                );
+        $model->set('gsu_id_primary_group',   'label', $this->_('Group'),
+                'description', $this->_('If empty, survey will never show up!'),
+                'multiOptions', $this->util->getDbLookup()->getGroups(),
+                'validator', new MUtil_Validate_Require(
+                        $model->get('gsu_active', 'label'),
+                        'gsu_id_primary_group',
+                        $model->get('gsu_id_primary_group', 'label')
+                        )
+                );
+
+        $model->set('gsu_insertable',         'label', $this->_('Insertable'),
+                'description', $this->_('Can staff manually insert this survey into a track.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
+                );
+        $model->set('gsu_valid_for_length',   'label', $this->_('Add to end date'),
+                'description', $this->_('Add to the start date to calculate the end date when inserting.'),
+                'filter', 'Int'
+                );
+        $model->set('gsu_valid_for_unit',     'label', $this->_('End date unit'),
+                'description', $this->_('The unit used to calculate the end date when inserting the survey.'),
+                'multiOptions', $this->util->getTrackData()->getDateUnitsList(true)
+                );
         if ($detailed) {
-            $model->set('gso_source_name',        'label', $this->_('Source'));
-        } else {
-            $model->set('gsu_duration',           'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
+            $model->set('gsu_duration',       'label', $this->_('Duration description'),
+                    'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".')
+                    );
+            if ($survey instanceof \Gems_Tracker_Survey) {
+                $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
+                    $survey->getQuestionList($this->locale->getLanguage());
+                $model->set('gsu_result_field',   'label', $this->_('Result field'),
+                        'multiOptions', $surveyFields);
+                // $model->set('gsu_agenda_result',  'label', $this->_('Agenda field'));
+            }
         }
-        $model->set('gsu_status_show',        'label', $this->_('Status in source'));
+        $model->set('gsu_code',               'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
 
         if ($detailed) {
-            $model->set('gsu_surveyor_active',    'label', $this->_('Active in source'));
-            $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), GEMS_PROJECT_NAME_UC));
-        } else {
-            $model->set('gsu_active',             'label', $this->_('Active'));
-        }
-        $model->set('gsu_active',             'multiOptions', $yesNo);
-
-        if ($standAlone) {
-            $model->set('gsu_as_survey',      'label', $this->_('Single'), 'multiOptions', $yesNo);
-        }
-
-        $model->set('gsu_surveyor_active',    'multiOptions', $yesNo);
-        $model->set('gsu_id_primary_group',   'label', $this->_('Group'), 'multiOptions', $this->util->getDbLookup()->getGroups());
-
-        if ($detailed) {
-            $model->set('gsu_result_field',          'label', $this->_('Result field'));
-            $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
-            $model->set('gsu_duration',              'label', $this->_('Duration description'), 'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".'));
-        }
-        $model->setIfExists('gsu_code', 'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
-        if ($detailed) {
-            $events  = $this->loader->getEvents();
-            $options = $events->listSurveyBeforeAnsweringEvents();
-            if (count($options) > 1) {
+            $events = $this->loader->getEvents();
+            $beforeOptions = $events->listSurveyBeforeAnsweringEvents();
+            if (count($beforeOptions) > 1) {
                 $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'),
-                        'multiOptions', $options,
+                        'multiOptions', $beforeOptions,
                         'elementClass', 'Select');
             }
-            $options = $events->listSurveyCompletionEvents();
-            if (count($options) > 1) {
+            $completedOptions = $events->listSurveyCompletionEvents();
+            if (count($completedOptions) > 1) {
                 $model->set('gsu_completed_event', 'label', $this->_('After completion'),
-                        'multiOptions', $options,
+                        'multiOptions', $completedOptions,
                         'elementClass', 'Select');
             }
-            $options = $events->listSurveyDisplayEvents();
-            if (count($options) > 1) {
+            $displayOptions = $events->listSurveyDisplayEvents();
+            if (count($displayOptions) > 1) {
                 $model->set('gsu_display_event', 'label', $this->_('Answer display'),
-                        'multiOptions', $options,
+                        'multiOptions', $displayOptions,
                         'elementClass', 'Select');
             }
         }
-
-        $model->setCreate(false);
 
         return $model;
     }
 
+    /**
+     * Strip all the tags, but keep the escaped characters
+     *
+     * @param string $value
+     * @return \MUtil_Html_Raw
+     */
     public static function formatDescription($value)
     {
-        return MUtil_Html::raw(strip_tags($value));
+        return \MUtil_Html::raw(strip_tags($value));
     }
 
     /**
-     * Returns a text element for autosearch. Can be overruled.
+     * Set column usage to use for the browser.
      *
-     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
-     * That creates a distinct group of elements
+     * Must be an array of arrays containing the input for TableBridge->setMultisort()
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array or false
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    public function getBrowseColumns()
     {
-        $elements = parent::getAutoSearchElements($model, $data);
+        $br = \MUtil_Html::create('br');
 
-        if ($elements) {
-            $br = MUtil_Html::create('br');
-            $elements[] = $this->_createSelectElement('gsu_id_primary_group', $model, $this->_('(all groups)'));
+        $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description');
+        $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
+            \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show');
+        $output[30] = array('gsu_active', $br, 'gsu_id_primary_group');
+        $output[40] = array('gsu_insertable', $br, 'gsu_code');
 
-            $elements[] = $br;
-
-            $states = array(
-                'act' => $this->_('Active'),
-                'sok' => $this->_('OK in source, not active'),
-                'nok' => $this->_('Blocked in source'),
-            );
-            $element = $this->_createSelectElement('status', $states, $this->_('(every state)'));
-            // $element->setLabel($this->_('Status'));
-            $elements[] = $element;
-
-        }
-
-        return $elements;
+        return $output;
     }
 
     /**
-     * Additional data filter statements for the user input.
+     * Helper function to get the title for the index action.
      *
-     * User input that has the same name as a model field is automatically
-     * used as a filter, but if the name is different processing is needed.
-     * That processing should happen here.
-     *
-     * @param array $data The current user input
-     * @return array New filter statements
+     * @return $string
      */
-    protected function getDataFilter(array $data)
+    public function getIndexTitle()
     {
-        $filter = parent::getDataFilter($data);
-
-        if (isset($data['status']) && strlen($data['status'])) {
-            switch ($data['status']) {
-                case 'sok':
-                    $filter['gsu_active'] = 0;
-                    $filter[] = "(gsu_status IS NULL OR LENGTH(gsu_status) = 0)";
-                    break;
-
-                case 'nok':
-                    $filter[] = "(gsu_status IS NOT NULL AND gsu_status NOT IN ('', 'OK'))";
-                    break;
-
-                default:
-                    $filter['gsu_active'] = 1;
-            }
-        }
-
-        return $filter;
+        return $this->_('Surveys');
     }
 
-    public function getTrackCount($currentId)
-    {
-        $singleTrack = ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) ? $this->escort->getTrackId() : null;
-
-        $select = new Zend_Db_Select($this->db);
-        $select->from('gems__rounds', array('useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)'));
-        if ($singleTrack) {
-            $select->where("gro_id_track = ?", $singleTrack);
-        } else {
-            $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', array())
-                    ->group('gro_id_survey')
-                    ->where("gtr_track_type = 'T'");
-        }
-        $select->where('gro_id_survey = ?', $currentId);
-
-        if ($counts = $select->query()->fetchObject()) {
-            if ($singleTrack) {
-                return sprintf($this->_('%d times in track.'), $counts->useCnt);
-            } else {
-                return sprintf($this->_('%d times in %d track(s).'), $counts->useCnt, $counts->trackCnt);
-            }
-        } else {
-            if ($singleTrack) {
-                return $this->_('Not used in track.');
-            } else {
-                return $this->_('Not used in tracks.');
-            }
-        }
-    }
-
+    /**
+     * Helper function to allow generalized statements about the items in the model.
+     *
+     * @param int $count
+     * @return $string
+     */
     public function getTopic($count = 1)
     {
         return $this->plural('survey', 'surveys', $count);
     }
 
-    public function getTopicTitle()
-    {
-        return $this->_('Surveys');
-    }
-
-    public function pdfAction()
-    {
-        // Make sure nothing else is output
-        $this->initRawOutput();
-
-        // Output the PDF
-        $this->loader->getPdf()->echoPdfBySurveyId($this->_getParam(MUtil_Model::REQUEST_ID));
-    }
-
-    public function setMenuParameter($data)
-    {
-        $source = $this->menu->getParameterSource();
-        $source->offsetSet('gsu_has_pdf', $data['gsu_survey_pdf'] ? 1 : 0);
-        $source->offsetSet('gsu_active', $data['gsu_active'] ? 1 : 0);
-        $source->offsetSet(MUtil_Model::REQUEST_ID, $data['gsu_id_survey']);
-
-        return $this;
-    }
-
-     /**
-     * Shows a table displaying a single record from the model
-     *
-     * Uses: $this->getModel()
-     *       $this->getShowTable();
-     */
-    public function showAction()
-    {
-        $this->html->h3(sprintf($this->_('Show %s'), $this->getTopic()));
-
-        $model    = $this->getModel();
-        $data     = $model->load();
-
-        $this->setMenuParameter(reset($data));
-
-        $repeater = MUtil_Lazy::repeat($data);
-        $table    = $this->getShowTable();
-        $table->setOnEmpty(sprintf($this->_('Unknown %s.'), $this->getTopic(1)));
-        $table->setRepeater($repeater);
-        $table->tfrow($this->createMenuLinks($this->menuShowIncludeLevel), array('class' => 'centerAlign'));
-
-        $this->html[] = $table;
-
-        if ($this->escort->hasPrivilege('pr.project.questions')) {
-            $this->addSnippet('Survey\\SurveyQuestionsSnippet', 'surveyId', $this->_getIdParam());
-        }
-    }
 }

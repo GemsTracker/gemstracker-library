@@ -45,8 +45,8 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate_TranslateableAbstract
-    implements MUtil_Model_Dependency_DependencyInterface
+abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translate_TranslateableAbstract
+    implements \MUtil_Model_Dependency_DependencyInterface
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -60,7 +60,8 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     /**
      * Array of name => name of items dependency depends on.
      *
-     * Can be overriden in sub class
+     * Can be overriden in sub class, when set to only field names this class will
+     * change the array to the correct structure.
      *
      * @var array Of name => name
      */
@@ -69,7 +70,8 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency
      *
-     * Can be overriden in sub class
+     * Can be overriden in sub class, when set to only field names this class will use _defaultEffects
+     * to change the array to the correct structure.
      *
      * @var array of name => array(setting => setting)
      */
@@ -104,7 +106,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
      */
     public function addDependsOn($dependsOn)
     {
-        $dependsOn = MUtil_Ra::flatten(func_get_args());
+        $dependsOn = \MUtil_Ra::flatten(func_get_args());
 
         foreach ($dependsOn as $dependOn) {
             $this->_dependentOn[$dependOn] = $dependOn;
@@ -127,7 +129,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends MUtil_Translate
     {
         foreach ((array) $effectedSettings as $setting) {
             if (is_array($setting)) {
-                MUtil_Echo::track($setting);
+                \MUtil_Echo::track($setting);
             }
             $this->_effecteds[$effectedField][$setting] = $setting;
         }

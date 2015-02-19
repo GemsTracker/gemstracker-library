@@ -896,23 +896,27 @@ ALTER TABLE gems__track_appointments ADD
 ALTER TABLE `gems__organizations` CHANGE
     `gor_location` `gor_location` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
--- PATCH: Display groups instead of single survey vs track
-ALTER TABLE gems__tracks ADD
-    gtr_display_group varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tracks'
-    AFTER gtr_survey_rounds;
+-- PATCH: Insertable surveys are defined at survey level
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_survey_table;
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_token_table;
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_staff;
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_id_user_field;
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_completion_field;
+ALTER IGNORE TABLE gems__surveys DROP COLUMN gsu_followup_field;
 
-UPDATE gems__tracks SET gtr_display_group = 'respondents'
-    WHERE gtr_track_type = 'S' AND
-        gtr_id_track IN (SELECT gro_id_track
-                        FROM gems__rounds INNER JOIN
-                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
-                            gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE ggp_respondent_members = 1);
+ALTER TABLE gems__surveys
+    ADD gsu_insertable boolean not null default 0
+    AFTER gsu_id_primary_group;
+ALTER TABLE gems__surveys
+    ADD gsu_valid_for_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M'
+    AFTER gsu_insertable;
+ALTER TABLE gems__surveys
+    ADD gsu_valid_for_length        int not null default 6
+    AFTER gsu_valid_for_unit;
 
-UPDATE gems__tracks SET gtr_display_group = 'staff'
-    WHERE gtr_track_type = 'S' AND
-        gtr_id_track IN (SELECT gro_id_track
-                        FROM gems__rounds INNER JOIN
-                            gems__surveys ON gro_id_survey = gsu_id_survey INNER JOIN
-                            gems__groups ON gsu_id_primary_group = ggp_id_group
-                        WHERE ggp_respondent_members = 0);
+UPDATE gems__surveys
+    SET gsu_insertable = 1
+    WHERE gsu_id_survey IN
+        (SELECT gro_id_survey
+            FROM gems__rounds INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+            WHERE gtr_track_class = 'SingleSurveyEngine');

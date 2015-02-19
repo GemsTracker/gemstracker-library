@@ -857,9 +857,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
         $tp = new MUtil_Model_Type_ConcatenatedRow('|', ', ');
         $tp->apply($model, 'organizations');
 
-
-
-
         switch ($action) {
             case 'create':
                 $this->_ensureRounds();
@@ -873,9 +870,9 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             case 'edit':
             	$model->set('gro_icon_file', 'multiOptions', $this->util->getTranslated()->getEmptyDropdownArray() + $this->_getAvailableIcons());
                 $model->set('org_specific_round',
-                'label', $this->_('Organization specific round'),
-                'multiOptions', $this->util->getTranslated()->getYesNo(),
-                'elementClass', 'radio');
+                        'label', $this->_('Organization specific round'),
+                        'multiOptions', $this->util->getTranslated()->getYesNo(),
+                        'elementClass', 'radio');
 
                 break;
 
