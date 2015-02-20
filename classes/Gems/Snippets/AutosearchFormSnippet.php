@@ -302,7 +302,7 @@ class Gems_Snippets_AutosearchFormSnippet extends \MUtil_Snippets_SnippetAbstrac
     protected function getAutoSearchForm()
     {
         $data = $this->getSearchData();
-        \MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
         $this->form = $form = $this->createForm(array('name' => 'autosubmit', 'class' => 'form-inline', 'role' => 'form'));
 

@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,26 +25,33 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * @package    MUtil
+ *
+ * @subpackage Validate
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Validate
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Validate
- */
-class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
+class MUtil_Validate_ElevenTest extends \Zend_Validate_Abstract
 {
+    /**
+     * Constant for setting 1 as the first number and then incrementing each next number as weight
+     */
     const ORDER_LEFT_2_RIGHT = 1;
+
+    /**
+     * Constant for setting 1 as the last number and then incrementing each previous number as weight
+     */
     const ORDER_RIGHT_2_LEFT = 2;
 
     /**
@@ -57,6 +63,11 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
     const TO_LONG     = 'toLong';
     const TO_SHORT    = 'toShort';
 
+    /**
+     * Templates for different error message types
+     *
+     * @var array
+     */
     protected $_messageTemplates = array(
         self::NOT_CHECK  => "This is not a valid %testDescription%.",
         self::NOT_NUMBER => "A %testDescription% cannot contain letters.",
@@ -74,9 +85,9 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
 
     /**
      * The length of the number (when not 0).
-     *  
+     *
      * Not used when $_numberOrder is an array
-     *  
+     *
      * @var array|ORDER_LEFT_2_RIGHT|ORDER_RIGHT_2_LEFT
      */
     protected $_numberLength = 0;
@@ -87,21 +98,25 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
     protected $_length = 0;
 
     /**
-     * Decides the weight addressed to each number 
-     *  
+     * Decides the weight addressed to each number
+     *
      * Set to array to specify weight value for each position.
-     *  
+     *
      * @var array|ORDER_LEFT_2_RIGHT|ORDER_RIGHT_2_LEFT
      */
     protected $_numberOrder = self::ORDER_LEFT_2_RIGHT;
 
     /**
-     * Description of the kind of test 
-     *  
+     * Description of the kind of test
+     *
      * @var string
      */
     protected $_testDescription = 'input number';
 
+    /**
+     *
+     * @param string $testDescription Description of data used in the error message
+     */
     public function __construct($testDescription = null)
     {
         if ($testDescription) {
@@ -109,6 +124,13 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
         }
     }
 
+    /**
+     * Calculate the weights with whom each number position in the input
+     * should be multiplied for the test.
+     *
+     * @param int $valueLength
+     * @return array
+     */
     protected function _getCalculateWeights($valueLength)
     {
         $order = $this->getNumberOrder();
@@ -131,18 +153,32 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
         }
     }
 
+    /**
+     * The length of the number (when not 0).
+     *
+     * Not used when $_numberOrder is an array
+     *
+     * @return int
+     */
     public function getNumberLength()
     {
         return $this->_numberLength;
     }
 
+    /**
+     * Decides the weight addressed to each number
+     *
+     * Set to array to specify weight value for each position.
+     *
+     * @return array|ORDER_LEFT_2_RIGHT|ORDER_RIGHT_2_LEFT
+     */
     public function getNumberOrder()
     {
         return $this->_numberOrder;
     }
 
     /**
-     * Get description of the kind of test 
+     * Get description of the kind of test, used in the error message
      *
      * @return String
      */
@@ -152,7 +188,7 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by \Zend_Validate_Interface
      *
      * Returns true if and only if a token has been set and the provided value
      * matches that token.
@@ -167,6 +203,7 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
         // Remove non letter characters like . _ - \s
         $value = preg_replace('/[\W_]/', '', $value);
 
+        // Make sure it is a number
         if (preg_match('/[\D]/', $value)) {
             $this->_error(self::NOT_NUMBER);
             return false;
@@ -177,8 +214,9 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
 
         //Set the length for the message template
         $this->_length = $count;
-        // MUtil_Echo::rs($value, $weights);
+        // \MUtil_Echo::rs($value, $weights);
 
+        // Simple length checks
         if ($count != strlen($value)) {
             if ($count < strlen($value)) {
                 $this->_error(self::TO_LONG);
@@ -189,24 +227,42 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
             }
         }
 
+        // The actual calculation
         $sum = 0;
         for ($i = 0; $i < $count; $i++) {
             $sum += ($value[$i] * $weights[$i]);
         }
+        // The actual test
         if ($sum % 11) {
             $this->_error(self::NOT_CHECK);
             return false;
         }
-        
+
         return true;
     }
 
+    /**
+     * The length of the number (when not 0).
+     *
+     * Not used when $_numberOrder is an array
+     *
+     * @param int $numberLength
+     * @return \MUtil_Validate_ElevenTest
+     */
     public function setNumberLength($numberLength)
     {
         $this->_numberLength = $numberLength;
         return $this;
     }
 
+    /**
+     * Decides the weight addressed to each number
+     *
+     * Set to array to specify weight value for each position.
+     *
+     * @param array|ORDER_LEFT_2_RIGHT|ORDER_RIGHT_2_LEFT $numberOrder
+     * @return \MUtil_Validate_ElevenTest
+     */
     public function setNumberOrder($numberOrder)
     {
         $this->_numberOrder = $numberOrder;
@@ -214,9 +270,9 @@ class MUtil_Validate_ElevenTest extends Zend_Validate_Abstract
     }
 
     /**
-     * Set description of the kind of test 
-     *  
-     * @param string $description 
+     * Set description of the kind of test
+     *
+     * @param string $description
      * @return $this
      */
     public function setTestDescription($description)
