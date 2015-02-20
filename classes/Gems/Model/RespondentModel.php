@@ -48,7 +48,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
+class Gems_Model_RespondentModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
      * Store the SSN hashed in the database and display only '*****'
@@ -67,7 +67,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -91,18 +91,18 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     public $view;
 
@@ -119,7 +119,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setKeys($this->_getKeysFor('gems__respondent2org'));
 
-        $this->setOnSave('gr2o_opened', new MUtil_Db_Expr_CurrentTimestamp());
+        $this->setOnSave('gr2o_opened', new \MUtil_Db_Expr_CurrentTimestamp());
         $this->setSaveOnChange('gr2o_opened');
         $this->setOnSave('gr2o_opened_by', GemsEscort::getInstance()->session->user_id);
         $this->setSaveOnChange('gr2o_opened_by');
@@ -176,7 +176,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
     /**
      * Add the table and field to check for respondent login checks
      *
-     * @return Gems_Model_RespondentModel (continuation pattern)
+     * @return \Gems_Model_RespondentModel (continuation pattern)
      */
     public function addLoginCheck()
     {
@@ -184,8 +184,8 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'gems__user_logins',
                 array('gr2o_patient_nr' => 'gul_login', 'gr2o_id_organization' => 'gul_id_organization'),
                 'gul',
-                MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
-                    MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
+                \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_UPDATE |
+                    \MUtil_Model_DatabaseModelAbstract::SAVE_MODE_DELETE);
 
         $this->addColumn(
                 "CASE WHEN gul_id_user IS NULL OR gul_user_class = 'NoLogin' OR gul_can_login = 0 THEN 0 ELSE 1 END",
@@ -196,10 +196,10 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
     /**
      * Add the respondent name as a caclulated field to the model
-     * @param Gems_Model_JoinModel $model
+     * @param \Gems_Model_JoinModel $model
      * @param string $label
      */
-    public static function addNameToModel(Gems_Model_JoinModel $model, $label)
+    public static function addNameToModel(\Gems_Model_JoinModel $model, $label)
     {
         $nameExpr[]  = "COALESCE(grs_last_name, '-')";
         $fieldList[] = 'grs_last_name';
@@ -233,7 +233,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         }
         $model->set('name',
                 'label', $label,
-                'column_expression', new Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
+                'column_expression', new \Zend_Db_Expr("CONCAT(" . implode(', ', $nameExpr) . ")"),
                 'fieldlist', $fieldList);
    }
 
@@ -271,7 +271,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_birthday',
                 'label', $translator->_('Birthday'),
-                'dateFormat', Zend_Date::DATE_MEDIUM);
+                'dateFormat', \Zend_Date::DATE_MEDIUM);
 
         $this->setIfExists('gr2o_opened',
                 'label', $translator->_('Opened'),
@@ -315,7 +315,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         }
 
         // The SSN
-        if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
+        if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
             $this->set('grs_ssn', 'label', $translator->_('SSN'),
                     'tab', $translator->_('Identification'));
         }
@@ -341,7 +341,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_birthday',
                 'label', $translator->_('Birthday'),
-                'dateFormat', Zend_Date::DATE_MEDIUM
+                'dateFormat', \Zend_Date::DATE_MEDIUM
                 );
 
         $this->setIfExists('gr2o_treatment',          'label', $translator->_('Treatment'));
@@ -354,8 +354,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_address_1',   'label', $translator->_('Street'));
         $this->setIfExists('grs_address_2',   'label', '&nbsp;');
 
-        // MUtil_Echo::track($this->getItemsOrdered());
-        //MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
+        // \MUtil_Echo::track($this->getItemsOrdered(), $this->getOrder('grs_email'));
 
         $this->setIfExists('grs_zipcode',     'label', $translator->_('Zipcode'));
         $this->setIfExists('grs_city',        'label', $translator->_('City'));
@@ -402,10 +401,10 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $translated = $this->util->getTranslated();
         $translator = $this->getTranslateAdapter();
-        $ucfirst    = new Zend_Filter_Callback('ucfirst');
+        $ucfirst    = new \Zend_Filter_Callback('ucfirst');
 
-        if ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
-            $onblur = new MUtil_Html_JavascriptArrayAttribute('onblur');
+        if ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
+            $onblur = new \MUtil_Html_JavascriptArrayAttribute('onblur');
             $onblur->addSubmitOnChange('this.value');
 
             $this->set('grs_ssn',
@@ -435,7 +434,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
                 'elementClass', 'Checkbox',
                 'required', true,
                 'order', $this->getOrder('grs_email') + 1,
-                'validator', new Gems_Validate_OneOf(
+                'validator', new \Gems_Validate_OneOf(
                         $translator->_('Respondent has no e-mail'),
                         'grs_email',
                         $this->get('grs_email', 'label')
@@ -453,7 +452,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
         $this->setIfExists('grs_first_name', 'filter', $ucfirst);
         $this->setIfExists('grs_last_name',  'filter', $ucfirst, 'required', true);
-        $this->setIfExists('grs_partner_last_name',  'filter', new Zend_Filter_Callback('ucfirst'));
+        $this->setIfExists('grs_partner_last_name',  'filter', new \Zend_Filter_Callback('ucfirst'));
 
         $this->setIfExists('grs_gender',
                 'elementClass', 'Radio',
@@ -465,7 +464,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
         $this->setIfExists('grs_birthday',
                 'jQueryParams', array('defaultDate' => '-30y', 'maxDate' => 0, 'yearRange' => 'c-130:c0'),
                 'elementClass', 'Date',
-                'validator', new MUtil_Validate_Date_DateBefore());
+                'validator', new \MUtil_Validate_Date_DateBefore());
 
         $this->setIfExists('gr2o_treatment', 'size', 30);
         $this->setIfExists('gr2o_comments',  'elementClass', 'Textarea', 'rows', 4, 'cols', 60);
@@ -588,7 +587,7 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      */
     public function getRespondentTracksModel()
     {
-        $model = new Gems_Model_JoinModel('surveys', 'gems__respondent2track');
+        $model = new \Gems_Model_JoinModel('surveys', 'gems__respondent2track');
         $model->addTable('gems__tracks', array('gr2t_id_track' => 'gtr_id_track'));
         $model->addTable('gems__respondent2org', array('gr2t_id_user' => 'gr2o_id_user'));
 
@@ -618,10 +617,12 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      * @param array $context Optional, the other values being saved
      * @return string The output to display
      */
-    public function hideSSN($value, $isNew = false, $name = null, array $context = array())
+    public function hideSSN($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
-        if ($value) {
+        if ($value && (! $isPost)) {
             return str_repeat('*', 9);
+        } else {
+            return $value;
         }
     }
 
@@ -661,9 +662,9 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
 
             if ((!$id) &&
                     isset($newValues['grs_ssn']) &&
-                    ($this->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE)) {
+                    ($this->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE)) {
 
-                if (Gems_Model_RespondentModel::SSN_HASH === $this->hashSsn) {
+                if (\Gems_Model_RespondentModel::SSN_HASH === $this->hashSsn) {
                     $search = $this->saveSSN($newValues['grs_ssn']);
                 } else {
                     $search = $newValues['grs_ssn'];
@@ -730,14 +731,14 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
      *
      * @param string $patientId   Can be empty if $respondentId is passed
      * @param int $organizationId
-     * @param string $newCode     String or Gems_Util_ReceptionCode
+     * @param string $newCode     String or \Gems_Util_ReceptionCode
      * @param int $respondentId   Pass when at hand, is looked up otherwise
-     * @param string $oldCode     Pass when at hand as tring or Gems_Util_ReceptionCode, is looked up otherwise
-     * @return Gems_Util_ReceptionCode The new code reception code object for further processing
+     * @param string $oldCode     Pass when at hand as tring or \Gems_Util_ReceptionCode, is looked up otherwise
+     * @return \Gems_Util_ReceptionCode The new code reception code object for further processing
      */
     public function setReceptionCode($patientId, $organizationId, $newCode, $respondentId = null, $oldCode = null)
     {
-        if ($newCode instanceof Gems_Util_ReceptionCode) {
+        if ($newCode instanceof \Gems_Util_ReceptionCode) {
             $code    = $newCode;
             $newCode = $code->getCode();
         } else {
@@ -751,14 +752,14 @@ class Gems_Model_RespondentModel extends Gems_Model_HiddenOrganizationModel
             if (null === $oldCode) {
                 $oldCode = $this->getReceptionCode($patientId, $organizationId, $respondentId);
             }
-            if ($oldCode instanceof Gems_Util_ReceptionCode) {
+            if ($oldCode instanceof \Gems_Util_ReceptionCode) {
                 $oldCode = $oldCode->getCode();
             }
 
             // If the code wasn't set already
             if ($oldCode !== $newCode) {
                 $values['gr2o_reception_code'] = $newCode;
-                $values['gr2o_changed']        = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gr2o_changed']        = new \MUtil_Db_Expr_CurrentTimestamp();
                 $values['gr2o_changed_by']     = $userId;
 
                 if ($patientId) {
