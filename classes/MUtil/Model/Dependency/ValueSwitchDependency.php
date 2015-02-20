@@ -36,7 +36,7 @@
  */
 
 /**
- * A dependency where a fixed array of values is returned for each vale in the contact.
+ * A dependency where a fixed array of values is returned for each value in the switch.
  *
  * When used with N dependsOn fields, then the first N levels of the switches
  * should contain match value in the order of the dependsOn fields.
@@ -45,13 +45,34 @@
  *
  * When no value match is found, nothing is changed.
  *
+ * The next example switches the display and editing of two fields on and off depending on the value of
+ * the depends on field.
+ * <code>
+ * $switch = new \MUtil_Model_Dependency_ValueSwitchDependency();
+ * $switch->setDependsOn('fieldDecides');
+ * $switch->setSwitches(array(
+ *      0 => array(
+ *              'field1' => array('elementClass' => 'Text', 'label' => 'Field 1'),
+ *              'field2' => array('elementClass' => 'Text', 'label' => 'Field 2'),
+ *          ),
+ *      1 => array(
+ *              'field1' => array('elementClass' => 'Hidden', 'label' => null),
+ *              'field2' => array('elementClass' => 'Text',   'label' => 'Field 2'),
+ *          ),
+ *      2 => array(
+ *              'field1' => array('elementClass' => 'Hidden', 'label' => null),
+ *              'field2' => array('elementClass' => 'Hidden', 'label' => null),
+ *          ),
+ *      ));
+ * </code>
+ *
  * @package    MUtil
  * @subpackage Model_Dependency
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependency_DependencyAbstract
+class MUtil_Model_Dependency_ValueSwitchDependency extends \MUtil_Model_Dependency_DependencyAbstract
 {
     /**
      * When false the effected fields should be recalculated
@@ -67,12 +88,25 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
     protected $_switches = array();
 
     /**
+     *
+     * @param array $switches
+     */
+    public function __construct(array $switches = null)
+    {
+        parent::__construct();
+
+        if ($switches) {
+            $this->addSwitches($switches);
+        }
+    }
+
+    /**
      * Recursively refresh effected fields
      *
      * @param array $switches Current level of switches array
      * @param array $dependsOn Current level of $dependsOn array
      * @param array $results The final result, should take the form array(field => array(stting => setting))
-     * @throws MUtil_Model_Dependency_DependencyException
+     * @throws \MUtil_Model_Dependency_DependencyException
      */
     private function _checkEffectFor(array $switches, array $dependsOn, array &$results)
     {
@@ -88,7 +122,7 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
         // At end level when dependsOn is empty
         foreach ($switches as $name => $values) {
             if (! is_array($values)) {
-                throw new MUtil_Model_Dependency_DependencyException('In correct nesting of switches.');
+                throw new \MUtil_Model_Dependency_DependencyException('In correct nesting of switches.');
             }
 
             $keys = array_keys($values);
@@ -113,7 +147,7 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
 
             $this->_checkEffectFor($this->_switches, $this->_dependentOn, $results);
 
-            // MUtil_Echo::track($results);
+            // \MUtil_Echo::track($results);
 
             $this->setEffecteds($results);
 
@@ -141,9 +175,9 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
 
         // When there is no data, return no changes
         if (!array_key_exists($name, $context)) {
-            if (MUtil_Model::$verbose) {
+            if (\MUtil_Model::$verbose) {
                 $names = array_diff_key($this->_dependentOn, $context);
-                MUtil_Echo::r(implode(', ', $names), 'Name(s) not found in ' . get_class($this));
+                \MUtil_Echo::r(implode(', ', $names), 'Name(s) not found in ' . get_class($this));
             }
             return array();
         }
@@ -178,9 +212,9 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends MUtil_Model_Dependenc
                 }
             }
         }
-        if (MUtil_Model::$verbose) {
-            MUtil_Echo::track($this->_switches, $this->_dependentOn, $this->_effecteds);
-            MUtil_Echo::r(
+        if (\MUtil_Model::$verbose) {
+            \MUtil_Echo::track($this->_switches, $this->_dependentOn, $this->_effecteds);
+            \MUtil_Echo::r(
                     "Value '$value' not found for field $name among the values: " .
                         implode(', ', array_keys($switches)),
                     'Value not found in ' . get_class($this));

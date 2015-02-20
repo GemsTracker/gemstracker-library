@@ -1,5 +1,16 @@
 Important changes from 1.7.0 => 1.7.1
 ============================================================
+Ignore any messages that a "Column does not exist in table" during the upgrade
+Controllers have moved from BrowseEditAction to ModelSnippetActionAbstract, check these project specific controllers for compatibility:
+    ConsentController
+    DatabaseController
+    LogController
+    LogMaintenanceController
+    ProjectSurveysController
+    ProjectTracksController
+    ReceptionController
+    RoleController
+    SurveyMaintenanceController
 Some snippets have moved location in the code:
     AddTracksSnippet => Tracker\\AddTracksSnippet
     EditTrackEngineSnippet => Tracker\\EditTrackEngineSnippet

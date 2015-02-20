@@ -41,89 +41,146 @@
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  */
-class Gems_Util_Translated extends Gems_Registry_TargetAbstract
+class Gems_Util_Translated extends \MUtil_Translate_TranslateableAbstract
 {
+    /**
+     * Format string usaed by this project date time output to site users
+     *
+     * @var string
+     */
     protected $phpDateFormatString = 'd-m-Y';
 
     /**
+     * Date format string usaed by this project
      *
-     * @var Zend_Translate
+     * @var string
      */
-    protected $translate;
-
     public $dateFormatString = 'yyyy-MM-dd';
+
+    /**
+     * DateTime format string usaed by this project
+     *
+     * @var string
+     */
     public $dateTimeFormatString = 'yyyy-MM-dd HH:mm:ss';
 
+    /**
+     * Array representing an empty choice
+     *
+     * @var array
+     */
     public static $emptyDropdownArray;
 
-    protected function _($text, $locale = null)
+    /**
+     * Returns a callable if a method is called as a variable
+     *
+     * @param string $name
+     * @return Callable
+     */
+    public function __get($name)
     {
-        return $this->translate->_($text, $locale);
+        if (method_exists($this, $name)) {
+            // Return a callable
+            return array($this, $name);
+        }
+
+        throw new \Gems_Exception_Coding("Unknown method '$name' requested as callable.");
     }
 
     /**
-     * Should be called after answering the request to allow the Target
-     * to check if all required registry values have been set correctly.
+     * Called after the check that all required registry values
+     * have been set correctly has run.
      *
-     * Makes sure $this->translate is set.
-     *
-     * @return boolean False if required are missing.
+     * @return void
      */
-    public function checkRegistryRequestsAnswers()
+    public function afterRegistry()
     {
-        if (! $this->translate instanceof Zend_Translate) {
-            $this->translate = Zend_Registry::get('Zend_Translate');
+        parent::afterRegistry();
 
-            if (! $this->translate instanceof Zend_Translate) {
-                $this->translate = new MUtil_Translate_Adapter_Potemkin();
-            }
-        }
         self::$emptyDropdownArray = array('' => $this->_('-'));
-
-        return parent::checkRegistryRequestsAnswers();
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
     public function formatDate($dateValue)
     {
         return $this->formatDateTime($dateValue);
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'forever' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
     public function formatDateForever($dateValue)
     {
         if ($dateValue) {
             return $this->formatDateTime($dateValue);
         } else {
-            return MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
+            return \MUtil_Html::create()->span($this->_('forever'), array('class' => 'disabled'));
         }
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'n/a' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
     public function formatDateNa($dateValue)
     {
         if ($dateValue) {
             return $this->formatDateTime($dateValue);
         } else {
-            return MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
+            return \MUtil_Html::create()->span($this->_('n/a'), array('class' => 'disabled'));
         }
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'never' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
     public function formatDateNever($dateValue)
     {
         if ($dateValue) {
             return $this->formatDateTime($dateValue);
         } else {
-            return MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
+            return \MUtil_Html::create()->span($this->_('never'), array('class' => 'disabled'));
         }
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     * or 'unknown' when null
+     *
+     * @param \MUtil_Date $dateValue
+     * @return string|\MUtil_Html_HtmlElement
+     */
     public function formatDateUnknown($dateValue)
     {
         if ($dateValue) {
             return $this->formatDateTime($dateValue);
         } else {
-            return MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
         }
     }
 
+    /**
+     * Get a readable version of date / time object with nearby days translated in text
+     *
+     * @param \MUtil_Date $dateTimeValue
+     * @return string
+     */
     public function formatDateTime($dateTimeValue)
     {
         if (! $dateTimeValue) {
@@ -131,15 +188,15 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
         }
 
         //$dateTime = strtotime($dateTimeValue);
-        // MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
+        // \MUtil_Echo::track($dateTimeValue, date('c', $dateTime), $dateTime / 86400, date('c', time()), time() / 86400);
         // TODO: Timezone seems to screw this one up
         //$days = floor($dateTime / 86400) - floor(time() / 86400); // 86400 = 24*60*60
-        if ($dateTimeValue instanceof MUtil_Date) {
+        if ($dateTimeValue instanceof \MUtil_Date) {
             $dateTime = clone $dateTimeValue;
-        } elseif (MUtil_Date::isDate($dateTimeValue, Zend_Date::ISO_8601)) {
-            $dateTime = new MUtil_Date($dateTimeValue, Zend_Date::ISO_8601);
-        } elseif (MUtil_Date::isDate($dateTimeValue, 'YYYY-MM-DD')) {
-            $dateTime = new MUtil_Date($dateTimeValue, 'YYYY-MM-DD');
+        } elseif (\MUtil_Date::isDate($dateTimeValue, \Zend_Date::ISO_8601)) {
+            $dateTime = new \MUtil_Date($dateTimeValue, \Zend_Date::ISO_8601);
+        } elseif (\MUtil_Date::isDate($dateTimeValue, 'YYYY-MM-DD')) {
+            $dateTime = new \MUtil_Date($dateTimeValue, 'YYYY-MM-DD');
         } else {
             return null;
         }
@@ -182,7 +239,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
      */
     public function formatTime($dateTimeValue)
     {
-        if ($dateTimeValue instanceof Zend_Date) {
+        if ($dateTimeValue instanceof \Zend_Date) {
             $dateTimeValue = $dateTimeValue->getTimestamp();
         }
         $seconds = str_pad($dateTimeValue % 60, 2, '0', STR_PAD_LEFT);
@@ -203,6 +260,21 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     }
 
     /**
+     * Returns the time in seconds as a display string or unknown when null
+     *
+     * @param int $dateTimeValue
+     * @return string
+     */
+    public function formatTimeUnknown($dateTimeValue)
+    {
+        if (null === $dateTimeValue) {
+            return \MUtil_Html::create()->span($this->_('unknown'), array('class' => 'disabled'));
+        } else {
+            return $this->formatTime($dateTimeValue);
+        }
+    }
+
+    /**
      * The options for bulk mail token processing.
      *
      * @return array
@@ -219,7 +291,7 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
     /**
      * Get a translated empty value for usage in dropdowns
      *
-     * On instantiation of the class via Gems_Loader this variable will be populated
+     * On instantiation of the class via \Gems_Loader this variable will be populated
      * in checkRegistryRequestsAnswers
      *
      * @return array
@@ -266,27 +338,20 @@ class Gems_Util_Translated extends Gems_Registry_TargetAbstract
         return array('M' => $this->_('Mr.', $locale), 'F' => $this->_('Mrs.', $locale), 'U' => $this->_('Mr./Mrs.', $locale));
     }
 
-    public function getYesNo($locale = null)
+    /**
+     * Yes / no values array
+     *
+     * @staticvar array $data
+     * @return array 1 => Yes, 0 => No
+     */
+    public function getYesNo()
     {
         static $data;
 
         if (! $data) {
-            $data = array(1 => $this->_('Yes', $locale), 0 => $this->_('No', $locale));
+            $data = array(1 => $this->_('Yes'), 0 => $this->_('No'));
         }
 
         return $data;
     }
-
-    // DO NOT USE THIS FUNCTION
-    // It will screw up your automatically generated translations file.
-    // As I have done so twice, I leave this here as a reminder. Matijs
-    /*
-    public static function translateArray(Zend_Translate $translate, array $texts)
-    {
-        foreach ($texts as &$text) {
-            $text = $translate->_($text);
-        }
-
-        return $texts;
-    } // */
 }
