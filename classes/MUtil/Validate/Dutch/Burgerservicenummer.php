@@ -1,10 +1,9 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +14,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,39 +25,56 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @package    MUtil
+ * @subpackage Validate
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Validate
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since version 1.0
  */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Validate
- */
-class MUtil_Validate_Dutch_Burgerservicenummer extends MUtil_Validate_ElevenTest
+class MUtil_Validate_Dutch_Burgerservicenummer extends \MUtil_Validate_ElevenTest
 {
     /**
-     * Decides the weight addressed to each number 
-     *  
-     * Set to array tpo specify weight value for each position.
-     *  
+     * Decides the weight addressed to each number
+     *
+     * Set to array to specify weight value for each position.
+     *
      * @var array|ORDER_LEFT_2_RIGHT|ORDER_RIGHT_2_LEFT
      */
     protected $_numberOrder = array(9, 8, 7, 6, 5, 4, 3, 2, -1);
 
     /**
-     * Description of the kind of test 
-     *  
+     * Description of the kind of test
+     *
      * @var string
      */
     protected $_testDescription = 'burgerservicenummer';
+
+    /**
+     * Defined by \Zend_Validate_Interface
+     *
+     * Returns true if and only if a token has been set and the provided value
+     * matches that token.
+     *
+     * @param  mixed $value
+     * @return boolean
+     */
+    public function isValid($value, $context = array())
+    {
+        if (trim($value, '*')) {
+            return parent::isValid($value, $context);
+        }
+        return true;
+    }
 }
 
