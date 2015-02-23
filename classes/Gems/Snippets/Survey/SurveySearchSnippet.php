@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2011, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -28,23 +28,45 @@
  *
  *
  * @package    Gems
- * @subpackage Snippets
+ * @subpackage Snippets_Survey
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: EditTrackEngineSnippet.php 457 2012-02-07 11:24:23Z mennodekker $
+ * @version    $Id: SurveySearchSnippet.php $
  */
 
+namespace Gems\Snippets\Survey;
+
 /**
- * Default snippet for editing track engines instances
+ *
  *
  * @package    Gems
- * @subpackage Snippets
- * @copyright  Copyright (c) 2011 Erasmus MC
+ * @subpackage Snippets_Survey
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.4
- * @deprecated since version 1.6.5 replaced by Tracker//EditTrackEngineSnippet
+ * @since      Class available since version 1.6.5 23-feb-2015 16:44:02
  */
-class EditTrackEngineSnippet extends \Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric
+class SurveySearchSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
+    /**
+     * Returns a text element for autosearch. Can be overruled.
+     *
+     * The form / html elements to search on. Elements can be grouped by inserting null's between them.
+     * That creates a distinct group of elements
+     *
+     * @param array $data The $form field values (can be usefull, but no need to set them)
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     */
+    protected function getAutoSearchElements(array $data)
+    {
+        $elements = parent::getAutoSearchElements($data);
+
+        array_unshift(
+                $elements,
+                new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID1),
+                new \Zend_Form_Element_Hidden(\MUtil_Model::REQUEST_ID2)
+                );
+
+        return $elements;
+    }
 }

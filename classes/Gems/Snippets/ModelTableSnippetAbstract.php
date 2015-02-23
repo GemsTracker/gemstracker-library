@@ -88,7 +88,34 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     public $menu;
 
     /**
-     * Optioan to manually diasable the menu
+     * The default controller for menu actions, if null the current controller is used.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuActionController = null;
+
+    /**
+     * Menu actions to show in Edit box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuEditActions = array('edit');
+
+    /**
+     * Menu actions to show in Show box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuShowActions = array('show');
+
+    /**
+     * Option to manually diasable the menu
      *
      * @var boolean
      */
@@ -124,8 +151,12 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
             $bridge->getTable()->tbody()->getFirst(true)->appendAttrib('class', $bridge->row_class);
         }
 
-        if ($this->showMenu && ($showMenuItem = $this->getShowMenuItem())) {
-            $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
+        if ($this->showMenu) {
+            $showMenuItems = $this->getShowMenuItems();
+
+            foreach ($showMenuItems as $menuItem) {
+                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+            }
         }
 
         // make sure search results are highlighted
@@ -133,8 +164,12 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
 
         parent::addBrowseTableColumns($bridge, $model);
 
-        if ($this->showMenu && ($editMenuItem = $this->getEditMenuItem())) {
-            $bridge->addItemLink($editMenuItem->toActionLinkLower($this->request, $bridge));
+        if ($this->showMenu) {
+            $editMenuItems = $this->getEditMenuItems();
+
+            foreach ($editMenuItems as $menuItem) {
+                $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
+            }
         }
     }
 
@@ -149,6 +184,21 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     protected function addPaginator(\MUtil_Html_TableElement $table, \Zend_Paginator $paginator)
     {
         $table->tfrow()->pagePanel($paginator, $this->request, $this->translate);
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if (! $this->menuActionController) {
+            $this->menuActionController = $this->request->getControllerName();
+        }
     }
 
     /**
@@ -185,7 +235,8 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      */
     public function createMenuLink($parameterSource, $controller, $action = 'index', $label = null)
     {
-        if ($menuItem  = $this->findMenuItem($controller, $action)) {
+        $menuItem = $this->findMenuItem($controller, $action);
+        if ($menuItem) {
             return $menuItem->toActionLinkLower($this->request, $parameterSource, $label);
         }
     }
@@ -193,13 +244,58 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     /**
      * Finds a specific active menu item
      *
-     * @param string $controller
-     * @param string $action
+     * @param string $defaultController
+     * @param string|array $actions
+     * @return \Gems_Menu_SubMenuItem The first that
+     * @deprecated since 1.7.1, use findMenuItems()
+     */
+    protected function findMenuItem($defaultController, $actions = 'index')
+    {
+        foreach ((array) $actions as $key => $action) {
+            $controller = is_int($key) ? $defaultController : $key;
+            $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+
+            if ($item) {
+                return $item;
+            }
+        }
+    }
+
+    /**
+     * Finds a specific active menu item
+     *
+     * @param string $defaultController
+     * @param string|array $actions
+     * @return array of \Gems_Menu_SubMenuItem
+     */
+    protected function findMenuItems($defaultController, $actions = array('index'))
+    {
+        $output = array();
+
+
+        foreach ((array) $actions as $key => $action) {
+            $controller = is_int($key) ? $defaultController : $key;
+            $item       = $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+
+            if ($item) {
+                $output[] = $item;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Returns an edit menu item, if access is allowed by privileges
+     *
+     * @deprecated since 1.7.1, use getEditMenuItems()
      * @return \Gems_Menu_SubMenuItem
      */
-    protected function findMenuItem($controller, $action = 'index')
+    protected function getEditMenuItem()
     {
-        return $this->menu->find(array('controller' => $controller, 'action' => $action, 'allowed' => true));
+        if ($this->menuEditActions) {
+            return $this->findMenuItem($this->menuActionController, $this->menuEditActions);
+        }
     }
 
     /**
@@ -207,9 +303,11 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
      *
      * @return \Gems_Menu_SubMenuItem
      */
-    protected function getEditMenuItem()
+    protected function getEditMenuItems()
     {
-        return $this->findMenuItem($this->request->getControllerName(), 'edit');
+        if ($this->menuEditActions) {
+            return $this->findMenuItems($this->menuActionController, $this->menuEditActions);
+        }
     }
 
     /**
@@ -243,10 +341,25 @@ abstract class Gems_Snippets_ModelTableSnippetAbstract extends \MUtil_Snippets_M
     /**
      * Returns a show menu item, if access is allowed by privileges
      *
+     * @deprecated since 1.7.1, use getShowMenuItems()
      * @return \Gems_Menu_SubMenuItem
      */
     protected function getShowMenuItem()
     {
-        return $this->findMenuItem($this->request->getControllerName(), 'show');
+        if ($this->menuShowActions) {
+            return $this->findMenuItem($this->menuActionController, $this->menuShowActions);
+        }
+    }
+
+    /**
+     * Returns a show menu item, if access is allowed by privileges
+     *
+     * @return \Gems_Menu_SubMenuItem
+     */
+    protected function getShowMenuItems()
+    {
+        if ($this->menuShowActions) {
+            return $this->findMenuItems($this->menuActionController, $this->menuShowActions);
+        }
     }
 }

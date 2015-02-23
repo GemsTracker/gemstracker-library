@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_ProjectSurveysAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -56,14 +56,19 @@ class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActi
      */
     protected $autofilterParameters = array(
         'extraFilter' => array(
-            'gtr_display_group' => array('staff', 'respondents'),
-            'gtr_active'        => 1,
-            -2 => '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE'
+            'gsu_surveyor_active' => 1,
+            'gsu_active'          => 1,
             ),
         'extraSort' => array(
-            'gtr_track_name' => SORT_ASC,
+            'gsu_survey_name' => SORT_ASC,
             ),
         );
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
 
     /**
      *
@@ -81,7 +86,7 @@ class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActi
      *
      * @var array Mixed key => value array for snippet initialization
      */
-    protected $showParameters = array('trackId' => '_getIdParam');
+    protected $showParameters = array('surveyId' => '_getIdParam');
 
     /**
      * The snippets used for the show action
@@ -107,27 +112,56 @@ class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActi
      */
     protected function createModel($detailed, $action)
     {
-        $translated = $this->util->getTranslated();
+        $yesNo = $this->util->getTranslated()->getYesNo();
 
-        $model = new Gems_Model_JoinModel('tracks', 'gems__tracks');
-        $model->addTable('gems__rounds',  array('gtr_id_track' => 'gro_id_track'));
-        $model->addTable('gems__surveys', array('gro_id_survey' => 'gsu_id_survey'));
+        $model = new \Gems_Model_JoinModel('surveys', 'gems__surveys');
         $model->addTable('gems__groups',  array('gsu_id_primary_group' => 'ggp_id_group'));
 
-        //$model->resetOrder();
-        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
-        $model->set('ggp_name',        'label', $this->_('By'));
-        $model->set('gtr_date_start',  'label', $this->_('From'),
-                'dateFormat', $translated->dateFormatString,
-                'tdClass', 'date'
-                );
-        $model->set('gtr_date_until',  'label', $this->_('Until'),
-                'dateFormat', $translated->dateFormatString,
-                'formatFunction', $translated->formatDateForever,
-                'tdClass', 'date'
+        $model->addColumn(
+                '(SELECT COUNT(DISTINCT gro_id_track) FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track WHERE gro_id_survey = gsu_id_survey)',
+                'track_count'
                 );
 
+        $model->resetOrder();
+
+        $model->set('gsu_survey_name', 'label', $this->_('Survey'));
+
+        if ($detailed) {
+            $model->set('gsu_survey_description', 'label', $this->_('Description'),
+                    'formatFunction', array(__CLASS__, 'formatDescription')
+                    );
+            $model->set('gsu_active',             'label', sprintf($this->_('Active in %s'), $this->project->getName()),
+                    'elementClass', 'Checkbox',
+                    'multiOptions', $yesNo
+                    );
+        }
+
+        $model->set('ggp_name',        'label', $this->_('By'));
+        $model->set('track_count',     'label', $this->_('Usage'),
+                'description', $this->_('How many track definitions use this survey?'));
+        $model->set('gsu_insertable',  'label', $this->_('Insertable'),
+                'description', $this->_('Can this survey be manually inserted into a track.'),
+                'multiOptions', $yesNo
+                );
+
+        if ($detailed) {
+            $model->set('gsu_duration',         'label', $this->_('Duration description'),
+                    'description', $this->_('Text to inform the respondent, e.g. "20 seconds" or "1 minute".')
+                    );
+        }
+
         return $model;
+    }
+
+    /**
+     * Strip all the tags, but keep the escaped characters
+     *
+     * @param string $value
+     * @return \MUtil_Html_Raw
+     */
+    public static function formatDescription($value)
+    {
+        return \MUtil_Html::raw(strip_tags($value));
     }
 
     /**
@@ -151,7 +185,11 @@ class Gems_Default_ProjectSurveysAction extends Gems_Controller_ModelSnippetActi
     {
         if (! $this->defaultSearchData) {
             $orgId = $this->loader->getCurrentUser()->getCurrentOrganizationId();
-            $this->defaultSearchData[-1] = "gtr_organizations LIKE '%|$orgId|%'";
+            $this->defaultSearchData[-1] = "((gsu_insertable = 1 AND gsu_insert_organizations LIKE '%|$orgId|%') OR
+                EXISTS
+                (SELECT gro_id_track FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track
+                    WHERE gro_id_survey = gsu_id_survey AND gtr_organizations LIKE '%|$orgId|%'
+                    ))";
         }
 
         return parent::getSearchDefaults();

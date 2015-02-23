@@ -65,12 +65,6 @@ class Track_AvailableTracksSnippets extends Gems_Snippets_ModelTableSnippetAbstr
     protected $model;
 
     /**
-     *
-     * @var string 'S' or 'T'
-     */
-    protected $trackType;
-
-    /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
@@ -129,18 +123,7 @@ class Track_AvailableTracksSnippets extends Gems_Snippets_ModelTableSnippetAbstr
      */
     protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
     {
-        $filter = array();
-
-        if ($this->trackType) {
-            $filter['gtr_track_type'] = $this->trackType;
-        }
-
-        $sort = array('gtr_track_name' => SORT_ASC);
-
-        // MUtil_Echo::track($filter);
-
-        $model->addFilter($filter);
-        $model->addSort($sort);
+        $model->addSort(array('gtr_track_name' => SORT_ASC));
     }
 
 }

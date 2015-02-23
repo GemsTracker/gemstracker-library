@@ -43,17 +43,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
+class Gems_Default_TokenPlanAction extends \Gems_Controller_BrowseEditAction
 {
     public $sortKey = array(
-        'gto_valid_from'          => SORT_ASC,
-        'gto_mail_sent_date'      => SORT_ASC,
-        'respondent_name'         => SORT_ASC,
-        'gr2o_patient_nr'         => SORT_ASC,
-        'calc_track_name'         => SORT_ASC,
-        'calc_track_info'         => SORT_ASC,
-        'calc_round_description'  => SORT_ASC,
-        'gto_round_order'         => SORT_ASC,
+        'gto_valid_from'        => SORT_ASC,
+        'gto_mail_sent_date'    => SORT_ASC,
+        'respondent_name'       => SORT_ASC,
+        'gr2o_patient_nr'       => SORT_ASC,
+        'gtr_track_name'        => SORT_ASC,
+        'gr2t_track_info'       => SORT_ASC,
+        'gto_round_description' => SORT_ASC,
+        'gto_round_order'       => SORT_ASC,
         );
 
     /**
@@ -61,20 +61,17 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $HTML  = MUtil_Html::create();
+        $HTML  = \MUtil_Html::create();
 
         $model->set('gto_id_token', 'formatFunction', 'strtoupper');
 
-        // Row with dates and patient data
-        $bridge->gtr_track_type; // Data needed for buttons
-
-        $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
+        $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $tr = $bridge->tr();
         $tr->appendAttrib('class', $bridge->row_class);
         $tr->appendAttrib('title', $bridge->gto_comment);
@@ -97,15 +94,15 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $bridge->addSortable('gto_mail_sent_num', $this->_('Contact moments'));
 
 
-        if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
-            $bridge->addMultiSort('calc_round_description', $HTML->raw('; '), 'gsu_survey_name');
+        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
+            $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
         } else {
-            $model->set('calc_track_info', 'tableDisplay', 'smallData');
-            $model->set('calc_round_description', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+            $model->set('gto_round_description', 'tableDisplay', 'smallData');
             $bridge->addMultiSort(
-                'calc_track_name', 'calc_track_info',
-                array($bridge->calc_track_name->if($HTML->raw(' &raquo; ')), ' '),
-                'gsu_survey_name', 'calc_round_description');
+                'gtr_track_name', 'gr2t_track_info',
+                array($bridge->gtr_track_name->if($HTML->raw(' &raquo; ')), ' '),
+                'gsu_survey_name', 'gto_round_description');
         }
 
         $bridge->addSortable('assigned_by');
@@ -120,11 +117,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
         $model = $this->loader->getTracker()->getTokenModel();
         $model->setCreate(false);
 
@@ -172,7 +169,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
             $this->addSnippet('Mail_TokenBulkMailFormSnippet', $params);
             /*
-            $form = new Gems_Email_MultiMailForm(array(
+            $form = new \Gems_Email_MultiMailForm(array(
                 'escort' => $this->escort,
                 'templateOnly' => ! $this->escort->hasPrivilege('pr.token.mail.freetext'),
             ));
@@ -190,7 +187,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                 }
 
             } else {
-                $table = new MUtil_Html_TableElement(array('class' => 'formTable'));
+                $table = new \MUtil_Html_TableElement(array('class' => 'formTable'));
                 $table->setAsFormLayout($form, true, true);
                 $table['tbody'][0][0]->class = 'label';  // Is only one row with formLayout, so all in output fields get class.
                 if ($links = $this->createMenuLinks(10)) {
@@ -208,7 +205,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
     }
 
-    public function getActionLinks(MUtil_Model_Bridge_TableBridge $bridge)
+    public function getActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => array('email', 'answer'), 'allowed' => true))) {
@@ -239,11 +236,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
@@ -268,11 +265,11 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
         $options = array();
         $options['label'] = $this->_('from');
-        MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $options);
-        $elements[] = new Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
+        \MUtil_Model_Bridge_FormBridge::applyFixedOptions('date', $options);
+        $elements[] = new \Gems_JQuery_Form_Element_DatePicker('datefrom', $options);
 
         $options['label'] = ' ' . $this->_('until');
-        $elements[] = new Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
+        $elements[] = new \Gems_JQuery_Form_Element_DatePicker('dateuntil', $options);
 
         $elements[] = null; // break into separate spans
 
@@ -287,7 +284,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         $multiOrg    = count($allowedOrgs) > 1;
 
         $elements[] = $this->_('Select:');
-        $elements[] = MUtil_Html::create('br');
+        $elements[] = \MUtil_Html::create('br');
 
         if ($multiOrg) {
             $orgWhere = $user->getRespondentOrgWhere('gtr_organizations');
@@ -297,10 +294,10 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         }
 
         // Add track selection
-        if ($this->escort instanceof Gems_Project_Tracks_MultiTracksInterface) {
+        if ($this->escort instanceof \Gems_Project_Tracks_MultiTracksInterface) {
             $sql = "SELECT gtr_id_track, gtr_track_name
                 FROM gems__tracks
-                WHERE gtr_active=1 AND gtr_track_type='T' AND $orgWhere
+                WHERE gtr_active=1 AND $orgWhere
                 ORDER BY gtr_track_name";
             $elements[] = $this->_createSelectElement('gto_id_track', $sql, $this->_('(all tracks)'));
         }
@@ -310,7 +307,6 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     WHERE gro_active=1 AND
                         LENGTH(gro_round_description) > 0 AND
                         gtr_active=1 AND
-                        gtr_track_type='T' AND
                         $orgWhere
                     ORDER BY gro_round_description";
         $elements[] = $this->_createSelectElement('gto_round_description', $sql, $this->_('(all rounds)'));
@@ -350,7 +346,6 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     WHERE ggp_group_active = 1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        gtr_track_type='T' AND
                         $orgWhere
                     ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
@@ -386,12 +381,12 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
 
     protected function getDataFilter(array $data)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         //Add default filter
         $filter = array();
-        if ($where = Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
-            // MUtil_Echo::track($where);
+        if ($where = \Gems_Snippets_AutosearchFormSnippet::getPeriodFilter($data, $this->db)) {
+            // \MUtil_Echo::track($where);
             $filter[] = $where;
         }
 
@@ -412,7 +407,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                     $filter[] = sprintf(
                             "(grs_email IS NULL OR grs_email = '' OR grs_email NOT RLIKE '%s') AND
                                 ggp_respondent_members = 1",
-                            str_replace('\'', '\\\'', trim(MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                            str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     $filter[] = '(gto_valid_until IS NULL OR gto_valid_until >= CURRENT_TIMESTAMP)';
                     $filter['gto_completion_time'] = null;
@@ -456,7 +451,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
                                 grs_email != '' AND
                                 grs_email RLIKE '%s' AND
                                 ggp_respondent_members = 1",
-                            str_replace('\'', '\\\'', trim(MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
+                            str_replace('\'', '\\\'', trim(\MUtil_Validate_SimpleEmail::EMAIL_REGEX, '/'))
                             );
                     //$filter[] = "grs_email IS NOT NULL AND grs_email != '' AND ggp_respondent_members = 1";
                     $filter['gto_mail_sent_date'] = null;
@@ -504,14 +499,14 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
             $filter[] = $this->db->quoteInto($date_field . ' <= '.  $date_filter, intval($data['period_end']));
         }
 
-        // MUtil_Echo::track($filter);
+        // \MUtil_Echo::track($filter);
         return $filter;
     }
 
     public function getDefaultSearchData()
     {
-        $inFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
-        $now      = new MUtil_Date();
+        $inFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        $now      = new \MUtil_Date();
 
         return array(
             'datefrom'            => $now->toString($inFormat),
@@ -521,7 +516,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
         );
     }
 
-    public function getTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
+    public function getTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => 'show', 'allowed' => true))) {
@@ -547,7 +542,7 @@ class Gems_Default_TokenPlanAction extends Gems_Controller_BrowseEditAction
      */
     public function indexAction()
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         // Check for unprocessed tokens
         $filter = $this->getCachedRequestData(true);

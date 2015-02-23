@@ -12,12 +12,9 @@ CREATE TABLE if not exists gems__tracks (
         gtr_active            boolean not null default 0,
         gtr_survey_rounds     int unsigned not null default 0,
 
-        gtr_display_group     varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'tracks',
+        -- deprecated since 1.7.1
         gtr_track_type        char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'T',
-
-        -- depreciated
-        gtr_track_model varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'TrackModel',
-        -- end depreciated
+        -- end deprecated
 
         gtr_track_class       varchar(64) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null,
         gtr_calculation_event varchar(128) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',

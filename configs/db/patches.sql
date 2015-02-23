@@ -911,12 +911,50 @@ ALTER TABLE gems__surveys
     ADD gsu_valid_for_unit char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M'
     AFTER gsu_insertable;
 ALTER TABLE gems__surveys
-    ADD gsu_valid_for_length        int not null default 6
+    ADD gsu_valid_for_length int not null default 6
     AFTER gsu_valid_for_unit;
+ALTER TABLE gems__surveys
+    ADD gsu_insert_organizations varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'
+    AFTER gsu_valid_for_length;
 
 UPDATE gems__surveys
-    SET gsu_insertable = 1
+    SET gsu_insertable = 1,
+        gsu_insert_organizations = (SELECT MAX(gtr_organizations)
+            FROM gems__rounds INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
+            WHERE gtr_track_type = 'S')
     WHERE gsu_id_survey IN
         (SELECT gro_id_survey
             FROM gems__rounds INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
-            WHERE gtr_track_class = 'SingleSurveyEngine');
+            WHERE gtr_track_type = 'S');
+
+-- Move SingleSurveyEngine tracks to AnyStepEngine
+UPDATE gems__rounds
+    SET gro_valid_after_id     = null,
+        gro_valid_after_source = 'rtr',
+        gro_valid_after_field  = 'gr2t_start_date',
+        gro_valid_after_unit   = 'M',
+        gro_valid_after_length = 0,
+        gro_valid_for_id     = null,
+        gro_valid_for_source = 'rtr',
+        gro_valid_for_field  = 'gr2t_start_date',
+        gro_valid_for_unit   = 'M',
+        gro_valid_for_length = 6
+    WHERE gro_id_track IN (SELECT gtr_id_track FROM gems__tracks WHERE gtr_track_type = 'S');
+
+UPDATE gems__tracks
+    SET gtr_track_class = 'AnyStepEngine'
+    WHERE gtr_track_class = 'SingleSurveyEngine' AND
+        gtr_id_track IN (SELECT gr2t_id_track FROM gems__respondent2track);
+
+UPDATE gems__tracks
+    SET gtr_active = 0,
+        gtr_date_until = CURRENT_DATE
+    WHERE gtr_track_class = 'SingleSurveyEngine' AND
+        gtr_id_track NOT IN (SELECT gr2t_id_track FROM gems__respondent2track);
+
+ALTER IGNORE TABLE gems__tracks DROP gtr_track_model;
+
+-- PATCH: New rights for insert action
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.insert')
+    WHERE grl_privileges LIKE '%,pr.survey.create%';
+

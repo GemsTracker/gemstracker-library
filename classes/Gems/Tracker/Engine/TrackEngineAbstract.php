@@ -44,12 +44,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_TranslateableAbstract implements Gems_Tracker_Engine_TrackEngineInterface
+abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_TranslateableAbstract implements \Gems_Tracker_Engine_TrackEngineInterface
 {
     /**
      * Stores how the fields are define for this track
      *
-     * @var Gems_Tracker_Engine_FieldsDefinition
+     * @var \Gems_Tracker_Engine_FieldsDefinition
      */
     protected $_fieldsDefinition;
 
@@ -73,37 +73,37 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Events
+     * @var \Gems_Events
      */
     protected $events;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Gems_Tracker
+     * @var \Gems_Tracker
      */
     protected $tracker;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      *
-     * @var Zend_View
+     * @var \Zend_View
      */
     protected $view;
 
@@ -130,7 +130,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 ->where('gro_id_track = ?', $this->_trackId)
                 ->order('gro_id_order');
 
-            // MUtil_Echo::r((string) $roundSelect);
+            // \MUtil_Echo::r((string) $roundSelect);
 
             $this->_rounds  = array();
             foreach ($roundSelect->query()->fetchAll() as $round) {
@@ -152,8 +152,8 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             if ($fileinfo->isFile()) {
                 // $icons[$fileinfo->getFilename()] = $fileinfo->getFilename();
                 $filename = $fileinfo->getFilename();
-                $url = $this->view->baseUrl() . MUtil_Html_ImgElement::getImageDir($filename);
-                $icons[$fileinfo->getFilename()] = MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
+                $url = $this->view->baseUrl() . \MUtil_Html_ImgElement::getImageDir($filename);
+                $icons[$fileinfo->getFilename()] = \MUtil_Html::create('span', $filename, array('style' => 'background: transparent url(' . $url . $filename . ') center right no-repeat; padding-right: 20px;'));
             }
         }
 
@@ -171,16 +171,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         if ($this->tracker->filterChangesOnly($this->_trackData, $values)) {
 
-            if (Gems_Tracker::$verbose) {
+            if (\Gems_Tracker::$verbose) {
                 $echo = '';
                 foreach ($values as $key => $val) {
                     $echo .= $key . ': ' . $this->_trackData[$key] . ' => ' . $val . "\n";
                 }
-                MUtil_Echo::r($echo, 'Updated values for ' . $this->_trackId);
+                \MUtil_Echo::r($echo, 'Updated values for ' . $this->_trackId);
             }
 
             if (! isset($values['gto_changed'])) {
-                $values['gtr_changed'] = new MUtil_Db_Expr_CurrentTimestamp();
+                $values['gtr_changed'] = new \MUtil_Db_Expr_CurrentTimestamp();
             }
             if (! isset($values['gtr_changed_by'])) {
                 $values['gtr_changed_by'] = $userId;
@@ -211,7 +211,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     {
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
-            $transformer = new Gems_Tracker_Model_RespondentTrackModelTransformer(
+            $transformer = new \Gems_Tracker_Model_RespondentTrackModelTransformer(
                     $this->loader,
                     $this->_fieldsDefinition,
                     $respondentId,
@@ -231,11 +231,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * NOTE: When overruling this function you should not create tokens because they
      * were deleted by the user
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens created by this code
      */
-    protected function addNewTokens(Gems_Tracker_RespondentTrack $respTrack, $userId)
+    protected function addNewTokens(\Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
         $orgId       = $respTrack->getOrganizationId();
         $respId      = $respTrack->getRespondentId();
@@ -293,13 +293,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Set menu parameters from this track engine
      *
-     * @param Gems_Menu_ParameterSource $source
-     * @return Gems_Tracker_Engine_TrackEngineInterface (continuation pattern)
+     * @param \Gems_Menu_ParameterSource $source
+     * @return \Gems_Tracker_Engine_TrackEngineInterface (continuation pattern)
      */
-    public function applyToMenuSource(Gems_Menu_ParameterSource $source)
+    public function applyToMenuSource(\Gems_Menu_ParameterSource $source)
     {
         $source->setTrackId($this->_trackId);
-        $source->setTrackType($this->getTrackType());
         return $this;
     }
 
@@ -328,11 +327,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Checks all existing tokens and updates any changes to the original rounds (when necessary)
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    protected function checkExistingRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId)
+    protected function checkExistingRoundsFor(\Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
         // Quote here, I like to keep bound parameters limited to the WHERE
         // Besides, these statements are not order dependent while parameters are and do not repeat
@@ -392,14 +391,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Check for the existence of all tokens and create them otherwise
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
-     * @param Gems_Task_TaskRunnerBatch $changes batch for counters
+     * @param \Gems_Task_TaskRunnerBatch $changes batch for counters
      */
-    public function checkRoundsFor(Gems_Tracker_RespondentTrack $respTrack, $userId, Gems_Task_TaskRunnerBatch $batch = null)
+    public function checkRoundsFor(\Gems_Tracker_RespondentTrack $respTrack, $userId, \Gems_Task_TaskRunnerBatch $batch = null)
     {
         if (null === $batch) {
-            $batch = new Gems_Task_TaskRunnerBatch('tmp-tack-' . $respTrack->getRespondentTrackId());
+            $batch = new \Gems_Task_TaskRunnerBatch('tmp-tack-' . $respTrack->getRespondentTrackId());
         }
         // Step one: update existing tokens
         $i = $batch->addToCounter('roundChangeUpdates', $this->checkExistingRoundsFor($respTrack, $userId));
@@ -433,7 +432,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      */
     public function convertTo($conversionTargetClass)
     {
-        throw new Gems_Exception_Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
+        throw new \Gems_Exception_Coding(sprintf($this->_('%s track engines cannot be converted to %s track engines.'), $this->getName(), $conversionTargetClass));
     }
 
     /**
@@ -500,10 +499,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
             $numFields = 0;
         }
 
-        //MUtil_Echo::track($track, $copy);
-        //MUtil_Echo::track($rounds, $newRounds);
-        //MUtil_Echo::track($fields, $newFields);
-        Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
+        //\MUtil_Echo::track($track, $copy);
+        //\MUtil_Echo::track($rounds, $newRounds);
+        //\MUtil_Echo::track($fields, $newFields);
+        \Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger')->addMessage(sprintf($this->_('Copied track, including %s round(s) and %s field(s).'), $numRounds, $numFields));
 
         return $newTrackId;
     }
@@ -511,11 +510,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Create model for rounds. Allowes overriding by sub classes.
      *
-     * @return Gems_Model_JoinModel
+     * @return \Gems_Model_JoinModel
      */
     protected function createRoundModel()
     {
-        return new Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
+        return new \Gems_Model_JoinModel('rounds', 'gems__rounds', 'gro');
     }
 
     /**
@@ -572,7 +571,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Get the storage model for field values
      *
-     * @return Gems_Tracker_Model_FieldDataModel
+     * @return \Gems_Tracker_Model_FieldDataModel
      */
     public function getFieldsDataStorageModel()
     {
@@ -585,7 +584,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @param array $data the current request data
-     * @return Gems_Tracker_Model_FieldMaintenanceModel
+     * @return \Gems_Tracker_Model_FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed, $action, array $data)
     {
@@ -620,7 +619,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Get the FieldUpdateEvent for this trackId
      *
-     * @return Gems_TrackFieldUpdateEventInterface | null
+     * @return \Gems_TrackFieldUpdateEventInterface | null
      */
     public function getFieldUpdateEvent()
     {
@@ -694,7 +693,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
            }
 
 
-           throw new Gems_Exception_Coding("Requested non existing previous round id for round $roundId.");
+           throw new \Gems_Exception_Coding("Requested non existing previous round id for round $roundId.");
 
        } elseif ($this->_rounds) {
             end($this->_rounds);
@@ -710,10 +709,10 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Returns a snippet name that can be used to display the answers to the token or nothing.
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return array Of snippet names
      */
-    public function getRoundAnswerSnippets(Gems_Tracker_Token $token)
+    public function getRoundAnswerSnippets(\Gems_Tracker_Token $token)
     {
         $this->_ensureRounds();
         $roundId = $token->getRoundId();
@@ -729,7 +728,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      * Return the Round Changed event name for this round
      *
      * @param int $roundId
-     * @return Gems_Event_RoundChangedEventInterface event instance or null
+     * @return \Gems_Event_RoundChangedEventInterface event instance or null
      */
     public function getRoundChangedEvent($roundId)
     {
@@ -812,17 +811,17 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function getRoundModel($detailed, $action)
     {
         $model = $this->createRoundModel();
 
         // Set the keys to the parameters in use.
-        $model->setKeys(array(MUtil_Model::REQUEST_ID => 'gro_id_track', Gems_Model::ROUND_ID => 'gro_id_round'));
+        $model->setKeys(array(\MUtil_Model::REQUEST_ID => 'gro_id_track', \Gems_Model::ROUND_ID => 'gro_id_round'));
 
         if ($detailed) {
-            $model->set('gro_id_track',  'label', $this->_('Track'), 'elementClass', 'exhibitor', 'multiOptions', MUtil_Lazy::call($this->util->getTrackData()->getAllTracks));
+            $model->set('gro_id_track',  'label', $this->_('Track'), 'elementClass', 'exhibitor', 'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks));
         }
 
         $model->set('gro_id_survey',         'label', $this->_('Survey'),         'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions());
@@ -854,7 +853,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
                 'multiOptions', $this->util->getDbLookup()->getOrganizations(),
                 'data-source', 'org_specific_round'
                 );
-        $tp = new MUtil_Model_Type_ConcatenatedRow('|', ', ');
+        $tp = new \MUtil_Model_Type_ConcatenatedRow('|', ', ');
         $tp->apply($model, 'organizations');
 
         switch ($action) {
@@ -898,7 +897,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Returns a model that can be used to save, edit, etc. the token
      *
-     * @return Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems_Tracker_Model_StandardTokenModel
      */
     public function getTokenModel()
     {
@@ -908,7 +907,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Get the TrackCompletedEvent for this trackId
      *
-     * @return Gems_Event_TrackCalculationEventInterface | null
+     * @return \Gems_Event_TrackCalculationEventInterface | null
      */
     public function getTrackCalculationEvent()
     {
@@ -920,7 +919,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Get the TrackCompletedEvent for this trackId
      *
-     * @return Gems_Event_TrackCompletedEventInterface|null
+     * @return \Gems_Event_TrackCompletedEventInterface|null
      */
     public function getTrackCompletionEvent()
     {
@@ -961,11 +960,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends MUtil_Translate_T
     /**
      * Remove the unanswered tokens for inactive rounds.
      *
-     * @param Gems_Tracker_RespondentTrack $respTrack The respondent track to check
+     * @param \Gems_Tracker_RespondentTrack $respTrack The respondent track to check
      * @param int $userId Id of the user who takes the action (for logging)
      * @return int The number of tokens changed by this code
      */
-    protected function removeInactiveRounds(Gems_Tracker_RespondentTrack $respTrack, $userId)
+    protected function removeInactiveRounds(\Gems_Tracker_RespondentTrack $respTrack, $userId)
     {
         $qTrackId     = $this->db->quote($this->_trackId);
         $qRespTrackId = $this->db->quote($respTrack->getRespondentTrackId());

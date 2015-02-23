@@ -106,37 +106,17 @@ class TrackUsageTextDetailsSnippet extends \MUtil_Snippets_SnippetAbstract
         }
 
         if (isset($this->trackData['gtr_date_until']) && $this->trackData['gtr_date_until']) {
-            switch ($this->trackData['gtr_track_type']) {
-                case 'S':
-                    $text = $this->_('This survey can be assigned from %s until %s.');
-                    break;
-
-                default:
-                    $text = $this->_('This track can be assigned from %s until %s.');
-
-            }
-
             $html->pInfo(
                 sprintf(
-                    $text,
+                    $this->_('This track can be assigned from %s until %s.'),
                     \MUtil_Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG),
                     \MUtil_Date::format($this->trackData['gtr_date_until'], \Zend_Date::DATE_LONG))
                 );
 
-        } else if (isset($this->trackData['gtr_track_type'])) {
-            switch ($this->trackData['gtr_track_type']) {
-                case 'S':
-                    $text = $this->_('This survey can be assigned since %s.');
-                    break;
-
-                default:
-                    $text = $this->_('This track can be assigned since %s.');
-
-            }
-
+        } else {
             $html->pInfo(
                 sprintf(
-                    $text,
+                    $this->_('This track can be assigned since %s.'),
                     \MUtil_Date::format($this->trackData['gtr_date_start'], \Zend_Date::DATE_LONG))
                 );
         }

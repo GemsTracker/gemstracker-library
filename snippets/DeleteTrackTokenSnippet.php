@@ -103,7 +103,6 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
         $bridge->addHidden('gto_id_track');
         $bridge->addHidden('gto_id_survey');
         $bridge->addHidden('gtr_id_track');
-        $bridge->addHidden('gtr_track_type');
 
         // Patient
         $bridge->addExhibitor('gto_id_token');
@@ -255,7 +254,6 @@ class DeleteTrackTokenSnippet extends Gems_Tracker_Snippets_EditTokenSnippetAbst
             // Create a link for the old token
             if ($menuItem = $this->menu->find(array('controller' => $this->request->getControllerName(), 'action' => 'show', 'allowed' => true))) {
                 $paramSource['gto_id_token']      = $this->tokenId;
-                $paramSource['gtr_track_type']    = $this->token->getTrackEngine()->getTrackType();
                 $paramSource[Gems_Model::ID_TYPE] = 'token';
 
                 $link = $menuItem->toActionLink($paramSource, strtoupper($this->tokenId), true);

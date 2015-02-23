@@ -41,12 +41,12 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
   */
-class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_TokenPlanTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     public $filter = array();
 
     /**
-     * @var GemsEscort
+     * @var \GemsEscort
      */
     public $escort;
 
@@ -56,8 +56,8 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
     public function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
@@ -69,12 +69,9 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         $model->set('gto_mail_sent_date',    'label', $this->_('Contact date'));
         $model->set('respondent_name',       'label', $this->_('Name'));
 
-        $HTML  = MUtil_Html::create();
+        $HTML  = \MUtil_Html::create();
 
-        // Row with dates and patient data
-        $bridge->gtr_track_type; // Data needed for buttons
-
-        $bridge->setDefaultRowClass(MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
+        $bridge->setDefaultRowClass(\MUtil_Html_TableElement::createAlternateRowClass('even', 'even', 'odd', 'odd'));
         $bridge->addColumn($this->getTokenLinks($bridge), ' ')->rowspan = 2; // Space needed because TableElement does not look at rowspans
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
@@ -86,21 +83,21 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         $bridge->addSortable('gto_mail_sent_date');
         $bridge->addSortable('gto_completion_time');
 
-        if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
-            $bridge->addMultiSort('calc_round_description', $HTML->raw('; '), 'gsu_survey_name');
+        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
+            $bridge->addMultiSort('gto_round_description', $HTML->raw('; '), 'gsu_survey_name');
         } else {
-            $model->set('calc_track_info', 'tableDisplay', 'smallData');
-            $model->set('calc_round_description', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
+            $model->set('gto_round_description', 'tableDisplay', 'smallData');
             $bridge->addMultiSort(
-                'calc_track_name', 'calc_track_info',
-                $bridge->calc_track_name->if($HTML->raw(' &raquo; ')),
-                'gsu_survey_name', 'calc_round_description');
+                'gtr_track_name', 'gr2t_track_info',
+                $bridge->gtr_track_name->if($HTML->raw(' &raquo; ')),
+                'gsu_survey_name', 'gto_round_description');
         }
 
         $bridge->addSortable('assigned_by');
     }
 
-    public function getActionLinks(MUtil_Model_Bridge_TableBridge $bridge)
+    public function getActionLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the other token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => array('email', 'answer'), 'allowed' => true))) {
@@ -125,7 +122,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         return $buttons;
     }
 
-    public function getTokenLinks(MUtil_Model_Bridge_TableBridge $bridge)
+    public function getTokenLinks(\MUtil_Model_Bridge_TableBridge $bridge)
     {
         // Get the token buttons
         if ($menuItems = $this->menu->findAll(array('controller' => array('track', 'survey'), 'action' => 'show', 'allowed' => true))) {
@@ -136,7 +133,7 @@ class Gems_Snippets_TokenPlanTableSnippet extends Gems_Snippets_ModelTableSnippe
         }
     }
 
-    public function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    public function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
         if (!empty($this->filter)) {
             $model->setFilter($this->filter);

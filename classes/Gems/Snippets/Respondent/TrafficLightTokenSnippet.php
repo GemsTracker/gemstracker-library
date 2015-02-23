@@ -1,41 +1,53 @@
 <?php
 
 /**
- * Description of TrafficLightTokenSnippet
+ * Copyright (c) 2014, Erasmus MC
+ * All rights reserved.
  *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright
+ *      notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above copyright
+ *      notice, this list of conditions and the following disclaimer in the
+ *      documentation and/or other materials provided with the distribution.
+ *    * Neither the name of Erasmus MC nor the
+ *      names of its contributors may be used to endorse or promote products
+ *      derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    Gems
+ * @subpackage Snippets
+ * @author     Menno Dekker
+ * @copyright  Copyright (c) 2014 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id: TrafficLightTokenSnippet.php 2136 2014-09-29 14:58:20Z matijsdejong $
+ */
+
+/**
  * Show the track in a different way, ordered by round and group showing
  * traffic light color indicating the status of a token and uses inline
  * answer display.
  *
  * @package    Gems
- * @subpackage Gems
- * @author     175780
+ * @subpackage Snippets
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id$
+ * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_RespondentTokenSnippet {
-
-    public $browse = false;
-
-    /**
-     * @var MUtil_Html_Creator
-     */
-    public $creator         = null;
-    protected $_fixedSort   = array(
-        'gr2t_start_date'         => SORT_DESC,
-        'gto_id_respondent_track' => SORT_DESC,
-        'gto_valid_from'          => SORT_ASC,
-        'gto_round_description'   => SORT_ASC,
-        'forgroup'                => SORT_ASC
-    );
-    protected $_fixedFilter = array(
-        'gto_valid_from <= NOW()'
-    );
-    protected $_completed   = 0;
-    protected $_open        = 0;
-    protected $_missed      = 0;
-
+class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends \Gems_Snippets_RespondentTokenSnippet
+{
     /**
      * The display format for the date
      *
@@ -43,36 +55,59 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
      */
     protected $_dateFormat;
 
+    protected $_fixedFilter = array(
+        'gto_valid_from <= NOW()'
+    );
+
+    protected $_fixedSort   = array(
+        'gr2t_start_date'         => SORT_DESC,
+        'gto_id_respondent_track' => SORT_DESC,
+        'gto_valid_from'          => SORT_ASC,
+        'gto_round_description'   => SORT_ASC,
+        'forgroup'                => SORT_ASC
+    );
+
+    protected $_completed   = 0;
+    protected $_open        = 0;
+    protected $_missed      = 0;
+
     /**
      *
-     * @var Gems_Menu_SubMenuItem
+     * @var \Gems_Menu_SubMenuItem
      */
     protected $_surveyAnswer;
 
     /**
      *
-     * @var Gems_Menu_SubMenuItem
+     * @var \Gems_Menu_SubMenuItem
      */
     protected $_trackAnswer;
 
     /**
      *
-     * @var Gems_Menu_SubMenuItem
+     * @var \Gems_Menu_SubMenuItem
      */
     protected $_takeSurvey;
+
+    public $browse = false;
+
+    /**
+     * @var \MUtil_Html_Creator
+     */
+    public $creator         = null;
 
     /**
      * Initialize the view
      *
      * Make sure the needed javascript is loaded
      *
-     * @param Zend_View $view
+     * @param \Zend_View $view
      */
     protected function _initView($view) {
-        $baseUrl = GemsEscort::getInstance()->basepath->getBasePath();
+        $baseUrl = \GemsEscort::getInstance()->basepath->getBasePath();
 
         // Make sure we can use jQuery
-        MUtil_JQuery::enableView($view);
+        \MUtil_JQuery::enableView($view);
 
         // Now add the scrollTo plugin so we can scroll to today
         $view->headScript()->appendFile($baseUrl . '/gems/js/jquery.scrollTo.min.js');
@@ -193,7 +228,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     }
 
     /**
-     * Copied from Gems_Token, to save overhead of loading a token just for this check
+     * Copied from \Gems_Token, to save overhead of loading a token just for this check
      *
      * @param array $tokenData
      * @return boolean
@@ -211,11 +246,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         if ($this->_isCompleted($tokenData)) {
             $status = $this->creator->span($this->translate->_('Answered'), array('class' => 'success'));
             $status = '';
-            if ($tokenData['gtr_track_type'] == 'T') {
-                $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', $status, $this->_trackAnswer);
-            } else {
-                $tokenLink = $this->createMenuLink($tokenData, 'survey', 'answer', $status, $this->_surveyAnswer);
-            }
+            $tokenLink = $this->createMenuLink($tokenData, 'track', 'answer', $status, $this->_trackAnswer);
         } else {
             $status = $this->creator->span($this->translate->_('Fill in'), array('class' => 'warning'));
             $status = '';
@@ -251,10 +282,10 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         parent::afterRegistry();
 
         // Load the display dateformat
-        $dateOptions       = MUtil_Model_Bridge_FormBridge::getFixedOptions('date');
+        $dateOptions       = \MUtil_Model_Bridge_FormBridge::getFixedOptions('date');
         $this->_dateFormat = $dateOptions['dateFormat'];
 
-        $this->creator = Gems_Html::init();
+        $this->creator = \Gems_Html::init();
     }
 
     /**
@@ -288,7 +319,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         return $model;
     }
 
-    public function getHtmlOutput(Zend_View_Abstract $view) {
+    public function getHtmlOutput(\Zend_View_Abstract $view) {
         $this->_initView($view);
 
         $main = $this->creator->div(array('id'=>'wrapper' , 'renderClosingTag' => true));
@@ -306,7 +337,6 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
             'gto_id_token',
             'gto_round_description',
             'forgroup',
-            'gtr_track_type',
             'gsu_survey_name',
             'gto_completion_time',
             'gr2o_patient_nr',
@@ -321,7 +351,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
         $lastDate        = null;
         $lastDescription = null;
         $doelgroep       = null;
-        $today           = new MUtil_Date();
+        $today           = new \MUtil_Date();
         $today           = $today->get($this->_dateFormat);
         $progressDiv     = null;
         $respTrackId     = 0;
@@ -341,13 +371,12 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
                 $trackHeading = $track->div(array('class' => 'panel-heading', 'renderClosingTag' => true));
                 $trackHeading->h3($row['gtr_track_name'], array('class'=>"panel-title"))->span(array('class'=>"fa fa-chevron-down fa-fw"));
 
-                $editLink = MUtil_Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
+                $editLink = \MUtil_Html::create('span', array('class' => 'fa fa-pencil', 'renderClosingTag' => true));
 
-                    $editTrackContainer = MUtil_Html::create('div', array('class' => 'editIcon'));
+                    $editTrackContainer = \MUtil_Html::create('div', array('class' => 'editIcon'));
                      $link = $this->createMenuLink(
                         array(
                             'gr2t_id_respondent_track' => $row['gto_id_respondent_track'],
-                            'gtr_track_type' => 'T',
                             'gr2o_patient_nr' => $row['gr2o_patient_nr'],
                             'gr2o_id_organization' => $row['gr2o_id_organization'],
                             'can_edit' => 1
@@ -368,7 +397,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
                 $cva              = $container->div(array('class' => 'objecten', 'renderClosingTag' => true));
             }
             $date = $row['gto_valid_from'];
-            if ($date instanceof Zend_Date) {
+            if ($date instanceof \Zend_Date) {
                 $date = $date->get($this->_dateFormat);
             } else {
                 continue;
@@ -395,7 +424,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
                 $doelgroep    = $row['forgroup'];
                 $doelgroepDiv = $day->div(array('class' => 'actor', 'renderClosingTag' => true));
                 //$progressDiv  = $doelgroepDiv->div(array('class' => 'progress'));
-                $minIcon = MUtil_Html::create('span',array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
+                $minIcon = \MUtil_Html::create('span',array('class' => 'fa fa-plus-square', 'renderClosingTag' => true));
                 $title = $doelgroepDiv->h5(array($minIcon, $doelgroep));
                 $progressDiv  = $doelgroepDiv->div(array('class' => 'zplegenda', 'renderClosingTag' => true));
                 $tokenDiv = $doelgroepDiv->div(array('class' => 'zpitems', 'renderClosingTag' => true));
@@ -431,9 +460,9 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model) {
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model) {
         $model->setFilter($this->_fixedFilter);
         $filter['gto_id_respondent'] = $this->respondentData['grs_id_user'];
         if (is_array($this->forOtherOrgs)) {
@@ -454,7 +483,7 @@ class Gems_Snippets_Respondent_TrafficLightTokenSnippet extends Gems_Snippets_Re
 
         $model->addFilter($filter);
 
-        // MUtil_Echo::track($model->getFilter());
+        // \MUtil_Echo::track($model->getFilter());
         //$this->processSortOnly($model);
     }
 

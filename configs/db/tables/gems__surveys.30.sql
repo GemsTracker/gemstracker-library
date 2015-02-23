@@ -21,6 +21,7 @@ CREATE TABLE if not exists gems__surveys (
         gsu_insertable              boolean not null default 0,
         gsu_valid_for_unit          char(1) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' not null default 'M',
         gsu_valid_for_length        int not null default 6,
+        gsu_insert_organizations    varchar(250) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gsu_result_field            varchar(20) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 

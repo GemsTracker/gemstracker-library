@@ -718,23 +718,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
             // TODO: patch en extend later
             if (! isset($trackData['gtr_track_class'])) {
-                if ($trackData['gtr_track_type'] == 'S') {
-                    $trackData['gtr_track_class'] = 'SingleSurveyEngine';
-                } else {
-                    switch ($trackData['gtr_track_model']) {
-                        case 'NewTrackModel':
-                            $trackData['gtr_track_class'] = 'AnyStepEngine';
-                            break;
-
-                        case 'TrackModel':
-                            $trackData['gtr_track_class'] = 'NextStepEngine';
-                            break;
-
-                    }
-                }
-            }
-            if (! isset($trackData['gtr_track_class'])) {
-                throw new \Gems_Exception_Coding('Missing engine class for track ID: ' . $trackId);
+                $trackData['gtr_track_class'] = 'AnyStepEngine';
             }
 
             $this->_trackEngines[$trackId] = $this->_loadClass('engine_' . $trackData['gtr_track_class'], true, array($trackData));
@@ -792,7 +776,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
      */
     public function getTrackEngineEditSnippets()
     {
-        return array('EditTrackEngineSnippet');
+        return array('Tracker\\EditTrackEngineSnippet');
     }
 
     /**

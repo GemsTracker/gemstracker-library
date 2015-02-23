@@ -44,11 +44,31 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
+     * Menu actions to show in Edit box.
      *
-     * @var Gems_Util
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuEditActions = array();
+
+    /**
+     * Menu actions to show in Show box.
+     *
+     * If controller is numeric $menuActionController is used, otherwise
+     * the key specifies the controller.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuShowActions = array('track' => 'show-track');
+
+    /**
+     *
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -58,11 +78,11 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $tUtil = $this->util->getTokenData();
         $table = $bridge->getTable();
@@ -79,9 +99,9 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         if ($showMenuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($showMenuItem->toActionLinkLower($this->request, $bridge));
         }
-        
+
         // Initialize alter
-        $alternateClass = new MUtil_Lazy_Alternate(array('odd', 'even'));
+        $alternateClass = new \MUtil_Lazy_Alternate(array('odd', 'even'));
 
         foreach($model->getItemsOrdered() as $name) {
             if ($label = $model->get($name, 'label')) {
@@ -90,7 +110,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                     $span++;
                     $class = null;
                 } else {
-                    // If the round has an icon, show the icon else just 'R' since 
+                    // If the round has an icon, show the icon else just 'R' since
                     // complete round description messes up the display
                     $th->append($cDesc);
                     $th->title = $cRound;
@@ -99,8 +119,8 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                     $span    = 1;
                     $cRound  = $round;
                     if ($cIcon = $model->get($name, 'roundIcon')) {
-                        $cDesc = MUtil_Html_ImgElement::imgFile($cIcon, array(
-                            'alt'   => $cRound, 
+                        $cDesc = \MUtil_Html_ImgElement::imgFile($cIcon, array(
+                            'alt'   => $cRound,
                             'title' => $cRound
                         ));
                     } else {
@@ -117,25 +137,25 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
 
                 if ($model->get($name, 'noSort')) {
                     $title = array(
-                        MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
+                        \MUtil_Lazy::method($tUtil, 'getStatusDescription', $bridge->$name),
                         "\n" . $model->get($name, 'description')
                         );
                     $token = 'tok_' . substr($name, 5);
 
-                    $href = new MUtil_Html_HrefArrayAttribute(array(
+                    $href = new \MUtil_Html_HrefArrayAttribute(array(
                         $this->request->getControllerKey() => 'track', // This code is only used for tracks :)
                         $this->request->getActionKey()     => 'show',
-                        MUtil_Model::REQUEST_ID            => $bridge->$token,
+                        \MUtil_Model::REQUEST_ID            => $bridge->$token,
                         ));
                     $href->setRouteReset();
 
-                    $onclick = new MUtil_Html_OnClickArrayAttribute();
+                    $onclick = new \MUtil_Html_OnClickArrayAttribute();
                     $onclick->addUrl($href)
                             ->addCancelBubble();
 
                     $tds   = $bridge->addColumn(
                             array(
-                                MUtil_Html_AElement::iflink(
+                                \MUtil_Html_AElement::iflink(
                                         $bridge->$token,
                                         array(
                                             $href,
@@ -145,10 +165,10 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
                                             ),
                                         $bridge->$name
                                         ),
-                                'class'   => array('round', MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
+                                'class'   => array('round', \MUtil_Lazy::method($tUtil, 'getStatusClass', $bridge->$name)),
                                 'title'   => $title,
                                 // onclick is needed because the link does not fill the whole cell
-                                'onclick' => MUtil_Lazy::iff($bridge->$token, $onclick),
+                                'onclick' => \MUtil_Lazy::iff($bridge->$token, $onclick),
                                 ),
                             array($label, 'title' => $model->get($name, 'description'), 'class' => 'round')
                             );
@@ -162,15 +182,5 @@ class Gems_Snippets_Tracker_Compliance_ComplianceTableSnippet extends Gems_Snipp
         }
         $th->append($cRound);
         $th->colspan = $span;
-    }
-
-    /**
-     * Returns a show menu item, if access is allowed by privileges
-     *
-     * @return Gems_Menu_SubMenuItem
-     */
-    protected function getShowMenuItem()
-    {
-        return $this->findMenuItem('track', 'show-track');
     }
 }

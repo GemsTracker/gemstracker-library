@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.2
  */
-class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -92,7 +92,7 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return Gems_Model_TrackModel
+     * @return \Gems_Model_TrackModel
      */
     public function createModel($detailed, $action)
     {
@@ -114,7 +114,7 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
     public function getDeleteQuestion()
     {
         $field = $this->_getParam('fid');
-        if (Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
+        if (\Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
             $used  = $this->db->fetchOne(
                     "SELECT COUNT(*)
                         FROM gems__respondent2track2appointment
@@ -164,21 +164,5 @@ class Gems_Default_TrackFieldsAction extends Gems_Controller_ModelSnippetActionA
     public function getTopic($count = 1)
     {
         return $this->plural('field', 'fields', $count);
-    }
-
-    /**
-     * Set the menu
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        // Make sure the menu knows the track type
-        $source = $this->menu->getParameterSource();
-        $source->setTrackType($this->db->fetchOne('SELECT gtr_track_type FROM gems__tracks WHERE gtr_id_track = ?', $this->_getIdParam()));
-
-        return parent::init();
     }
 }

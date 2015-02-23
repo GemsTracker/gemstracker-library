@@ -53,11 +53,11 @@
  * - gems__surveys
  * - gems__tracks
  *
- * The MUtil_Registry_TargetInterface is implemented so that
+ * The \MUtil_Registry_TargetInterface is implemented so that
  * these models can take care of their own formatting.
  *
- * @see Gems_Tracker_Engine_TrackEngineInterface
- * @see Gems_Tracker_Model_SingleSurveyTokenModel
+ * @see \Gems_Tracker_Engine_TrackEngineInterface
+ * @see \Gems_Tracker_Model_SingleSurveyTokenModel
  *
  * @package    Gems
  * @subpackage Tracker
@@ -65,7 +65,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizationModel
+class Gems_Tracker_Model_StandardTokenModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
      *
@@ -74,12 +74,12 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     protected $saveRespondentTracks = false;
 
     /**
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -105,19 +105,6 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         $this->addTable(    'gems__reception_codes',  array('gto_reception_code' => 'grc_id_reception_code'));
         $this->addLeftTable('gems__rounds',           array('gto_id_round' => 'gro_id_round'));
         $this->addLeftTable('gems__staff',            array('gr2t_created_by' => 'gems__staff.gsf_id_user'));
-
-        $this->addColumn(
-            "CASE WHEN gtr_track_type = 'T' THEN gtr_track_name ELSE NULL END",
-            'calc_track_name',
-            'gtr_track_name');
-        $this->addColumn(
-            "CASE WHEN gtr_track_type = 'T' THEN gr2t_track_info ELSE NULL END",
-            'calc_track_info',
-            'gr2t_track_info');
-        $this->addColumn(
-            "CASE WHEN gtr_track_type = 'T' THEN gto_round_description ELSE gr2t_track_info END",
-            'calc_round_description',
-            'gto_round_description');
 
         $this->addColumn(
             "CASE WHEN CHAR_LENGTH(gsu_survey_name) > 30 THEN CONCAT(SUBSTRING(gsu_survey_name, 1, 28), '...') ELSE gsu_survey_name END",
@@ -155,7 +142,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
                     )
                 END",
             'assigned_by');
-        $this->addColumn(new Zend_Db_Expr("'token'"), Gems_Model::ID_TYPE);
+        $this->addColumn(new \Zend_Db_Expr("'token'"), \Gems_Model::ID_TYPE);
         /*    TRIM(CONCAT(
                 CASE WHEN gto_created = gto_changed OR DATEDIFF(CURRENT_TIMESTAMP, gto_changed) > 0 THEN '' ELSE 'changed' END,
                 ' ',
@@ -176,7 +163,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
         if ($escort->hasPrivilege('pr.respondent.result')) {
             $this->addColumn('gto_result', 'calc_result', 'gto_result');
         } else {
-            $this->addColumn(new Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
+            $this->addColumn(new \Zend_Db_Expr('NULL'), 'calc_result', 'gto_result');
         }
 
         $this->set('gsu_id_primary_group', 'default', 800);
@@ -217,16 +204,16 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
             return true;
         }
 
-        if ($context['gto_valid_from'] instanceof Zend_Date) {
+        if ($context['gto_valid_from'] instanceof \Zend_Date) {
             $start = $context['gto_valid_from'];
         } else {
-            $start = new MUtil_Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
+            $start = new \MUtil_Date($context['gto_valid_from'], $this->get('gto_valid_from', 'dateFormat'));
         }
 
-        if ($context['gto_mail_sent_date'] instanceof Zend_Date) {
+        if ($context['gto_mail_sent_date'] instanceof \Zend_Date) {
             $sent = $context['gto_mail_sent_date'];
         } else {
-            $sent = new MUtil_Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
+            $sent = new \MUtil_Date($context['gto_mail_sent_date'], $this->get('gto_mail_sent_date', 'dateFormat'));
         }
 
         return $start->isLater($sent);
@@ -240,7 +227,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
      */
     public function addEditTracking()
     {
-        $changer = new MUtil_Model_Type_ChangeTracker($this, 1, 0);
+        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
 
         $changer->apply('gto_valid_from_manual',  'gto_valid_from');
         $changer->apply('gto_valid_until_manual', 'gto_valid_until');
@@ -251,7 +238,7 @@ class Gems_Tracker_Model_StandardTokenModel extends Gems_Model_HiddenOrganizatio
     /**
      * Sets the labels, format functions, etc...
      *
-     * @return Gems_Tracker_Model_StandardTokenModel
+     * @return \Gems_Tracker_Model_StandardTokenModel
      */
     public function applyFormatting()
     {

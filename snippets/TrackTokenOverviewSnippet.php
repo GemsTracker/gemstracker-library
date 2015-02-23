@@ -101,7 +101,6 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
     protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Signal the bridge that we need these values
-        $bridge->gtr_track_type;
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
 
@@ -159,12 +158,12 @@ class TrackTokenOverviewSnippet extends Gems_Snippets_TokenModelSnippetAbstract
     public function getHtmlOutput(Zend_View_Abstract $view)
     {
         $table = parent::getHtmlOutput($view);
-        
+
         $table->class = $this->class;
         $this->applyHtmlAttributes($table);
         $this->class = false;
         $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'), $table);
-        
+
         return $tableContainer;
     }
 

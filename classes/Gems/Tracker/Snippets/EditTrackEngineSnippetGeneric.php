@@ -134,9 +134,6 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
         if (! $this->createData) {
             $bridge->addCheckbox('gtr_active');
         }
-        if ($model->has('gtr_display_group')) {
-            $bridge->add('gtr_display_group');
-        }
         if ($model->has('gtr_code')) {
             $bridge->addText('gtr_code');
         }
@@ -149,7 +146,7 @@ class Gems_Tracker_Snippets_EditTrackEngineSnippetGeneric extends \Gems_Snippets
         if ($model->has('gtr_fieldupdate_event', 'label')) {
             $bridge->add('gtr_fieldupdate_event');
         }
-        $bridge->addMultiCheckbox('gtr_organizations', 'label', $this->_('Organizations'), 'multiOptions', $this->util->getDbLookup()->getOrganizations(), 'required', true);
+        $bridge->add('gtr_organizations');
 
         $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
         $element->setLabel($this->_('Toggle'));

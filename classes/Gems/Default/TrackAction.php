@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
+class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
 {
     /**
      * Use these snippets to show the content of a track
@@ -55,7 +55,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -63,18 +63,16 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
     public $summarizedActions = array('index', 'autofilter', 'create', 'delete-track', 'edit-track', 'show-track', 'export-track');
 
-    public $trackType = 'T';
-
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @rturn void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->gr2t_id_respondent_track; //For show and edit button
 
@@ -104,15 +102,15 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The data that will later be loaded into the form
      * @param optional boolean $new Form should be for a new element
      * @return void|array When an array of new values is return, these are used to update the $data array in the calling function
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, array $data, $new = false)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, array $data, $new = false)
     {
-        if ($model instanceof Gems_Tracker_Model_RespondentTrackModel) {
+        if ($model instanceof \Gems_Tracker_Model_RespondentTrackModel) {
             $bridge->addHidden(   'gr2t_id_respondent_track');
             $bridge->addHidden(   'gr2t_id_user');
             $bridge->addHidden(   'gr2t_id_track');
@@ -152,7 +150,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         $filter = array('gr2o_patient_nr' => $respId, 'gr2o_id_organization' => $orgId, 'gtr_id_track' => $trackId);
         $sort   = $model->getRequestSort($this->getRequest()) + array('gr2t_created' => SORT_DESC);
 
-        // MUtil_Echo::r($filter);
+        // \MUtil_Echo::r($filter);
         if ($data = $model->load($filter, $sort)) {
             $bridge  = $model->getBridgeFor('table', array('class' => 'browser table'));
             $bridge->setBaseUrl($baseUrl);
@@ -179,7 +177,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
             }
 
             $this->html->h3(sprintf($this->_('Assignments of this track to %s: %s'), $respId, $this->getRespondentName()));
-            $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'));
+            $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
             $tableContainer[] = $bridge->getTable();
             $this->html[] = $tableContainer;
 
@@ -187,11 +185,11 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         }
     }
 
-    public function beforeSave(array &$data, $isNew, Zend_Form $form = null)
+    public function beforeSave(array &$data, $isNew, \Zend_Form $form = null)
     {
         if (isset($data['gtf_field'])) {
             // concatenate user input (gtf_field fields)
-            $data['gr2t_track_info'] = trim(implode(' ', MUtil_Ra::flatten($data['gtf_field'])));
+            $data['gr2t_track_info'] = trim(implode(' ', \MUtil_Ra::flatten($data['gtf_field'])));
         }
 
         $data['gr2t_track_info'] = trim($data['gr2t_track_info']);
@@ -203,7 +201,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     {
         $model = $this->getModel();
 
-        if ($model instanceof Gems_Tracker_Model_RespondentTrackModel) {
+        if ($model instanceof \Gems_Tracker_Model_RespondentTrackModel) {
             if ('delete-track' === $model->getMeta('action')) {
                 // Is really removed
                 if ($data['gr2t_reception_code'] != GemsEscort::RECEPTION_OK) {
@@ -238,14 +236,14 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     public function afterSaveRoute($data)
     {
         $model = $this->getModel();
-        if ($model instanceof Gems_Tracker_Model_RespondentTrackModel) {
+        if ($model instanceof \Gems_Tracker_Model_RespondentTrackModel) {
             if ($this->menu) {
-                if ($data instanceof Zend_Controller_Request_Abstract) {
+                if ($data instanceof \Zend_Controller_Request_Abstract) {
                     $refData = $data;
                 } elseif (is_array($data)) {
                     $refData = $model->getKeyRef($data) + $data;
                 } else {
-                    throw new Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
+                    throw new \Gems_Exception_Coding('The variable $data must be an array or a Zend_Controller_Request_Abstract object.');
                 }
 
                 if ($menuItem = $this->menu->find(array('controller' => 'track', 'action' => 'show-track', 'allowed' => true))) {
@@ -349,7 +347,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
     public function deleteTrackAction()
     {
         //*
-        $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+        $respTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
         $respTrack   = $this->loader->getTracker()->getRespondentTrack($respTrackId);
 
         // Set variables for the menu
@@ -369,7 +367,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         } elseif ($request->getParam('confirmed')) {
 
-            $track = $request->getParam(Gems_Model::RESPONDENT_TRACK);
+            $track = $request->getParam(\Gems_Model::RESPONDENT_TRACK);
             $sql1  = 'DELETE FROM gems__tokens WHERE gto_id_respondent_track = ?';
             $sql2  = 'DELETE FROM gems__respondent2track WHERE gr2t_id_respondent_track = ?';
 
@@ -441,9 +439,9 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
      */
     public function editTrackAction()
     {
-        $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+        $respTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
 
-        if ((! $respTrackId) && $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+        if ((! $respTrackId) && $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 
             list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
 
@@ -459,7 +457,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                         ->where('gr2o_id_organization = ?', $orgId)
                         ->order('gr2t_start_date DESC');
 
-                $trackId = $this->_getParam(Gems_Model::TRACK_ID);
+                $trackId = $this->_getParam(\Gems_Model::TRACK_ID);
 
                 if ($trackId) {
                     $select->where('gr2t_id_track = ?', $trackId);
@@ -494,20 +492,20 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
         $this->html->h2(sprintf($this->_('%s track for respondent nr %s: %s'),
             $data['gtr_track_name'],
-            $this->_getParam(MUtil_Model::REQUEST_ID1),
+            $this->_getParam(\MUtil_Model::REQUEST_ID1),
             $this->getRespondentName($data)));
 
-        if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+        if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
             $links = parent::createMenuLinks(10);
             $this->addSnippet('ModelItemTableSnippetGeneric',
                     'menuList', $links,
-                    'model', $model,
-                    'trackType', $this->trackType);
+                    'model', $model
+                    );
         }
 
-        $respTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
-        $patNr = $this->_getParam(MUtil_Model::REQUEST_ID1);
-        $orgId = $this->_getParam(MUtil_Model::REQUEST_ID2);
+        $respTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
+        $patNr = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+        $orgId = $this->_getParam(\MUtil_Model::REQUEST_ID2);
         $export = $this->loader->getRespondentExport($this);
         $export->trackFilter = array(array('resptrackid'=>(int) $respTrackId));
 
@@ -524,7 +522,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
     public function getTopic($count = 1)
     {
-        if ($this->getModel() instanceof Gems_Tracker_Model_StandardTokenModel) {
+        if ($this->getModel() instanceof \Gems_Tracker_Model_StandardTokenModel) {
             return $this->plural('token', 'tokens', $count);
         } else {
             return $this->plural('track', 'tracks', $count);
@@ -533,14 +531,22 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
 
     public function getTopicTitle()
     {
-        if ($this->getModel() instanceof Gems_Tracker_Model_StandardTokenModel) {
+        if ($this->getModel() instanceof \Gems_Tracker_Model_StandardTokenModel) {
             return $this->_('Token');
         } else {
             return sprintf($this->_('Tracks assigned to %s: %s'),
-                    $this->_getParam(MUtil_Model::REQUEST_ID1),
+                    $this->_getParam(\MUtil_Model::REQUEST_ID1),
                     $this->getRespondentName()
                 );
         }
+    }
+
+    /**
+     * Insert a single survey into a track
+     */
+    public function insertAction()
+    {
+        $this->addMessage($this->_('Coming soon'));
     }
 
     /**
@@ -551,41 +557,41 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
         $request = $this->getRequest();
         $model   = $this->getModel();
 
-        // Gems_Menu::$verbose = true;
+        // \Gems_Menu::$verbose = true;
         $data = $model->applyRequest($request)->loadFirst();
 
         if ($data) {
             $data['track_can_be_created'] = 0;
             $this->setMenuParameters($data);
-            // MUtil_Echo::track($data);
+            // \MUtil_Echo::track($data);
             if ($data['grc_description']) {
                 $model->set('grc_description', 'label', $this->_('Rejection code'), 'formatFunction', array($this->translate, '_'));
             }
 
             $links = $this->createMenuLinks(10);
 
-            $this->_setParam(Gems_Model::RESPONDENT_TRACK, $data['gr2t_id_respondent_track']);
+            $this->_setParam(\Gems_Model::RESPONDENT_TRACK, $data['gr2t_id_respondent_track']);
 
             $this->html->h2(sprintf($this->_('%s track for respondent nr %s: %s'),
                     $data['gtr_track_name'],
-                    $this->_getParam(MUtil_Model::REQUEST_ID1),
+                    $this->_getParam(\MUtil_Model::REQUEST_ID1),
                     $this->getRespondentName($data)));
 
-            if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+            if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
                 $this->addSnippet('ModelItemTableSnippetGeneric',
                         'menuList', $links,
-                        'model', $model,
-                        'trackType', $this->trackType);
+                        'model', $model
+                        );
 
                 $this->addSnippet('Tracker\\TrackUsageTextDetailsSnippet', 'trackData', $data);
             }
-            $baseUrl[MUtil_Model::REQUEST_ID1]     = $this->_getParam(MUtil_Model::REQUEST_ID1);
-            $baseUrl[MUtil_Model::REQUEST_ID2]     = $this->_getParam(MUtil_Model::REQUEST_ID2);
-            $baseUrl[Gems_Model::RESPONDENT_TRACK] = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+            $baseUrl[\MUtil_Model::REQUEST_ID1]     = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+            $baseUrl[\MUtil_Model::REQUEST_ID2]     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
+            $baseUrl[\Gems_Model::RESPONDENT_TRACK] = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
 
             $this->addSnippet('TrackTokenOverviewSnippet', 'trackData', $data, 'baseUrl', $baseUrl);
 
-            if (! $this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+            if (! $this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
                 $this->addTrackUsage($data['gr2o_patient_nr'], $data['gr2t_id_organization'], $data['gr2t_id_track'], $baseUrl);
             }
 
@@ -593,7 +599,7 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 $this->html->buttonDiv($links);
             }
 
-        } elseif ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+        } elseif ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 
             $data['gr2o_patient_nr']      = $this->_getIdParam();
             $data['gr2o_id_organization'] = $this->escort->getCurrentOrganization();
@@ -606,11 +612,11 @@ class Gems_Default_TrackAction extends Gems_Default_TrackActionAbstract
                 'gtr_date_until IS NULL OR gtr_date_until >= CURRENT_TIMESTAMP',
             ));
 
-            // MUtil_Model::$verbose = true;
+            // \MUtil_Model::$verbose = true;
 
             $this->html->h3($this->_('Add track'));
             $this->html->pInfo($this->_('This respondent does not yet have an active track. Add one here.'));
-            $this->addSnippet('Track_AvailableTracksSnippets', 'model', $model, 'trackType', $this->trackType);
+            $this->addSnippet('Track_AvailableTracksSnippets', 'model', $model);
 
         } else {
             $this->addMessage(sprintf($this->_('Unknown %s requested'), $this->getTopic()));

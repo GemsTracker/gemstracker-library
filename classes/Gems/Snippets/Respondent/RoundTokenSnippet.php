@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_RespondentTokenSnippet
+class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_RespondentTokenSnippet
 {
     /**
      * Set a fixed model sort.
@@ -67,12 +67,12 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     protected $project;
 
     /**
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -82,23 +82,22 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
         //
         // Initiate data retrieval for stuff needed by links
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
         $bridge->gr2t_id_respondent_track;
-        $bridge->gtr_track_type;
 
-        $HTML = MUtil_Html::create();
+        $HTML = \MUtil_Html::create();
 
-        $roundIcon[] = MUtil_Lazy::iif($bridge->gro_icon_file, MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon')));
+        $roundIcon[] = \MUtil_Lazy::iif($bridge->gro_icon_file, \MUtil_Html::create('img', array('src' => $bridge->gro_icon_file, 'class' => 'icon')));
 
         if ($menuItem = $this->findMenuItem('track', 'show-track')) {
             $href = $menuItem->toHRefAttribute($this->request, $bridge);
@@ -141,7 +140,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
@@ -165,7 +164,7 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
@@ -183,9 +182,8 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends Gems_Snippets_Responden
                                     )
                             ->addParameterSources(
                                     array(
-                                        Gems_Model::TRACK_ID   => $default,
+                                        \Gems_Model::TRACK_ID   => $default,
                                         'gtr_id_track'         => $default,
-                                        'gtr_track_type'       => $track->getTrackType(),
                                         'track_can_be_created' => 1,
                                         ),
                                     $this->request

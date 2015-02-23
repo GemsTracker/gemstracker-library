@@ -42,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_ProjectTracksAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_ProjectTracksAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -56,8 +56,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_ModelSnippetActio
      */
     protected $autofilterParameters = array(
         'extraFilter' => array(
-            'gtr_display_group' => 'tracks',
-            'gtr_active'        => 1,
+            'gtr_active' => 1,
             -2 => '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE'
             ),
         'extraSort' => array(
@@ -67,7 +66,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_ModelSnippetActio
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -114,7 +113,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_ModelSnippetActio
     {
         $translated = $this->util->getTranslated();
 
-        $model = new MUtil_Model_TableModel('gems__tracks');
+        $model = new \MUtil_Model_TableModel('gems__tracks');
         //$model->resetOrder();
 
         $model->set('gtr_track_name',    'label', $this->_('Track'));
@@ -186,7 +185,7 @@ class Gems_Default_ProjectTracksAction extends Gems_Controller_ModelSnippetActio
     {
         $this->addSnippet('Survey\\SurveyQuestionsSnippet',
                 'menu', $this->menu,
-                'surveyId', $this->_getParam(Gems_Model::SURVEY_ID),
+                'surveyId', $this->_getParam(\Gems_Model::SURVEY_ID),
                 'trackId', $this->_getIdParam()
                 );
     }

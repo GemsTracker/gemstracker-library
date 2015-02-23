@@ -61,6 +61,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         'extraSort' => array(
             'gsu_survey_name' => SORT_ASC,
             ),
+        'menuEditActions' => array('edit', 'pdf'),
         );
 
     /**
@@ -74,8 +75,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      * @var array Mixed key => value array for snippet initialization
      */
     protected $createEditParameters = array(
-        'cacheTags' => array('surveys', 'tracks'),
-        'surveyId'  => '_getIdParam',
+        'cacheTags'       => array('surveys', 'tracks'),
+        'surveyId'        => '_getIdParam',
         );
 
     /**
@@ -97,6 +98,12 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      * @var mixed String or array of snippets name
      */
     protected $indexStartSnippets = array('Generic_ContentTitleSnippet', 'Survey\\SurveyMaintenanceSearchSnippet');
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    public $loader;
 
     /**
      *
@@ -155,19 +162,19 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function calculateDuration($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -187,8 +194,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $row = $select->fetchRow();
         if ($row) {
             $trs = $this->util->getTranslated();
-            $seq = new MUtil_Html_Sequence();
-            $seq->setGlue(MUtil_Html::create('br', $this->view));
+            $seq = new \MUtil_Html_Sequence();
+            $seq->setGlue(\MUtil_Html::create('br', $this->view));
 
             $seq->sprintf($this->_('Answered surveys: %d.'), $row['cnt']);
             $seq->sprintf(
@@ -228,19 +235,19 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function calculateTrackCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -249,7 +256,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             return 0;
         }
 
-        $select = new Zend_Db_Select($this->db);
+        $select = new \Zend_Db_Select($this->db);
         $select->from('gems__rounds', array('useCnt' => 'COUNT(*)', 'trackCnt' => 'COUNT(DISTINCT gro_id_track)'));
         $select->joinLeft('gems__tracks', 'gtr_id_track = gro_id_track', array())
                 ->where('gro_id_survey = ?', $surveyId);
@@ -305,8 +312,9 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
      */
     protected function createModel($detailed, $action)
     {
-        $survey = null;
-        $yesNo  = $this->util->getTranslated()->getYesNo();
+        $dbLookup = $this->util->getDbLookup();
+        $survey   = null;
+        $yesNo    = $this->util->getTranslated()->getYesNo();
 
         if ($detailed) {
             $surveyId = $this->_getIdParam();
@@ -340,7 +348,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $model->resetOrder();
 
         $model->set('gsu_survey_name',        'label', $this->_('Name'),
-                'elementClass', 'Exhibitor');
+                'elementClass', 'Exhibitor'
+                );
         $model->set('gsu_survey_description', 'label', $this->_('Description'),
                 'elementClass', 'Exhibitor',
                 'formatFunction', array(__CLASS__, 'formatDescription')
@@ -359,7 +368,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 );
         $model->set('gsu_id_primary_group',   'label', $this->_('Group'),
                 'description', $this->_('If empty, survey will never show up!'),
-                'multiOptions', $this->util->getDbLookup()->getGroups(),
+                'multiOptions', $dbLookup->getGroups(),
                 'validator', new \MUtil_Validate_Require(
                         $model->get('gsu_active', 'label'),
                         'gsu_id_primary_group',
@@ -368,7 +377,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 );
 
         $model->set('gsu_insertable',         'label', $this->_('Insertable'),
-                'description', $this->_('Can staff manually insert this survey into a track.'),
+                'description', $this->_('Can this survey be manually inserted into a track.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo,
                 'onclick', 'this.form.submit()'
@@ -382,11 +391,26 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                     'description', $this->_('The unit used to calculate the end date when inserting the survey.'),
                     'multiOptions', $this->util->getTrackData()->getDateUnitsList(true)
                     );
+            $model->set('gsu_insert_organizations', 'label', $this->_('Insert organizations'),
+                    'description', $this->_('The organizations where the survey may be inserted.'),
+                    'elementClass', 'MultiCheckbox',
+                    'multiOptions', $dbLookup->getOrganizations(),
+                    'required', true
+                    );
+            $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $this->_(', '));
+            $ct->apply($model, 'gsu_insert_organizations');
+
+//            if ('edit' == $action) {
+//                $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=gtr_organizations]'));
+//                $element->setLabel($this->_('Toggle'));
+//                $model->set('toggleOrg', 'elementClass', $element);
+//            }
 
             $switches = array(
                 0 => array(
-                    'gsu_valid_for_length' => array('elementClass' => 'Hidden', 'label' => null),
-                    'gsu_valid_for_unit'   => array('elementClass' => 'Hidden', 'label' => null),
+                    'gsu_valid_for_length'     => array('elementClass' => 'Hidden', 'label' => null),
+                    'gsu_valid_for_unit'       => array('elementClass' => 'Hidden', 'label' => null),
+                    'gsu_insert_organizations' => array('elementClass' => 'Hidden', 'label' => null),
                 ),
             );
             $model->addDependency(array('ValueSwitchDependency', $switches), 'gsu_insertable');
@@ -400,7 +424,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
         if ($detailed) {
             $model->set('calc_duration',        'label', $this->_('Duration calculated'),
-                    'elementClass', 'Html');
+                    'elementClass', 'Html'
+                    );
             $model->setOnLoad('calc_duration', array($this, 'calculateDuration'));
 
             $model->set('gsu_duration',         'label', $this->_('Duration description'),
@@ -410,7 +435,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
                     $survey->getQuestionList($this->locale->getLanguage());
                 $model->set('gsu_result_field',          'label', $this->_('Result field'),
-                        'multiOptions', $surveyFields);
+                        'multiOptions', $surveyFields
+                        );
                 // $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             }
         }
@@ -422,19 +448,49 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             if (count($beforeOptions) > 1) {
                 $model->set('gsu_beforeanswering_event', 'label', $this->_('Before answering'),
                         'multiOptions', $beforeOptions,
-                        'elementClass', 'Select');
+                        'elementClass', 'Select'
+                        );
             }
             $completedOptions = $events->listSurveyCompletionEvents();
             if (count($completedOptions) > 1) {
                 $model->set('gsu_completed_event',       'label', $this->_('After completion'),
                         'multiOptions', $completedOptions,
-                        'elementClass', 'Select');
+                        'elementClass', 'Select'
+                        );
             }
             $displayOptions = $events->listSurveyDisplayEvents();
             if (count($displayOptions) > 1) {
                 $model->set('gsu_display_event',         'label', $this->_('Answer display'),
                         'multiOptions', $displayOptions,
-                        'elementClass', 'Select');
+                        'elementClass', 'Select'
+                        );
+            }
+
+            if (('show' !== $action) || $survey->hasPdf()) {
+                // Only the action changes from the current page
+                // and the right to see the pdf is the same as
+                // the right to see this page.
+                $pdfLink = \MUtil_Html::create(
+                        'a',
+                        array($this->getRequest()->getActionKey() => 'pdf'),
+                        array(
+                            'class'   => 'pdf',
+                            'target'  => '_blank',
+                            'type'    => 'application/pdf',
+                            'onclick' => 'event.cancelBubble = true;',
+                            )
+                        );
+
+                $model->set('gsu_survey_pdf', 'label', 'Pdf',
+                        'accept', 'application/pdf',
+                        'destination', $this->loader->getPdf()->getUploadDir('survey_pdfs'),
+                        'elementClass', 'File',
+                        'extension', 'pdf',
+                        'filename', $surveyId,
+                        'required', false,
+                        'itemDisplay', $pdfLink,
+                        'validators[pdf]', new \MUtil_Validate_Pdf()
+                        );
             }
         }
 
@@ -523,6 +579,18 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
     public function getTopic($count = 1)
     {
         return $this->plural('survey', 'surveys', $count);
+    }
+
+    /**
+     * Open pdf linked to survey
+     */
+    public function pdfAction()
+    {
+        // Make sure nothing else is output
+        $this->initRawOutput();
+
+        // Output the PDF
+        $this->loader->getPdf()->echoPdfBySurveyId($this->_getParam(\MUtil_Model::REQUEST_ID));
     }
 
 }

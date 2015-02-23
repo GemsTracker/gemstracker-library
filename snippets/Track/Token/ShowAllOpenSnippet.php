@@ -126,7 +126,7 @@ class Track_Token_ShowAllOpenSnippet extends Gems_Tracker_Snippets_ShowTokenLoop
             $pStart       = $html->pInfo();
 
             foreach ($tokens as $row) {
-                if (('T' == $row['gtr_track_type']) && ($row['gtr_track_name'] !== $lastTrack)) {
+                if ($row['gtr_track_name'] !== $lastTrack) {
                     $lastTrack = $row['gtr_track_name'];
 
                     $div = $html->div();

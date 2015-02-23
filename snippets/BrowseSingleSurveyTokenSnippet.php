@@ -97,39 +97,13 @@ class BrowseSingleSurveyTokenSnippet extends Gems_Snippets_TokenModelSnippetAbst
         $HTML = MUtil_Html::create();
 
         // Signal the bridge that we need these values
-        $bridge->gtr_track_type;
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
 
         $bridge->setOnEmpty($this->_('This track is currently not assigned to this respondent.'));
 
-        /*
-        $roundDescription[] = $HTML->if($bridge->calc_round_description, $HTML->small(' [', $bridge->calc_round_description, ']'));
-        $roundDescription[] = $HTML->small(' [', $bridge->createSortLink('calc_round_description'), ']');
-
-        if ($menuItem = $this->findMenuItem('track', 'show-track')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-            $track1 = $HTML->if($bridge->calc_track_name, $HTML->a($href, $bridge->calc_track_name));
-        } else {
-            $track1 = $bridge->calc_track_name;
-        }
-        $track[] = array($track1, $HTML->if($bridge->calc_track_info, $HTML->small(' [', $bridge->calc_track_info, ']')));
-        $track[] = array($bridge->createSortLink('calc_track_name'), $HTML->small(' [', $bridge->createSortLink('calc_track_info'), ']'));
-
-        // Set column widths to prevent strange column breaking in dates
-        //
-        // Use colgroup to test the second way of doing this.
-        // $bridge->colgroup(array('span' => 3));
-        // $bridge->colgroup(array('span' => 3, 'width' => '9em'));
-
-        $bridge->addMultiSort($track);
-        $bridge->addMultiSort('gsu_survey_name', $roundDescription);
-        $bridge->addSortable('ggp_name');
-        $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
-        // */
-
         $bridge->addMultiSort('gtr_track_name');
-        $bridge->addMultiSort('calc_round_description');
+        $bridge->addMultiSort('gto_round_description');
         $bridge->addSortable('ggp_name');
         $bridge->addSortable('calc_used_date', null, $HTML->if($bridge->is_completed, 'disabled date', 'enabled date'));
 

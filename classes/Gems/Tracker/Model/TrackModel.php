@@ -81,6 +81,8 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
     {
         parent::__construct('gems__tracks');
 
+        $this->addColumn("CASE WHEN gtr_track_class = 'SingleSurveyEngine' THEN 'deleted' ELSE '' END", 'row_class');
+
         \Gems_Model::setChangeFieldsByPrefix($this, 'gtr');
 
         $this->set('gtr_date_start', 'default', new \Zend_Date());
@@ -118,10 +120,6 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         $this->set('gtr_date_until',    'label', $translator->_('Use until'),
                 'dateFormat', $dateFormat,
                 'formatFunction', $translated->formatDateForever);
-
-        $this->set('gtr_display_group', 'label', $translator->_('Display group'),
-                'description', $translator->_('Seperate tracks into display groups.'),
-                'multiOptions', $this->tracker->getTrackDisplayGroups());
         $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
                 'size', 10,
                 'description', $translator->_('Only for programmers.'));
@@ -131,24 +129,31 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
 
             $list = $events->listTrackCalculationEvents();
             if (count($list) > 1) {
-                $this->setIfExists('gtr_calculation_event',
-                    'label', $translator->_('Before (re)calculation'),
-                    'multiOptions', $list);
+                $this->setIfExists('gtr_calculation_event', 'label', $translator->_('Before (re)calculation'),
+                        'multiOptions', $list
+                        );
             }
 
             $list = $events->listTrackCompletionEvents();
             if (count($list) > 1) {
-                $this->setIfExists('gtr_completed_event',
-                    'label', $translator->_('After completion'),
-                    'multiOptions', $list);
+                $this->setIfExists('gtr_completed_event', 'label', $translator->_('After completion'),
+                        'multiOptions', $list
+                        );
             }
 
             $list = $events->listTrackFieldUpdateEvents();
             if (count($list) > 1) {
-                $this->setIfExists('gtr_fieldupdate_event',
-                    'label', $translator->_('After field update'),
-                    'multiOptions', $list);
+                $this->setIfExists('gtr_fieldupdate_event', 'label', $translator->_('After field update'),
+                        'multiOptions', $list
+                        );
             }
+            $this->setIfExists('gtr_organizations', 'label', $translator->_('Organizations'),
+                    'elementClass', 'MultiCheckbox',
+                    'multiOptions', $this->util->getDbLookup()->getOrganizations(),
+                    'required', true
+                    );
+            $ct = new \MUtil_Model_Type_ConcatenatedRow('|', $translator->_(', '));
+            $ct->apply($this, 'gtr_organizations');
         }
 
         return $this;

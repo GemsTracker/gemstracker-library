@@ -340,145 +340,128 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
 
         if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
 
-            $trType = 'T';
             $subPage = $page->addPage($this->_('Track'), 'pr.track', 'track', 'show-track')
                     ->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
-                    ->addHiddenParameter(\Gems_Model::TRACK_ID, $this->escort->getTrackId(), 'gtr_track_type', $trType);
+                    ->addHiddenParameter(\Gems_Model::TRACK_ID, $this->escort->getTrackId());
 
             $subPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                    ->setParameterFilter('track_can_be_created', 1)
                     ->addHiddenParameter('track_can_be_created', 1);
             $subPage->addAction($this->_('Preview'), 'pr.track', 'view')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 1)
+                    ->setParameterFilter('track_can_be_created', 1)
                     ->addHiddenParameter('track_can_be_created', 1);
             $subPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'track_can_be_created', 0)
+                    ->setParameterFilter('track_can_be_created', 0)
                     ->addHiddenParameter('track_can_be_created', 0);
-            $tkPages[$trType] = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
+
+            $tkPage = $subPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
+                    ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
 
         } else {
 
             $trPage = $page->addPage($this->_('Tracks'), 'pr.track', 'track');
-            $trType = 'T';
-
             $trPage->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
                     ->addAutofilterAction();
 
-            /*
-             \MUtil_Lazy::iff(is('gtr_track_type', $trType), aget(\MUtil_Model::REQUEST_ID, 'gr2o_patient_nr', \Gems_Model::TRACK_ID, 'gtr_id_track'))
-             */
             $trPage->addAction($this->_('Add'), 'pr.track.create', 'create')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+                    ->setHiddenOrgId($orgId);
+
+            $trPage->addAction($this->_('Insert'), 'pr.track.insert', 'insert')
+                    ->setNamedParameters($params)
+                    ->addNamedParameters(\Gems_Model::SURVEY_ID, 'gsu_id_survey')
+                    ->setHiddenOrgId($orgId);
 
             $trPage->addAction($this->_('Assignments'), 'pr.track', 'view')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+                    ->setHiddenOrgId($orgId);
 
             $itemPage = $trPage->addAction($this->_('Show track'), 'pr.track', 'show-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+                    ->setHiddenOrgId($orgId);
 
             $itemPage->addAction($this->_('Edit'), 'pr.track.edit', 'edit-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+                    ->setParameterFilter('can_edit', 1);
 
             $itemPage->addAction($this->_('Delete'), 'pr.track.delete', 'delete-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_edit', 1);
+                    ->setParameterFilter('can_edit', 1);
 
             $itemPage->addAction($this->_('Export track'), 'pr.track', 'export-track')
                     ->setNamedParameters($params)
                     ->addNamedParameters(\Gems_Model::RESPONDENT_TRACK, 'gr2t_id_respondent_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+                    ->setHiddenOrgId($orgId);
 
-            $tkPages[$trType] = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
+            $tkPage = $itemPage->addAction($this->_('Token'), 'pr.token', 'show')
                     ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
+                    ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
 
-            if ($this->escort instanceof \Gems_Project_Tracks_StandAloneSurveysInterface) {
-                $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
-                $trType = 'S';
+            $trPage = $page->addPage($this->_('Surveys'), 'pr.survey', 'survey');
 
-                $trPage->setNamedParameters($params)
-                        ->setHiddenOrgId($orgId)
-                        ->addAutofilterAction();
-
-                $trPage->addAction($this->_('Add'), 'pr.survey.create', 'create')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+            // Surveys overview
+            $trPage->setNamedParameters($params)
                     ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+                    ->addAutofilterAction();
 
-                $trPage->addAction($this->_('Assigned'), 'pr.survey', 'view')
-                    ->setNamedParameters($params)
-                    ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
-                    ->setHiddenOrgId($orgId)
-                    ->setParameterFilter('gtr_track_type', $trType);
+            $trPage->addAction($this->_('Add'), 'pr.survey.create', 'create')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                ->setHiddenOrgId($orgId);
 
-                // $tkPages[$trType] = $trPage;
-
-                $tkPages[$trType] =$trPage->addShowAction('pr.survey')
-                        ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                        ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
-            }
+            $trPage->addAction($this->_('Assigned'), 'pr.survey', 'view')
+                ->setNamedParameters($params)
+                ->addNamedParameters(\Gems_Model::TRACK_ID, 'gtr_id_track')
+                ->setHiddenOrgId($orgId);
         }
 
-        foreach ($tkPages as $trType => $tkPage) {
+        $tkPage->addEditAction('pr.token.edit')
+                ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');
 
-            $tkPage->addEditAction('pr.token.edit')
-                    ->setNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, \Gems_Model::ID_TYPE, 'token');
+        $tkPage->addDeleteAction('pr.token.delete')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('grc_success', 1, \Gems_Model::ID_TYPE, 'token');
 
-            $tkPage->addDeleteAction('pr.token.delete')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'grc_success', 1, \Gems_Model::ID_TYPE, 'token');
-
-            $tkPage->addButtonOnly($this->_('Fill in'), 'pr.ask', 'ask', 'take')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('can_be_taken', 1, \Gems_Model::ID_TYPE, 'token');
-            $tkPage->addPdfButton($this->_('Print PDF'), 'pr.token.print')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gsu_has_pdf', 1, \Gems_Model::ID_TYPE, 'token');
-            $tkPage->addAction($this->_('E-Mail now!'), 'pr.token.mail', 'email')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'can_be_taken', 1, 'can_email', 1, \Gems_Model::ID_TYPE, 'token');
-            $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, \Gems_Model::ID_TYPE, 'token');
-            $answers = $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, \Gems_Model::ID_TYPE, 'token')
-                    ->set('target', \MUtil_Model::REQUEST_ID);
-            $answers->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
-                    ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
-                    ->setParameterFilter('gtr_track_type', $trType, 'is_completed', 1, \Gems_Model::ID_TYPE, 'token')
-                    ->set('target', \MUtil_Model::REQUEST_ID);
-        }
+        $tkPage->addButtonOnly($this->_('Fill in'), 'pr.ask', 'ask', 'take')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('can_be_taken', 1, \Gems_Model::ID_TYPE, 'token');
+        $tkPage->addPdfButton($this->_('Print PDF'), 'pr.token.print')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('gsu_has_pdf', 1, \Gems_Model::ID_TYPE, 'token');
+        $tkPage->addAction($this->_('E-Mail now!'), 'pr.token.mail', 'email')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('can_be_taken', 1, 'can_email', 1, \Gems_Model::ID_TYPE, 'token');
+        $tkPage->addAction($this->_('Preview'), 'pr.project.questions', 'questions')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter(\Gems_Model::ID_TYPE, 'token');
+        $answers = $tkPage->addActionButton($this->_('Answers'), 'pr.token.answers', 'answer')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
+                ->set('target', \MUtil_Model::REQUEST_ID);
+        $answers->addActionButton($this->_('PDF export'), 'pr.token.answers', 'answer-export')
+                ->addNamedParameters(\MUtil_Model::REQUEST_ID, 'gto_id_token')
+                ->setParameterFilter('is_completed', 1, \Gems_Model::ID_TYPE, 'token')
+                ->set('target', \MUtil_Model::REQUEST_ID);
 
         $page->addAction($this->_('Export archive'), 'pr.respondent.export-html', 'export')
                 ->setNamedParameters($params)

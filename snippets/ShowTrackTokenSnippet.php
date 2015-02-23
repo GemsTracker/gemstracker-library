@@ -61,7 +61,6 @@ class ShowTrackTokenSnippet extends Gems_Tracker_Snippets_ShowTokenSnippetAbstra
         // MUtil_Model::$verbose = true;
 
         // Extra item needed for menu items
-        $bridge->gtr_track_type;
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;

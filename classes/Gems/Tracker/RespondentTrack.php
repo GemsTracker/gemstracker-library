@@ -354,7 +354,6 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $source->setRespondentTrackId($this->_respTrackId);
         $source->setPatient($this->getPatientNumber(), $this->getOrganizationId());
         $source->setTrackId($this->getTrackId());
-        $source->setTrackType($this->getTrackEngine()->getTrackType());
         $source->offsetSet('can_edit', $this->hasSuccesCode());
 
         return $this;

@@ -100,7 +100,6 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                 'gto_valid_from_manual',
                 'gto_valid_until_manual',
                 'gtr_id_track',
-                'gtr_track_type',
                 $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
                 );
 

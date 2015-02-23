@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEditAction
+abstract class Gems_Default_TrackActionAbstract extends \Gems_Controller_BrowseEditAction
 {
     /**
      * Use these snippets to show the content of a track
@@ -56,13 +56,13 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     /**
      *
-     * @var Zend_Db_Adaptor_Abstract
+     * @var \Zend_Db_Adaptor_Abstract
      */
     public $db;
 
     /**
      *
-     * @var Gems_Menu
+     * @var \Gems_Menu
      */
     public $menu;
 
@@ -75,74 +75,68 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public $summarizedActions = array('index', 'autofilter', 'create');
 
-    // Set when this controller should only showe results from a single tracktype.
-    public $trackType = null;
-
     public $view;
 
     protected function _createTable()
     {
         $result[] = parent::_createTable();
 
-        if ($this->trackType) {
-            $orgId   = trim($this->db->quote($this->_getParam(MUtil_Model::REQUEST_ID2)), "'");
-            $model   = $this->createTrackModel(false, 'index');
-            $request = $this->getRequest();
+        $orgId   = trim($this->db->quote($this->_getParam(\MUtil_Model::REQUEST_ID2)), "'");
+        $model   = $this->createTrackModel(false, 'index');
+        $request = $this->getRequest();
 
-            $searchText = $this->_getParam($model->getTextFilter());
+        $searchText = $this->_getParam($model->getTextFilter());
 
-            $model->applyPostRequest($request);
-            // $model->trackUsage(); DO NOT USE AS all is label here.
+        $model->applyPostRequest($request);
+        // $model->trackUsage(); DO NOT USE AS all is label here.
 
-            if ($searchText) {
-                $marker = new MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
-                foreach ($model->getItemNames() as $name) {
-                    if ($model->get($name, 'label')) {
-                        $model->set($name, 'markCallback', array($marker, 'mark'));
-                    }
+        if ($searchText) {
+            $marker = new \MUtil_Html_Marker($model->getTextSearches($searchText), 'strong', 'UTF-8');
+            foreach ($model->getItemNames() as $name) {
+                if ($model->get($name, 'label')) {
+                    $model->set($name, 'markCallback', array($marker, 'mark'));
                 }
             }
-
-            $filter     = $model->getTextSearchFilter($searchText);
-            $filter['gtr_track_type'] = $this->trackType;
-            $filter['gtr_active']     = 1;
-            $filter[]   = '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE';
-            $filter[]   = "gtr_organizations LIKE '%|$orgId|%'";
-
-            $menuParams = array(
-                'gr2o_patient_nr'        => $this->_getParam(MUtil_Model::REQUEST_ID1),
-                'gr2o_id_organization'   => $orgId);
-            $baseUrl    = $menuParams + array(
-                'action'                 => 'index',
-                MUtil_Model::TEXT_FILTER => $searchText);
-
-            $bridge = $model->getBridgeFor('table', array('class' => 'browser table'));
-            $bridge->setBaseUrl($baseUrl);
-            $bridge->setOnEmpty($this->_('No tracks found'));
-            $bridge->getOnEmpty()->class = 'centerAlign';
-            $bridge->setRepeater($model->loadRepeatable($filter, $this->availableSort));
-
-            // Add view button
-            if ($menuItem = $this->findAllowedMenuItem('view')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
-            }
-
-            foreach($model->getItemsOrdered() as $name) {
-                if ($label = $model->get($name, 'label')) {
-                    $bridge->add($name, $label);
-                }
-            }
-
-            // Add create button
-            if ($menuItem = $this->findAllowedMenuItem('create')) {
-                $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
-            }
-
-            $result[] = MUtil_Html::create()->h3($this->_('Available tracks'));
-            $tableContainer = MUtil_Html::create()->div();
-            $tableContainer[] = $bridge->getTable();
-            $result[] = $tableContainer;
         }
+
+        $filter     = $model->getTextSearchFilter($searchText);
+        $filter['gtr_active']     = 1;
+        $filter[]   = '(gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE) AND gtr_date_start <= CURRENT_DATE';
+        $filter[]   = "gtr_organizations LIKE '%|$orgId|%'";
+
+        $menuParams = array(
+            'gr2o_patient_nr'        => $this->_getParam(\MUtil_Model::REQUEST_ID1),
+            'gr2o_id_organization'   => $orgId);
+        $baseUrl    = $menuParams + array(
+            'action'                 => 'index',
+            \MUtil_Model::TEXT_FILTER => $searchText);
+
+        $bridge = $model->getBridgeFor('table', array('class' => 'browser table'));
+        $bridge->setBaseUrl($baseUrl);
+        $bridge->setOnEmpty($this->_('No tracks found'));
+        $bridge->getOnEmpty()->class = 'centerAlign';
+        $bridge->setRepeater($model->loadRepeatable($filter, $this->availableSort));
+
+        // Add view button
+        if ($menuItem = $this->findAllowedMenuItem('view')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
+        }
+
+        foreach($model->getItemsOrdered() as $name) {
+            if ($label = $model->get($name, 'label')) {
+                $bridge->add($name, $label);
+            }
+        }
+
+        // Add create button
+        if ($menuItem = $this->findAllowedMenuItem('create')) {
+            $bridge->addItemLink($menuItem->toActionLinkLower($request, $bridge, $menuParams));
+        }
+
+        $result[] = \MUtil_Html::create()->h3($this->_('Available tracks'));
+        $tableContainer = \MUtil_Html::create()->div();
+        $tableContainer[] = $bridge->getTable();
+        $result[] = $tableContainer;
 
         return $result;
     }
@@ -159,8 +153,8 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
      */
     protected function _getPatientAndOrganisationParam()
     {
-        $patientId = $this->_getParam(MUtil_Model::REQUEST_ID1);
-        $orgId     = $this->_getParam(MUtil_Model::REQUEST_ID2);
+        $patientId = $this->_getParam(\MUtil_Model::REQUEST_ID1);
+        $orgId     = $this->_getParam(\MUtil_Model::REQUEST_ID2);
 
         return array($patientId, $orgId);
     }
@@ -174,7 +168,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     {
         // If loaded inline by Ajax request, disable the layout
         /*if ($this->getRequest()->isXmlHttpRequest()) {
-            Zend_Layout::getMvcInstance()->disableLayout();
+            \Zend_Layout::getMvcInstance()->disableLayout();
         }*/
 
         // Set menu OFF
@@ -217,7 +211,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
      */
     public function createAction()
     {
-        $trackId = $this->_getParam(Gems_Model::TRACK_ID);
+        $trackId = $this->_getParam(\Gems_Model::TRACK_ID);
         $engine  = $this->loader->getTracker()->getTrackEngine($trackId);
 
         list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
@@ -240,11 +234,11 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
         $tracker = $this->loader->getTracker();
         $model   = $tracker->getRespondentTrackModel();
 
-        $trackEngineId = $this->_getParam(Gems_Model::TRACK_ID);
+        $trackEngineId = $this->_getParam(\Gems_Model::TRACK_ID);
         if ($trackEngineId) {
             $model->setTrackEngine($tracker->getTrackEngine($trackEngineId));
         }
-        $respondentTrackId = $this->_getParam(Gems_Model::RESPONDENT_TRACK);
+        $respondentTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
         if ($respondentTrackId) {
             $model->setRespondentTrack($tracker->getRespondentTrack($respondentTrackId));
         }
@@ -264,7 +258,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function createTrackModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__tracks');
+        $model = new \MUtil_Model_TableModel('gems__tracks');
 
         return $model;
     }
@@ -332,11 +326,11 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
      * The form / html elements to search on. Elements can be grouped by inserting null's between them.
      * That creates a distinct group of elements
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
-    protected function getAutoSearchElements(MUtil_Model_ModelAbstract $model, array $data)
+    protected function getAutoSearchElements(\MUtil_Model_ModelAbstract $model, array $data)
     {
         $elements = parent::getAutoSearchElements($model, $data);
 
@@ -345,17 +339,17 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             $data = $this->getRequest()->getParams();
         }
 
-        if (isset($data[MUtil_Model::REQUEST_ID1])) {
+        if (isset($data[\MUtil_Model::REQUEST_ID1])) {
             $i = 1;
-            while (isset($data[MUtil_Model::REQUEST_ID . $i])) {
-                $keys[] = MUtil_Model::REQUEST_ID . $i;
+            while (isset($data[\MUtil_Model::REQUEST_ID . $i])) {
+                $keys[] = \MUtil_Model::REQUEST_ID . $i;
                 $i++;
             }
         } else {
             $keys = $model->getKeys();
         }
         foreach ($keys as $key) {
-            $elements[] = new Zend_Form_Element_Hidden($key, array('value' => $data[$key]));
+            $elements[] = new \Zend_Form_Element_Hidden($key, array('value' => $data[$key]));
         }
 
         return $elements;
@@ -422,23 +416,18 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
     public function initFilter()
     {
         // FROM REQUEST
-        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID1)) {
+        if ($param = $this->_getParam(\MUtil_Model::REQUEST_ID1)) {
             $this->filterStandard['gr2o_patient_nr'] = $param;
         }
-        if ($param = $this->_getParam(MUtil_Model::REQUEST_ID2)) {
+        if ($param = $this->_getParam(\MUtil_Model::REQUEST_ID2)) {
             $this->filterStandard['gr2o_id_organization'] = $param;
         }
 
-        if ($param = $this->_getParam(Gems_Model::RESPONDENT_TRACK)) {
+        if ($param = $this->_getParam(\Gems_Model::RESPONDENT_TRACK)) {
             $this->filterStandard['gr2t_id_respondent_track'] = $param;
         }
-        if ($param = $this->_getParam(Gems_Model::TRACK_ID)) {
+        if ($param = $this->_getParam(\Gems_Model::TRACK_ID)) {
             $this->filterStandard['gtr_id_track'] = $param;
-        }
-
-        // FROM VARS
-        if ($this->trackType) {
-            $this->filterStandard['gtr_track_type'] = $this->trackType;
         }
     }
 
@@ -494,14 +483,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
                 $source->offsetSet($key, $data[$key]);
             }
         }
-
-        // LASTLY WE GOT A VAR
-        if (isset($data['gtr_track_type'])) {
-            $source->setTrackType($data['gtr_track_type']);
-            $this->trackType = $data['gtr_track_type'];
-        }
-
-        // MUtil_Echo::track($source->getArrayCopy());
+        // \MUtil_Echo::track($source->getArrayCopy());
     }
 
     /**
@@ -520,7 +502,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
 
     public function viewAction()
     {
-        $trackId = $this->_getParam(Gems_Model::TRACK_ID);
+        $trackId = $this->_getParam(\Gems_Model::TRACK_ID);
         $engine  = $this->loader->getTracker()->getTrackEngine($trackId);
 
         list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
@@ -542,7 +524,7 @@ abstract class Gems_Default_TrackActionAbstract extends Gems_Controller_BrowseEd
             }
             $this->addSnippets($this->addTrackContentSnippets, 'trackData', $trackData);
         } else {
-            $this->addMessage(sprintf($this->_('Track %s does not exist.'), $this->_getParam(Gems_Model::TRACK_ID)));
+            $this->addMessage(sprintf($this->_('Track %s does not exist.'), $this->_getParam(\Gems_Model::TRACK_ID)));
         }
     }
 }

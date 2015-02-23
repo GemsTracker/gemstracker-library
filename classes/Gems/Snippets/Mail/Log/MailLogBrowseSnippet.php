@@ -43,11 +43,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4.4
  */
-class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -57,18 +57,18 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTab
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($menuItem = $this->getShowMenuItem()) {
             $bridge->addItemLink($menuItem->toActionLinkLower($this->request, $bridge));
         }
 
         // Newline placeholder
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
 
         // make sure search results are highlighted
         $this->applyTextMarker();
@@ -77,12 +77,11 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTab
         $bridge->addMultiSort('grco_id_token', $br, 'assigned_by',     $br, 'grco_sender',  $br, 'gsu_survey_name');
         $bridge->addMultiSort('status',        $br, 'grco_topic');
 
-        $title = MUtil_Html::create()->strong($this->_('+'));
+        $title = \MUtil_Html::create()->strong($this->_('+'));
         $params = array(
             'gto_id_token'  => $bridge->gto_id_token,
-            'gtr_track_type' => $bridge->gtr_track_type,
             'grc_success' => 1,
-            Gems_Model::ID_TYPE => 'token',
+            \Gems_Model::ID_TYPE => 'token',
             );
 
         $showLinks[]   = $this->createMenuLink($params, 'track',  'show', $title);
@@ -103,7 +102,7 @@ class Gems_Snippets_Mail_Log_MailLogBrowseSnippet extends Gems_Snippets_ModelTab
         $tbody = $bridge->tbody();
         $td = $tbody[0][0];
         /* // Does not repeat for some reason
-        $td->appendAttrib('class', MUtil_Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->status));
+        $td->appendAttrib('class', \MUtil_Lazy::method($this->util->getTokenData(), 'getStatusClass', $bridge->status));
         $td->append($br);
         $td->append($br); // */
         $td->append($br);

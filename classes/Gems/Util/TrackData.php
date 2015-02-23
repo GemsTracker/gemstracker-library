@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
+class Gems_Util_TrackData extends \Gems_Registry_TargetAbstract
 {
     /**
      * When displaying tokens for a respondent only those of
@@ -74,25 +74,25 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -264,7 +264,7 @@ class Gems_Util_TrackData extends Gems_Registry_TargetAbstract
             return $results;
         }
 
-        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks WHERE gtr_track_type = 'T' ORDER BY gtr_track_name";
+        $select = "SELECT gtr_id_track, gtr_track_name FROM gems__tracks ORDER BY gtr_track_name";
 
         $results = $this->db->fetchPairs($select);
         $this->cache->save($results, $cacheId, array('tracks'));

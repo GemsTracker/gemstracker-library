@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippets_AutosearchFormSnippet
+class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends \Gems_Snippets_AutosearchFormSnippet
 {
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
 
@@ -59,7 +59,7 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
      * That creates a distinct group of elements
      *
      * @param array $data The $form field values (can be usefull, but no need to set them)
-     * @return array Of Zend_Form_Element's or static tekst to add to the html or null for group breaks.
+     * @return array Of \Zend_Form_Element's or static tekst to add to the html or null for group breaks.
      */
     protected function getAutoSearchElements(array $data)
     {
@@ -94,7 +94,6 @@ class Gems_Snippets_Tracker_Summary_SummarySearchFormSnippet extends Gems_Snippe
                     WHERE ggp_group_active = 1 AND
                         gro_active=1 AND
                         gtr_active=1 AND
-                        gtr_track_type='T'
                     ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 

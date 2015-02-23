@@ -73,15 +73,6 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
 
         $bridge->tdh($this->getCaption(), array('colspan' => 2));
 
-        // Caption for surveys
-        $trackLabel = $this->_('Assigned surveys');
-        if ($menuItem = $this->findMenuItem('survey', 'index')) {
-            $href = $menuItem->toHRefAttribute($this->request, $bridge);
-            $bridge->tdh(array('class' => 'linked'))->a($href, $trackLabel);
-        } else {
-            $bridge->tdh($trackLabel, array('class' => 'linked'));
-        }
-
         // Caption for tracks
         $trackLabel = $this->_('Assigned tracks');
         if ($menuItem = $this->findMenuItem('track', 'index')) {
@@ -98,34 +89,11 @@ class RespondentDetailsWithAssignmentsSnippet extends Gems_Snippets_RespondentDe
 
         $rowspan = 10;
 
-        // Column for surveys
-        $tracksModel = $this->model->getRespondentTracksModel();
-        // Add token as action needs token ID + only one per single survey
-        $tracksModel->addTable('gems__tokens', array('gr2t_id_respondent_track' => 'gto_id_respondent_track'));
-        $tracksData  = MUtil_Lazy::repeat(
-            $tracksModel->load(
-                array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization, 'gtr_track_type' => 'S'),
-                array('gr2t_created' => SORT_DESC)));
-        $tracksList  = $HTML->div($tracksData, array('class' => 'tracksList'));
-        $tracksList->setOnEmpty($this->_('No surveys'));
-        if ($menuItem = $this->findMenuItem('survey', 'show')) {
-            $href = $menuItem->toHRefAttribute($tracksData, array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr));
-            $tracksTarget = $tracksList->p()->a($href);
-        } else {
-            $tracksTarget = $tracksList->p();
-        }
-        $tracksTarget->strong($tracksData->gtr_track_name);
-        $tracksTarget[] = ' ';
-        $tracksTarget->em($tracksData->gr2t_track_info, array('renderWithoutContent' => false));
-        $tracksTarget[] = ' ';
-        $tracksTarget[] = MUtil_Lazy::call($this->util->getTranslated()->formatDate, $tracksData->gr2t_created);
-        $bridge->td($tracksList, array('rowspan' => $rowspan, 'class' => 'linked tracksList'));
-
         // Column for tracks
         $tracksModel = $this->model->getRespondentTracksModel();
         $tracksData  = MUtil_Lazy::repeat(
             $tracksModel->load(
-                array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization, 'gtr_track_type' => 'T'),
+                array('gr2o_patient_nr' => $this->repeater->gr2o_patient_nr, 'gr2o_id_organization' => $this->repeater->gr2o_id_organization),
                 array('gr2t_created' => SORT_DESC)));
         $tracksList  = $HTML->div($tracksData, array('class' => 'tracksList'));
         $tracksList->setOnEmpty($this->_('No tracks'));

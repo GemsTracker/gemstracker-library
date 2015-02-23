@@ -60,7 +60,6 @@ class ShowTrackUsageSnippet extends Gems_Tracker_Snippets_ShowTrackUsageAbstract
     protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
     {
         // Signal the bridge that we need these values
-        $bridge->gtr_track_type;
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2t_id_respondent_track;
         $bridge->gr2o_patient_nr;

@@ -116,86 +116,102 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
      */
     public $showTitle = true;
 
-    protected function _getTracks($displayGroup, $pageRef, $trackTypeDescription)
+    protected function _getTracks($trackType, $pageRef, $trackTypeDescription)
     {
-        $orgId      = intval($this->request->getParam(\MUtil_Model::REQUEST_ID2));
-        $cacheId    = strtr(__CLASS__ . '_' . $displayGroup . '_' . $orgId, '\\/' , '__');
-        $tracksData = $this->cache->load($cacheId);
+        switch ($trackType) {
+            case 'tracks':
+                $action = 'create';
+                break;
 
-        if (! $tracksData) {
-            $sql = "SELECT gtr_id_track, gtr_track_name, gtr_track_type,
-                    CASE WHEN gtr_track_type = 'S' THEN 'survey' ELSE 'track' END AS controller
-                FROM gems__tracks
-                WHERE gtr_date_start < CURRENT_TIMESTAMP AND
-                    (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
-                    gtr_active = 1 AND
-                    gtr_display_group = ? AND
-                    gtr_organizations LIKE '%|$orgId|%'
-                 ORDER BY gtr_track_name";
-            $tracksData = $this->db->fetchAll($sql, $displayGroup);
+            case 'respondents':
+            case 'staff':
+                $action = 'insert';
+                break;
+        }
+        $orgId   = intval($this->request->getParam(\MUtil_Model::REQUEST_ID2));
+        $cacheId = strtr(__CLASS__ . '_' . $trackType . '_' . $orgId, '\\/' , '__');
+        $tracks  = $this->cache->load($cacheId);
 
-            $this->cache->save($tracksData, $cacheId, array('surveys', 'tracks'));
+        if (true || ! $tracks) {
+            switch ($trackType) {
+                case 'tracks':
+                    $sql = "SELECT gtr_id_track, gtr_track_name
+                        FROM gems__tracks
+                        WHERE gtr_date_start < CURRENT_TIMESTAMP AND
+                            (gtr_date_until IS NULL OR gtr_date_until > CURRENT_TIMESTAMP) AND
+                            gtr_active = 1 AND
+                            gtr_organizations LIKE '%|$orgId|%'
+                         ORDER BY gtr_track_name";
+                    break;
+
+                case 'respondents':
+                    $sql = "SELECT gsu_id_survey, gsu_survey_name
+                        FROM gems__surveys INNER JOIN gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE gsu_surveyor_active = 1 AND
+                            gsu_active = 1 AND
+                            ggp_group_active = 1 AND
+                            ggp_respondent_members = 1 AND
+                            gsu_insert_organizations LIKE '%|$orgId|%'
+                        ORDER BY gsu_survey_name";
+                    break;
+
+                case 'staff':
+                    $sql = "SELECT gsu_id_survey, gsu_survey_name
+                        FROM gems__surveys INNER JOIN gems__groups ON gsu_id_primary_group = ggp_id_group
+                        WHERE gsu_surveyor_active = 1 AND
+                            gsu_active = 1 AND
+                            ggp_group_active = 1 AND
+                            ggp_staff_members = 1 AND
+                            gsu_insert_organizations LIKE '%|$orgId|%'
+                        ORDER BY gsu_survey_name";
+                    break;
+            }
+            $tracks = $this->db->fetchPairs($sql);
+
+            $this->cache->save($tracks, $cacheId, array('surveys', 'tracks'));
         }
 
         $div = \MUtil_Html::create()->div(array('class' => 'toolbox btn-group'));
 
-        if ($tracksData) {
-            $controllers = \MUtil_Ra::column('controller', $tracksData);
+        $menuIndex  = $this->menu->findController('track', 'index');
 
-            // Find the menu items
-            foreach ($controllers as $controller) {
-                foreach (array('index', 'view', 'create') as $action) {
-                    $menuItem = $this->menu->findController($controller, $action);
-                    if ($menuItem && $menuItem->isAllowed()) {
-                        $menu[$action][$controller] = $menuItem;
-                    }
-                }
-            }
-            // No output if we have no menu items for one of the sub arrays.
-            foreach ($menu as $key => $items) {
-                if (! $items) {
-                    return null;
-                }
-            }
+        if ($tracks) {
+            $menuView   = $this->menu->findController('track', 'view');
+            $menuCreate = $this->menu->findController('track', $action);
 
-            if ('tracks' == $displayGroup) {
-                $menuIndex = reset($menu['index']);
-            } else {
-                $menuIndex = end($menu['index']);
+            if (! $menuCreate->isAllowed()) {
+                return null;
             }
 
             if (\MUtil_Bootstrap::enabled()) {
-                $bOpt = array('class' => 'btn btn-primary', 'data-toggle' => 'dropdown', 'type' => 'button');
-                $div->button($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, $bOpt)
-                            ->appendAttrib('class', 'toolanchor');
-
-                $dropdownButton = $div->button($bOpt);
-                $dropdownButton->appendAttrib('class', 'dropdown-toggle');
+                $div->button($menuIndex->toHRefAttribute($this->request), $trackTypeDescription,
+                    array('class' => 'toolanchor btn btn-primary', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'btn btn-primary dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton->span(array('class' => 'caret'));
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, array('class' => 'toolanchor'));
             }
 
-            $data   = new \MUtil_Lazy_Repeatable($tracksData);
-            $params = array('gtr_id_track' => $data->gtr_id_track, 'gtr_track_type' => $data->gtr_track_type);
+            $data   = new \MUtil_Lazy_RepeatableByKeyValue($tracks);
+            $params = array('gtr_id_track' => $data->key, 'gsu_id_survey' => $data->key);
 
             if (\MUtil_Bootstrap::enabled()) {
-                if (count($tracksData) > $this->scrollTreshold) {
+                if (count($tracks) > $this->scrollTreshold) {
                     // Add a header and scroll class so we keep rounded corners
                     $top  = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'));
                     $link = $top->li(array('class' => 'disabled'))->a('#');
                     $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-left', 'renderClosingTag' => true));
                     $link->i(array('class' => 'fa fa-chevron-down fa-fw pull-right', 'renderClosingTag' => true));
                     // Add extra scroll-menu class
-                    $li = $top->li()->ul(array('class' => 'dropdown-menu scroll-menu', 'role' => 'menu'), $data)->li();
+                    $li   = $top->li()->ul(array('class' => 'dropdown-menu scroll-menu', 'role' => 'menu'), $data)->li();
                 } else {
                     $li = $div->ul(array('class' => 'dropdown-menu', 'role' => 'menu'), $data)->li();
                 }
 
-                $link = $li->a(\MUtil_Lazy::offsetGet($menu['view'], $data->controller)->toHRefAttribute($this->request, $params), array('class' => 'rightFloat info'));
+                $link = $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat info'));
                 $link->i(array('class' => 'fa fa-info-circle'))->raw('&nbsp;');
 
-                if (count($tracksData) > $this->scrollTreshold) {
+                if (count($tracks) > $this->scrollTreshold) {
                     // Add a footer so we keep rounded corners
                     $link = $top->li(array('class' => 'disabled'))->a('#');
                     $link->i(array('class' => 'fa fa-chevron-up fa-fw pull-left', 'renderClosingTag' => true));
@@ -203,32 +219,21 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
                 }
             } else {
                 $li = $div->ul($data)->li();
-                $li->a(\MUtil_Lazy::offsetGet($menu['view'], $data->controller)->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
+                $li->a($menuView->toHRefAttribute($this->request, $params), array('class' => 'rightFloat'))
                     ->img(array('src' => 'info.png', 'width' => 12, 'height' => 12, 'alt' => $this->_('info')));
             }
 
             $toolboxRowAttributes = array('class' => 'add');
-            $li->a(\MUtil_Lazy::offsetGet($menu['create'], $data->controller)->toHRefAttribute($this->request, $params),
-                    $data->gtr_track_name,
+            $li->a($menuCreate->toHRefAttribute($this->request, $params),
+                    $data->value,
                     $toolboxRowAttributes);
 
         } else {
-            if ('tracks' == $displayGroup) {
-                $menuIndex = $this->menu->findController('track', 'index');
-                $trackTypeDescription = 'T';
-            } else {
-                $menuIndex = $this->menu->findController('survey', 'index');
-                $trackTypeDescription = 'S';
-            }
             if (\MUtil_Bootstrap::enabled()) {
-                $bOpt = array('class' => 'btn btn-primary disabled', 'data-toggle' => 'dropdown', 'type' => 'button');
-
-                $div->button($menuIndex->toHRefAttribute($this->request), $trackTypeDescription, $bOpt)
-                        ->appendAttrib('class', 'toolanchor');
-                $dropdownButton = $div->button($bOpt);
-                $dropdownButton->appendAttrib('class', 'dropdown-toggle');
+                $div->button($menuIndex->toHRefAttribute($this->request),                $trackTypeDescription,
+                    array('class' => 'toolanchor btn btn-primary disabled', 'data-toggle' => 'dropdown', 'type' => 'button'));
+                $dropdownButton = $div->button(array('class' => 'btn btn-primary disabled dropdown-toggle', 'data-toggle' => 'dropdown', 'type' => 'button'));
                 $dropdownButton->span(array('class' => 'caret'));
-
                 $options = array('class' => 'dropdown-menu disabled', 'role' => 'menu');
             } else {
                 $div->a($menuIndex->toHRefAttribute($this->request),
@@ -237,6 +242,7 @@ class AddTracksSnippet extends \MUtil_Snippets_SnippetAbstract
 
                 $options = array('class' => 'disabled');
             }
+
             $div->ul($this->_('None available'), $options);
         }
 

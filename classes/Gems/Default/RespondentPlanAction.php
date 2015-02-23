@@ -43,15 +43,15 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
+class Gems_Default_RespondentPlanAction extends \Gems_Default_TokenPlanAction
 {
     public $sortKey = array(
-        'respondent_name'         => SORT_ASC,
-        'gr2o_patient_nr'         => SORT_ASC,
-        'calc_track_name'         => SORT_ASC,
-        'calc_track_info'         => SORT_ASC,
-        'calc_round_description'  => SORT_ASC,
-        'gto_round_order'         => SORT_ASC,
+        'respondent_name'       => SORT_ASC,
+        'gr2o_patient_nr'       => SORT_ASC,
+        'gtr_track_name'        => SORT_ASC,
+        'gtr_track_info'        => SORT_ASC,
+        'gr2t_track_info'       => SORT_ASC,
+        'gto_round_description' => SORT_ASC,
         );
 
     /**
@@ -59,17 +59,16 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
      *
      * Adds a button column to the model, if such a button exists in the model.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
-        $bridge->gtr_track_type; // Data needed for edit button
         $bridge->gr2t_id_respondent_track; // Data needed for edit button
         $bridge->gr2o_id_organization; // Data needed for edit button
 
-        $HTML = MUtil_Html::create();
+        $HTML = \MUtil_Html::create();
 
         // Get the buttons
         if ($menuItem = $this->menu->find(array('controller' => 'respondent', 'action' => 'show', 'allowed' => true))) {
@@ -90,18 +89,18 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
         $bridge->addSortable('gr2o_patient_nr');
         $bridge->addSortable('respondent_name')->colspan = 2;
 
-        if ($this->escort instanceof Gems_Project_Tracks_SingleTrackInterface) {
+        if ($this->escort instanceof \Gems_Project_Tracks_SingleTrackInterface) {
             $bridge->addSortable('grs_birthday');
             $bridge->addMultiSort('progress', array($respondentButton));
         } else {
             $bridge->addSortable('grs_birthday');
             $bridge->addMultiSort('grs_city', array($respondentButton));
 
-            $model->set('calc_track_info', 'tableDisplay', 'smallData');
+            $model->set('gr2t_track_info', 'tableDisplay', 'smallData');
 
             // Row with track info
             $bridge->tr(array('onlyWhenChanged' => true, 'class' => 'even'));
-            $td = $bridge->addMultiSort('calc_track_name', 'calc_track_info');
+            $td = $bridge->addMultiSort('gtr_track_name', 'gr2t_track_info');
             $td->class   = 'indentLeft';
             $td->colspan = 4;
             $td->renderWithoutContent = false; // Do not display this cell and thus this row if there is not content
@@ -113,8 +112,8 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
         $bridge->addColumn($this->getTokenLinks($bridge))->class = 'rightAlign';
         $bridge->addSortable('gto_valid_from');
         $bridge->addSortable('gto_valid_until');
-        $model->set('calc_round_description', 'tableDisplay', 'smallData');
-        $bridge->addMultiSort('gsu_survey_name', 'calc_round_description')->colspan = 2;
+        $model->set('gto_round_description', 'tableDisplay', 'smallData');
+        $bridge->addMultiSort('gsu_survey_name', 'gto_round_description')->colspan = 2;
 
         $bridge->tr(array('class' => array('odd', $bridge->row_class), 'title' => $bridge->gto_comment));
         $bridge->addColumn();
@@ -133,7 +132,7 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
@@ -142,7 +141,7 @@ class Gems_Default_RespondentPlanAction extends Gems_Default_TokenPlanAction
         $model->set('grs_birthday', 'label', $this->_('Birthday'));
         $model->set('grs_city', 'label', $this->_('City'));
 
-        $model->addColumn("CASE WHEN gtr_track_type = 'T' THEN CONCAT(gr2t_completed, '" . $this->_(' of ') . "', gr2t_count) ELSE NULL END", 'progress');
+        $model->addColumn("CONCAT(gr2t_completed, '" . $this->_(' of ') . "', gr2t_count)", 'progress');
         $model->set('progress', 'label', $this->_('Progress'));
 
         return $model;

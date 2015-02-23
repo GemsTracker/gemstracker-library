@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelTableSnippetAbstract
+class Gems_Snippets_Agenda_AppointmentsTableSnippet extends \Gems_Snippets_ModelTableSnippetAbstract
 {
     /**
      * Date storage format string
@@ -56,15 +56,22 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     /**
      * Image for time display
      *
-     * @var MUtil_Html_HtmlElement
+     * @var \MUtil_Html_HtmlElement
      * /
     private $_timeImg;
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     * The default controller for menu actions, if null the current controller is used.
+     *
+     * @var array (int/controller => action)
+     */
+    public $menuActionController = 'appointment';
 
     /**
      * Adds columns from the model to the bridge that creates the browse table.
@@ -72,11 +79,11 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->gr2o_patient_nr;
         $bridge->gr2o_id_organization;
@@ -92,7 +99,7 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
             $editButton = null;
         }
 
-        $br    = MUtil_Html::create('br');
+        $br    = \MUtil_Html::create('br');
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -107,18 +114,18 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
             $bridge->addMultiSort('gaa_name', $br, 'gapr_name');
         } else {
             $bridge->addMultiSort(
-                    array($bridge->date_only), 
-                    $br, 
+                    array($bridge->date_only),
+                    $br,
                     array($bridge->gap_admission_time, $model->get('gap_admission_time', 'label'))
                     );
             $bridge->addMultiSort(
-                    array($bridge->gas_name, $model->get('gas_name', 'label')), 
-                    $br, 
+                    array($bridge->gas_name, $model->get('gas_name', 'label')),
+                    $br,
                     array($bridge->glo_name, $model->get('glo_name', 'label'))
                     );
             $bridge->addMultiSort(
-                    array($bridge->gaa_name, $model->get('gaa_name', 'label')), 
-                    $br, 
+                    array($bridge->gaa_name, $model->get('gaa_name', 'label')),
+                    $br,
                     array($bridge->gapr_name, $model->get('gapr_name', 'label'))
                     );
         }
@@ -143,22 +150,22 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
         $model = $this->loader->getModels()->createAppointmentModel();
         $model->applyBrowseSettings();
 
-        $model->addColumn(new Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
+        $model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $model->set('date_only', 'formatFunction', array($this, 'formatDate'));
-                // 'dateFormat', Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
+                // 'dateFormat', \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR);
         $model->set('gap_admission_time', 'label', $this->_('Time'),
                 'formatFunction', array($this, 'formatTime'));
-                // 'dateFormat', 'HH:mm ' . Zend_Date::WEEKDAY);
+                // 'dateFormat', 'HH:mm ' . \Zend_Date::WEEKDAY);
 
         $this->_dateStorageFormat = $model->get('gap_admission_time', 'storageFormat');
-        // $this->_timeImg           = MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
+        // $this->_timeImg           = \MUtil_Html::create('img', array('src' => 'stopwatch.png', 'alt' => ''));
 
         $model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
@@ -168,16 +175,16 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     /**
      * Display the date field
      *
-     * @param MUtil_Date $value
+     * @param \MUtil_Date $value
      */
     public function formatDate($value)
     {
-        return MUtil_Html::create(
+        return \MUtil_Html::create(
                 'span',
                 // array('class' => 'date'),
-                MUtil_Date::format(
+                \MUtil_Date::format(
                         $value,
-                        Zend_Date::DAY_SHORT . ' ' . Zend_Date::MONTH_NAME_SHORT . ' ' . Zend_Date::YEAR,
+                        \Zend_Date::DAY_SHORT . ' ' . \Zend_Date::MONTH_NAME_SHORT . ' ' . \Zend_Date::YEAR,
                         $this->_dateStorageFormat
                         )
                 );
@@ -186,49 +193,28 @@ class Gems_Snippets_Agenda_AppointmentsTableSnippet extends Gems_Snippets_ModelT
     /**
      * Display the time field
      *
-     * @param MUtil_Date $value
+     * @param \MUtil_Date $value
      */
     public function formatTime($value)
     {
-        return MUtil_Html::create(
+        return \MUtil_Html::create(
                 'span',
                 // array('class' => 'time'),
                 // $this->_timeImg,
-                MUtil_Date::format($value, ' HH:mm ' . Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
+                \MUtil_Date::format($value, ' HH:mm ' . \Zend_Date::WEEKDAY_SHORT, $this->_dateStorageFormat)
                 );
-    }
-
-    /**
-     * Returns an edit menu item, if access is allowed by privileges
-     *
-     * @return Gems_Menu_SubMenuItem
-     */
-    protected function getEditMenuItem()
-    {
-        return $this->menu->find(array('controller' => 'appointment', 'action' => 'edit'));
-    }
-
-
-    /**
-     * Returns a show menu item, if access is allowed by privileges
-     *
-     * @return Gems_Menu_SubMenuItem
-     */
-    protected function getShowMenuItem()
-    {
-        return $this->menu->find(array('controller' => 'appointment', 'action' => 'show'));
     }
 
     /**
      * Overrule to implement snippet specific filtering and sorting.
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function processFilterAndSort(MUtil_Model_ModelAbstract $model)
+    protected function processFilterAndSort(\MUtil_Model_ModelAbstract $model)
     {
         $model->setFilter(array(
-            'gr2o_patient_nr'      => $this->request->getParam(MUtil_Model::REQUEST_ID1),
-            'gr2o_id_organization' => $this->request->getParam(MUtil_Model::REQUEST_ID2),
+            'gr2o_patient_nr'      => $this->request->getParam(\MUtil_Model::REQUEST_ID1),
+            'gr2o_id_organization' => $this->request->getParam(\MUtil_Model::REQUEST_ID2),
             // 'gap_status'           => $this->loader->getAgenda()->getStatusKeysActive(),
             ));
     }
