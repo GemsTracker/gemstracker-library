@@ -170,9 +170,10 @@ class MUtil_Model_Type_ConcatenatedRow
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
+     * @param boolean $isPost True when passing on post data
      * @return array Of the values
      */
-    public function loadValue($value, $isNew = false, $name = null, array $context = array())
+    public function loadValue($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         // MUtil_Echo::track($value, $name, $context);
         if (! is_array($value)) {
