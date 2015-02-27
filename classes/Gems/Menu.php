@@ -474,6 +474,26 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
+        
+        /* Add respondent relations */
+        $relParams = $params + array('rid' => 'grr_id');
+        $relationsPage = $page->addPage($this->_('Relations'), 'pr.respondent.relation', 'respondent-relation', 'index')
+                ->setNamedParameters($params)
+                ->setHiddenOrgId($orgId);
+        $relationsPage->addAutofilterAction();
+        $relationsPage->addCreateAction();
+        $relationsPage->addEditAction();
+        $relationsPage->addDeleteAction();
+        foreach ($relationsPage->getChildren() as $relation)
+        {
+            if (!in_array($relation->get('action'), array('autofilter', 'create'))) {
+                $relation->setNamedParameters($relParams)
+                         ->setHiddenOrgId($orgId);
+            } else {
+                $relation->setNamedParameters($params)
+                         ->setHiddenOrgId($orgId);
+            }
+        }
 
         return $page;
     }

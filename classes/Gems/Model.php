@@ -317,6 +317,16 @@ class Gems_Model extends Gems_Loader_TargetLoaderAbstract
 
         return $model;
     }
+    
+    /**
+     * Get the respondent relation model
+     * 
+     * @return Gems_Model_RespondentRelationModel
+     */
+    public function getRespondentRelationModel()
+    {
+        return $this->_loadClass('RespondentRelationModel', true);        
+    }
 
     /**
      * Load the staffmodel
