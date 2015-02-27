@@ -693,23 +693,21 @@ class GemsEscort extends \MUtil_Application_Escort
 
         $autoloader = \Zend_Loader_Autoloader::getInstance();
         $autoloader->registerNamespace('ZFDebug');
+        
+        # Instantiate the database adapter and cache
+        $this->bootstrap('db');
+        $db = $this->getPluginResource('db');
+        
+        $this->bootstrap('cache');
+        $cache = $this->cache;        
 
         $options = array(
             'plugins' => array('Variables',
-                'File' => array('base_path' => '/path/to/project'),
-                'Memory',
-                'Time',
-                'Registry',
-                'Exception'),
-            // 'jquery_path' => not yet initialized
+                'Database' => array('adapter' => $db->getDbAdapter()),
+                'File'     => array('basePath' => '/path/to/project'),
+                'Cache'    => array('backend' => $cache->getBackend()),
+                'Exception')
         );
-
-        # Instantiate the database adapter and setup the plugin.
-        # Alternatively just add the plugin like above and rely on the autodiscovery feature.
-        $this->bootstrap('db');
-        $db = $this->getPluginResource('db');
-        $options['plugins']['Database']['adapter'] = $db->getDbAdapter();
-
         $debug = new ZFDebug_Controller_Plugin_Debug($options);
 
         $this->bootstrap('frontController');

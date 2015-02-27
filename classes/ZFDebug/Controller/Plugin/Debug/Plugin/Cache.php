@@ -109,8 +109,8 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache
                         . round($cache['mem_size']/1024/1024, 1) . 'M)' . $linebreak
                         . $cache['num_hits'] . ' Hits ('
                         . round($cache['num_hits'] * 100 / ($cache['num_hits'] + $cache['num_misses']), 1) . '%)'
-                        . $linebreak
-                        . $cache['expunges'] . ' Expunges (cache full count)';
+                        ;//. $linebreak
+                        //. $cache['expunges'] . ' Expunges (cache full count)';
             }
         }
         
