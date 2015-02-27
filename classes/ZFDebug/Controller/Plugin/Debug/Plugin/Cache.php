@@ -1,37 +1,8 @@
 <?php
-
-/**
- * Copyright (c) 2011, Erasmus MC
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of Erasmus MC nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *      
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 /**
  * ZFDebug Zend Additions
  *
  * @category   ZFDebug
- * @filesource
  * @package    ZFDebug_Controller
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
@@ -41,13 +12,14 @@
 
 /**
  * @category   ZFDebug
- * @filesource
  * @package    ZFDebug_Controller
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
  * @license    http://code.google.com/p/zfdebug/wiki/License     New BSD License
  */
-class ZFDebug_Controller_Plugin_Debug_Plugin_Cache implements ZFDebug_Controller_Plugin_Debug_Plugin_Interface
+class ZFDebug_Controller_Plugin_Debug_Plugin_Cache
+    extends ZFDebug_Controller_Plugin_Debug_Plugin
+    implements ZFDebug_Controller_Plugin_Debug_Plugin_Interface
 {
     /**
      * Contains plugin identifier name
@@ -91,6 +63,16 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache implements ZFDebug_Controller
     }
 
     /**
+     * Returns the base64 encoded icon
+     *
+     * @return string
+     **/
+    public function getIconData()
+    {
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAI/SURBVDjLjZPbS9NhHMYH+zNidtCSQrqwQtY5y2QtT2QGrTZf13TkoYFlzsWa/tzcoR3cSc2xYUlGJfzAaIRltY0N12H5I+jaOxG8De+evhtdOP1hu3hv3sPzPO/z4SsBIPnfuvG8cbBlWiEVO5OUItA0VS8oxi9EdhXo+6yV3V3UGHRvVXHNfNv6zRfNuBZVoiFcB/3LdnQ8U+Gk+bhPVKB3qUOuf6/muaQR/qwDkZ9BRFdCmMr5EPz6BN7lMYylLGgNNaKqt3K0SKDnQ7us690t3rNsxeyvaUz+8OJpzo/QNzd8WTtcaQ7WlBmPvxhx1V2Pg7oDziIBimwwf3qAGWESkVwQ7owNujk1ztvk+cg4NnAUTT4FrrjqUKHdF9jxBfXr1rgjaSk4OlMcLrnOrJ7latxbL1V2lgvlbG9MtMTrMw1r1PImtfyn1n5q47TlBLf90n5NmalMtUdKZoyQMkLKlIGLjMyYhFpmlz3nGEVmFJlRZNaf7pIaEndM24XIjCOzjX9mm2S2JsqdkMYIqbB1j5C6yWzVk7YRFTsGFu7l+4nveExIA9aMCcOJh6DIoMigyOh+o4UryRWQOtIjaJtoziM1FD0mpE4uZcTc72gBaUyYKEI6khgqINXO3saR7kM8IZUVCRDS0Ucf+xFbCReQhr97MZ51wpWxYnhpCD3zOrT4lTisr+AJqVx0Fiiyr4/vhP4VyyMFIUWNqRrV96vWKXKckBoIqWzXYcoPDrUslDJoopuEVEpIB0sR+AuErIiZ6OqMKAAAAABJRU5ErkJggg==';
+    }
+
+    /**
      * Gets menu tab for the Debugbar
      *
      * @return string
@@ -109,43 +91,64 @@ class ZFDebug_Controller_Plugin_Debug_Plugin_Cache implements ZFDebug_Controller
     {
         $panel = '';
 
+        $linebreak = $this->getLinebreak();
+
         # Support for APC
         if (function_exists('apc_sma_info') && ini_get('apc.enabled')) {
             $mem = apc_sma_info();
-            $mem_size = $mem['num_seg']*$mem['seg_size'];
-            $mem_avail = $mem['avail_mem'];
-            $mem_used = $mem_size-$mem_avail;
-            
+            $memSize = $mem['num_seg'] * $mem['seg_size'];
+            $memAvail = $mem['avail_mem'];
+            $memUsed = $memSize - $memAvail;
+
             $cache = apc_cache_info();
-            
-            $panel .= '<h4>APC '.phpversion('apc').' Enabled</h4>';
-            $panel .= round($mem_avail/1024/1024, 1).'M available, '.round($mem_used/1024/1024, 1).'M used<br />'
-                    . $cache['num_entries'].' Files cached ('.round($cache['mem_size']/1024/1024, 1).'M)<br />'
-                    . $cache['num_hits'].' Hits ('.round($cache['num_hits'] * 100 / ($cache['num_hits']+$cache['num_misses']), 1).'%)<br />'
-                    . $cache['expunges'].' Expunges (cache full count)'; 
+            if ($cache['mem_size'] > 0) {
+                $panel .= '<h4>APC '.phpversion('apc').' Enabled</h4>';
+                $panel .= round($memAvail/1024/1024, 1) . 'M available, '
+                        . round($memUsed/1024/1024, 1) . 'M used' . $linebreak
+                        . $cache['num_entries'].' Files cached ('
+                        . round($cache['mem_size']/1024/1024, 1) . 'M)' . $linebreak
+                        . $cache['num_hits'] . ' Hits ('
+                        . round($cache['num_hits'] * 100 / ($cache['num_hits'] + $cache['num_misses']), 1) . '%)'
+                        . $linebreak
+                        . $cache['expunges'] . ' Expunges (cache full count)';
+            }
+        }
+        
+        if (function_exists('opcache_get_configuration')) {
+            $opconfig = opcache_get_configuration();
+            if ($opconfig['directives']['opcache.enable']) {
+                $opstatus = opcache_get_status();
+                $cache = $opstatus['opcache_statistics'];
+                $panel .= '<h4>'.$opconfig['version']['opcache_product_name'].' '.$opconfig['version']['version'].' Enabled</h4>';
+                $panel .= round($opstatus['memory_usage']['used_memory']/1024/1024, 1) . 'M used, '
+                        . round($opstatus['memory_usage']['free_memory']/1024/1024, 1) . 'M free ('
+                        . round($opstatus['memory_usage']['current_wasted_percentage'], 1) .'% wasted)' . $linebreak
+                        . $cache['num_cached_scripts'].' Files cached' . $linebreak
+                        . $cache['hits'] . ' Hits ('
+                        . round($cache['opcache_hit_rate'], 1) . '%)';
+            }
         }
 
         foreach ($this->_cacheBackends as $name => $backend) {
             $fillingPercentage = $backend->getFillingPercentage();
             $ids = $backend->getIds();
-            
+
             # Print full class name, backends might be custom
             $panel .= '<h4>Cache '.$name.' ('.get_class($backend).')</h4>';
-            $panel .= count($ids).' Entr'.(count($ids)>1?'ies':'y').'<br />'
-                    . 'Filling Percentage: '.$backend->getFillingPercentage().'%<br />';
-            
+            $panel .= count($ids).' Entr'.(count($ids)>1?'ies':'y').''.$linebreak
+                    . 'Filling Percentage: '.$backend->getFillingPercentage().'%'.$linebreak;
+
             $cacheSize = 0;
-            foreach ($ids as $id)
-            {
+            foreach ($ids as $id) {
                 # Calculate valid cache size
-                $mem_pre = memory_get_usage();
+                $memPre = memory_get_usage();
                 if ($cached = $backend->load($id)) {
-                    $mem_post = memory_get_usage();
-                    $cacheSize += $mem_post-$mem_pre;
+                    $memPost = memory_get_usage();
+                    $cacheSize += $memPost - $memPre;
                     unset($cached);
-                }                
+                }
             }
-            $panel .= 'Valid Cache Size: '.round($cacheSize/1024, 1). 'K';
+            $panel .= 'Valid Cache Size: ' . round($cacheSize/1024, 1) . 'K';
         }
         return $panel;
     }

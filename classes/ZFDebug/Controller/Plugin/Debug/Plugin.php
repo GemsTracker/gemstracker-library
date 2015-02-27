@@ -1,37 +1,8 @@
 <?php
-
-/**
- * Copyright (c) 2011, Erasmus MC
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *    * Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *    * Neither the name of Erasmus MC nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *      
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 /**
  * ZFDebug Zend Additions
  *
  * @category   ZFDebug
- * @filesource
  * @package    ZFDebug_Controller
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
@@ -41,7 +12,6 @@
 
 /**
  * @category   ZFDebug
- * @filesource
  * @package    ZFDebug_Controller
  * @subpackage Plugins
  * @copyright  Copyright (c) 2008-2009 ZF Debug Bar Team (http://code.google.com/p/zfdebug)
@@ -49,6 +19,38 @@
  */
 class ZFDebug_Controller_Plugin_Debug_Plugin
 {
+    protected $_closingBracket = null;
+
+    public function getLinebreak()
+    {
+        return '<br'.$this->getClosingBracket();
+    }
+
+    public function getIconData()
+    {
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHhSURBVDjLpZI9SJVxFMZ/r2YFflw/kcQsiJt5b1ije0tDtbQ3GtFQYwVNFbQ1ujRFa1MUJKQ4VhYqd7K4gopK3UIly+57nnMaXjHjqotnOfDnnOd/nt85SURwkDi02+ODqbsldxUlD0mvHw09ubSXQF1t8512nGJ/Uz/5lnxi0tB+E9QI3D//+EfVqhtppGxUNzCzmf0Ekojg4fS9cBeSoyzHQNuZxNyYXp5ZM5Mk1ZkZT688b6thIBenG/N4OB5B4InciYBCVyGnEBHO+/LH3SFKQuF4OEs/51ndXMXC8Ajqknrcg1O5PGa2h4CJUqVES0OO7sYevv2qoFBmJ/4gF4boaOrg6rPLYWaYiVfDo0my8w5uj12PQleB0vcp5I6HsHAUoqUhR29zH+5B4IxNTvDmxljy3x2YCYUwZVlbzXJh9UKeQY6t2m0Lt94Oh5loPdqK3EkjzZi4MM/Y9Db3MTv/mYWVxaqkw9IOATNR7B5ABHPrZQrtg9sb8XDKa1+QOwsri4zeHD9SAzE1wxBTXz9xtvMc5ZU5lirLSKIz18nJnhOZjb22YKkhd4odg5icpcoyL669TAAujlyIvmPHSWXY1ti1AmZ8mJ3ElP1ips1/YM3H300g+W+51nc95YPEX8fEbdA2ReVYAAAAAElFTkSuQmCC';
+    }
+
+    public function getClosingBracket()
+    {
+        if (!$this->_closingBracket) {
+            if ($this->_isXhtml()) {
+                $this->_closingBracket = ' />';
+            } else {
+                $this->_closingBracket = '>';
+            }
+        }
+
+        return $this->_closingBracket;
+    }
+
+    protected function _isXhtml()
+    {
+        $view = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer')->view;
+        $doctype = $view->doctype();
+        return $doctype->isXhtml();
+    }
+
     /**
      * Transforms data into readable format
      *
@@ -57,18 +59,20 @@ class ZFDebug_Controller_Plugin_Debug_Plugin
      */
     protected function _cleanData($values)
     {
-        if (is_array($values))
-            ksort($values);
+        $linebreak = $this->getLinebreak();
 
+        if (is_array($values)) {
+            ksort($values);
+        }
         $retVal = '<div class="pre">';
         foreach ($values as $key => $value)
         {
             $key = htmlspecialchars($key);
             if (is_numeric($value)) {
-                $retVal .= $key.' => '.$value.'<br/>';
+                $retVal .= $key.' => '.$value.$linebreak;
             }
             else if (is_string($value)) {
-                $retVal .= $key.' => \''.htmlspecialchars($value).'\'<br/>';
+                $retVal .= $key.' => \''.htmlspecialchars($value).'\''.$linebreak;
             }
             else if (is_array($value))
             {
@@ -76,11 +80,11 @@ class ZFDebug_Controller_Plugin_Debug_Plugin
             }
             else if (is_object($value))
             {
-                $retVal .= $key.' => '.get_class($value).' Object()<br/>';
+                $retVal .= $key.' => '.get_class($value).' Object()'.$linebreak;
             }
             else if (is_null($value))
             {
-                $retVal .= $key.' => NULL<br/>';
+                $retVal .= $key.' => NULL'.$linebreak;
             }
         }
         return $retVal.'</div>';
