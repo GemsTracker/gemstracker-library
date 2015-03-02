@@ -302,9 +302,10 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->checkTrackTokens($userId, $this->_tokens[$tokenId]);
             // Update the track counter
             //$this->_checkTrackCount($userId);
+            return $this->_tokens[$tokenId];
         }
 
-        return $this->_tokens[$tokenId];
+        return $this->tracker->getToken($tokenId);
     }
 
     /**
@@ -330,7 +331,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $this->db->update('gems__tokens', $tokenData, $where);
 
         $token->refresh();
-
+        
         if ($checkTrack === true) {
             //Now refresh the track to include the survey we just added (easiest way as order may change)
             $this->getTokens(true);
