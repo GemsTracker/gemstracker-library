@@ -74,7 +74,7 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
         $url = array('controller' => $request->getControllerName(),
             'action' => $request->getActionName(),
             'routereset' => true) + $params;
-        $html->a($url, $this->_('Toggle'), array('class' => 'actionlink'));
+        $html->actionLink($url, $this->_('Toggle'));
 
         // Now add the menulist all buttons under answer
         $menuList = $this->menu->getMenuList();
@@ -93,6 +93,6 @@ class Gems_Snippets_Survey_Display_FullAnswerToggleSnippet extends MUtil_Snippet
             return false;
         }
         
-        return parent::hasHtmlOutput();
+        return true;
     }
 }
