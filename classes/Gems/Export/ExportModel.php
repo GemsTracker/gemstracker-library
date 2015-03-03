@@ -26,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
  *
  * @package    Gems
  * @subpackage Export
@@ -36,9 +35,6 @@
  */
 
 /**
- * Short description for ExportModel
- *
- * Long description for class ExportModel (if any)...
  *
  * @package    Gems
  * @subpackage Export
@@ -46,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export_ExportModel extends MUtil_Model_ModelAbstract
+class Gems_Export_ExportModel extends \MUtil_Model_ModelAbstract
 {
 
     public function __construct()

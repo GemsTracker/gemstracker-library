@@ -43,61 +43,98 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Default_ExportAction extends Gems_Controller_Action
+class Gems_Default_ExportAction extends \Gems_Controller_Action
 {
     /**
      * Defines the value used for 'no round description'
-     * 
+     *
      * It this value collides with a used round description, change it to something else
      */
     const NoRound = '-1';
-            
-    /**
-     *
-     * @var Zend_Db_Adapter_Abstract
-     */
-    //public $db;
 
     /**
-     * @var Gems_Export
+     *
+     * @var \Zend_Session_Namespace
+     */
+    protected $_session;
+
+    /**
+     *
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    public $db;
+
+    /**
+     * @var \Gems_Export
      */
     public $export;
 
     /**
      *
-     * @var Zend_Locale
+     * @var \Zend_Locale
      */
     public $locale;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
-    /**
-     *
-     * @var Gems_Util_RequestCache
-     */
-    public $requestCache;
-
-    /**
-     *
-     * @var Zend_Session_Namespace
-     */
-    protected $_session;
-
-    public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
+    protected function _addResponseDatabaseForm($form, &$data, &$elements)
     {
-        parent::__construct($request, $response, $invokeArgs);
-        $this->export = $this->loader->getExport();
+        // A little hack to get the form to align nice... at least for my layout. Do we actually use the small max-with that is currently set?
+        $this->view->HeadStyle()->appendStyle('.tab-displaygroup input, .tab-displaygroup select { max-width: 39em; }');
 
-        //Add this controller to the export so it can render view when needed
-        $this->export->controller = $this;
+        if (isset($data['tid']) && (!empty($data['tid']))) {
+            // If we have a responsedatabase and a track id, try something cool ;-)
+            $responseDb = $this->project->getResponseDatabase();
+            if ($this->db === $responseDb) {
+                // We are in the same database, now put that to use by allowing to filter respondents based on an answer in any survey
+                $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
+                $allSurveys = $empty + $this->util->getDbLookup()->getSurveysForExport();
 
-        $this->_session = GemsEscort::getInstance()->session;
+                $element = new \Zend_Form_Element_Select('filter_sid');
+                $element->setLabel($this->_('Survey'))
+                        ->setMultiOptions($allSurveys);
+
+                $groupElements = array($element);
+
+                if (isset($data['filter_sid']) && !empty($data['filter_sid'])) {
+                    $filterSurvey    = $this->loader->getTracker()->getSurvey($data['filter_sid']);
+                    $filterQuestions = $empty + $filterSurvey->getQuestionList($this->locale->getLanguage());
+
+                    $element = new \Zend_Form_Element_Select('filter_answer');
+                    $element->setLabel($this->_('Question'))
+                            ->setMultiOptions($filterQuestions);
+                    $groupElements[] = $element;
+                }
+
+                if (isset($filterSurvey) && isset($data['filter_answer']) && !empty($data['filter_answer'])) {
+                    $questionInfo = $filterSurvey->getQuestionInformation($this->locale->getLanguage());
+
+                    if (array_key_exists($data['filter_answer'], $questionInfo)) {
+                        $questionInfo = $questionInfo[$data['filter_answer']];
+                    } else {
+                        $questionInfo = array();
+                    }
+
+                    if (array_key_exists('answers', $questionInfo) && is_array($questionInfo['answers']) && count($questionInfo['answers']) > 1) {
+                        $element = new \Zend_Form_Element_Multiselect('filter_value');
+                        $element->setMultiOptions($empty + $questionInfo['answers']);
+                        $element->setAttrib('size', count($questionInfo['answers']) + 1);
+                    } else {
+                        $element = new \Zend_Form_Element_Text('filter_value');
+                    }
+                    $element->setLabel($this->_('Value'));
+                    $groupElements[] = $element;
+                }
+
+                $form->addDisplayGroup($groupElements, 'filter', array('showLabels'  => true, 'Description' => $this->_('Filter')));
+                array_shift($elements);
+            }
+        }
     }
-
 
     /**
      * Convert the submitted form-data to a filter to be used for retrieving the data to export
@@ -125,7 +162,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         }
 
         if ($this->project->hasResponseDatabase()) {
-            $this->ResponseDatabaseFilter($data, $filter);
+            $this->_getResponseDatabaseFilter($data, $filter);
         }
 
         if (isset($data['tid'])) {
@@ -142,19 +179,24 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $filter['organizationid'] = $data['oid'];
         } else {
             //Invalid id so when nothing selected... we get nothing
-            //$filter['organizationid'] = '-1';
+            // $filter['organizationid'] = '-1';
         }
-        $filter['consentcode'] = array_diff((array) $this->util->getConsentTypes(), (array) $this->util->getConsentRejected());
-        
+
+        // Consent codes
+        $filter['consentcode'] = array_diff(
+                (array) $this->util->getConsentTypes(),
+                (array) $this->util->getConsentRejected()
+                );
+
         if (isset($data['rounds']) && !empty($data['rounds'])) {
             $select = $this->loader->getTracker()->getTokenSelect(array('gto_id_token'));
-            
+
             // Only get positive receptioncodes
             $select->andReceptionCodes(array())
                    ->onlySucces();
-            
+
             // Apply track filter
-            if (isset($data['tid']) && !empty($data['tid'])) {                
+            if (isset($data['tid']) && !empty($data['tid'])) {
                 $select->forWhere('gto_id_track = ?', (int) $data['tid']);
             }
 
@@ -162,92 +204,91 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             if (isset($data['sid']) && !empty($data['sid'])) {
                 $select->forSurveyId((int) $data['sid']);
             }
-            
+
             // Apply organization filter
             if (isset($data['oid'])) {
                 $select->forWhere('gto_id_organization in (?)', $data['oid']);
             }
-        
+
             // Apply round description filter
             if ($data['rounds'] == self::NoRound) {
                 $select->forWhere('gto_round_description IS NULL OR gto_round_description = ""');
             } else {
                 $select->forWhere('gto_round_description = ?', $data['rounds']);
             }
-                        
+
             $tokens = array();
             $result = $select->getSelect()->query();
-            while ($row = $result->fetch(Zend_Db::FETCH_NUM)) {
+            while ($row = $result->fetch(\Zend_Db::FETCH_NUM)) {
                 $tokens[] = $row[0];
             }
-            
+
             if (empty($tokens)) {
                 // Add invalid filter
                 $filter['organizationid'] = -1;
             }
-             
+
             $filter['token'] = $tokens;
         }
 
-        // Gems_Tracker::$verbose = true;
+        // \Gems_Tracker::$verbose = true;
         return $filter;
+    }
+
+    protected function _getResponseDatabaseFilter($data, &$filter)
+    {
+        if (isset($data['filter_answer']) &&
+                (!empty($data['filter_answer'])) &&
+                isset($data['filter_value']) &&
+                $data['filter_value'] !== '') {
+
+            $select = $this->db->select()
+                    ->from('gemsdata__responses', array(''))
+                    ->join('gems__tokens', 'gto_id_token = gdr_id_token', array(''))
+                    ->where('gdr_answer_id = ?', $data['filter_answer']);
+
+            if (is_array($data['filter_value'])) {
+                $select->where('gdr_response IN (?)', $data['filter_value']);
+            } else {
+                $select->where('gdr_response = ?', $data['filter_value']);
+            }
+
+            $select->distinct()
+                   ->columns('gto_id_respondent', 'gems__tokens');
+
+            $result = $select->query()->fetchAll(\Zend_Db::FETCH_COLUMN);
+
+            if (!empty($result)) {
+                $filter['respondentid'] = $result;
+            } else {
+                $filter['respondentid'] = -1;
+            }
+        }
     }
 
     public function downloadAction()
     {
         $this->view->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
-        $files = $this->_session->exportFile;
-        foreach($files['headers'] as $header) {
+        $file = $this->_session->exportFile;
+        foreach($file['headers'] as $header) {
             header($header);
         }
         while (ob_get_level()) {
             ob_end_clean();
         }
-        readfile(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        readfile($file['file']);
         // Now clean up the file
-        unlink(GEMS_ROOT_DIR . '/var/tmp/' . $files['file']);
+        unlink($file['file']);
+
         exit;
-    }
-
-    /**
-     * Modify request to hold a cache
-     *
-     * @return array
-     */
-    public function getCachedRequestData()
-    {
-        if (! $this->requestCache) {
-            $this->requestCache = $this->util->getRequestCache($this->getRequest()->getActionName(), false);
-            $this->requestCache->setMenu($this->menu);
-            $this->requestCache->setRequest($this->getRequest());
-
-            // Button text should not be stored.
-            $this->requestCache->removeParams('export', 'action');
-        }
-
-        $data = $this->requestCache->getProgramParams();
-
-        // Clean up empty values
-        //
-        // We do this here because empty values can be valid filters that overrule the default
-        foreach ($data as $key => $value) {
-            if ((is_array($value) && empty($value)) || (is_string($value) && 0 === strlen($value))) {
-                unset($data[$key]);
-            }
-        }
-
-        // Do not set, we only want to have the data as a default
-        //$this->getRequest()->setParams($data);
-
-        return $data;
     }
 
     /**
      * Retrieve the form
      *
      * @param array $data
-     * @return Gems_Form
+     * @return \Gems_Form
      */
     public function getForm(&$data)
     {
@@ -260,12 +301,12 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $types         = $this->export->getExportClasses();
 
         //Create the basic form
-        if (MUtil_Bootstrap::enabled()) {
-            $form = new Gems_Form();
+        if (\MUtil_Bootstrap::enabled()) {
+            $form = new \Gems_Form();
         } else {
-            $form = new Gems_Form_TableForm();
+            $form = new \Gems_Form_TableForm();
         }
-        
+
         $form->getDecorator('AutoFocus')->setSelectall(false);
 
         //Start adding elements
@@ -285,14 +326,14 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         $element->setLabel($this->_('Survey'))
             ->setMultiOptions($surveys);
         $elements[] = $element;
-        
+
         $element = $form->createElement('select', 'rounds');
         $element->setLabel($this->_('Round description'))
             ->setMultiOptions($rounds);
         $elements[] = $element;
 
         if ($this->project->hasResponseDatabase()) {
-            $this->ResponseDatabaseForm($form, $data, $elements);
+            $this->_addResponseDatabaseForm($form, $data, $elements);
         }
 
         //Add a field to the form showing the record count. If this is too slow for large recordsets
@@ -315,7 +356,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 ->setMultiOptions($organizations);
         $elements[] = $element;
 
-        $element = new Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
+        $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         $element->setLabel($this->_('Toggle'));
         $elements[] = $element;
 
@@ -336,7 +377,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
             //Now add a hidden field so we know that when this is present in the $data
             //we don't need to set the defaults
-            $formFields[] = new Zend_Form_Element_Hidden($exportName);
+            $formFields[] = new \Zend_Form_Element_Hidden($exportName);
             foreach ($formFields as $formField) {
                 $formField->setBelongsTo($exportName);
                 $form->addElement($formField);
@@ -365,7 +406,6 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         return $this->_('Export survey answers');
     }
 
-
     /**
      * Take care of exporting the data
      *
@@ -375,13 +415,13 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     {
         if (isset($data['type']) && !empty($data['sid'])) {
             //Do the logging
-            $message = Zend_Json::encode($data);
-            Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
+            $message = \Zend_Json::encode($data);
+            \Gems_AccessLog::getLog()->log('export', $this->getRequest(), $message, null, true);
 
             //And delegate the export to the right class
             $exportClass = $this->export->getExport($data['type']);
 
-            if ($exportClass instanceof Gems_Export_ExportBatchInterface) {
+            if ($exportClass instanceof \Gems_Export_ExportBatchInterface) {
                 // Clear possible existing batch
                 $batch = $this->loader->getTaskRunnerBatch('export_data');
                 $batch->reset();
@@ -424,7 +464,7 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
         }
 
         $title = $this->_('Export');
-        // Not using batchrunner since we need something else
+
         if ($batch->run($this->getRequest())) {
             exit;
         } else {
@@ -432,18 +472,12 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
             $controller->html->h3($title);
 
             if ($batch->isFinished()) {
-                $messages = $batch->getMessages();
-                if (array_key_exists('file', $messages)) {
-                    $files = $messages['file'];
-                    unset($messages['file']);
-                    unset($messages['export-progress']);
-                }
+                // $controller->addMessage($batch->getMessages());
 
-                $controller->addMessage($messages);
-
-                if (!empty($files) && array_key_exists('file', $files) && file_exists(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'])) {
+                $file = $batch->getSessionVariable('file');
+                if ((!empty($file)) && isset($file['file']) && file_exists($file['file'])) {
                     // Forward to download action
-                    $this->_session->exportFile = $files;
+                    $this->_session->exportFile = $file;
                     $this->_reroute(array('action'=>'download'));
                 }
             } else {
@@ -452,7 +486,11 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
                 } else {
                     $controller->html->pInfo($controller->_('Nothing to do.'));
                 }
-                $controller->html->pInfo(MUtil_Html_AElement::a(MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index')), array('class'=>'actionlink'), $this->_('Back')));
+                $controller->html->pInfo()->a(
+                        \MUtil_Html_UrlArrayAttribute::rerouteUrl($this->getRequest(), array('action'=>'index')),
+                        array('class'=>'actionlink'),
+                        $this->_('Back')
+                        );
             }
         }
     }
@@ -461,38 +499,59 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
     {
         $this->initHtml();
 
-        $data = $this->getCachedRequestData();
+        $data = isset($this->_session->exportParams) ? $this->_session->exportParams : array();
+        $form = $this->processForm(null, $data);
+        $this->_session->exportParams = array_filter($form->getValues());
 
-        //Hacked around to get a self-refreshing form, quite hardcoded but fine for now
-        if ($form = $this->processForm(null, $data)) {
-            if (!$this->getRequest()->isPost() || $form->getElement('export')->isChecked()) {
-                if ($form->getElement('export')->isChecked()) {
-                    $data = $form->getValues();
-                    $this->handleExport($data);
-                }
-                $this->html->h3($this->getTopicTitle());
-                $div = $this->html->div(array('id' => 'mainform'));
-                $div[] = $form;
-            } else {
-                // We do not need to return the layout, just the form
-                $this->disableLayout();
-
-                // $this->html->append($form);
-
-                $this->html->raw($form->render($this->view));
-
-                //Now add all onload actions to make the form still work
-                $actions = $this->view->jQuery()->getOnLoadActions();
-                $script  = $this->html->script(array('type' => "text/javascript"));
-                foreach ($actions as $action) {
-                    $script->raw($action);
-                }
-                $this->html->raw($this->view->inlineScript());
-                // MUtil_Echo::track(htmlentities($script->render($this->view)));
-                // MUtil_Echo::track(htmlentities($this->view->inlineScript()));
-                $this->html->raw(MUtil_Echo::out());
+        if ((! $this->getRequest()->isPost()) || $form->getElement('export')->isChecked()) {
+            if ($form->getElement('export')->isChecked()) {
+                $this->handleExport($form->getValues());
             }
+            $this->html->h3($this->getTopicTitle());
+            $div = $this->html->div(array('id' => 'mainform'));
+            $div[] = $form;
+
+        } else {
+            // Hacked around to get a self-refreshing form, quite hardcoded but fine for now
+            //
+            // We do not need to return the layout, just the form
+            $this->disableLayout();
+
+            // $this->html->append($form);
+
+            $this->html->raw($form->render($this->view));
+
+            //Now add all onload actions to make the form still work
+            $actions = $this->view->jQuery()->getOnLoadActions();
+            $script  = $this->html->script(array('type' => "text/javascript"));
+            foreach ($actions as $action) {
+                $script->raw($action);
+            }
+            $this->html->raw($this->view->inlineScript());
+            // \MUtil_Echo::track(htmlentities($script->render($this->view)));
+            // \MUtil_Echo::track(htmlentities($this->view->inlineScript()));
+            $this->html->raw(\MUtil_Echo::out());
         }
+    }
+
+    /**
+     * Initialize translate and html objects
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->export = $this->loader->getExport();
+
+        //Add this controller to the export so it can render view when needed
+        $this->export->controller = $this;
+
+        // $this->_session = GemsEscort::getInstance()->session;
+        $this->_session = new \Zend_Session_Namespace(__CLASS__);
     }
 
     /**
@@ -517,90 +576,11 @@ class Gems_Default_ExportAction extends Gems_Controller_Action
 
         //Make the form 'autosubmit' so it can refresh
         $form->setAttrib('id', 'autosubmit');
-        $form->setAutoSubmit(MUtil_Html::attrib('href', array('action' => 'index', 'RouteReset' => true)), 'mainform');
+        $form->setAutoSubmit(\MUtil_Html::attrib('href', array('action' => 'index', 'RouteReset' => true)), 'mainform');
 
         if ($data) {
             $form->populate($data);
         }
         return $form;
-    }
-
-    protected function ResponseDatabaseFilter($data, &$filter) {
-        if (isset($data['filter_answer']) && !empty($data['filter_answer']) && isset($data['filter_value']) && $data['filter_value'] !== '') {
-            $select = $this->db->select()
-                    ->from('gemsdata__responses', array(''))
-                    ->join('gems__tokens', 'gto_id_token = gdr_id_token', array(''))
-                    ->where('gdr_answer_id = ?', $data['filter_answer']);
-
-            if (is_array($data['filter_value'])) {
-                $select->where('gdr_response IN (?)', $data['filter_value']);
-            } else {
-                $select->where('gdr_response = ?', $data['filter_value']);
-            }
-
-            $select->distinct()
-                   ->columns('gto_id_respondent', 'gems__tokens');
-
-            $result = $select->query()->fetchAll(Zend_Db::FETCH_COLUMN);
-
-            if (!empty($result)) {
-                $filter['respondentid'] = $result;
-            } else {
-                $filter['respondentid'] = -1;
-            }
-        }
-    }
-
-    protected function ResponseDatabaseForm($form, &$data, &$elements) {
-        // A little hack to get the form to align nice... at least for my layout. Do we actually use the small max-with that is currently set?
-        $this->view->HeadStyle()->appendStyle('.tab-displaygroup input, .tab-displaygroup select { max-width: 39em; }');
-        if (isset($data['tid']) && !empty($data['tid'])) {           
-            // If we have a responsedatabase and a track id, try something cool ;-)
-            $responseDb = $this->project->getResponseDatabase();
-            if ($this->db == $responseDb) {
-                // We are in the same database, now put that to use by allowing to filter respondents based on an answer in any survey
-                $empty      = $this->util->getTranslated()->getEmptyDropdownArray();
-                $allSurveys = $empty + $this->util->getDbLookup()->getSurveysForExport();
-                
-                $element = new Zend_Form_Element_Select('filter_sid');
-                $element->setLabel($this->_('Survey'))
-                        ->setMultiOptions($allSurveys);
-
-                $groupElements = array($element);
-
-                if (isset($data['filter_sid']) && !empty($data['filter_sid'])) {
-                    $filterSurvey    = $this->loader->getTracker()->getSurvey($data['filter_sid']);
-                    $filterQuestions = $empty + $filterSurvey->getQuestionList($this->locale->getLanguage());
-
-                    $element = new Zend_Form_Element_Select('filter_answer');
-                    $element->setLabel($this->_('Question'))
-                            ->setMultiOptions($filterQuestions);
-                    $groupElements[] = $element;
-                }
-
-                if (isset($filterSurvey) && isset($data['filter_answer']) && !empty($data['filter_answer'])) {
-                    $questionInfo = $filterSurvey->getQuestionInformation($this->locale->getLanguage());
-
-                    if (array_key_exists($data['filter_answer'], $questionInfo)) {
-                        $questionInfo = $questionInfo[$data['filter_answer']];
-                    } else {
-                        $questionInfo = array();
-                    }
-
-                    if (array_key_exists('answers', $questionInfo) && is_array($questionInfo['answers']) && count($questionInfo['answers']) > 1) {
-                        $element = new Zend_Form_Element_Multiselect('filter_value');
-                        $element->setMultiOptions($empty + $questionInfo['answers']);
-                        $element->setAttrib('size', count($questionInfo['answers']) + 1);
-                    } else {
-                        $element = new Zend_Form_Element_Text('filter_value');
-                    }
-                    $element->setLabel($this->_('Value'));
-                    $groupElements[] = $element;
-                }
-
-                $form->addDisplayGroup($groupElements, 'filter', array('showLabels'  => true, 'Description' => $this->_('Filter')));
-                array_shift($elements);
-            }
-        }
     }
 }

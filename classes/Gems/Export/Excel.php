@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -25,7 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Short description of file
  *
  * @package    Gems
  * @subpackage Export
@@ -35,9 +35,6 @@
  */
 
 /**
- * Short description for Excel
- *
- * Long description for class Excel (if any)...
  *
  * @package    Gems
  * @subpackage Export
@@ -45,14 +42,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Export_ExportBatchInterface
+class Gems_Export_Excel extends \Gems_Export_ExportAbstract implements \Gems_Export_ExportBatchInterface
 {
     /**
      * Return an array of Form Elements for this specific export
      *
      * @param type $form
      * @param type $data
-     * @return array of Zend_Form_Element
+     * @return array of \Zend_Form_Element
      */
     public function getFormElements(&$form, &$data)
     {
@@ -96,7 +93,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
      * access the controller object.
      *
      * @param array               $data     The formdata
-     * @param Gems_Tracker_Survey $survey   The survey object we are exporting
+     * @param \Gems_Tracker_Survey $survey   The survey object we are exporting
      * @param array               $answers  The array of answers
      */
     public function handleExport($data, $survey, $answers, $answerModel, $language)
@@ -117,18 +114,18 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
      * and
      *      handleExportBatchFinalize Write the footer to the file
      *
-     * @param Gems_Task_TaskRunnerBatch $batch       The batch to start
-     * @param array                     $filter      The filter to use
-     * @param string                    $language    The language used / to use for the export
-     * @param array                     $data        The formdata
+     * @param array  $filter   The filter to use
+     * @param string $language The language used / to use for the export
+     * @param array  $data     The formdata
      */
-    public function handleExportBatch($filter, $language, $data) {
-        $batch = $this->_batch;
+    public function handleExportBatch($filter, $language, $data)
+    {
+        $batch       = $this->_batch;
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
         $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
         $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>0) + $filter); // Limit to one response
         $filename    = $this->getFilename($survey, '.xls');
-        
+
         if (count($answers) === 0) {
             $noData = sprintf($this->_('No %s found.'), $this->_('data'));
             $answers = array($noData => $noData);
@@ -136,18 +133,19 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
             $answers = reset($answers);
         }
 
-        $files['file']= 'export-' . md5(time() . rand());
-        $files['headers'][] = "Content-Type: application/download";
-        $files['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
-        $files['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
-        $files['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
-        $files['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
-        $files['headers'][] = "Pragma: cache";                          // HTTP/1.0
+        $file['file']= GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
+        $file['headers'][] = "Content-Type: application/download";
+        $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
+        $file['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
+        $file['headers'][] = "Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT";
+        $file['headers'][] = "Cache-Control: must-revalidate, post-check=0, pre-check=0";
+        $file['headers'][] = "Pragma: cache";                          // HTTP/1.0
 
-        $batch->setMessage('file', $files);
+        $batch->setSessionVariable('file', $file);
         $batch->setMessage('export-progress', $this->_('Initializing export'));
 
-        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'w');
+        \MUtil_File::ensureDir(dirname($file['file']));
+        $f = fopen($file['file'], 'w');
         fwrite($f, '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
@@ -221,7 +219,7 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         do {
             $filter['limit']  = $step;
             $filter['offset'] = $current;
-            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchStep', $data, $filter, $language);
+            $batch->addTask('Export_ExportCommand', $data['type'], 'handleExportBatchStep', $filter, $language, $data);
             $current = $current + $step;
         } while ($current < $answerCount);
 
@@ -230,10 +228,17 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         return;
     }
 
-    public function handleExportBatchStep($data, $filter, $language)
+    /**
+     *
+     * @param array  $filter   The filter to use
+     * @param string $language The language used / to use for the export
+     * @param array  $data     The formdata
+     * @throws \Gems_Exception
+     */
+    public function handleExportBatchStep($filter, $language, $data)
     {
         $batch   = $this->_batch;
-        $files   = $batch->getMessage('file', array());
+        $file    = $batch->getSessionVariable('file');
         $survey  = $this->loader->getTracker()->getSurvey($data['sid']);
         $answers = $survey->getRawTokenAnswerRows($filter);
         $answerModel = $survey->getAnswerModel($language);
@@ -251,13 +256,13 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         }
 
         if (in_array('formatAnswer', $options)) {
-            $answers = new Gems_FormattedData($answers, $answerModel);
+            $answers = new \Gems_FormattedData($answers, $answerModel);
         }
 
-        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
+        $f = fopen($file['file'], 'a');
         if (! $f) {
             $edata = error_get_last();
-            throw new Gems_Exception('Error opening ' . $files['file'] . '. ' . $edata['message']);
+            throw new \Gems_Exception('Error opening ' . $file['file'] . '. ' . $edata['message']);
         }
         foreach($answers as $answer)
         {
@@ -271,11 +276,15 @@ class Gems_Export_Excel extends Gems_Export_ExportAbstract implements Gems_Expor
         fclose($f);
     }
 
+    /**
+     * Close the export file
+     */
     public function handleExportBatchFinalize()
     {
-        $files = $this->_batch->getMessage('file', array());
         $this->_batch->setMessage('export-progress', $this->_('Export finished'));
-        $f = fopen(GEMS_ROOT_DIR . '/var/tmp/' . $files['file'], 'a');
+
+        $file = $this->_batch->getSessionVariable('file');
+        $f = fopen($file['file'], 'a');
         fwrite($f, '            </tbody>
         </table>
     </body>

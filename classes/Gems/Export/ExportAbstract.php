@@ -37,8 +37,8 @@
 /**
  * This is a helper class to make implementing exports easier
  *
- * The setBatch method will only be used when running batch exports. To do so 
- * you must implement the Gems_Export_ExportBatchInterface
+ * The setBatch method will only be used when running batch exports. To do so
+ * you must implement the \Gems_Export_ExportBatchInterface
  *
  * @package    Gems
  * @subpackage Export
@@ -46,60 +46,61 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstract implements Gems_Export_ExportInterface
-{  
+abstract class Gems_Export_ExportAbstract extends \Gems_Loader_TargetLoaderAbstract
+    implements \Gems_Export_ExportInterface
+{
     /**
      * Holds the current batch if there is any
      *
-     * @var Gems_Task_TaskRunnerBatch
+     * @var \Gems_Task_TaskRunnerBatch
      */
     protected $_batch = null;
-    
+
     /**
      * Variable needed to access the controller functions
      *
      * $this->export->controller
      *
-     * @var Gems_Export
+     * @var \Gems_Export
      */
     public $export;
-    
+
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     public $translate;
 
     /**
-     * @var Zend_View
+     * @var \Zend_View
      */
     public $view;
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($text, $locale = null)
     {
         return $this->translate->getAdapter()->_($text, $locale);
     }
-    
+
     /**
      * Creates a valid filename for a survey
-     * 
-     * @param Gems_Tracker_Survey $survey
+     *
+     * @param \Gems_Tracker_Survey $survey
      * @param string $extension Extension, including the dot
      * @return string
      */
@@ -111,15 +112,15 @@ abstract class Gems_Export_ExportAbstract extends Gems_Loader_TargetLoaderAbstra
         $filename = trim($filename, '.');
         return $filename . $extension;
     }
-    
+
     /**
      * Set the batch to be used by this source
      *
      * Use $this->hasBatch to check for existence
      *
-     * @param Gems_Task_TaskRunnerBatch $batch
+     * @param \Gems_Task_TaskRunnerBatch $batch
      */
-    public function setBatch(Gems_Task_TaskRunnerBatch $batch)
+    public function setBatch(\Gems_Task_TaskRunnerBatch $batch)
     {
         $this->_batch = $batch;
     }
