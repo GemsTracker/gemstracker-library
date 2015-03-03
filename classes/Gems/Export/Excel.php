@@ -121,10 +121,11 @@ class Gems_Export_Excel extends \Gems_Export_ExportAbstract implements \Gems_Exp
     public function handleExportBatch($filter, $language, $data)
     {
         $batch       = $this->_batch;
-        $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
+        $tracker     = $this->loader->getTracker();
+        $survey      = $tracker->getSurvey($data['sid']);
         $answerCount = $survey->getRawTokenAnswerRowsCount($filter);
         $answers     = $survey->getRawTokenAnswerRows(array('limit'=>1,'offset'=>0) + $filter); // Limit to one response
-        $filename    = $this->getFilename($survey, '.xls');
+        $filename    = $this->getSurveyFilename($survey, '.xls');
 
         if (count($answers) === 0) {
             $noData = sprintf($this->_('No %s found.'), $this->_('data'));
@@ -133,7 +134,7 @@ class Gems_Export_Excel extends \Gems_Export_ExportAbstract implements \Gems_Exp
             $answers = reset($answers);
         }
 
-        $file['file']= GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
+        $file['file'] = GEMS_ROOT_DIR . '/var/tmp/export-' . md5(time() . rand());
         $file['headers'][] = "Content-Type: application/download";
         $file['headers'][] = "Content-Disposition: attachment; filename=\"" . $filename . "\"";
         $file['headers'][] = "Expires: Mon, 26 Jul 1997 05:00:00 GMT";    // Date in the past
@@ -182,6 +183,14 @@ class Gems_Export_Excel extends \Gems_Export_ExportAbstract implements \Gems_Exp
         } else {
             $options = array();
         }
+
+//        $fieldExport = isset($data['tid'], $data['tid_fields']) && $data['tid'] && $data['tid_fields'];
+//        if ($fieldExport) {
+//            \MUtil_Echo::track('Export fields');
+//            $engine     = $tracker->getTrackEngine($data['tid']);
+//            $fieldModel = $engine->getFieldsDataStorageModel();
+//            \MUtil_Echo::track($fieldModel->getItemNames());
+//        }
 
         $headers = array();
         if (in_array('formatVariable', $options)) {
@@ -237,11 +246,13 @@ class Gems_Export_Excel extends \Gems_Export_ExportAbstract implements \Gems_Exp
      */
     public function handleExportBatchStep($filter, $language, $data)
     {
-        $batch   = $this->_batch;
-        $file    = $batch->getSessionVariable('file');
-        $survey  = $this->loader->getTracker()->getSurvey($data['sid']);
-        $answers = $survey->getRawTokenAnswerRows($filter);
+        $batch       = $this->_batch;
+        $file        = $batch->getSessionVariable('file');
+        $tracker     = $this->loader->getTracker();
+        $survey      = $tracker->getSurvey($data['sid']);
+        $answers     = $survey->getRawTokenAnswerRows($filter);
         $answerModel = $survey->getAnswerModel($language);
+
         //Now add the organization id => name mapping
         $answerModel->set('organizationid', 'multiOptions', $this->loader->getCurrentUser()->getAllowedOrganizations());
         $batch->setMessage('export-progress', sprintf($this->_('Exporting records %s and up'), $filter['offset']));

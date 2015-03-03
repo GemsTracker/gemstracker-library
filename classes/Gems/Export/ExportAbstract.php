@@ -46,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class Gems_Export_ExportAbstract extends \Gems_Loader_TargetLoaderAbstract
+abstract class Gems_Export_ExportAbstract extends \MUtil_Translate_TranslateableAbstract
     implements \Gems_Export_ExportInterface
 {
     /**
@@ -72,30 +72,9 @@ abstract class Gems_Export_ExportAbstract extends \Gems_Loader_TargetLoaderAbstr
     public $loader;
 
     /**
-     * @var \Zend_Translate
-     */
-    public $translate;
-
-    /**
      * @var \Zend_View
      */
     public $view;
-
-    /**
-     * Copy from \Zend_Translate_Adapter
-     *
-     * Translates the given string
-     * returns the translation
-     *
-     * @param  string             $text   Translation string
-     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see \Zend_Locale for more information
-     * @return string
-     */
-    public function _($text, $locale = null)
-    {
-        return $this->translate->getAdapter()->_($text, $locale);
-    }
 
     /**
      * Creates a valid filename for a survey
@@ -104,7 +83,7 @@ abstract class Gems_Export_ExportAbstract extends \Gems_Loader_TargetLoaderAbstr
      * @param string $extension Extension, including the dot
      * @return string
      */
-    protected function getFilename($survey, $extension = '.dat')
+    protected function getSurveyFilename(\Gems_Tracker_Survey $survey, $extension = '.dat')
     {
         // Change all slashes, colons and spaces to underscores
         $filename = str_replace(array('/', '\\', ':', ' '), '_', $survey->getName());

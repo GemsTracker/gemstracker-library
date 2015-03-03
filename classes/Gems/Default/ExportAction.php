@@ -292,13 +292,20 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
      */
     public function getForm(&$data)
     {
-        $empty         = $this->util->getTranslated()->getEmptyDropdownArray();
-        $noRound       = array (self::NoRound => $this->_('No round description'));
-        $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
-        $surveys       = $empty + $this->util->getDbLookup()->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
-        $rounds        = $empty + $noRound + $this->util->getDbLookup()->getRoundsForExport(isset($data['tid']) ? $data['tid'] : null, isset($data['sid']) ? $data['sid'] : null);
+        $dbLookup      = $this->util->getDbLookup();
+        $translated    = $this->util->getTranslated();
+
+        $empty         = $translated->getEmptyDropdownArray();
         $organizations = $this->loader->getCurrentUser()->getRespondentOrganizations();
+        $noRound       = array(self::NoRound => $this->_('No round description'));
+        $rounds        = $empty + $noRound + $dbLookup->getRoundsForExport(
+                isset($data['tid']) ? $data['tid'] : null,
+                isset($data['sid']) ? $data['sid'] : null
+            );
+        $tracks        = $empty + $this->util->getTrackData()->getSteppedTracks();
+        $surveys       = $empty + $dbLookup->getSurveysForExport(isset($data['tid']) ? $data['tid'] : null);
         $types         = $this->export->getExportClasses();
+        $yesNo         = $translated->getYesNo();
 
         //Create the basic form
         if (\MUtil_Bootstrap::enabled()) {
@@ -321,6 +328,17 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         $element->setLabel($this->_('Tracks'))
             ->setMultiOptions($tracks);
         $elements[] = $element;
+
+        if (isset($data['tid']) && $data['tid']) {
+            $element = $form->createElement('radio', 'tid_fields');
+            $element->setLabel($this->_('Export fields'))
+                ->setMultiOptions($yesNo);
+            $elements[] = $element;
+
+            if (!array_key_exists('tid_fields', $data)) {
+                $data['tid_fields'] = 1;
+            }
+        }
 
         $element = $form->createElement('select', 'sid');
         $element->setLabel($this->_('Survey'))

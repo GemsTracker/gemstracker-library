@@ -299,7 +299,7 @@ class Gems_Export_Spss extends \Gems_Export_ExportAbstract implements \Gems_Expo
 
         $f = fopen($file . '.sps', 'a');
 
-        $filenameDat = $this->getFilename($survey, '.dat');
+        $filenameDat = $this->getSurveyFilename($survey, '.dat');
 
         //first output our script
         fwrite($f,
@@ -406,13 +406,13 @@ GET DATA
     public function handleExportBatchFinalize($data, $file)
     {
         $survey      = $this->loader->getTracker()->getSurvey($data['sid']);
-        $filename    = $this->getFilename($survey, '.zip');
+        $filename    = $this->getSurveyFilename($survey, '.zip');
         $zipFile     = dirname($file) . '/export-' . md5(time() . rand());
 
         $zipArchive = new ZipArchive();
         $zipArchive->open(   $zipFile, ZipArchive::CREATE);
-        $zipArchive->addFile($file . '.dat', $this->getFilename($survey, '.dat'));
-        $zipArchive->addFile($file . '.sps', $this->getFilename($survey, '.sps'));
+        $zipArchive->addFile($file . '.dat', $this->getSurveyFilename($survey, '.dat'));
+        $zipArchive->addFile($file . '.sps', $this->getSurveyFilename($survey, '.sps'));
         $zipArchive->close();
         unlink($file . '.dat');
         unlink($file . '.sps');
