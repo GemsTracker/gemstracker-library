@@ -305,13 +305,12 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     /**
      * Calculate the track info from the fields
      *
-     * @param int $respTrackId Gems respondent track id or null when new
      * @param array $data The values to save
      * @return string The description to save as track_info
      */
-    public function calculateFieldsInfo($respTrackId, array $data)
+    public function calculateFieldsInfo(array $data)
     {
-        return $this->_fieldsDefinition->calculateFieldsInfo($respTrackId, $data);
+        return $this->_fieldsDefinition->calculateFieldsInfo($data);
     }
 
     /**

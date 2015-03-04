@@ -43,11 +43,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnippetAbstract
+class Gems_Snippets_EditTrackSnippet extends \Gems_Tracker_Snippets_EditTrackSnippetAbstract
 {
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -73,7 +73,7 @@ class Gems_Snippets_EditTrackSnippet extends Gems_Tracker_Snippets_EditTrackSnip
         if ($this->trackEngine) {
             // concatenate user input (gtf_field fields)
             // before the data is saved (the fields them
-            $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData);
+            $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->formData);
         }
 
         // Perform the save

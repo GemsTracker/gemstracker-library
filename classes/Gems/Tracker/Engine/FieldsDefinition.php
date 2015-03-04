@@ -35,6 +35,9 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Field\FieldInterface;
+use Gems\Tracker\Field\OnRespondentTrackLoadInterface;
+
 /**
  *
  * @package    Gems
@@ -43,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_TranslateableAbstract
+class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      * Field key separator
@@ -66,6 +69,13 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
      * @var array
      */
     protected $_dataModel = array();
+
+    /**
+     * Can be an empty array.
+     *
+     * @var array of \Gems\Tracker\Field\FieldInterface objects
+     */
+    protected $_fields = false;
 
     /**
      * Cache for appointment fields check
@@ -128,7 +138,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
     /**
      * Construct the defintion for this gems__tracks track id.
      *
-     * @param The track $trackId
+     * @param int $trackId The track id from gems__tracks
      */
     public function __construct($trackId)
     {
@@ -140,24 +150,27 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
      */
     protected function _ensureTrackFields()
     {
-        if (! is_array($this->_trackFields)) {
+        if (! is_array($this->_fields)) {
             $for    = array('gtf_id_track' => $this->_trackId);
             $model  = $this->getMaintenanceModel(false, 'index', $for);
             $fields = $model->load($for, array('gtf_id_order' => SORT_ASC));
 
+            $this->_fields      = array();
             $this->_trackFields = array();
             if (is_array($fields)) {
-
                 $this->exists = true;
 
                 foreach ($fields as $field) {
                     $key = self::makeKey($field['sub'], $field['gtf_id_field']);
+
+                    $class = 'Field\\' . ucfirst($field['gtf_field_type']) . 'Field';
+                    $this->_fields[$key] = $this->tracker->createTrackClass($class, $this->_trackId, $field);
+
                     $this->_trackFields[$key] = $field;
                 }
-                // MUtil_Echo::track($this->_trackFields);
+                // \MUtil_Echo::track($this->_trackFields);
             } else {
                 $this->exists       = false;
-                $this->_trackFields = array();
             }
         }
     }
@@ -178,39 +191,32 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
     /**
      * Calculate the content for the track info field using the other fields
      *
-     * @param int $respTrackId Gems respondent track id or null when new
      * @param array $data The values to save
      * @return string The description to save as track_info
      */
-    public function calculateFieldsInfo($respTrackId, array $data)
+    public function calculateFieldsInfo(array $data)
     {
         if (! $this->exists) {
             return null;
         }
 
-        $model   = $this->getDataStorageModel();
-        $results = array();
+        $output = array();
 
-        foreach ($this->_trackFields as $key => $field) {
-            if (array_key_exists($key, $data)) {
-                if ($field['gtf_to_track_info']) {
-                    $typeFunction = 'calculateFieldInfo' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
-                    if (method_exists($model, $typeFunction)) {
-                        $value = $model->$typeFunction($data[$key], $key, $data, $field, $respTrackId);
-                    } else {
-                        $value = $data[$key];
-                    }
+        foreach ($this->_fields as $key => $field) {
+            if (array_key_exists($key, $data) && ($field instanceof FieldInterface)) {
+                if ($field->toTrackInfo()) {
+                    $value = $field->calculateFieldInfo($data[$key], $data);
 
                     if (is_array($value)) {
-                        $results = array_merge($results, array_filter($value));
+                        $output = array_merge($output, array_filter($value));
                     } elseif ($value || ($value == 0)) {
-                        $results[] = $value;
+                        $output[] = $value;
                     }
                 }
             }
         }
 
-        return substr(trim(implode(' ', $results)), 0, $this->maxTrackInfoChars);
+        return substr(trim(implode(' ', $output)), 0, $this->maxTrackInfoChars);
     }
 
     /**
@@ -274,11 +280,11 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
     /**
      * Get the storage model for field values
      *
-     * @return Gems_Tracker_Model_FieldDataModel
+     * @return \Gems_Tracker_Model_FieldDataModel
      */
     public function getDataStorageModel()
     {
-        if (! $this->_dataModel instanceof Gems_Tracker_Model_FieldDataModel) {
+        if (! $this->_dataModel instanceof \Gems_Tracker_Model_FieldDataModel) {
             $this->_dataModel = $this->tracker->createTrackClass('Model_FieldDataModel');
         }
 
@@ -365,12 +371,12 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
      */
     public function getFieldsDataFor($respTrackId)
     {
-        if (! $this->_trackFields) {
+        if (! $this->_fields) {
             return array();
         }
 
         // Set the default values to empty as we currently do not store default values for fields
-        $output = array_fill_keys(array_keys($this->_trackFields), null);
+        $output = array_fill_keys(array_keys($this->_fields), null);
 
         if (! $respTrackId) {
             return $output;
@@ -381,21 +387,18 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
 
         if ($rows) {
             foreach ($rows as $row) {
-                $key = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
+                $key   = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
 
-                $value = $row['gr2t2f_value'];
-
-                if (isset($this->_trackFields[$key], $this->_trackFields[$key]['gtf_field_type'])) {
-                    $typeFunction = 'calculateOnLoad' . ucfirst($this->_trackFields[$key]['gtf_field_type']);
-                    if (method_exists($model, $typeFunction)) {
-                        $value = $model->$typeFunction($value, $output, $respTrackId);
-                    }
+                if (isset($this->_fields[$key]) && ($this->_fields[$key] instanceof OnRespondentTrackLoadInterface)) {
+                    $value = $this->_fields[$key]->onRespondentTrackLoad($row['gr2t2f_value'], $output, $respTrackId);
+                } else {
+                    $value = $row['gr2t2f_value'];
                 }
 
                 $output[$key] = $value;
             }
         }
-        // MUtil_Echo::track($output);
+        // \MUtil_Echo::track($output);
 
         return $output;
     }
@@ -406,7 +409,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @param array $data the current request data
-     * @return Gems_Tracker_Model_FieldMaintenanceModel
+     * @return \Gems_Tracker_Model_FieldMaintenanceModel
      */
     public function getMaintenanceModel($detailed, $action, array $data)
     {
@@ -520,7 +523,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends MUtil_Translate_Translateable
                     // Perform automatic calculation
                     if (isset($field['gtf_calculate_using'])) {
                         $sources = explode(
-                                Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
+                                \Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
                                 $field['gtf_calculate_using']
                                 );
 

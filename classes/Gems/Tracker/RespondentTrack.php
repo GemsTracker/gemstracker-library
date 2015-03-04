@@ -331,7 +331,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         $this->db->update('gems__tokens', $tokenData, $where);
 
         $token->refresh();
-        
+
         if ($checkTrack === true) {
             //Now refresh the track to include the survey we just added (easiest way as order may change)
             $this->getTokens(true);
@@ -1151,7 +1151,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
         if ($userId) {
             $this->handleFieldUpdate($userId);
 
-            $info = $this->getTrackEngine()->calculateFieldsInfo($this->_respTrackId, $this->_fieldData);
+            $info = $this->getTrackEngine()->calculateFieldsInfo($this->_fieldData);
 
             if ($info != $this->_respTrackData['gr2t_track_info']) {
                 $this->_updateTrack(array('gr2t_track_info' => $info), $userId);

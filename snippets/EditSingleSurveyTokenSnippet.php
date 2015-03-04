@@ -44,20 +44,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract
+class EditSingleSurveyTokenSnippet extends \Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract
 {
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
     /**
      * Add the elements for the track fields
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
      */
-    protected function _addFieldsElements(MUtil_Model_Bridge_FormBridgeInterface $bridge)
+    protected function _addFieldsElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge)
     {
         if ($this->trackEngine) {
             $elements = $this->trackEngine->getFieldNames();
@@ -65,7 +65,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
             foreach ($elements as $id => $name) {
                 $bridge->add($id);
             }
-            // MUtil_Echo::track(array_intersect_key($this->formData, $elements));
+            // \MUtil_Echo::track(array_intersect_key($this->formData, $elements));
         }
     }
 
@@ -75,10 +75,10 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
      * Overrule this function to add different elements to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addFormElements(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addFormElements(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->addHiddenMulti(
                 'gr2o_id_organization',
@@ -100,7 +100,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                 'gto_valid_from_manual',
                 'gto_valid_until_manual',
                 'gtr_id_track',
-                $model->getMeta(MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
+                $model->getMeta(\MUtil_Model_Type_ChangeTracker::HIDDEN_FIELDS, array())
                 );
 
         if (! $this->createData) {
@@ -126,7 +126,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                     $this->formData['add_to_track'] = $this->createData ? 1 : 0;
                 }
 
-                $onclick = new MUtil_Html_OnClickArrayAttribute();
+                $onclick = new \MUtil_Html_OnClickArrayAttribute();
                 $onclick->addSubmit();
                 $bridge->addRadio('add_to_track', 'label', $this->_('Add'),
                         'multiOptions', array(
@@ -142,7 +142,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
                     $results    = $translated->getEmptyDropdownArray();
 
                     foreach ($tracks as $track) {
-                        if ($track instanceof Gems_Tracker_RespondentTrack) {
+                        if ($track instanceof \Gems_Tracker_RespondentTrack) {
                             if (($track->getTrackEngine()->getTrackType() !== 'S') &&
                                     $track->getReceptionCode()->isSuccess()) {
 
@@ -194,7 +194,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         } else {
             $bridge->addDate(     'gto_valid_from');
             $bridge->addDate(     'gto_valid_until')
-                ->addValidator(new MUtil_Validate_Date_DateAfter('gto_valid_from'));
+                ->addValidator(new \MUtil_Validate_Date_DateAfter('gto_valid_from'));
         }
         $bridge->addTextarea('gto_comment', 'rows', 3, 'cols', 50);
 
@@ -210,7 +210,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
 
     /**
      *
-     * @return Gems_Menu_MenuList
+     * @return \Gems_Menu_MenuList
      */
     protected function getMenuList()
     {
@@ -258,7 +258,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         if (isset($this->formData['add_to_track']) && $this->formData['add_to_track']) {
 
             if (! isset($this->formData['to_existing_track'])) {
-                throw new Gems_Exception_Coding('Add to track called without existing track.');
+                throw new \Gems_Exception_Coding('Add to track called without existing track.');
             }
 
             $tracker    = $this->loader->getTracker();
@@ -324,7 +324,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
             if ($this->trackEngine) {
                 // concatenate user input (gtf_field fields)
                 // before the data is saved (the fields them
-                $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->respondentTrackId, $this->formData);
+                $this->formData['gr2t_track_info'] = $this->trackEngine->calculateFieldsInfo($this->formData);
             }
 
             // Perform the save
@@ -352,7 +352,7 @@ class EditSingleSurveyTokenSnippet extends Gems_Tracker_Snippets_EditSingleSurve
         if ($this->routeAction && ($this->request->getActionName() !== $this->routeAction)) {
             $this->afterSaveRouteUrl = array(
                 $this->request->getActionKey() => $this->routeAction,
-                MUtil_Model::REQUEST_ID => $this->tokenId,
+                \MUtil_Model::REQUEST_ID => $this->tokenId,
                 );
         }
         if (isset($this->formData['add_to_track']) && $this->formData['add_to_track']) {

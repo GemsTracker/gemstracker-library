@@ -268,7 +268,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
         // Process track fields.
         if ($trackFieldsData && (! array_key_exists('gr2t_track_info', $respTrackData))) {
-            $respTrackData['gr2t_track_info'] = $trackEngine->calculateFieldsInfo(null, $trackFieldsData);
+            $respTrackData['gr2t_track_info'] = $trackEngine->calculateFieldsInfo($trackFieldsData);
         }
 
         // Create the filter values for creating the track
@@ -291,7 +291,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
             $respTrackId = $respTrack->getRespondentTrackId();
             $trackEngine->setFieldsData($respTrackId, $trackFieldsData + $trackEngine->getFieldsData($respTrackId));
 
-            $newInfo = $trackEngine->calculateFieldsInfo($respTrackId, $trackEngine->getFieldsData($respTrackId));
+            $newInfo = $trackEngine->calculateFieldsInfo($trackEngine->getFieldsData($respTrackId));
 
             // Update info if changed after creation
             if ($newInfo !== $respTrackData['gr2t_track_info']) {
