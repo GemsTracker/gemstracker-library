@@ -75,10 +75,23 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $context)
+    public function calculateFieldInfo($currentValue, array $fieldData)
+    {
+        return $currentValue;
+    }
+
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other known field values
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return mixed the new value
+     */
+    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
     {
         return $currentValue;
     }
@@ -93,12 +106,87 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     }
 
     /**
+     * Get the fields that should be used for calculation,
+     * first field to use first.
+     *
+     * I.e. the last selected field in field maintenance
+     * is the first field in the output array.
+     *
+     * @param array $fieldData The fields being saved
+     * @return array [fieldKey => fieldValue]
+     */
+    public function getCalculationFields(array $fieldData)
+    {
+        $output = array();
+
+        // Perform automatic calculation
+        if (isset($this->_fieldDefinition['gtf_calculate_using'])) {
+            $sources = explode(
+                    \Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
+                    $this->_fieldDefinition['gtf_calculate_using']
+                    );
+
+            foreach ($sources as $source) {
+                if (isset($fieldData[$source]) && $fieldData[$source]) {
+                    $output[$source] = $fieldData[$source];
+                } else {
+                    $output[$source] = null;
+                }
+            }
+        }
+        return array_reverse($output, true);
+    }
+
+    /**
+     *
+     * @return The track field id
+     */
+    public function getFieldId()
+    {
+        return $this->_fieldDefinition['gtf_id_field'];
+    }
+
+
+    /**
+     *
+     * @return The track field sub (model) value
+     */
+    public function getFieldSub()
+    {
+        return $this->_fieldDefinition['sub'];
+    }
+
+    /**
      *
      * @return The field label
      */
     public function getLabel()
     {
         return $this->_fieldDefinition['gtf_field_name'];
+    }
+
+    /**
+     * Calculation the field value when loading from a respondent track
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackLoad($currentValue, array $fieldData)
+    {
+        return $currentValue;
+    }
+
+    /**
+     * Converting the field value when saving to a respondent track
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackSave($currentValue, array $fieldData)
+    {
+        return $currentValue;
     }
 
     /**

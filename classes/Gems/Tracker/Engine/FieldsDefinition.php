@@ -35,8 +35,9 @@
  * @version    $Id$
  */
 
+namespace Gems\Tracker\Engine;
+
 use Gems\Tracker\Field\FieldInterface;
-use Gems\Tracker\Field\OnRespondentTrackLoadInterface;
 
 /**
  *
@@ -46,7 +47,7 @@ use Gems\Tracker\Field\OnRespondentTrackLoadInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
+class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      * Field key separator
@@ -109,6 +110,13 @@ class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_Translateabl
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
+
+    /**
+     * True when the fields have changed during the last call to processBeforeSave
+     *
+     * @var boolean
+     */
+    public $changed = false;
 
     /**
      * True when there exist fields
@@ -191,7 +199,7 @@ class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_Translateabl
     /**
      * Calculate the content for the track info field using the other fields
      *
-     * @param array $data The values to save
+     * @param array $data The field values
      * @return string The description to save as track_info
      */
     public function calculateFieldsInfo(array $data)
@@ -203,14 +211,15 @@ class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_Translateabl
         $output = array();
 
         foreach ($this->_fields as $key => $field) {
-            if (array_key_exists($key, $data) && ($field instanceof FieldInterface)) {
+            if ($field instanceof FieldInterface) {
                 if ($field->toTrackInfo()) {
-                    $value = $field->calculateFieldInfo($data[$key], $data);
+                    $inVal  = isset($data[$key]) ? $data[$key] : null;
+                    $outVal = $field->calculateFieldInfo($inVal, $data);
 
-                    if (is_array($value)) {
-                        $output = array_merge($output, array_filter($value));
-                    } elseif ($value || ($value == 0)) {
-                        $output[] = $value;
+                    if (is_array($outVal)) {
+                        $output = array_merge($output, array_filter($outVal));
+                    } elseif ($outVal || ($outVal == 0)) {
+                        $output[] = $outVal;
                     }
                 }
             }
@@ -389,10 +398,10 @@ class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_Translateabl
             foreach ($rows as $row) {
                 $key   = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
 
-                if (isset($this->_fields[$key]) && ($this->_fields[$key] instanceof OnRespondentTrackLoadInterface)) {
+                if (isset($this->_fields[$key]) && ($this->_fields[$key] instanceof FieldInterface)) {
                     $value = $this->_fields[$key]->onRespondentTrackLoad($row['gr2t2f_value'], $output, $respTrackId);
                 } else {
-                    $value = $row['gr2t2f_value'];
+                    $value = $row['gr2t2f_value']; // Should not occur
                 }
 
                 $output[$key] = $value;
@@ -498,55 +507,69 @@ class Gems_Tracker_Engine_FieldsDefinition extends \MUtil_Translate_Translateabl
     }
 
     /**
+     * Processes the values and and changes them as required
+     *
+     * @param array $fieldData The field values
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return array The processed data
+     */
+    public function processBeforeSave(array $fieldData, array $trackData)
+    {
+        $this->changed = false;
+
+        if (! $this->exists) {
+            return null;
+        }
+
+        $output = array();
+
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                $inVal  = isset($fieldData[$key]) ? $fieldData[$key] : null;
+                $outVal = $field->calculateRespondentTrackValue($inVal, $fieldData, $trackData);
+
+                $this->changed = $this->changed || ((string) $inVal !== (string) $outVal);
+
+                $fieldData[$key] = $outVal; // Make sure the new value is available to the next field
+                $output[$key]    = $outVal;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
      * Saves the field data for the respondent track id.
      *
      * @param int $respTrackId Gems respondent track id
-     * @param array $data The values to save
+     * @param array $fieldData The values to save
      * @return int The number of changed fields
      */
-    public function setFieldsData($respTrackId, array $data)
+    public function saveFields($respTrackId, array $fieldData)
     {
-        // Clean up any keys not in fields
-        $data  = array_intersect_key($data, $this->_trackFields);
-        $model = $this->getDataStorageModel();
         $saves = array();
 
-        // \MUtil_Echo::track($data);
-        foreach ($data as $key => &$value) {
-            if (isset($this->_trackFields[$key])) {
-                $field = $this->_trackFields[$key];
-
-                $typeFunction = 'calculateOnSave' . ucfirst($field['gtf_field_type']);
-                if (method_exists($model, $typeFunction)) {
-                    $calcUsing    = array();
-
-                    // Perform automatic calculation
-                    if (isset($field['gtf_calculate_using'])) {
-                        $sources = explode(
-                                \Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
-                                $field['gtf_calculate_using']
-                                );
-
-                        foreach ($sources as $source) {
-                            if (isset($data[$source]) && $data[$source]) {
-                                $calcUsing[$source] = $data[$source];
-                            } else {
-                                $calcUsing[$source] = null;
-                            }
-                        }
-                    }
-                    $value = $model->$typeFunction($value, $calcUsing, $data, $respTrackId, $field);
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                if (isset($fieldData[$key])) {
+                    $inVal = $fieldData[$key];
+                } else {
+                    // There is no value do not save
+                    continue;
                 }
 
+                $saveVal = $field->onRespondentTrackSave($inVal, $fieldData);
+
                 $saves[] = array(
-                    'sub'                        => $field['sub'],
+                    'sub'                        => $field->getFieldSub(),
                     'gr2t2f_id_respondent_track' => $respTrackId,
-                    'gr2t2f_id_field'            => $field['gtf_id_field'],
-                    'gr2t2f_value'               => $value,
+                    'gr2t2f_id_field'            => $field->getFieldId(),
+                    'gr2t2f_value'               => $saveVal,
                 );
             }
         }
-        // \MUtil_Echo::track($saves);
+
+        $model = $this->getDataStorageModel();
         $model->saveAll($saves);
 
         return $model->getChanged();

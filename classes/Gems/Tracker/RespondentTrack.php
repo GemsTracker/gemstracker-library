@@ -1069,9 +1069,34 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      * @param int $userId The current user or null if a recalculation should not be performed
      * @return int The number of tokens changed as a result of this update
      */
-    public function recalculateFields($userId)
+    public function recalculateFields($userId, &$fieldsChanged = false)
     {
-        $this->setFieldData($this->getFieldData(), $userId);
+        $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
+
+        $this->_fieldData = $fieldDef->processBeforeSave($this->_fieldData, $this->_respTrackData);
+        $fieldsChanged    = $fieldDef->changed;
+
+        if (! $fieldsChanged) {
+            return 0;
+        }
+
+        $changes       = $fieldDef->saveFields($this->_respTrackData, $this->_fieldData);
+        $fieldsChanged = (boolean) $changes;
+
+        if (! $fieldsChanged) {
+            return 0;
+        }
+
+        if (! $userId) {
+            return 0;
+        }
+
+        $this->handleFieldUpdate($userId);
+
+        $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
+        if ($info != $this->_respTrackData['gr2t_track_info']) {
+            $this->_updateTrack(array('gr2t_track_info' => $info), $userId);
+        }
 
         // We always update the fields, but recalculate the token dates
         // only when this respondent track is still running.
@@ -1130,10 +1155,11 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
      */
     public function setFieldData($data, $userId = null)
     {
-        $engine    = $this->getTrackEngine();
-        $fieldMap  = $engine->getFields();
+        $fieldDef  = $this->getTrackEngine()->getFieldsDefinition();
+        $fieldMap  = $fieldDef->getFieldCodes();
         $fieldData = array();
 
+        // Use values on code fields if oiginal does not exist
         foreach ($data as $key => $value)
         {
             if (array_key_exists($key, $fieldMap)) {
@@ -1145,13 +1171,14 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
                 }
             }
         }
-        $engine->setFieldsData($this->_respTrackId, $fieldData);
-        $this->_ensureFieldData(true);  // force reload
 
-        if ($userId) {
+        $this->_fieldData = $fieldDef->processBeforeSave($fieldData, $this->_respTrackData);
+        $changes          = $fieldDef->saveFields($this->_respTrackData, $this->_fieldData);
+
+        if ($userId && $changes) {
             $this->handleFieldUpdate($userId);
 
-            $info = $this->getTrackEngine()->calculateFieldsInfo($this->_fieldData);
+            $info = $fieldDef->calculateFieldsInfo($this->_fieldData);
 
             if ($info != $this->_respTrackData['gr2t_track_info']) {
                 $this->_updateTrack(array('gr2t_track_info' => $info), $userId);

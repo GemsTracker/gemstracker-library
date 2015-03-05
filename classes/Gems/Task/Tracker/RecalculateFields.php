@@ -44,10 +44,10 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 9-okt-2014 13:18:02
  */
-class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
+class Gems_Task_Tracker_RecalculateFields extends \MUtil_Task_TaskAbstract
 {
     /**
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
@@ -63,19 +63,23 @@ class Gems_Task_Tracker_RecalculateFields extends MUtil_Task_TaskAbstract
         $tracker   = $this->loader->getTracker();
         $respTrack = $tracker->getRespondentTrack($respTrackData);
 
-        $current   = $respTrack->getFieldData();
-        $new       = $respTrack->setFieldData($current, $userId);
+        $fieldsChanged = false;
+        $tokensChanged = $respTrack->recalculateFields($userId, $fieldsChanged);
 
         $t = $batch->addToCounter('trackFieldsChecked');
-        if ($current !== $new) {
+        if ($fieldsChanged) {
             $i = $batch->addToCounter('trackFieldsChanged');
         } else {
             $i = $batch->getCounter('trackFieldsChanged');
         }
-        if ($userId && $respTrack->hasSuccesCode() && $respTrack->isOpen()) {
-            $respTrack->checkTrackTokens($userId);
+        if ($tokensChanged) {
+            $j = $batch->addToCounter('trackTokensChanged');
+        } else {
+            $j = $batch->getCounter('trackTokensChanged');
         }
 
-        $batch->setMessage('trackFieldsCheck', sprintf($this->_('%d tracks checked, %d had field changes.'), $t, $i));
+        $batch->setMessage(
+                'trackFieldsCheck',
+                sprintf($this->_('%d tracks checked, %d had field changes, %d had token changes..'), $t, $i, $j));
     }
 }

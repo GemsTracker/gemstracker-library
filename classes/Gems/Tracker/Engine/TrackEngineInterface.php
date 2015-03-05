@@ -184,6 +184,13 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     public function getFieldsDataStorageModel();
 
     /**
+     * Returns the field definition for the track enige.
+     *
+     * @return \Gems\Tracker\Engine\FieldsDefinition;
+     */
+    public function getFieldsDefinition();
+
+    /**
      * Returns the fields required for editing a track of this type.
      *
      * @return array of \Zend_Form_Element
@@ -409,15 +416,6 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return boolean
      */
     public function isUserCreatable();
-
-    /**
-     * Saves the field data for the respondent track id.
-     *
-     * @param int $respTrackId Gems respondent track id
-     * @param array $data The values to save
-     * @return int The number of changed fields
-     */
-    public function setFieldsData($respTrackId, array $data);
 
     /**
      * Updates the number of rounds in this track.

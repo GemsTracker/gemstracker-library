@@ -162,6 +162,22 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Dynamically load and create a [Gems|Project]_Agenda_ class
+     *
+     * @param string $className
+     * @param mixed $param1
+     * @param mixed $param2
+     * @return object
+     */
+    public function createAgendaClass($className, $param1 = null, $param2 = null)
+    {
+        $params = func_get_args();
+        array_shift($params);
+
+        return $this->_loadClass($className, true, $params);
+    }
+
+    /**
      * Find the first appointment matching this query
      *
      * @param int $filterId

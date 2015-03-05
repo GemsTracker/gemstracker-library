@@ -87,46 +87,19 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
     {
         parent::__construct($modelName, $modelField);
 
-        $model = new \MUtil_Model_TableModel('gems__respondent2track2field');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2f');
-        $this->addUnionModel($model, null, \Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME);
+        $modelF = new \MUtil_Model_TableModel('gems__respondent2track2field');
+        \Gems_Model::setChangeFieldsByPrefix($modelF, 'gr2t2f');
+        $this->addUnionModel($modelF, null, \Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME);
 
-        $model = new \MUtil_Model_TableModel('gems__respondent2track2appointment');
-        \Gems_Model::setChangeFieldsByPrefix($model, 'gr2t2a');
+        $modelA = new \MUtil_Model_TableModel('gems__respondent2track2appointment');
+        \Gems_Model::setChangeFieldsByPrefix($modelA, 'gr2t2a');
 
-        $map = $model->getItemsOrdered();
-        $map = array_combine($map, str_replace('gr2t2a_', 'gr2t2f_', $map));
+        $mapBase = $modelA->getItemsOrdered();
+        $map     = array_combine($mapBase, str_replace('gr2t2a_', 'gr2t2f_', $mapBase));
         $map['gr2t2a_id_app_field'] = 'gr2t2f_id_field';
         $map['gr2t2a_id_appointment'] = 'gr2t2f_value';
 
-        $this->addUnionModel($model, $map, \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
-    }
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values The values for the checked calculate from fields
-     * @param array $context The other values being saved
-     * @param int $respTrackId Gems respondent track id
-     * @param array $field Field definition array
-     * @return mixed the new value
-     */
-    public function calculateOnSaveActivity($currentValue, array $values, array $context, $respTrackId, $field)
-    {
-        if ($values) {
-            $agenda = $this->loader->getAgenda();
-
-            foreach (array_reverse(array_filter($values)) as $value) {
-                $appointment = $agenda->getAppointment($value);
-
-                if ($appointment->exists) {
-                    return $appointment->getActivityId();
-                }
-            }
-        }
-
-        return $currentValue;
+        $this->addUnionModel($modelA, $map, \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
     }
 
     /**
@@ -183,87 +156,6 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 
                 if ($appointment->isActive()) {
                     $this->_lastActiveAppointment = $appointment;
-                }
-            }
-        }
-
-        return $currentValue;
-    }
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values The values for the checked calculate from fields
-     * @param array $context The other values being saved
-     * @param int $respTrackId Gems respondent track id
-     * @param array $field Field definition array
-     * @return mixed the new value
-     */
-    public function calculateOnSaveCaretaker($currentValue, array $values, array $context, $respTrackId, $field)
-    {
-        if ($values) {
-            $agenda = $this->loader->getAgenda();
-
-            foreach (array_reverse(array_filter($values)) as $value) {
-                $appointment = $agenda->getAppointment($value);
-
-                if ($appointment->exists) {
-                    return $appointment->getAttendedById();
-                }
-            }
-        }
-
-        return $currentValue;
-    }
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values The values for the checked calculate from fields
-     * @param array $context The other values being saved
-     * @param int $respTrackId Gems respondent track id
-     * @param array $field Field definition array
-     * @return mixed the new value
-     */
-    public function calculateOnSaveLocation($currentValue, array $values, array $context, $respTrackId, $field)
-    {
-        if ($values) {
-            $agenda = $this->loader->getAgenda();
-
-            foreach (array_reverse(array_filter($values)) as $value) {
-                $appointment = $agenda->getAppointment($value);
-
-                if ($appointment->exists) {
-                    return $appointment->getLocationId();
-                }
-            }
-        }
-
-        return $currentValue;
-    }
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values The values for the checked calculate from fields
-     * @param array $context The other values being saved
-     * @param int $respTrackId Gems respondent track id
-     * @param array $field Field definition array
-     * @return mixed the new value
-     */
-    public function calculateOnSaveProcedure($currentValue, array $values, array $context, $respTrackId, $field)
-    {
-        if ($values) {
-            $agenda = $this->loader->getAgenda();
-
-            foreach (array_reverse(array_filter($values)) as $value) {
-                $appointment = $agenda->getAppointment($value);
-
-                if ($appointment->exists) {
-                    return $appointment->getProcedureId();
                 }
             }
         }

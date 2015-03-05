@@ -34,6 +34,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  * The tracker is the central access point doing anything with tracks or tokens.
  *
@@ -253,6 +255,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
     public function createRespondentTrack($respondentId, $organizationId, $trackId, $userId, $respTrackData = array(), array $trackFieldsData = array())
     {
         $trackEngine = $this->getTrackEngine($trackId);
+        $fieldsDef   = $trackEngine->getFieldsDefinition();
 
         // Process $respTrackData and gr2t_start_date values
         if ($respTrackData && (! is_array($respTrackData))) {
@@ -267,12 +270,13 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $respTrackData['gr2t_id_organization'] = $organizationId;
 
         // Process track fields.
-        if ($trackFieldsData && (! array_key_exists('gr2t_track_info', $respTrackData))) {
-            $respTrackData['gr2t_track_info'] = $trackEngine->calculateFieldsInfo($trackFieldsData);
+        $usedFields = $fieldsDef->processBeforeSave($trackFieldsData, $respTrackData);
+        if ($usedFields && (! array_key_exists('gr2t_track_info', $respTrackData))) {
+            $respTrackData['gr2t_track_info'] = $fieldsDef->calculateFieldsInfo($usedFields);
         }
 
         // Create the filter values for creating the track
-        $filter['gtr_id_track']         = $trackId;
+        $filter['gtr_id_track'] = $trackId;
 
         // Load all other new data
         $respTrackModel = $this->getRespondentTrackModel();
@@ -287,17 +291,8 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
         $respTrack      = $this->getRespondentTrack($respTrackData);
 
         // Save the fields
-        if ($trackFieldsData) {
-            $respTrackId = $respTrack->getRespondentTrackId();
-            $trackEngine->setFieldsData($respTrackId, $trackFieldsData + $trackEngine->getFieldsData($respTrackId));
-
-            $newInfo = $trackEngine->calculateFieldsInfo($trackEngine->getFieldsData($respTrackId));
-
-            // Update info if changed after creation
-            if ($newInfo !== $respTrackData['gr2t_track_info']) {
-                $respTrackData['gr2t_track_info'] = $newInfo;
-                $respTrackModel->save($respTrackData);
-            }
+        if ($usedFields) {
+            $fieldsDef->saveFields($respTrack->getRespondentTrackId(), $usedFields);
         }
 
         // Create the actual tokens!!!!
@@ -384,7 +379,7 @@ class Gems_Tracker extends \Gems_Loader_TargetLoaderAbstract implements \Gems_Tr
 
         if ($rows) {
             foreach ($rows as $row) {
-                $key = \Gems_Tracker_Engine_FieldsDefinition::makeKey($row['sub'], $row['gtf_id_field']);
+                $key = FieldsDefinition::makeKey($row['sub'], $row['gtf_id_field']);
                 $fields[$key] = $row['gtf_field_code'];
             }
         }

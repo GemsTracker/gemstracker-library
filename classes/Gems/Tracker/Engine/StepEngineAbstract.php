@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  * Parent class for all engines that calculate dates using information
  * from other rounds.
@@ -481,9 +483,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                 return $survey->getDatesList($language);
 
             case self::APPOINTMENT_TABLE:
-                return $this->_fieldsDefinition->getFieldLabelsOfType(
-                        \Gems_Tracker_Engine_FieldsDefinition::TYPE_APPOINTMENT
-                        );
+                return $this->_fieldsDefinition->getFieldLabelsOfType(FieldsDefinition::TYPE_APPOINTMENT);
 
             case self::RESPONDENT_TRACK_TABLE:
                 $results = array(
@@ -492,8 +492,7 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     // 'gr2t_created'    => $this->_('Track created'),
                 );
 
-                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(
-                        \Gems_Tracker_Engine_FieldsDefinition::TYPE_DATE);
+                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(FieldsDefinition::TYPE_DATE);
 
             case self::TOKEN_TABLE:
                 return array(

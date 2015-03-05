@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  *
  *
@@ -44,29 +46,29 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
  */
-class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_ModelTransformerAbstract
+class Gems_Tracker_Model_RespondentTrackModelTransformer extends \MUtil_Model_ModelTransformerAbstract
 {
     /**
      *
-     * @var Gems_Tracker_Engine_FieldsDefinition
+     * @var \Gems\Tracker\Engine\FieldsDefinition;
      */
     protected $fieldsDefinition;
 
     /**
      *
-     * @var Gems_loader
+     * @var \Gems_loader
      */
     protected $loader;
 
     /**
      *
-     * @param \Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition
+     * @param \Gems\Tracker\Engine\FieldsDefinition; $fieldsDefinition
      * @param int $respondentId When null $patientNr is required
      * @param int $organizationId
      * @param string $patientNr Optional for when $respondentId is null
      * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      */
-    public function __construct(\Gems_Loader $loader, \Gems_Tracker_Engine_FieldsDefinition $fieldsDefinition, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function __construct(\Gems_Loader $loader, FieldsDefinition $fieldsDefinition, $respondentId, $organizationId, $patientNr = null, $edit = true)
     {
         $this->loader = $loader;
         $this->fieldsDefinition = $fieldsDefinition;
@@ -80,13 +82,13 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @return array Of filedname => set() values
      */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
         // Many definitions use load transformers
-        $model->setMeta(MUtil_Model_ModelAbstract::LOAD_TRANSFORMER, true);
+        $model->setMeta(\MUtil_Model_ModelAbstract::LOAD_TRANSFORMER, true);
 
         return parent::getFieldInfo($model);
     }
@@ -95,13 +97,13 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         $empty = false;
 
@@ -125,19 +127,24 @@ class Gems_Tracker_Model_RespondentTrackModelTransformer extends MUtil_Model_Mod
      * This transform function performs the actual save of the data and is called after
      * the saving of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         if (isset($row['gr2t_id_respondent_track']) && $row['gr2t_id_respondent_track']) {
-            $tracker   = $this->loader->getTracker();
-            $respTrack = $tracker->getRespondentTrack($row['gr2t_id_respondent_track']);
-            $userId    = $this->loader->getCurrentUser()->getUserId();
-            if ($respTrack) {
-                $newRow = $respTrack->setFieldData($row, $userId);
-                if (!$model->getChanged()) {
+            $fields  = $this->fieldsDefinition->processBeforeSave($row, $row);
+            $changed = $this->fieldsDefinition->saveFields($row['gr2t_id_respondent_track'], $fields);
+            $userId  = $this->loader->getCurrentUser()->getUserId();
+
+            if ($changed) {
+                $tracker   = $this->loader->getTracker();
+                $respTrack = $tracker->getRespondentTrack($row['gr2t_id_respondent_track']);
+                // TODO: SET FIELD INFO!
+                $respTrack->handleFieldUpdate($userId);
+
+                if (! $model->getChanged()) {
                     $model->addChanged(1);
                 }
             }

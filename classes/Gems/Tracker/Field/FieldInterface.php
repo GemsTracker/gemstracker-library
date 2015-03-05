@@ -59,27 +59,49 @@ interface FieldInterface
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $context);
+    public function calculateFieldInfo($currentValue, array $fieldData);
+
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other known field values
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return mixed the new value
+     */
+    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData);
 
     /**
      * On save calculation function
      *
      * @param array $currentValue The current value
      * @param array $values The values for the checked calculate from fields
-     * @param array $context The other values being saved
+     * @param array $fieldData The other values being saved
      * @param int $respTrackId Optional gems respondent track id
      * @return mixed the new value
      * /
-    public function calculateOnSave($currentValue, array $values, array $context, $respTrackId = null);
+    public function calculateOnSave($currentValue, array $values, array $fieldData, $respTrackId = null);
 
     /**
      *
      * @return The field code
      */
     public function getCode();
+
+    /**
+     *
+     * @return The track field id
+     */
+    public function getFieldId();
+
+    /**
+     *
+     * @return The track field sub (model) value
+     */
+    public function getFieldSub();
 
     /**
      *
@@ -111,6 +133,24 @@ interface FieldInterface
      * /
     public function getTrackMaintenanceSettings($values, $respondentId, $organizationId, $patientNr = null, $edit = true);
     // */
+
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackLoad($currentValue, array $fieldData);
+
+    /**
+     * Converting the field value when saving to a respondent track
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackSave($currentValue, array $fieldData);
 
     /**
      * Should this field be added to the track info

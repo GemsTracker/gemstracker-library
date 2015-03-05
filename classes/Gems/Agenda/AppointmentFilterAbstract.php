@@ -37,6 +37,8 @@
 
 namespace Gems\Agenda;
 
+use Gems\Tracker\Engine\FieldsDefinition;
+
 /**
  *
  *
@@ -46,7 +48,6 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 13-okt-2014 20:13:01
  */
-// abstract class Gems_Agenda_AppointmentFilterAbstract implements Gems_Agenda_AppointmentFilterInterface
 abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableAbstract
     implements AppointmentFilterInterface, \Serializable
 {
@@ -120,7 +121,7 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     public function getFieldId()
     {
         if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
-            return \Gems_Tracker_Engine_FieldsDefinition::makeKey(
+            return FieldsDefinition::makeKey(
                     \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
                     $this->_data['gtap_id_app_field']
                     );
@@ -207,12 +208,12 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
      * @param \Gems\Agenda\Gems_Agenda_Appointment $appointment
      * @return boolean
      */
-    // public function matchAppointment(Gems_Agenda_Appointment $appointment);
+    // public function matchAppointment(\Gems_Agenda_Appointment $appointment);
 
     /**
      * By default only object variables starting with '_' are serialized in order to
      * avoid serializing any resource types loaded by
-     * MUtil_Translate_TranslateableAbstract
+     * \MUtil_Translate_TranslateableAbstract
      *
      * @return string
      */

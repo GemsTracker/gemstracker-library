@@ -406,7 +406,8 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
                 $respTrack = $tracker->getRespondentTrack($respTrackId);
 
                 // Recalculate this track
-                $tokenChanges += $respTrack->recalculateFields($userId);
+                $fieldsChanged = false;
+                $tokenChanges += $respTrack->recalculateFields($userId, $fieldsChanged);
 
                 // Store the track for creation checking
                 $existingTracks[$trackId][] = $respTrack;

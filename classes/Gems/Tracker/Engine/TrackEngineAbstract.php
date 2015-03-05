@@ -49,7 +49,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     /**
      * Stores how the fields are define for this track
      *
-     * @var \Gems_Tracker_Engine_FieldsDefinition
+     * @var \Gems\Tracker\Engine\FieldsDefinition;
      */
     protected $_fieldsDefinition;
 
@@ -287,7 +287,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     {
         parent::afterRegistry();
 
-        $this->_fieldsDefinition = $this->tracker->createTrackClass('Engine_FieldsDefinition', $this->_trackId);
+        $this->_fieldsDefinition = $this->tracker->createTrackClass('Engine\\FieldsDefinition', $this->_trackId);
     }
 
     /**
@@ -575,6 +575,16 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     public function getFieldsDataStorageModel()
     {
         return $this->_fieldsDefinition->getDataStorageModel();
+    }
+
+    /**
+     * Returns the field definition for the track enige.
+     *
+     * @return \Gems\Tracker\Engine\FieldsDefinition;
+     */
+    public function getFieldsDefinition()
+    {
+        return $this->_fieldsDefinition;
     }
 
     /**
@@ -977,18 +987,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                         gro_id_track = $qTrackId)";
 
         return $this->db->delete('gems__tokens', $where);
-    }
-
-    /**
-     * Saves the field data for the respondent track id.
-     *
-     * @param int $respTrackId Gems respondent track id
-     * @param array $data The values to save
-     * @return int The number of changed fields
-     */
-    public function setFieldsData($respTrackId, array $data)
-    {
-        return $this->_fieldsDefinition->setFieldsData($respTrackId, $data);
     }
 
     /**

@@ -46,8 +46,14 @@ namespace Gems\Tracker\Field;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 4-mrt-2015 11:43:37
  */
-class DateField extends FieldAbstract implements OnRespondentTrackLoadInterface
+class DateField extends FieldAbstract
 {
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
     /**
      * The format string for outputting dates
      *
@@ -66,13 +72,15 @@ class DateField extends FieldAbstract implements OnRespondentTrackLoadInterface
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $context)
+    public function calculateFieldInfo($currentValue, array $fieldData)
     {
-        if (! $currentValue) {
-            return $currentValue;
+        if ((null === $currentValue) ||
+                ($currentValue instanceof \Zend_Db_Expr) ||
+                \MUtil_String::startsWith($currentValue, 'current_', true)) {
+            return $value;
         }
 
         if ($currentValue instanceof \Zend_Date) {
@@ -87,18 +95,82 @@ class DateField extends FieldAbstract implements OnRespondentTrackLoadInterface
     }
 
     /**
-     * Calculation the field value when loading a respondent track
+     * Calculate the field value using the current values
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other known field values
+     * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function onRespondentTrackLoad($currentValue, array $context)
+    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
+    {
+        $calcUsing = $this->getCalculationFields($fieldData);
+
+        if ($calcUsing) {
+            $agenda = $this->loader->getAgenda();
+
+            // Get the used fields with values
+            foreach (array_filter($calcUsing) as $value) {
+                $appointment = $agenda->getAppointment($value);
+
+                if ($appointment->exists) {
+                    return $appointment->getAdmissionTime();
+                }
+            }
+        }
+
+        return $currentValue;
+    }
+
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackLoad($currentValue, array $fieldData)
     {
         if (empty($currentValue)) {
             return null;
         }
 
         return new \MUtil_Date($currentValue, \Zend_Date::ISO_8601);
+    }
+
+    /**
+     * Converting the field value when saving to a respondent track
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other values loaded so far
+     * @return mixed the new value
+     */
+    public function onRespondentTrackSave($currentValue, array $fieldData)
+    {
+        if ((null === $currentValue) ||
+                ($currentValue instanceof \Zend_Db_Expr) ||
+                \MUtil_String::startsWith($currentValue, 'current_', true)) {
+            return $currentValue;
+        }
+
+        $saveFormat = \Gems_Tracker::DB_DATE_FORMAT;
+
+        if ($currentValue instanceof \Zend_Date) {
+            return $currentValue->toString($saveFormat);
+
+        } else {
+            $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+
+            try {
+                return \MUtil_Date::format($currentValue, $saveFormat, $displayFormat);
+            } catch (\Zend_Exception $e) {
+                if (\Zend_Date::isDate($currentValue, $saveFormat)) {
+                    return $currentValue;
+                }
+                throw $e;
+            }
+        }
+
+        return (string) $currentValue;
     }
 }

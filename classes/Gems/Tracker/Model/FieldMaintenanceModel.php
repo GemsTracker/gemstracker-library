@@ -36,6 +36,7 @@
  */
 
 use Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency;
+use Gems\Tracker\Engine\FieldsDefinition;
 
 /**
  *
@@ -175,7 +176,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         if ($appFields) {
             foreach ($appFields as $id => $label) {
-                $key = \Gems_Tracker_Engine_FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
+                $key = FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
                 $options[$key] = $label;
             }
         }

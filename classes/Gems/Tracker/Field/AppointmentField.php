@@ -65,10 +65,10 @@ class AppointmentField extends FieldAbstract
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $context)
+    public function calculateFieldInfo($currentValue, array $fieldData)
     {
         if (! $currentValue) {
             return $currentValue;

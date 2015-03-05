@@ -58,10 +58,10 @@ class ActivityField extends FieldAbstract
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
-     * @param array $context The other values loaded so far
+     * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function calculateFieldInfo($currentValue, array $context)
+    public function calculateFieldInfo($currentValue, array $fieldData)
     {
         if (! $currentValue) {
             return $currentValue;
@@ -74,5 +74,33 @@ class ActivityField extends FieldAbstract
         }
 
         return null;
+    }
+
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other known field values
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return mixed the new value
+     */
+    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
+    {
+        $calcUsing = $this->getCalculationFields($fieldData);
+
+        if ($calcUsing) {
+            $agenda = $this->loader->getAgenda();
+
+            // Get the used fields with values
+            foreach (array_filter($calcUsing) as $value) {
+                $appointment = $agenda->getAppointment($value);
+
+                if ($appointment->exists) {
+                    return $appointment->getActivityId();
+                }
+            }
+        }
+
+        return $currentValue;
     }
 }
