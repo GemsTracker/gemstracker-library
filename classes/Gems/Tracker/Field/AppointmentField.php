@@ -49,6 +49,32 @@ namespace Gems\Tracker\Field;
 class AppointmentField extends FieldAbstract
 {
     /**
+     * The last active appointment in any field
+     *
+     * Shared among all field instances saving to the same respondent track id
+     *
+     * @var array of \Gems_Agenda_Appointment)
+     */
+    protected static $_lastActiveAppointment = array();
+
+    /**
+     * The last active appointment in any field
+     *
+     * Shared among all field instances saving to the same respondent track id
+     *
+     * @var array of $_lastActiveKey => array(appId => appId)
+     */
+    protected static $_lastActiveAppointmentIds = array();
+
+    /**
+     * The key for the current calculation to self::$_lastActiveAppointment  and
+     * self::$_lastActiveAppointmentIds
+     *
+     * @var mixed
+     */
+    protected $_lastActiveKey;
+
+    /**
      * The format string for outputting appointments
      *
      * @var string
@@ -86,6 +112,124 @@ class AppointmentField extends FieldAbstract
         }
 
         return null;
+    }
 
+    /**
+     * Calculate the field value using the current values
+     *
+     * @param array $currentValue The current value
+     * @param array $fieldData The other known field values
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return mixed the new value
+     */
+    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
+    {
+        return $currentValue;
+        if ($currentValue || isset($this->_fieldDefinition['gtf_filter_id'])) {
+            $agenda = $this->loader->getAgenda();
+
+            if ($this->_lastActiveKey && isset($this->_fieldDefinition['gtf_filter_id'])) {
+                $fromDate   = false;
+                $lastActive = self::$_lastActiveAppointment[$this->_lastActiveKey];
+
+                if (($lastActive instanceof \Gems_Agenda_Appointment) && $lastActive->isActive()) {
+                    $fromDate = $lastActive->getAdmissionTime();
+                    $oper     = $this->_fieldDefinition['gtf_after_next'] ? '>' : '<';
+                }
+
+                if ((! $fromDate) && isset($trackData['gr2t_start_date']) && $trackData['gr2t_start_date']) {
+
+                    if ($trackData['gr2t_start_date'] instanceof \Zend_Date) {
+                        $fromDate = $trackData['gr2t_start_date'];
+                    } else {
+                        $fromDate = new \MUtil_Date($trackData['gr2t_start_date'], \Gems_Tracker::DB_DATETIME_FORMAT);
+                    }
+                    // Always use start of the day for start date comparisons
+                    $fromDate->setTime('00:00:00');
+
+                    if ($this->_fieldDefinition['gtf_after_next']) {
+                        $oper = '>=';
+                    } else {
+                        $fromDate->addDay(1);
+                        $oper = '<'; // < as we check before the end of the day of start date
+                    }
+                }
+
+                if ($fromDate) {
+                    $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
+                    $select->forFilter($this->_fieldDefinition['gtf_filter_id'])
+                            ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])
+                            ->fromDate($fromDate, $oper);
+
+                    if ($this->_fieldDefinition['gtf_uniqueness']) {
+                        switch ($this->_fieldDefinition['gtf_uniqueness']) {
+                            case 1: // Track instances may link only once to an appointment
+                                $select->uniqueInTrackInstance(
+                                        self::$_lastActiveAppointmentIds[$this->_lastActiveKey]
+                                        );
+                                break;
+
+                            case 2: // Tracks of this type may link only once to an appointment
+                                if (isset($trackData['gr2t_id_respondent_track'])) {
+                                    $respTrackId = $trackData['gr2t_id_respondent_track'];
+                                } else {
+                                    $respTrackId = null;
+                                }
+                                $select->uniqueForTrackId(
+                                        $this->_trackId,
+                                        $respTrackId,
+                                        self::$_lastActiveAppointmentIds[$this->_lastActiveKey]
+                                        );
+                                break;
+
+                            // default:
+                        }
+                    }
+
+                    // Query ready
+                    $newValue = $select->fetchOne();
+                    // \MUtil_Echo::track($newValue);
+
+                    if ($newValue) {
+                        $currentValue = $newValue;
+                    }
+                }
+            }
+
+            if ($this->_lastActiveKey && $currentValue) {
+                $appointment = $agenda->getAppointment($currentValue);
+
+                if ($appointment->isActive()) {
+                    self::$_lastActiveAppointment[$this->_lastActiveKey] = $appointment;
+                    self::$_lastActiveAppointmentIds[$this->_lastActiveKey][$currentValue] = $currentValue;
+                }
+            }
+        }
+
+        return $currentValue;
+
+    }
+
+    /**
+     * Signal the start of a new calculation round (for all fields)
+     *
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return \Gems\Tracker\Field\FieldAbstract
+     */
+    public function calculationStart(array $trackData)
+    {
+        if (isset($trackData['gr2t_id_respondent_track'])) {
+            $this->_lastActiveKey = $trackData['gr2t_id_respondent_track'];
+        } elseif (isset($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])) {
+            $this->_lastActiveKey = $trackData['gr2t_id_user'] . '__' . $trackData['gr2t_id_organization'];
+        } else {
+            $this->_lastActiveKey = false;
+        }
+        if ($this->_lastActiveKey) {
+            self::$_lastActiveAppointment[$this->_lastActiveKey]    = null;
+            self::$_lastActiveAppointmentIds[$this->_lastActiveKey] = array();
+        }
+
+        return $this;
     }
 }

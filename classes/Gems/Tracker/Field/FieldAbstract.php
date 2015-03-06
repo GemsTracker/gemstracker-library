@@ -56,6 +56,12 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
     /**
      *
+     * @var string
+     */
+    protected $_fieldId;
+
+    /**
+     *
      * @var int gems__tracks id for this field
      */
     protected $_trackId;
@@ -63,11 +69,13 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     /**
      *
      * @param int $trackId gems__tracks id for this field
+     * @param string $key The field key
      * @param array $fieldDefinition Field definition array
      */
-    public function __construct($trackId, array $fieldDefinition)
+    public function __construct($trackId, $key, array $fieldDefinition)
     {
         $this->_trackId         = $trackId;
+        $this->_fieldId         = $key;
         $this->_fieldDefinition = $fieldDefinition;
     }
 
@@ -91,9 +99,20 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
         return $currentValue;
+    }
+
+    /**
+     * Signal the start of a new calculation round (for all fields)
+     *
+     * @param array $trackData The currently available track data (track id may be empty)
+     * @return \Gems\Tracker\Field\FieldAbstract
+     */
+    public function calculationStart(array $trackData)
+    {
+        return $this;
     }
 
     /**
@@ -172,7 +191,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onRespondentTrackLoad($currentValue, array $fieldData)
+    public function onFieldDataLoad($currentValue, array $fieldData)
     {
         return $currentValue;
     }
@@ -184,7 +203,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onRespondentTrackSave($currentValue, array $fieldData)
+    public function onFieldDataSave($currentValue, array $fieldData)
     {
         return $currentValue;
     }

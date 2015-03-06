@@ -36,6 +36,7 @@
  */
 
 use Gems\Agenda\AppointmentFilterInterface;
+use Gems\Agenda\AppointmentSelect;
 
 /**
  *
@@ -178,6 +179,17 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     }
 
     /**
+     * Create agenda select
+     *
+     * @param string|array $fields The appointment fields to select
+     * @return \Gems\Agenda\AppointmentSelect
+     */
+    public function createAppointmentSelect($fields = '*')
+    {
+        return $this->_loadClass('AppointmentSelect', true, array());
+    }
+
+    /**
      * Find the first appointment matching this query
      *
      * @param int $filterId
@@ -186,7 +198,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
      * @param string $oper Comaprison operator for the from date
      * @param int $uniqueness 0 is not unique, 1 within respTreck, 2 within track, 3 overall
      * @return int The first found appointment id or false
-     */
+     * /
     public function findFirstAppointmentId($filterId, \Gems_Tracker_RespondentTrack $respTrack,
             $from = null, $oper = '>=', $uniqueness = 0)
     {

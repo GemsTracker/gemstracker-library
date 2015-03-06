@@ -102,7 +102,7 @@ class DateField extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
         $calcUsing = $this->getCalculationFields($fieldData);
 
@@ -129,7 +129,7 @@ class DateField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onRespondentTrackLoad($currentValue, array $fieldData)
+    public function onFieldDataLoad($currentValue, array $fieldData)
     {
         if (empty($currentValue)) {
             return null;
@@ -145,7 +145,7 @@ class DateField extends FieldAbstract
      * @param array $fieldData The other values loaded so far
      * @return mixed the new value
      */
-    public function onRespondentTrackSave($currentValue, array $fieldData)
+    public function onFieldDataSave($currentValue, array $fieldData)
     {
         if ((null === $currentValue) ||
                 ($currentValue instanceof \Zend_Db_Expr) ||

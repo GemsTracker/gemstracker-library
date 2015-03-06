@@ -46,39 +46,6 @@
 class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 {
     /**
-     * The last active appointment in any round
-     *
-     * @var \Gems_Agenda_Appointment
-     */
-    protected $_lastActiveAppointment;
-
-    /**
-     * The format string for outputting appointments
-     *
-     * @var string
-     */
-    protected $appointmentTimeFormat = 'dd MMM yyyy HH:MM';
-
-    /**
-     * The format string for outputting dates
-     *
-     * @var string
-     */
-    protected $dateTimeFormat = 'dd MMM yyyy';
-
-    /**
-     *
-     * @var \Gems_Loader
-     */
-    protected $loader;
-
-    /**
-     *
-     * @var \Gems_Tracker
-     */
-    protected $tracker;
-
-    /**
      *
      * @param string $modelName Hopefully unique model name
      * @param string $modelField The name of the field used to store the sub model
@@ -100,67 +67,6 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
         $map['gr2t2a_id_appointment'] = 'gr2t2f_value';
 
         $this->addUnionModel($modelA, $map, \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
-    }
-
-    /**
-     * On save calculation function
-     *
-     * @param array $currentValue The current value
-     * @param array $values Containing filter => int
-     * @param array $context The other values being saved
-     * @param int $respTrackId Gems respondent track id
-     * @param array $field Field definition array
-     * @return mixed the new value
-     */
-    public function calculateOnSaveAppointment($currentValue, array $values, array $context, $respTrackId, $field)
-    {
-        if ($currentValue || isset($field['gtf_filter_id'])) {
-            $agenda = $this->loader->getAgenda();
-
-            if (isset($field['gtf_filter_id'])) {
-                $respTrack = $this->tracker->getRespondentTrack($respTrackId);
-                if ($this->_lastActiveAppointment && $this->_lastActiveAppointment->isActive()) {
-                    // \MUtil_Echo::track($this->_lastActiveAppointment->getAdmissionTime()->toString());
-                    $fromDate = $this->_lastActiveAppointment;
-                    $oper     = $field['gtf_after_next'] ? '>' : '<';
-                } else {
-                    $fromDate  = $respTrack->getStartDate();
-                    if ($fromDate) {
-                        if ($field['gtf_after_next']) {
-                            $oper = '>=';
-                        } else {
-                            $fromDate->addDay(1);
-                            $oper = '<'; // < as we add a day to the start date
-                        }
-                    }
-                }
-                // \MUtil_Echo::track($field['gtf_filter_id'], $field['gtf_after_next'], $oper);
-                if ($fromDate) {
-                    $newValue = $agenda->findFirstAppointmentId(
-                            $field['gtf_filter_id'],
-                            $respTrack,
-                            $fromDate,
-                            $oper,
-                            $field['gtf_uniqueness']
-                            );
-                    // \MUtil_Echo::track($newValue);
-
-                    if ($newValue) {
-                        $currentValue = $newValue;
-                    }
-                }
-            }
-
-            if ($currentValue) {
-                $appointment = $agenda->getAppointment($currentValue);
-
-                if ($appointment->isActive()) {
-                    $this->_lastActiveAppointment = $appointment;
-                }
-            }
-        }
-
-        return $currentValue;
     }
 
     /**
@@ -195,20 +101,5 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
         if ($model instanceof \MUtil_Model_TableModel) {
             return $model->getTableName();
         }
-    }
-
-    /**
-     * Calls $this->save() multiple times for each element
-     * in the input array and returns the number of saved rows.
-     *
-     * @param array $newValues A nested array
-     * @return int The number of changed rows
-     */
-    public function saveAll(array $newValues)
-    {
-        // Clear before the next run
-        $this->_lastActiveAppointment = null;
-
-        return parent::saveAll($newValues);
     }
 }

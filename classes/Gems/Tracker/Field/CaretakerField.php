@@ -84,7 +84,7 @@ class CaretakerField extends FieldAbstract
      * @param array $trackData The currently available track data (track id may be empty)
      * @return mixed the new value
      */
-    public function calculateRespondentTrackValue($currentValue, array $fieldData, array $trackData)
+    public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
         $calcUsing = $this->getCalculationFields($fieldData);
 

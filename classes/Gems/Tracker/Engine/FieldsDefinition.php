@@ -172,7 +172,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     $key = self::makeKey($field['sub'], $field['gtf_id_field']);
 
                     $class = 'Field\\' . ucfirst($field['gtf_field_type']) . 'Field';
-                    $this->_fields[$key] = $this->tracker->createTrackClass($class, $this->_trackId, $field);
+                    $this->_fields[$key] = $this->tracker->createTrackClass($class, $this->_trackId, $key, $field);
 
                     $this->_trackFields[$key] = $field;
                 }
@@ -399,7 +399,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                 $key   = self::makeKey($row['sub'], $row['gr2t2f_id_field']);
 
                 if (isset($this->_fields[$key]) && ($this->_fields[$key] instanceof FieldInterface)) {
-                    $value = $this->_fields[$key]->onRespondentTrackLoad($row['gr2t2f_value'], $output, $respTrackId);
+                    $value = $this->_fields[$key]->onFieldDataLoad($row['gr2t2f_value'], $output, $respTrackId);
                 } else {
                     $value = $row['gr2t2f_value']; // Should not occur
                 }
@@ -521,12 +521,18 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
             return null;
         }
 
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                $field->calculationStart($trackData);
+            }
+        }
+
         $output = array();
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
                 $inVal  = isset($fieldData[$key]) ? $fieldData[$key] : null;
-                $outVal = $field->calculateRespondentTrackValue($inVal, $fieldData, $trackData);
+                $outVal = $field->calculateFieldValue($inVal, $fieldData, $trackData);
 
                 $this->changed = $this->changed || ((string) $inVal !== (string) $outVal);
 
@@ -558,7 +564,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     continue;
                 }
 
-                $saveVal = $field->onRespondentTrackSave($inVal, $fieldData);
+                $saveVal = $field->onFieldDataSave($inVal, $fieldData);
 
                 $saves[] = array(
                     'sub'                        => $field->getFieldSub(),

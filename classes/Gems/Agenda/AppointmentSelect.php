@@ -75,18 +75,6 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
 
     /**
      *
-     * @var \gems\Agenda\AppointmentFilterInterface
-     */
-    protected $filter;
-
-    /**
-     *
-     * @var \Gems_Tracker_RespondentTrack
-     */
-    protected $respondentTrack;
-
-    /**
-     *
      * @param string|array $fields Optional select fieldlist
      */
     public function __construct($fields = null)
@@ -156,8 +144,6 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
      */
     public function forFilter(AppointmentFilterInterface $filter)
     {
-        $this->filter = $filter;
-
         $this->_select->where($filter->getSqlWhere());
 
         return $this;
@@ -192,65 +178,6 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
                ->where('gap_id_organization = ?', $organizationId);
 
        return $this;
-    }
-
-    /**
-     * For a certain respondent track
-     *
-     * Add's the filter and remembers the respondent track
-     *
-     * @param \Gems_Tracker_RespondentTrack $respTrack
-     * @return \Gems\Agenda\AppointmentSelect
-     */
-    public function forRespondentTrack(\Gems_Tracker_RespondentTrack $respTrack)
-    {
-        $this->respondentTrack = $respTrack;
-
-        return $this->forRespondent($respTrack->getRespondentId(), $respTrack->getOrganizationId());
-    }
-
-    public function forUniqueness($uniqueness = 0)
-    {
-        if ($uniqueness) {
-            $fieldId     = intval($this->filter->getAppointmentFieldId());
-            $respTrackId = intval($this->respTrack->getRespondentTrackId());
-            switch ($uniqueness) {
-                case 1:
-                    $select->where(
-                            "gap_id_appointment NOT IN
-                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-                                        gr2t2a_id_respondent_track = $respTrackId AND
-                                        gr2t2a_id_app_field != $fieldId)"
-                            );
-                    break;
-                case 2:
-                    $trackId = $this->respTrack->getTrackId();
-                    $select->where(
-                            "gap_id_appointment NOT IN
-                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-                                    INNER JOIN gems__respondent2track
-                                        ON gr2t2a_id_respondent_track = gr2t_id_respondent_track
-                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-                                        gr2t_id_track = $trackId AND
-                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
-                                            gr2t2a_id_app_field = $fieldId))"
-                            );
-                    break;
-//                case 3:
-//                    $this->_select->where(
-//                            "gap_id_appointment NOT IN
-//                                (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
-//                                    WHERE gr2t2a_id_appointment IS NOT NULL AND
-//                                        NOT (gr2t2a_id_respondent_track = $respTrackId AND
-//                                            gr2t2a_id_app_field = $fieldId))"
-//                            );
-//                    break;
-                // default:
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -311,5 +238,56 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
         $this->_select->order($spec);
 
         return $this;
+    }
+
+    /**
+     * Add a filter for the appointment id's currently used in tracks with this track id
+     *
+     * @param int $trackId The current trrack id
+     * @param int $respTrackId The current respondent track id or null for new tracks
+     * @param array $previousAppIds array of gap_id_appointment
+     */
+    public function uniqueForTrackId($trackId, $respTrackId, $previousAppIds)
+    {
+        if ($previousAppIds) {
+            // When unique for all tracks of this type the current track
+            // appointment id's should also be excluded.
+            $this->uniqueInTrackInstance($previousAppIds);
+
+            // Exclude the current app id's in the track
+            $this->_select->where("gr2t2a_id_appointment NOT IN (" . implode(", ", $previousAppIds) . ")");
+        }
+
+        $sql = "gap_id_appointment NOT IN
+                    (SELECT gr2t2a_id_appointment FROM gems__respondent2track2appointment
+                        INNER JOIN gems__respondent2track
+                            ON gr2t2a_id_respondent_track = gr2t_id_respondent_track
+                        WHERE gr2t2a_id_appointment IS NOT NULL AND
+                            gr2t_id_track = $trackId";
+
+        if ($respTrackId) {
+            // Exclude all fields of the current respondent track as it is being recalculated
+            // and therefore they may have changed.
+            //
+            // Instead we filter here on $previousAppIds
+            $sql .= " AND NOT (gr2t2a_id_respondent_track = $respTrackId)";
+        }
+
+        $sql .= ")";
+
+        $this->_select->where($sql);
+    }
+
+    /**
+     * Add a filter for the appointment id's currently used in this track
+     *
+     * @param array $previousAppIds array of gap_id_appointment
+     */
+    public function uniqueInTrackInstance($previousAppIds)
+    {
+        if ($previousAppIds) {
+            // Exclude the current app id's in the track
+            $this->_select->where("gr2t2a_id_appointment NOT IN (" . implode(", ", $previousAppIds) . ")");
+        }
     }
 }
