@@ -91,7 +91,7 @@ class Gems_Snippets_Tracker_Compliance_ComplianceSearchFormSnippet extends \Gems
                         INNER JOIN gems__tracks ON gro_id_track = gtr_id_track
                     WHERE ggp_group_active = 1 AND
                         gro_active=1 AND
-                        gtr_active=1 AND
+                        gtr_active=1 
                     ORDER BY ggp_name";
         $elements[] = $this->_createSelectElement('gsu_id_primary_group', $sql, $this->_('(all fillers)'));
 

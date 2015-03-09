@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -30,50 +30,49 @@
  * @package    Gems
  * @subpackage Tracker_Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AppointmentMaintenanceDependency.php $
+ * @version    $Id: FieldDataDependency.php $
  */
 
 namespace Gems\Tracker\Model\Dependency;
+
+use Gems\Tracker\Field\FieldInterface;
 
 /**
  *
  *
  * @package    Gems
  * @subpackage Tracker_Model
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.5 16-okt-2014 18:30:05
+ * @since      Class available since version 1.6.5 9-mrt-2015 17:53:07
  */
-class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class FieldDataDependency extends \MUtil_Model_Dependency_DependencyAbstract
 {
     /**
-     * Array of setting => setting of setting changed by this dependency
      *
-     * The settings array for those effecteds that don't have an effects array
-     *
-     * @var array
+     * @var array of \Gems\Tracker\Field\FieldInterface
      */
-    protected $_defaultEffects = array('elementClass', 'label');
+    protected $_fields;
 
     /**
-     * Array of name => name of items dependency depends on.
+     * Add a field to this dependency
      *
-     * Can be overriden in sub class
-     *
-     * @var array Of name => name
+     * @param FieldInterface $field
+     * @return \Gems\Tracker\Model\FieldDataDependency
      */
-    protected $_dependentOn = array('gtf_filter_id', 'gtf_create_track');
+    public function addField(FieldInterface $field)
+    {
+        $key = $field->getFieldKey();
 
-    /**
-     * Array of name => array(setting => setting) of fields with settings changed by this dependency
-     *
-     * Can be overriden in sub class
-     *
-     * @var array of name => array(setting => setting)
-     */
-    protected $_effecteds = array('gtf_after_next', 'gtf_create_track', 'gtf_create_wait_days');
+        $this->addDependsOn($field->getDataModelDependsOn());
+        $this->addEffected($key, $field->getDataModelEffecteds());
+
+        $this->_fields[$key] = $field;
+
+        return $this;
+    }
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -97,48 +96,29 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
      */
     public function getChanges(array $context, $new)
     {
-        $hideCreate = ! $context['gtf_filter_id'];
-        if ($hideCreate) {
-            $hideWait = true;
-        } else {
-            $hideWait = !$context['gtf_create_track'];
-        }
-        if ($hideCreate) {
-            $output['gtf_after_next'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-            $output['gtf_uniqueness'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-            $output['gtf_create_track'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-        } else {
-            $output['gtf_after_next'] = array(
-                'elementClass' => 'Checkbox',
-                );
-            $output['gtf_uniqueness'] = array(
-                'elementClass' => 'Radio',
-                );
-            $output['gtf_create_track'] = array(
-                'elementClass' => 'Checkbox',
-                );
-        }
-        if ($hideWait) {
-            $output['gtf_create_wait_days'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-        } else {
-            $output['gtf_create_wait_days'] = array(
-                'elementClass' => 'Text',
-                );
+        $output = array();
+
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                $changes = $field->getDataModelDependyChanges($context, $new);
+
+                if ($changes) {
+                    $output[$field->getFieldKey()] = $changes;
+                }
+            }
         }
 
         return $output;
     }
 
+    /**
+     * Add a field to this dependency
+     *
+     * @param FieldInterface $field
+     * @return \Gems\Tracker\Model\FieldDataDependency
+     */
+    public function getFieldCount()
+    {
+        return count($this->_fields);
+    }
 }

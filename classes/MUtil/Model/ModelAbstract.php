@@ -1750,7 +1750,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
 
 
     /**
-     * Helper function that procesess the raw data after a load.
+     * Helper function that procesess the raw data after a save.
      *
      * @param array $row Row array containing saved (and maybe not saved data)
      * @return array Nested
@@ -1764,6 +1764,21 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
                 $row = $transformer->transformRowAfterSave($this, $row);
             }
             $this->addChanged($transformer->getChanged());
+        }
+
+        return $row;
+    }
+
+    /**
+     * Helper function that procesess the raw data before a save.
+     *
+     * @param array $row Row array containing saved (and maybe not saved data)
+     * @return array Nested
+     */
+    public function processBeforeSave(array $row)
+    {
+        foreach ($this->_transformers as $transformer) {
+            $row = $transformer->transformRowBeforeSave($this, $row);
         }
 
         return $row;
@@ -1883,15 +1898,17 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function save(array $newValues, array $filter = null)
     {
-        $resultValues = $this->_save($newValues, $filter);
+        $beforeValues = $this->processBeforeSave($newValues);
 
-        $resultValues = $this->processAfterSave($resultValues);
+        $resultValues = $this->_save($beforeValues, $filter);
+
+        $afterValues  = $this->processAfterSave($resultValues);
 
         if ($this->getMeta(self::LOAD_TRANSFORMER) || $this->hasDependencies()) {
-            $resultValues = $this->_processRowAfterLoad($resultValues, false);
+            return $this->_processRowAfterLoad($afterValues, false);
+        } else {
+            return $afterValues;
         }
-
-        return $resultValues;
     }
 
     /**

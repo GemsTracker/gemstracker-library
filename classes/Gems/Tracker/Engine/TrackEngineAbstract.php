@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Model\AddTrackFieldsTransformer;
+
 /**
  * Utility class containing functions used by most track engines.
  *
@@ -201,25 +203,23 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      * Integrate field loading en showing and editing
      *
      * @param \MUtil_Model_ModelAbstract $model
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @param boolean $addDependency True when editing, can be false in all other cases
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true)
     {
         if ($this->_fieldsDefinition->exists) {
             // Add the data to the load / save
-            $transformer = new \Gems_Tracker_Model_RespondentTrackModelTransformer(
-                    $this->loader,
-                    $this->_fieldsDefinition,
-                    $respondentId,
-                    $organizationId,
-                    $patientNr,
-                    $edit
-                    );
+            $transformer = new AddTrackFieldsTransformer($this->loader, $this->_fieldsDefinition);
             $model->addTransformer($transformer);
+
+            if ($addDependency) {
+                $dependency = $this->_fieldsDefinition->getDataModelDependency();
+
+                if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+                    $model->addDependency($dependency);
+                }
+            }
         }
 
         return $this;
@@ -598,20 +598,6 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     public function getFieldsMaintenanceModel($detailed, $action, array $data)
     {
         return $this->_fieldsDefinition->getMaintenanceModel($detailed, $action, $data);
-    }
-
-    /**
-     * Get a big array with model settings for fields in a track
-     *
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
-     * @return array fieldname => array(settings)
-     */
-    public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true)
-    {
-        return $this->_fieldsDefinition->getDataEditModelSettings($respondentId, $organizationId, $patientNr, $edit);
     }
 
     /**

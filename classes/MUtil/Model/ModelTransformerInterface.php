@@ -59,54 +59,64 @@ interface MUtil_Model_ModelTransformerInterface
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @return array Of filedname => set() values
      */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model);
+    public function getFieldInfo(\MUtil_Model_ModelAbstract $model);
 
     /**
      * This transform function checks the filter for
      * a) retreiving filters to be applied to the transforming data,
      * b) adding filters that are needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $filter
      * @return array The (optionally changed) filter
      */
-    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter);
+    public function transformFilter(\MUtil_Model_ModelAbstract $model, array $filter);
 
     /**
      * This transform function checks the sort to
      * a) remove sorts from the main model that are not possible
      * b) add sorts that are required needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $sort
      * @return array The (optionally changed) sort
      */
-    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort);
+    public function transformSort(\MUtil_Model_ModelAbstract $model, array $sort);
 
     /**
      * This transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false);
+    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false);
 
     /**
-     * This transform function performs the actual save of the data and is called after
+     * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row);
+    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row);
+
+    /**
+     * This transform function is called before the saving of the data in the source model and allows you to
+     * change all data.
+     *
+     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row);
 
     /**
      * When true, the on save functions are triggered before passing the data on

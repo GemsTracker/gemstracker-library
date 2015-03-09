@@ -49,6 +49,20 @@ namespace Gems\Tracker\Field;
 class AppointmentField extends FieldAbstract
 {
     /**
+     * Respondent track fields that this field's settings are dependent on.
+     *
+     * @var array Null or an array of respondent track fields.
+     */
+    protected $_dependsOn = array('gr2t_id_user', 'gr2t_id_organization');
+
+    /**
+     * Model settings for this field that may change depending on the dependsOn fields.
+     *
+     * @var array Null or an array of model settings that change for this field
+     */
+    protected $_effecteds = array('multiOptions');
+
+    /**
      * The last active appointment in any field
      *
      * Shared among all field instances saving to the same respondent track id
@@ -86,6 +100,25 @@ class AppointmentField extends FieldAbstract
      * @var \Gems_Loader
      */
     protected $loader;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    protected function addModelSettings(array &$settings)
+    {
+        $settings['elementClass']   = 'Select';
+        $settings['formatFunction'] = array($this, 'showAppointment');
+    }
 
     /**
      * Calculation the field info display for this type
@@ -231,5 +264,63 @@ class AppointmentField extends FieldAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * Returns the changes to the model for this field that must be made in an array consisting of
+     *
+     * <code>
+     *  array(setting1 => $value1, setting2 => $value2, ...),
+     * </code>
+     *
+     * By using [] array notation in the setting array key you can append to existing
+     * values.
+     *
+     * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
+     *
+     * @param array $context The current data this object is dependent on
+     * @param boolean $new True when the item is a new record not yet saved
+     * @return array (setting => value)
+     */
+    public function getDataModelDependyChanges(array $context, $new)
+    {
+        if ($this->isReadOnly()) {
+            return null;
+        }
+
+        $agenda = $this->loader->getAgenda();
+        $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
+
+        $output['multiOptions'] = $empty + $agenda->getActiveAppointments(
+                $context['gr2t_id_user'],
+                $context['gr2t_id_organization']
+                );
+
+        return $output;
+    }
+
+    /**
+     * Dispaly an appoitment as text
+     *
+     * @param value $value
+     * @return string
+     */
+    public function showAppointment($value)
+    {
+        if (! $value) {
+            return $this->_('Unknown');
+        }
+        if ($value instanceof \Gems_Agenda_Appointment) {
+            $appointment = $value;
+        } else {
+            $appointment = $this->loader->getAgenda()->getAppointment($value);
+        }
+        if ($appointment instanceof \Gems_Agenda_Appointment) {
+            return $appointment->getDisplayString();
+        }
+
+        return $value;
     }
 }

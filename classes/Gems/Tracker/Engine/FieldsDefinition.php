@@ -38,6 +38,7 @@
 namespace Gems\Tracker\Engine;
 
 use Gems\Tracker\Field\FieldInterface;
+use Gems\Tracker\Model\Dependency\FieldDataDependency;
 
 /**
  *
@@ -229,58 +230,52 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get model dependency that changes model settings for each row when loaded
+     *
+     * @return \MUtil_Model_Dependency_DependencyInterface or null
+     */
+    public function getDataModelDependency()
+    {
+        if (! $this->exists) {
+            return null;
+        }
+
+        $dependency = new FieldDataDependency();
+
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                $dependsOn = $field->getDataModelDependsOn();
+
+                if ($field->hasDataModelDependencies()) {
+                    $dependency->addField($field);
+                }
+            }
+        }
+
+        if ($dependency->getFieldCount()) {
+            return $dependency;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Get a big array with model settings for fields in a track
      *
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
      * @return array fieldname => array(settings)
      */
-    public function getDataEditModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true)
+    public function getDataModelSettings()
     {
         if (! $this->exists) {
             return array();
         }
 
-        $appointments  = null;
         $fieldSettings = array();
-        $model         = $this->getMaintenanceModel(false, 'index', array('gtf_id_track' => $this->_trackId));
 
-        foreach ($this->_trackFields as $name => $field) {
-            $editField = $edit;
-
-            $fieldSettings[$name] = array(
-                'label'       => $field['gtf_field_name'],
-                'required'    => $field['gtf_required'],
-                'description' => $field['gtf_field_description'],
-                );
-
-            if ($field['gtf_readonly']) {
-                $fieldSettings[$name]['elementClass'] = 'Exhibitor';
-                $editField = false;
+        foreach ($this->_fields as $key => $field) {
+            if ($field instanceof FieldInterface) {
+                $fieldSettings[$key] = $field->getDataModelSettings();
             }
-
-            $typeFunction = 'getSettingsFor' . ucfirst($field['gtf_field_type']);
-            if (method_exists($model, $typeFunction)) {
-                $extra = $model->$typeFunction(
-                        $field['gtf_field_values'],
-                        $respondentId,
-                        $organizationId,
-                        $patientNr,
-                        $editField
-                        );
-            } else {
-                $extra = $model->getSettingsForType(
-                        $field['gtf_field_type'],
-                        $field['gtf_field_values'],
-                        $respondentId,
-                        $organizationId,
-                        $patientNr,
-                        $editField
-                        );
-            }
-            $fieldSettings[$name] = $extra + $fieldSettings[$name];
         }
 
         return $fieldSettings;
@@ -557,7 +552,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
 
         foreach ($this->_fields as $key => $field) {
             if ($field instanceof FieldInterface) {
-                if (isset($fieldData[$key])) {
+                if (array_key_exists($key, $fieldData)) {
                     $inVal = $fieldData[$key];
                 } else {
                     // There is no value do not save

@@ -48,5 +48,16 @@ namespace Gems\Tracker\Field;
  */
 class TextField extends FieldAbstract
 {
-
+    /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    protected function addModelSettings(array &$settings)
+    {
+        $settings['elementClass'] = 'Text';
+        $settings['size']         = '40';
+    }
 }

@@ -210,6 +210,23 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     }
 
     /**
+     * Get a general description of this appointment
+     *
+     * @see \Gems_Agenda->getAppointmentDisplay()
+     *
+     * @return string
+     */
+    public function getDisplayString()
+    {
+        $results[] = $this->getAdmissionTime()->toString($this->agenda->appointmentDisplayFormat);
+        $results[] = $this->getActivityDescription();
+        $results[] = $this->getProcedureDescription();
+        $results[] = $this->getLocationDescription();
+
+        return implode($this->_('; '), array_filter($results));
+    }
+
+    /**
      * Return the appointment id
      *
      * @return int
@@ -217,6 +234,29 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
     public function getId()
     {
         return $this->_appointmentId;
+    }
+
+    /**
+     * Return the description of the current location
+     *
+     * @return string or null when not found
+     */
+    public function getLocationDescription()
+    {
+        if (! (isset($this->_gemsData['gap_id_location']) && $this->_gemsData['gap_id_location'])) {
+            return null;
+        }
+        if (!array_key_exists('glo_name', $this->_gemsData)) {
+            $sql = "SELECT glo_name FROM gems__locations WHERE glo_id_location = ?";
+
+            $this->_gemsData['glo_name'] = $this->db->fetchOne($sql, $this->_gemsData['gap_id_location']);
+
+            // Cleanup db result
+            if (false === $this->_gemsData['glo_name']) {
+                $this->_gemsData['glo_name'] = null;
+            }
+        }
+        return $this->_gemsData['glo_name'];
     }
 
     /**
@@ -255,10 +295,9 @@ class Gems_Agenda_Appointment extends \MUtil_Translate_TranslateableAbstract
      * Return the description of the current procedure
      *
      * @return string or null when not found
-     * /
+     */
     public function getProcedureDescription()
     {
-        // NOT TESTED!
         if (! (isset($this->_gemsData['gap_id_procedure']) && $this->_gemsData['gap_id_procedure'])) {
             return null;
         }

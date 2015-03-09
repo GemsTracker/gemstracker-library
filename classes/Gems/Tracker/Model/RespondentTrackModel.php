@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Tracker_Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
@@ -53,17 +53,17 @@
  * - gems__tracks
  *
  * @package    Gems
- * @subpackage Tracker
+ * @subpackage Tracker_Model
  * @copyright  Copyright (c) 2011 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizationModel
+class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
      * Optional, required for details or $trackEngine, $patientId and $organizationId must be set
      *
-     * @var Gems_Tracker_RespondentTrack
+     * @var \Gems_Tracker_RespondentTrack
      */
     protected $respondentTrack;
 
@@ -91,13 +91,13 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     /**
      * Optional, required for details when $respondentTrack is not set
      *
-     * @var Gems_Tracker_Engine_TrackEngineInterface
+     * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
     protected $trackEngine;
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -159,7 +159,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
      */
     public function addEditTracking()
     {
-        $changer = new MUtil_Model_Type_ChangeTracker($this, 1, 0);
+        $changer = new \MUtil_Model_Type_ChangeTracker($this, 1, 0);
 
         $changer->apply('gr2t_end_date_manual', 'gr2t_end_date');
 
@@ -183,7 +183,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         $this->set('gr2t_start_date',   'label', $this->_('Start'),
         	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate,
-            'default', new Zend_Date());
+            'default', new \Zend_Date());
         $this->set('gr2t_end_date',   'label', $this->_('Ending on'),
         	'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
@@ -226,15 +226,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
                 );
 
         // Integrate fields
-        if ($this->trackEngine instanceof Gems_Tracker_Engine_TrackEngineInterface) {
-            $this->trackEngine->addFieldsToModel(
-                    $this,
-                    $this->respondentId,
-                    $this->organizationId,
-                    $this->patientId,
-                    $edit
-                    );
-        }
+        $this->trackEngine->addFieldsToModel($this, $edit);
 
         $this->set('gr2t_track_info',   'label', $this->_('Description'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
@@ -269,7 +261,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         $this->set('gr2t_track_info', 'elementClass', 'None');
         $this->set('assigned_by',     'elementClass', 'None');
         $this->set('gr2t_start_date', 'elementClass', 'Date',
-                'default',  new Zend_Date(),
+                'default',  new \Zend_Date(),
                 'required', true,
                 'size',     30
                 );
@@ -292,15 +284,15 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     {
         if ($parameters) {
             // Altkey
-            if (isset($parameters[Gems_Model::RESPONDENT_TRACK])) {
-                $id = $parameters[Gems_Model::RESPONDENT_TRACK];
-                unset($parameters[Gems_Model::RESPONDENT_TRACK]);
+            if (isset($parameters[\Gems_Model::RESPONDENT_TRACK])) {
+                $id = $parameters[\Gems_Model::RESPONDENT_TRACK];
+                unset($parameters[\Gems_Model::RESPONDENT_TRACK]);
                 $parameters['gr2t_id_respondent_track'] = $id;
             }
 
-            if (isset($parameters[Gems_Model::TRACK_ID])) {
-                $id = $parameters[Gems_Model::TRACK_ID];
-                unset($parameters[Gems_Model::TRACK_ID]);
+            if (isset($parameters[\Gems_Model::TRACK_ID])) {
+                $id = $parameters[\Gems_Model::TRACK_ID];
+                unset($parameters[\Gems_Model::TRACK_ID]);
                 $parameters['gtr_id_track'] = $id;
             }
 
@@ -391,12 +383,12 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
         if (isset($newValues['gr2t_end_date']) && $newValues['gr2t_end_date'])  {
             $displayFormat = $this->get('gr2t_end_date', 'dateFormat');
             if ( ! $displayFormat) {
-                $displayFormat = MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+                $displayFormat = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
             }
 
             // Of course do not do so when we got a time format
-            if (! MUtil_Date_Format::getTimeFormat($displayFormat)) {
-                $newValues['gr2t_end_date'] = new MUtil_Date($newValues['gr2t_end_date'], $displayFormat);
+            if (! \MUtil_Date_Format::getTimeFormat($displayFormat)) {
+                $newValues['gr2t_end_date'] = new \MUtil_Date($newValues['gr2t_end_date'], $displayFormat);
                 $newValues['gr2t_end_date']->setTimeToDayEnd();
             }
         }
@@ -427,10 +419,10 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
      * Set when available, required for details or $trackEngine, $patientId and
      * $organizationId must be set
      *
-     * @param Gems_Tracker_RespondentTrack $respondentTrack
+     * @param \Gems_Tracker_RespondentTrack $respondentTrack
      * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)
      */
-    public function setRespondentTrack(Gems_Tracker_RespondentTrack $respondentTrack)
+    public function setRespondentTrack(\Gems_Tracker_RespondentTrack $respondentTrack)
     {
         $this->respondentTrack = $respondentTrack;
 
@@ -440,10 +432,10 @@ class Gems_Tracker_Model_RespondentTrackModel extends Gems_Model_HiddenOrganizat
     /**
      * Set when available, required for details when $respondentTrack is not set
      *
-     * @param Gems_Tracker_Engine_TrackEngineInterface $trackEngine
+     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
      * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)
      */
-    public function setTrackEngine(Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
+    public function setTrackEngine(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
     {
         $this->trackEngine = $trackEngine;
 

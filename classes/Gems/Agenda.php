@@ -63,6 +63,12 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
 
     /**
      *
+     * @var string
+     */
+    public $appointmentDisplayFormat = 'dd-MM-yyyy HH:mm';
+
+    /**
+     *
      * @var \Zend_Cache_Core
      */
     protected $cache;
@@ -329,13 +335,15 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
     /**
      * Overrule this function to adapt the display of the agenda items for each project
      *
+     * @see \Gems_Agenda_Appointment->getDisplayString()
+     *
      * @param array $row Row containing result select
      * @return string
      */
     public function getAppointmentDisplay(array $row)
     {
         $date = new \MUtil_Date($row['gap_admission_time'], 'yyyy-MM-dd HH:mm:ss');
-        $results[] = $date->toString('dd-MM-yyyy HH:mm');
+        $results[] = $date->toString($this->appointmentDisplayFormat);
         if ($row['gaa_name']) {
             $results[] = $row['gaa_name'];
         }

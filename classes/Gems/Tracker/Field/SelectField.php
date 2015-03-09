@@ -48,5 +48,25 @@ namespace Gems\Tracker\Field;
  */
 class SelectField extends FieldAbstract
 {
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
+    /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    protected function addModelSettings(array &$settings)
+    {
+        $empty = $this->util->getTranslated()->getEmptyDropdownArray();
+        $multi = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+
+        $settings['elementClass'] = 'Select';
+        $settings['multiOptions'] = $empty + array_combine($multi, $multi);
+    }
 }

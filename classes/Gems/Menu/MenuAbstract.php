@@ -515,6 +515,10 @@ abstract class Gems_Menu_MenuAbstract
         $page->addAutofilterAction();
         // $page->addExcelAction();
 
+        $page = $infoPage->addPage($this->_('Track Field Content'), 'pr.plan.fields', 'field-overview', 'index');
+        $page->addAutofilterAction();
+        $page->addExcelAction();
+
         $plans[] = $infoPage->addPage($this->_('By period'), 'pr.plan.overview', 'overview-plan', 'index');
         $plans[] = $infoPage->addPage($this->_('By token'), 'pr.plan.token', 'token-plan', 'index');
         $plans[] = $infoPage->addPage($this->_('By respondent'), 'pr.plan.respondent', 'respondent-plan', 'index');

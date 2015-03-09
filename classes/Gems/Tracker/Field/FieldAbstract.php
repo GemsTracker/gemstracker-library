@@ -49,6 +49,25 @@ namespace Gems\Tracker\Field;
 abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract implements FieldInterface
 {
     /**
+     * Option seperator for fields
+     */
+    const FIELD_SEP = '|';
+
+    /**
+     * Respondent track fields that this field's settings are dependent on.
+     *
+     * @var array Null or an array of respondent track fields.
+     */
+    protected $_dependsOn;
+
+    /**
+     * Model settings for this field that may change depending on the dependsOn fields.
+     *
+     * @var array Null or an array of model settings that change for this field
+     */
+    protected $_effecteds;
+
+    /**
      *
      * @var array  Field definition array
      */
@@ -58,7 +77,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
      *
      * @var string
      */
-    protected $_fieldId;
+    protected $_fieldKey;
 
     /**
      *
@@ -75,9 +94,19 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     public function __construct($trackId, $key, array $fieldDefinition)
     {
         $this->_trackId         = $trackId;
-        $this->_fieldId         = $key;
+        $this->_fieldKey        = $key;
         $this->_fieldDefinition = $fieldDefinition;
     }
+
+    /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    abstract protected function addModelSettings(array &$settings);
+
 
     /**
      * Calculation the field info display for this type
@@ -140,10 +169,7 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
 
         // Perform automatic calculation
         if (isset($this->_fieldDefinition['gtf_calculate_using'])) {
-            $sources = explode(
-                    \Gems_Tracker_Model_FieldMaintenanceModel::FIELD_SEP,
-                    $this->_fieldDefinition['gtf_calculate_using']
-                    );
+            $sources = explode(self::FIELD_SEP, $this->_fieldDefinition['gtf_calculate_using']);
 
             foreach ($sources as $source) {
                 if (isset($fieldData[$source]) && $fieldData[$source]) {
@@ -157,6 +183,68 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     }
 
     /**
+     * Respondent track fields that this field's settings are dependent on.
+     *
+     * @return array Null or an array of respondent track fields
+     */
+    public function getDataModelDependsOn()
+    {
+        return $this->_dependsOn;
+    }
+
+    /**
+     * Returns the changes to the model for this field that must be made in an array consisting of
+     *
+     * <code>
+     *  array(setting1 => $value1, setting2 => $value2, ...),
+     * </code>
+     *
+     * By using [] array notation in the setting array key you can append to existing
+     * values.
+     *
+     * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
+     *
+     * @param array $context The current data this object is dependent on
+     * @param boolean $new True when the item is a new record not yet saved
+     * @return array (setting => value)
+     */
+    public function getDataModelDependyChanges(array $context, $new)
+    {
+        return null;
+    }
+
+    /**
+     * Model settings for this field that may change depending on the dependsOn fields.
+     *
+     * @return array Null or an array of model settings that change for this field
+     */
+    public function getDataModelEffecteds()
+    {
+        return $this->_effecteds;
+    }
+
+    /**
+     *
+     * @return array Of settings to add to a model using these fields
+     */
+    public function getDataModelSettings()
+    {
+        $output['label']       = $this->getLabel();
+        $output['required']    = $this->_fieldDefinition['gtf_required'];
+        $output['description'] = $this->_fieldDefinition['gtf_field_description'];
+
+        $this->addModelSettings($output);
+
+        if ($this->isReadOnly()) {
+            $output['elementClass'] = 'Exhibitor';
+        }
+
+        return $output;
+    }
+
+    /**
      *
      * @return The track field id
      */
@@ -165,6 +253,14 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
         return $this->_fieldDefinition['gtf_id_field'];
     }
 
+    /**
+     *
+     * @return The track field key as used by the union model
+     */
+    public function getFieldKey()
+    {
+        return $this->_fieldKey;
+    }
 
     /**
      *
@@ -182,6 +278,24 @@ abstract class FieldAbstract extends \MUtil_Translate_TranslateableAbstract impl
     public function getLabel()
     {
         return $this->_fieldDefinition['gtf_field_name'];
+    }
+
+    /**
+     *
+     * @return boolean When this field has dependencies
+     */
+    public function hasDataModelDependencies()
+    {
+        return (boolean) $this->_dependsOn && $this->_effecteds;
+    }
+
+    /**
+     *
+     * @return boolean True when this field is read only
+     */
+    public function isReadOnly()
+    {
+        return $this->_fieldDefinition['gtf_readonly'];
     }
 
     /**

@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.2 (in current form)
  */
-abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_ModelTransformerInterface
+abstract class MUtil_Model_ModelTransformerAbstract implements \MUtil_Model_ModelTransformerInterface
 {
     /**
      *
@@ -55,7 +55,7 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     /**
      * Gets one or more values for a certain field name.
      *
-     * @see MUtil_Model_ModelAbstract->get()
+     * @see \MUtil_Model_ModelAbstract->get()
      *
      * @param string $name Field name
      * @param string|array|null $arrayOrKey1 Null or the name of a single attribute or an array of attribute names
@@ -65,7 +65,7 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     public function get($name, $arrayOrKey1 = null, $key2 = null)
     {
         $args = func_get_args();
-        $args = MUtil_Ra::args($args, 1);
+        $args = \MUtil_Ra::args($args, 1);
 
         switch (count($args)) {
             case 0:
@@ -110,10 +110,10 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @return array Of fieldname => set() values
      */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
         return $this->_fields;
     }
@@ -121,10 +121,10 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     /**
      * Set one or more attributes for a field names in the model.
      *
-     * @see MUtil_Model_ModelAbstract->set()
+     * @see \MUtil_Model_ModelAbstract->set()
      *
      * @param string $name The fieldname
-     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see MUtil_Args::pairs()
+     * @param mixed  $arrayOrKey1 A key => value array or the name of the first key, see \MUtil_Args::pairs()
      * @param mixed  $value1      The value for $arrayOrKey1 or null when $arrayOrKey1 is an array
      * @param string $key2        Optional second key when $arrayOrKey1 is a string
      * @param mixed  $value2      Optional second value when $arrayOrKey1 is a string,
@@ -134,7 +134,7 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
     public function set($name, $arrayOrKey1 = null, $value1 = null, $key2 = null, $value2 = null)
     {
         $args = func_get_args();
-        $args = MUtil_Ra::pairs($args, 1);
+        $args = \MUtil_Ra::pairs($args, 1);
 
         if ($args) {
             foreach ($args as $key => $value) {
@@ -168,11 +168,11 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      * a) retreiving filters to be applied to the transforming data,
      * b) adding filters that are needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $filter
      * @return array The (optionally changed) filter
      */
-    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
+    public function transformFilter(\MUtil_Model_ModelAbstract $model, array $filter)
     {
         // No changes
         return $filter;
@@ -183,11 +183,11 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      * a) remove sorts from the main model that are not possible
      * b) add sorts that are required needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $sort
      * @return array The (optionally changed) sort
      */
-    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort)
+    public function transformSort(\MUtil_Model_ModelAbstract $model, array $sort)
     {
         // No changes
         return $sort;
@@ -197,27 +197,41 @@ abstract class MUtil_Model_ModelTransformerAbstract implements MUtil_Model_Model
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         // No changes
         return $data;
     }
 
     /**
-     * This transform function performs the actual save of the data and is called after
+     * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
+    {
+        // No changes
+        return $row;
+    }
+
+    /**
+     * This transform function is called before the saving of the data in the source model and allows you to
+     * change all data.
+     *
+     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         // No changes
         return $row;

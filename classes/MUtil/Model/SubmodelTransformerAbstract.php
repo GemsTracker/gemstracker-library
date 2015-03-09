@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_ModelTransformerInterface
+abstract class MUtil_Model_SubmodelTransformerAbstract implements \MUtil_Model_ModelTransformerInterface
 {
     /**
      * The number of rows changed at the last save
@@ -61,7 +61,7 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
 
     /**
      *
-     * @var array of MUtil_Model_ModelAbstract
+     * @var array of \MUtil_Model_ModelAbstract
      */
     protected $_subModels = array();
 
@@ -78,13 +78,13 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
     /**
      * Add an (extra) model to the join
      *
-     * @param MUtil_Model_ModelAbstract $subModel
+     * @param \MUtil_Model_ModelAbstract $subModel
      * @param array $joinFields
      * @return \MUtil_Model_Transform_NestedTransformer (continuation pattern)
      */
-    public function addModel(MUtil_Model_ModelAbstract $subModel, array $joinFields)
+    public function addModel(\MUtil_Model_ModelAbstract $subModel, array $joinFields)
     {
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
 
         $name = $subModel->getName();
         $this->_subModels[$name] = $subModel;
@@ -99,10 +99,10 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @return array Of filedname => set() values
      */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
         $data = array();
         foreach ($this->_subModels as $sub) {
@@ -124,11 +124,11 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * a) retreiving filters to be applied to the transforming data,
      * b) adding filters that are the result
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $filter
      * @return array The (optionally changed) filter
      */
-    public function transformFilter(MUtil_Model_ModelAbstract $model, array $filter)
+    public function transformFilter(\MUtil_Model_ModelAbstract $model, array $filter)
     {
         // Make sure the join fields are in the result set
         foreach ($this->_joins as $joins) {
@@ -146,13 +146,13 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * The transform function performs the actual transformation of the data and is called after
      * the loading of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $data Nested array
      * @param boolean $new True when loading a new item
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      * @return array Nested array containing (optionally) transformed data
      */
-    public function transformLoad(MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
+    public function transformLoad(\MUtil_Model_ModelAbstract $model, array $data, $new = false, $isPostData = false)
     {
         if (! $data) {
             return $data;
@@ -161,7 +161,7 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
         foreach ($this->_subModels as $name => $sub) {
             $this->transformLoadSubModel($model, $sub, $data, $this->_joins[$name], $name, $new, $isPostData);
         }
-        // MUtil_Echo::track($data);
+        // \MUtil_Echo::track($data);
 
         return $data;
     }
@@ -169,8 +169,8 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model Parent model
-     * @param MUtil_Model_ModelAbstract $sub Sub model
+     * @param \MUtil_Model_ModelAbstract $model Parent model
+     * @param \MUtil_Model_ModelAbstract $sub Sub model
      * @param array $data The nested data rows
      * @param array $join The join array
      * @param string $name Name of sub model
@@ -178,18 +178,18 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
     abstract protected function transformLoadSubModel(
-            MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+            \MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$data, array $join,
             $name, $new, $isPostData);
 
     /**
-     * This transform function performs the actual save of the data and is called after
+     * This transform function performs the actual save (if any) of the transformer data and is called after
      * the saving of the data in the source model.
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @param array $row Array containing row
      * @return array Row array containing (optionally) transformed data
      */
-    public function transformRowAfterSave(MUtil_Model_ModelAbstract $model, array $row)
+    public function transformRowAfterSave(\MUtil_Model_ModelAbstract $model, array $row)
     {
         if (! $row) {
             return $row;
@@ -199,33 +199,47 @@ abstract class MUtil_Model_SubmodelTransformerAbstract implements MUtil_Model_Mo
             $this->transformSaveSubModel($model, $sub, $row, $this->_joins[$name], $name);
             $this->_changed = $this->_changed + $sub->getChanged();
         }
-        // MUtil_Echo::track($row);
+        // \MUtil_Echo::track($row);
 
+        return $row;
+    }
+
+    /**
+     * This transform function is called before the saving of the data in the source model and allows you to
+     * change all data.
+     *
+     * @param \MUtil_Model_ModelAbstract $model The parent model
+     * @param array $row Array containing row
+     * @return array Row array containing (optionally) transformed data
+     */
+    public function transformRowBeforeSave(\MUtil_Model_ModelAbstract $model, array $row)
+    {
+        // No changes
         return $row;
     }
 
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param MUtil_Model_ModelAbstract $sub
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $sub
      * @param array $data
      * @param array $join
      * @param string $name
      */
     abstract protected function transformSaveSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name);
+            (\MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name);
 
     /**
      * This transform function checks the sort to
      * a) remove sorts from the main model that are not possible
      * b) add sorts that are required needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $sort
      * @return array The (optionally changed) sort
      */
-    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort)
+    public function transformSort(\MUtil_Model_ModelAbstract $model, array $sort)
     {
         foreach ($this->_subModels as $sub) {
             foreach ($sort as $key => $value) {

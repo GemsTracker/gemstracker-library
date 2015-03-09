@@ -135,26 +135,14 @@ class Gems_Tracker_Snippets_EditSingleSurveyTokenSnippetAbstract extends Gems_Sn
     {
         if ($this->token) {
             $model = $this->token->getModel();
-            $this->trackEngine->addFieldsToModel(
-                    $model,
-                    $this->token->getRespondentId(),
-                    $this->token->getOrganizationId(),
-                    null,
-                    true
-                    );
+            $this->trackEngine->addFieldsToModel($model, true);
         } else {
             if (!$this->trackEngine && $this->trackId) {
                 $this->trackEngine = $this->loader->getTracker()->getTrackEngine($this->trackId);
             }
-            
+
             $model = $this->trackEngine->getTokenModel();
-            $this->trackEngine->addFieldsToModel(
-                    $model,
-                    null,
-                    $this->organizationId,
-                    $this->patientId,
-                    true
-                    );
+            $this->trackEngine->addFieldsToModel($model, true);
         }
 
         $model->addEditTracking();

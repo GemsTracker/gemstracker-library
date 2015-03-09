@@ -101,10 +101,56 @@ interface FieldInterface
     public function getCode();
 
     /**
+     * Respondent track fields that this field's settings are dependent on.
+     *
+     * @return array Null or an array of respondent track fields
+     */
+    public function getDataModelDependsOn();
+
+    /**
+     * Returns the changes to the model for this field that must be made in an array consisting of
+     *
+     * <code>
+     *  array(setting1 => $value1, setting2 => $value2, ...),
+     * </code>
+     *
+     * By using [] array notation in the setting array key you can append to existing
+     * values.
+     *
+     * Use the setting 'value' to change a value in the original data.
+     *
+     * When a 'model' setting is set, the workings cascade.
+     *
+     * @param array $context The current data this object is dependent on
+     * @param boolean $new True when the item is a new record not yet saved
+     * @return array (setting => value)
+     */
+    public function getDataModelDependyChanges(array $context, $new);
+
+    /**
+     * Model settings for this field that may change depending on the dependsOn fields.
+     *
+     * @return array Null or an array of model settings that change for this field
+     */
+    public function getDataModelEffecteds();
+
+    /**
+     *
+     * @return array Of settings to add to a model using these fields
+     */
+    public function getDataModelSettings();
+
+    /**
      *
      * @return The track field id
      */
     public function getFieldId();
+
+    /**
+     *
+     * @return The track field key as used by the union model
+     */
+    public function getFieldKey();
 
     /**
      *
@@ -142,6 +188,12 @@ interface FieldInterface
      * /
     public function getTrackMaintenanceSettings($values, $respondentId, $organizationId, $patientNr = null, $edit = true);
     // */
+
+    /**
+     *
+     * @return boolean When this field has dependencies
+     */
+    public function hasDataModelDependencies();
 
     /**
      * Calculate the field value using the current values

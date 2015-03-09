@@ -44,6 +44,6 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 17:51:12
  */
-class FieldReportController extends Gems_Default_FieldReportAction
+class FieldReportController extends \Gems_Default_FieldReportAction
 {
 }

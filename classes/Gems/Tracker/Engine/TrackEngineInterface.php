@@ -54,13 +54,10 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * Integrate field loading en showing and editing
      *
      * @param \MUtil_Model_ModelAbstract $model
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
+     * @param boolean $addDependency True when editing, can be false in all other cases
      * @return \Gems_Tracker_Engine_TrackEngineAbstract
      */
-    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $respondentId, $organizationId, $patientNr = null, $edit = true);
+    public function addFieldsToModel(\MUtil_Model_ModelAbstract $model, $addDependency = true);
 
     /**
      * Set menu parameters from this track engine
@@ -206,17 +203,6 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @return \Gems_Tracker_Model_FieldMaintenanceModel
      */
     public function getFieldsMaintenanceModel($detailed, $action, array $data);
-
-    /**
-     * Get a big array with model settings for fields in a track
-     *
-     * @param int $respondentId When null $patientNr is required
-     * @param int $organizationId
-     * @param string $patientNr Optional for when $respondentId is null
-     * @param boolean $edit True when editing, false for display (detailed is assumed to be true)
-     * @return array fieldname => array(settings)
-     */
-    public function getFieldsModelSettings($respondentId, $organizationId, $patientNr = null, $edit = true);
 
     /**
      * Returns an array name => code of all the fields of the type specified

@@ -48,4 +48,26 @@ namespace Gems\Tracker\Field;
  */
 class Multiselect extends FieldAbstract
 {
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
+
+    /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    protected function addModelSettings(array &$settings)
+    {
+        $concatter = new \MUtil_Model_Type_ConcatenatedRow(parent::FIELD_SEP, ' ', false);
+        $multi     = explode(parent::FIELD_SEP, $this->_fieldDefinition['gtf_field_values']);
+        $settings  = $concatter->getSettings() + $settings;
+
+        $settings['elementClass'] = 'MultiCheckbox';
+        $settings['multiOptions'] = array_combine($multi, $multi);
+    }
 }

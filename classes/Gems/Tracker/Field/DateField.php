@@ -69,6 +69,20 @@ class DateField extends FieldAbstract
     protected $zendDateTimeFormat = 'dd MMM yyyy';
 
     /**
+     * Add the model settings like the elementClass for this field.
+     *
+     * elementClass is overwritten when this field is read only, unless you override it again in getDataModelSettings()
+     *
+     * @param array $settings The settings set so far
+     */
+    protected function addModelSettings(array &$settings)
+    {
+        $settings['elementClass']  = 'Date';
+        $settings['dateFormat']    = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+        $settings['storageFormat'] = \Gems_Tracker::DB_DATE_FORMAT;
+    }
+
+    /**
      * Calculation the field info display for this type
      *
      * @param array $currentValue The current value
@@ -91,7 +105,11 @@ class DateField extends FieldAbstract
             $value = $currentValue;
         }
 
-        return array($this->getLabel(), ' ', $value);
+        if (! $currentValue) {
+            return null;
+        } else {
+            return array($this->getLabel(), ' ', $value);
+        }
     }
 
     /**

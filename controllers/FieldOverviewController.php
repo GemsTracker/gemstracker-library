@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (c) 2014, Erasmus MC
+ * Copyright (c) 2015, Erasmus MC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL MAGNAFACTA BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -27,37 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * @package    MUtil
- * @subpackage ModelFormAssembledSnippet
+ * @package    Gems
+ * @subpackage Controller
  * @author     Matijs de Jong <mjong@magnafacta.nl>
- * @copyright  Copyright (c) 2014 Erasmus MC
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelFormAssembledSnippet .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: FieldOverviewController.php $
  */
 
 /**
  *
- * @package    MUtil
- * @subpackage ModelFormAssembledSnippet
- * @copyright  Copyright (c) 2014 Erasmus MC
+ *
+ * @package    Gems
+ * @subpackage Controller
+ * @copyright  Copyright (c) 2015 Erasmus MC
  * @license    New BSD License
- * @since      Class available since version 1.6.3
+ * @since      Class available since version 1.6.5 9-mrt-2015 17:20:33
  */
-class ModelFormAssembledSnippet extends MUtil_Snippets_ModelFormAssembledSnippetAbstract
+class FieldOverviewController extends \Gems_Default_FieldOverviewAction
 {
-    /**
-     *
-     * @var MUtil_Model_ModelAbstract
-     */
-    protected $model;
-
-    /**
-     * Creates the model
-     *
-     * @return MUtil_Model_ModelAbstract
-     */
-    protected function createModel()
-    {
-        return $this->model;
-    }
 }
