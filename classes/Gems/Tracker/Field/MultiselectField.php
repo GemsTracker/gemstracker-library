@@ -46,7 +46,7 @@ namespace Gems\Tracker\Field;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 4-mrt-2015 11:42:43
  */
-class Multiselect extends FieldAbstract
+class MultiselectField extends FieldAbstract
 {
     /**
      *
