@@ -237,13 +237,12 @@ abstract class Gems_Default_TrackActionAbstract extends \Gems_Controller_BrowseE
         $trackEngineId = $this->_getParam(\Gems_Model::TRACK_ID);
         if ($trackEngineId) {
             $model->setTrackEngine($tracker->getTrackEngine($trackEngineId));
+        } else {
+            $respondentTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
+            if ($respondentTrackId) {
+                $model->setTrackEngine($tracker->getRespondentTrack($respondentTrackId)->getTrackEngine());
+            }
         }
-        $respondentTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
-        if ($respondentTrackId) {
-            $model->setRespondentTrack($tracker->getRespondentTrack($respondentTrackId));
-        }
-        list($patientId, $orgId) = $this->_getPatientAndOrganisationParam();
-        $model->setPatientAndOrganization($patientId, $orgId);
 
         if (in_array($action, array('create', 'delete-track', 'edit-track'))) {
             $model->applyEditSettings();

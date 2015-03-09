@@ -61,35 +61,7 @@
 class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
-     * Optional, required for details or $trackEngine, $patientId and $organizationId must be set
-     *
-     * @var \Gems_Tracker_RespondentTrack
-     */
-    protected $respondentTrack;
-
-    /**
-     * Optional, required for details when $respondentTrack is not set
-     *
-     * @var int Organization Id
-     */
-    protected $organizationId;
-
-    /**
-     * Optional, required for details when $respondentTrack is not set
-     *
-     * @var int Patient Id
-     */
-    protected $patientId;
-
-    /**
-     * Set by application
-     *
-     * @var int respondent id
-     */
-    protected $respondentId = null;
-
-    /**
-     * Optional, required for details when $respondentTrack is not set
+     * Optional, derifed from $respondentTrack is not set
      *
      * @var \Gems_Tracker_Engine_TrackEngineInterface
      */
@@ -194,9 +166,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     /**
      * Set those settings needed for the detailed display
      *
-     * Either respondentTrack or trackEngine and patientId and organizationId must have been set.
-     *
-     * @param boolean $edit When true edit fields are added
+     * @param boolean $edit When true the fields are added in edit mode
      * @return \Gems_Model_RespondentModel
      */
     public function applyDetailSettings($edit = false)
@@ -204,12 +174,6 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->resetOrder();
 
         $formatDate = $this->util->getTranslated()->formatDate;
-
-        if ($this->respondentTrack) {
-            $this->organizationId = $this->respondentTrack->getOrganizationId();
-            $this->respondentId   = $this->respondentTrack->getRespondentId();
-            $this->trackEngine    = $this->respondentTrack->getTrackEngine();
-        }
 
         $this->set('gr2o_patient_nr',   'label', $this->_('Respondent number'));
         $this->set('respondent_name',   'label', $this->_('Respondent name'));
@@ -241,8 +205,6 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
 
     /**
      * Set those values needed for editing
-     *
-     * Either respondentTrack or trackEngine and patientId and organizationId must have been set.
      *
      * @param mixed $locale The locale for the settings
      * @return \Gems_Model_RespondentModel
@@ -320,46 +282,50 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     {
         $values = array();
 
+        // Get the defaults
+        foreach ($this->getItemNames() as $name) {
+            $value = $this->get($name, 'default');
+
+            // Load 'Value' if set
+            if (null === $value) {
+                $value = $this->get($name, 'value');
+            }
+            $values[$name] = $value;
+        }
+
         // Create the extra values for the result
         if ($filter) {
             $db = $this->getAdapter();
 
             if (isset($filter['gr2o_patient_nr'], $filter['gr2o_id_organization'])) {
                 $sql = "SELECT *,
-                            CONCAT(COALESCE(CONCAT(grs_last_name, ', '), '-, '), COALESCE(CONCAT(grs_first_name, ' '), ''), COALESCE(grs_surname_prefix, '')) AS respondent_name
+                            CONCAT(
+                                COALESCE(CONCAT(grs_last_name, ', '), '-, '),
+                                COALESCE(CONCAT(grs_first_name, ' '), ''),
+                                COALESCE(grs_surname_prefix, '')) AS respondent_name
                         FROM gems__respondents INNER JOIN gems__respondent2org ON grs_id_user = gr2o_id_user
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?";
-                $values = $db->fetchRow($sql, array($filter['gr2o_patient_nr'], $filter['gr2o_id_organization']));
+                $values = $db->fetchRow($sql, array($filter['gr2o_patient_nr'], $filter['gr2o_id_organization'])) + $values;
                 $values['gr2t_id_user']         = $values['gr2o_id_user'];
                 $values['gr2t_id_organization'] = $values['gr2o_id_organization'];
             }
             if (isset($filter['gtr_id_track'])) {
                 $sql = 'SELECT * FROM gems__tracks WHERE gtr_id_track = ?';
-                $values = $values + $db->fetchRow($sql, $filter['gtr_id_track']);
+                $values = $db->fetchRow($sql, $filter['gtr_id_track']) + $values;
                 $values['gr2t_id_track']        = $values['gtr_id_track'];
                 $values['gr2t_count']           = $values['gtr_survey_rounds'];
             }
         }
 
-        // Create standard empty items
-        $empties = parent::loadNew($count);
+        // \MUtil_Echo::track($filter, $values);
+        $rows = $this->processAfterLoad(array($values), true);
+        $row  = reset($rows);
 
-        // Add the empty items to the values
-        if ($values) {
-            if (null === $count) {
-                // Return one array
-                return $values + $empties;
-            } else {
-                // Return array of arrays
-                $result = array();
-                foreach ($empties as $empty) {
-                    $result[] = $values + $empty;
-                }
-                return $result;
-            }
-
+        // Return only a single row when no count is specified
+        if (null === $count) {
+            return $row;
         } else {
-            return $empties;
+            return array_fill(0, $count, $row);
         }
     }
 
@@ -401,36 +367,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
     }
 
     /**
-     * Set when available, required for details when $respondentTrack is not set
-     *
-     * @param string $patientId
-     * @param int $organizationId
-     * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)
-     */
-    public function setPatientAndOrganization($patientId, $organizationId)
-    {
-        $this->patientId      = $patientId;
-        $this->organizationId = $organizationId;
-
-        return $this;
-    }
-
-    /**
-     * Set when available, required for details or $trackEngine, $patientId and
-     * $organizationId must be set
-     *
-     * @param \Gems_Tracker_RespondentTrack $respondentTrack
-     * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)
-     */
-    public function setRespondentTrack(\Gems_Tracker_RespondentTrack $respondentTrack)
-    {
-        $this->respondentTrack = $respondentTrack;
-
-        return $this;
-    }
-
-    /**
-     * Set when available, required for details when $respondentTrack is not set
+     * Set when available, required for detail adn edit settings
      *
      * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
      * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)

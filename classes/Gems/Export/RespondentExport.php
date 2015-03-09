@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -41,7 +42,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.5
  */
-class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
+class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
 {
     protected $_reportFooter         = 'Export_ReportFooterSnippet';
     protected $_reportHeader         = 'Export_ReportHeaderSnippet';
@@ -57,18 +58,18 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Gems_Loader
      */
     public $loader;
 
     /**
      *
-     * @var Gems_Project_ProjectSettings
+     * @var \Gems_Project_ProjectSettings
      */
     public $project;
 
     /**
-     * @var Zend_Translate_Adapter
+     * @var \Zend_Translate_Adapter
      */
     public $translate;
 
@@ -105,14 +106,14 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
     public $view;
 
     /**
-     * @var Gems_Pdf
+     * @var \Gems_Pdf
      */
     protected $_pdf;
 
@@ -124,14 +125,14 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     }
 
     /**
-     * Copy from Zend_Translate_Adapter
+     * Copy from \Zend_Translate_Adapter
      *
      * Translates the given string
      * returns the translation
      *
      * @param  string             $text   Translation string
-     * @param  string|Zend_Locale $locale (optional) Locale/Language to use, identical with locale
-     *                                    identifier, @see Zend_Locale for more information
+     * @param  string|\Zend_Locale $locale (optional) Locale/Language to use, identical with locale
+     *                                    identifier, @see \Zend_Locale for more information
      * @return string
      */
     public function _($messageid, $locale = null)
@@ -142,7 +143,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     /**
      * Returns true when this token should be displayed
      *
-     * @param Gems_Tracker_Token $token
+     * @param \Gems_Tracker_Token $token
      * @return boolean
      */
     public function _displayToken($token)
@@ -158,10 +159,10 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * Determines if this particular token should be included
      * in the report
      *
-     * @param  Gems_Tracker_Token $token
+     * @param  \Gems_Tracker_Token $token
      * @return boolean This dummy implementation always returns true
      */
-    protected function _isTokenInFilter(Gems_Tracker_Token $token)
+    protected function _isTokenInFilter(\Gems_Tracker_Token $token)
     {
         $result = false;
 
@@ -201,10 +202,10 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
      * Determines if this particular track should be included
      * in the report
      *
-     * @param  Gems_Tracker_RespondentTrack $track
+     * @param  \Gems_Tracker_RespondentTrack $track
      * @return boolean This dummy implementation always returns true
      */
-    protected function _isTrackInFilter(Gems_Tracker_RespondentTrack $track)
+    protected function _isTrackInFilter(\Gems_Tracker_RespondentTrack $track)
     {
         $result    = false;
         $trackInfo = array(
@@ -238,9 +239,9 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     /**
      * Exports all the tokens of a single track, grouped by round
      *
-     * @param Gems_Tracker_RespondentTrack $track
+     * @param \Gems_Tracker_RespondentTrack $track
      */
-    protected function _exportTrackTokens(Gems_Tracker_RespondentTrack $track)
+    protected function _exportTrackTokens(\Gems_Tracker_RespondentTrack $track)
     {
         $groupSurveys = $this->_group;
         $token        = $track->getFirstToken();
@@ -301,7 +302,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
                     $snippets = array($snippets);
                 }
 
-                list($snippets, $snippetParams) = MUtil_Ra::keySplit($snippets);
+                list($snippets, $snippetParams) = \MUtil_Ra::keySplit($snippets);
                 $params = $params + $snippetParams;
 
                 $this->html->snippet('Export_SurveyHeaderSnippet', 'token', $token);
@@ -320,16 +321,16 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     /**
      * Exports a single track
      *
-     * @param Gems_Tracker_RespondentTrack $track
+     * @param \Gems_Tracker_RespondentTrack $respTrack
      */
-    protected function _exportTrack(Gems_Tracker_RespondentTrack $track)
+    protected function _exportTrack(\Gems_Tracker_RespondentTrack $respTrack)
     {
-        if (!$this->_isTrackInFilter($track)) {
+        if (!$this->_isTrackInFilter($respTrack)) {
             return;
         }
 
         $trackModel = $this->loader->getTracker()->getRespondentTrackModel();
-        $trackModel->setRespondentTrack($track);
+        $trackModel->setTrackEngine($respTrack->getTrackEngine());
         $trackModel->applyDetailSettings(false);
         $trackModel->resetOrder();
         $trackModel->set('gtr_track_name',    'label', $this->_('Track'));
@@ -338,16 +339,16 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $trackModel->set('assigned_by',       'label', $this->_('Assigned by'));
         $trackModel->set('gr2t_start_date',   'label', $this->_('Start'),
             'formatFunction', $this->util->getTranslated()->formatDate,
-            'default', MUtil_Date::format(new Zend_Date(), 'dd-MM-yyyy'));
+            'default', \MUtil_Date::format(new \Zend_Date(), 'dd-MM-yyyy'));
         $trackModel->set('gr2t_reception_code');
         $trackModel->set('gr2t_comment',       'label', $this->_('Comment'));
-        $trackModel->setFilter(array('gr2t_id_respondent_track' => $track->getRespondentTrackId()));
+        $trackModel->setFilter(array('gr2t_id_respondent_track' => $respTrack->getRespondentTrackId()));
         $trackData = $trackModel->loadFirst();
 
         $this->html->h3($this->_('Track') . ' ' . $trackData['gtr_track_name']);
 
         $bridge = $trackModel->getBridgeFor('itemTable', array('class' => 'browser table'));
-        $bridge->setRepeater(MUtil_Lazy::repeat(array($trackData)));
+        $bridge->setRepeater(\MUtil_Lazy::repeat(array($trackData)));
         $bridge->th($this->_('Track information'), array('colspan' => 2));
         $bridge->setColumnCount(1);
         foreach($trackModel->getItemsOrdered() as $name) {
@@ -356,12 +357,12 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
             }
         }
 
-        $tableContainer = MUtil_Html::create()->div(array('class' => 'table-container'));
+        $tableContainer = \MUtil_Html::create()->div(array('class' => 'table-container'));
         $tableContainer[] = $bridge->getTable();
         $this->html[] = $tableContainer;
         $this->html->br();
 
-        $this->_exportTrackTokens($track);
+        $this->_exportTrackTokens($respTrack);
 
         $this->html->hr();
     }
@@ -407,19 +408,19 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     /**
      * Constructs the form
      *
-     * @return Gems_Form_TableForm
+     * @return \Gems_Form_TableForm
      */
     public function getForm()
     {
-        $form = new Gems_Form_TableForm();
+        $form = new \Gems_Form_TableForm();
         $form->setAttrib('target', '_blank');
 
-        $element = new Zend_Form_Element_Checkbox('group');
+        $element = new \Zend_Form_Element_Checkbox('group');
         $element->setLabel($this->_('Group surveys'));
         $element->setValue(1);
         $form->addElement($element);
 
-        $element = new Zend_Form_Element_Select('format');
+        $element = new \Zend_Form_Element_Select('format');
         $element->setLabel($this->_('Output format'));
         $outputFormats = array('html' => 'HTML');
         if ($this->_pdf->hasPdfExport()) {
@@ -429,7 +430,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $element->setMultiOptions($outputFormats);
         $form->addElement($element);
 
-        $element = new Zend_Form_Element_Submit('export');
+        $element = new \Zend_Form_Element_Submit('export');
         $element->setLabel($this->_('Export'))
                 ->setAttrib('class', 'button');
         $form->addElement($element);
@@ -448,7 +449,7 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
     {
         $this->_group = $group;
         $this->_format = $format;
-        $this->html = new MUtil_Html_Sequence();
+        $this->html = new \MUtil_Html_Sequence();
 
         $this->html->snippet($this->_reportHeader);
 
@@ -467,13 +468,13 @@ class Gems_Export_RespondentExport extends Gems_Registry_TargetAbstract
         $this->html->snippet($this->_reportFooter,  'respondents', $respondents);
 
         $this->escort->menu->setVisible(false);
-        if ($this->escort instanceof Gems_Project_Layout_MultiLayoutInterface) {
+        if ($this->escort instanceof \Gems_Project_Layout_MultiLayoutInterface) {
             $this->escort->layoutSwitch();
         }
-        $this->escort->postDispatch(Zend_Controller_Front::getInstance()->getRequest());
+        $this->escort->postDispatch(\Zend_Controller_Front::getInstance()->getRequest());
 
-        Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
-        Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
+        \Zend_Controller_Action_HelperBroker::getExistingHelper('layout')->disableLayout();
+        \Zend_Controller_Action_HelperBroker::getExistingHelper('viewRenderer')->setNoRender(true);
 
         $this->view->layout()->content = $this->html->render($this->view);
 

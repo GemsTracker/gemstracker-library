@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Tracker_model
+ * @subpackage Tracker_Model
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -43,7 +43,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
  *
  *
  * @package    Gems
- * @subpackage RespondentTrackModelTransformer
+ * @subpackage Tracker_Model
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3 13-feb-2014 16:33:25
