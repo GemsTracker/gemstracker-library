@@ -717,11 +717,14 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         }
 
         $this->_filters = $this->getFilters("SELECT *
-                FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
-                WHERE gaf_active = 1
+                FROM gems__appointment_filters INNER JOIN
+                    gems__track_appointments ON gaf_id = gtap_filter_id INNER JOIN
+                    gems__tracks ON gtap_id_track = gtr_id_track
+                WHERE gaf_active = 1 AND gtr_active = 1 AND gtr_date_start <= CURRENT_DATE AND
+                    (gtr_date_until IS NULL OR gtr_date_until >= CURRENT_DATE)
                 ORDER BY gaf_id_order, gtap_id_order");
 
-        $this->cache->save($this->_filters, $cacheId, array('appointment_filters'));
+        $this->cache->save($this->_filters, $cacheId, array('appointment_filters', 'tracks'));
 
         return $this->_filters;
     }
