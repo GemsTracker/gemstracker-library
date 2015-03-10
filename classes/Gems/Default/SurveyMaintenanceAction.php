@@ -418,7 +418,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
 
         $model->set('track_count',              'label', $detailed ? $this->_('Usage') : ' ',
                 'elementClass', 'Exhibitor',
-                'noSort', true
+                'noSort', true,
+                'no_text_search', true
                 );
         $model->setOnLoad('track_count', array($this, 'calculateTrackCount'));
 
@@ -434,13 +435,15 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
             if ($survey instanceof \Gems_Tracker_Survey) {
                 $surveyFields = $this->util->getTranslated()->getEmptyDropdownArray() +
                     $survey->getQuestionList($this->locale->getLanguage());
-                $model->set('gsu_result_field',          'label', $this->_('Result field'),
+                $model->set('gsu_result_field', 'label', $this->_('Result field'),
                         'multiOptions', $surveyFields
                         );
                 // $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             }
         }
-        $model->set('gsu_code',                          'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
+        $model->set('gsu_code',                 'label', $this->_('Code name'),
+                'description', $this->_('Only for programmers.'),
+                'size', 10);
 
         if ($detailed) {
             $events = $this->loader->getEvents();
