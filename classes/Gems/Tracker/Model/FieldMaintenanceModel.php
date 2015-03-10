@@ -75,7 +75,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
      *
      * @var array
      */
-    protected $fromAppointments = array('caretaker', 'location', 'activity', 'procedure');
+    protected $fromAppointments = array('activity', 'caretaker', 'date', 'location', 'procedure');
 
     /**
      *
