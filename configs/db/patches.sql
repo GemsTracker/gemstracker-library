@@ -869,12 +869,13 @@ ALTER TABLE gems__log_actions ADD
     glac_on_post boolean not null default 0 AFTER glac_change;
 UPDATE gems__log_actions SET glac_on_post = 1 WHERE glac_name LIKE '%edit%' OR glac_name LIKE '%create%';
 
+ALTER TABLE gems__log_actions CHANGE
+    glac_created glac_created timestamp not null;
+
 ALTER TABLE gems__log_actions ADD
     glac_changed timestamp AFTER glac_log;
 UPDATE gems__log_actions SET glac_changed = glac_created;
 
-ALTER TABLE gems__log_actions CHANGE
-    glac_created glac_created timestamp not null;
 ALTER TABLE gems__log_actions CHANGE
     glac_changed glac_changed timestamp not null default current_timestamp on update current_timestamp;
 
