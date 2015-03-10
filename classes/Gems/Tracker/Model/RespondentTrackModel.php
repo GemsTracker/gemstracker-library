@@ -61,13 +61,6 @@
 class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganizationModel
 {
     /**
-     * Optional, derifed from $respondentTrack is not set
-     *
-     * @var \Gems_Tracker_Engine_TrackEngineInterface
-     */
-    protected $trackEngine;
-
-    /**
      *
      * @var \Gems_Util
      */
@@ -161,15 +154,18 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             'formatFunction', $formatDate);
         $this->set('gr2t_reception_code');
         $this->set('gr2t_comment',       'label', $this->_('Comment'));
+
+        return $this;
     }
 
     /**
      * Set those settings needed for the detailed display
      *
+     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
      * @param boolean $edit When true the fields are added in edit mode
      * @return \Gems_Model_RespondentModel
      */
-    public function applyDetailSettings($edit = false)
+    public function applyDetailSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine, $edit = false)
     {
         $this->resetOrder();
 
@@ -190,7 +186,7 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 );
 
         // Integrate fields
-        $this->trackEngine->addFieldsToModel($this, $edit);
+        $trackEngine->addFieldsToModel($this, $edit);
 
         $this->set('gr2t_track_info',   'label', $this->_('Description'));
         $this->set('assigned_by',       'label', $this->_('Assigned by'));
@@ -201,17 +197,19 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
             'dateFormat', 'dd-MM-yyyy',
             'formatFunction', $formatDate);
         $this->set('gr2t_comment',      'label', $this->_('Comment'));
+
+        return $this;
     }
 
     /**
      * Set those values needed for editing
      *
-     * @param mixed $locale The locale for the settings
+     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
      * @return \Gems_Model_RespondentModel
      */
-    public function applyEditSettings()
+    public function applyEditSettings(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
     {
-        $this->applyDetailSettings(true);
+        $this->applyDetailSettings($trackEngine, true);
         $this->addEditTracking();
 
         $this->set('gr2o_patient_nr', 'elementClass', 'Exhibitor');
@@ -232,6 +230,8 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
                 'size',    30
                 );
         $this->set('gr2t_comment',    'elementClass', 'None');
+
+        return $this;
     }
 
     /**
@@ -364,18 +364,5 @@ class Gems_Tracker_Model_RespondentTrackModel extends \Gems_Model_HiddenOrganiza
         $this->setKeys($keys);
 
         return $newValues;
-    }
-
-    /**
-     * Set when available, required for detail adn edit settings
-     *
-     * @param \Gems_Tracker_Engine_TrackEngineInterface $trackEngine
-     * @return \Gems_Tracker_Model_RespondentTrackModel (continuation pattern)
-     */
-    public function setTrackEngine(\Gems_Tracker_Engine_TrackEngineInterface $trackEngine)
-    {
-        $this->trackEngine = $trackEngine;
-
-        return $this;
     }
 }

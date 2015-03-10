@@ -231,28 +231,29 @@ abstract class Gems_Default_TrackActionAbstract extends \Gems_Controller_BrowseE
 
     public function createRespondentTrackModel($detailed, $action)
     {
-        $tracker = $this->loader->getTracker();
-        $model   = $tracker->getRespondentTrackModel();
+        $tracker     = $this->loader->getTracker();
+        $trackEngine = null;
+        $model       = $tracker->getRespondentTrackModel();
 
         $trackEngineId = $this->_getParam(\Gems_Model::TRACK_ID);
         if ($trackEngineId) {
-            $model->setTrackEngine($tracker->getTrackEngine($trackEngineId));
+            $trackEngine = $tracker->getTrackEngine($trackEngineId);
         } else {
             $respondentTrackId = $this->_getParam(\Gems_Model::RESPONDENT_TRACK);
             if ($respondentTrackId) {
-                $model->setTrackEngine($tracker->getRespondentTrack($respondentTrackId)->getTrackEngine());
+                $trackEngine = $tracker->getRespondentTrack($respondentTrackId)->getTrackEngine();
             }
         }
 
-        if (in_array($action, array('create', 'delete-track', 'edit-track'))) {
-            $model->applyEditSettings();
-        } elseif (in_array($action, array('export-track', 'show-track'))) {
-            $model->applyDetailSettings();
-        } else {
-            $model->applyBrowseSettings();
+        if ($trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
+            if (in_array($action, array('create', 'delete-track', 'edit-track'))) {
+                return $model->applyEditSettings($trackEngine);
+            } elseif (in_array($action, array('export-track', 'show-track'))) {
+                return $model->applyDetailSettings($trackEngine);
+            }
         }
 
-        return $model;
+        return $model->applyBrowseSettings();
     }
 
     public function createTrackModel($detailed, $action)

@@ -330,8 +330,7 @@ class Gems_Export_RespondentExport extends \Gems_Registry_TargetAbstract
         }
 
         $trackModel = $this->loader->getTracker()->getRespondentTrackModel();
-        $trackModel->setTrackEngine($respTrack->getTrackEngine());
-        $trackModel->applyDetailSettings(false);
+        $trackModel->applyDetailSettings($respTrack->getTrackEngine(), false);
         $trackModel->resetOrder();
         $trackModel->set('gtr_track_name',    'label', $this->_('Track'));
         $trackModel->set('gr2t_track_info',   'label', $this->_('Description'),

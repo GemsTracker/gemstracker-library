@@ -151,15 +151,13 @@ class Gems_Tracker_Snippets_EditTrackSnippetAbstract extends \Gems_Snippets_Mode
         $tracker = $this->loader->getTracker();
         $model   = $tracker->getRespondentTrackModel();
 
-        if ($this->trackEngine) {
-            $model->setTrackEngine($this->trackEngine);
-        } else {
+        if (! $this->trackEngine instanceof \Gems_Tracker_Engine_TrackEngineInterface) {
             if (! $this->respondentTrack) {
                 $this->respondentTrack = $tracker->getRespondentTrack($this->respondentTrackId);
             }
-            $model->setTrackEngine($this->respondentTrack->getTrackEngine());
+            $this->trackEngine = $this->respondentTrack->getTrackEngine();
         }
-        $model->applyEditSettings();
+        $model->applyEditSettings($this->trackEngine);
 
         return $model;
     }
