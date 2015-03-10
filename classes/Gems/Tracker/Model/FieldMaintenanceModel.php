@@ -361,11 +361,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
                             2 => $this->_('Tracks of this type may link only once to an appointment.'),
 //                            3 => $this->_('Appointment may not be used in any other track.'),
                         ),
-                        'order', $this->getOrder('gtf_filter_id') + 1
+                        'order', $this->getOrder('gtf_filter_id') + 2
                         );
                 $this->set('gtf_create_track',
                         'onclick', 'this.form.submit();',
-						'order', $this->getOrder('gtf_filter_id') + 2
+						'order', $this->getOrder('gtf_filter_id') + 3
                         );
                 $this->set('gtf_create_wait_days',
                         'label', $this->_('Days between tracks'),
