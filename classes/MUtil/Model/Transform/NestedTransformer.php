@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.6.2
  */
-class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransformerAbstract
+class MUtil_Model_Transform_NestedTransformer extends \MUtil_Model_SubmodelTransformerAbstract
 {
     /**
      * If the transformer add's fields, these should be returned here.
@@ -52,10 +52,10 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
      * know which fields to add by then (optionally using the model
      * for that).
      *
-     * @param MUtil_Model_ModelAbstract $model The parent model
+     * @param \MUtil_Model_ModelAbstract $model The parent model
      * @return array Of filedname => set() values
      */
-    public function getFieldInfo(MUtil_Model_ModelAbstract $model)
+    public function getFieldInfo(\MUtil_Model_ModelAbstract $model)
     {
         $data = array();
         foreach ($this->_subModels as $sub) {
@@ -66,11 +66,12 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
 
                     // Remove unsuited data
                     unset($data[$name]['table'], $data[$name]['column_expression']);
-                    unset($data[$name]['label'], $data[$name]['elementClass']);
-                    
+                    unset($data[$name]['label']);
+                    $data[$name]['elementClass'] = 'None';
+
                     // Remove the submodel's own transformers to prevent changed/created to show up in the data array instead of only in the nested info
-                    unset($data[$name][MUtil_Model_ModelAbstract::LOAD_TRANSFORMER]);
-                    unset($data[$name][MUtil_Model_ModelAbstract::SAVE_TRANSFORMER]);
+                    unset($data[$name][\MUtil_Model_ModelAbstract::LOAD_TRANSFORMER]);
+                    unset($data[$name][\MUtil_Model_ModelAbstract::SAVE_TRANSFORMER]);
                 }
             }
         }
@@ -80,8 +81,8 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model Parent model
-     * @param MUtil_Model_ModelAbstract $sub Sub model
+     * @param \MUtil_Model_ModelAbstract $model Parent model
+     * @param \MUtil_Model_ModelAbstract $sub Sub model
      * @param array $data The nested data rows
      * @param array $join The join array
      * @param string $name Name of sub model
@@ -89,7 +90,7 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
      * @param boolean $isPostData With post data, unselected multiOptions values are not set so should be added
      */
     protected function transformLoadSubModel(
-            MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$data, array $join,
+            \MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$data, array $join,
             $name, $new, $isPostData)
     {
         foreach ($data as $key => $row) {
@@ -117,14 +118,14 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
     /**
      * Function to allow overruling of transform for certain models
      *
-     * @param MUtil_Model_ModelAbstract $model
-     * @param MUtil_Model_ModelAbstract $sub
+     * @param \MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $sub
      * @param array $data
      * @param array $join
      * @param string $name
      */
     protected function transformSaveSubModel
-            (MUtil_Model_ModelAbstract $model, MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
+            (\MUtil_Model_ModelAbstract $model, \MUtil_Model_ModelAbstract $sub, array &$row, array $join, $name)
     {
         if (! isset($row[$name])) {
             return;
@@ -156,11 +157,11 @@ class MUtil_Model_Transform_NestedTransformer extends MUtil_Model_SubmodelTransf
      * a) remove sorts from the main model that are not possible
      * b) add sorts that are required needed
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $sort
      * @return array The (optionally changed) sort
      */
-    public function transformSort(MUtil_Model_ModelAbstract $model, array $sort)
+    public function transformSort(\MUtil_Model_ModelAbstract $model, array $sort)
     {
         foreach ($this->_subModels as $sub) {
             foreach ($sort as $key => $value) {

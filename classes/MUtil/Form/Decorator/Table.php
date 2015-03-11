@@ -44,21 +44,21 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
+class MUtil_Form_Decorator_Table extends \Zend_Form_Decorator_ViewHelper
 {
     /**
      *
-     * @var array of Zend_Form_Decorator constructors or obhjects
+     * @var array of \Zend_Form_Decorator constructors or obhjects
      */
     protected $_cellDecorators;
 
     /**
      * Change the current decorators
      *
-     * @param Zend_Form_Element $element
+     * @param \Zend_Form_Element $element
      * @param array $decorators
      */
-    private function _applyDecorators(Zend_Form_Element $element, array $decorators)
+    private function _applyDecorators(\Zend_Form_Element $element, array $decorators)
     {
         $element->clearDecorators();
         foreach ($decorators as $decorator) {
@@ -68,7 +68,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
 
     /**
      * Loads Cell decorators if needed.
-     * @return array of Zend_Form_Decorator constructors or obhjects
+     * @return array of \Zend_Form_Decorator constructors or obhjects
      */
     public function getCellDecorators()
     {
@@ -81,7 +81,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
 
     /**
      *
-     * @return array of Zend_Form_Decorator constructors or obhjects
+     * @return array of \Zend_Form_Decorator constructors or obhjects
      */
     public function loadDefaultCellDecorators()
     {
@@ -112,10 +112,10 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
 
         $cellDecorators = $this->getCellDecorators();
 
-        $table = new MUtil_Html_TableElement();
-        $table->setOnEmpty(array(new MUtil_Html_Raw('&hellip;'), 'style' => 'text-align: center;'));
+        $table = new \MUtil_Html_TableElement();
+        $table->setOnEmpty(array(new \MUtil_Html_Raw('&hellip;'), 'style' => 'text-align: center;'));
 
-        if ($element instanceof MUtil_Form_Element_Table) {
+        if ($element instanceof \MUtil_Form_Element_Table) {
 
             $subforms = $element->getSubForms();
             $table->id = $element->getName();
@@ -125,7 +125,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
             } else {
                 $firstform = $element->getSubForm();
             }
-        } elseif ($element instanceof Zend_Form)  {
+        } elseif ($element instanceof \Zend_Form)  {
             $cellDecorators = null;
             $firstform  = $element;
             $subforms = array($element);
@@ -133,47 +133,48 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
 
         if (isset($firstform)) {
 
-            $hasDescriptions = false;
+//            $hasDescriptions = false;
             foreach ($firstform->getElements() as $headerelement) {
-                if (! $headerelement instanceof Zend_Form_Element_Hidden) {
+                if (! $headerelement instanceof \Zend_Form_Element_Hidden) {
                     if (! $subforms) {
                        $headerelement->setAttrib('id', $element->getName());
                     }
-                    $last_cell = $table->th()->label($headerelement);
+                    $last_cell = $table->th(array('title' => $headerelement->getDescription()))
+                            ->label($headerelement);
 
-                    if ($headerelement->getDescription()) {
-                        $hasDescriptions = true;
-                    }
+//                    if ($headerelement->getDescription()) {
+//                        $hasDescriptions = true;
+//                    }
                 }
             }
-            if ($hasDescriptions) {
-                foreach ($firstform->getElements() as $headerelement) {
-                    if (! $headerelement instanceof Zend_Form_Element_Hidden) {
-                        if ($headerelement->getDescription()) {
-                            $table->tf()->inputOnly($headerelement, 'Description');
-                        } else {
-                            $table->tf();
-                        }
-                    }
-                }
-            }
+//            if ($hasDescriptions) {
+//                foreach ($firstform->getElements() as $headerelement) {
+//                    if (! $headerelement instanceof \Zend_Form_Element_Hidden) {
+//                        if ($headerelement->getDescription()) {
+//                            $table->tf()->inputOnly($headerelement, 'Description');
+//                        } else {
+//                            $table->tf();
+//                        }
+//                    }
+//                }
+//            }
 
-            $hidden = '';
+            $hidden = array();
             if ($subforms) {
                 foreach ($subforms as $subform) {
                     $table->tr();
                     foreach ($subform->getElements() as $subelement) {
-                        if ($subelement instanceof Zend_Form_Element_Hidden) {
+                        if ($subelement instanceof \Zend_Form_Element_Hidden) {
                             $this->_applyDecorators($subelement, array(array('ViewHelper')));
                             $hidden[] = $subelement;
                         } else {
-                            $last_cell = $table->td($hidden);
+                            $last_cell = $table->td($hidden, array('title' => $subelement->getDescription()));
                             if ($cellDecorators) {
                                 $last_cell->inputOnlyArray($subelement, $cellDecorators);
                             } else {
                                 $last_cell[] = $subelement;
                             }
-                            $hidden = null;
+                            $hidden = array();
                         }
                     }
                 }
@@ -182,11 +183,11 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
                 }
             }
 
-        } elseif ($element instanceof Zend_Form_DisplayGroup) {
-            throw new Exception('Rendering of Zend_Form_DisplayGroup in ' . __CLASS__ . ' not yet implemented.');
+        } elseif ($element instanceof \Zend_Form_DisplayGroup) {
+            throw new Exception('Rendering of \Zend_Form_DisplayGroup in ' . __CLASS__ . ' not yet implemented.');
 
-        } elseif ($element instanceof Zend_Form_Element) {
-            throw new Exception('Rendering of Zend_Form_Element in ' . __CLASS__ . ' not yet implemented.');
+        } elseif ($element instanceof \Zend_Form_Element) {
+            throw new Exception('Rendering of \Zend_Form_Element in ' . __CLASS__ . ' not yet implemented.');
             // $table->addColumn($element->renderViewHelper(), $element->renderLabel());
 
         } else {
@@ -202,7 +203,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
      *
      * @param  string $key
      * @param  mixed $value
-     * @return Zend_Form_Decorator_Interface
+     * @return \Zend_Form_Decorator_Interface
      */
     public function setOption($key, $value)
     {
@@ -226,7 +227,7 @@ class MUtil_Form_Decorator_Table extends Zend_Form_Decorator_ViewHelper
      * Set decorator options from an array
      *
      * @param  array $options
-     * @return Zend_Form_Decorator_Interface
+     * @return \Zend_Form_Decorator_Interface
      */
     public function setOptions(array $options)
     {
