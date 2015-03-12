@@ -47,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFormSnippetAbstract
+class MUtil_Snippets_Standard_ModelImportSnippet extends \MUtil_Snippets_WizardFormSnippetAbstract
 {
     /**
      * Contains the errors generated so far
@@ -58,7 +58,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     /**
      *
-     * @var Zend_Session_Namespace
+     * @var \Zend_Session_Namespace
      */
     protected $_session;
 
@@ -109,20 +109,20 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     /**
      *
-     * @var MUtil_Model_Importer
+     * @var \MUtil_Model_Importer
      */
     protected $importer;
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $importModel;
 
     /**
      * Required, an array of one or more translators
      *
-     * @var array of MUtil_Model_ModelTranslatorInterface objects
+     * @var array of \MUtil_Model_ModelTranslatorInterface objects
      */
     protected $importTranslators;
 
@@ -139,14 +139,14 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
     /**
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
     /**
      * Model to read import
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $sourceModel;
 
@@ -166,7 +166,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      *
      * Required, can be set by passing a model to $this->model
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $targetModel;
 
@@ -178,8 +178,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     public $tempDirectory;
 
     /**
+     * Use csrf token on form for protection against Cross Site Request Forgery
      *
-     * @var Zend_View
+     * @var boolean
+     */
+    public $useCsrf = false;
+
+    /**
+     *
+     * @var \Zend_View
      */
     public $view;
 
@@ -207,10 +214,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addStep1(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep1(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $this->addItems($bridge, 'trans', 'mode');
     }
@@ -218,14 +225,14 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addStep2(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep2(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $translator = $this->getImportTranslator();
-        if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
-            $element = new MUtil_Form_Element_Html('trans_header');
+        if ($translator instanceof \MUtil_Model_ModelTranslatorInterface) {
+            $element = new \MUtil_Form_Element_Html('trans_header');
             $element->span($this->_('Choosen import definition: '));
             $element->strong($translator->getDescription());
             $element->setDecorators(array('Tooltip', 'ViewHelper'));
@@ -237,9 +244,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
             $element = $bridge->getForm()->getElement('file');
 
-            if ($element instanceof Zend_Form_Element_File) {
+            if ($element instanceof \Zend_Form_Element_File) {
                 // Now add the rename filter, the localfile is known only once after loadFormData() has run
-                $element->addFilter(new Zend_Filter_File_Rename(array(
+                $element->addFilter(new \Zend_Filter_File_Rename(array(
                     'target'    => $this->_session->localfile,
                     'overwrite' => true
                     )));
@@ -248,9 +255,9 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 if ($element->isValid(null) && $element->getFileName()) {
                     // Now the filename is still set to the upload filename.
                     $this->_session->extension = pathinfo($element->getFileName(), PATHINFO_EXTENSION);
-                    // MUtil_Echo::track($this->_session->extension);
+                    // \MUtil_Echo::track($element->getFileName(), $element->getFileSize());
                     if (!$element->receive()) {
-                        throw new MUtil_Model_ModelException(sprintf(
+                        throw new \MUtil_Model_ModelException(sprintf(
                             $this->_("Error retrieving file '%s'."),
                             $element->getFileName()
                             ));
@@ -286,27 +293,27 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addStep3(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep3(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         if ($this->loadSourceModel()) {
             $this->displayHeader($bridge, $this->_('Upload successful!'));
             $this->displayErrors($bridge, $this->_('Check the input visually.'));
 
-            // MUtil_Echo::track($this->sourceModel->load());
+            // \MUtil_Echo::track($this->sourceModel->load());
 
-            $element  = new MUtil_Form_Element_Html('importdisplay');
-            $repeater = MUtil_Lazy::repeat(new LimitIterator($this->sourceModel->loadIterator(), 0, 20));
-            $table    = new MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
+            $element  = new \MUtil_Form_Element_Html('importdisplay');
+            $repeater = \MUtil_Lazy::repeat(new LimitIterator($this->sourceModel->loadIterator(), 0, 20));
+            $table    = new \MUtil_Html_TableElement($repeater, array('class' => $this->formatBoxClass));
 
             foreach ($this->sourceModel->getItemsOrdered() as $name) {
                 $table->addColumn($repeater->$name, $name);
             }
 
             // Extra div for CSS settings
-            $element->setValue(new MUtil_Html_HtmlElement('div', $table, array('class' => $this->formatBoxClass)));
+            $element->setValue(new \MUtil_Html_HtmlElement('div', $table, array('class' => $this->formatBoxClass)));
             $bridge->addElement($element);
         } else {
             $this->displayHeader($bridge, $this->_('Upload error!'));
@@ -319,10 +326,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addStep4(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep4(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $this->nextDisabled = true;
 
@@ -333,12 +340,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $batch->setFormId($form->getId());
             $batch->autoStart = true;
 
-            // MUtil_Registry_Source::$verbose = true;
+            // \MUtil_Registry_Source::$verbose = true;
             if ($batch->run($this->request)) {
                 exit;
             }
 
-            $element = new MUtil_Form_Element_Html($batch->getId());
+            $element = new \MUtil_Form_Element_Html($batch->getId());
 
             if ($batch->isFinished()) {
                 $this->nextDisabled = $batch->getCounter('import_errors');
@@ -368,10 +375,10 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    protected function addStep5(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addStep5(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $this->nextDisabled = true;
 
@@ -386,7 +393,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                 exit;
             }
 
-            $element = new MUtil_Form_Element_Html($batch->getId());
+            $element = new \MUtil_Form_Element_Html($batch->getId());
 
             if ($batch->isFinished()) {
                 $this->nextDisabled = $batch->getCounter('import_errors');
@@ -423,11 +430,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Add the elements from the model to the bridge for the current step
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param int $step The current step
      */
-    protected function addStepElementsFor(MUtil_Model_Bridge_FormBridgeInterface $bridge, MUtil_Model_ModelAbstract $model, $step)
+    protected function addStepElementsFor(\MUtil_Model_Bridge_FormBridgeInterface $bridge, \MUtil_Model_ModelAbstract $model, $step)
     {
         $this->displayHeader(
                 $bridge,
@@ -469,22 +476,22 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     {
         parent::afterRegistry();
 
-        if (! $this->importer instanceof MUtil_Model_Importer) {
-            $this->importer = new MUtil_Model_Importer();
+        if (! $this->importer instanceof \MUtil_Model_Importer) {
+            $this->importer = new \MUtil_Model_Importer();
 
-            $source = new MUtil_Registry_Source(get_object_vars($this));
+            $source = new \MUtil_Registry_Source(get_object_vars($this));
             $source->applySource($this->importer);
             $this->importer->setRegistrySource($source);
         }
-        if (! $this->targetModel instanceof MUtil_Model_ModelAbstract) {
-            if ($this->model instanceof MUtil_Model_ModelAbstract) {
+        if (! $this->targetModel instanceof \MUtil_Model_ModelAbstract) {
+            if ($this->model instanceof \MUtil_Model_ModelAbstract) {
                 $this->targetModel = $this->model;
             }
         }
-        if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
+        if ($this->targetModel instanceof \MUtil_Model_ModelAbstract) {
             $this->importer->setTargetModel($this->targetModel);
         }
-        if ($this->sourceModel instanceof MUtil_Model_ModelAbstract) {
+        if ($this->sourceModel instanceof \MUtil_Model_ModelAbstract) {
             $this->importer->setSourceModel($this->sourceModel);
         }
 
@@ -524,21 +531,21 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         if ($fieldInfo) {
             // Slow
-            //$table1 = MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
+            //$table1 = \MUtil_Html_TableElement::createArray($fieldInfo, $this->_('Import field definitions'), true);
             //$table1->appendAttrib('class', $this->formatBoxClass);
 
             // Fast
-            $table = MUtil_Html_TableElement::table();
+            $table = \MUtil_Html_TableElement::table();
             $table->caption($this->_('Import field definitions'));
             $table->appendAttrib('class', $this->formatBoxClass);
-            $repeater = new MUtil_Lazy_Repeatable($fieldInfo);
+            $repeater = new \MUtil_Lazy_Repeatable($fieldInfo);
             $table->setRepeater($repeater);
             foreach (reset($fieldInfo) as $title => $element)
             {
                 $table->addColumn($repeater->$title, $title);
             }
 
-            $element = new MUtil_Form_Element_Html('transtable');
+            $element = new \MUtil_Form_Element_Html('transtable');
             $element->setValue($table);
 
             $this->_form->addElement($element);
@@ -548,13 +555,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->importModel instanceof MUtil_Model_ModelAbstract) {
-            // $model = new MUtil_Model_TableModel
-            $model = new MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
+        if (! $this->importModel instanceof \MUtil_Model_ModelAbstract) {
+            // $model = new \MUtil_Model_TableModel
+            $model = new \MUtil_Model_SessionModel('import_for_' . $this->request->getControllerName());
 
             $model->set('trans', 'label', $this->_('Import definition'),
                     'default', $this->defaultImportTranslator,
@@ -581,7 +588,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                     'required',     true);
 
             if ($this->tempDirectory) {
-                MUtil_File::ensureDir($this->tempDirectory);
+                \MUtil_File::ensureDir($this->tempDirectory);
                 $model->set('file', 'destination',  $this->tempDirectory);
             }
 
@@ -602,17 +609,17 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Display the errors
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param array Errors to display
      */
-    protected function displayErrors(MUtil_Model_Bridge_FormBridgeInterface $bridge, $errors = null)
+    protected function displayErrors(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $errors = null)
     {
         if (null === $errors) {
             $errors = $this->_errors;
         }
 
         if ($errors) {
-            $element = new MUtil_Form_Element_Html('errors');
+            $element = new \MUtil_Form_Element_Html('errors');
             $element->ul($errors, array('class' => $this->errorClass));
 
             $bridge->addElement($element);
@@ -622,13 +629,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Display a header
      *
-     * @param MUtil_Model_Bridge_FormBridgeInterface $bridge
+     * @param \MUtil_Model_Bridge_FormBridgeInterface $bridge
      * @param mixed $header Header content
      * @param string $tagName
      */
-    protected function displayHeader(MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
+    protected function displayHeader(\MUtil_Model_Bridge_FormBridgeInterface $bridge, $header, $tagName = 'h2')
     {
-        $element = new MUtil_Form_Element_Html('step_header');
+        $element = new \MUtil_Form_Element_Html('step_header');
         $element->$tagName($header);
 
         $bridge->addElement($element);
@@ -637,7 +644,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Try to get the current translator
      *
-     * @return MUtil_Model_ModelTranslatorInterface or false if none is current
+     * @return \MUtil_Model_ModelTranslatorInterface or false if none is current
      */
     protected function getImportTranslator()
     {
@@ -652,18 +659,18 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         }
 
         $translator = $this->importTranslators[$this->formData['trans']];
-        if (! $translator instanceof MUtil_Model_ModelTranslatorInterface) {
+        if (! $translator instanceof \MUtil_Model_ModelTranslatorInterface) {
             $this->_errors[] = sprintf($this->_('%s is not a valid import definition.'), $this->formData['trans']);
             return false;
         }
 
         // Store/set relevant variables
-        if ($this->importer instanceof MUtil_Model_Importer) {
+        if ($this->importer instanceof \MUtil_Model_Importer) {
             $this->importer->setImportTranslator($translator);
         }
-        if ($this->targetModel instanceof MUtil_Model_ModelAbstract) {
+        if ($this->targetModel instanceof \MUtil_Model_ModelAbstract) {
             $translator->setTargetModel($this->targetModel);
-            if ($this->importer instanceof MUtil_Model_Importer) {
+            if ($this->importer instanceof \MUtil_Model_Importer) {
                 $this->importer->setTargetModel($this->targetModel);
             }
         }
@@ -691,7 +698,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         if (! $this->_translatorDescriptions) {
             $results = array();
             foreach ($this->importTranslators as $key => $translator) {
-                if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+                if ($translator instanceof \MUtil_Model_ModelTranslatorInterface) {
                     $results[$key] = $translator->getDescription();
                 }
             }
@@ -721,7 +728,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         } elseif (!is_array($for)) {
             $descriptors = $this->getTranslatorDescriptions();
             if (! isset($descriptors[$for])) {
-                throw new Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
+                throw new \Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
             }
             $for = array($for => $descriptors[$for]);
         }
@@ -733,11 +740,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         foreach ($for as $transKey => $transName) {
             if (! isset($this->importTranslators[$transKey])) {
-                throw new Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
+                throw new \Zend_Exception("Unknown translator $for passed to " . __CLASS__ . '->' . __FUNCTION__ . '()');
             }
             $translator = $this->importTranslators[$transKey];
 
-            if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+            if ($translator instanceof \MUtil_Model_ModelTranslatorInterface) {
 
                 $translator->setTargetModel($this->targetModel);
                 $translations = $translator->getFieldsTranslations();
@@ -754,7 +761,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                         $results[$target][$requiredKey][$transName] = $required;
 
                         if (trim($required)) {
-                            $results[$target][$transName] = new MUtil_Html_HtmlElement('strong', $source);
+                            $results[$target][$transName] = new \MUtil_Html_HtmlElement('strong', $source);
                         } else {
                             $results[$target][$transName] = $source;
                         }
@@ -778,11 +785,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
                 // $field = $this->_targetModel->get($name, 'type', 'maxlength', 'label', 'required');
                 switch ($this->targetModel->get($name, 'type')) {
-                    case MUtil_Model::TYPE_NOVALUE:
+                    case \MUtil_Model::TYPE_NOVALUE:
                         unset($results[$name]);
                         continue 2;
 
-                    case MUtil_Model::TYPE_NUMERIC:
+                    case \MUtil_Model::TYPE_NUMERIC:
                         $maxlength = $this->targetModel->get($name, 'maxlength');
                         if ($maxlength) {
                             $decimals = $this->targetModel->get($name, 'decimals');
@@ -796,15 +803,15 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
                         }
                         break;
 
-                    case MUtil_Model::TYPE_DATE:
+                    case \MUtil_Model::TYPE_DATE:
                         $type = $this->_('Date value using ISO 8601: yyyy-mm-dd');
                         break;
 
-                    case MUtil_Model::TYPE_DATETIME:
+                    case \MUtil_Model::TYPE_DATETIME:
                         $type = $this->_('Datetime value using ISO 8601: yyyy-mm-ddThh:mm::ss[+-hh:mm]');
                         break;
 
-                    case MUtil_Model::TYPE_TIME:
+                    case \MUtil_Model::TYPE_TIME:
                         $type = $this->_('Time value using ISO 8601: hh:mm::ss[+-hh:mm]');
                         break;
 
@@ -874,13 +881,13 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
-        if ($this->request instanceof MUtil_Controller_Request_Cli) {
+        if ($this->request instanceof \MUtil_Controller_Request_Cli) {
 
             $this->processCli();
             return false;
@@ -921,12 +928,12 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
         if (! (isset($this->formData['import_id']) && $this->formData['import_id'])) {
             $this->formData['import_id'] = mt_rand(10000,99999) . time();
         }
-        $this->_session = new Zend_Session_Namespace(__CLASS__ . '-' . $this->formData['import_id']);
+        $this->_session = new \Zend_Session_Namespace(__CLASS__ . '-' . $this->formData['import_id']);
 
         if (isset($this->formData[$this->stepFieldName]) &&
                 $this->formData[$this->stepFieldName] > 1 &&
                 (!(isset($this->_session->localfile) && $this->_session->localfile))) {
-            $this->_session->localfile = MUtil_File::createTemporaryIn(
+            $this->_session->localfile = \MUtil_File::createTemporaryIn(
                     $this->tempDirectory,
                     $this->request->getControllerName() . '_'
                     );
@@ -937,11 +944,11 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
 
         // Set the translator
         $translator = $this->getImportTranslator();
-        if ($translator instanceof MUtil_Model_ModelTranslatorInterface) {
+        if ($translator instanceof \MUtil_Model_ModelTranslatorInterface) {
             $this->importer->setImportTranslator($translator);
         }
 
-        // MUtil_Echo::track($_POST, $_FILES, $this->formData);
+        // \MUtil_Echo::track($_POST, $_FILES, $this->formData);
     }
 
     /**
@@ -963,7 +970,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->_errors[] = $e->getMessage();
         }
 
-        return $this->sourceModel instanceof MUtil_Model_ModelAbstract;
+        return $this->sourceModel instanceof \MUtil_Model_ModelAbstract;
     }
 
     /**
@@ -977,7 +984,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             // Lookup in importTranslators
             $transName = $this->request->getParam('trans', $this->defaultImportTranslator);
             if (! isset($this->importTranslators[$transName])) {
-                throw new MUtil_Model_ModelTranslateException(sprintf(
+                throw new \MUtil_Model_ModelTranslateException(sprintf(
                         $this->_("Unknown translator '%s'. Should be one of: %s"),
                         $transName,
                         implode($this->_(', '), array_keys($this->importTranslators))
@@ -988,7 +995,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
             $this->importer->setSourceFile($this->request->getParam('file'));
             $this->importer->setImportTranslator($translator);
 
-            // MUtil_Registry_Source::$verbose = true;
+            // \MUtil_Registry_Source::$verbose = true;
             $batch = $this->importer->getCheckAndImportBatch();
             $batch->setVariable('addImport', !$this->request->getParam('check', false));
             $batch->runContinuous();
@@ -1039,7 +1046,7 @@ class MUtil_Snippets_Standard_ModelImportSnippet extends MUtil_Snippets_WizardFo
     /**
      * Set what to do when the form is 'finished'.
      *
-     * @return MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
+     * @return \MUtil_Snippets_ModelFormSnippetAbstract (continuation pattern)
      */
     protected function setAfterSaveRoute()
     {
