@@ -44,11 +44,11 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_StraightTranslator
+class Gems_Model_Translator_RespondentTranslator extends \Gems_Model_Translator_StraightTranslator
 {
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -58,6 +58,16 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
      * @var array
      */
     protected $orgTranslations;
+
+    /**
+     * Create an empty form for filtering and validation
+     *
+     * @return \MUtil_Form
+     */
+    protected function _createTargetForm()
+    {
+        return new \Gems_Form();
+    }
 
     /**
      * Called after the check that all required registry values
@@ -90,14 +100,14 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->db instanceof Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
+        return ($this->db instanceof \Zend_Db_Adapter_Abstract) && parent::checkRegistryRequestsAnswers();
     }
 
     /**
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations()
     {
@@ -117,8 +127,8 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
      */
     public function startImport()
     {
-        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            throw new MUtil_Model_ModelException("Trying to start the import without target model.");
+        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            throw new \MUtil_Model_ModelException("Trying to start the import without target model.");
         }
 
         $this->_targetModel->set('grs_gender', 'extraValueKeys', array('V' => 'F'));
@@ -160,10 +170,10 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
 
             if ((!$id) &&
                     isset($row['grs_ssn']) &&
-                    $this->_targetModel instanceof Gems_Model_RespondentModel &&
-                    $this->_targetModel->hashSsn !== Gems_Model_RespondentModel::SSN_HIDE) {
+                    $this->_targetModel instanceof \Gems_Model_RespondentModel &&
+                    $this->_targetModel->hashSsn !== \Gems_Model_RespondentModel::SSN_HIDE) {
 
-                if (Gems_Model_RespondentModel::SSN_HASH === $this->_targetModel->hashSsn) {
+                if (\Gems_Model_RespondentModel::SSN_HASH === $this->_targetModel->hashSsn) {
                     $search = $this->_targetModel->saveSSN($row['grs_ssn']);
                 } else {
                     $search = $row['grs_ssn'];
@@ -176,7 +186,7 @@ class Gems_Model_Translator_RespondentTranslator extends Gems_Model_Translator_S
                 // Check for change in patient ID
                 if ($id &&
                         isset($row['gr2o_id_organization']) &&
-                        $this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
+                        $this->_targetModel instanceof \MUtil_Model_DatabaseModelAbstract) {
 
                     $sql = 'SELECT gr2o_patient_nr
                             FROM gems__respondent2org

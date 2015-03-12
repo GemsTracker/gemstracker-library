@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Serializable
+abstract class MUtil_Model_Iterator_FileIteratorAbstract implements \Iterator, \Serializable
 {
     /**
      * The content file encoding, only set when different from internal encoding.
@@ -70,7 +70,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
 
     /**
      *
-     * @var SplFileObject
+     * @var \SplFileObject
      */
     protected $_file = null;
 
@@ -140,7 +140,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
         }
 
         try {
-            $this->_file = new SplFileObject($this->_filename, 'r');
+            $this->_file = new \SplFileObject($this->_filename, 'r');
             $this->_file->setFlags($this->_fileFlags);
             $this->_skipBom();
 
@@ -179,7 +179,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
 
         // If there is no bom, then remove bom will return a 3 character string.
         // In that case the file position must be reset to the start of the file
-        if (MUtil_Encoding::removeBOM($bom)) {
+        if (\MUtil_Encoding::removeBOM($bom)) {
             $this->_file->rewind();
         }
     }
@@ -204,7 +204,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
             $this->_openFile();
         }
 
-        if (! (($this->_file instanceof SplFileObject) && $this->_file->valid())) {
+        if ((! $this->_file instanceof SplFileObject) || $this->_file->eof()) {
             return false;
         }
 
@@ -268,7 +268,7 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
 
         if ($this->_file) {
             $this->_key = $this->_key + 1;
-            if ($this->_file->valid()) {
+            if (! $this->_file->eof()) {
                 $this->_file->next();
                 $this->_filepos = $this->_file->ftell();
             }
@@ -350,6 +350,6 @@ abstract class MUtil_Model_Iterator_FileIteratorAbstract implements Iterator, Se
             $this->_openFile();
         }
 
-        return $this->_file && $this->_file->valid();
+        return $this->_file && (! $this->_file->eof());
     }
 }
