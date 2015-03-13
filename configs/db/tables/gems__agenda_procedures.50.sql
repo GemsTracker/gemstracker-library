@@ -10,6 +10,7 @@ CREATE TABLE if not exists gems__agenda_procedures (
         gapr_code            varchar(40) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci',
 
         gapr_active          boolean not null default 1,
+        gapr_filter          boolean not null default 0,
 
         gapr_changed         timestamp not null default current_timestamp on update current_timestamp,
         gapr_changed_by      bigint unsigned not null,

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AndModelDependency.php $
+ * @version    $Id: OrModelDependency.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -48,7 +48,6 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 16:56:22
  */
-// class Gems_Agenda_Filter_AndModelDependency extends Gems_Agenda_FilterModelDependencyAbstract
 class OrModelDependency extends FilterModelDependencyAbstract
 {
     /**
@@ -92,7 +91,7 @@ class OrModelDependency extends FilterModelDependencyAbstract
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return string
      */
     public function calcultateName($value, $isNew = false, $name = null, array $context = array())
     {

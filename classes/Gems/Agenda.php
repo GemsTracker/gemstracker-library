@@ -476,7 +476,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             return $filters[$filterId];
         }
         $found = $this->getFilters("SELECT *
-                FROM gems__appointment_filters INNER JOIN gems__track_appointments ON gaf_id = gtap_filter_id
+                FROM gems__appointment_filters LEFT JOIN gems__track_appointments ON gaf_id = gtap_filter_id
                 WHERE gaf_active = 1 AND gaf_id = $filterId LIMIT 1");
 
         if ($found) {
@@ -825,7 +825,9 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $matches) {
             $matches = array();
             $select  = $this->db->select();
-            $select->from('gems__agenda_activities', array('gaa_id_activity', 'gaa_match_to', 'gaa_id_organization'));
+            $select->from('gems__agenda_activities', array(
+                'gaa_id_activity', 'gaa_match_to', 'gaa_id_organization', 'gaa_filter',
+                ));
 
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
@@ -835,7 +837,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     $key = $row['gaa_id_organization'];
                 }
                 foreach (explode('|', $row['gaa_match_to']) as $match) {
-                    $matches[$match][$key] = $row['gaa_id_activity'];
+                    $matches[$match][$key] = $row['gaa_filter'] ? false : $row['gaa_id_activity'];
                 }
             }
             $this->cache->save($matches, $cacheId, array('activities'));
@@ -862,6 +864,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             'gaa_id_organization' => $organizationId,
             'gaa_match_to'        => $name,
             'gaa_active'          => 1,
+            'gaa_filter'          => 0,
         );
 
         $result = $model->save($values);
@@ -914,7 +917,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
                 foreach (explode('|', $row['gas_match_to']) as $match) {
-                    $matches[$match][$row['gas_id_organization']] = $row['gas_id_staff'];
+                    $matches[$match][$row['gas_id_organization']] = $row['gas_filter'] ? false : $row['gas_id_staff'];
                 }
             }
             $this->cache->save($matches, $cacheId, array('staff'));
@@ -943,6 +946,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             'gas_id_organization' => $organizationId,
             'gas_match_to'        => $name,
             'gas_active'          => 1,
+            'gas_filter'          => 0,
         );
 
         $result = $model->save($values);
@@ -994,6 +998,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                         'glo_id_location'   => $first['glo_id_location'],
                         'glo_organizations' => ':' . implode(':', array_keys($matches[$name])) . ':' .
                             $organizationId . ':',
+                        'glo_filter'        => $first['glo_filter'],
                     );
                 }
             } else {
@@ -1007,6 +1012,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                 'glo_organizations' => ':' . $organizationId . ':',
                 'glo_match_to'      => $name,
                 'glo_active'        => 1,
+                'glo_filter'        => 0,
             );
         }
 
@@ -1040,7 +1046,9 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
         if (! $matches) {
             $matches = array();
             $select  = $this->db->select();
-            $select->from('gems__agenda_procedures', array('gapr_id_procedure', 'gapr_match_to', 'gapr_id_organization'));
+            $select->from('gems__agenda_procedures', array(
+                'gapr_id_procedure', 'gapr_match_to', 'gapr_id_organization', 'gapr_filter',
+                ));
 
             $result = $this->db->fetchAll($select);
             foreach ($result as $row) {
@@ -1050,7 +1058,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
                     $key = $row['gapr_id_organization'];
                 }
                 foreach (explode('|', $row['gapr_match_to']) as $match) {
-                    $matches[$match][$key] = $row['gapr_id_procedure'];
+                    $matches[$match][$key] = $row['gapr_filter'] ? false : $row['gapr_id_procedure'];
                 }
             }
             $this->cache->save($matches, $cacheId, array('procedures'));
@@ -1077,6 +1085,7 @@ class Gems_Agenda extends \Gems_Loader_TargetLoaderAbstract
             'gapr_id_organization' => $organizationId,
             'gapr_match_to'        => $name,
             'gapr_active'          => 1,
+            'gapr_filter'          => 0,
         );
 
         $result = $model->save($values);

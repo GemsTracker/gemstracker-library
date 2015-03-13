@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: SubjectModelDependency.php $
+ * @version    $Id: LocationModelDependency.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -48,7 +48,7 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 18:52:40
  */
-class SubjectModelDependency extends FilterModelDependencyAbstract
+class LocationModelDependency extends FilterModelDependencyAbstract
 {
     /**
      * A ModelAbstract->setOnSave() function that returns the input
@@ -65,7 +65,7 @@ class SubjectModelDependency extends FilterModelDependencyAbstract
     public function calcultateName($value, $isNew = false, $name = null, array $context = array())
     {
         if (isset($context['gaf_filter_text1'])) {
-            return sprintf($this->_('Subject contains %s'), $context['gaf_filter_text1']);
+            return sprintf($this->_('Location contains %s'), $context['gaf_filter_text1']);
         } else {
             return $this->_('empty filter');
         }
@@ -78,7 +78,7 @@ class SubjectModelDependency extends FilterModelDependencyAbstract
      */
     public function getFilterClass()
     {
-        return 'SubjectAppointmentFilter';
+        return 'LocationAppointmentFilter';
     }
 
     /**
@@ -88,7 +88,7 @@ class SubjectModelDependency extends FilterModelDependencyAbstract
      */
     public function getFilterName()
     {
-        return $this->_('Subject match');
+        return $this->_('Location match');
     }
 
     /**
@@ -106,7 +106,7 @@ class SubjectModelDependency extends FilterModelDependencyAbstract
 
         return array(
             'gaf_filter_text1' => array(
-                'label'       => $this->_('Appointment subject'),
+                'label'       => $this->_('Appointment location'),
                 'description' => $description,
                 'required'    => true,
                 ),

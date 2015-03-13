@@ -48,7 +48,6 @@ use Gems\Agenda\FilterModelDependencyAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 18:05:13
  */
-// class Gems_Agenda_Filter_SqlLikeModelDependency extends Gems_Agenda_FilterModelDependencyAbstract
 class SqlLikeModelDependency extends FilterModelDependencyAbstract
 {
     /**
@@ -61,7 +60,7 @@ class SqlLikeModelDependency extends FilterModelDependencyAbstract
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return string
      */
     public function calcultateName($value, $isNew = false, $name = null, array $context = array())
     {
@@ -112,9 +111,9 @@ class SqlLikeModelDependency extends FilterModelDependencyAbstract
      */
     public function getTextSettings()
     {
-        $description = sprintf($this->_(
+        $description = $this->_(
                 "Use the %%-sign to search for zero or more random characters and an _ for a single random character."
-                ));
+                );
 
         return array(
             'gaf_filter_text1' => array(

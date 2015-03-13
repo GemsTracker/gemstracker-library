@@ -44,19 +44,31 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTableSnippetGeneric
+class Gems_Snippets_Agenda_CalendarTableSnippet extends \Gems_Snippets_ModelTableSnippetGeneric
 {
+    /**
+     *
+     * @var array Optional alternative search filter for appointments
+     */
+    protected $calSearchFilter;
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
     /**
      * Adds columns from the model to the bridge that creates the browse table.
      *
      * Overrule this function to add different columns to the browse table, without
      * having to recode the core table building code.
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @return void
      */
-    protected function addBrowseTableColumns(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model)
+    protected function addBrowseTableColumns(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model)
     {
         $bridge->gr2o_id_organization;
 
@@ -71,7 +83,7 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
             $respButton = null;
         }
 
-        $br    = MUtil_Html::create('br');
+        $br    = \MUtil_Html::create('br');
 
         $table = $bridge->getTable();
         $table->appendAttrib('class', 'calendar');
@@ -98,32 +110,47 @@ class Gems_Snippets_Agenda_CalendarTableSnippet extends Gems_Snippets_ModelTable
         // $bridge->addColumn(array($bridge->gaa_name, $br, $bridge->gapr_name));
         $bridge->addColumn($respButton)->class = 'middleAlign rightAlign';
 
-        unset($table[MUtil_Html_TableElement::THEAD]);
+        unset($table[\MUtil_Html_TableElement::THEAD]);
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        if ($this->calSearchFilter) {
+            $this->searchFilter = $this->calSearchFilter;
+        }
     }
 
     /**
      * Creates the model
      *
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel()
     {
-        if (! $this->model instanceof Gems_Model_AppointmentModel) {
+        if (! $this->model instanceof \Gems_Model_AppointmentModel) {
             $this->model = $this->loader->getModels()->createAppointmentModel();
             $this->model->applyBrowseSettings();
         }
-        $this->model->addColumn(new Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
+        $this->model->addColumn(new \Zend_Db_Expr("CONVERT(gap_admission_time, DATE)"), 'date_only');
         $this->model->set('date_only', 'dateFormat',
-                    Zend_Date::WEEKDAY . ' ' . Zend_Date::DAY_SHORT . ' ' .
-                    Zend_Date::MONTH_NAME . ' ' . Zend_Date::YEAR);
+                    \Zend_Date::WEEKDAY . ' ' . \Zend_Date::DAY_SHORT . ' ' .
+                    \Zend_Date::MONTH_NAME . ' ' . \Zend_Date::YEAR);
         $this->model->set('gap_admission_time', 'label', $this->_('Time'),
                 'dateFormat', 'HH:mm');
 
         $this->model->set('gr2o_patient_nr', 'label', $this->_('Respondent nr'));
 
-        Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
+        \Gems_Model_RespondentModel::addNameToModel($this->model, $this->_('Name'));
 
-        // MUtil_Model::$verbose = true;
+        // \MUtil_Model::$verbose = true;
         return $this->model;
     }
 }

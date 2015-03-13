@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_AgendaActivityAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -64,10 +64,51 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
     public $cacheTags = array('activity', 'activities');
 
     /**
+     * The snippets used for the show action
      *
-     * @var Gems_Util
+     * @var mixed String or array of snippets name
+     */
+    protected $showParameters = array(
+        'calSearchFilter' => 'getShowFilter',
+        'caption'         => 'getShowCaption',
+        'onEmpty'         => 'getShowOnEmpty',
+        );
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Agenda_CalendarTableSnippet',
+        );
+
+    /**
+     *
+     * @var \Gems_Util
      */
     public $util;
+
+    /**
+     * Cleanup appointments
+     */
+    public function cleanupAction()
+    {
+        $params = $this->_processParameters($this->showParameters);
+        $params['contentTitle'] = $this->_('Cleanup existing appointments?');
+        $params['filterOn']     = 'gap_id_activity';
+        $params['filterWhen']   = 'gaa_filter';
+
+        $snippets = array(
+            'Generic_ContentTitleSnippet',
+            'Agenda\\AppointmentCleanupSnippet',
+            'Agenda_CalendarTableSnippet',
+            );
+
+        $this->addSnippets($snippets, $params);
+    }
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -78,14 +119,14 @@ class Gems_Default_AgendaActivityAction extends Gems_Controller_ModelSnippetActi
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
         $translated = $this->util->getTranslated();
-        $model      = new MUtil_Model_TableModel('gems__agenda_activities');
+        $model      = new \MUtil_Model_TableModel('gems__agenda_activities');
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'gaa');
 
         $model->setDeleteValues('gaa_active', 0);
 
@@ -116,6 +157,11 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $translated->getYesNo()
                 );
+        $model->setIfExists('gaa_filter',      'label', $this->_('Filter'),
+                'description', $this->_('When true these activities are not imported.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $translated->getYesNo()
+                );
 
         $model->addColumn("CASE WHEN gaa_active = 1 THEN '' ELSE 'deleted' END", 'row_class');
 
@@ -130,6 +176,38 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
     public function getIndexTitle()
     {
         return $this->_('Agenda activity');
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowCaption()
+    {
+        return $this->_('Example appointments');
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowOnEmpty()
+    {
+        return $this->_('No example appointments found');
+
+    }
+    /**
+     * Get an agenda filter for the current shown item
+     *
+     * @return array
+     */
+    public function getShowFilter()
+    {
+        return array(
+            \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
+            'gap_id_activity' => $this->_getIdParam(),
+            'limit' => 10,
+            );
     }
 
     /**

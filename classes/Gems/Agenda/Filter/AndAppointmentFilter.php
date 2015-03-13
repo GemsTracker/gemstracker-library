@@ -49,7 +49,6 @@ use Gems\Agenda\AppointmentSubFilterAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 16:56:07
  */
-// class Gems_Agenda_Filter_AndAppointmentFilter extends Gems_Agenda_AppointmentFilterAbstract
 class AndAppointmentFilter extends AppointmentSubFilterAbstract
 {
     /**

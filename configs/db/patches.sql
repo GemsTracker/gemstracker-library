@@ -957,5 +957,29 @@ ALTER IGNORE TABLE gems__tracks DROP gtr_track_model;
 
 -- PATCH: New rights for insert action
 UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.track.insert')
-    WHERE grl_privileges LIKE '%,pr.survey.create%';
+    WHERE grl_privileges LIKE '%pr.survey.create,%' AND grl_privileges NOT LIKE '%,pr.track.insert%';
 
+-- PATCH: Agenda items can be set to not importable
+ALTER TABLE gems__agenda_activities ADD
+        gaa_filter boolean not null default 0 AFTER gaa_active;
+
+ALTER TABLE gems__agenda_procedures ADD
+        gapr_filter boolean not null default 0 AFTER gapr_active;
+
+ALTER TABLE gems__agenda_staff ADD
+        gas_filter boolean not null default 0 AFTER gas_active;
+
+ALTER TABLE gems__locations ADD
+        glo_filter boolean not null default 0 AFTER glo_active;
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.agenda-activity.cleanup')
+    WHERE grl_privileges LIKE '%pr.agenda-activity.edit,%' AND grl_privileges NOT LIKE '%,pr.agenda-activity.cleanup%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.agenda-procedure.cleanup')
+    WHERE grl_privileges LIKE '%pr.agenda-procedure.edit,%' AND grl_privileges NOT LIKE '%,pr.agenda-procedure.cleanup%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.locations.cleanup')
+    WHERE grl_privileges LIKE '%pr.locations.edit,%' AND grl_privileges NOT LIKE '%,pr.locations.cleanup%';
+
+UPDATE gems__roles SET grl_privileges = CONCAT(grl_privileges, ',pr.agenda-staff.cleanup')
+    WHERE grl_privileges LIKE '%pr.agenda-staff.edit,%' AND grl_privileges NOT LIKE '%,pr.agenda-staff.cleanup%';

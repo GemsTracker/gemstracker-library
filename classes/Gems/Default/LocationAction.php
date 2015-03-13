@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -65,7 +65,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     public $util;
 
@@ -79,12 +79,13 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
     public function getBrowseColumns()
     {
         // Newline placeholder
-        $br = MUtil_Html::create('br');
+        $br = \MUtil_Html::create('br');
+        $sp = \MUtil_Html::raw(' ');
 
         $columns[10] = array('glo_name', $br, 'glo_organizations');
         $columns[20] = array('glo_url', $br, 'glo_url_route');
-        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
-        $columns[40] = array(MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_match_to');
+        $columns[30] = array('glo_address_1', $br, 'glo_zipcode', \MUtil_Html::raw('&nbsp;&nbsp;'), 'glo_city');
+        $columns[40] = array(\MUtil_Html::raw('&#9743; '), 'glo_phone_1', $br, 'glo_filter', $sp, 'glo_match_to');
 
         return $columns;
     }
@@ -98,13 +99,14 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
-        $model = new MUtil_Model_TableModel('gems__locations');
+        $model = new \MUtil_Model_TableModel('gems__locations');
+        $yesNo = $this->util->getTranslated()->getYesNo();
 
-        Gems_Model::setChangeFieldsByPrefix($model, 'glo');
+        \Gems_Model::setChangeFieldsByPrefix($model, 'glo');
 
         $model->setDeleteValues('glo_active', 0);
 
@@ -117,7 +119,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
                 'elementClass', 'MultiCheckbox',
                 'multiOptions', $this->util->getDbLookup()->getOrganizations()
                 );
-        $tp = new MUtil_Model_Type_ConcatenatedRow(':', ', ');
+        $tp = new \MUtil_Model_Type_ConcatenatedRow(':', ', ');
         $tp->apply($model, 'glo_organizations');
 
         $model->setIfExists('glo_match_to',        'label', $this->_('Import matches'),
@@ -142,7 +144,7 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
         $model->setIfExists('glo_zipcode',     'label', $this->_('Zipcode'),
                 'size', 7,
                 'description', $this->_('E.g.: 0000 AA'),
-                'filter', new Gems_Filter_DutchZipcode()
+                'filter', new \Gems_Filter_DutchZipcode()
                 );
 
         $model->setIfExists('glo_city',        'label', $this->_('City'));
@@ -158,7 +160,12 @@ class Gems_Default_LocationAction extends Gems_Controller_ModelSnippetActionAbst
         $model->setIfExists('glo_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),
                 'elementClass', 'Checkbox',
-                'multiOptions', $this->util->getTranslated()->getYesNo()
+                'multiOptions', $yesNo
+                );
+        $model->setIfExists('glo_filter',      'label', $this->_('Filter'),
+                'description', $this->_('When true appointments with these locations are not imported.'),
+                'elementClass', 'Checkbox',
+                'multiOptions', $yesNo
                 );
 
         $model->addColumn("CASE WHEN glo_active = 1 THEN '' ELSE 'deleted' END", 'row_class');

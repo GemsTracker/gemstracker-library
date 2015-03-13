@@ -46,7 +46,6 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 13:07:11
  */
-// class Gems_Agenda_AppointmentFilterModel extends Gems_Model_JoinModel
 class AppointmentFilterModel extends \Gems_Model_JoinModel
 {
     /**
@@ -68,6 +67,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
      */
     protected $filterDependencies = array(
         'AndModelDependency',
+        'LocationModelDependency',
         'OrModelDependency',
         'SqlLikeModelDependency',
         'SubjectModelDependency',
@@ -82,7 +82,7 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -117,6 +117,14 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                 );
         $this->set('gaf_active', 'label', $this->_('Active'),
                 'multiOptions', $yesNo
+                );
+
+        $this->addColumn(new \Zend_Db_Expr(
+                "(SELECT COUNT(*) FROM gems__track_appointments WHERE gaf_id = gtap_filter_id)"
+                ), 'use');
+        $this->set('use', 'label', $this->_('Usage'),
+                'description', $this->_('The number of uses of this filter in track fields.'),
+                'elementClass', 'Exhibitor'
                 );
 
         return $this;
@@ -154,6 +162,14 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
         $this->set('gaf_active', 'label', $this->_('Active'),
                 'multiOptions', $yesNo
+                );
+
+        $this->addColumn(new \Zend_Db_Expr(
+                "(SELECT COUNT(*) FROM gems__track_appointments WHERE gaf_id = gtap_filter_id)"
+                ), 'use');
+        $this->set('use', 'label', $this->_('Usage'),
+                'description', $this->_('The number of uses of this filter in track fields.'),
+                'elementClass', 'Exhibitor'
                 );
 
         return $this;
@@ -200,7 +216,6 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
             $this->filterOptions = array();
             foreach ($this->filterDependencies as $dependencyClass) {
                 $dependency = $this->agenda->newFilterObject($dependencyClass);
-                // if ($dependency instanceof Gems_Agenda_FilterModelDependencyAbstract) {
                 if ($dependency instanceof FilterModelDependencyAbstract) {
 
                     $this->filterOptions[$dependency->getFilterClass()] = $dependency->getFilterName();

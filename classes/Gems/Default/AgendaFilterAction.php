@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 23:30:18
  */
-class Gems_Default_AgendaFilterAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_AgendaFilterAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The snippets used for the autofilter action.
@@ -64,18 +64,27 @@ class Gems_Default_AgendaFilterAction extends Gems_Controller_ModelSnippetAction
     public $cacheTags = array('appointment_filters');
 
     /**
-     * The parameters used for the show action
+     * The snippets used for the show action
      *
-     * When the value is a function name of that object, then that functions is executed
-     * with the array key as single parameter and the return value is set as the used value
-     * - unless the key is an integer in which case the code is executed but the return value
-     * is not stored.
-     *
-     * @var array Mixed key => value array for snippet initialization
+     * @var mixed String or array of snippets name
      */
     protected $showParameters = array(
-        'bridgeMode' => MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW,
-    );
+        'bridgeMode'      => \MUtil_Model_Bridge_BridgeAbstract::MODE_SINGLE_ROW,
+        'calSearchFilter' => 'getShowFilter',
+        'caption'         => 'getShowCaption',
+        'onEmpty'         => 'getShowOnEmpty',
+        );
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Agenda_CalendarTableSnippet',
+        );
 
     /**
      * Creates a model for getModel(). Called only for each new $action.
@@ -86,7 +95,7 @@ class Gems_Default_AgendaFilterAction extends Gems_Controller_ModelSnippetAction
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     protected function createModel($detailed, $action)
     {
@@ -126,4 +135,41 @@ class Gems_Default_AgendaFilterAction extends Gems_Controller_ModelSnippetAction
         return $this->plural('agenda filter', 'agenda filters', $count);
     }
 
+    /**
+     *
+     * @return type
+     */
+    public function getShowCaption()
+    {
+        return $this->_('Example appointments');
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowOnEmpty()
+    {
+        return $this->_('No example appointments found');
+
+    }
+    /**
+     * Get an agenda filter for the current shown item
+     *
+     * @return array
+     */
+    public function getShowFilter()
+    {
+        $filter = $this->loader->getAgenda()->getFilter($this->_getIdParam());
+
+        if ($filter && $filter->getSqlWhere()) {
+            return array(
+                \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
+                $filter->getSqlWhere(),
+                'limit' => 10,
+                );
+        } else {
+            return array('1=0');
+        }
+    }
 }

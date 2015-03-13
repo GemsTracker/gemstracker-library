@@ -50,7 +50,7 @@ abstract class Gems_Menu_MenuAbstract
 {
     /**
      *
-     * @var GemsEscort
+     * @var \GemsEscort
      */
     public $escort;
 
@@ -216,13 +216,39 @@ abstract class Gems_Menu_MenuAbstract
     {
         $setup = $this->addContainer($label);
 
-        $setup->addBrowsePage($this->_('Activities'),      'pr.agenda-activity',  'agenda-activity');
-        $setup->addBrowsePage($this->_('Procedures'),      'pr.agenda-procedure', 'agenda-procedure');
-        $setup->addBrowsePage($this->_('Locations'),       'pr.locations',        'location');
-        $setup->addBrowsePage($this->_('Healtcare staff'), 'pr.agenda-staff',     'agenda-staff');
-        $setup->addBrowsePage($this->_('Agenda filters'),  'pr.agenda-filters',   'agenda-filter');
+        $setup->addAgendaSetupPage($this->_('Activities'),      'pr.agenda-activity',  'agenda-activity');
+        $setup->addAgendaSetupPage($this->_('Procedures'),      'pr.agenda-procedure', 'agenda-procedure');
+        $setup->addAgendaSetupPage($this->_('Locations'),       'pr.locations',        'location');
+        $setup->addAgendaSetupPage($this->_('Healtcare staff'), 'pr.agenda-staff',     'agenda-staff');
+        $setup->addBrowsePage(     $this->_('Agenda filters'),  'pr.agenda-filters',   'agenda-filter');
 
         return $setup;
+    }
+
+    /**
+     * Add a browse / ceate / edit / show / / sleanup etc.. menu item
+     *
+     * @param string $label
+     * @param string $privilege
+     * @param string $controller
+     * @param array $other
+     * @return \Gems_Menu_SubMenuItem
+     */
+    public function addAgendaSetupPage($label, $privilege, $controller, array $other = array())
+    {
+        $page = $this->addPage($label, $privilege, $controller, 'index', $other);
+        $page->addAutofilterAction();
+        $page->addCreateAction();
+        $page->addExcelAction();
+        $page->addImportAction();
+        $show = $page->addShowAction();
+        $show->addEditAction();
+        $show->addDeleteAction();
+
+        $show->addAction($this->_('Clean up'), $privilege . '.cleanup', 'cleanup')
+                ->setModelParameters(1);
+
+        return $page;
     }
 
     /**

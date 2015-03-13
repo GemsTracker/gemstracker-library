@@ -44,23 +44,23 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_StraightTranslator
+class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator_StraightTranslator
 {
     /**
      *
-     * @var Gems_Agenda
+     * @var \Gems_Agenda
      */
     protected $_agenda;
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @var Gems_loader
+     * @var \Gems_loader
      */
     protected $loader;
 
@@ -104,8 +104,8 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->db instanceof Zend_Db_Adapter_Abstract) &&
-            ($this->loader instanceof Gems_Loader) &&
+        return ($this->db instanceof \Zend_Db_Adapter_Abstract) &&
+            ($this->loader instanceof \Gems_Loader) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -113,7 +113,7 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations()
     {
@@ -177,7 +177,7 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
                         WHERE gr2o_patient_nr = ? AND gr2o_id_organization = ?';
 
                 $id = $this->db->fetchOne($sql, array($row['gr2o_patient_nr'], $row['gap_id_organization']));
-                // MUtil_Echo::track($id, $row['gr2o_patient_nr'], $row['gap_id_organization']);
+                // \MUtil_Echo::track($id, $row['gr2o_patient_nr'], $row['gap_id_organization']);
 
                 if ($id) {
                     $row['gap_id_user'] = $id;
@@ -189,29 +189,42 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
             }
         }
 
+        if (($row['gap_admission_time'] instanceof \MUtil_Date) && ($row['gap_discharge_time'] instanceof \MUtil_Date)) {
+            if ($row['gap_discharge_time']->diffDays($row['gap_admission_time']) > 366) {
+                if ($row['gap_discharge_time']->diffDays(new \MUtil_Date()) > 366) {
+                    $row['gap_discharge_time'] = null;
+                }
+            }
+        }
+
+        $skip = false;
         if (isset($row['gas_name_attended_by'])) {
             $row['gap_id_attended_by'] = $this->_agenda->matchHealthcareStaff(
                     $row['gas_name_attended_by'],
                     $row['gap_id_organization']
                     );
+            $skip = $skip || (false === $row['gap_id_attended_by']);
         }
         if (isset($row['gas_name_referred_by'])) {
             $row['gap_id_referred_by'] = $this->_agenda->matchHealthcareStaff(
                     $row['gas_name_referred_by'],
                     $row['gap_id_organization']
                     );
+            $skip = $skip || (false === $row['gap_id_referred_by']);
         }
         if (isset($row['gaa_name'])) {
             $row['gap_id_activity'] = $this->_agenda->matchActivity(
                     $row['gaa_name'],
                     $row['gap_id_organization']
                     );
+            $skip = $skip || (false === $row['gap_id_activity']);
         }
         if (isset($row['gapr_name'])) {
             $row['gap_id_procedure'] = $this->_agenda->matchProcedure(
                     $row['gapr_name'],
                     $row['gap_id_organization']
                     );
+            $skip = $skip || (false === $row['gap_id_procedure']);
         }
         if (isset($row['glo_name'])) {
             $location = $this->_agenda->matchLocation(
@@ -219,8 +232,12 @@ class Gems_Model_Translator_AppointmentTranslator extends Gems_Model_Translator_
                     $row['gap_id_organization']
                     );
             $row['gap_id_location'] = $location['glo_id_location'];
+            $skip = $skip || $location['glo_filter'];
         }
-        // MUtil_Echo::track($row);
+        if ($skip) {
+            return null;
+        }
+        // \MUtil_Echo::track($row);
 
         return $row;
     }

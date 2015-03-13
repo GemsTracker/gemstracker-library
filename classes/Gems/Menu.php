@@ -474,7 +474,7 @@ class Gems_Menu extends \Gems_Menu_MenuAbstract implements \MUtil_Html_HtmlInter
         $page->addDeleteAction('pr.respondent.delete')
                 ->setNamedParameters($params)
                 ->setHiddenOrgId($orgId);
-        
+
         /* Add respondent relations */
         $relParams = $params + array('rid' => 'grr_id');
         $relationsPage = $page->addPage($this->_('Relations'), 'pr.respondent.relation', 'respondent-relation', 'index')

@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: AndAppointmentFilter.php $
+ * @version    $Id: OrAppointmentFilter.php $
  */
 
 namespace Gems\Agenda\Filter;
@@ -49,7 +49,6 @@ use Gems\Agenda\AppointmentSubFilterAbstract;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 16:56:07
  */
-// class Gems_Agenda_Filter_OrAppointmentFilter extends Gems_Agenda_AppointmentFilterAbstract
 class OrAppointmentFilter extends AppointmentSubFilterAbstract
 {
     /**
