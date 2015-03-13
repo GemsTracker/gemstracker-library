@@ -82,6 +82,11 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
                 $currentValues[$targetField] = call_user_func($function, $value, $targetField);
             }
         }
+        if (isset($this->_summarizeOn[$keyField]['string'])) {
+            foreach ($this->_summarizeOn[$keyField]['string'] as $targetField => $fixed) {
+                $currentValues[$targetField] = $fixed;
+            }
+        }
     }
 
     /**
@@ -125,7 +130,7 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
             } else {
                 $fixed['string'][$fixedName] = $value;
             }
-            // Make sure the fields are know to the model
+            // Make sure the fields are known to the model
             $this->_fields[$fixedName] = array();
         }
 
@@ -157,14 +162,8 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
                 array_fill_keys(array_keys(reset($data)), null);
         $sumValues     = array_fill_keys(array_keys($this->_summarizeOn), $sumReset);
 
-        foreach ($this->_summarizeOn as $keyField => $settings) {
-            if (isset($settings['string'])) {
-                $sumValues[$keyField] = $settings['string'] + $sumValues[$keyField];
-            }
-        }
-
         foreach ($data as $row) {
-            // Add summarize rows to output
+            // Add summarize rows to output when the dependent value has changed
             foreach ($sumValues as $keyField => $currentValues) {
                 if (isset($sumValues[$keyField], $row[$keyField]) &&
                         array_key_exists($keyField, $keyValues) &&
@@ -175,18 +174,16 @@ class SumTotalTransformer extends \MUtil_Model_ModelTransformerAbstract
                     $output[] = $currentValues;
                 }
             }
+            // Output the current row itself
             $output[] = $row;
 
+            // Calculate the new values for the summarised rows
             foreach ($sumValues as $keyField => $currentValues) {
                 if (array_key_exists($keyField, $row)) {
                     // Create summarize rows
                     if ((!array_key_exists($keyField, $keyValues)) || ($row[$keyField] != $keyValues[$keyField])) {
                         $keyValues[$keyField] = $row[$keyField];
                         $currentValues        = $sumReset;
-
-                        if (isset($this->_summarizeOn[$keyField]['string'])) {
-                            $currentValues = $this->_summarizeOn[$keyField]['string'] + $currentValues;
-                        }
                     }
                 }
                 // Calculate summarize values
