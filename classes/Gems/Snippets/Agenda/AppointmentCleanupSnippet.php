@@ -240,12 +240,12 @@ class AppointmentCleanupSnippet extends \Gems_Snippets_ModelItemTableSnippetGene
                         );
 
             } else {
-                $this->addMessage($this->_('Cleanup not needed!'));
-                $bridge->tfrow($this->_('No cleanup needed, no appointments exist.'), $fparams);
+                $this->addMessage($this->_('Clean up not needed!'));
+                $bridge->tfrow($this->_('No clean up needed, no appointments exist.'), $fparams);
             }
         } else {
-            $this->addMessage($this->_('Cleanup filter disabled!'));
-            $bridge->tfrow($this->_('No cleanup possible.'), array('class' => 'centerAlign'));
+            $this->addMessage($this->_('Clean up filter disabled!'));
+            $bridge->tfrow($this->_('No clean up possible.'), array('class' => 'centerAlign'));
         }
 
         if ($this->displayMenu) {

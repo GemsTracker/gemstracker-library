@@ -97,7 +97,7 @@ class Gems_Default_AgendaActivityAction extends \Gems_Controller_ModelSnippetAct
     public function cleanupAction()
     {
         $params = $this->_processParameters($this->showParameters);
-        $params['contentTitle'] = $this->_('Cleanup existing appointments?');
+        $params['contentTitle'] = $this->_('Clean up existing appointments?');
         $params['filterOn']     = 'gap_id_activity';
         $params['filterWhen']   = 'gaa_filter';
 
@@ -158,7 +158,7 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
                 'multiOptions', $translated->getYesNo()
                 );
         $model->setIfExists('gaa_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When true these activities are not imported.'),
+                'description', $this->_('When checked appointments with these activities are not imported.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $translated->getYesNo()
                 );

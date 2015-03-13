@@ -97,7 +97,7 @@ class Gems_Default_AgendaProcedureAction extends \Gems_Controller_ModelSnippetAc
     public function cleanupAction()
     {
         $params = $this->_processParameters($this->showParameters);
-        $params['contentTitle'] = $this->_('Cleanup existing appointments?');
+        $params['contentTitle'] = $this->_('Clean up existing appointments?');
         $params['filterOn']     = 'gap_id_procedure';
         $params['filterWhen']   = 'gap_filter';
 
@@ -158,7 +158,7 @@ e.g. an excercise, an explanantion, a massage, mindfullness, a (specific) operat
                 'multiOptions', $translated->getYesNo()
                 );
         $model->setIfExists('gapr_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When true these procedures are not imported.'),
+                'description', $this->_('When checked appointments with these procedures are not imported.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $translated->getYesNo()
                 );

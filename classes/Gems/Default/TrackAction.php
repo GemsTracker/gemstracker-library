@@ -546,7 +546,7 @@ class Gems_Default_TrackAction extends \Gems_Default_TrackActionAbstract
      */
     public function insertAction()
     {
-        $this->addMessage($this->_('Coming soon'));
+        $this->addMessage('Coming soon');
     }
 
     /**

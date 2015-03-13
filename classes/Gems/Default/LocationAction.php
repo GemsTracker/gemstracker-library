@@ -64,10 +64,51 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
     public $cacheTags = array('location', 'locations');
 
     /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showParameters = array(
+        'calSearchFilter' => 'getShowFilter',
+        'caption'         => 'getShowCaption',
+        'onEmpty'         => 'getShowOnEmpty',
+        );
+
+    /**
+     * The snippets used for the show action
+     *
+     * @var mixed String or array of snippets name
+     */
+    protected $showSnippets = array(
+        'Generic_ContentTitleSnippet',
+        'ModelItemTableSnippetGeneric',
+        'Agenda_CalendarTableSnippet',
+        );
+
+    /**
      *
      * @var \Gems_Util
      */
     public $util;
+
+    /**
+     * Cleanup appointments
+     */
+    public function cleanupAction()
+    {
+        $params = $this->_processParameters($this->showParameters);
+        $params['contentTitle'] = $this->_('Clean up existing appointments?');
+        $params['filterOn']     = 'gap_id_location';
+        $params['filterWhen']   = 'glo_filter';
+
+        $snippets = array(
+            'Generic_ContentTitleSnippet',
+            'Agenda\\AppointmentCleanupSnippet',
+            'Agenda_CalendarTableSnippet',
+            );
+
+        $this->addSnippets($snippets, $params);
+    }
 
     /**
      * Set column usage to use for the browser.
@@ -163,7 +204,7 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
                 'multiOptions', $yesNo
                 );
         $model->setIfExists('glo_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When true appointments with these locations are not imported.'),
+                'description', $this->_('When checked appointments with these locations are not imported.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo
                 );
@@ -181,6 +222,38 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
     public function getIndexTitle()
     {
         return $this->_('Locations');
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowCaption()
+    {
+        return $this->_('Example appointments');
+    }
+
+    /**
+     *
+     * @return type
+     */
+    public function getShowOnEmpty()
+    {
+        return $this->_('No example appointments found');
+
+    }
+    /**
+     * Get an agenda filter for the current shown item
+     *
+     * @return array
+     */
+    public function getShowFilter()
+    {
+        return array(
+            \MUtil_Model::SORT_DESC_PARAM => 'gap_admission_time',
+            'gap_id_location' => $this->_getIdParam(),
+            'limit' => 10,
+            );
     }
 
     /**

@@ -377,7 +377,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 );
 
         $model->set('gsu_insertable',         'label', $this->_('Insertable'),
-                'description', $this->_('Can this survey be manually inserted into a track.'),
+                'description', $this->_('Can this survey be manually inserted into a track?'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $yesNo,
                 'onclick', 'this.form.submit()'
@@ -525,7 +525,7 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
         $output[10] = array('gsu_survey_name', $br, 'gsu_survey_description');
         $output[20] = array('gsu_surveyor_active', \MUtil_Html::raw($this->_(' [')), 'gso_source_name',
             \MUtil_Html::raw($this->_(']')), $br, 'gsu_status_show');
-        $output[30] = array('gsu_active', \MUtil_Html::raw($this->_(' ')), 'track_count', $br, 'gsu_id_primary_group');
+        $output[30] = array('gsu_active', \MUtil_Html::raw(' '), 'track_count', $br, 'gsu_id_primary_group');
         $output[40] = array('gsu_insertable', $br, 'gsu_code');
 
         return $output;

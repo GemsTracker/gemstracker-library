@@ -118,7 +118,9 @@ class Gems_Default_ProjectSurveysAction extends \Gems_Controller_ModelSnippetAct
         $model->addTable('gems__groups',  array('gsu_id_primary_group' => 'ggp_id_group'));
 
         $model->addColumn(
-                '(SELECT COUNT(DISTINCT gro_id_track) FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track WHERE gro_id_survey = gsu_id_survey)',
+                "(SELECT COUNT(DISTINCT gro_id_track)
+                    FROM gems__tracks INNER JOIN gems__rounds ON gtr_id_track = gro_id_track
+                    WHERE gro_id_survey = gsu_id_survey)",
                 'track_count'
                 );
 
@@ -140,7 +142,7 @@ class Gems_Default_ProjectSurveysAction extends \Gems_Controller_ModelSnippetAct
         $model->set('track_count',     'label', $this->_('Usage'),
                 'description', $this->_('How many track definitions use this survey?'));
         $model->set('gsu_insertable',  'label', $this->_('Insertable'),
-                'description', $this->_('Can this survey be manually inserted into a track.'),
+                'description', $this->_('Can this survey be manually inserted into a track?'),
                 'multiOptions', $yesNo
                 );
 

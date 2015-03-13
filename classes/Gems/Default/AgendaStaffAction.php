@@ -97,7 +97,7 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
     public function cleanupAction()
     {
         $params = $this->_processParameters($this->showParameters);
-        $params['contentTitle'] = $this->_('Cleanup existing appointments?');
+        $params['contentTitle'] = $this->_('Clean up existing appointments?');
         $params['filterOn']     = array('gap_id_attended_by', 'gap_id_referred_by');
         $params['filterWhen']   = 'gas_filter';
 
@@ -156,7 +156,7 @@ class Gems_Default_AgendaStaffAction extends \Gems_Controller_ModelSnippetAction
                 'multiOptions', $translated->getYesNo()
                 );
         $model->setIfExists('gas_filter',      'label', $this->_('Filter'),
-                'description', $this->_('When true appointments with this staff member are not imported.'),
+                'description', $this->_('When checked appointments with this staff member are not imported.'),
                 'elementClass', 'Checkbox',
                 'multiOptions', $translated->getYesNo()
                 );

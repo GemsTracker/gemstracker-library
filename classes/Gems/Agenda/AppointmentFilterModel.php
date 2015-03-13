@@ -121,11 +121,28 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
 
         $this->addColumn(new \Zend_Db_Expr(
                 "(SELECT COUNT(*) FROM gems__track_appointments WHERE gaf_id = gtap_filter_id)"
-                ), 'use');
-        $this->set('use', 'label', $this->_('Usage'),
+                ), 'usetrack');
+        $this->set('usetrack', 'label', $this->_('Use in track fields'),
                 'description', $this->_('The number of uses of this filter in track fields.'),
                 'elementClass', 'Exhibitor'
                 );
+        $this->addColumn(new \Zend_Db_Expr(
+                "(SELECT COUNT(*)
+                    FROM gems__appointment_filters AS other
+                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter') AND
+                        (
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text4
+                        )
+                )"
+                ), 'usefilter');
+        $this->set('usefilter', 'label', $this->_('Use in filters'),
+                'description', $this->_('The number of uses of this filter in other filters.'),
+                'elementClass', 'Exhibitor'
+                );
+
 
         return $this;
     }
@@ -164,11 +181,35 @@ class AppointmentFilterModel extends \Gems_Model_JoinModel
                 'multiOptions', $yesNo
                 );
 
-        $this->addColumn(new \Zend_Db_Expr(
-                "(SELECT COUNT(*) FROM gems__track_appointments WHERE gaf_id = gtap_filter_id)"
-                ), 'use');
-        $this->set('use', 'label', $this->_('Usage'),
-                'description', $this->_('The number of uses of this filter in track fields.'),
+        $this->addColumn(new \Zend_Db_Expr(sprintf(
+                "(SELECT COALESCE(GROUP_CONCAT(gtr_track_name, '%s', gtap_field_name
+                                    ORDER BY gtr_track_name, gtap_id_order SEPARATOR '%s'), '%s')
+                    FROM gems__track_appointments INNER JOIN gems__tracks ON gtap_id_track = gtr_id_track
+                    WHERE gaf_id = gtap_filter_id)",
+                $this->_(': '),
+                $this->_('; '),
+                $this->_('Not used in tracks')
+                )), 'usetrack');
+        $this->set('usetrack', 'label', $this->_('Use in track fields'),
+                'description', $this->_('The use of this filter in track fields.'),
+                'elementClass', 'Exhibitor'
+                );
+        $this->addColumn(new \Zend_Db_Expr(sprintf(
+                "(SELECT COALESCE(GROUP_CONCAT(gaf_calc_name ORDER BY gaf_id_order SEPARATOR '%s'), '%s')
+                    FROM gems__appointment_filters AS other
+                    WHERE gaf_class IN ('AndAppointmentFilter', 'OrAppointmentFilter') AND
+                        (
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text1 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text2 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text3 OR
+                            gems__appointment_filters.gaf_id = other.gaf_filter_text4
+                        )
+                )",
+                $this->_('; '),
+                $this->_('Not used in filters')
+                )), 'usefilter');
+        $this->set('usefilter', 'label', $this->_('Use in filters'),
+                'description', $this->_('The use of this filter in other filters.'),
                 'elementClass', 'Exhibitor'
                 );
 
