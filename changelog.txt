@@ -1,3 +1,17 @@
+1.7.0p2
+=======
+Double track assignment (appointments) fixed
+Hidden SSN save bug fixed
+Table creation script gems__sources fixed
+Assignment of inactive tracks fixed
+Import rare condition related to PHP version fixed
+
+1.7.0p1
+=======
+Radius authentication fixed
+Double track assignment (appointments) fixed
+Import answers bug fixed
+
 Important changes from 1.6.4 => 1.7.0
 ============================================================
 Appointments can be used to create tracks
