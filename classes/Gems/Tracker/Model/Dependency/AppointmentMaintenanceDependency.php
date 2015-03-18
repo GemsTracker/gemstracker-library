@@ -55,7 +55,7 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
      *
      * @var array
      */
-    protected $_defaultEffects = array('elementClass', 'label');
+    protected $_defaultEffects = array('description', 'elementClass', 'label', 'multiOptions', 'onchange', 'onclick');
 
     /**
      * Array of name => name of items dependency depends on.
@@ -73,7 +73,21 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
      *
      * @var array of name => array(setting => setting)
      */
-    protected $_effecteds = array('gtf_after_next', 'gtf_create_track', 'gtf_create_wait_days');
+    protected $_effecteds = array(
+        'gtf_id_order', 'gtf_filter_id', 'gtf_after_next', 'gtf_uniqueness', 'gtf_create_track', 'gtf_create_wait_days',
+        );
+
+    /**
+     *
+     * @var \Gems_Loader
+     */
+    protected $loader;
+
+    /**
+     *
+     * @var \Gems_Util
+     */
+    protected $util;
 
     /**
      * Returns the changes that must be made in an array consisting of
@@ -97,45 +111,60 @@ class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_Dependenc
      */
     public function getChanges(array $context, $new)
     {
-        $hideCreate = ! $context['gtf_filter_id'];
-        if ($hideCreate) {
-            $hideWait = true;
-        } else {
-            $hideWait = !$context['gtf_create_track'];
+        // Only change anything when there are filters
+        $filters = $this->loader->getAgenda()->getFilterList();
+
+        if (! $filters) {
+            return array();
         }
-        if ($hideCreate) {
+
+        // Load utility
+        $translated = $this->util->getTranslated();
+
+        $output['gtf_id_order'] =array(
+            'description' => $this->_('The display and processing order of the fields.') . "\n" .
+            $this->_('When using automatic filters the fields are ALWAYS filled with appointments in ascending order.'),
+            );
+
+        $output['gtf_filter_id'] = array(
+            'label'        => $this->_('Automatic link'),
+            'description'  => $this->_('Automatically link an appointment when it passes this filter.'),
+            'elementClass' => 'Select',
+            'multiOptions' => $translated->getEmptyDropdownArray() + $filters,
+            'onchange'     => 'this.form.submit();',
+            );
+
+        if ($context['gtf_filter_id']) {
             $output['gtf_after_next'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-            $output['gtf_uniqueness'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-            $output['gtf_create_track'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-        } else {
-            $output['gtf_after_next'] = array(
+                'label'        => $this->_('Link ascending'),
+                'description'  => $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
                 'elementClass' => 'Checkbox',
+                'multiOptions' => $translated->getYesNo(),
                 );
             $output['gtf_uniqueness'] = array(
+                'label'        => $this->_('Link unique'),
+                'description'  => $this->_('Can one appointment be used in multiple fields?'),
                 'elementClass' => 'Radio',
+                'multiOptions' => array(
+                    0 => $this->_('No: repeatedly linked appointments are allowed.'),
+                    1 => $this->_('Track instances may link only once to an appointment.'),
+                    2 => $this->_('Tracks of this type may link only once to an appointment.'),
+    //                 3 => $this->_('Appointment may not be used in any other track.'),
+                    ),
                 );
             $output['gtf_create_track'] = array(
                 'elementClass' => 'Checkbox',
+                'label'        => $this->_('Create track'),
+                'onclick'      => 'this.form.submit();',
                 );
-        }
-        if ($hideWait) {
-            $output['gtf_create_wait_days'] = array(
-                'elementClass' => 'Hidden',
-                'label'        => null,
-                );
-        } else {
-            $output['gtf_create_wait_days'] = array(
-                'elementClass' => 'Text',
-                );
+
+            if ($context['gtf_create_track']) {
+                $output['gtf_create_wait_days'] = array(
+                    'label'       => $this->_('Days between tracks'),
+                    'description' => $this->_('Any previous track must have an end date at least this many days in the past.'),
+                    'elementClass' => 'Text',
+                    );
+            }
         }
 
         return $output;

@@ -39,6 +39,7 @@ namespace Gems\Tracker\Engine;
 
 use Gems\Tracker\Field\FieldInterface;
 use Gems\Tracker\Model\Dependency\FieldDataDependency;
+use Gems\Tracker\Model\FieldDataModel;
 
 /**
  *
@@ -160,9 +161,8 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     protected function _ensureTrackFields()
     {
         if (! is_array($this->_fields)) {
-            $for    = array('gtf_id_track' => $this->_trackId);
-            $model  = $this->getMaintenanceModel(false, 'index', $for);
-            $fields = $model->load($for, array('gtf_id_order' => SORT_ASC));
+            $model  = $this->getMaintenanceModel();
+            $fields = $model->load(array('gtf_id_track' => $this->_trackId), array('gtf_id_order' => SORT_ASC));
 
             $this->_fields      = array();
             $this->_trackFields = array();
@@ -284,12 +284,12 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get the storage model for field values
      *
-     * @return \Gems_Tracker_Model_FieldDataModel
+     * @return \Gems\Tracker\Model\FieldDataModel
      */
     public function getDataStorageModel()
     {
-        if (! $this->_dataModel instanceof \Gems_Tracker_Model_FieldDataModel) {
-            $this->_dataModel = $this->tracker->createTrackClass('Model_FieldDataModel');
+        if (! $this->_dataModel instanceof FieldDataModel) {
+            $this->_dataModel = $this->tracker->createTrackClass('Model\\FieldDataModel');
         }
 
         return $this->_dataModel;
@@ -412,20 +412,19 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @param array $data the current request data
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel
      */
-    public function getMaintenanceModel($detailed, $action, array $data)
+    public function getMaintenanceModel($detailed = false, $action = 'index')
     {
         if (isset($this->_maintenanceModels[$action])) {
             return $this->_maintenanceModels[$action];
         }
 
-        $model = $this->tracker->createTrackClass('Model_FieldMaintenanceModel');
+        $model = $this->tracker->createTrackClass('Model\\FieldMaintenanceModel');
 
         if ($detailed) {
             if (('edit' === $action) || ('create' === $action)) {
-                $model->applyEditSettings($this->_trackId, $data);
+                $model->applyEditSettings();
 
                 if ('create' === $action) {
                     $model->set('gtf_id_track', 'default', $this->_trackId);
@@ -435,16 +434,17 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
                     // Load last row
                     $row = $model->loadFirst(
                             array('gtf_id_track' => $this->_trackId),
-                            array('gtf_id_order' => SORT_DESC)
+                            array('gtf_id_order' => SORT_DESC),
+                            false // Make sure this does not trigger type dependency
                             );
 
                     if ($row && isset($row['gtf_id_order'])) {
-                        $new_order = $row['gtf_id_order'] + 10;
-                        $model->set('gtf_id_order', 'default', $new_order);
+                        $newOrder = $row['gtf_id_order'] + 10;
+                        $model->set('gtf_id_order', 'default', $newOrder);
                     }
                 }
             } else {
-                $model->applyDetailSettings($this->_trackId, $data);
+                $model->applyDetailSettings();
             }
 
         } else {

@@ -370,7 +370,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      * @param array $row The row values to load
      * @param boolean $new True when it is a new item not saved in the model
      * @param boolean $isPost True when passing on post data
-     * @param array $transformColumns
+     * @param array $transformColumns ignore:: cache to prevent repeated call's top getCol
      * @return array The possibly adapted array of values
      */
     protected function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())

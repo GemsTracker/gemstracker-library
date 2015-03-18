@@ -38,6 +38,7 @@
 namespace Gems\Agenda;
 
 use Gems\Tracker\Engine\FieldsDefinition;
+use Gems\Tracker\Model\FieldMaintenanceModel;
 
 /**
  *
@@ -122,7 +123,7 @@ abstract class AppointmentFilterAbstract extends \MUtil_Translate_TranslateableA
     {
         if (isset($this->_data['gtap_id_app_field']) && $this->_data['gtap_id_app_field']) {
             return FieldsDefinition::makeKey(
-                    \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME,
+                    FieldMaintenanceModel::APPOINTMENTS_NAME,
                     $this->_data['gtap_id_app_field']
                     );
         }

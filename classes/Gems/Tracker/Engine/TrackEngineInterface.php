@@ -176,7 +176,7 @@ interface Gems_Tracker_Engine_TrackEngineInterface
     /**
      * Get the storage model for field values
      *
-     * @return \Gems_Tracker_Model_FieldDataModel
+     * @return \Gems\Tracker\Model\FieldDataModel
      */
     public function getFieldsDataStorageModel();
 
@@ -200,9 +200,9 @@ interface Gems_Tracker_Engine_TrackEngineInterface
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
      * @param array $data the current request data
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel
      */
-    public function getFieldsMaintenanceModel($detailed, $action, array $data);
+    public function getFieldsMaintenanceModel($detailed = false, $action = 'index');
 
     /**
      * Returns an array name => code of all the fields of the type specified

@@ -35,6 +35,8 @@
  * @version    $Id: FieldReportAction.php $
  */
 
+use Gems\Tracker\Model\FieldDataModel;
+
 /**
  *
  *
@@ -44,7 +46,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.5 30-nov-2014 17:50:22
  */
-class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionAbstract
+class Gems_Default_FieldReportAction extends \Gems_Controller_ModelSnippetActionAbstract
 {
     /**
      * The parameters used for the autofilter action.
@@ -63,7 +65,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     public $db;
 
@@ -110,7 +112,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
      *
      * @param boolean $detailed True when the current action is not in $summarizedActions.
      * @param string $action The current action.
-     * @return MUtil_Model_ModelAbstract
+     * @return \MUtil_Model_ModelAbstract
      */
     public function createModel($detailed, $action)
     {
@@ -118,7 +120,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
         // Return empty model when no track sel;ected
         if (! (isset($filter['gtf_id_track']) && $filter['gtf_id_track'])) {
-            $model = new Gems_Model_JoinModel('trackfields' , 'gems__track_fields');
+            $model = new \Gems_Model_JoinModel('trackfields' , 'gems__track_fields');
             $model->set('gtf_field_name', 'label', $this->_('Name'));
             $model->setFilter(array('1=0'));
             $this->autofilterParameters['onEmpty'] = $this->_('No track selected...');
@@ -136,11 +138,11 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
             WHERE gr2t_id_track = ? AND grc_success = 1";
         $this->trackCount = $this->db->fetchOne($sql, $this->trackId);
 
-        $model = $this->engine->getFieldsMaintenanceModel(false, 'index', array());
+        $model = $this->engine->getFieldsMaintenanceModel();
         $model->setFilter($filter);
 
-        // $model->addColumn(new Zend_Db_Expr($trackCount), 'trackcount');
-        // $model->addColumn(new Zend_Db_Expr("(SELECT COUNT())"), 'fillcount');
+        // $model->addColumn(new \Zend_Db_Expr($trackCount), 'trackcount');
+        // $model->addColumn(new \Zend_Db_Expr("(SELECT COUNT())"), 'fillcount');
 
         $model->set('trackcount', 'label', $this->_('Tracks'));
         $model->setOnLoad('trackcount', $this->trackCount);
@@ -159,19 +161,19 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function emptyCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
@@ -185,25 +187,25 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function fillCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         $model = $this->engine->getFieldsDataStorageModel();
 
-        if (! $model instanceof \Gems_Tracker_Model_FieldDataModel) {
+        if (! $model instanceof FieldDataModel) {
             return null;
         }
 
@@ -220,7 +222,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
                 $this->trackId
                 );
 
-        // MUtil_Echo::track($sql);
+        // \MUtil_Echo::track($sql);
         $this->trackFilled = $this->db->fetchOne($sql);
 
         $value = $this->trackFilled;
@@ -233,25 +235,25 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
 
     /**
      * A ModelAbstract->setOnLoad() function that takes care of transforming a
-     * dateformat read from the database to a Zend_Date format
+     * dateformat read from the database to a \Zend_Date format
      *
-     * If empty or Zend_Db_Expression (after save) it will return just the value
+     * If empty or \Zend_Db_Expression (after save) it will return just the value
      * currently there are no checks for a valid date format.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
      * @param boolean $isPost True when passing on post data
-     * @return MUtil_Date|Zend_Db_Expr|string
+     * @return \MUtil_Date|\Zend_Db_Expr|string
      */
     public function valueCount($value, $isNew = false, $name = null, array $context = array(), $isPost = false)
     {
         $model = $this->engine->getFieldsDataStorageModel();
 
-        if (! $model instanceof \Gems_Tracker_Model_FieldDataModel) {
+        if (! $model instanceof FieldDataModel) {
             return null;
         }
 
@@ -269,7 +271,7 @@ class Gems_Default_FieldReportAction extends Gems_Controller_ModelSnippetActionA
                 $this->trackId
                 );
 
-        // MUtil_Echo::track($sql);
+        // \MUtil_Echo::track($sql);
         $value = $this->db->fetchOne($sql);
         return sprintf(
                 $this->_('%d (uses per value: %01.2f)'),

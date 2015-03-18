@@ -164,7 +164,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      * @param $name Field name
      * @return boolean
      */
-    public function dependsOn()
+    public function dependsOn($name)
     {
         return isset($this->_dependentOn[$name]);
     }

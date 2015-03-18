@@ -270,7 +270,7 @@ class Gems_Default_TrackMaintenanceAction  extends \Gems_Controller_BrowseEditAc
             case "fields": {
                 $trackId = $this->_getIdParam();
                 $engine = $tracker->getTrackEngine($trackId);
-                $model = $engine->getFieldsMaintenanceModel(false, $action, $this->getRequest()->getParams());
+                $model = $engine->getFieldsMaintenanceModel(false, $action);
                 $model->addSort(array('gtf_id_order' => SORT_ASC));
             } break;
 

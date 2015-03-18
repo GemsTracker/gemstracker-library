@@ -35,6 +35,10 @@
  * @version    $Id$
  */
 
+namespace Gems\Tracker\Model;
+
+use Gems\Tracker\Model\FieldMaintenanceModel;
+
 /**
  *
  * @package    Gems
@@ -43,7 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.3
  */
-class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
+class FieldDataModel extends \MUtil_Model_UnionModel
 {
     /**
      *
@@ -56,7 +60,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
 
         $modelF = new \MUtil_Model_TableModel('gems__respondent2track2field');
         \Gems_Model::setChangeFieldsByPrefix($modelF, 'gr2t2f');
-        $this->addUnionModel($modelF, null, \Gems_Tracker_Model_FieldMaintenanceModel::FIELDS_NAME);
+        $this->addUnionModel($modelF, null, FieldMaintenanceModel::FIELDS_NAME);
 
         $modelA = new \MUtil_Model_TableModel('gems__respondent2track2appointment');
         \Gems_Model::setChangeFieldsByPrefix($modelA, 'gr2t2a');
@@ -66,7 +70,7 @@ class Gems_Tracker_Model_FieldDataModel extends \MUtil_Model_UnionModel
         $map['gr2t2a_id_app_field'] = 'gr2t2f_id_field';
         $map['gr2t2a_id_appointment'] = 'gr2t2f_value';
 
-        $this->addUnionModel($modelA, $map, \Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME);
+        $this->addUnionModel($modelA, $map, FieldMaintenanceModel::APPOINTMENTS_NAME);
     }
 
     /**

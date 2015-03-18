@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use Gems\Tracker\Model\FieldMaintenanceModel;
+
 /**
  *
  * @package    Gems
@@ -97,11 +99,10 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
     public function createModel($detailed, $action)
     {
         $request = $this->getRequest();
-        $data    = $request->getParams();
         $trackId = $this->_getIdParam();
         $engine  = $this->loader->getTracker()->getTrackEngine($trackId);
 
-        $model   = $engine->getFieldsMaintenanceModel($detailed, $action, $data);
+        $model   = $engine->getFieldsMaintenanceModel($detailed, $action);
 
         return $model;
     }
@@ -114,7 +115,7 @@ class Gems_Default_TrackFieldsAction extends \Gems_Controller_ModelSnippetAction
     public function getDeleteQuestion()
     {
         $field = $this->_getParam('fid');
-        if (\Gems_Tracker_Model_FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
+        if (FieldMaintenanceModel::APPOINTMENTS_NAME === $this->_getParam('sub')) {
             $used  = $this->db->fetchOne(
                     "SELECT COUNT(*)
                         FROM gems__respondent2track2appointment

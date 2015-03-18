@@ -35,7 +35,8 @@
  * @version    $id: FieldMaintenanceModel.php 203 2012-01-01t 12:51:32Z matijs $
  */
 
-use Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency;
+namespace Gems\Tracker\Model;
+
 use Gems\Tracker\Engine\FieldsDefinition;
 
 /**
@@ -47,7 +48,7 @@ use Gems\Tracker\Engine\FieldsDefinition;
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
+class FieldMaintenanceModel extends \MUtil_Model_UnionModel
 {
     /**
      * Constant name to id appointment items
@@ -65,23 +66,39 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     const FIELD_SEP = '|';
 
     /**
+     * Should a type dependency be added uin _processRowAfterLoad?
+     *
+     * @var boolean
+     */
+    protected $_addLoadDependency = false;
+
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
-     * The fields that can be calculated using an appointment as input
+     * The field types that have a dependency
      *
-     * @var array
+     * @var array fieldType => dependency class name (without path elements)
      */
-    protected $fromAppointments = array('activity', 'caretaker', 'date', 'location', 'procedure');
+    protected $dependencies = array(
+        'activity'    => 'FromAppointmentsMaintenanceDependency',
+        'appointment' => 'AppointmentMaintenanceDependency',
+        'caretaker'   => 'FromAppointmentsMaintenanceDependency',
+        'date'        => 'FromAppointmentsMaintenanceDependency',
+        'location'    => 'FromAppointmentsMaintenanceDependency',
+        'multiselect' => 'ValuesMaintenanceDependency',
+        'select'      => 'ValuesMaintenanceDependency',
+        'procedure'   => 'FromAppointmentsMaintenanceDependency',
+        );
 
     /**
      *
-     * @var \Gems_Loader
+     * @var \Gems_Tracker
      */
-    protected $loader;
+    protected $tracker;
 
     /**
      *
@@ -100,13 +117,6 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
      * @var \Gems_Util
      */
     protected $util;
-
-    /**
-     * The fields that use the values TextArea
-     *
-     * @var array
-     */
-    protected $valuesFields = array('multiselect', 'select');
 
     /**
      *
@@ -159,29 +169,39 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     }
 
     /**
-     * Get an options list of all the appointment fields
+     * Process on load functions and dependencies
      *
-     * @param type $trackId
-     * @return array field_id => field_name
+     * @see addDependency()
+     * @see setOnLoad()
+     *
+     * @param array $row The row values to load
+     * @param boolean $new True when it is a new item not saved in the model
+     * @param boolean $isPost True when passing on post data
+     * @param array $transformColumns
+     * @return array The possibly adapted array of values
      */
-    protected function _loadAppointments($trackId)
+    protected function _processRowAfterLoad(array $row, $new = false, $isPost = false, &$transformColumns = array())
     {
-        $appFields = $this->db->fetchPairs("
-            SELECT gtap_id_app_field, gtap_field_name
-                FROM gems__track_appointments
-                WHERE gtap_id_track = ?
-                ORDER BY gtap_id_order", $trackId);
+        if ($this->_addLoadDependency) {
+            // Display of data field
+            if (! (isset($row['gtf_field_type']) && $row['gtf_field_type'])) {
+                $row['gtf_field_type'] = $this->getFieldType($row);
+            }
+            // assert: $row['gtf_field_type'] is now always filled.
 
-        $options = array();
+            if (! isset($row[$this->_modelField])) {
+                $row[$this->_modelField] = $this->getModelNameForRow($row);
+            }
 
-        if ($appFields) {
-            foreach ($appFields as $id => $label) {
-                $key = FieldsDefinition::makeKey(self::APPOINTMENTS_NAME, $id);
-                $options[$key] = $label;
+            // Now add the type specific dependency (if any)
+            $class = $this->getTypeDependencyClass($row['gtf_field_type']);
+            if ($class) {
+                $dependency = $this->tracker->createTrackClass($class, $row['gtf_id_track']);
+                $this->addDependency($dependency, null, null, 'row');
             }
         }
 
-        return $options;
+        return parent::_processRowAfterLoad($row, $new, $isPost, $transformColumns);
     }
 
     /**
@@ -202,7 +222,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     /**
      * Set those settings needed for the browse display
      *
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel (continuation pattern)
      */
     public function applyBrowseSettings()
     {
@@ -212,6 +232,7 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
         $types = $this->getFieldTypes();
         asort($types);
 
+        $this->set('gtf_id_track'); // Set order
         $this->set('gtf_field_name',    'label', $this->_('Name'));
         $this->set('gtf_id_order',      'label', $this->_('Order'),
                 'description', $this->_('The display and processing order of the fields.')
@@ -220,8 +241,11 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'multiOptions', $types,
                 'default', 'text'
                 );
+        $this->set('gtf_field_values'); // Set order
+        $this->set('gtf_field_description'); // Set order
         $this->set('gtf_field_code',    'label', $this->_('Code Name'),
-                'description', $this->_('Optional extra name to link the field to program code.'));
+                'description', $this->_('Optional extra name to link the field to program code.')
+                );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),
                 'multiOptions', $yesNo
@@ -238,10 +262,15 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'description', $this->_('Automatically calculate this field using other fields'),
                 'formatFunction', array($this, 'countCalculationSources')
                 );
+
+        $this->set('gtf_filter_id'); // Set order
+        $this->set('gtf_after_next'); // Set order
+        $this->set('gtf_uniqueness'); // Set order
         $this->set('gtf_create_track', 'label', $this->_('Create track'),
                 'description', $this->_('Create a track if the respondent does not have a track where this field is empty.'),
                 'multiOptions', $yesNo
                 );
+        $this->set('gtf_create_wait_days'); // Set order
 
         return $this;
     }
@@ -249,177 +278,45 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     /**
      * Set those settings needed for the detailed display
      *
-     * @param int $trackId The current track id
-     * @param array $data The currently known data
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel (continuation pattern)
      */
-    public function applyDetailSettings($trackId, array &$data)
+    public function applyDetailSettings()
     {
         $this->applyBrowseSettings();
 
+        $this->_addLoadDependency = true;
+
         $this->set('gtf_id_track',          'label', $this->_('Track'),
-                'multiOptions', $this->util->getTrackData()->getAllTracks(),
-                'order', 2
+                'multiOptions', $this->util->getTrackData()->getAllTracks()
                 );
-        $order = $this->getOrder('gtf_field_type') + 1;
         $this->set('gtf_field_description', 'label', $this->_('Description'),
-                'description', $this->_('Optional extra description to show the user.'),
-                'order', $order++
+                'description', $this->_('Optional extra description to show the user.')
                 );
 
-        // Display of data field
-        if (! (isset($data['gtf_field_type']) && $data['gtf_field_type'])) {
-            if (isset($data[$this->_modelField]) && ($data[$this->_modelField] === self::APPOINTMENTS_NAME)) {
-                $data['gtf_field_type'] = 'appointment';
-            } else {
-                if (isset($data['gtf_id_field']) && $data['gtf_id_field']) {
-                    $data[\Gems_Model::FIELD_ID] = $data['gtf_id_field'];
-                }
-                if (isset($data[\Gems_Model::FIELD_ID])) {
-                    $data['gtf_field_type'] = $this->db->fetchOne(
-                            "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
-                            $data[\Gems_Model::FIELD_ID]
-                            );
-                } else  {
-                    if (! $this->has('gtf_field_type', 'default')) {
-                        $this->set('gtf_field_type', 'default', 'text');
-                    }
-                    $data['gtf_field_type'] = $this->get('gtf_field_type', 'default');
-                }
-            }
-        }
-        if (! isset($data[$this->_modelField])) {
-            $data[$this->_modelField] = $this->getModelNameForRow($data);
-        }
+        // Clean up data always show in browse view, but not always in detail views
+        $this->set('gtf_calculate_using', 'label', null, 'formatFunction', null);
 
-        if (in_array($data['gtf_field_type'], $this->valuesFields)) {
-            $this->set('gtf_field_values', 'label', $this->_('Values'),
-                    'description', $this->_('Separate multiple values with a vertical bar (|)'),
-                    'formatFunction', array($this, 'formatValues'),
-                    'order', $order++
-                    );
-        }
+        // But do always transform gtf_calculate_using on load and save
+        // as otherwise we might not be sure what to do
+        $contact = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
+        $contact->apply($this, 'gtf_calculate_using');
 
-        // Clean up never used
-        $this->set('gtf_calculate_using', 'label', $this->_('Calculate from'),
-                'formatFunction', null
-                );
-        if ($trackId) { // && in_array($data['gtf_field_type'], $this->fromAppointments)) {
-            $method = 'loadOptionsFor' . ucfirst($data['gtf_field_type']);
-            if (!method_exists($this, $method)) {
-                if (in_array($data['gtf_field_type'], $this->fromAppointments)) {
-                    $method = '_loadAppointments';
-                } else {
-                    $method = false;
-                }
-            }
-
-            if ($method) {
-                $options = call_user_func(array($this, $method), $trackId);
-
-                if ($options) {
-                    $this->set('gtf_calculate_using',
-                            'elementClass', 'MultiCheckbox',
-                            'multiOptions', $options
-                            );
-
-                    $contact = new \MUtil_Model_Type_ConcatenatedRow(self::FIELD_SEP, '; ', false);
-                    $contact->apply($this, 'gtf_calculate_using');
-                }
-            }
-        }
-        if (! $this->has('gtf_calculate_using', 'elementClass')) {
-            $this->del('gtf_calculate_using', 'label', 'description');
-        }
-
-        if ('appointment' == $data['gtf_field_type']) {
-            $filters = $this->loader->getAgenda()->getFilterList();
-
-            if ($filters) {
-                $translated = $this->util->getTranslated();
-
-                $this->set('gtf_id_order', 'description',
-                        $this->get('gtf_id_order', 'description') . "\n" .
-                        $this->_('When using automatic filters the fields are ALWAYS filled with appointments in ascending order.')
-                        );
-
-                $this->set('gtf_filter_id', 'label', $this->_('Automatic link'),
-                        'description', $this->_('Automatically link an appointment when it passes this filter.'),
-                        'multiOptions', $translated->getEmptyDropdownArray() + $filters,
-                        'onchange', 'this.form.submit();'
-                        );
-                $this->set('gtf_after_next', 'label', $this->_('Link ascending'),
-                        'description', $this->_('Automatically linked appointments are added in ascending (or otherwise descending) order; starting with the track start date.'),
-                        'multiOptions', $translated->getYesNo(),
-                        'order', $this->getOrder('gtf_filter_id') + 1
-                        );
-                $this->set('gtf_uniqueness', 'label', $this->_('Link unique'),
-                        'description', $this->_('Can one appointment be used in multiple fields?'),
-                        'multiOptions', array(
-                            0 => $this->_('No: repeatedly linked appointments are allowed.'),
-                            1 => $this->_('Track instances may link only once to an appointment.'),
-                            2 => $this->_('Tracks of this type may link only once to an appointment.'),
-//                            3 => $this->_('Appointment may not be used in any other track.'),
-                        ),
-                        'order', $this->getOrder('gtf_filter_id') + 2
-                        );
-                $this->set('gtf_create_track',
-                        'onclick', 'this.form.submit();',
-						'order', $this->getOrder('gtf_filter_id') + 3
-                        );
-                $this->set('gtf_create_wait_days',
-                        'label', $this->_('Days between tracks'),
-                        'description', $this->_('Any previous track must have an end date at least this many days in the past.')
-                        );
-
-                // $this->addDependency(new \Gems_Tracker_Model_Dependency_AppointmentMaintenanceDependency());
-                // $this->addDependency(new \Gems\Tracker\Model\Dependency\AppointmentMaintenanceDependency());
-                $this->addDependency(new AppointmentMaintenanceDependency());
-            }
-        }
-        if (! $this->has('gtf_create_track', 'onclick')) {
-            $this->del('gtf_create_track', 'label', 'description');
-        }
+        // Clean up data always show in browse view, but not always in detail views
+        $this->set('gtf_create_track',    'label', null);
     }
 
     /**
      * Set those values needed for editing
      *
-     * @param int $trackId The current track id
-     * @param array $data The currently known data
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel (continuation pattern)
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel (continuation pattern)
      */
-    public function applyEditSettings($trackId, array $data)
+    public function applyEditSettings()
     {
-        $this->applyDetailSettings($trackId, $data);
-
-        $noSubChange = false;
-        $subId = $data[$this->_modelField];
-
-        if ($subId == self::FIELDS_NAME) {
-            $sql = 'SELECT gr2t2f_id_field
-                FROM gems__respondent2track2field
-                WHERE gr2t2f_id_field = ?';
-        } elseif ($subId == self::APPOINTMENTS_NAME) {
-            $sql = 'SELECT gr2t2a_id_app_field
-                FROM gems__respondent2track2appointment
-                WHERE gr2t2a_id_app_field = ?';
-        } else {
-            $sql = false;
-        }
-        if ($sql && isset($data[\Gems_Model::FIELD_ID])) {
-            $noSubChange = $this->db->fetchOne($sql, $data[\Gems_Model::FIELD_ID]);
-        }
+        $this->applyDetailSettings();
 
         $this->set('gtf_id_field',          'elementClass', 'Hidden');
         $this->set('gtf_id_track',          'elementClass', 'Exhibitor');
-
-        if ($noSubChange) {
-            $this->set('gtf_field_type',    'elementClass', 'Exhibitor');
-        } else {
-            $this->set('gtf_field_type',    'elementClass', 'Select',
-                    'onchange', 'this.form.submit();');
-        }
+        $this->set('gtf_field_type',        'elementClass', 'Exhibitor');
 
         $this->set('gtf_field_name',        'elementClass', 'Text',
                 'size', '30',
@@ -435,19 +332,21 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);
         $this->set('gtf_field_description', 'elementClass', 'Text', 'size', 30);
+        $this->set('gtf_field_values',      'elementClass', 'Hidden');
 
-        if ($this->has('gtf_field_values', 'label')) {
-            $this->set('gtf_field_values',  'elementClass', 'Textarea',
-                    'minlength', 4,
-                    'rows', 4,
-                    'required', true
-                    );
-        } else {
-            $this->set('gtf_field_values',  'elementClass', 'Hidden');
-        }
         $this->set('gtf_to_track_info',     'elementClass', 'CheckBox');
         $this->set('gtf_required',          'elementClass', 'CheckBox');
         $this->set('gtf_readonly',          'elementClass', 'CheckBox');
+
+        $this->set('gtf_filter_id',         'elementClass', 'Hidden');
+        $this->set('gtf_after_next',        'elementClass', 'Hidden');
+        $this->set('gtf_uniqueness',        'elementClass', 'Hidden');
+        $this->set('gtf_create_track',      'elementClass', 'Hidden');
+        $this->set('gtf_create_wait_days',  'elementClass', 'Hidden');
+
+        $class      = 'Model\\Dependency\\FieldTypeChangeableDependency';
+        $dependency = $this->tracker->createTrackClass($class, $this->_modelField);
+        $this->addDependency($dependency);
     }
 
     /**
@@ -497,14 +396,32 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     }
 
     /**
-     * Put each value on a separate line
+     * Get the type from the row in case it was not set
      *
-     * @param string $values
-     * @return \MUtil_Html_Sequence
+     * @param array $row Loaded row
+     * @return string Data type for the row
      */
-    public function formatValues($values)
+    protected function getFieldType(array &$row)
     {
-        return new \MUtil_Html_Sequence(array('glue' => '<br/>'), explode('|', $values));
+        if (isset($row[$this->_modelField]) && ($row[$this->_modelField] === self::APPOINTMENTS_NAME)) {
+            return 'appointment';
+        }
+
+        if (isset($row['gtf_id_field']) && $row['gtf_id_field']) {
+            $row[\Gems_Model::FIELD_ID] = $row['gtf_id_field'];
+        }
+
+        if (isset($row[\Gems_Model::FIELD_ID])) {
+            return $this->db->fetchOne(
+                    "SELECT gtf_field_type FROM gems__track_fields WHERE gtf_id_field = ?",
+                    $row[\Gems_Model::FIELD_ID]
+                    );
+        }
+
+        if (! $this->has('gtf_field_type', 'default')) {
+            $this->set('gtf_field_type', 'default', 'text');
+        }
+        return $this->get('gtf_field_type', 'default');
     }
 
     /**
@@ -542,6 +459,29 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
     }
 
     /**
+     * Get the dependency class name (if any)
+     *
+     * @param string $fieldType
+     * @return string Classname including Model\Dependency\ part
+     */
+    public function getTypeDependencyClass($fieldType)
+    {
+        if (isset($this->dependencies[$fieldType]) && $this->dependencies[$fieldType]) {
+            return 'Model\\Dependency\\' . $this->dependencies[$fieldType];
+        }
+    }
+
+    /**
+     * Does the model have a dependencies?
+     *
+     * @return boolean
+     */
+    public function hasDependencies()
+    {
+        return $this->_addLoadDependency || parent::hasDependencies();
+    }
+
+    /**
      * Function that checks the setup of this class/traight
      *
      * This function is not needed if the variables have been defined correctly in the
@@ -570,6 +510,27 @@ class Gems_Tracker_Model_FieldMaintenanceModel extends \MUtil_Model_UnionModel
 
         // Make sure there always is an adapter, even if it is fake.
         $this->translateAdapter = new \MUtil_Translate_Adapter_Potemkin();
+    }
+
+    /**
+     * Returns an array containing the first requested item.
+     *
+     * @param mixed $filter True to use the stored filter, array to specify a different filteloa
+     * @param mixed $sort True to use the stored sort, array to specify a different sort
+     * @param boolean $loadDependencies When true the row dependencies are loaded
+     * @return array An array or false
+     */
+    public function loadFirst($filter = true, $sort = true, $loadDependencies = true)
+    {
+        // Needed as the default order otherwise triggers the type dependency
+        $oldDep = $this->_addLoadDependency;
+        $this->_addLoadDependency = $loadDependencies;
+
+        $output = parent::loadFirst();
+
+        $this->_addLoadDependency = $oldDep;
+
+        return $output;
     }
 
     /**

@@ -82,7 +82,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      * @param $name Field name
      * @return boolean
      */
-    public function dependsOn();
+    public function dependsOn($name);
 
     /**
      * Returns the changes that must be made in an array consisting of

@@ -445,7 +445,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
         $trackModel = $this->tracker->getTrackModel();
 
         $roundModel = $this->getRoundModel(true, 'rounds');
-        $fieldModel = $this->getFieldsMaintenanceModel(false, 'fields', array());
+        $fieldModel = $this->getFieldsMaintenanceModel();
 
         // First load the track
         $trackModel->applyParameters(array('id' => $oldTrackId));
@@ -570,7 +570,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
     /**
      * Get the storage model for field values
      *
-     * @return \Gems_Tracker_Model_FieldDataModel
+     * @return \Gems\Tracker\Model\FieldDataModel
      */
     public function getFieldsDataStorageModel()
     {
@@ -592,12 +592,11 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      *
      * @param boolean $detailed Create a model for the display of detailed item data or just a browse table
      * @param string $action The current action
-     * @param array $data the current request data
-     * @return \Gems_Tracker_Model_FieldMaintenanceModel
+     * @return \Gems\Tracker\Model\FieldMaintenanceModel
      */
-    public function getFieldsMaintenanceModel($detailed, $action, array $data)
+    public function getFieldsMaintenanceModel($detailed = false, $action = 'index')
     {
-        return $this->_fieldsDefinition->getMaintenanceModel($detailed, $action, $data);
+        return $this->_fieldsDefinition->getMaintenanceModel($detailed, $action);
     }
 
     /**

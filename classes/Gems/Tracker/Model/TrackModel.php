@@ -225,7 +225,8 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         return $this->translate;
     }
 
-    public function save(array $newValues, array $filter = null) {
+    public function save(array $newValues, array $filter = null)
+    {
         // Allow to add default fields to any new track
         if ($defaultFields = $this->getDefaultFields()) {
             $keys = $this->getKeys();
@@ -238,7 +239,7 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
                 $foundKeys = array_intersect_key($newValues, $missing);
                 // Now get the fieldmodel
                 $engine     = $this->loader->getTracker()->getTrackEngine($foundKeys['gtr_id_track']);
-                $fieldmodel = $engine->getFieldsMaintenanceModel(true, 'create', array());
+                $fieldmodel = $engine->getFieldsMaintenanceModel(true, 'create');
                 $lastOrder  = 0;
                 foreach ($defaultFields as $field) {
                     // Load defaults
