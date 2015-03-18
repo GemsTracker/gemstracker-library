@@ -35,6 +35,8 @@
  * @version    $Id: ReadonlyDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
+namespace MUtil\Model\Dependency;
+
 /**
  * A class for adding dependencies that turn readonly off in the model unless
  * one of the values the dependency depends on returns a true value.
@@ -53,7 +55,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_ReadonlyDependency extends MUtil_Model_Dependency_DependencyAbstract
+class ReadonlyDependency extends DependencyAbstract
 {
     /**
      * The settings array for those effecteds that don't have an effects array

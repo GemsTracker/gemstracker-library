@@ -46,7 +46,7 @@ namespace MUtil\Model\Dependency;
  * @license    New BSD License
  * @since      Class available since MUtil version 1.4 23-jan-2015 10:34:59
  */
-class CallbackDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class CallbackDependency extends DependencyAbstract
 {
     /**
      *

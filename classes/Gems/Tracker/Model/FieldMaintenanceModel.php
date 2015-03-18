@@ -88,6 +88,7 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
         'appointment' => 'AppointmentMaintenanceDependency',
         'caretaker'   => 'FromAppointmentsMaintenanceDependency',
         'date'        => 'FromAppointmentsMaintenanceDependency',
+        'datetime'    => 'FromAppointmentsMaintenanceDependency',
         'location'    => 'FromAppointmentsMaintenanceDependency',
         'multiselect' => 'ValuesMaintenanceDependency',
         'select'      => 'ValuesMaintenanceDependency',
@@ -431,17 +432,22 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
      */
     public function getFieldTypes()
     {
-        return array(
-            'select'      => $this->_('Select one'),
-            'multiselect' => $this->_('Select multiple'),
+        $output = array(
+            'activity'    => $this->_('Activity'),
             'appointment' => $this->_('Appointment'),
+            'caretaker'   => $this->_('Caretaker'),
             'date'        => $this->_('Date'),
             'text'        => $this->_('Free text'),
             'location'    => $this->_('Location'),
-            'caretaker'   => $this->_('Caretaker'),
-            'activity'    => $this->_('Activity'),
+            'datetime'    => $this->_('Moment in time'),
             'procedure'   => $this->_('Procedure'),
+            'relation'    => $this->_('Relation'),
+            'select'      => $this->_('Select one'),
+            'multiselect' => $this->_('Select multiple'),
             );
+
+        asort($output);
+        return $output;
     }
 
     /**

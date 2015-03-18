@@ -37,6 +37,8 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use MUtil\Model\Dependency\DependencyAbstract;
+
 /**
  *
  *
@@ -46,7 +48,7 @@ namespace Gems\Tracker\Model\Dependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 16-okt-2014 18:30:05
  */
-class AppointmentMaintenanceDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class AppointmentMaintenanceDependency extends DependencyAbstract
 {
     /**
      * Array of setting => setting of setting changed by this dependency

@@ -38,6 +38,7 @@
 namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Field\FieldInterface;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -48,7 +49,7 @@ use Gems\Tracker\Field\FieldInterface;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 9-mrt-2015 17:53:07
  */
-class FieldDataDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class FieldDataDependency extends DependencyAbstract
 {
     /**
      *

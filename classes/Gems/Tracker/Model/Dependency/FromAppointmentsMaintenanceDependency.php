@@ -39,6 +39,7 @@ namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Engine\FieldsDefinition;
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  *
@@ -49,7 +50,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 18-mrt-2015 14:00:41
  */
-class FromAppointmentsMaintenanceDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class FromAppointmentsMaintenanceDependency extends DependencyAbstract
 {
     /**
      * Array of name => name of items dependency depends on.

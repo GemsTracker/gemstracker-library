@@ -38,6 +38,7 @@
 namespace Gems\Tracker\Model\Dependency;
 
 use Gems\Tracker\Model\FieldMaintenanceModel;
+use MUtil\Model\Dependency\DependencyAbstract;
 
 /**
  * Class that checks whether changing the field type is allowed.
@@ -48,7 +49,7 @@ use Gems\Tracker\Model\FieldMaintenanceModel;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 18-mrt-2015 13:07:12
  */
-class FieldTypeChangeableDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class FieldTypeChangeableDependency extends DependencyAbstract
 {
     /**
      * Array of name => array(setting => setting) of fields with settings changed by this dependency

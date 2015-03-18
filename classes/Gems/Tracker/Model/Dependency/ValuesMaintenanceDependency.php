@@ -37,6 +37,8 @@
 
 namespace Gems\Tracker\Model\Dependency;
 
+use MUtil\Model\Dependency\DependencyAbstract;
+
 /**
  *
  *
@@ -46,7 +48,7 @@ namespace Gems\Tracker\Model\Dependency;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 18-mrt-2015 14:00:41
  */
-class ValuesMaintenanceDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class ValuesMaintenanceDependency extends DependencyAbstract
 {
     /**
      * Array of name => name of items dependency depends on.

@@ -35,6 +35,8 @@
  * @version    $Id: DependencyInterface .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
+namespace MUtil\Model\Dependency;
+
 /**
  *
  * @package    MUtil
@@ -43,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-interface MUtil_Model_Dependency_DependencyInterface
+interface DependencyInterface
 {
     // public function dependencyChanges($sourceName, $targetName, array $context, $isNew, MUtil_Model_ModelAbstract $model);
 
@@ -52,7 +54,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      * dependency depends on.
      *
      * @param mixed $dependsOn
-     * @return \MUtil_Model_Dependency_DependencyInterface (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyInterface (continuation pattern)
      */
     public function addDependsOn($dependsOn);
 
@@ -62,7 +64,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      *
      * @param string $effectedField A field name
      * @param mixed $effectedSettings A single setting or an array of settings
-     * @return \MUtil_Model_Dependency_DependencyInterface (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyInterface (continuation pattern)
      */
     public function addEffected($effectedField, $effectedSettings);
 
@@ -72,7 +74,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      * Do not override this function, override addEffected() instead
      *
      * @param array $effecteds Of values accepted by addEffected as paramter
-     * @return \MUtil_Model_Dependency_DependencyInterface (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyInterface (continuation pattern)
      */
     public function addEffecteds(array $effecteds);
 
@@ -141,7 +143,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      * dependency depends on.
      *
      * @param mixed $dependsOn
-     * @return \MUtil_Model_Dependency_DependencyInterface (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyInterface (continuation pattern)
      */
     public function setDependsOn($dependsOn);
 
@@ -149,7 +151,7 @@ interface MUtil_Model_Dependency_DependencyInterface
      * Add to the fields effected by this dependency
      *
      * @param array $effecteds Of values accepted by addEffected as paramter
-     * @return \MUtil_Model_Dependency_DependencyInterface (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyInterface (continuation pattern)
      */
     public function setEffecteds(array $effecteds);
 }

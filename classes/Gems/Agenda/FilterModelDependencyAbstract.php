@@ -37,6 +37,8 @@
 
 namespace Gems\Agenda;
 
+use MUtil\Model\Dependency\ValueSwitchDependency;
+
 /**
  * Default dependency for any AppointFilter
  *
@@ -46,8 +48,7 @@ namespace Gems\Agenda;
  * @license    New BSD License
  * @since      Class available since version 1.6.5 15-okt-2014 18:10:36
  */
-// abstract class Gems_Agenda_FilterModelDependencyAbstract extends MUtil_Model_Dependency_ValueSwitchDependency
-abstract class FilterModelDependencyAbstract extends \MUtil_Model_Dependency_ValueSwitchDependency
+abstract class FilterModelDependencyAbstract extends ValueSwitchDependency
 {
     /**
      * Array of name => name of items dependency depends on.
@@ -109,13 +110,13 @@ abstract class FilterModelDependencyAbstract extends \MUtil_Model_Dependency_Val
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     public function calcultateAndCheckName($value, $isNew = false, $name = null, array $context = array())
     {
@@ -126,13 +127,13 @@ abstract class FilterModelDependencyAbstract extends \MUtil_Model_Dependency_Val
      * A ModelAbstract->setOnSave() function that returns the input
      * date as a valid date.
      *
-     * @see MUtil_Model_ModelAbstract
+     * @see \MUtil_Model_ModelAbstract
      *
      * @param mixed $value The value being saved
      * @param boolean $isNew True when a new item is being saved
      * @param string $name The name of the current field
      * @param array $context Optional, the other values being saved
-     * @return Zend_Date
+     * @return \Zend_Date
      */
     abstract public function calcultateName($value, $isNew = false, $name = null, array $context = array());
 
@@ -161,7 +162,7 @@ abstract class FilterModelDependencyAbstract extends \MUtil_Model_Dependency_Val
 
     /**
      * Set the maximum length of the calculated name field
-     * 
+     *
      * @param int $length
      * @return \Gems\Agenda\FilterModelDependencyAbstract
      */

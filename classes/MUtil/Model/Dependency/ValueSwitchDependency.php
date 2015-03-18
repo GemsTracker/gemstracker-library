@@ -32,8 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ValueSwitchDependency .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: ValueSwitchDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
+
+namespace MUtil\Model\Dependency;
 
 /**
  * A dependency where a fixed array of values is returned for each value in the switch.
@@ -48,7 +50,7 @@
  * The next example switches the display and editing of two fields on and off depending on the value of
  * the depends on field.
  * <code>
- * $switch = new \MUtil_Model_Dependency_ValueSwitchDependency();
+ * $switch = new ValueSwitchDependency();
  * $switch->setDependsOn('fieldDecides');
  * $switch->setSwitches(array(
  *      0 => array(
@@ -72,7 +74,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_ValueSwitchDependency extends \MUtil_Model_Dependency_DependencyAbstract
+class ValueSwitchDependency extends DependencyAbstract
 {
     /**
      * When false the effected fields should be recalculated
@@ -230,7 +232,7 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends \MUtil_Model_Dependen
      *
      * @param string $effectedField A field name
      * @param mixed $effectedSettings A single setting or an array of settings
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public function addEffected($effectedField, $effectedSettings)
     {
@@ -244,7 +246,7 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends \MUtil_Model_Dependen
      * Recursively merge the new switches into the existing switches
      *
      * @param array $switches The switches
-     * @return \MUtil_Model_Dependency_ValueSwitchDependency (continuation pattern)
+     * @return \MUtil\Model\Dependency\ValueSwitchDependency (continuation pattern)
      */
     public function addSwitches(array $switches)
     {
@@ -337,7 +339,7 @@ class MUtil_Model_Dependency_ValueSwitchDependency extends \MUtil_Model_Dependen
      * Set the switches
      *
      * @param array $switches The switches
-     * @return \MUtil_Model_Dependency_ValueSwitchDependency (continuation pattern)
+     * @return \MUtil\Model\Dependency\ValueSwitchDependency (continuation pattern)
      */
     public function setSwitches(array $switches)
     {

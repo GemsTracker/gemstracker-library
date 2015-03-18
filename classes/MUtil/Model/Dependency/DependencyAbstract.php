@@ -35,6 +35,8 @@
  * @version    $Id: DependencyAbstract .php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
 
+namespace MUtil\Model\Dependency;
+
 /**
  * A basic dependency implementation that all the housekeeping work,
  * but leaves the actual changes alone.
@@ -45,8 +47,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translate_TranslateableAbstract
-    implements \MUtil_Model_Dependency_DependencyInterface
+abstract class DependencyAbstract extends \MUtil_Translate_TranslateableAbstract implements DependencyInterface
 {
     /**
      * Array of setting => setting of setting changed by this dependency
@@ -102,7 +103,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      * dependency depends on.
      *
      * @param mixed $dependsOn
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public function addDependsOn($dependsOn)
     {
@@ -123,7 +124,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      *
      * @param string $effectedField A field name
      * @param mixed $effectedSettings A single setting or an array of settings
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public function addEffected($effectedField, $effectedSettings)
     {
@@ -143,7 +144,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      * Do not override this function, override addEffected() instead
      *
      * @param array $effecteds Of values accepted by addEffected as paramter
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public final function addEffecteds(array $effecteds)
     {
@@ -245,7 +246,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      * dependency depends on.
      *
      * @param mixed $dependsOn
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public function setDependsOn($dependsOn)
     {
@@ -260,7 +261,7 @@ abstract class MUtil_Model_Dependency_DependencyAbstract extends \MUtil_Translat
      * Do not override this function, override addEffected() instead
      *
      * @param array $effecteds Of values accepted by addEffected as paramter
-     * @return \MUtil_Model_Dependency_DependencyAbstract (continuation pattern)
+     * @return \MUtil\Model\Dependency\DependencyAbstract (continuation pattern)
      */
     public final function setEffecteds(array $effecteds)
     {

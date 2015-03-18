@@ -94,13 +94,6 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
     {
         $this->_select = $this->db->select();
         $this->_select->from('gems__appointments', $this->fields);
-
-        if ($this->filter instanceof AppointmentFilterInterface) {
-            $this->forFilter($filter);
-        }
-        if ($this->respondentTrack instanceof \Gems_Tracker_RespondentTrack) {
-            $this->forRespondentTrack($this->respondentTrack);
-        }
     }
 
     /**
@@ -118,7 +111,7 @@ class AppointmentSelect extends \MUtil_Registry_TargetAbstract
      */
     public function fetchOne()
     {
-        $this->sql_select->limit(1);
+        $this->_select->limit(1);
 
         return $this->_select->query()->fetchColumn(0);
     }

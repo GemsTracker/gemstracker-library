@@ -35,6 +35,8 @@
  * @version    $Id$
  */
 
+use MUtil\Model\Dependency\DependencyInterface;
+
 /**
  * A model combines knowedge about a set of data with knowledge required to manipulate
  * that set of data. I.e. it can store data about fields such as type, label, length,
@@ -115,7 +117,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     /**
      * Dependencies that transform the model
      *
-     * @var array order => \MUtil_Model_Dependency_DependencyInterface
+     * @var array order => \MUtil\Model\Dependency\DependencyInterface
      */
     private $_model_dependencies = array();
 
@@ -430,7 +432,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      *
      * Dependencies are processed in the order they are added
      *
-     * @param mixed $dependency \MUtil_Model_Dependency_DependencyInterface or string or array to create one
+     * @param mixed $dependency \MUtil\Model\Dependency\DependencyInterface or string or array to create one
      * @param mixed $dependsOn Optional string field name or array of fields that do the changing
      * @param array $effects Optional array of field => array(setting) of settings are changed, array of whatever
      * the dependency accepts as an addEffects() argument
@@ -439,7 +441,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
      */
     public function addDependency($dependency, $dependsOn = null, array $effects = null,  $key = null)
     {
-        if (! $dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+        if (! $dependency instanceof DependencyInterface) {
             $loader = \MUtil_Model::getDependencyLoader();
 
             if (is_array($dependency)) {
@@ -1009,7 +1011,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         $results = array();
 
         foreach ($this->_model_dependencies as $key => $dependency) {
-            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof DependencyInterface) {
                 foreach ($names as $name) {
                     $settings = $dependency->getEffected($name);
 
@@ -1041,7 +1043,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         $results      = array();
 
         foreach ($dependencies as $dependency) {
-            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof DependencyInterface) {
                 $results = $results + $dependency->getDependsOn();
             }
         }
@@ -1420,7 +1422,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
         $names = (array) $name;
 
         foreach ($this->_model_dependencies as $dependency) {
-            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof DependencyInterface) {
                 foreach ($names as $name) {
                     $settings = $dependency->getEffected($name);
 
@@ -1794,7 +1796,7 @@ abstract class MUtil_Model_ModelAbstract extends \MUtil_Registry_TargetAbstract
     public function processDependencies(array $data, $new)
     {
         foreach ($this->_model_dependencies as $dependency) {
-            if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+            if ($dependency instanceof DependencyInterface) {
 
                 $dependsOn = $dependency->getDependsOn();
                 $context   = array_intersect_key($data, $dependsOn);

@@ -1080,7 +1080,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             return 0;
         }
 
-        $changes       = $fieldDef->saveFields($this->_respTrackData, $this->_fieldData);
+        $changes       = $fieldDef->saveFields($this->_respTrackId, $this->_fieldData);
         $fieldsChanged = (boolean) $changes;
 
         if (! $fieldsChanged) {

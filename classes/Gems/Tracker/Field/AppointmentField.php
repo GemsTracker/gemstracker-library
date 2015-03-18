@@ -157,7 +157,6 @@ class AppointmentField extends FieldAbstract
      */
     public function calculateFieldValue($currentValue, array $fieldData, array $trackData)
     {
-        return $currentValue;
         if ($currentValue || isset($this->_fieldDefinition['gtf_filter_id'])) {
             $agenda = $this->loader->getAgenda();
 
@@ -190,7 +189,7 @@ class AppointmentField extends FieldAbstract
 
                 if ($fromDate) {
                     $select = $agenda->createAppointmentSelect(array('gap_id_appointment'));
-                    $select->forFilter($this->_fieldDefinition['gtf_filter_id'])
+                    $select->forFilterId($this->_fieldDefinition['gtf_filter_id'])
                             ->forRespondent($trackData['gr2t_id_user'], $trackData['gr2t_id_organization'])
                             ->fromDate($fromDate, $oper);
 
@@ -221,7 +220,6 @@ class AppointmentField extends FieldAbstract
 
                     // Query ready
                     $newValue = $select->fetchOne();
-                    // \MUtil_Echo::track($newValue);
 
                     if ($newValue) {
                         $currentValue = $newValue;

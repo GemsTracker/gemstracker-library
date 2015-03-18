@@ -36,6 +36,7 @@
  */
 
 use Gems\Tracker\Model\AddTrackFieldsTransformer;
+use MUtil\Model\Dependency\DependencyInterface;
 
 /**
  * Utility class containing functions used by most track engines.
@@ -216,7 +217,7 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
             if ($addDependency) {
                 $dependency = $this->_fieldsDefinition->getDataModelDependency();
 
-                if ($dependency instanceof \MUtil_Model_Dependency_DependencyInterface) {
+                if ($dependency instanceof DependencyInterface) {
                     $model->addDependency($dependency);
                 }
             }

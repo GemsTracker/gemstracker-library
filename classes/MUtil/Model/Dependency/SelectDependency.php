@@ -32,8 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: QueryDependency .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: SelectDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
+
+namespace MUtil\Model\Dependency;
 
 /**
  *
@@ -43,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_DependencyAbstract
+class SelectDependency extends DependencyAbstract
 {
     /**
      *
@@ -53,22 +55,22 @@ class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_Dep
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
     /**
      *
-     * @param Zend_Db_Select $select The base select statement
-     * @param array $filter Array of select field => context field, context can be a Zend_Db_Expr
+     * @param \Zend_Db_Select $select The base select statement
+     * @param array $filter Array of select field => context field, context can be a \Zend_Db_Expr
      */
-    public function __construct(Zend_Db_Select $select, array $filter)
+    public function __construct(\Zend_Db_Select $select, array $filter)
     {
         $this->_select = $select;
         $this->_filter = $filter;
 
         foreach ($filter as $context) {
-            if (! $context instanceof Zend_Db_Expr) {
+            if (! $context instanceof \Zend_Db_Expr) {
                 $this->addDependsOn($context);
             }
         }
@@ -99,7 +101,7 @@ class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_Dep
         $select = clone $this->_select;
 
         foreach ($this->_filter as $fieldName => $contextName) {
-            if ($contextName instanceof Zend_Db_Expr) {
+            if ($contextName instanceof \Zend_Db_Expr) {
                 $select->where($fieldName . ' = ?', $contextName);
             } elseif (null === $context[$contextName]) {
                 $select->where($fieldName . ' IS NULL');
@@ -110,7 +112,7 @@ class MUtil_Model_Dependency_SelectDependency extends MUtil_Model_Dependency_Dep
 
         $options = $this->db->fetchPairs($select);
 
-        MUtil_Echo::track($this->getEffecteds());
+        // \MUtil_Echo::track($this->getEffecteds());
         $results = array();
         foreach ($this->getEffecteds() as $name => $settings) {
             foreach ($settings as $setting) {

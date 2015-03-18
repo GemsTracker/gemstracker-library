@@ -232,7 +232,7 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Get model dependency that changes model settings for each row when loaded
      *
-     * @return \MUtil_Model_Dependency_DependencyInterface or null
+     * @return \MUtil\Model\Dependency\DependencyInterface or null
      */
     public function getDataModelDependency()
     {

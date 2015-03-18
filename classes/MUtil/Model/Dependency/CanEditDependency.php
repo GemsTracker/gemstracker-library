@@ -28,12 +28,14 @@
  *
  *
  * @package    MUtil
- * @subpackage CanEditDependency
+ * @subpackage Model_Dependency
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @version    $Id: CanEditDependency.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
+
+namespace MUtil\Model\Dependency;
 
 /**
  * Reverse of the Readonly dependency.
@@ -43,18 +45,18 @@
  *
  * Example:
  * <code>
- * $model->addDependency('ReadOnlyDependency', array('can_edit'), $model->getColNames('label'));
+ * $model->addDependency('CanEditDependency', array('can_edit'), $model->getColNames('label'));
  * </code>
  * Will set readonly=null for all fields with a label when can_edit returns true, otherwise
  * sets readonly=readonly
  *
  * @package    MUtil
- * @subpackage CanEditDependency
+ * @subpackage Model_Dependency
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_CanEditDependency extends MUtil_Model_Dependency_ReadonlyDependency
+class CanEditDependency extends ReadonlyDependency
 {
     /**
      * Returns the changes that must be made in an array consisting of

@@ -78,8 +78,8 @@ class DateField extends FieldAbstract
     protected function addModelSettings(array &$settings)
     {
         $settings['elementClass']  = 'Date';
-        $settings['dateFormat']    = \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
-        $settings['storageFormat'] = \Gems_Tracker::DB_DATE_FORMAT;
+        $settings['dateFormat']    = $this->getDateFormat();
+        $settings['storageFormat'] = $this->getStorageFormat();
     }
 
     /**
@@ -141,6 +141,26 @@ class DateField extends FieldAbstract
     }
 
     /**
+     * Get the date display format (zend style)
+     *
+     * @return string
+     */
+    protected function getDateFormat()
+    {
+        return \MUtil_Model_Bridge_FormBridge::getFixedOption('date', 'dateFormat');
+    }
+
+    /**
+     * Get the date display format (zend style)
+     *
+     * @return string
+     */
+    protected function getStorageFormat()
+    {
+        return \Gems_Tracker::DB_DATE_FORMAT;
+    }
+
+    /**
      * Calculate the field value using the current values
      *
      * @param array $currentValue The current value
@@ -153,7 +173,7 @@ class DateField extends FieldAbstract
             return null;
         }
 
-        return new \MUtil_Date($currentValue, \Zend_Date::ISO_8601);
+        return new \MUtil_Date($currentValue, $this->getStorageFormat());
     }
 
     /**
@@ -171,7 +191,7 @@ class DateField extends FieldAbstract
             return $currentValue;
         }
 
-        $saveFormat = \Gems_Tracker::DB_DATE_FORMAT;
+        $saveFormat = $this->getStorageFormat();
 
         if ($currentValue instanceof \Zend_Date) {
             return $currentValue->toString($saveFormat);
