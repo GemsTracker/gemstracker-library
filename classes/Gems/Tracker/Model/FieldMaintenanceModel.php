@@ -323,12 +323,13 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 'size', '30',
                 'minlength', 4,
                 'required', true,
-                'validator', $this->createUniqueValidator(array('gtf_field_name','gtf_id_track'))
+                'validator', $this->createUniqueValidator(array('gtf_field_name', 'gtf_id_track'))
                 );
 
         $this->set('gtf_id_order',          'elementClass', 'Text',
-                'validators[int]', 'Int',
-                'validators[gt]', new \Zend_Validate_GreaterThan(0)
+                'validators[int]',    'Int',
+                'validators[gt]',     new \Zend_Validate_GreaterThan(0),
+                'validators[unique]', $this->createUniqueValidator(array('gtf_id_order', 'gtf_id_track'))
                 );
 
         $this->set('gtf_field_code',        'elementClass', 'Text', 'minlength', 4);

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-13 14:47+0100\n"
+"POT-Creation-Date: 2015-03-18 17:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -24,6 +24,7 @@ msgstr "Database needs to be updated!"
 #: classes/Gems/Agenda.php:357 classes/Gems/Agenda/Appointment.php:226
 #: classes/Gems/Agenda/AppointmentFilterModel.php:190
 #: classes/Gems/Agenda/AppointmentFilterModel.php:208
+#: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:115
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:860
 msgid "; "
 msgstr "; "
@@ -93,7 +94,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Default/CommTemplateAction.php:73
 #: classes/Gems/Default/DatabaseAction.php:210
 #: classes/Gems/Default/DatabaseAction.php:471
-#: classes/Gems/Default/FieldReportAction.php:122
+#: classes/Gems/Default/FieldReportAction.php:124
 #: classes/Gems/Default/GroupAction.php:83
 #: classes/Gems/Default/RoleAction.php:130
 #: classes/Gems/Default/SourceAction.php:175
@@ -105,7 +106,7 @@ msgstr "Determines what is filtered how."
 #: classes/Gems/Model/TemplateModel.php:67
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:151
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:70
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:215
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:237
 #: classes/Gems/Tracker/Model/TrackModel.php:110
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:69
 msgid "Name"
@@ -116,7 +117,7 @@ msgstr "Name"
 #: classes/Gems/Default/ConsentAction.php:74
 #: classes/Gems/Default/DatabaseAction.php:214
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:824
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:216
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:238
 msgid "Order"
 msgstr "Order"
 
@@ -305,12 +306,12 @@ msgstr "Activity search filter"
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:120
 #: classes/Gems/Default/AgendaActivityAction.php:133
 #: classes/Gems/Default/AgendaProcedureAction.php:133
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:525
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:437
 msgid "Activity"
 msgstr "Activity"
 
 #: classes/Gems/Agenda/Filter/SqlLikeModelDependency.php:125
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:526
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:444
 msgid "Procedure"
 msgstr "Procedure"
 
@@ -859,9 +860,9 @@ msgstr "The survey for token %s is no longer active."
 #: classes/Gems/Export/RespondentExport.php:347 classes/Gems/Menu.php:343
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:64
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:155
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:714
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:717
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:819
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:260
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:290
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:144
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:176
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:279
@@ -877,8 +878,8 @@ msgstr "Track"
 #: classes/Gems/Export/RespondentExport.php:253
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:65
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:228
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:600
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:656
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:603
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:659
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:249
 msgid "Round"
 msgstr "Round"
@@ -918,7 +919,7 @@ msgstr "Survey code"
 #: classes/Gems/Export/RespondentExport.php:336
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:123
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:825
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:265
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:293
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:145
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:191
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:277
@@ -1136,7 +1137,7 @@ msgstr "End date"
 
 #: classes/Gems/Default/ComplianceAction.php:103
 #: classes/Gems/Default/FieldOverviewAction.php:112
-#: classes/Gems/Default/FieldReportAction.php:124
+#: classes/Gems/Default/FieldReportAction.php:126
 #: classes/Gems/Default/SummaryAction.php:138
 msgid "No track selected..."
 msgstr "No track selected..."
@@ -1146,7 +1147,7 @@ msgid "Compliance"
 msgstr "Compliance"
 
 #: classes/Gems/Default/ComplianceAction.php:190
-#: classes/Gems/Default/FieldReportAction.php:322
+#: classes/Gems/Default/FieldReportAction.php:324
 #: classes/Gems/Default/ProjectTracksAction.php:168
 #: classes/Gems/Default/TrackAction.php:528
 #: classes/Gems/Default/TrackMaintenanceAction.php:362
@@ -1384,7 +1385,7 @@ msgstr "No rows in %s."
 #: classes/Gems/Default/FileActionAbstract.php:119
 #: classes/Gems/Model/AppointmentModel.php:198
 #: classes/Gems/Model/AppointmentModel.php:237
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:219
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:241
 msgid "Type"
 msgstr "Type"
 
@@ -1399,7 +1400,7 @@ msgstr "Group"
 #: classes/Gems/Model/AppointmentModel.php:204
 #: classes/Gems/Model/AppointmentModel.php:248
 #: classes/Gems/Model/OrganizationModel.php:106
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:523
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:442
 msgid "Location"
 msgstr "Location"
 
@@ -1697,7 +1698,7 @@ msgid "Not respondent nr, but respondent id as exported here."
 msgstr "Not patient nr, but respondent id as exported here."
 
 #: classes/Gems/Default/ExportAction.php:328
-#: classes/Gems/Default/FieldReportAction.php:145
+#: classes/Gems/Default/FieldReportAction.php:147
 #: classes/Gems/Default/ReceptionAction.php:105
 #: classes/Gems/Default/TrackMaintenanceAction.php:367
 #: classes/Gems/Menu.php:373 classes/Gems/Menu/MenuAbstract.php:621
@@ -1759,30 +1760,30 @@ msgid_plural "track fields"
 msgstr[0] "track field"
 msgstr[1] "track fields"
 
-#: classes/Gems/Default/FieldReportAction.php:148
+#: classes/Gems/Default/FieldReportAction.php:150
 msgid "Filled"
 msgstr "Filled"
 
-#: classes/Gems/Default/FieldReportAction.php:151
+#: classes/Gems/Default/FieldReportAction.php:153
 msgid "Empty"
 msgstr "Empty"
 
-#: classes/Gems/Default/FieldReportAction.php:154
+#: classes/Gems/Default/FieldReportAction.php:156
 msgid "Unique values"
 msgstr "Unique values"
 
-#: classes/Gems/Default/FieldReportAction.php:180
-#: classes/Gems/Default/FieldReportAction.php:228
+#: classes/Gems/Default/FieldReportAction.php:182
+#: classes/Gems/Default/FieldReportAction.php:230
 #, php-format
 msgid "%d (%d%%)"
 msgstr "%d (%d%%)"
 
-#: classes/Gems/Default/FieldReportAction.php:275
+#: classes/Gems/Default/FieldReportAction.php:277
 #, php-format
 msgid "%d (uses per value: %01.2f)"
 msgstr "%d (uses per value: %01.2f)"
 
-#: classes/Gems/Default/FieldReportAction.php:311
+#: classes/Gems/Default/FieldReportAction.php:313
 msgid "Track fields"
 msgstr "Track fields"
 
@@ -2149,7 +2150,7 @@ msgstr ""
 #: classes/Gems/Default/LogAction.php:120
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:94
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:227
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:521
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:440
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:490
 msgid "Date"
 msgstr "Date"
@@ -2268,7 +2269,7 @@ msgstr "From address"
 #: classes/Gems/Snippets/Mail/Log/MailLogBrowseSnippet.php:96
 #: classes/Gems/Snippets/Respondent/MailLogSnippet.php:98
 #: classes/Gems/Snippets/TokenModelSnippetAbstract.php:70
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:712
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:715
 #: classes/Gems/Tracker/Form/AskTokenForm.php:77
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:248
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:187
@@ -3508,8 +3509,8 @@ msgid "OK"
 msgstr "OK"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:357
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:599
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:655
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:602
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:658
 msgid "Source"
 msgstr "Source"
 
@@ -3621,7 +3622,7 @@ msgstr "Round / Details"
 #: classes/Gems/Default/TrackRoundsAction.php:82
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:67
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:82
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:499
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:502
 msgid "Valid from"
 msgstr "Valid from"
 
@@ -3631,7 +3632,7 @@ msgstr "Valid from"
 #: classes/Gems/Default/TrackRoundsAction.php:83
 #: classes/Gems/Snippets/TokenPlanTableSnippet.php:68
 #: classes/Gems/Snippets/Tracker/Summary/SummarySearchFormSnippet.php:83
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:500
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:503
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:253
 msgid "Valid until"
 msgstr "Valid until"
@@ -3876,18 +3877,18 @@ msgstr "This track is currently not assigned to this patient."
 msgid "Track %s does not exist."
 msgstr "Track %s does not exist."
 
-#: classes/Gems/Default/TrackFieldsAction.php:134
+#: classes/Gems/Default/TrackFieldsAction.php:135
 msgid "Do you want to delete this field?"
 msgstr "Do you want to delete this field?"
 
-#: classes/Gems/Default/TrackFieldsAction.php:138
+#: classes/Gems/Default/TrackFieldsAction.php:139
 #, php-format
 msgid "This field will be deleted from %s assigned track."
 msgid_plural "This field will be deleted from %s assigned tracks."
 msgstr[0] "This field will be deleted from %s assigned track."
 msgstr[1] "This field will be deleted from %s assigned tracks."
 
-#: classes/Gems/Default/TrackFieldsAction.php:143
+#: classes/Gems/Default/TrackFieldsAction.php:144
 #, php-format
 msgid "Do you want to delete this field and the value stored for the field?"
 msgid_plural ""
@@ -3897,12 +3898,12 @@ msgstr[0] ""
 msgstr[1] ""
 "Do you want to delete this field and the %s values stored for the field?"
 
-#: classes/Gems/Default/TrackFieldsAction.php:155
+#: classes/Gems/Default/TrackFieldsAction.php:156
 #, php-format
 msgid "Fields %s"
 msgstr "Fields %s"
 
-#: classes/Gems/Default/TrackFieldsAction.php:166
+#: classes/Gems/Default/TrackFieldsAction.php:167
 msgid "field"
 msgid_plural "fields"
 msgstr[0] "field"
@@ -4656,7 +4657,7 @@ msgid "E-Mail now!"
 msgstr "E-Mail now!"
 
 #: classes/Gems/Menu.php:457 classes/Gems/Menu/MenuAbstract.php:465
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:703
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:706
 msgid "Answers"
 msgstr "Answers"
 
@@ -4980,8 +4981,8 @@ msgstr "May be mailed"
 
 #: classes/Gems/Model/AppointmentModel.php:194
 #: classes/Gems/Model/AppointmentModel.php:231
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:707
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:520
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:710
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:438
 msgid "Appointment"
 msgstr "Appointment"
 
@@ -5844,14 +5845,14 @@ msgstr "Checked %d tokens."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:70
 #: classes/Gems/Tracker/ChangeTracker.php:81
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:419
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:420
 #, php-format
 msgid "%2$d token date changes in %1$d tracks."
 msgstr "%2$d token date changes in %1$d tracks."
 
 #: classes/Gems/Task/Tracker/CheckTrackTokens.php:74
 #: classes/Gems/Tracker/ChangeTracker.php:64
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:422
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:423
 #, php-format
 msgid "Checked %d tracks."
 msgstr "Checked %d tracks."
@@ -5912,19 +5913,19 @@ msgid "No passwords found in table %s."
 msgstr "No passwords found in table %s."
 
 #: classes/Gems/Tracker/ChangeTracker.php:84
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:404
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:405
 #, php-format
 msgid "Round changes propagated to %d tokens."
 msgstr "Round changes propagated to %d tokens."
 
 #: classes/Gems/Tracker/ChangeTracker.php:87
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:408
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:409
 #, php-format
 msgid "%d tokens deleted by round changes."
 msgstr "%d tokens deleted by round changes."
 
 #: classes/Gems/Tracker/ChangeTracker.php:90
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:412
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:413
 #, php-format
 msgid "%d tokens created to by round changes."
 msgstr "%d tokens created to by round changes."
@@ -5986,86 +5987,86 @@ msgstr "%s minus %s %s"
 msgid "%s"
 msgstr "%s"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:501
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:504
 msgid "Start time"
 msgstr "Start time"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:502
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:505
 msgid "Completion time"
 msgstr "Completion time"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:559
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:562
 msgid "Valid from calculation"
 msgstr "Valid from calculation"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:568
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:620
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:571
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:623
 msgid "Date source"
 msgstr "Date source"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:577
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:629
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:580
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:632
 msgid "Round used"
 msgstr "Round used"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:583
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:636
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:586
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:639
 msgid "Date used"
 msgstr "Date used"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:588
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:641
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:591
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:644
 msgid "Add to date"
 msgstr "Add to date"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:589
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:592
 msgid "Can be negative"
 msgstr "Can be negative"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:594
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:647
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:597
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:650
 msgid "Add to date unit"
 msgstr "Add to date unit"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:602
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:658
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:605
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:661
 msgid "Date calculation"
 msgstr "Date calculation"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:610
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:613
 msgid "Valid for calculation"
 msgstr "Valid for calculation"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:700
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:703
 msgid "Does not expire"
 msgstr "Does not expire"
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:703
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:706
 msgid "Use an answer from a survey."
 msgstr "Use an answer from a survey."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:708
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:711
 msgid "Use an appointment linked to this track."
 msgstr "Use an appointment linked to this track."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:712
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:715
 msgid "Use a standard token date."
 msgstr "Use a standard token date."
 
-#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:714
+#: classes/Gems/Tracker/Engine/StepEngineAbstract.php:717
 msgid "Use a track level date."
 msgstr "Use a track level date."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:434
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:435
 #, php-format
 msgid "%s track engines cannot be converted to %s track engines."
 msgstr "%s track engines cannot be converted to %s track engines."
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:457
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:458
 msgid " - Copy"
 msgstr " - Copy"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:504
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:505
 #, php-format
 msgid "Copied track, including %s round(s) and %s field(s)."
 msgstr "Copied track, including %s round(s) and %s field(s)."
@@ -6099,7 +6100,7 @@ msgstr "After change"
 msgid "Organization specific round"
 msgstr "Organization specific round"
 
-#: classes/Gems/Tracker/Field/AppointmentField.php:313
+#: classes/Gems/Tracker/Field/AppointmentField.php:311
 #: classes/Gems/Util/Translated.php:312
 msgid "Unknown"
 msgstr "Unknown"
@@ -6109,63 +6110,126 @@ msgstr "Unknown"
 msgid "Enter tokens as %s."
 msgstr "Enter tokens as %s."
 
-#: classes/Gems/Tracker/Model/Dependency/FieldMaintenanceTypeDependency.php:220
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:296
-msgid "Values"
-msgstr "Values"
-
-#: classes/Gems/Tracker/Model/Dependency/FieldMaintenanceTypeDependency.php:221
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:297
-msgid "Separate multiple values with a vertical bar (|)"
-msgstr "Separate multiple values with a vertical bar (|)"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:217
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:127
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:239
 msgid "The display and processing order of the fields."
 msgstr "The display and processing order of the fields."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:223
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:128
+msgid ""
+"When using automatic filters the fields are ALWAYS filled with appointments "
+"in ascending order."
+msgstr ""
+"When using automatic filters the fields are ALWAYS filled with appointments "
+"in ascending order."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:132
+msgid "Automatic link"
+msgstr "Automatic link"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:133
+msgid "Automatically link an appointment when it passes this filter."
+msgstr "Automatically link an appointment when it passes this filter."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:141
+msgid "Link ascending"
+msgstr "Link ascending"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:142
+msgid ""
+"Automatically linked appointments are added in ascending (or otherwise "
+"descending) order; starting with the track start date."
+msgstr ""
+"Automatically linked appointments are added in ascending (or otherwise "
+"descending) order; starting with the track start date."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:147
+msgid "Link unique"
+msgstr "Link unique"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:148
+msgid "Can one appointment be used in multiple fields?"
+msgstr "Can one appointment be used in multiple fields?"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:151
+msgid "No: repeatedly linked appointments are allowed."
+msgstr "No: repeatedly linked appointments are allowed."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:152
+msgid "Track instances may link only once to an appointment."
+msgstr "Track instances may link only once to an appointment."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:153
+msgid "Tracks of this type may link only once to an appointment."
+msgstr "Tracks of this type may link only once to an appointment."
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:159
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:270
+msgid "Create track"
+msgstr "Create track"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:165
+msgid "Days between tracks"
+msgstr "Days between tracks"
+
+#: classes/Gems/Tracker/Model/Dependency/AppointmentMaintenanceDependency.php:166
+msgid ""
+"Any previous track must have an end date at least this many days in the past."
+msgstr ""
+"Any previous track must have an end date at least this many days in the past."
+
+#: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:150
+msgid "Calculate from"
+msgstr "Calculate from"
+
+#: classes/Gems/Tracker/Model/Dependency/FromAppointmentsMaintenanceDependency.php:151
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:263
+msgid "Automatically calculate this field using other fields"
+msgstr "Automatically calculate this field using other fields"
+
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:107
+msgid "Values"
+msgstr "Values"
+
+#: classes/Gems/Tracker/Model/Dependency/ValuesMaintenanceDependency.php:108
+msgid "Separate multiple values with a vertical bar (|)"
+msgstr "Separate multiple values with a vertical bar (|)"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:247
 msgid "Code Name"
 msgstr "Code Name"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:224
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:248
 msgid "Optional extra name to link the field to program code."
 msgstr "Optional extra name to link the field to program code."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:225
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:250
 msgid "In description"
 msgstr "In description"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:226
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:251
 msgid "Add this field to the track description"
 msgstr "Add this field to the track description"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:229
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:254
 #: classes/MUtil/Snippets/Standard/ModelImportSnippet.php:736
 msgid "Required"
 msgstr "Required"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:232
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:257
 msgid "Readonly"
 msgstr "Readonly"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:234
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:259
 msgid "Check this box if this field is always set by code instead of the user."
 msgstr ""
 "Check this box if this field is always set by code instead of the user."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:237
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:262
 msgid "Calculate using"
 msgstr "Calculate using"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:238
-msgid "Automatically calculate this field using other fields"
-msgstr "Automatically calculate this field using other fields"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:241
-msgid "Create track"
-msgstr "Create track"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:242
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:271
 msgid ""
 "Create a track if the respondent does not have a track where this field is "
 "empty."
@@ -6173,95 +6237,41 @@ msgstr ""
 "Create a track if the patient does not have a track where this field is "
 "empty."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:266
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:294
 msgid "Optional extra description to show the user."
 msgstr "Optional extra description to show the user."
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:304
-msgid "Calculate from"
-msgstr "Calculate from"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:343
-msgid ""
-"When using automatic filters the fields are ALWAYS filled with appointments "
-"in ascending order."
-msgstr ""
-"When using automatic filters the fields are ALWAYS filled with appointments "
-"in ascending order."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:346
-msgid "Automatic link"
-msgstr "Automatic link"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:347
-msgid "Automatically link an appointment when it passes this filter."
-msgstr "Automatically link an appointment when it passes this filter."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:351
-msgid "Link ascending"
-msgstr "Link ascending"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:352
-msgid ""
-"Automatically linked appointments are added in ascending (or otherwise "
-"descending) order; starting with the track start date."
-msgstr ""
-"Automatically linked appointments are added in ascending (or otherwise "
-"descending) order; starting with the track start date."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:356
-msgid "Link unique"
-msgstr "Link unique"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:357
-msgid "Can one appointment be used in multiple fields?"
-msgstr "Can one appointment be used in multiple fields?"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:359
-msgid "No: repeatedly linked appointments are allowed."
-msgstr "No: repeatedly linked appointments are allowed."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:360
-msgid "Track instances may link only once to an appointment."
-msgstr "Track instances may link only once to an appointment."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:361
-msgid "Tracks of this type may link only once to an appointment."
-msgstr "Tracks of this type may link only once to an appointment."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:371
-msgid "Days between tracks"
-msgstr "Days between tracks"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:372
-msgid ""
-"Any previous track must have an end date at least this many days in the past."
-msgstr ""
-"Any previous track must have an end date at least this many days in the past."
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:466
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:367
 #, php-format
 msgid "%d field"
 msgid_plural "%d fields"
 msgstr[0] "%d field"
 msgstr[1] "%d fields"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:518
-msgid "Select one"
-msgstr "Select one"
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:439
+msgid "Caretaker"
+msgstr "Caretaker"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:519
-msgid "Select multiple"
-msgstr "Select multiple"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:522
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:441
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:505
 msgid "Free text"
 msgstr "Free text"
 
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:524
-msgid "Caretaker"
-msgstr "Caretaker"
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:443
+msgid "Moment in time"
+msgstr "Moment in time"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:445
+msgid "Relation"
+msgstr "Relation"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:446
+msgid "Select one"
+msgstr "Select one"
+
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:447
+msgid "Select multiple"
+msgstr "Select multiple"
 
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:152
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:196

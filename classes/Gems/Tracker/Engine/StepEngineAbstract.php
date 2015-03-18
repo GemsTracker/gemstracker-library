@@ -492,7 +492,10 @@ abstract class Gems_Tracker_Engine_StepEngineAbstract extends \Gems_Tracker_Engi
                     // 'gr2t_created'    => $this->_('Track created'),
                 );
 
-                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(FieldsDefinition::TYPE_DATE);
+                return $results + $this->_fieldsDefinition->getFieldLabelsOfType(array(
+                    FieldsDefinition::TYPE_DATE,
+                    FieldsDefinition::TYPE_DATETIME,
+                    ));
 
             case self::TOKEN_TABLE:
                 return array(

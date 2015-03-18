@@ -67,6 +67,11 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     const TYPE_DATE = 'date';
 
     /**
+     * Date type
+     */
+    const TYPE_DATETIME = 'datetime';
+
+    /**
      * The storage model for field data
      *
      * @var array
@@ -351,16 +356,24 @@ class FieldsDefinition extends \MUtil_Translate_TranslateableAbstract
     /**
      * Returns an array name => label of all the fields of the type specified
      *
-     * @param string $fieldType
+     * @param string|array $fieldType One or more field types
      * @return array name => code
      */
     public function getFieldLabelsOfType($fieldType)
     {
         $output = array();
 
-        foreach ($this->_trackFields as $key => $field) {
-            if ($fieldType == $field['gtf_field_type']) {
-                $output[$key] = $field['gtf_field_name'];
+        if (is_array($fieldType)) {
+            foreach ($this->_trackFields as $key => $field) {
+                if (in_array($field['gtf_field_type'], $fieldType)) {
+                    $output[$key] = $field['gtf_field_name'];
+                }
+            }
+        } else {
+            foreach ($this->_trackFields as $key => $field) {
+                if ($fieldType == $field['gtf_field_type']) {
+                    $output[$key] = $field['gtf_field_name'];
+                }
             }
         }
 

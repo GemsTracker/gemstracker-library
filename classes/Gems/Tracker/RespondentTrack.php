@@ -643,7 +643,7 @@ class Gems_Tracker_RespondentTrack extends \Gems_Registry_TargetAbstract
             $this->_ensureFieldData();
 
             if (isset($this->_fieldData[$fieldName])) {
-                $date   = $this->_fieldData[$fieldName];
+                $date = $this->_fieldData[$fieldName];
 
                 if ($this->getTrackEngine()->isAppointmentField($fieldName)) {
                     $appointment = $this->tracker->getAppointment($date);
