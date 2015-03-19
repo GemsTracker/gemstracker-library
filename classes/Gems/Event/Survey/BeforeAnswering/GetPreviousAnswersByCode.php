@@ -45,12 +45,13 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.4
  */
-class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswersByCode extends MUtil_Registry_TargetAbstract implements Gems_Event_SurveyBeforeAnsweringEventInterface
+class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswersByCode extends \MUtil_Registry_TargetAbstract
+    implements \Gems_Event_SurveyBeforeAnsweringEventInterface
 {
     /**
-     * Set as this is a MUtil_Registry_TargetInterface
+     * Set as this is a \MUtil_Registry_TargetInterface
      *
-     * @var Zend_Translate $translate
+     * @var \Zend_Translate $translate
      */
     protected $translate;
 
@@ -61,7 +62,7 @@ class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswersByCode extends MUtil_R
      */
     public function getEventName()
     {
-        return $this->translate->_('Previous Answers Lookup using Survey Code');
+        return $this->translate->_('Lookup answers in previous survey with the same survey code in track.');
     }
 
     /**
@@ -69,10 +70,10 @@ class Gems_Event_Survey_BeforeAnswering_GetPreviousAnswersByCode extends MUtil_R
      *
      * Storing the changed values is handled by the calling function.
      *
-     * @param Gems_Tracker_Token $token Gems token object
+     * @param \Gems_Tracker_Token $token Gems token object
      * @return array Containing the changed values
      */
-    public function processTokenInsertion(Gems_Tracker_Token $token)
+    public function processTokenInsertion(\Gems_Tracker_Token $token)
     {
         if ($token->hasSuccesCode() && (! $token->isCompleted())) {
             // Preparation for a more general object class

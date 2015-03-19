@@ -60,7 +60,7 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
      */
     public function getEventName()
     {
-        return $this->_('Skip rounds whose appointment is not yet set, hiding them from the user.');
+        return $this->_('Skip rounds without a valid appointment, hiding them for the user.');
     }
 
     /**
@@ -106,7 +106,7 @@ class Gems_Event_Track_FieldUpdate_HideWhenNoAppointment extends \MUtil_Translat
                 }
                 $oldCode = GemsEscort::RECEPTION_OK === $newCode ? 'skip' : GemsEscort::RECEPTION_OK;
                 $curCode = $token->getReceptionCode()->getCode();
-                // MUtil_Echo::track($token->getTokenId(), $curCode, $oldCode, $newCode);
+                // \MUtil_Echo::track($token->getTokenId(), $curCode, $oldCode, $newCode);
                 if (($oldCode === $curCode) && ($curCode !== $newCode)) {
                     $change = true;
                     $token->setReceptionCode($newCode, $newText, $userId);

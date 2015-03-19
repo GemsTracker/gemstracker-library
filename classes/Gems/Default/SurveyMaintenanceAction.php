@@ -441,8 +441,8 @@ class Gems_Default_SurveyMaintenanceAction extends \Gems_Controller_ModelSnippet
                 // $model->set('gsu_agenda_result',         'label', $this->_('Agenda field'));
             }
         }
-        $model->set('gsu_code',                 'label', $this->_('Code name'),
-                'description', $this->_('Only for programmers.'),
+        $model->set('gsu_code',                 'label', $this->_('Survey code'),
+                'description', $this->_('Optional code name to link the survey to program code.'),
                 'size', 10);
 
         if ($detailed) {

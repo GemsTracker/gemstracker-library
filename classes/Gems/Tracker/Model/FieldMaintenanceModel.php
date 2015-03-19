@@ -244,8 +244,8 @@ class FieldMaintenanceModel extends \MUtil_Model_UnionModel
                 );
         $this->set('gtf_field_values'); // Set order
         $this->set('gtf_field_description'); // Set order
-        $this->set('gtf_field_code',    'label', $this->_('Code Name'),
-                'description', $this->_('Optional extra name to link the field to program code.')
+        $this->set('gtf_field_code',    'label', $this->_('Field code'),
+                'description', $this->_('Optional code name to link the field to program code.')
                 );
         $this->set('gtf_to_track_info', 'label', $this->_('In description'),
                 'description', $this->_('Add this field to the track description'),

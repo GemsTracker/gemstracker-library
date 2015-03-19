@@ -102,7 +102,10 @@ class Gems_Default_CommTemplateAction extends Gems_Controller_ModelSnippetAction
             $translationModel->setFilter(array('gctt_lang' => $defaultLanguage));
         }
 
-        $model->set('gct_code', 'label', $this->_('Code'), 'size', 50, 'description', $this->_('Only for programmers.'));
+        $model->set('gct_code', 'label', $this->_('Template code'),
+                'size', 50,
+                'description', $this->_('Optional code name to link the template to program code.')
+                );
         $transformer = new MUtil_Model_Transform_RequiredRowsTransformer();
         $transformer->setRequiredRows($requiredRows);
         $translationModel->addTransformer($transformer);

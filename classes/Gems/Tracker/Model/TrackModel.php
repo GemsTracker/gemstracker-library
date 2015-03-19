@@ -120,9 +120,9 @@ class Gems_Tracker_Model_TrackModel extends \MUtil_Model_TableModel
         $this->set('gtr_date_until',    'label', $translator->_('Use until'),
                 'dateFormat', $dateFormat,
                 'formatFunction', $translated->formatDateForever);
-        $this->setIfExists('gtr_code',  'label', $translator->_('Code name'),
+        $this->setIfExists('gtr_code',  'label', $translator->_('Track code'),
                 'size', 10,
-                'description', $translator->_('Only for programmers.'));
+                'description', $translator->_('Optional code name to link the track to program code.'));
 
         if ($detailed) {
             $events = $this->loader->getEvents();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -43,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.1
  */
-interface Gems_Event_TrackCompletedEventInterface extends Gems_Event_EventInterface
+interface Gems_Event_TrackCompletedEventInterface extends \Gems_Event_EventInterface
 {
     /**
      * Process the data and do what must be done

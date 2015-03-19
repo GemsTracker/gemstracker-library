@@ -45,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Event_EventCalculations
+class Gems_Event_EventCalculations extends \MUtil_Translate_TranslateableAbstract
 {
     /**
      * Adds value to $results when it is different from the value in $tokenAnswers.
@@ -83,7 +83,7 @@ class Gems_Event_EventCalculations
             }
         }
 
-        // MUtil_Echo::track($results);
+        // \MUtil_Echo::track($results);
 
         return $results;
     }

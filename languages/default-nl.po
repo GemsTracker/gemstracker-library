@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker NL\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 17:47+0100\n"
+"POT-Creation-Date: 2015-03-19 18:19+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -116,7 +116,7 @@ msgstr "Naam"
 #: classes/Gems/Agenda/AppointmentFilterModel.php:170
 #: classes/Gems/Default/ConsentAction.php:74
 #: classes/Gems/Default/DatabaseAction.php:214
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:824
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:830
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:238
 msgid "Order"
 msgstr "Volgorde"
@@ -141,7 +141,7 @@ msgstr ""
 #: classes/Gems/Default/SourceAction.php:242
 #: classes/Gems/Model/OrganizationModel.php:124
 #: classes/Gems/Snippets/Survey/SurveyMaintenanceSearchSnippet.php:68
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:835
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:848
 #: classes/Gems/Tracker/Model/TrackModel.php:115
 #: classes/Gems/Util/TrackData.php:185
 #: classes/OpenRosa/Model/OpenRosaFormModel.php:70
@@ -535,7 +535,7 @@ msgstr "%s is onbekend."
 #: classes/Gems/Snippets/ModelFormSnippetAbstract.php:335
 #: classes/Gems/Snippets/ModelItemTableSnippetAbstract.php:192
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:125
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:185
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:189
 #: classes/Gems/Tracker/Snippets/ShowRoundSnippetAbstract.php:193
 #: classes/MUtil/Snippets/WizardFormSnippetAbstract.php:256
 #: snippets/Generic/CurrentButtonRowSnippet.php:77
@@ -640,25 +640,12 @@ msgid "Split multiple import matches using '|'."
 msgstr "Zet een '|' tussen verschillende import koppelingen."
 
 #: classes/Gems/Default/AgendaActivityAction.php:151
-#: classes/Gems/Default/AgendaProcedureAction.php:151
-#: classes/Gems/Default/LocationAction.php:170
-#: classes/Gems/Default/SurveyMaintenanceAction.php:444
-#: classes/Gems/Model/OrganizationModel.php:117
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:836
-#: classes/Gems/Tracker/Model/TrackModel.php:123
-msgid "Code name"
-msgstr "Code naam"
+msgid "Activity code"
+msgstr "Activiteitscode"
 
 #: classes/Gems/Default/AgendaActivityAction.php:153
-#: classes/Gems/Default/AgendaProcedureAction.php:153
-#: classes/Gems/Default/CommTemplateAction.php:105
-#: classes/Gems/Default/LocationAction.php:172
-#: classes/Gems/Default/SurveyMaintenanceAction.php:445
-#: classes/Gems/Model/OrganizationModel.php:118
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:836
-#: classes/Gems/Tracker/Model/TrackModel.php:125
-msgid "Only for programmers."
-msgstr "Uitsluitend voor programmeurs."
+msgid "Optional code name to link the activity to program code."
+msgstr "Optionele code naam om de activiteit aan programma code te koppelen."
 
 #: classes/Gems/Default/AgendaActivityAction.php:156
 #: classes/Gems/Default/AgendaProcedureAction.php:156
@@ -728,6 +715,14 @@ msgstr ""
 "Een procedure beschrijft de effecten van een afspraak op de patiënt:\n"
 "bijvoorbeeld conditie verbetering, verheldering, verlichting, een specifieke "
 "operatie, zekerheid, etc..."
+
+#: classes/Gems/Default/AgendaProcedureAction.php:151
+msgid "Procedure code"
+msgstr "Procedurecode"
+
+#: classes/Gems/Default/AgendaProcedureAction.php:153
+msgid "Optional code name to link the procedure to program code."
+msgstr "Optionele code naam om de procedure aan programma code te koppelen."
 
 #: classes/Gems/Default/AgendaProcedureAction.php:161
 msgid "When checked appointments with these procedures are not imported."
@@ -874,7 +869,7 @@ msgstr "De vragenlijst voor kenmerk %s is niet meer in gebruik."
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:64
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:155
 #: classes/Gems/Tracker/Engine/StepEngineAbstract.php:717
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:819
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:820
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:290
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:144
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:176
@@ -912,12 +907,13 @@ msgstr "Ronde"
 #: classes/Gems/Snippets/Mail/TokenMailFormSnippet.php:66
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:148
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:119
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:822
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:826
 #: classes/Gems/Tracker/Model/StandardTokenModel.php:278
 msgid "Survey"
 msgstr "Vragenlijst"
 
 #: classes/Gems/Default/ChartconfigAction.php:63
+#: classes/Gems/Default/SurveyMaintenanceAction.php:444
 msgid "Survey code"
 msgstr "Vragenlijst code"
 
@@ -931,7 +927,7 @@ msgstr "Vragenlijst code"
 #: classes/Gems/Default/UpgradeAction.php:199
 #: classes/Gems/Export/RespondentExport.php:336
 #: classes/Gems/Snippets/Tracker/TrackSurveyOverviewSnippet.php:123
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:825
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:834
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:293
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:145
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:191
@@ -1108,21 +1104,23 @@ msgid "Message"
 msgstr "Bericht"
 
 #: classes/Gems/Default/CommTemplateAction.php:105
-#: classes/Gems/Default/ReceptionAction.php:84
-#: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:230
-msgid "Code"
-msgstr "Code"
+msgid "Template code"
+msgstr "Sjabloon code"
 
-#: classes/Gems/Default/CommTemplateAction.php:118
+#: classes/Gems/Default/CommTemplateAction.php:107
+msgid "Optional code name to link the template to program code."
+msgstr "Optionele code naam om het sjabloon aan programma code te koppelen"
+
+#: classes/Gems/Default/CommTemplateAction.php:121
 msgid "New template"
 msgstr "Nieuw sjabloon"
 
-#: classes/Gems/Default/CommTemplateAction.php:125
+#: classes/Gems/Default/CommTemplateAction.php:128
 #, php-format
 msgid "Edit template: %s"
 msgstr "Bewerk sjabloon: %s"
 
-#: classes/Gems/Default/CommTemplateAction.php:130
+#: classes/Gems/Default/CommTemplateAction.php:133
 #: classes/Gems/Default/MailTemplateAction.php:100
 msgid "Email templates"
 msgstr "Email sjabloon"
@@ -1686,7 +1684,7 @@ msgid "Contents of %s %s"
 msgstr "De inhoud van %s %s"
 
 #: classes/Gems/Default/ExportAction.php:108
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:151
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:155
 #: classes/Gems/Tracker/Snippets/AnswerModelSnippetGeneric.php:161
 msgid "Question"
 msgstr "Vraag"
@@ -2057,7 +2055,7 @@ msgstr "Ongeldige taal instelling."
 
 #: classes/Gems/Default/LocationAction.php:158
 #: classes/Gems/Email/MailTemplateForm.php:102 classes/Gems/Menu.php:216
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:846
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:865
 #: classes/Gems/Tracker/Model/TrackModel.php:150
 msgid "Organizations"
 msgstr "Organisaties"
@@ -2067,6 +2065,14 @@ msgstr "Organisaties"
 msgid "Checked organizations see this organizations respondents."
 msgstr ""
 "Geselecteerde organisaties kunnen de patiënten van deze organisatie bekijken."
+
+#: classes/Gems/Default/LocationAction.php:170
+msgid "Location code"
+msgstr "Locatiecode"
+
+#: classes/Gems/Default/LocationAction.php:172
+msgid "Optional code name to link the location to program code."
+msgstr "Optionele code naam om de locatie aan programma code te koppelen."
 
 #: classes/Gems/Default/LocationAction.php:174
 msgid "Location url"
@@ -2767,6 +2773,11 @@ msgstr "Tot"
 msgid "Active tracks"
 msgstr "Beschikbare trajecten"
 
+#: classes/Gems/Default/ReceptionAction.php:84
+#: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:230
+msgid "Code"
+msgstr "Code"
+
 #: classes/Gems/Default/ReceptionAction.php:87
 msgid "Is success code"
 msgstr "Is succes code"
@@ -3454,7 +3465,7 @@ msgid "This survey has not been assigned to this respondent."
 msgstr "Deze vragenlijst is nog niet aan deze patiënt toegewezen."
 
 #: classes/Gems/Default/SurveyActionOld.php:91
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:178
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:182
 #, php-format
 msgid "Survey %s does not exist."
 msgstr "Vragenlijst %s bestaat niet."
@@ -3593,6 +3604,10 @@ msgstr "Berekende afnametijd"
 msgid "Result field"
 msgstr "Resultaat veld"
 
+#: classes/Gems/Default/SurveyMaintenanceAction.php:445
+msgid "Optional code name to link the survey to program code."
+msgstr "Optionele code naam om de vragenlijst aan programma code te koppelen."
+
 #: classes/Gems/Default/SurveyMaintenanceAction.php:452
 msgid "Before answering"
 msgstr "Voor beantwoording"
@@ -3603,7 +3618,7 @@ msgid "After completion"
 msgstr "Na afronding"
 
 #: classes/Gems/Default/SurveyMaintenanceAction.php:466
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:833
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:844
 msgid "Answer display"
 msgstr "Antwoord weergave"
 
@@ -4338,23 +4353,39 @@ msgstr "%d emails verzonden en %d kenmerken bijgewerkt."
 msgid "Invalid e-mail address '%s'."
 msgstr "Ongeldig email adres '%s'."
 
-#: classes/Gems/Event/Survey/BeforeAnswering/GetPreviousAnswers.php:64
-msgid "Previous Version Answers Lookup"
-msgstr "Antwoorden overnemen van vorige keer"
+#: classes/Gems/Event/Survey/BeforeAnswering/GetPreviousAnswers.php:65
+msgid "Lookup answers in previous instance of survey in track."
+msgstr ""
+"Antwoorden overnemen van vorige instantie van vragenlijst binnen traject."
 
-#: classes/Gems/Event/Survey/BeforeAnswering/GetPreviousAnswersByCode.php:64
-msgid "Previous Answers Lookup using Survey Code"
-msgstr "Antwoorden overnemen van vorige vragenlijst met dezelfde code"
+#: classes/Gems/Event/Survey/BeforeAnswering/GetPreviousAnswersByCode.php:65
+msgid "Lookup answers in previous survey with the same survey code in track."
+msgstr ""
+"Antwoorden overnemen van vorige vragenlijst met dezelfde vragenlijst code "
+"binnen traject."
 
-#: classes/Gems/Event/Survey/Display/AllOfSurvey.php:73
+#: classes/Gems/Event/Survey/Completed/BmiCalculation.php:57
+msgid "Bmi Calculation"
+msgstr "BMI berekening"
+
+#: classes/Gems/Event/Survey/Completed/DisplayVars.php:60
+msgid "Echo the survey answers for testing"
+msgstr "Echo de antwoorden voor tests"
+
+#: classes/Gems/Event/Survey/Display/AllOfSurvey.php:68
 msgid "Show all answers for this survey type"
 msgstr "Toon alle antwoorden voor deze vragenlijst"
 
-#: classes/Gems/Event/Survey/Display/AllSingleTrack.php:86
+#: classes/Gems/Event/Survey/Display/AllOfSurveyWithCharts.php:73
+#, php-format
+msgid "%s with chart"
+msgstr "%s met chart"
+
+#: classes/Gems/Event/Survey/Display/AllSingleTrack.php:81
 msgid "Show all tokens for this survey in this track type"
 msgstr "Toon alle antwoorden voor deze vragenlijst in dit traject type"
 
-#: classes/Gems/Event/Survey/Display/ByValue.php:87
+#: classes/Gems/Event/Survey/Display/ByValue.php:86
 msgid "Show the highest answer first."
 msgstr "Toon het hoogste antwoord eerst."
 
@@ -4387,11 +4418,8 @@ msgid "Yes answers on top."
 msgstr "Ja antwoorden bovenaan."
 
 #: classes/Gems/Event/Track/FieldUpdate/HideWhenNoAppointment.php:63
-msgid ""
-"Skip rounds whose appointment is not yet set, hiding them from the user."
-msgstr ""
-"Als rondes over als de bijbehorende afspraak nog niet ingesteld is, zodat "
-"deze voor de gebruiker verborgen blijven."
+msgid "Skip rounds without a valid appointment, hiding them for the user."
+msgstr "Verberg rondes zonder bijbehorende afspraak voor de gebruiker"
 
 #: classes/Gems/Event/Track/FieldUpdate/HideWhenNoAppointment.php:105
 msgid "Skipped until appointment is set"
@@ -4926,7 +4954,6 @@ msgid "Reset to default values"
 msgstr "Reset template"
 
 #: classes/Gems/Menu/MenuAbstract.php:657
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Wijzig wachtwoord"
 
@@ -5127,6 +5154,14 @@ msgstr ""
 "spatie gescheiden url's wordt aangeroepen. De eerste url wordt gebruikt voor "
 "emails."
 
+#: classes/Gems/Model/OrganizationModel.php:117
+msgid "Organization code"
+msgstr "Organisatiecode"
+
+#: classes/Gems/Model/OrganizationModel.php:118
+msgid "Optional code name to link the organization to program code."
+msgstr "Optionele code naam om de organisatie aan programma code te koppelen."
+
 #: classes/Gems/Model/OrganizationModel.php:120
 msgid "Healtcare provider id"
 msgstr "Zorginstelling identificatie"
@@ -5148,7 +5183,7 @@ msgid "Contact email"
 msgstr "Contact email"
 
 #: classes/Gems/Model/OrganizationModel.php:139
-#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:9
+#: classes/Gems/User/Form/LoginForm.php:161
 msgid "Login"
 msgstr "Inloggen"
 
@@ -5729,20 +5764,24 @@ msgstr "(iedere status)"
 msgid "(any insertable)"
 msgstr "(elke in te voegen)"
 
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:155
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:151
+msgid "Question code"
+msgstr "Vraagcode"
+
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:159
 msgid "Answer options"
 msgstr "Antwoord opties"
 
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:173
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:177
 #, php-format
 msgid "Questions in survey %s"
 msgstr "Vragen in vragenlijst %s"
 
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:176
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:180
 msgid "Survey not found"
 msgstr "Vragenlijst niet gevonden"
 
-#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:180
+#: classes/Gems/Snippets/Survey/SurveyQuestionsSnippet.php:184
 msgid "Survey not specified."
 msgstr "Vragenlijst niet opgegeven."
 
@@ -6147,15 +6186,24 @@ msgstr "%d: %s"
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:823
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:829
 msgid "Icon"
 msgstr "Icoon"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:829
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:840
 msgid "After change"
 msgstr "Ronde veranderingscode"
 
-#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:867
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:852
+msgid "Round code"
+msgstr "Ronde code"
+
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:853
+#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:248
+msgid "Optional code name to link the field to program code."
+msgstr "Optionele code naam om het veld aan programma code te koppelen."
+
+#: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:888
 msgid "Organization specific round"
 msgstr "Organisatiespecifieke ronde"
 
@@ -6259,12 +6307,8 @@ msgid "Separate multiple values with a vertical bar (|)"
 msgstr "Scheidt meerdere waarden met verticale streep (|)"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:247
-msgid "Code Name"
-msgstr "Code Naam"
-
-#: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:248
-msgid "Optional extra name to link the field to program code."
-msgstr "Optie: extra naam om dit veld te koppelen aan programma code."
+msgid "Field code"
+msgstr "Veldcode"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:250
 msgid "In description"
@@ -6374,6 +6418,14 @@ msgstr "Traject type"
 #: classes/Gems/Tracker/Model/TrackModel.php:120
 msgid "Use until"
 msgstr "Geldig tot"
+
+#: classes/Gems/Tracker/Model/TrackModel.php:123
+msgid "Track code"
+msgstr "Traject code"
+
+#: classes/Gems/Tracker/Model/TrackModel.php:125
+msgid "Optional code name to link the track to program code."
+msgstr "Optionele code naam om het traject aan programma code te koppelen."
 
 #: classes/Gems/Tracker/Model/TrackModel.php:132
 msgid "Before (re)calculation"
@@ -7893,6 +7945,21 @@ msgid_plural ""
 "After this survey there are another %d surveys we would like you to answer."
 msgstr[0] "Na deze vragenlijst hebben we nog één andere vragenlijst voor u."
 msgstr[1] "Na deze vragenlijst hebben we nog %d andere vragenlijsten voor u."
+
+#~ msgid "Code name"
+#~ msgstr "Code naam"
+
+#~ msgid "Only for programmers."
+#~ msgstr "Uitsluitend voor programmeurs."
+
+#~ msgid "Previous Version Answers Lookup"
+#~ msgstr "Antwoorden overnemen van vorige keer"
+
+#~ msgid "Previous Answers Lookup using Survey Code"
+#~ msgstr "Antwoorden overnemen van vorige vragenlijst met dezelfde code"
+
+#~ msgid "Code Name"
+#~ msgstr "Code Naam"
 
 #~ msgid "The whole or partial content of the appointment subject."
 #~ msgstr "De hele of gedeeltelijk inhoud van het onderwerp van de afspraak."

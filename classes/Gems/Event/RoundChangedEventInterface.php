@@ -37,7 +37,7 @@
 /**
  * After a round has changed/completed run this code.
  *
- * As it passes Gems_Tracker objects it is more powerfull than survey completion events,
+ * As it passes \Gems_Tracker objects it is more powerfull than survey completion events,
  * but then the code may be more difficult to implement.
  *
  * @package    Gems
@@ -46,17 +46,17 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-interface Gems_Event_RoundChangedEventInterface extends Gems_Event_EventInterface
+interface Gems_Event_RoundChangedEventInterface extends \Gems_Event_EventInterface
 {
     /**
      * Process the token and return true when data has changed.
      *
      * The event has to handle the actual storage of the changes.
      *
-     * @param Gems_Tracker_Token $token
-     * @param Gems_Tracker_RespondentTrack $respondentTrack
+     * @param \Gems_Tracker_Token $token
+     * @param \Gems_Tracker_RespondentTrack $respondentTrack
      * @param int $userId The current user
      * @return int The number of tokens changed by this event
      */
-    public function processChangedRound(Gems_Tracker_Token $token, Gems_Tracker_RespondentTrack $respondentTrack, $userId);
+    public function processChangedRound(\Gems_Tracker_Token $token, \Gems_Tracker_RespondentTrack $respondentTrack, $userId);
 }

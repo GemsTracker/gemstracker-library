@@ -44,13 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.2
  */
-class Gems_Event_Survey_Display_OnlyAnsweredWithCharts extends Gems_Event_Survey_Display_OnlyAnswered
+class Gems_Event_Survey_Display_OnlyAnsweredWithCharts extends \Gems_Event_Survey_Display_OnlyAnswered
 {
-    public function getEventName() {
-     return parent::getEventName() . ' with chart';
-    }
-
-    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token) {
+    /**
+     * Function that returns the snippets to use for this display.
+     *
+     * @param \Gems_Tracker_Token $token The token to get the snippets for
+     * @return array of Snippet names or nothing
+     */
+    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
+    {
         $snippets = parent::getAnswerDisplaySnippets($token);
         if (!is_array($snippets)) {
         	$snippets = array($snippets);
@@ -58,5 +61,15 @@ class Gems_Event_Survey_Display_OnlyAnsweredWithCharts extends Gems_Event_Survey
         // Add the ScoreChartsSnippet
         $snippets[] = 'Survey_Display_ScoreChartsSnippet';
         return $snippets;
+    }
+
+    /**
+     * A pretty name for use in dropdown selection boxes.
+     *
+     * @return string Name
+     */
+    public function getEventName()
+    {
+        return sprintf($this->_('%s with chart'), parent::getEventName());
     }
 }

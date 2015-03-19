@@ -810,30 +810,49 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
      */
     public function getRoundModel($detailed, $action)
     {
-        $model = $this->createRoundModel();
+        $model      = $this->createRoundModel();
+        $translated = $this->util->getTranslated();
 
         // Set the keys to the parameters in use.
         $model->setKeys(array(\MUtil_Model::REQUEST_ID => 'gro_id_track', \Gems_Model::ROUND_ID => 'gro_id_round'));
 
         if ($detailed) {
-            $model->set('gro_id_track',  'label', $this->_('Track'), 'elementClass', 'exhibitor', 'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks));
+            $model->set('gro_id_track',      'label', $this->_('Track'),
+                    'elementClass', 'exhibitor',
+                    'multiOptions', \MUtil_Lazy::call($this->util->getTrackData()->getAllTracks)
+                    );
         }
 
-        $model->set('gro_id_survey',         'label', $this->_('Survey'),         'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions());
+        $model->set('gro_id_survey',         'label', $this->_('Survey'),
+                'multiOptions', $this->util->getTrackData()->getAllSurveysAndDescriptions()
+                );
         $model->set('gro_icon_file',         'label', $this->_('Icon'));
-        $model->set('gro_id_order',          'label', $this->_('Order'),          'default', 10, 'validators[]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track')));
-        $model->set('gro_round_description', 'label', $this->_('Description'),    'size', '30'); //, 'minlength', 4, 'required', true);
+        $model->set('gro_id_order',          'label', $this->_('Order'),
+                'default', 10,
+                'validators[uni]', $model->createUniqueValidator(array('gro_id_order', 'gro_id_track'))
+                );
+        $model->set('gro_round_description', 'label', $this->_('Description'),
+                'size', '30'
+                ); //, 'minlength', 4, 'required', true);
 
         $list = $this->events->listRoundChangedEvents();
         if (count($list) > 1) {
-            $model->set('gro_changed_event',     'label', $this->_('After change'),   'multiOptions', $list);
+            $model->set('gro_changed_event', 'label', $this->_('After change'),   'multiOptions', $list);
         }
         $list = $this->events->listSurveyDisplayEvents();
         if (count($list) > 1) {
-            $model->set('gro_display_event',     'label', $this->_('Answer display'), 'multiOptions', $list);
+            $model->set('gro_display_event', 'label', $this->_('Answer display'),
+                    'multiOptions', $list
+                    );
         }
-        $model->set('gro_active',            'label', $this->_('Active'),         'multiOptions', $this->util->getTranslated()->getYesNo(), 'elementClass', 'checkbox');
-        $model->setIfExists('gro_code',          'label', $this->_('Code name'), 'size', 10, 'description', $this->_('Only for programmers.'));
+        $model->set('gro_active',            'label', $this->_('Active'),
+                'elementClass', 'checkbox',
+                'multiOptions', $translated->getYesNo()
+                );
+        $model->setIfExists('gro_code',      'label', $this->_('Round code'),
+                'description', $this->_('Optional code name to link the field to program code.'),
+                'size', 10
+                );
 
         $model->addColumn(
             "CASE WHEN gro_active = 1 THEN '' ELSE 'deleted' END",
@@ -862,11 +881,14 @@ abstract class Gems_Tracker_Engine_TrackEngineAbstract extends \MUtil_Translate_
                 // Intentional fall through
                 // break;
             case 'edit':
-            	$model->set('gro_icon_file', 'multiOptions', $this->util->getTranslated()->getEmptyDropdownArray() + $this->_getAvailableIcons());
+            	$model->set('gro_icon_file',
+                        'multiOptions', $translated->getEmptyDropdownArray() + $this->_getAvailableIcons()
+                        );
                 $model->set('org_specific_round',
                         'label', $this->_('Organization specific round'),
-                        'multiOptions', $this->util->getTranslated()->getYesNo(),
-                        'elementClass', 'radio');
+                        'multiOptions', $translated->getYesNo(),
+                        'elementClass', 'radio'
+                        );
 
                 break;
 

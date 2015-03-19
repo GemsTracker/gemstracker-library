@@ -167,9 +167,9 @@ class Gems_Default_LocationAction extends \Gems_Controller_ModelSnippetActionAbs
                 'description', $this->_("Split multiple import matches using '|'.")
                 );
 
-        $model->setIfExists('glo_code',        'label', $this->_('Code name'),
+        $model->setIfExists('glo_code',        'label', $this->_('Location code'),
                 'size', 10,
-                'description', $this->_('Only for programmers.'));
+                'description', $this->_('Optional code name to link the location to program code.'));
 
         $model->setIfExists('glo_url',         'label', $this->_('Location url'),
                 'description', $this->_('Complete url for location: http://www.domain.etc'),

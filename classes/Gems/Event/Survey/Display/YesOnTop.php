@@ -48,20 +48,20 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAbstract
+class Gems_Event_Survey_Display_YesOnTop extends \Gems_Event_SurveyAnswerFilterAbstract
 {
     /**
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+     * @see \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function filterAnswers(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames)
     {
         if (! $this->token->isCompleted()) {
             return $currentNames;
@@ -70,7 +70,7 @@ class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAb
         $answers  = $this->token->getRawAnswers();
         $onTop    = array();
 
-        // MUtil_Echo::track($answers);
+        // \MUtil_Echo::track($answers);
 
         foreach($answers as $name => $value) {
             if ($value === 'Y') {
@@ -86,7 +86,7 @@ class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAb
         }
 
         $currentNames = array_combine($currentNames, $currentNames);
-        // MUtil_Echo::track($onTop, $onTop + $currentNames, $currentNames);
+        // \MUtil_Echo::track($onTop, $onTop + $currentNames, $currentNames);
 
         return $this->restoreHeaderPositions($model, $onTop + $currentNames);
     }
@@ -98,6 +98,6 @@ class Gems_Event_Survey_Display_YesOnTop extends Gems_Event_SurveyAnswerFilterAb
      */
     public function getEventName()
     {
-        return $this->translate->_('Yes answers on top.');
+        return $this->_('Yes answers on top.');
     }
 }

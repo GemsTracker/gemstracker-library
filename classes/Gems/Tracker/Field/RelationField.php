@@ -75,11 +75,11 @@ class RelationField extends FieldAbstract
                         CASE WHEN gsf_id_user IS NULL
                             THEN CONCAT(
                                 COALESCE(CONCAT(grr_first_name, ' '), ''),
-                                COALESCE(CONCAT(gsf_surname_prefix, ' '), ''),
                                 COALESCE(grr_last_name, '')
                                 )
                             ELSE CONCAT(
                                 COALESCE(CONCAT(gsf_first_name, ' '), ''),
+                                COALESCE(CONCAT(gsf_surname_prefix, ' '), ''),
                                 COALESCE(gsf_last_name, '')
                                 )
                         END

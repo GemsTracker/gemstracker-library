@@ -44,16 +44,16 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class Gems_Event_Survey_Display_ShowHiddenFields extends MUtil_Translate_TranslateableAbstract
-    implements Gems_Event_SurveyDisplayEventInterface
+class Gems_Event_Survey_Display_ShowHiddenFields extends \MUtil_Translate_TranslateableAbstract
+    implements \Gems_Event_SurveyDisplayEventInterface
 {
     /**
      * Function that returns the snippets to use for this display.
      *
-     * @param Gems_Tracker_Token $token The token to get the snippets for
+     * @param \Gems_Tracker_Token $token The token to get the snippets for
      * @return array of Snippet names or nothing
      */
-    public function getAnswerDisplaySnippets(Gems_Tracker_Token $token)
+    public function getAnswerDisplaySnippets(\Gems_Tracker_Token $token)
     {
         return 'Tracker_Answers_TrackAllAnswersModelSnippet';
     }
@@ -65,6 +65,6 @@ class Gems_Event_Survey_Display_ShowHiddenFields extends MUtil_Translate_Transla
      */
     public function getEventName()
     {
-        return $this->translate->_('Display all answers, including those without a label.');
+        return $this->_('Display all answers, including those without a label.');
     }
 }

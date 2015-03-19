@@ -43,27 +43,58 @@
  * @license    New BSD License
  * @since      Class available since version 1.0
  */
-class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
+class MUtil_Lazy_Repeatable implements \MUtil_Lazy_RepeatableInterface
 {
+    /**
+     * When true array, otherwise interator
+     *
+     * @var boolean
+     */
     protected $_arrayMode;
+
+    /**
+     * The current item as changing for each iteration
+     *
+     * @var mixed
+     */
     protected $_currentItem;
+
+    /**
+     * Static lazy object used to for all Lazy call's and get's for data
+     *
+     * @var \MUtil_Lazy_Call
+     */
     protected $_currentLazy;
+
+    /**
+     *
+     * @var mixed The actual array or Iterator or IteratorAggregate or other item to repeat
+     */
     protected $_repeatable;
+
+    /**
+     *
+     * @var mixed The array or Iterator that repeats
+     */
     protected $_repeater = null;
 
     /**
      * Return a lazy version of the call
      *
-     * @return MUtil_Lazy_Call
+     * @return \MUtil_Lazy_Call
      */
     public function __call($name, array $arguments)
     {
-        return new MUtil_Lazy_Call(array($this->_currentLazy, $name), $arguments);
+        return new \MUtil_Lazy_Call(array($this->_currentLazy, $name), $arguments);
     }
 
+    /**
+     *
+     * @param mixed $repeatable The array or Iterator or IteratorAggregate or other item to repeat
+     */
     public function __construct($repeatable)
     {
-        $this->_currentLazy = new MUtil_Lazy_Call(array($this, '__current'));
+        $this->_currentLazy = new \MUtil_Lazy_Call(array($this, '__current'));
         $this->_repeatable  = $repeatable;
     }
 
@@ -84,11 +115,11 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_Property
+     * @return \MUtil_Lazy_Property
      */
     public function __get($name)
     {
-        return new MUtil_Lazy_Property($this->_currentLazy, $name);
+        return new \MUtil_Lazy_Property($this->_currentLazy, $name);
     }
 
     /**
@@ -99,7 +130,7 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
     public function __getRepeatable()
     {
         $value = $this->_repeatable;
-        while ($value instanceof MUtil_Lazy_LazyInterface) {
+        while ($value instanceof \MUtil_Lazy_LazyInterface) {
             $value = $value->__toValue(array());
         }
 
@@ -140,7 +171,7 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
 
         if (is_array($this->_currentItem)) {
             // Make the array elements accessible as properties
-            $this->_currentItem = new ArrayObject($this->_currentItem, ArrayObject::ARRAY_AS_PROPS);
+            $this->_currentItem = new \ArrayObject($this->_currentItem, \ArrayObject::ARRAY_AS_PROPS);
         }
 
         return $this->_currentItem;
@@ -149,11 +180,11 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
     /**
      * Return a lazy version of the property retrieval
      *
-     * @return MUtil_Lazy_Property
+     * @return \MUtil_Lazy_Property
      */
     public function __set($name, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     /**
@@ -165,7 +196,7 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
     {
         $value = $this->__getRepeatable();
 
-        // MUtil_Echo::r($value);
+        // \MUtil_Echo::r($value);
 
         if (is_array($value)) {
             $this->_repeater  = $value;
@@ -207,16 +238,16 @@ class MUtil_Lazy_Repeatable implements MUtil_Lazy_RepeatableInterface
 
     public function offsetGet($offset)
     {
-        return new MUtil_Lazy_ArrayAccessor($this->_currentLazy, $offset);
+        return new \MUtil_Lazy_ArrayAccessor($this->_currentLazy, $offset);
     }
 
     public function offsetSet($offset, $value)
     {
-        throw new MUtil_Lazy_LazyException('You cannot set a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot set a Lazy object.');
     }
 
     public function offsetUnset($offset)
     {
-        throw new MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
+        throw new \MUtil_Lazy_LazyException('You cannot unset a Lazy object.');
     }
 }

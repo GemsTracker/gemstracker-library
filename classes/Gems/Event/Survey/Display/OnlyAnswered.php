@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.5.6
  */
-class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilterAbstract
+class Gems_Event_Survey_Display_OnlyAnswered extends \Gems_Event_SurveyAnswerFilterAbstract
 {
 
     /**
@@ -80,14 +80,14 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
      * This function is called in addBrowseTableColumns() to filter the names displayed
      * by AnswerModelSnippetGeneric.
      *
-     * @see Gems_Tracker_Snippets_AnswerModelSnippetGeneric
+     * @see \Gems_Tracker_Snippets_AnswerModelSnippetGeneric
      *
-     * @param MUtil_Model_Bridge_TableBridge $bridge
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_Bridge_TableBridge $bridge
+     * @param \MUtil_Model_ModelAbstract $model
      * @param array $currentNames The current names in use (allows chaining)
      * @return array Of the names of labels that should be shown
      */
-    public function filterAnswers(MUtil_Model_Bridge_TableBridge $bridge, MUtil_Model_ModelAbstract $model, array $currentNames)
+    public function filterAnswers(\MUtil_Model_Bridge_TableBridge $bridge, \MUtil_Model_ModelAbstract $model, array $currentNames)
     {
         $rows = $bridge->getRows();
         if (! $rows) {
@@ -101,7 +101,7 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
         }
 
         $results = array_intersect($currentNames, array_keys($keys), array_keys($this->token->getRawAnswers()));
-        // MUtil_Echo::track($results);
+        // \MUtil_Echo::track($results);
 
         $results = $this->restoreHeaderPositions($model, $results);
 
@@ -119,6 +119,6 @@ class Gems_Event_Survey_Display_OnlyAnswered extends Gems_Event_SurveyAnswerFilt
      */
     public function getEventName()
     {
-        return $this->translate->_('Display only the questions with an answer.');
+        return $this->_('Display only the questions with an answer.');
     }
 }

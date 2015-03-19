@@ -147,6 +147,10 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
     protected function addColumns(\MUtil_Html_TableElement $table)
     {
         $table->addColumn(
+                array(\MUtil_Html::raw($this->repeater->key), 'class' => $this->repeater->class),
+                $this->_('Question code')
+                );
+        $table->addColumn(
                 array(\MUtil_Html::raw($this->repeater->question), 'class' => $this->repeater->class),
                 $this->_('Question')
                 );
@@ -187,6 +191,7 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
 
         return $div;
     }
+
     /**
      * The place to check if the data set in the snippet is valid
      * to generate the snippet.
@@ -247,8 +252,8 @@ class SurveyQuestionsSnippet extends \MUtil_Snippets_TableSnippetAbstract
         }
         // Load the data
         if (($this->survey instanceof \Gems_Tracker_Survey) && $this->survey->exists) {
-            $this->data   = $this->survey->getQuestionInformation($this->locale->getLanguage());
-            // \MUtil_Echo::track($this->data);
+            $this->data = \MUtil_Ra::addKey($this->survey->getQuestionInformation($this->locale->getLanguage()), 'key');
+            //\MUtil_Echo::track($this->data);
         }
 
         return parent::hasHtmlOutput();

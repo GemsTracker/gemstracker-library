@@ -148,9 +148,9 @@ e.g. consult, check-up, diet, operation, physiotherapy or other.'),
                 'description', $this->_("Split multiple import matches using '|'.")
                 );
 
-        $model->setIfExists('gaa_code',        'label', $this->_('Code name'),
+        $model->setIfExists('gaa_code',        'label', $this->_('Activity code'),
                 'size', 10,
-                'description', $this->_('Only for programmers.'));
+                'description', $this->_('Optional code name to link the activity to program code.'));
 
         $model->setIfExists('gaa_active',      'label', $this->_('Active'),
                 'description', $this->_('Inactive means assignable only through automatich processes.'),

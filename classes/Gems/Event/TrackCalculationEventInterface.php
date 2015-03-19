@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-interface Gems_Event_TrackCalculationEventInterface extends Gems_Event_EventInterface
+interface Gems_Event_TrackCalculationEventInterface extends \Gems_Event_EventInterface
 {
     /**
      * Process the data and do what must be done
