@@ -63,6 +63,30 @@ class RelationField extends FieldAbstract
     protected $_effecteds = array('multiOptions');
 
     /**
+     * Query for respondent infomration.
+     *
+     * Can be changed by project specific classes
+     *
+     * @var string
+     */
+    protected $_sql = "SELECT grr_id,
+                    CONCAT(
+                        COALESCE(CONCAT(grr_type, ' '), ''),
+                        CASE WHEN gsf_id_user IS NULL
+                            THEN CONCAT(
+                                COALESCE(CONCAT(grr_first_name, ' '), ''),
+                                COALESCE(CONCAT(gsf_surname_prefix, ' '), ''),
+                                COALESCE(grr_last_name, '')
+                                )
+                            ELSE CONCAT(
+                                COALESCE(CONCAT(gsf_first_name, ' '), ''),
+                                COALESCE(gsf_last_name, '')
+                                )
+                        END
+                        ) AS name
+                FROM gems__respondent_relations LEFT JOIN gems__staff ON gsf_id_user = grr_id_staff
+                ";
+    /**
      *
      * @var \Zend_Db_Adapter_Abstract
      */
@@ -107,6 +131,12 @@ class RelationField extends FieldAbstract
         }
 
         // Display nice
+        $sql = $this->_sql . "WHERE grr_id = ?";
+        $row = $this->db->fetchRow($sql, $currentValue);
+
+        if ($row && isset($row['name'])) {
+            return $row['name'];
+        }
 
         return $currentValue;
     }
@@ -135,11 +165,7 @@ class RelationField extends FieldAbstract
             return null;
         }
 
-        // Need better name
-        $sql = "SELECT grr_id, COALESCE(grr_id_staff, CONCAT(grr_first_name, grr_last_name)) AS name
-            FROM gems__respondent_relations
-            WHERE grr_id_respondent = ?
-            ORDER BY grr_type";
+        $sql    = $this->_sql ."WHERE grr_id_respondent = ? ORDER BY grr_type";
         $empty  = $this->util->getTranslated()->getEmptyDropdownArray();
 
         $output['multiOptions'] = $empty + $this->db->fetchPairs($sql, $context['gr2t_id_user']);
