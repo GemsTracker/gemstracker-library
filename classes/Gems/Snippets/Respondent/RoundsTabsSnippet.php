@@ -44,7 +44,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.6.1
  */
-class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnippetAbstract
+class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnippetAbstract
 {
     /**
      * The tab values
@@ -55,7 +55,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
 
     /**
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $db;
 
@@ -71,7 +71,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
     /**
      * The RESPONDENT model, not the token model
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $model;
 
@@ -123,7 +123,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
 
     /**
      *
-     * @var Gems_Util
+     * @var \Gems_Util
      */
     protected $util;
 
@@ -146,7 +146,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
                 }
             }
             if (! $this->organizationId) {
-                $this->organizationId = $this->request->getParam(MUtil_Model::REQUEST_ID2);
+                $this->organizationId = $this->request->getParam(\MUtil_Model::REQUEST_ID2);
             }
         }
 
@@ -161,7 +161,7 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
             }
             if (! $this->respondentId) {
                 $this->respondentId = $this->util->getDbLookup()->getRespondentId(
-                        $this->request->getParam(MUtil_Model::REQUEST_ID1),
+                        $this->request->getParam(\MUtil_Model::REQUEST_ID1),
                         $this->organizationId
                         );
             }
@@ -199,63 +199,86 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends MUtil_Snippets_TabSnipp
      * When invalid data should result in an error, you can throw it
      * here but you can also perform the check in the
      * checkRegistryRequestsAnswers() function from the
-     * {@see MUtil_Registry_TargetInterface}.
+     * {@see \MUtil_Registry_TargetInterface}.
      *
      * @return boolean
      */
     public function hasHtmlOutput()
     {
         $sql = "SELECT COALESCE(gto_round_description, '') AS label,
-                        MAX(
+                        SUM(
                             CASE
-                            WHEN gto_valid_from IS NULL OR
-                                gto_valid_from > CURRENT_TIMESTAMP OR
-                                gto_valid_until < CURRENT_TIMESTAMP
-                            THEN 0
                             WHEN gto_completion_time IS NOT NULL
                             THEN 1
-                            ELSE 2
+                            ELSE 0
                             END
-                        ) AS status
+                        ) AS completed,
+                        SUM(
+                            CASE
+                            WHEN gto_completion_time IS NULL AND
+                                gto_valid_from < CURRENT_TIMESTAMP AND
+                                (gto_valid_until > CURRENT_TIMESTAMP OR gto_valid_until IS NULL)
+                            THEN 1
+                            ELSE 0
+                            END
+                        ) AS waiting,
+                        COUNT(*) AS any
                     FROM gems__tokens INNER JOIN
                         gems__reception_codes ON gto_reception_code = grc_id_reception_code
                     WHERE gto_id_respondent = ? AND
                         gto_id_organization = ? AND
                         grc_success = 1
                     GROUP BY COALESCE(gto_round_description, '')
-                    ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description, gto_id_track";
+                    ORDER BY MIN(COALESCE(gto_round_order, 100000)), gto_round_description";
 
-        $tabLabels = $this->db->fetchPairs($sql, array($this->respondentId, $this->organizationId));
+        // \MUtil_Echo::track($this->respondentId, $this->organizationId);
+        $tabLabels = $this->db->fetchAll($sql, array($this->respondentId, $this->organizationId));
 
         if ($tabLabels) {
-            $default  = null;
-            $tabState = -1;
-            $tabs     = array();
+            $default = null;
+            $filters = array();
+            $noOpen  = true;
+            $tabs    = array();
 
-            foreach ($tabLabels as $label => $state) {
-                // $name = '_' . MUtil_Form::normalizeName($label);
-                $name = $label;
+            foreach ($tabLabels as $row) {
+                $name = '_' . \MUtil_Form::normalizeName($row['label']);
+                $label = sprintf(
+                        $this->_('%s (%d/%d/%d)'),
+                        $row['label'],
+                        $row['completed'],
+                        $row['waiting'],
+                        $row['any'] - ($row['completed'] + $row['waiting'])
+                        );
 
-                if (strlen($label)) {
-                    $tabs[$name] = $label;
-                } else {
-                    $tabs[$name] = MUtil_Html::raw($this->_('&laquo;empty&raquo;'));
-                }
+                $filters[$name] = $row['label'];
+                $tabs[$name]    = $label;
 
-                if ($state > $tabState) {
+                if ($noOpen && ($row['completed'] > 0)) {
                     $default  = $name;
-                    $tabState = $state;
                 }
+                if ($row['waiting'] > 0) {
+                    $default = $name;
+                    $noOpen  = false;
+                }
+            }
+            if (null === $default) {
+                reset($filters);
+                $default = key($filters);
             }
 
             // Set the model
             $reqFilter = $this->request->getParam($this->getParameterKey());
-            if (! isset($tabs[$reqFilter])) {
+            if (! isset($filters[$reqFilter])) {
                 $reqFilter = $default;
             }
-            $this->model->setMeta('tab_filter', array('gto_round_description' => $reqFilter));
 
-            // MUtil_Echo::track($tabs, $reqFilter, $default, $tabLabels);
+            if ('' === $filters[$reqFilter]) {
+                $this->model->setMeta('tab_filter', array("(gto_round_description IS NULL OR gto_round_description = '')"));
+            } else {
+                $this->model->setMeta('tab_filter', array('gto_round_description' => $filters[$reqFilter]));
+            }
+
+            // \MUtil_Echo::track($tabs, $reqFilter, $default, $tabLabels);
 
             $this->defaultTab = $default;
             $this->_tabs      = $tabs;

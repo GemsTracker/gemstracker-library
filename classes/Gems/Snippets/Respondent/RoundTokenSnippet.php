@@ -173,32 +173,38 @@ class Gems_Snippets_Respondent_RoundTokenSnippet extends \Gems_Snippets_Responde
         if ($this->menu) {
             if ($default = $this->project->getDefaultTrackId()) {
 
-                $track = $this->loader->getTracker()->getTrackEngine($default);
+                if ($this->respondentData['grc_success']) {
+                    $track = $this->loader->getTracker()->getTrackEngine($default);
 
-                if ($track->isUserCreatable()) {
-                    $list = $this->menu->getMenuList()
-                            ->addByController('track', 'create',
-                                    sprintf($this->_('Add %s track to this respondent'), $track->getTrackName())
-                                    )
-                            ->addParameterSources(
-                                    array(
-                                        \Gems_Model::TRACK_ID   => $default,
-                                        'gtr_id_track'         => $default,
-                                        'track_can_be_created' => 1,
-                                        ),
-                                    $this->request
-                                    );
-                    $this->onEmpty = $list->getActionLink('track', 'create');
+                    if ($track->isUserCreatable()) {
+                        $list = $this->menu->getMenuList()
+                                ->addByController('track', 'create',
+                                        sprintf($this->_('Add %s track to this respondent'), $track->getTrackName())
+                                        )
+                                ->addParameterSources(
+                                        array(
+                                            \Gems_Model::TRACK_ID   => $default,
+                                            'gtr_id_track'         => $default,
+                                            'track_can_be_created' => 1,
+                                            ),
+                                        $this->request
+                                        );
+                        $this->onEmpty = $list->getActionLink('track', 'create');
+                    }
                 }
-            }
-            if (! $this->onEmpty) {
-                $list = $this->menu->getMenuList()
-                        ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
-                        ->addParameterSources($this->request);
-                $this->onEmpty = $list->getActionLink('track', 'show-track');
+                if (! $this->onEmpty) {
+                    if ($this->respondentData['grc_success']) {
+                        $list = $this->menu->getMenuList()
+                                ->addByController('track', 'show-track', $this->_('Add a track to this respondent'))
+                                ->addParameterSources($this->request);
+                        $this->onEmpty = $list->getActionLink('track', 'show-track');
+                    } else {
+                        $this->onEmpty = MUtil_Html::create('em', $this->_('No valid tokens found'));
+                    }
+                }
             }
         }
 
-        return $this->respondentData && $this->request && parent::hasHtmlOutput();
+        return parent::hasHtmlOutput();
     }
 }
