@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-19 18:18+0100\n"
+"POT-Creation-Date: 2015-03-20 13:29+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -4328,6 +4328,8 @@ msgid "Show all answers for this survey type"
 msgstr "Show all answers for this survey type"
 
 #: classes/Gems/Event/Survey/Display/AllOfSurveyWithCharts.php:73
+#: classes/Gems/Event/Survey/Display/OnlyAnsweredWithCharts.php:73
+#: classes/Gems/Event/Survey/Display/ToggleCharts.php:71
 #, php-format
 msgid "%s with chart"
 msgstr "%s with chart"
@@ -4340,7 +4342,7 @@ msgstr "Show all tokens for this survey in this track type"
 msgid "Show the highest answer first."
 msgstr "Show the highest answer first."
 
-#: classes/Gems/Event/Survey/Display/CompactFullToggle.php:121
+#: classes/Gems/Event/Survey/Display/CompactFullToggle.php:128
 msgid "Display only the questions whose code starts with `score`."
 msgstr "Display only the questions whose code starts with `score`."
 
@@ -4356,11 +4358,11 @@ msgstr "Reverse the question order."
 msgid "Display all answers, including those without a label."
 msgstr "Display all answers, including those without a label."
 
-#: classes/Gems/Event/Survey/Display/TokenOnly.php:73
+#: classes/Gems/Event/Survey/Display/TokenOnly.php:68
 msgid "Show answers for this token only"
 msgstr "Show answers for this token only"
 
-#: classes/Gems/Event/Survey/Display/TrackOnly.php:73
+#: classes/Gems/Event/Survey/Display/TrackOnly.php:68
 msgid "Show all tokens for this survey in the track"
 msgstr "Show all tokens for this survey in the track"
 
@@ -4901,6 +4903,7 @@ msgid "Reset to default values"
 msgstr "Reset to default values"
 
 #: classes/Gems/Menu/MenuAbstract.php:657
+#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -5129,7 +5132,7 @@ msgid "Contact email"
 msgstr "Contact email"
 
 #: classes/Gems/Model/OrganizationModel.php:139
-#: classes/Gems/User/Form/LoginForm.php:161
+#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:9
 msgid "Login"
 msgstr "Login"
 
@@ -5585,18 +5588,23 @@ msgstr "Test mail sent to %s"
 msgid "Score"
 msgstr "Score"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:181
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:182
 #, php-format
 msgid "Add %s track to this respondent"
 msgstr "Add %s track to this patient"
 
-#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:196
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:198
 msgid "Add a track to this respondent"
 msgstr "Add a track to this patient"
 
-#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:242
-msgid "&laquo;empty&raquo;"
-msgstr "&laquo;empty&raquo;"
+#: classes/Gems/Snippets/Respondent/RoundTokenSnippet.php:202
+msgid "No valid tokens found"
+msgstr "No valid tokens found"
+
+#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:246
+#, php-format
+msgid "%s (%d/%d/%d)"
+msgstr "%s (%d/%d/%d)"
 
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:173
 msgid "Please settle the informed consent form for this respondent."
@@ -7856,6 +7864,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "&laquo;empty&raquo;"
+#~ msgstr "&laquo;empty&raquo;"
 
 #~ msgid "Code name"
 #~ msgstr "Code name"
