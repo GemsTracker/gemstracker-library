@@ -32,8 +32,10 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
- * @version    $Id: DependencyException .php 1748 2014-02-19 18:09:41Z matijsdejong $
+ * @version    $Id: DependencyException.php 1748 2014-02-19 18:09:41Z matijsdejong $
  */
+
+namespace MUtil\Model\Dependency;
 
 /**
  * Exception for conditions
@@ -44,4 +46,5 @@
  * @license    New BSD License
  * @since      Class available since version 1.5
  */
-class MUtil_Model_Dependency_DependencyException extends MUtil_Model_ModelException { }
+class DependencyException extends \MUtil_Model_ModelException
+{ }

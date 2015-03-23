@@ -61,12 +61,12 @@ class CallbackDependency extends DependencyAbstract
      * @param mixed $targetName  A fieldname or array of field names set to the output of the function
      * @param mixed $targetKey   Optional fields set by callback, otherwise callback should return array
      * @param mixed $sourceName  Optional parameter input names for the callback, passed in order
-     * @throws \MUtil_Model_Dependency_DependencyException
+     * @throws \MUtil\Model\Dependency\DependencyException
      */
     public function __construct($callback, $targetName, $targetKey = null, $sourceName = null)
     {
         if (!is_callable($callback)) {
-            throw new \MUtil_Model_Dependency_DependencyException(__CLASS__ . " requires a valid callback.");
+            throw new DependencyException(__CLASS__ . " requires a valid callback.");
         }
 
         $this->_callback = $callback;
