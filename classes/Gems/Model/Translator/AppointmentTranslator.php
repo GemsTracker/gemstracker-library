@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
@@ -39,7 +39,7 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.1
@@ -54,22 +54,9 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
 
     /**
      *
-     * @var \Zend_Db_Adapter_Abstract
-     */
-    protected $db;
-
-    /**
-     *
      * @var \Gems_loader
      */
     protected $loader;
-
-    /**
-     *
-     *
-     * @var array
-     */
-    protected $orgTranslations;
 
     /**
      * Called after the check that all required registry values
@@ -82,18 +69,6 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         parent::afterRegistry();
 
         $this->_agenda = $this->loader->getAgenda();
-
-        $this->orgTranslations = $this->db->fetchPairs('
-            SELECT gor_provider_id, gor_id_organization
-                FROM gems__organizations
-                WHERE gor_provider_id IS NOT NULL
-                ORDER BY gor_provider_id');
-
-        $this->orgTranslations = $this->orgTranslations + $this->db->fetchPairs('
-            SELECT gor_code, gor_id_organization
-                FROM gems__organizations
-                WHERE gor_code IS NOT NULL
-                ORDER BY gor_id_organization');
     }
 
     /**
@@ -104,8 +79,7 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
      */
     public function checkRegistryRequestsAnswers()
     {
-        return ($this->db instanceof \Zend_Db_Adapter_Abstract) &&
-            ($this->loader instanceof \Gems_Loader) &&
+        return ($this->loader instanceof \Gems_Loader) &&
             parent::checkRegistryRequestsAnswers();
     }
 
@@ -163,11 +137,6 @@ class Gems_Model_Translator_AppointmentTranslator extends \Gems_Model_Translator
         // Set fixed values for import
         $row['gap_source']      = 'import';
         $row['gap_manual_edit'] = 0;
-
-        // Get the real organization from the provider_id or code if it exists
-        if (isset($row['gap_id_organization'], $this->orgTranslations[$row['gap_id_organization']])) {
-            $row['gap_id_organization'] = $this->orgTranslations[$row['gap_id_organization']];
-        }
 
         if (! isset($row['gap_id_user'])) {
             if (isset($row['gr2o_patient_nr'], $row['gap_id_organization'])) {

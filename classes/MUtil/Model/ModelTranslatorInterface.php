@@ -32,7 +32,7 @@
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelTranslatorInterface.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: ModelTranslatorInterface.php 203 2012-01-01 12:51:32Z matijs $
  */
 
 /**
@@ -45,17 +45,17 @@
  * @license    New BSD License
  * @since      Interface available since MUtil version 1.3
  */
-interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInterface
+interface MUtil_Model_ModelTranslatorInterface extends \MUtil_Registry_TargetInterface
 {
     /**
      * Add the current row to a (possibly separate) batch that does the importing.
      *
-     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param \MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
      * @param string $key The current iterator key
      * @param array $row translated and validated row
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row);
+    public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row);
 
     /**
      * Returns a description of the translator to enable users to choose
@@ -76,7 +76,7 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations();
 
@@ -98,7 +98,7 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     /**
      * Get the source model, where the data is coming from.
      *
-     * @return MUtil_Model_ModelAbstract $sourceModel The source of the data
+     * @return \MUtil_Model_ModelAbstract $sourceModel The source of the data
      */
     public function getSourceModel();
 
@@ -113,7 +113,7 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     /**
      * Get the target model, where the data is going to.
      *
-     * @return MUtil_Model_ModelAbstract $sourceModel The target of the data
+     * @return \MUtil_Model_ModelAbstract $sourceModel The target of the data
      */
     public function getTargetModel();
 
@@ -127,18 +127,18 @@ interface MUtil_Model_ModelTranslatorInterface extends MUtil_Registry_TargetInte
     /**
      * Set the source model, where the data is coming from.
      *
-     * @param MUtil_Model_ModelAbstract $sourceModel The source of the data
+     * @param \MUtil_Model_ModelAbstract $sourceModel The source of the data
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setSourceModel(MUtil_Model_ModelAbstract $sourceModel);
+    public function setSourceModel(\MUtil_Model_ModelAbstract $sourceModel);
 
     /**
      * Set the target model, where the data is going to.
      *
-     * @param MUtil_Model_ModelAbstract $sourceModel The target of the data
+     * @param \MUtil_Model_ModelAbstract $sourceModel The target of the data
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setTargetModel(MUtil_Model_ModelAbstract $targetModel);
+    public function setTargetModel(\MUtil_Model_ModelAbstract $targetModel);
 
     /**
      * Prepare for the import.

@@ -45,14 +45,14 @@
  * @license    New BSD License
  * @since      Class available since version 1.4
  */
-class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_LimeSurvey1m9FieldMap
+class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends \Gems_Tracker_Source_LimeSurvey1m9FieldMap
 {
     /**
      * Applies the fieldmap data to the model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    public function applyToModel(MUtil_Model_ModelAbstract $model)
+    public function applyToModel(\MUtil_Model_ModelAbstract $model)
     {
         $map    = $this->_getMap();
         $oldfld = null;
@@ -61,36 +61,39 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
         foreach ($map as $name => $field) {
 
             $tmpres = array();
-            $tmpres['thClass']         = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['thClass']         = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group']           = $field['gid'];
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_DATE) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATE) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy';
                 // $tmpres['formatFunction']
             }
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_DATETIME) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
                 // $tmpres['formatFunction']
             }
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_TIME) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_TIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'HH:mm:ss';
                 // $tmpres['formatFunction']
             }
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_NUMERIC) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_NUMERIC) {
                 $tmpres['formatFunction'] = array($this, 'handleFloat');
             }
 
             $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
             if (isset($field['question']) && (! isset($oldfld) || $oldQuestion !== $field['question'])) {
-                $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['question']));
+                $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
+            }
+            if (isset($field['help']) && $field['help']) {
+                $tmpres['description'] = \MUtil_Html::raw($this->removeMarkup($field['help']));
             }
 
             // Juggle the labels for sub-questions etc..
@@ -99,18 +102,18 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
                     // Add non answered question for grouping and make it the current parent
                     $parent = '_' . $name . '_';
                     $model->set($parent, $tmpres);
-                    $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
+                    $model->set($parent, 'type', \MUtil_Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = MUtil_Html::raw(sprintf(
+                    $tmpres['label'] = \MUtil_Html::raw(sprintf(
                             $this->translate->_('%s: %s'),
                             $this->removeMarkup($field['sq_question']),
                             $this->removeMarkup($field['sq_question1'])
                             ));
                 } else {
-                    $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['sq_question']));
+                    $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['sq_question']));
                 }
-                $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['thClass'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
             if ($options = $this->_getMultiOptions($field)) {
                 $tmpres['multiOptions'] = $options;
@@ -122,7 +125,7 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
             }
 
             // Parent storage
-            if (Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
+            if (\Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
                 $parent = $name;
             } elseif ($parent) {
                 // Add the name of the parent item
@@ -139,7 +142,7 @@ class Gems_Tracker_Source_LimeSurvey2m00FieldMap extends Gems_Tracker_Source_Lim
     /**
      * Function to cast numbers as float, but leave null intact
      * @param  The number to cast to float
-     * @return float 
+     * @return float
      */
     public function handleFloat($value)
     {

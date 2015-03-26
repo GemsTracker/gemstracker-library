@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -39,12 +39,12 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3 24-apr-2014 16:08:57
  */
-abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Model_ModelTranslatorAbstract
+abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends \Gems_Model_ModelTranslatorAbstract
 {
     /**
      * Constant for creating an extra token when a token was already filled in.
@@ -69,6 +69,12 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     protected $_noToken = self::TOKEN_ERROR;
 
     /**
+     *
+     * @var boolean
+     */
+    protected $_skipUnknownPatients = false;
+
+    /**
      * The Gems id of the survey to import to
      *
      * @var int
@@ -91,29 +97,46 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
 
     /**
      *
-     * @var Gems_Loader
+     * @var \Zend_Db_Adapter_Abstract
+     */
+    protected $db;
+
+    /**
+     *
+     * @var \Gems_Loader
      */
     protected $loader;
 
     /**
-     * Create an empty form for filtering and validation
+     * The name of the field to (temporarily) store the organization id in
      *
-     * @return \MUtil_Form
+     * @var string
      */
-    protected function _createTargetForm()
-    {
-        return new Gems_Form();
-    }
+    protected $orgIdField = 'organization_id';
+
+    /**
+     * Extra values the origanization id field accepts
+     *
+     * @var array
+     */
+    protected $orgTranslations;
+
+    /**
+     * The name of the field to (temporarily) store the patient nr in
+     *
+     * @var string
+     */
+    protected $patientNrField = 'patient_id';
 
     /**
      * Add the current row to a (possibly separate) batch that does the importing.
      *
-     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param \MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
      * @param string $key The current iterator key
      * @param array $row translated and validated row
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row)
+    public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row)
     {
         $importBatch->setTask(
                 'Import_SaveAnswerTask',
@@ -124,6 +147,62 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
                 );
 
         return $this;
+    }
+
+    /**
+     * Called after the check that all required registry values
+     * have been set correctly has run.
+     *
+     * @return void
+     */
+    public function afterRegistry()
+    {
+        parent::afterRegistry();
+
+        $this->orgTranslations = $this->db->fetchPairs('
+            SELECT gor_provider_id, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_provider_id IS NOT NULL
+                ORDER BY gor_provider_id');
+
+        $this->orgTranslations = $this->orgTranslations + $this->db->fetchPairs('
+            SELECT gor_code, gor_id_organization
+                FROM gems__organizations
+                WHERE gor_code IS NOT NULL
+                ORDER BY gor_id_organization');
+    }
+
+    /**
+     * Check should a patient be imported
+     *
+     * @param string $patientNr
+     * @param int $orgId
+     * @return boolean
+     */
+    protected function checkPatient($patientNr, $orgId)
+    {
+        if (! ($patientNr && $orgId)) {
+            return false;
+        }
+
+        $select = $this->db->select();
+        $select->from('gems__respondent2org', array('gr2o_id_user'))
+            ->where('gr2o_patient_nr = ?', $patientNr)
+            ->where('gr2o_id_organization = ?', $orgId);
+
+        return $this->db->fetchOne($select);
+    }
+
+    /**
+     * Should be called after answering the request to allow the Target
+     * to check if all required registry values have been set correctly.
+     *
+     * @return boolean False if required values are missing.
+     */
+    public function checkRegistryRequestsAnswers()
+    {
+        return ($this->db instanceof \Zend_Db_Adapter_Abstract) &&
+            parent::checkRegistryRequestsAnswers();
     }
 
     /**
@@ -147,13 +226,13 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations()
     {
         $this->_targetModel->set('completion_date', 'label', $this->_('Completion date'),
                 'order', 9,
-                'type', MUtil_Model::TYPE_DATETIME
+                'type', \MUtil_Model::TYPE_DATETIME
                 );
 
         $fieldList = array('completion_date' => 'completion_date');
@@ -220,6 +299,18 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     }
 
     /**
+     * Get the treatment when no token exists
+     *
+     * @param string $noToken One of the TOKEN_ constants.
+     * @return \Gems_Model_Translator_AnswerTranslatorAbstract (continuation pattern)
+     */
+    public function setSkipUnknownPatients($skip = false)
+    {
+        $this->_skipUnknownPatients = $skip;
+        return $this;
+    }
+
+    /**
      * Set the id of the survey to import to
      *
      * @param int $surveyId
@@ -266,6 +357,21 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     {
         $row = parent::translateRowValues($row, $key);
 
+        if (! $row) {
+            return false;
+        }
+
+        // Get the real organization from the provider_id or code if it exists
+        if (isset($row[$this->orgIdField], $this->orgTranslations[$row[$this->orgIdField]])) {
+            $row[$this->orgIdField] = $this->orgTranslations[$row[$this->orgIdField]];
+        }
+
+        if ($this->_skipUnknownPatients && isset($row[$this->patientNrField], $row[$this->orgIdField])) {
+            if (! $this->checkPatient($row[$this->patientNrField], $row[$this->orgIdField])) {
+                return false;
+            }
+        }
+
         $row['track_id']  = $this->getTrackId();
         $row['survey_id'] = $this->_surveyId;
         $row['token']     = strtolower($this->findTokenFor($row));
@@ -284,7 +390,7 @@ abstract class Gems_Model_Translator_AnswerTranslatorAbstract extends MUtil_Mode
     {
         $row = parent::validateRowValues($row, $key);
 
-        $token = $this->loader->getTracker()->getToken($row['token']);
+        $token = $this->loader->getTracker()->getToken($row['token'] ? $row['token'] : 'emptytoken');
 
         if ($token->exists) {
             if ($token->isCompleted() && (self::TOKEN_ERROR == $this->getTokenCompleted())) {

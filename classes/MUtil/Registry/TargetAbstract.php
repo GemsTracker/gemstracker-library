@@ -36,10 +36,10 @@
  */
 
 /**
- * MUtil_Registry_TargetAbstract is a default target object, that requests variables
+ * \MUtil_Registry_TargetAbstract is a default target object, that requests variables
  * for all defined instance variables with names not starting with '_'.
  *
- * I.e. variables in a class inheriting from MUtil_Registry_TargetAbstract can be
+ * I.e. variables in a class inheriting from \MUtil_Registry_TargetAbstract can be
  * initialized by a source even when they are protected or private.
  *
  * This object is also usefull to copy the code to implement your own version of this class.
@@ -50,7 +50,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-abstract class MUtil_Registry_TargetAbstract implements MUtil_Registry_TargetInterface
+abstract class MUtil_Registry_TargetAbstract implements \MUtil_Registry_TargetInterface
 {
     /**
      * Called after the check that all required registry values
@@ -70,8 +70,8 @@ abstract class MUtil_Registry_TargetAbstract implements MUtil_Registry_TargetInt
      */
     public function answerRegistryRequest($name, $resource)
     {
-        if (MUtil_Registry_Source::$verbose) {
-            MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
+        if (\MUtil_Registry_Source::$verbose) {
+            \MUtil_Echo::r('Resource set: ' . get_class($this) . '->' . __FUNCTION__ .
                     '("' . $name . '", ' .
                     (is_object($resource) ? get_class($resource) : gettype($resource)) . ')');
         }

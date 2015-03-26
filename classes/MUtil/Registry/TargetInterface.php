@@ -39,10 +39,10 @@
  * The TargetInterface is a lightweight dependency injection framework that enables an
  * object to tell which central variables can/must be set.
  *
- * This allows sources containing variables, e.g. the Zend_Registry, to have their values
+ * This allows sources containing variables, e.g. the \Zend_Registry, to have their values
  * automatically injected into the TargetObject.
  *
- * @see MUtil_Registry_Source
+ * @see \MUtil_Registry_Source
  *
  * @package    MUtil
  * @subpackage Registry

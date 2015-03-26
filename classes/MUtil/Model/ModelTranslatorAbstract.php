@@ -28,11 +28,11 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Translator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
- * @version    $Id: ModelTranslatorAbstract.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: ModelTranslatorAbstract.php 203 2012-01-01 12:51:32Z matijs $
  */
 
 /**
@@ -40,13 +40,13 @@
  * model.
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Translator
  * @copyright  Copyright (c) 2012 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_TranslateableAbstract
-    implements MUtil_Model_ModelTranslatorInterface
+abstract class MUtil_Model_ModelTranslatorAbstract extends \MUtil_Translate_TranslateableAbstract
+    implements \MUtil_Model_ModelTranslatorInterface
 {
     /**
      *
@@ -99,14 +99,14 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * The source of the data
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $_sourceModel;
 
     /**
      * The target of the data
      *
-     * @var MUtil_Model_ModelAbstract
+     * @var \MUtil_Model_ModelAbstract
      */
     protected $_targetModel;
 
@@ -120,7 +120,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
    /**
     * Optional locale for date interpreations
     *
-    * @var Zend_Locale or string to create locale
+    * @var \Zend_Locale or string to create locale
     */
     public $dateLocale;
 
@@ -129,14 +129,14 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      *
      * @var string
      */
-    public $datetimeFormat = Zend_Date::ISO_8601;
+    public $datetimeFormat = \Zend_Date::ISO_8601;
 
     /**
      * Time import format
      *
      * @var string
      */
-    public $timeFormat = Zend_Date::TIMES;
+    public $timeFormat = \Zend_Date::TIMES;
 
     /**
      * The string value used for NULL values
@@ -148,7 +148,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * The form used to validate the input values
      *
-     * @var Zend_Form
+     * @var \Zend_Form
      */
     public $targetForm;
 
@@ -196,9 +196,9 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     protected function _checkForm(array $elements)
     {
         foreach ($elements as $name => $element) {
-            if ($element instanceof MUtil_JQuery_Form_Element_DatePicker) {
+            if ($element instanceof \MUtil_JQuery_Form_Element_DatePicker) {
                 $this->_dateElementNames[] = $name;
-            } elseif (($element instanceof Zend_Form_DisplayGroup) || ($element instanceof Zend_Form)) {
+            } elseif (($element instanceof \Zend_Form_DisplayGroup) || ($element instanceof \Zend_Form)) {
                 $this->_checkForm($element->getElements());
             }
         }
@@ -211,7 +211,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     protected function _createTargetForm()
     {
-        return new MUtil_Form();
+        return new \MUtil_Form();
     }
 
     /**
@@ -248,7 +248,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
             if ($this->_targetModel->get($targetName, 'label')) {
                 $options = $this->_targetModel->get($targetName, 'multiOptions');
                 if ($options) {
-                    $filter = new MUtil_Filter_LooseArrayFilter(
+                    $filter = new \MUtil_Filter_LooseArrayFilter(
                             $options,
                             $this->_targetModel->get($targetName, 'extraValueKeys')
                             );
@@ -273,12 +273,12 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * @param mixed $row array or Traversable row
      * @param scalar $key
      * @return array or boolean
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     protected function _prepareRow($row, $key)
     {
         if (null === $this->_mapRequired) {
-            throw new MUtil_Model_ModelException("Trying to translate without call to startImport().");
+            throw new \MUtil_Model_ModelException("Trying to translate without call to startImport().");
         }
 
         if ($row instanceof Traversable) {
@@ -311,12 +311,12 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Add the current row to a (possibly separate) batch that does the importing.
      *
-     * @param MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
+     * @param \MUtil_Task_TaskBatch $importBatch The import batch to impor this row into
      * @param string $key The current iterator key
      * @param array $row translated and validated row
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function addSaveTask(MUtil_Task_TaskBatch $importBatch, $key, array $row)
+    public function addSaveTask(\MUtil_Task_TaskBatch $importBatch, $key, array $row)
     {
         $importBatch->setTask('Import_SaveToModel', 'import-' . $key, $row);
         return $this;
@@ -336,23 +336,23 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
             return;
         }
 
-        if ($this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            if ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATE)) {
+        if ($this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            if ($this->_targetModel->is($key, 'type', \MUtil_Model::TYPE_DATE)) {
                 $format = $this->dateFormat;
-            } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_DATETIME)) {
+            } elseif ($this->_targetModel->is($key, 'type', \MUtil_Model::TYPE_DATETIME)) {
                 $format = $this->datetimeFormat;
-            } elseif ($this->_targetModel->is($key, 'type', MUtil_Model::TYPE_TIME)) {
+            } elseif ($this->_targetModel->is($key, 'type', \MUtil_Model::TYPE_TIME)) {
                 $format = $this->timeFormat ;
             } else {
                 $format = false;
             }
 
             if ($this->dateLocale && is_string($this->dateLocale)) {
-                $this->dateLocale = new Zend_Locale($this->dateLocale);
+                $this->dateLocale = new \Zend_Locale($this->dateLocale);
             }
 
-            if ($format && MUtil_Date::isDate($value, $format, $this->dateLocale)) {
-                $value = new MUtil_Date($value, $format, $this->dateLocale);
+            if ($format && \MUtil_Date::isDate($value, $format, $this->dateLocale)) {
+                $value = new \MUtil_Date($value, $format, $this->dateLocale);
                 return;
             }
 
@@ -385,7 +385,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     // public function getFieldsTranslations();
 
@@ -424,7 +424,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
                 $errorOutput[] = $rowErrors;
             }
         }
-        return MUtil_Ra::flatten($errorOutput);
+        return \MUtil_Ra::flatten($errorOutput);
     }
 
     /**
@@ -456,7 +456,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Get the source model, where the data is coming from.
      *
-     * @return MUtil_Model_ModelAbstract $sourceModel The source of the data
+     * @return \MUtil_Model_ModelAbstract $sourceModel The source of the data
      */
     public function getSourceModel()
     {
@@ -471,7 +471,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     public function getTargetForm()
     {
-        if (! $this->targetForm instanceof Zend_Form) {
+        if (! $this->targetForm instanceof \Zend_Form) {
             $this->setTargetForm($this->_makeTargetForm());
         }
 
@@ -481,7 +481,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Get the target model, where the data is going to.
      *
-     * @return MUtil_Model_ModelAbstract $sourceModel The target of the data
+     * @return \MUtil_Model_ModelAbstract $sourceModel The target of the data
      */
     public function getTargetModel()
     {
@@ -513,10 +513,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Set the source model, where the data is coming from.
      *
-     * @param MUtil_Model_ModelAbstract $sourceModel The source of the data
+     * @param \MUtil_Model_ModelAbstract $sourceModel The source of the data
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setSourceModel(MUtil_Model_ModelAbstract $sourceModel)
+    public function setSourceModel(\MUtil_Model_ModelAbstract $sourceModel)
     {
         $this->_sourceModel = $sourceModel;
         return $this;
@@ -526,10 +526,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      * Set a form populated with elements for filtering and validation of
      * the input elements
      *
-     * @param Zend_Form $form
+     * @param \Zend_Form $form
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setTargetForm(Zend_Form $form)
+    public function setTargetForm(\Zend_Form $form)
     {
         $this->targetForm = $form;
 
@@ -542,10 +542,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Set the target model, where the data is going to.
      *
-     * @param MUtil_Model_ModelAbstract $sourceModel The target of the data
+     * @param \MUtil_Model_ModelAbstract $sourceModel The target of the data
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setTargetModel(MUtil_Model_ModelAbstract $targetModel)
+    public function setTargetModel(\MUtil_Model_ModelAbstract $targetModel)
     {
         $this->_targetModel    = $targetModel;
 
@@ -555,10 +555,10 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
     /**
      * Set the translator to use.
      *
-     * @param Zend_Translate $translate
+     * @param \Zend_Translate $translate
      * @return \MUtil_Model_ModelTranslatorAbstract (continuation pattern)
      */
-    public function setTranslator(Zend_Translate $translate)
+    public function setTranslator(\Zend_Translate $translate)
     {
         $this->translate = $translate;
         $this->initTranslateable();
@@ -573,8 +573,8 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     public function startImport()
     {
-        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            throw new MUtil_Model_ModelException("Trying to start the import without target model.");
+        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            throw new \MUtil_Model_ModelException("Trying to start the import without target model.");
         }
 
         // Clear errors
@@ -646,7 +646,7 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
      */
     public function validateRowValues(array $row, $key)
     {
-        if (! $this->targetForm instanceof Zend_Form) {
+        if (! $this->targetForm instanceof \Zend_Form) {
             return $row;
         }
 
@@ -654,27 +654,12 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         $this->targetForm->clearErrorMessages()
                 ->populate(array());
 
-        /* Not needed, but leave in place just in case
-        // Make sure the copy keys are set (for e.g. validators)
-        if ($this->_targetModel instanceof MUtil_Model_DatabaseModelAbstract) {
-            $keys = $this->_targetModel->getKeys();
-
-            foreach ($keys as $name) {
-                $copy = $this->_targetModel->getKeyCopyName($name);
-
-                if ($this->_targetModel->has($copy)) {
-                    $row[$copy] = $row[$name];
-                }
-            }
-        } // */
-        // MUtil_Echo::track($row);
-
         if (! $this->targetForm->isValid($row)) {
             $messages = $this->targetForm->getMessages(null, true);
 
             $this->_addErrors($messages, $key, $row);
         }
-        // MUtil_Echo::track($row);
+        // \MUtil_Echo::track($row);
 
         // Notice: this changes all dates back to string
         $row = array_intersect_key($this->targetForm->getValues(), $row) + $row;
@@ -682,11 +667,11 @@ abstract class MUtil_Model_ModelTranslatorAbstract extends MUtil_Translate_Trans
         // Restore the dates as date objects
         foreach ($this->_dateElementNames as $name) {
             $element = $this->targetForm->getElement($name);
-            if ($element instanceof MUtil_JQuery_Form_Element_DatePicker) {
+            if ($element instanceof \MUtil_JQuery_Form_Element_DatePicker) {
                 $row[$name] = $element->getDateValue();
             }
         }
-        // MUtil_Echo::track($row);
+        // \MUtil_Echo::track($row);
 
         return $row;
     }

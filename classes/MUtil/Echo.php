@@ -86,6 +86,25 @@ class MUtil_Echo
     }
 
     /**
+     * Adds the string output in a format to detect special chars.
+     *
+     * @param mixed $var_1 Any kind of variable
+     * @param mixed $var_2 Optional, any kind of variable
+     */
+    public static function chars($var_1, $var_2 = null)
+    {
+        foreach (func_get_args() as $value) {
+            $output = '';
+            $length = strlen($value);
+            for($i = 0; $i < $length; $i++) {
+                $output .= '\\' . ord($value[$i]);
+            }
+            array_map('ord', $value);
+            self::r($output, $value);
+        }
+    }
+
+    /**
      * Adds multiple variables to the output, but displays the class name instead of the class itself.
      *
      * @param mixed $var_1 Any kind of variable
@@ -126,15 +145,15 @@ class MUtil_Echo
     /**
      * Returns the current session namespace that stores the content.
      *
-     * @staticvar Zend_Session_Namespace $session
-     * @return Zend_Session_Namespace
+     * @staticvar \Zend_Session_Namespace $session
+     * @return \Zend_Session_Namespace
      */
     private static function getSession()
     {
         static $session;
 
         if (! $session) {
-            $session = new Zend_Session_Namespace('mutil.' . __CLASS__ . '.session');
+            $session = new \Zend_Session_Namespace('mutil.' . __CLASS__ . '.session');
         }
 
         return $session;

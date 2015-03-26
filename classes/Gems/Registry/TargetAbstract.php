@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -37,7 +36,7 @@
  */
 
 /**
- * Extends MUtil_Registry_TargetAbstract with the ability to create PHP
+ * Extends \MUtil_Registry_TargetAbstract with the ability to create PHP
  * callables by request an existing method using $this->methodName.
  *
  * @package    Gems
@@ -46,7 +45,7 @@
  * @license    New BSD License
  * @since      Class available since version 1.1
  */
-class Gems_Registry_TargetAbstract extends MUtil_Registry_TargetAbstract
+class Gems_Registry_TargetAbstract extends \MUtil_Registry_TargetAbstract
 {
     /**
      * Returns a callable if a method is called as a variable
@@ -61,6 +60,6 @@ class Gems_Registry_TargetAbstract extends MUtil_Registry_TargetAbstract
             return array($this, $name);
         }
 
-        throw new Gems_Exception_Coding("Unknown method '$name' requested as callable.");
+        throw new \Gems_Exception_Coding("Unknown method '$name' requested as callable.");
     }
 }

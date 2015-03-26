@@ -28,23 +28,23 @@
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Translator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 201e Erasmus MC
  * @license    New BSD License
- * @version    $Id: NullCleanupTranslator.php 203 2012-01-01t 12:51:32Z matijs $
+ * @version    $Id: StraightTranslator.php 203 2012-01-01 12:51:32Z matijs $
  */
 
 /**
  *
  *
  * @package    MUtil
- * @subpackage Model
+ * @subpackage Model_Translator
  * @copyright  Copyright (c) 2013 Erasmus MC
  * @license    New BSD License
  * @since      Class available since MUtil version 1.3
  */
-class MUtil_Model_Translator_StraightTranslator extends MUtil_Model_ModelTranslatorAbstract
+class MUtil_Model_Translator_StraightTranslator extends \MUtil_Model_ModelTranslatorAbstract
 {
     /**
      *
@@ -59,12 +59,12 @@ class MUtil_Model_Translator_StraightTranslator extends MUtil_Model_ModelTransla
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations()
     {
-        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            throw new MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
+        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            throw new \MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
         }
 
         $fieldList   = array();

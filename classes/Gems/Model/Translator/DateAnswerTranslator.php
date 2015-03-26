@@ -28,7 +28,7 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @author     Matijs de Jong <mjong@magnafacta.nl>
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
@@ -39,12 +39,12 @@
  *
  *
  * @package    Gems
- * @subpackage Model
+ * @subpackage Model_Translator
  * @copyright  Copyright (c) 2014 Erasmus MC
  * @license    New BSD License
  * @since      Class available since version 1.6.3 24-apr-2014 14:46:04
  */
-class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_RespondentAnswerTranslator
+class Gems_Model_Translator_DateAnswerTranslator extends \Gems_Model_Translator_RespondentAnswerTranslator
 {
     /**
      * Find the token id using the passed row data and
@@ -55,13 +55,13 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
      */
     protected function findTokenFor(array $row)
     {
-        if (isset($row['patient_id'], $row['organization_id'], $row['completion_date']) &&
-                $row['patient_id'] &&
-                $row['organization_id'] &&
+        if (isset($row[$this->patientNrField], $row[$this->orgIdField], $row['completion_date']) &&
+                $row[$this->patientNrField] &&
+                $row[$this->orgIdField] &&
                 $row['completion_date']) {
 
-            if ($row['completion_date'] instanceof Zend_Date) {
-                $compl = $row['completion_date']->toString(Gems_Tracker::DB_DATETIME_FORMAT);
+            if ($row['completion_date'] instanceof \Zend_Date) {
+                $compl = $row['completion_date']->toString(\Gems_Tracker::DB_DATETIME_FORMAT);
             } else {
                 $compl = $row['completion_date'];
             }
@@ -73,8 +73,8 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
                             'gto_id_respondent = gr2o_id_user AND gto_id_organization = gr2o_id_organization',
                             array()
                             )
-                    ->where('gr2o_patient_nr = ?', $row['patient_id'])
-                    ->where('gr2o_id_organization = ?', $row['organization_id'])
+                    ->where('gr2o_patient_nr = ?', $row[$this->patientNrField])
+                    ->where('gr2o_id_organization = ?', $row[$this->orgIdField])
                     ->where('gto_id_survey = ?', $this->getSurveyId())
                     ->where('gto_valid_from <= ?', $compl)
                     ->where('(gto_valid_until >= ? OR gto_valid_until IS NULL)', $compl);
@@ -84,7 +84,7 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
                 $select->where('gto_id_track = ?', $trackId);
             }
 
-            $select->order(new Zend_Db_Expr("CASE
+            $select->order(new \Zend_Db_Expr("CASE
                 WHEN gto_completion_time IS NULL AND gto_valid_from IS NOT NULL THEN 1
                 WHEN gto_completion_time IS NULL AND gto_valid_from IS NULL THEN 2
                 ELSE 3 END ASC"))
@@ -106,12 +106,12 @@ class Gems_Model_Translator_DateAnswerTranslator extends Gems_Model_Translator_R
      * Get information on the field translations
      *
      * @return array of fields sourceName => targetName
-     * @throws MUtil_Model_ModelException
+     * @throws \MUtil_Model_ModelException
      */
     public function getFieldsTranslations()
     {
-        if (! $this->_targetModel instanceof MUtil_Model_ModelAbstract) {
-            throw new MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
+        if (! $this->_targetModel instanceof \MUtil_Model_ModelAbstract) {
+            throw new \MUtil_Model_ModelTranslateException(sprintf('Called %s without a set target model.', __FUNCTION__));
         }
 
         return parent::getFieldsTranslations();

@@ -64,7 +64,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     protected $_titlesMap;
 
     /**
-     * @var Zend_Cache_Core
+     * @var \Zend_Cache_Core
      */
     protected $cache;
 
@@ -78,7 +78,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     /**
      * Limesurvey database adapter
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var \Zend_Db_Adapter_Abstract
      */
     protected $ldDb;
 
@@ -91,7 +91,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
     /**
      *
-     * @var Zend_Translate
+     * @var \Zend_Translate
      */
     protected $translate;
 
@@ -107,11 +107,11 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      *
      * @param int $sourceSurveyId            Survey ID
      * @param string $language               (ISO) Language
-     * @param Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
-     * @param Zend_Translate $translate      A translate object
+     * @param \Zend_Db_Adapter_Abstract $lsDb The Lime Survey database connection
+     * @param \Zend_Translate $translate      A translate object
      * @param type $tablePrefix              The prefix to use for all LS tables (in this installation)
      */
-    public function __construct($sourceSurveyId, $language, Zend_Db_Adapter_Abstract $lsDb, Zend_Translate $translate, $tablePrefix)
+    public function __construct($sourceSurveyId, $language, \Zend_Db_Adapter_Abstract $lsDb, \Zend_Translate $translate, $tablePrefix)
     {
         $this->sourceSurveyId = $sourceSurveyId;
         $this->language       = $language;
@@ -220,7 +220,8 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             $qTable = $this->_getQuestionsTableName();
 
             $sql    = "
-                SELECT CONCAT(q.sid, 'X', q.gid, 'X', q.qid) AS sgq, q.type, q.qid, q.gid, q.question, q.title, q.other, q.question_order,
+                SELECT CONCAT(q.sid, 'X', q.gid, 'X', q.qid) AS sgq, q.type, q.qid, q.gid, q.question, q.title, q.help,
+                    q.other, q.question_order,
                     g.group_order, g.group_name, g.description,
                     sq.title AS sq_title, sq.question_order, sq.question AS sq_question, sq.scale_id
                 FROM $qTable AS q
@@ -361,6 +362,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             ) + $map;
 
             $this->_fieldMap = $map;
+            // \MUtil_Echo::track($map);
             // Use a tag (for cleaning if supported) and 1 day lifetime, maybe clean cache on sync survey?
             $this->cache->save($this->_fieldMap, $cacheId, array('fieldmap'), 86400);   //60*60*24=86400
         }
@@ -504,7 +506,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 default:
                     $answers = $this->translate->_('Free text');
             }
-            // MUtil_Echo::track($qid, $scale_id, $answers);
+            // \MUtil_Echo::track($qid, $scale_id, $answers);
             $this->_answers[$code][$scale_id] = $answers;
         }
 
@@ -576,12 +578,12 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     protected function _getSurveysTableName()
     {
-        return $this->tablePrefix . Gems_Tracker_Source_LimeSurvey1m9Database::SURVEYS_TABLE;
+        return $this->tablePrefix . \Gems_Tracker_Source_LimeSurvey1m9Database::SURVEYS_TABLE;
     }
-    
+
     /**
      * Returns a map of databasecode => questioncode
-     * 
+     *
      * @return array
      */
     private function _getTitlesMap() {
@@ -600,7 +602,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             $this->_titlesMap = $result;
         }
-        
+
         return $this->_titlesMap;
     }
 
@@ -608,7 +610,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      * Returns
      *
      * @param $field    Field from _getMap function
-     * @return int MUtil_Model::TYPE_ constant
+     * @return int \MUtil_Model::TYPE_ constant
      */
     protected function _getType($field)
     {
@@ -616,7 +618,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             case ':':
                 //Get the labels that could apply!
                 if ($this->_getQuestionAttribute($field['qid'], 'multiflexible_checkbox')) {
-                    return MUtil_Model::TYPE_STRING;
+                    return \MUtil_Model::TYPE_STRING;
                 }
 
             case '5':
@@ -624,7 +626,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             case 'B':
             case 'K':
             case 'N':
-                return MUtil_Model::TYPE_NUMERIC;
+                return \MUtil_Model::TYPE_NUMERIC;
 
             case 'D':
                 //date_format
@@ -642,33 +644,33 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                         $date = true;
                     }
                     if ($date && !$time) {
-                        return MUtil_Model::TYPE_DATE;
+                        return \MUtil_Model::TYPE_DATE;
                     } elseif (!$date && $time) {
-                        return MUtil_Model::TYPE_TIME;
+                        return \MUtil_Model::TYPE_TIME;
                     } else {
-                        return MUtil_Model::TYPE_DATETIME;
+                        return \MUtil_Model::TYPE_DATETIME;
                     }
                 }
-                return MUtil_Model::TYPE_DATE;
+                return \MUtil_Model::TYPE_DATE;
 
             case 'X':
-                return MUtil_Model::TYPE_NOVALUE;
+                return \MUtil_Model::TYPE_NOVALUE;
 
             case self::INTERNAL:
                 // Not a limesurvey type, used internally for meta data
-                return MUtil_Model::TYPE_DATETIME;
+                return \MUtil_Model::TYPE_DATETIME;
 
             default:
-                return MUtil_Model::TYPE_STRING;
+                return \MUtil_Model::TYPE_STRING;
         }
     }
 
     /**
      * Applies the fieldmap data to the model
      *
-     * @param MUtil_Model_ModelAbstract $model
+     * @param \MUtil_Model_ModelAbstract $model
      */
-    public function applyToModel(MUtil_Model_ModelAbstract $model)
+    public function applyToModel(\MUtil_Model_ModelAbstract $model)
     {
         $map    = $this->_getMap();
         $oldfld = null;
@@ -677,33 +679,36 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
         foreach ($map as $name => $field) {
 
             $tmpres = array();
-            $tmpres['thClass']         = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['thClass']         = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group']           = $field['gid'];
             $tmpres['type']            = $this->_getType($field);
             $tmpres['survey_question'] = true;
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_DATE) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATE) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy';
                 // $tmpres['formatFunction']
             }
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_DATETIME) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_DATETIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'dd MMMM yyyy HH:mm';
                 // $tmpres['formatFunction']
             }
 
-            if ($tmpres['type'] === MUtil_Model::TYPE_TIME) {
+            if ($tmpres['type'] === \MUtil_Model::TYPE_TIME) {
                 $tmpres['storageFormat'] = 'yyyy-MM-dd HH:mm:ss';
                 $tmpres['dateFormat']    = 'HH:mm:ss';
                 // $tmpres['formatFunction']
             }
 
-            // MUtil_Echo::track($field);
+            // \MUtil_Echo::track($field);
             $oldQuestion = isset($oldfld['question']) ? $oldfld['question'] : null;
             if (isset($field['question']) && (! isset($oldfld) || $oldQuestion !== $field['question'])) {
-                $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['question']));
+                $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['question']));
+            }
+            if (isset($field['help']) && $field['help']) {
+                $tmpres['description'] = \MUtil_Html::raw($this->removeMarkup($field['help']));
             }
 
             // Juggle the labels for sub-questions etc..
@@ -712,18 +717,18 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     // Add non answered question for grouping and make it the current parent
                     $parent = '_' . $name . '_';
                     $model->set($parent, $tmpres);
-                    $model->set($parent, 'type', MUtil_Model::TYPE_NOVALUE);
+                    $model->set($parent, 'type', \MUtil_Model::TYPE_NOVALUE);
                 }
                 if (isset($field['sq_question1'])) {
-                    $tmpres['label'] = MUtil_Html::raw(sprintf(
+                    $tmpres['label'] = \MUtil_Html::raw(sprintf(
                             $this->translate->_('%s: %s'),
                             $this->removeMarkup($field['sq_question']),
                             $this->removeMarkup($field['sq_question1'])
                             ));
                 } else {
-                    $tmpres['label'] = MUtil_Html::raw($this->removeMarkup($field['sq_question']));
+                    $tmpres['label'] = \MUtil_Html::raw($this->removeMarkup($field['sq_question']));
                 }
-                $tmpres['thClass'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['thClass'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
             if ($options = $this->_getMultiOptions($field)) {
                 $tmpres['multiOptions'] = $options;
@@ -735,7 +740,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             // Parent storage
-            if (Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
+            if (\Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION === $tmpres['thClass']) {
                 $parent = $name;
             } elseif ($parent) {
                 // Add the name of the parent item
@@ -772,7 +777,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
             }
 
             $tmpres = array();
-            $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
+            $tmpres['class'] = \Gems_Tracker_SurveyModel::CLASS_MAIN_QUESTION;
             $tmpres['group'] = $field['gid'];
             $tmpres['type']  = $field['type'];
             $tmpres['title'] = $field['title'];
@@ -797,7 +802,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     // "Next" question
                     $tmpres['question'] = $this->removeMarkup($field['sq_question']);
                 }
-                $tmpres['class'] = Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
+                $tmpres['class'] = \Gems_Tracker_SurveyModel::CLASS_SUB_QUESTION;
             }
             $tmpres['answers'] = $this->_getPossibleAnswers($field);
 
@@ -810,7 +815,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
 
             $oldfld = $field;
         }
-        // MUtil_Echo::track($result);
+        // \MUtil_Echo::track($result);
 
         return $result;
     }
@@ -861,9 +866,9 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                     $results[$name] = sprintf($this->translate->_('- %s'), $squestion);
                 }
             }
-            // MUtil_Echo::track($field);
+            // \MUtil_Echo::track($field);
         }
-        // MUtil_Echo::track($results);
+        // \MUtil_Echo::track($results);
 
         return $results;
     }
@@ -877,7 +882,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
     public function mapKeysToTitles(array $values)
     {
         $map = array_flip($this->_getTitlesMap());
-        
+
         $result = array();
         foreach ($values as $key => $value) {
             if (isset($map[$key])) {
@@ -886,7 +891,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $result[$key] = $value;
             }
         }
-        // MUtil_Echo::track($result);
+        // \MUtil_Echo::track($result);
 
         return $result;
     }
@@ -910,7 +915,7 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
                 $result[$key] = $value;
             }
         }
-        // MUtil_Echo::track($result);
+        // \MUtil_Echo::track($result);
 
         return $result;
     }
@@ -923,6 +928,6 @@ class Gems_Tracker_Source_LimeSurvey1m9FieldMap
      */
     public function removeMarkup($text)
     {
-        return MUtil_String::beforeChars(MUtil_Html::removeMarkup($text, 'b|i|u|em|strong'), '{');
+        return \MUtil_String::beforeChars(\MUtil_Html::removeMarkup($text, 'b|i|u|em|strong'), '{');
     }
 }
