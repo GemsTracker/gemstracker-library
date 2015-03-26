@@ -242,13 +242,15 @@ class Gems_Snippets_Respondent_RoundsTabsSnippet extends \MUtil_Snippets_TabSnip
 
             foreach ($tabLabels as $row) {
                 $name = '_' . \MUtil_Form::normalizeName($row['label']);
-                $label = sprintf(
-                        $this->_('%s (%d/%d/%d)'),
-                        $row['label'],
-                        $row['completed'],
-                        $row['waiting'],
-                        $row['any'] - ($row['completed'] + $row['waiting'])
-                        );
+                if ($row['waiting']) {
+                    $label = sprintf(
+                            $this->_('%s (%d open)'),
+                            $row['label'],
+                            $row['waiting']
+                            );
+                } else {
+                    $label = $row['label'];
+                }
 
                 $filters[$name] = $row['label'];
                 $tabs[$name]    = $label;

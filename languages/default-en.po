@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GemsTracker EN\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 13:29+0100\n"
+"POT-Creation-Date: 2015-03-26 17:21+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Matijs de Jong <mjong@magnafacta.nl>\n"
 "Language-Team: Erasmus MGZ <matijs.de.jong@magnafacta.nl>\n"
@@ -347,7 +347,7 @@ msgid "Start %s jobs"
 msgstr "Start %s jobs"
 
 #: classes/Gems/Controller/Action/Helper/BatchRunner.php:82
-#: classes/Gems/Default/ExportAction.php:505
+#: classes/Gems/Default/ExportAction.php:510
 msgid "Nothing to do."
 msgstr "Nothing to do."
 
@@ -410,7 +410,7 @@ msgid "No %s found"
 msgstr "No %s found"
 
 #: classes/Gems/Controller/BrowseEditAction.php:764
-#: classes/Gems/Default/ExportAction.php:462 classes/Gems/Export/Excel.php:131
+#: classes/Gems/Default/ExportAction.php:467 classes/Gems/Export/Excel.php:131
 #, php-format
 msgid "No %s found."
 msgstr "No %s found."
@@ -1030,8 +1030,8 @@ msgstr "Use the 'By staff member' address"
 #: classes/Gems/Default/MailJobAction.php:133
 #: classes/Gems/Model/OrganizationModel.php:321
 #: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:203
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:302
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:350
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:303
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:351
 msgid "Other"
 msgstr "Other"
 
@@ -1149,7 +1149,7 @@ msgstr "Compliance"
 #: classes/Gems/Default/ProjectTracksAction.php:168
 #: classes/Gems/Default/TrackAction.php:528
 #: classes/Gems/Default/TrackMaintenanceAction.php:362
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:204
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:208
 #: classes/Gems/Tracker/Snippets/EditTrackSnippetAbstract.php:186
 msgid "track"
 msgid_plural "tracks"
@@ -1719,31 +1719,31 @@ msgstr "Round description"
 msgid "%s records found."
 msgstr "%s records found."
 
-#: classes/Gems/Default/ExportAction.php:378
+#: classes/Gems/Default/ExportAction.php:383
 #: classes/Gems/Email/MailTemplateForm.php:111
 #: classes/Gems/Snippets/Survey/Display/FullAnswerToggleSnippet.php:77
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:152
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:156
 msgid "Toggle"
 msgstr "Toggle"
 
-#: classes/Gems/Default/ExportAction.php:382
+#: classes/Gems/Default/ExportAction.php:387
 msgid "Export to"
 msgstr "Export to"
 
-#: classes/Gems/Default/ExportAction.php:419
+#: classes/Gems/Default/ExportAction.php:424
 msgid "Data"
 msgstr "Data"
 
-#: classes/Gems/Default/ExportAction.php:424
+#: classes/Gems/Default/ExportAction.php:429
 msgid "Export survey answers"
 msgstr "Export survey answers"
 
-#: classes/Gems/Default/ExportAction.php:484
+#: classes/Gems/Default/ExportAction.php:489
 #: classes/Gems/Export/RespondentExport.php:433 classes/Gems/Menu.php:693
 msgid "Export"
 msgstr "Export"
 
-#: classes/Gems/Default/ExportAction.php:510
+#: classes/Gems/Default/ExportAction.php:515
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:336
 msgid "Back"
 msgstr "Back"
@@ -2157,7 +2157,7 @@ msgstr ""
 #: classes/Gems/Snippets/Agenda/CalendarTableSnippet.php:94
 #: classes/Gems/Snippets/Survey/Display/BarChartSnippet.php:227
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:440
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:490
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:492
 msgid "Date"
 msgstr "Date"
 
@@ -3674,7 +3674,7 @@ msgid "E-Mailed on"
 msgstr "E-Mailed on"
 
 #: classes/Gems/Default/TokenPlanAction.php:259
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:154
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:233
 #: classes/OpenRosa/Tracker/Source/OpenRosa/Form.php:589
 msgid "Completion date"
 msgstr "Completion date"
@@ -4441,8 +4441,8 @@ msgstr "Start"
 #: classes/Gems/Model/AppointmentModel.php:253
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:156
 #: classes/Gems/Tracker/Model/RespondentTrackModel.php:199
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:290
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:312
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:291
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:313
 msgid "Comment"
 msgstr "Comment"
 
@@ -4903,7 +4903,6 @@ msgid "Reset to default values"
 msgstr "Reset to default values"
 
 #: classes/Gems/Menu/MenuAbstract.php:657
-#: views/scripts/index/resetpassword.phtml:1
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -5132,7 +5131,7 @@ msgid "Contact email"
 msgstr "Contact email"
 
 #: classes/Gems/Model/OrganizationModel.php:139
-#: classes/Gems/User/Form/LoginForm.php:161 views/scripts/index/login.phtml:9
+#: classes/Gems/User/Form/LoginForm.php:161
 msgid "Login"
 msgstr "Login"
 
@@ -5247,26 +5246,26 @@ msgstr ""
 msgid "Compiled %s file(s)"
 msgstr "Compiled %s file(s)"
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:292
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:398
 #, php-format
 msgid "Token %s is completed."
 msgstr "Token %s is completed."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:298
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:404
 #, php-format
 msgid "No token found for %s."
 msgstr "No token found for %s."
 
-#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:308
+#: classes/Gems/Model/Translator/AnswerTranslatorAbstract.php:414
 #, php-format
 msgid "No track for inserting found for %s."
 msgstr "No track for inserting found for %s."
 
-#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:169
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:171
 msgid "Patient ID"
 msgstr "Patient ID"
 
-#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:174
+#: classes/Gems/Model/Translator/RespondentAnswerTranslator.php:176
 msgid "Organization ID"
 msgstr "Organization ID"
 
@@ -5601,10 +5600,10 @@ msgstr "Add a track to this patient"
 msgid "No valid tokens found"
 msgstr "No valid tokens found"
 
-#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:246
+#: classes/Gems/Snippets/Respondent/RoundsTabsSnippet.php:247
 #, php-format
-msgid "%s (%d/%d/%d)"
-msgstr "%s (%d/%d/%d)"
+msgid "%s (%d open)"
+msgstr "%s (%d open)"
 
 #: classes/Gems/Snippets/RespondentDetailSnippetAbstract.php:173
 msgid "Please settle the informed consent form for this respondent."
@@ -5654,7 +5653,7 @@ msgid "Create new extra set of answers"
 msgstr "Create new extra set of answers"
 
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:167
-#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:181
+#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:188
 msgid "Abort the import"
 msgstr "Abort the import"
 
@@ -5666,16 +5665,24 @@ msgstr "When token completed"
 msgid "What to do when an imported token has already been completed"
 msgstr "What to do when an imported token has already been completed"
 
+#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:177
+msgid "Skip unknowns"
+msgstr "Skip unknowns"
+
 #: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:179
+msgid "What to do when the respondent does not exist"
+msgstr "What to do when the patient does not exist"
+
+#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:186
 msgid "Create new token"
 msgstr "Create new token"
 
-#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:184
+#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:191
 #: classes/Gems/Util/TokenData.php:69
 msgid "Token does not exist"
 msgstr "Token does not exist"
 
-#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:186
+#: classes/Gems/Snippets/Survey/AnswerImportSnippet.php:193
 msgid "What to do when no token exist to import to"
 msgstr "What to do when no token exist to import to"
 
@@ -6128,7 +6135,7 @@ msgid "%d: %s"
 msgstr "%d: %s"
 
 #: classes/Gems/Tracker/Engine/TrackEngineAbstract.php:783
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:855
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:860
 #, php-format
 msgid "%s - %s"
 msgstr "%s - %s"
@@ -6303,7 +6310,7 @@ msgid "Caretaker"
 msgstr "Caretaker"
 
 #: classes/Gems/Tracker/Model/FieldMaintenanceModel.php:441
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:505
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:507
 msgid "Free text"
 msgstr "Free text"
 
@@ -6418,8 +6425,8 @@ msgstr "Close"
 msgid "Add new round"
 msgstr "Add new round"
 
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:214
-#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:250
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:218
+#: classes/Gems/Tracker/Snippets/EditTrackEngineSnippetGeneric.php:254
 msgid "Add new track"
 msgstr "Add new track"
 
@@ -6621,37 +6628,37 @@ msgstr "Checked"
 msgid "Not checked"
 msgstr "Not checked"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:267
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:268
 #, php-format
 msgid "Rank %d"
 msgstr "Rank %d"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:290
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:312
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:291
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:313
 msgid " (comment)"
 msgstr " (comment)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:493
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:495
 msgid "Free number"
 msgstr "Free number"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:499
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:501
 msgid "Free text (long)"
 msgstr "Free text (long)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:502
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:504
 msgid "Free text (very long)"
 msgstr "Free text (very long)"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:719
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:787
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:841
-#: classes/Gems/Tracker/Source/LimeSurvey2m00FieldMap.php:106
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:724
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:792
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:846
+#: classes/Gems/Tracker/Source/LimeSurvey2m00FieldMap.php:109
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:861
+#: classes/Gems/Tracker/Source/LimeSurvey1m9FieldMap.php:866
 #, php-format
 msgid "- %s"
 msgstr "- %s"
@@ -7864,6 +7871,9 @@ msgstr[0] ""
 "After this survey there is one other survey we would like you to answer."
 msgstr[1] ""
 "After this survey there are another %d surveys we would like you to answer."
+
+#~ msgid "%s (%d/%d/%d)"
+#~ msgstr "%s (%d/%d/%d)"
 
 #~ msgid "&laquo;empty&raquo;"
 #~ msgstr "&laquo;empty&raquo;"

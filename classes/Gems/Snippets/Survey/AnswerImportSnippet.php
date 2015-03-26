@@ -174,7 +174,7 @@ class Gems_Snippets_Survey_AnswerImportSnippet extends \MUtil_Snippets_Standard_
                     'multiOptions', $tokenCompleted
                     );
 
-            $this->importModel->set('skipUnknownPatients', 'label', $this->_('Skip unknown respondents'),
+            $this->importModel->set('skipUnknownPatients', 'label', $this->_('Skip unknowns'),
                     'default', 0,
                     'description', $this->_('What to do when the respondent does not exist'),
                     'elementClass', 'Checkbox',
