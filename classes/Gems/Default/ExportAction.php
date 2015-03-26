@@ -373,8 +373,13 @@ class Gems_Default_ExportAction extends \Gems_Controller_Action
         $element->setLabel($this->_('Organization'))
                 ->setMultiOptions($organizations);
         $elements[] = $element;
+        
+        if (MUtil_Bootstrap::enabled()) {
+            $element = new \MUtil_Bootstrap_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
+        } else {
+            $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
+        }
 
-        $element = new \Gems_JQuery_Form_Element_ToggleCheckboxes('toggleOrg', array('selector'=>'input[name^=oid]'));
         $element->setLabel($this->_('Toggle'));
         $elements[] = $element;
 

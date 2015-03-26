@@ -52,7 +52,8 @@ class Gems_JQuery_View_Helper_ToggleCheckboxes extends ZendX_JQuery_View_Helper_
     {
 
         $js = sprintf('%1$s("#%2$s").click(function(){
-            $("%3$s").attr("checked", !$("%3$s").attr("checked"));
+            var checkboxes = %1$s("%3$s");
+            checkboxes.prop("checked", !checkboxes.prop("checked"));
 });',
                 ZendX_JQuery_View_Helper_JQuery::getJQueryHandler(),
                 $id,

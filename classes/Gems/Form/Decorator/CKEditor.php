@@ -51,7 +51,6 @@ class Gems_Form_Decorator_CKEditor extends Zend_Form_Decorator_ViewHelper {
 
 	public function __construct($options = null)
 	{
-        //MUtil_Echo::track('test');
         // If basepath not set, try a default
         if ($options) {
             if (is_array($options)) {
