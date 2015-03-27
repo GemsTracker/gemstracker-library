@@ -176,7 +176,7 @@ class Gems_Snippets_Survey_Display_BarChartSnippet extends MUtil_Snippets_Snippe
             // Only draw rulers that are in the visible range
             if ($position >= 0 && $position <= 100) {
                 if (array_key_exists('label', $ruler) && !empty($ruler['label'])) {
-                    $chart[] = $html->div($ruler['label'], array('style'=>sprintf('top: %s%%;', $position), 'class'=>'label', 'renderClosingTag'=>true));
+                    $chart[] = $html->div($ruler['label'], array('style'=>sprintf('top: %s%%;', $position), 'class'=>'label', 'renderClosingTag'=>true, 'title'=>$ruler['label']));
                 }
                 $chart[] = $html->div('', array('style'=>sprintf('top: %s%%;', $position), 'class'=>'ruler ' . $ruler['class'], 'renderClosingTag'=>true));
             }
