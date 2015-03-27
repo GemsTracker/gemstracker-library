@@ -106,7 +106,7 @@ class Gems_Model_RespondentRelationInstance extends Gems_Registry_TargetAbstract
        
     public function getBirthDate()
     {
-        return array_key_exists('grr_birthdate', $this->_data) ? $this->_data['grr_birth_date'] : null;
+        return array_key_exists('grr_birthdate', $this->_data) ? $this->_data['grr_birthdate'] : null;
     }
     
     public function getEmail()
