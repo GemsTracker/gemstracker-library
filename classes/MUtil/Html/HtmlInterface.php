@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
@@ -49,10 +48,10 @@
  * it's rendering it is often used for quick implementations in
  * non-library code.
  *
- * @see MUtil_Html_AttributeInterface
- * @see MUtil_Html_ElementInterface
- * @see MUtil_Html_MultiWrapper
- * @see MUtil_Html_Raw
+ * @see \MUtil_Html_AttributeInterface
+ * @see \MUtil_Html_ElementInterface
+ * @see \MUtil_Html_MultiWrapper
+ * @see \MUtil_Html_Raw
  *
  * @package    MUtil
  * @subpackage Html
@@ -67,8 +66,8 @@ interface MUtil_Html_HtmlInterface
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view);
+    public function render(\Zend_View_Abstract $view);
 }

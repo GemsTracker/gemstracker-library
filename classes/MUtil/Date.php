@@ -35,7 +35,7 @@
  */
 
 /**
- * Extends Zend_Date with extra date math and Utility functions
+ * Extends \Zend_Date with extra date math and Utility functions
  *
  * @package    MUtil
  * @subpackage Date
@@ -43,7 +43,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Date extends Zend_Date
+class MUtil_Date extends \Zend_Date
 {
     const DAY_SECONDS = 86400;      // 24 * 60 * 60
     const WEEK_SECONDS = 604800;    // 7 * 24 * 60 * 60
@@ -55,11 +55,11 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date
-     * @param Zend_Locale $locale optional (not used)
+     * @param \Zend_Date $date
+     * @param \Zend_Locale $locale optional (not used)
      * @return type
      */
-    public function diffDays(Zend_Date $date = null, $locale = null)
+    public function diffDays(\Zend_Date $date = null, $locale = null)
     {
         $day1 = clone $this;
         $day1->setTime(0);
@@ -68,7 +68,7 @@ class MUtil_Date extends Zend_Date
         if (null === $date) {
             // We must use date objects as unix timestamps do not take
             // account of leap seconds.
-            $day2 = new MUtil_Date();
+            $day2 = new \MUtil_Date();
         } else {
             $day2 = clone $date;
         }
@@ -85,14 +85,14 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date
-     * @param Zend_Locale $locale optional
+     * @param \Zend_Date $date
+     * @param \Zend_Locale $locale optional
      * @return type
      */
-    public function diffMonths(Zend_Date $date, $locale = null)
+    public function diffMonths(\Zend_Date $date, $locale = null)
     {
-        $val1 = (intval($this->get(Zend_Date::YEAR, $locale)) * 12) + intval($this->get(Zend_Date::MONTH, $locale));
-        $val2 = (intval($date->get(Zend_Date::YEAR, $locale)) * 12) + intval($date->get(Zend_Date::MONTH, $locale));
+        $val1 = (intval($this->get(\Zend_Date::YEAR, $locale)) * 12) + intval($this->get(\Zend_Date::MONTH, $locale));
+        $val2 = (intval($date->get(\Zend_Date::YEAR, $locale)) * 12) + intval($date->get(\Zend_Date::MONTH, $locale));
 
         return $val1 - $val2;
     }
@@ -103,11 +103,11 @@ class MUtil_Date extends Zend_Date
      * It will always round to the biggest period, so 8 days ago will result in 1 week ago
      * while 13 days ago will result in 2 weeks ago.
      *
-     * @param Zend_Date $date
-     * @param Zend_Translate $translate
+     * @param \Zend_Date $date
+     * @param \Zend_Translate $translate
      * @return string
      */
-    public function diffReadable(Zend_Date $date, Zend_Translate $translate)
+    public function diffReadable(\Zend_Date $date, \Zend_Translate $translate)
     {
         $difference = $date->getUnixTimeStamp() - $this->getUnixTimestamp();
 
@@ -169,11 +169,11 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date Date or now
-     * @param Zend_Locale $locale optional (not used)
+     * @param \Zend_Date $date Date or now
+     * @param \Zend_Locale $locale optional (not used)
      * @return type
      */
-    public function diffSeconds(Zend_Date $date = null, $locale = null)
+    public function diffSeconds(\Zend_Date $date = null, $locale = null)
     {
         $val1 = $this->getUnixTimestamp();
         if (null == $date) {
@@ -192,11 +192,11 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date
-     * @param Zend_Locale $locale optional (not used)
+     * @param \Zend_Date $date
+     * @param \Zend_Locale $locale optional (not used)
      * @return type
      */
-    public function diffWeeks(Zend_Date $date, $locale = null)
+    public function diffWeeks(\Zend_Date $date, $locale = null)
     {
         $week1 = clone $this;
         $week2 = clone $date;
@@ -216,14 +216,14 @@ class MUtil_Date extends Zend_Date
      * POSITIVE when $date is YOUNGER than $this
      * Negative when $date is older than $this
      *
-     * @param Zend_Date $date
-     * @param Zend_Locale $locale optional
+     * @param \Zend_Date $date
+     * @param \Zend_Locale $locale optional
      * @return type
      */
-    public function diffYears(Zend_Date $date, $locale = null)
+    public function diffYears(\Zend_Date $date, $locale = null)
     {
-        $val1 = intval($this->get(Zend_Date::YEAR, $locale));
-        $val2 = intval($date->get(Zend_Date::YEAR, $locale));
+        $val1 = intval($this->get(\Zend_Date::YEAR, $locale));
+        $val2 = intval($date->get(\Zend_Date::YEAR, $locale));
 
         return $val1 - $val2;
     }
@@ -243,7 +243,7 @@ class MUtil_Date extends Zend_Date
             return null;
         }
 
-        if (! $date instanceof Zend_Date) {
+        if (! $date instanceof \Zend_Date) {
             $date = new self($date, $inFormat);
         }
 
@@ -258,7 +258,7 @@ class MUtil_Date extends Zend_Date
      */
     public function intDayOfYear($locale = null)
     {
-        return intval($this->get(Zend_Date::DAY_OF_YEAR, $locale));
+        return intval($this->get(\Zend_Date::DAY_OF_YEAR, $locale));
     }
 
     /**
@@ -269,7 +269,7 @@ class MUtil_Date extends Zend_Date
      */
     public function intMonth($locale = null)
     {
-        return intval($this->get(Zend_Date::MONTH, $locale));
+        return intval($this->get(\Zend_Date::MONTH, $locale));
     }
 
     /**
@@ -280,7 +280,7 @@ class MUtil_Date extends Zend_Date
      */
     public function intWeek($locale = null)
     {
-        return intval($this->get(Zend_Date::WEEK, $locale));
+        return intval($this->get(\Zend_Date::WEEK, $locale));
     }
 
     /**
@@ -291,7 +291,7 @@ class MUtil_Date extends Zend_Date
      */
     public function intYear($locale = null)
     {
-        return intval($this->get(Zend_Date::YEAR, $locale));
+        return intval($this->get(\Zend_Date::YEAR, $locale));
     }
 
     /**
@@ -299,11 +299,11 @@ class MUtil_Date extends Zend_Date
      * For example:
      * 15.May.2000 <-> 13.June.1999 will return true for day, year and date, but not for month
      *
-     * @param  string|integer|array|Zend_Date  $date    Date or datepart to compare with
+     * @param  string|integer|array|\Zend_Date  $date    Date or datepart to compare with
      * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
-     * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @param  string|\Zend_Locale              $locale  OPTIONAL Locale for parsing input
      * @return boolean
-     * @throws Zend_Date_Exception
+     * @throws \Zend_Date_Exception
      */
     public function isEarlierOrEqual($date, $part = null, $locale = null)
     {
@@ -318,11 +318,11 @@ class MUtil_Date extends Zend_Date
      * 15.May.2000 <-> 13.June.1999 will return true for month but false for day, year and date
      * Returns if the given date is later
      *
-     * @param  string|integer|array|Zend_Date  $date    Date or datepart to compare with
+     * @param  string|integer|array|\Zend_Date  $date    Date or datepart to compare with
      * @param  string                          $part    OPTIONAL Part of the date to compare, if null the timestamp is used
-     * @param  string|Zend_Locale              $locale  OPTIONAL Locale for parsing input
+     * @param  string|\Zend_Locale              $locale  OPTIONAL Locale for parsing input
      * @return boolean
-     * @throws Zend_Date_Exception
+     * @throws \Zend_Date_Exception
      */
     public function isLaterOrEqual($date, $part = null, $locale = null)
     {

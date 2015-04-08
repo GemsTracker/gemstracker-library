@@ -39,11 +39,11 @@
  * The Sequence class is for sequentional Html content, kind of like a DOM document fragment.
  *
  * It usual use is where you should return a single ElementInterface object but want to return a
- * sequence of objects. While implementing the MUtil_Html_ElementInterface it does have attributes
+ * sequence of objects. While implementing the \MUtil_Html_ElementInterface it does have attributes
  * nor does it return a tagname so it is not really an element, just treated as one.
  *
  * This object also contains functions for processing parameters of special types. E.g. when a
- * Zend_View object is passed it should be stored in $this->view, not added to the core array.
+ * \Zend_View object is passed it should be stored in $this->view, not added to the core array.
  *
  * @package    MUtil
  * @subpackage Html
@@ -51,7 +51,7 @@
  * @license    New BSD License
  * @since      Class available since MUtil version 1.0
  */
-class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_ElementInterface
+class MUtil_Html_Sequence extends \MUtil_ArrayString implements \MUtil_Html_ElementInterface
 {
     /**
      * Object classes that should not be added to the core array, but should be set using
@@ -78,22 +78,22 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     /**
      * View object
      *
-     * @var Zend_View_Interface
+     * @var \Zend_View_Interface
      */
     public $view = null;
 
     /**
      * Adds an HtmlElement to this element
      *
-     * @see MUtil_Html_Creator
+     * @see \MUtil_Html_Creator
      *
-     * @param string $name Function name becomes tagname (unless specified otherwise in MUtil_Html_Creator)
+     * @param string $name Function name becomes tagname (unless specified otherwise in \MUtil_Html_Creator)
      * @param array $arguments The content and attributes values
-     * @return MUtil_Html_HtmlElement With '$name' tagName
+     * @return \MUtil_Html_HtmlElement With '$name' tagName
      */
     public function __call($name, array $arguments)
     {
-        $elem = MUtil_Html::createArray($name, $arguments);
+        $elem = \MUtil_Html::createArray($name, $arguments);
 
         $this[] = $elem;
 
@@ -102,13 +102,13 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
 
     /**
      *
-     * @param mixed $arg_array MUtil_Ra::args parameter passing
+     * @param mixed $arg_array \MUtil_Ra::args parameter passing
      */
     public function __construct($arg_array = null)
     {
         parent::__construct();
 
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         $this->init();
 
@@ -122,7 +122,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     /**
      * Return a sequence with the items concatened without spaces or breajs
      *
-     * @param mixed $args_array MUtil_Ra::args input
+     * @param mixed $args_array \MUtil_Ra::args input
      * @return \self
      */
     public static function createSequence($args_array = null)
@@ -132,7 +132,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         // functions, but as a sequence can contain a sequence
         // this lead to unexpected behaviour.
 
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         $seq = new self($args);
 
@@ -146,7 +146,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     /**
      * Return a sequence with the items separated by spaces
      *
-     * @param mixed $args_array MUtil_Ra::args input
+     * @param mixed $args_array \MUtil_Ra::args input
      * @return \self
      */
     public static function createSpaced($args_array = null)
@@ -156,7 +156,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         // functions, but as a sequence can contain a sequence
         // this lead to unexpected behaviour.
 
-        $args = MUtil_Ra::args(func_get_args());
+        $args = \MUtil_Ra::args(func_get_args());
 
         $seq = new self($args);
 
@@ -180,7 +180,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     /**
      * Get the current view
      *
-     * @return Zend_View
+     * @return \Zend_View
      */
     public function getView()
     {
@@ -219,7 +219,7 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
 
         /*
         if (! $this->_specialTypes) {
-            MUtil_Echo::backtrace();
+            \MUtil_Echo::backtrace();
         } // */
         foreach ($this->_specialTypes as $class => $method) {
             if ($newval instanceof $class) {
@@ -238,10 +238,10 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
      *
      * The $view is used to correctly encode and escape the output
      *
-     * @param Zend_View_Abstract $view
+     * @param \Zend_View_Abstract $view
      * @return string Correctly encoded and escaped html output
      */
-    public function render(Zend_View_Abstract $view)
+    public function render(\Zend_View_Abstract $view)
     {
         $html = '';
         $glue = $this->getGlue();
@@ -249,11 +249,11 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
         if (null !== $view) {
             $this->setView($view);
         }
-        // MUtil_Echo::r($this->count(), $glue);
+        // \MUtil_Echo::r($this->count(), $glue);
 
         $view = $this->getView();
 
-        $renderer = MUtil_Html::getRenderer();
+        $renderer = \MUtil_Html::getRenderer();
         foreach ($this->getIterator() as $item) {
             $html .= $glue;
             $html .= $renderer->renderAny($view, $item);
@@ -265,10 +265,10 @@ class MUtil_Html_Sequence extends MUtil_ArrayString implements MUtil_Html_Elemen
     /**
      * Set the View object
      *
-     * @param  Zend_View_Interface $view
+     * @param  \Zend_View_Interface $view
      * @return \MUtil_Html_Sequence (continuation pattern)
      */
-    public function setView(Zend_View_Interface $view)
+    public function setView(\Zend_View_Interface $view)
     {
         $this->view = $view;
         return $this;

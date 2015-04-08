@@ -4,7 +4,7 @@
 /**
  * Copyright (c) 2011, Erasmus MC
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *    * Redistributions of source code must retain the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of Erasmus MC nor the
  *      names of its contributors may be used to endorse or promote products
  *      derived from this software without specific prior written permission.
- *      
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,24 +26,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * @package    MUtil
+ * @subpackage Validate
+ * @author     Matijs de Jong <mjong@magnafacta.nl>
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @version    $Id$
  */
 
 /**
- * 
- * @author Matijs de Jong
- * @since 1.0
- * @version 1.1
- * @package MUtil
+ *
+ * @package    MUtil
  * @subpackage Validate
+ * @copyright  Copyright (c) 2011 Erasmus MC
+ * @license    New BSD License
+ * @since      Class available since MUtil version 1.0
  */
-
-/**
- * 
- * @author Matijs de Jong
- * @package MUtil
- * @subpackage Validate
- */
-class MUtil_Validate_Url extends Zend_Validate_Abstract
+class MUtil_Validate_Url extends \Zend_Validate_Abstract
 {
     /**
      * Error constants
@@ -57,16 +58,16 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
     protected $_messageTemplates = array(
         self::ERROR_SITE_NOT_FOUND => 'The site %value%" does not exist',
         self::ERROR_URL_NOT_VALID  => '"%value%" is not a valid url',
-        Zend_Validate_Hostname::INVALID                 => "Invalid type given, value should be a string",
-        Zend_Validate_Hostname::IP_ADDRESS_NOT_ALLOWED  => "'%value%' appears to be an IP address, but IP addresses are not allowed",
-        Zend_Validate_Hostname::UNKNOWN_TLD             => "'%value%' appears to be a DNS hostname but cannot match TLD against known list",
-        Zend_Validate_Hostname::INVALID_DASH            => "'%value%' appears to be a DNS hostname but contains a dash (-) in an invalid position",
-        Zend_Validate_Hostname::INVALID_HOSTNAME_SCHEMA => "'%value%' appears to be a DNS hostname but cannot match against hostname schema for TLD '%tld%'",
-        Zend_Validate_Hostname::UNDECIPHERABLE_TLD      => "'%value%' appears to be a DNS hostname but cannot extract TLD part",
-        Zend_Validate_Hostname::INVALID_HOSTNAME        => "'%value%' does not match the expected structure for a DNS hostname",
-        Zend_Validate_Hostname::INVALID_LOCAL_NAME      => "'%value%' does not appear to be a valid local network name",
-        Zend_Validate_Hostname::LOCAL_NAME_NOT_ALLOWED  => "'%value%' appears to be a local network name but local network names are not allowed",
-        Zend_Validate_Hostname::CANNOT_DECODE_PUNYCODE  => "'%value%' appears to be a DNS hostname but the given punycode notation cannot be decoded"
+        \Zend_Validate_Hostname::INVALID                 => "Invalid type given, value should be a string",
+        \Zend_Validate_Hostname::IP_ADDRESS_NOT_ALLOWED  => "'%value%' appears to be an IP address, but IP addresses are not allowed",
+        \Zend_Validate_Hostname::UNKNOWN_TLD             => "'%value%' appears to be a DNS hostname but cannot match TLD against known list",
+        \Zend_Validate_Hostname::INVALID_DASH            => "'%value%' appears to be a DNS hostname but contains a dash (-) in an invalid position",
+        \Zend_Validate_Hostname::INVALID_HOSTNAME_SCHEMA => "'%value%' appears to be a DNS hostname but cannot match against hostname schema for TLD '%tld%'",
+        \Zend_Validate_Hostname::UNDECIPHERABLE_TLD      => "'%value%' appears to be a DNS hostname but cannot extract TLD part",
+        \Zend_Validate_Hostname::INVALID_HOSTNAME        => "'%value%' does not match the expected structure for a DNS hostname",
+        \Zend_Validate_Hostname::INVALID_LOCAL_NAME      => "'%value%' does not appear to be a valid local network name",
+        \Zend_Validate_Hostname::LOCAL_NAME_NOT_ALLOWED  => "'%value%' appears to be a local network name but local network names are not allowed",
+        \Zend_Validate_Hostname::CANNOT_DECODE_PUNYCODE  => "'%value%' appears to be a DNS hostname but the given punycode notation cannot be decoded"
     );
 
     /**
@@ -78,7 +79,7 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
      *
      * @param  mixed $value
      * @return boolean
-     * @throws Zend_Valid_Exception If validation of $value is impossible
+     * @throws \Zend_Valid_Exception If validation of $value is impossible
      */
     public function isValid($value, $context = array())
     {
@@ -86,10 +87,10 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
 
         if ($value) {
             try {
-                $uri = Zend_Uri::factory($value);
+                $uri = \Zend_Uri::factory($value);
 
-                // Check the host against the allowed values; delegated to Zend_Filter.
-                $validate = new Zend_Validate_Hostname(Zend_Validate_Hostname::ALLOW_DNS | Zend_Validate_Hostname::ALLOW_IP | Zend_Validate_Hostname::ALLOW_LOCAL);
+                // Check the host against the allowed values; delegated to \Zend_Filter.
+                $validate = new \Zend_Validate_Hostname(\Zend_Validate_Hostname::ALLOW_DNS | \Zend_Validate_Hostname::ALLOW_IP | \Zend_Validate_Hostname::ALLOW_LOCAL);
 
                 if (! $validate->isValid($uri->getHost())) {
                     foreach ($validate->getMessages() as $key => $msg) {
@@ -114,7 +115,7 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
 
                     // curl_setopt($ch, CURLOPT_FILETIME, true);
                     curl_setopt($ch, CURLOPT_NOBODY, true);
-                    
+
                     /**
                      * @todo Unknown CA's should probably be imported...
                      */
@@ -126,12 +127,12 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
                     }
 
                     // $return = curl_getinfo($ch, CURLINFO_FILETIME);
-                    // MUtil_Echo::r('Date at server: '.date('r', $return));
+                    // \MUtil_Echo::r('Date at server: '.date('r', $return));
 
                     curl_close($ch);
 
                     return $valid;
-                    
+
                 } else {
                     return true;
                 }
@@ -141,7 +142,7 @@ class MUtil_Validate_Url extends Zend_Validate_Abstract
                 $this->setMessage($e->getMessage(), self::ERROR_URL_NOT_VALID);
 
                 return false;
-            } 
+            }
         }
     }
 }
