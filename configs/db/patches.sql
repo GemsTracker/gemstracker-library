@@ -870,7 +870,7 @@ ALTER TABLE gems__log_actions ADD
 UPDATE gems__log_actions SET glac_on_post = 1 WHERE glac_name LIKE '%edit%' OR glac_name LIKE '%create%';
 
 ALTER TABLE gems__log_actions CHANGE
-    glac_created glac_created timestamp not null;
+    glac_created glac_created timestamp not null default 0;
 
 ALTER TABLE gems__log_actions ADD
     glac_changed timestamp AFTER glac_log;
